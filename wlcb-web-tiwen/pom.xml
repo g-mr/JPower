@@ -11,6 +11,8 @@
 
     <artifactId>wlcb-web-tiwen</artifactId>
 
+    <packaging>jar</packaging>
+
     <dependencies>
 
         <dependency>
@@ -71,6 +73,7 @@
                 <filtering>true</filtering>
             </testResource>
         </testResources>
+
     </build>
 
 </project>

@@ -12,6 +12,7 @@
     <name>wlcb-module-dbs</name>
     <artifactId>wlcb-module-dbs</artifactId>
 
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>

@@ -10,6 +10,8 @@
     <artifactId>wlcb-module-common</artifactId>
     <name>wlcb-module-common</name>
 
+    <packaging>jar</packaging>
+
     <dependencies>
 
         <dependency>

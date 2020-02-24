@@ -11,6 +11,7 @@
 
     <artifactId>wlcb-module-base</artifactId>
 
+    <packaging>jar</packaging>
 
     <dependencies>
 
