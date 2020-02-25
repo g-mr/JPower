@@ -46,6 +46,7 @@
                 <![CDATA[ and w.insert_at <= #{endTime} ]]>
             </if>
         </where>
+        order by w.insert_at desc
     </select>
 
     <select id="queryNew" resultType="java.util.Map">

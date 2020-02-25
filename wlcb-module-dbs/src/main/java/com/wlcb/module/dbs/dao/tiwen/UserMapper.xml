@@ -8,7 +8,7 @@
 
 
     <insert id="inster">
-        INSERT INTO user (openid,name,idcard,phone)
+        REPLACE INTO user (openid,name,idcard,phone)
         value (#{openid},#{name},#{idcard},#{phone})
     </insert>
 
