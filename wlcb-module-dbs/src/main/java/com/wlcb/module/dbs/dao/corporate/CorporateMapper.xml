@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wlcb.module.dbs.dao.corporate.CorporateMapper">
+
+    <sql id="Base_Column_List">
+        `id`,
+        `area`,
+        `enterprise_name`,
+        `legal_person`,
+        `enterprise_range`,
+        `legal_idcard`,
+        `enterprise_authority`,
+        `enterprise_status`,
+        `organization_code`,
+        `create_user`,
+        `create_time`,
+        `update_user`,
+        `update_time`,
+        `status`
+    </sql>
+
+    <select id="selectName" resultType="java.util.Map">
+        select id,enterprise_name from tbl_csrrg_corporate where enterprise_name like CONCAT('%',#{name,jdbcType=VARCHAR},'%' )
+    </select>
+
+    <select id="selectById" resultType="com.wlcb.module.dbs.entity.corporate.TblCsrrgCorporate">
+        select <include refid="Base_Column_List"/> from tbl_csrrg_corporate where id = #{id,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectDetailByLegal" resultType="com.wlcb.module.dbs.entity.corporate.TblCsrrgCorporate">
+        select <include refid="Base_Column_List"/> from tbl_csrrg_corporate
+        where
+        enterprise_name = #{enterpriseName,jdbcType=VARCHAR}
+        and legal_person = #{applicantName,jdbcType=VARCHAR}
+        and legal_idcard = #{applicantIdcard,jdbcType=VARCHAR}
+        limit 1
+    </select>
+
+
+</mapper>

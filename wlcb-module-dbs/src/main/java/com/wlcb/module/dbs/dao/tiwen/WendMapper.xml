@@ -9,7 +9,7 @@
     <select id="listDetail" resultType="java.util.Map">
         select w.uuid,w.img,w.wendu,w.detail,w.insert_at,w.openid,w.jiedao,w.shequ,w.xiaoqu,w.loudong,w.menpai,w.is_normal,
         u.openid,u.name,u.phone,u.idcard
-        from wend w join user u on w.openid = u.openid
+        from wend w left join user u on w.openid = u.openid
         <where>
             <if test="user.name != null  and user.name!=''">
                 and u.name like CONCAT('%',#{user.name},'%')

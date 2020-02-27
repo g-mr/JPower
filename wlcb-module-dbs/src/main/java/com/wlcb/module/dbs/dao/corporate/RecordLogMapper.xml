@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wlcb.module.dbs.dao.corporate.RecordLogMapper">
+
+    <sql id="Base_Column_List">
+        `id`,
+        `record_id`,
+        `user_id`,
+        `name`,
+        `openid`,
+        `content`,
+        `create_user`,
+        `create_time`,
+        `update_user`,
+        `update_time`,
+        `status`
+    </sql>
+
+    <insert id="inster">
+        insert into tbl_csrrg_record_log
+        (id,record_id,user_id,name,openid,content) values
+        (#{id,jdbcType=VARCHAR},#{recordId,jdbcType=VARCHAR},#{userId,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},
+        #{openid,jdbcType=VARCHAR},#{content,jdbcType=VARCHAR})
+    </insert>
+
+</mapper>

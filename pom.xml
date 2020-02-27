@@ -27,6 +27,7 @@
         <module>wlcb-module-common</module>
         <module>wlcb-module-dbs</module>
         <module>wlcb-web-tiwen</module>
+        <module>wlcb-web-corporate</module>
     </modules>
 
     <dependencyManagement>
