@@ -1,4 +1,3 @@
-
 drop table if exists tbl_csrrg_corporate;
 CREATE TABLE `tbl_csrrg_corporate` (
   `id` varchar(32) NOT NULL COMMENT 'id',
@@ -25,7 +24,7 @@ CREATE TABLE `tbl_csrrg_record` (
   `enterprise_name` varchar(32) DEFAULT NULL COMMENT '企业名称  孕育存，提高查询速度',
   `applicant_openid` varchar(32) DEFAULT NULL COMMENT '申请人openid',
   `applicant_name` varchar(30) NOT NULL COMMENT '申请人姓名',
-  `applicant_idcard` varchar(10) NOT NULL COMMENT '申请人身份证号',
+  `applicant_idcard` varchar(18) NOT NULL COMMENT '申请人身份证号',
   `applicant_username` varchar(100) DEFAULT null COMMENT '申请人用户名',
   `applicant_phone` varchar(18) DEFAULT null COMMENT '申请人电话',
   `applicant_quxian` varchar(50) DEFAULT null COMMENT '申请人区县',
@@ -36,7 +35,7 @@ CREATE TABLE `tbl_csrrg_record` (
   `applicant_jiedao_id` varchar(32) DEFAULT null COMMENT '申请人街道ID',
   `applicant_xiaoqu_id` varchar(32) DEFAULT null COMMENT '申请人小区ID',
   `file_path` varchar(50) DEFAULT null COMMENT '证件地址',
-  `applicant_status` varchar(50) DEFAULT null COMMENT '申请状态 1：申请成功 2：申请失败 3：审核中 4：匹配成功',
+  `applicant_status` integer(50) DEFAULT null COMMENT '申请状态 1：申请成功 2：申请失败 3：审核中 4：匹配成功',
   `fail_reason` varchar(50) DEFAULT null COMMENT '申请失败原因',
   `create_user` varchar(32) DEFAULT 'root' COMMENT '作成者',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成时间',
@@ -50,7 +49,7 @@ CREATE TABLE `tbl_csrrg_record` (
 drop table if exists tbl_csrrg_record_log;
 CREATE TABLE `tbl_csrrg_record_log` (
   `id` varchar(32) NOT NULL COMMENT 'id',
-  `record_id` varchar(30) NOT NULL COMMENT '申请记录表ID',
+  `record_id` varchar(32) NOT NULL COMMENT '申请记录表ID',
   `user_id` varchar(30) NOT NULL COMMENT '操作人用户ID',
   `name` varchar(32) DEFAULT NULL COMMENT '操作人姓名',
   `openid` varchar(32) DEFAULT NULL COMMENT '操作人openID',
@@ -61,4 +60,4 @@ CREATE TABLE `tbl_csrrg_record_log` (
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   `status` int(5) DEFAULT '1' COMMENT '状态',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='申请记录操作日志';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='申请记录操作日志表';
