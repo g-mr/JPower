@@ -1,5 +1,5 @@
 server:
-  port: 86
+  port: 87
 #  servlet:
 #    context-path: /tiwen
 
@@ -49,6 +49,7 @@ mybatis:
     map-underscore-to-camel-case: true
   typeAliasesPackage: com.wlcb.module.dbs.entity
 
-
+#文件保存路径
 fileParentPath: /Users/mr.gmac/IdeaProjects/wlcb/file/
+#支持上传的文件后缀名
 fileSuffixName: png,jpg,jpeg
