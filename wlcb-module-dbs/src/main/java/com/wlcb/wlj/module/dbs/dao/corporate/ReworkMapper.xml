@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wlcb.wlj.module.dbs.dao.corporate.ReworkMapper">
+
+    <sql id="Base_Column_List">
+        id,
+        openid,
+        corporate_id,
+        corporate_people_sum,
+        corporate_rep_sum,
+        plan_path,
+        committed_path,
+        review_stats,
+        refuse_reason,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        status
+    </sql>
+
+    <select id="listAll" resultType="com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgRework">
+        select a.id,
+        a.openid,
+        a.corporate_id,
+        a.corporate_people_sum,
+        a.corporate_rep_sum,
+        a.plan_path,
+        a.committed_path,
+        a.review_stats,
+        a.create_user,
+        a.create_time,
+        a.update_user,
+        a.update_time,
+        a.status,
+        b.applicant_name as name
+        from tbl_csrrg_rework a
+        left join tbl_csrrg_record b on a.openid = b.applicant_openid
+        where a.corporate_id = #{corporateId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectById" resultType="com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgRework">
+        select <include refid="Base_Column_List"/> from tbl_csrrg_rework
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateByPrimaryKeySelective">
+
+        update tbl_csrrg_rework
+        <set >
+            <if test="openid != null" >
+                openid = #{openid,jdbcType=VARCHAR},
+            </if>
+            <if test="corporateId != null and corporateId != ''" >
+                corporate_id = #{corporateId,jdbcType=VARCHAR},
+            </if>
+            <if test="corporatePeopleSum != null" >
+                corporate_people_sum = #{corporatePeopleSum,jdbcType=INTEGER},
+            </if>
+            <if test="corporateRepSum != null" >
+                corporate_rep_sum = #{corporateRepSum,jdbcType=INTEGER},
+            </if>
+            <if test="planPath != null and planPath != ''" >
+                plan_path = #{planPath,jdbcType=VARCHAR},
+            </if>
+            <if test="committedPath != null and committedPath!=''" >
+                committed_path = #{committedPath,jdbcType=VARCHAR},
+            </if>
+            <if test="reviewStats != null and reviewStats != ''" >
+                review_stats = #{reviewStats,jdbcType=INTEGER},
+            </if>
+            <if test="refuseReason != null and refuseReason != ''" >
+                refuse_reason = #{refuseReason,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUser != null and updateUser != ''" >
+                update_user = #{updateUser,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null" >
+                status = #{status,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+
+    </update>
+
+    <insert id="insterSelective">
+        insert into tbl_csrrg_rework
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null and id != ''" >
+                id,
+            </if>
+            <if test="openid != null and openid != ''" >
+                openid,
+            </if>
+            <if test="corporateId != null and corporateId != ''" >
+                corporate_id,
+            </if>
+            <if test="corporatePeopleSum != null" >
+                corporate_people_sum,
+            </if>
+            <if test="corporateRepSum != null" >
+                corporate_rep_sum,
+            </if>
+            <if test="planPath != null and planPath != ''" >
+                plan_path,
+            </if>
+            <if test="committedPath != null and committedPath!=''" >
+                committed_path,
+            </if>
+            <if test="reviewStats != null and reviewStats != ''" >
+                review_stats,
+            </if>
+            <if test="refuseReason != null and refuseReason != ''" >
+                refuse_reason,
+            </if>
+            <if test="createUser != null and createUser != ''" >
+                create_user,
+            </if>
+            <if test="updateUser != null and updateUser != ''" >
+                update_user,
+            </if>
+            <if test="status != null" >
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null and id != ''" >
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="openid != null and openid != ''" >
+                #{openid,jdbcType=VARCHAR},
+            </if>
+            <if test="corporateId != null and corporateId != ''" >
+                #{corporateId,jdbcType=VARCHAR},
+            </if>
+            <if test="corporatePeopleSum != null" >
+                #{corporatePeopleSum,jdbcType=INTEGER},
+            </if>
+            <if test="corporateRepSum != null" >
+                #{corporateRepSum,jdbcType=INTEGER},
+            </if>
+            <if test="planPath != null and planPath != ''" >
+                #{planPath,jdbcType=VARCHAR},
+            </if>
+            <if test="committedPath != null and committedPath!=''" >
+                #{committedPath,jdbcType=VARCHAR},
+            </if>
+            <if test="reviewStats != null and reviewStats != ''" >
+                #{reviewStats,jdbcType=INTEGER},
+            </if>
+            <if test="refuseReason != null and refuseReason != ''" >
+                #{refuseReason,jdbcType=VARCHAR},
+            </if>
+            <if test="createUser != null and createUser != ''" >
+                #{createUser,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUser != null and updateUser != ''" >
+                #{updateUser,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null and status != ''" >
+                #{status,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+</mapper>
