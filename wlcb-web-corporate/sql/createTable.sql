@@ -71,7 +71,7 @@ drop table if exists tbl_csrrg_log;
 CREATE TABLE `tbl_csrrg_log` (
   `id` varchar(32) NOT NULL COMMENT 'id',
   `key_id` varchar(32) NOT NULL COMMENT '操作表ID',
-  `user_id` varchar(30) NOT NULL COMMENT '操作人用户ID',
+  `user_id` varchar(32) NOT NULL COMMENT '操作人用户ID',
   `name` varchar(32) DEFAULT NULL COMMENT '操作人姓名',
   `openid` varchar(32) DEFAULT NULL COMMENT '操作人openID',
   `content` varchar(30) NOT NULL COMMENT '操作内容',
