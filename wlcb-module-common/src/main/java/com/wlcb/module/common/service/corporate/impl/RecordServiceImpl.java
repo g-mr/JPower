@@ -8,12 +8,12 @@ import com.wlcb.module.common.utils.ReturnJsonUtil;
 import com.wlcb.module.common.utils.UUIDUtil;
 import com.wlcb.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.module.dbs.dao.corporate.CorporateMapper;
-import com.wlcb.module.dbs.dao.corporate.RecordLogMapper;
+import com.wlcb.module.dbs.dao.corporate.LogMapper;
 import com.wlcb.module.dbs.dao.corporate.RecordMapper;
 import com.wlcb.module.dbs.entity.base.PageBean;
 import com.wlcb.module.dbs.entity.corporate.TblCsrrgCorporate;
+import com.wlcb.module.dbs.entity.corporate.TblCsrrgLog;
 import com.wlcb.module.dbs.entity.corporate.TblCsrrgRecord;
-import com.wlcb.module.dbs.entity.corporate.TblCsrrgRecordLog;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,7 +31,7 @@ public class RecordServiceImpl implements RecordService {
     @Autowired
     private CorporateMapper corporateMapper;
     @Autowired
-    private RecordLogMapper recordLogMapper;
+    private LogMapper logMapper;
 
     @Override
     public PageBean<TblCsrrgRecord> listPage(TblCsrrgRecord record) {
@@ -75,10 +75,10 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public Integer updateRecordStatus(TblCsrrgRecordLog recordLog,String failReason) {
+    public Integer updateRecordStatus(TblCsrrgLog recordLog, String failReason) {
 
         TblCsrrgRecord record = new TblCsrrgRecord();
-        record.setId(recordLog.getRecordId());
+        record.setId(recordLog.getKeyId());
         record.setApplicantStatus(recordLog.getStatus());
         record.setUpdateUser(recordLog.getName());
         record.setFailReason(failReason);
@@ -88,11 +88,17 @@ public class RecordServiceImpl implements RecordService {
         if(count > 0){
             recordLog.setStatus(null);
             recordLog.setId(UUIDUtil.getUUID());
-            recordLog.setContent("修改状态为："+ConstantsEnum.APPLICANT_STATUS.getName(record.getApplicantStatus()));
+            recordLog.setTableName("tbl_csrrg_record");
+            recordLog.setContent("修改申请记录状态为："+ConstantsEnum.APPLICANT_STATUS.getName(record.getApplicantStatus()));
 
-            recordLogMapper.inster(recordLog);
+            logMapper.inster(recordLog);
         }
 
         return count;
+    }
+
+    @Override
+    public Integer selectCountByCidAndOid(String openid, String corporateId) {
+        return recordMapper.selectCountByCidAndOid(openid,corporateId);
     }
 }

@@ -9,8 +9,8 @@ import com.wlcb.module.common.utils.UUIDUtil;
 import com.wlcb.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.module.dbs.entity.base.PageBean;
 import com.wlcb.module.dbs.entity.corporate.TblCsrrgCorporate;
+import com.wlcb.module.dbs.entity.corporate.TblCsrrgLog;
 import com.wlcb.module.dbs.entity.corporate.TblCsrrgRecord;
-import com.wlcb.module.dbs.entity.corporate.TblCsrrgRecordLog;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
-import java.util.List;
 
 /**
  * @ClassName TiwenController
@@ -48,7 +47,7 @@ public class RecordController {
 
     /**
      * @Author 郭丁志
-     * @Description //TODO 委托书保存路径
+     * @Description //TODO 文件保存路径
      * @Date 20:46 2020-02-27
      * @Param
      * @return
@@ -88,7 +87,7 @@ public class RecordController {
      * @return com.wlcb.module.base.vo.ResponseData
      **/
     @RequestMapping(value = "/updateRecordStatus",method = RequestMethod.POST,produces="application/json")
-    public ResponseData updateRecordStatus(TblCsrrgRecordLog recordLog,String failReason, HttpServletRequest request, HttpServletResponse response){
+    public ResponseData updateRecordStatus(TblCsrrgLog recordLog, String failReason, HttpServletRequest request, HttpServletResponse response){
 
         if (StringUtils.isBlank(recordLog.getOpenid())){
             return ReturnJsonUtil.printJson(-1,"操作人OPENID不可为空",false);
@@ -102,7 +101,7 @@ public class RecordController {
             return ReturnJsonUtil.printJson(-1,"操作人姓名不可为空",false);
         }
 
-        if (StringUtils.isBlank(recordLog.getRecordId())){
+        if (StringUtils.isBlank(recordLog.getKeyId())){
             return ReturnJsonUtil.printJson(-1,"申请记录ID不可为空",false);
         }
 
@@ -180,11 +179,11 @@ public class RecordController {
                 //获得文件后缀名
                 String suffixName=file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1);
 
-                if (!StringUtils.containsAny(fileSuffixName,suffixName.toLowerCase())){
+                if (!StringUtils.containsIgnoreCase(fileSuffixName,suffixName)){
                     return ReturnJsonUtil.printJson(-1,"文件类型不符，请上传"+fileSuffixName+"文件类型",false);
                 }
 
-                String imgPath = DateUtils.getDate(new Date(), "yyyy-MM-dd") + File.separator + fileName + "." + suffixName;
+                String imgPath = "recodefile" + File.separator + DateUtils.getDate(new Date(), "yyyy-MM-dd") + File.separator + fileName + "." + suffixName;
 
                 File imgFile = new File(fileParentPath+File.separator+imgPath);
 
@@ -195,6 +194,7 @@ public class RecordController {
                 file.transferTo(imgFile);
 
                 record.setFilePath(imgPath);
+                logger.info("文件保存成，文件路径={}",imgFile.getAbsolutePath());
             } catch (IOException e) {
                 logger.error("委托书保存出错：{}",e.getMessage());
                 return ReturnJsonUtil.printJson(-1,"系统出错，稍后重试",false);

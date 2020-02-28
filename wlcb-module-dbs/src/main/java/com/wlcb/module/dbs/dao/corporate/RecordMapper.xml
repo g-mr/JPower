@@ -57,6 +57,13 @@
         </where>
     </select>
 
+    <select id="selectCountByCidAndOid" resultType="java.lang.Integer">
+        select count(1) from tbl_csrrg_record
+        where
+        applicant_openid = #{openid,jdbcType=VARCHAR}
+        and corporate_id = #{corporateId,jdbcType=VARCHAR}
+    </select>
+
     <insert id="insterSelective">
         insert into tbl_csrrg_record
         <trim prefix="(" suffix=")" suffixOverrides="," >
@@ -243,7 +250,7 @@
             <if test="updateUser != null and updateUser != ''" >
                 update_user = #{updateUser,jdbcType=VARCHAR},
             </if>
-            <if test="status != null and status != ''" >
+            <if test="status != null" >
                 status = #{status,jdbcType=INTEGER},
             </if>
         </set>

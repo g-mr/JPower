@@ -1,5 +1,5 @@
 server:
-  port: 87
+  port: 88
 #  servlet:
 #    context-path: /tiwen
 

@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.wlcb.module.dbs.dao.corporate.RecordLogMapper">
+<mapper namespace="com.wlcb.module.dbs.dao.corporate.LogMapper">
 
     <sql id="Base_Column_List">
         `id`,
-        `record_id`,
+        `key_id`,
         `user_id`,
         `name`,
         `openid`,
         `content`,
+        `table_name`,
         `create_user`,
         `create_time`,
         `update_user`,
@@ -17,10 +18,10 @@
     </sql>
 
     <insert id="inster">
-        insert into tbl_csrrg_record_log
-        (id,record_id,user_id,name,openid,content) values
-        (#{id,jdbcType=VARCHAR},#{recordId,jdbcType=VARCHAR},#{userId,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},
-        #{openid,jdbcType=VARCHAR},#{content,jdbcType=VARCHAR})
+        insert into tbl_csrrg_log
+        (id,key_id,user_id,`name`,openid,content,`table_name`) values
+        (#{id,jdbcType=VARCHAR},#{keyId,jdbcType=VARCHAR},#{userId,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},
+        #{openid,jdbcType=VARCHAR},#{content,jdbcType=VARCHAR},#{tableName,jdbcType=VARCHAR})
     </insert>
 
 </mapper>

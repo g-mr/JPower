@@ -11,7 +11,7 @@ public class ConstantsEnum {
     
     /**
      * @Author 郭丁志
-     * @Description //TODO 重复类型
+     * @Description //TODO 企业联系人关联审核状态
      * @Date 18:24 2020-02-03
      * @Param 
      * @return 

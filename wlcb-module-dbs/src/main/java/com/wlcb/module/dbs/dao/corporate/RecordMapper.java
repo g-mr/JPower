@@ -13,4 +13,6 @@ import java.util.List;
 public interface RecordMapper extends BaseMapper<TblCsrrgRecord> {
 
     List<TblCsrrgRecord> listAll(TblCsrrgRecord record);
+
+    Integer selectCountByCidAndOid(String openid, String corporateId);
 }

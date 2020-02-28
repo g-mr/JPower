@@ -12,20 +12,26 @@ import java.io.Serializable;
  * @Version 1.0
  */
 @Data
-public class TblCsrrgRecordLog implements Serializable {
+public class TblCsrrgRework implements Serializable {
 
-    private static final long serialVersionUID = 2986524133916815265L;
+    private static final long serialVersionUID = 412755129157532112L;
 
     private String id;
-    private String recordId;
-    private String userId;
-    private String name;
     private String openid;
-    private String content;
+    private String corporateId;
+    private Integer corporatePeopleSum;
+    private Integer corporateRepSum;
+    private String planPath;
+    private String committedPath;
+    private Integer reviewStats;
+    private String refuseReason;
     private String createUser;
     private String createTime;
     private String updateUser;
     private String updateTime;
     private Integer status;
+
+    //申请人姓名
+    private String name;
 
 }

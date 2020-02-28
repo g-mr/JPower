@@ -2,8 +2,8 @@ package com.wlcb.module.common.service.corporate;
 
 import com.wlcb.module.base.vo.ResponseData;
 import com.wlcb.module.dbs.entity.base.PageBean;
+import com.wlcb.module.dbs.entity.corporate.TblCsrrgLog;
 import com.wlcb.module.dbs.entity.corporate.TblCsrrgRecord;
-import com.wlcb.module.dbs.entity.corporate.TblCsrrgRecordLog;
 
 public interface RecordService {
 
@@ -13,5 +13,7 @@ public interface RecordService {
 
     TblCsrrgRecord detail(String id);
 
-    Integer updateRecordStatus(TblCsrrgRecordLog recordLog,String failReason);
+    Integer updateRecordStatus(TblCsrrgLog recordLog, String failReason);
+
+    Integer selectCountByCidAndOid(String openid, String corporateId);
 }

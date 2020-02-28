@@ -33,7 +33,7 @@
             <!--日志文件输出的文件名-->
             <FileNamePattern>${log.base}/log/log.%d{yyyyMMdd}.%i.log</FileNamePattern>
             <!--日志文件最大的大小-->
-            <maxFileSize>10MB</maxFileSize>
+            <maxFileSize>500MB</maxFileSize>
             <!--日志文件保留天数-->
             <MaxHistory>30</MaxHistory>
         </rollingPolicy>
@@ -50,10 +50,13 @@
             <!--日志文件输出的文件名-->
             <FileNamePattern>${log.base}/error/error.%d{yyyyMMdd}.%i.log</FileNamePattern>
             <!--日志文件最大的大小-->
-            <maxFileSize>10MB</maxFileSize>
+            <maxFileSize>500MB</maxFileSize>
             <!--日志文件保留天数-->
             <MaxHistory>30</MaxHistory>
         </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>error</level>
+        </filter>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
             <pattern>${patternAsyn}</pattern>
