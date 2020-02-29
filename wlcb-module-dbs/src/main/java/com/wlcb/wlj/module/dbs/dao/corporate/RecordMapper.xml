@@ -46,6 +46,9 @@
             <if test="applicantXiaoquId != null and applicantXiaoquId != ''" >
                 and applicant_xiaoqu_id=#{applicantXiaoquId,jdbcType=VARCHAR}
             </if>
+            <if test="applicantStatus != null" >
+                and applicant_status=#{applicantStatus,jdbcType=INTEGER}
+            </if>
         </where>
         order by create_time desc
     </select>
