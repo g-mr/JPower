@@ -89,9 +89,9 @@ public class RecordController {
     @RequestMapping(value = "/updateRecordStatus",method = RequestMethod.POST,produces="application/json")
     public ResponseData updateRecordStatus(TblCsrrgLog recordLog, String failReason, HttpServletRequest request, HttpServletResponse response){
 
-        if (StringUtils.isBlank(recordLog.getOpenid())){
-            return ReturnJsonUtil.printJson(-1,"操作人OPENID不可为空",false);
-        }
+//        if (StringUtils.isBlank(recordLog.getOpenid())){
+//            return ReturnJsonUtil.printJson(-1,"操作人OPENID不可为空",false);
+//        }
 
         if (StringUtils.isBlank(recordLog.getUserId())){
             return ReturnJsonUtil.printJson(-1,"操作人ID不可为空",false);

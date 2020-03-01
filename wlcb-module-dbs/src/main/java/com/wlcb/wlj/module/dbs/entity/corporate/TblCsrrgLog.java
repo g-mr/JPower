@@ -20,7 +20,7 @@ public class TblCsrrgLog implements Serializable {
     private String keyId;
     private String userId;
     private String name;
-    private String openid;
+//    private String openid;
     private String content;
     private String tableName;
     private String createUser;

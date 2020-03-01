@@ -28,6 +28,7 @@
         <module>wlcb-module-dbs</module>
         <module>wlcb-web-tiwen</module>
         <module>wlcb-web-corporate</module>
+        <module>wlcb-web-sync</module>
     </modules>
 
     <dependencyManagement>
@@ -83,6 +84,16 @@
             <dependency>
                 <groupId>com.wlcb</groupId>
                 <artifactId>wlcb-module-common</artifactId>
+                <version>${com.wlcb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.wlcb</groupId>
+                <artifactId>wlcb-web-sync</artifactId>
+                <version>${com.wlcb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.wlcb</groupId>
+                <artifactId>wlcb-web-corporate</artifactId>
                 <version>${com.wlcb.version}</version>
             </dependency>
             <dependency>

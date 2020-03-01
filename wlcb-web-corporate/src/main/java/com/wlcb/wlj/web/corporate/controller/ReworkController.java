@@ -112,9 +112,9 @@ public class ReworkController {
     @RequestMapping(value = "/updateReworkStatus",method = RequestMethod.POST,produces="application/json")
     public ResponseData updateReworkStatus(TblCsrrgLog log,String refuseReason, HttpServletRequest request, HttpServletResponse response){
 
-        if (StringUtils.isBlank(log.getOpenid())){
-            return ReturnJsonUtil.printJson(-1,"操作人OPENID不可为空",false);
-        }
+//        if (StringUtils.isBlank(log.getOpenid())){
+//            return ReturnJsonUtil.printJson(-1,"操作人OPENID不可为空",false);
+//        }
 
         if (StringUtils.isBlank(log.getUserId())){
             return ReturnJsonUtil.printJson(-1,"操作人ID不可为空",false);
