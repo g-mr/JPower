@@ -33,7 +33,7 @@
         a.update_user,
         a.update_time,
         a.status,
-        b.applicant_name as name
+        b.applicant_name as name,
         d.enterprise_name as enterpriseName
         from tbl_csrrg_rework a
         left join tbl_csrrg_record b on a.openid = b.applicant_openid
