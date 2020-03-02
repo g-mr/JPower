@@ -2,10 +2,12 @@ package com.wlcb.wlj.module.dbs.entity.tiwen;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Data
-public class User {
+public class User implements Serializable {
+    private static final long serialVersionUID = -3053723479767248490L;
     private String openid;
     private String name;
     private String phone;

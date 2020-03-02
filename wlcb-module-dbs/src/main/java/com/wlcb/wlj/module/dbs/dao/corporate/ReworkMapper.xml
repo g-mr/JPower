@@ -45,6 +45,9 @@
         <if test="openid != null and openid!=''" >
             and a.openid = #{openid,jdbcType=VARCHAR}
         </if>
+        <if test="reviewStats != null" >
+            and a.review_stats = #{reviewStats,jdbcType=INTEGER}
+        </if>
     </select>
 
     <select id="selectById" resultType="com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgRework">

@@ -25,4 +25,14 @@ public class CorporateServiceImpl implements CorporateService {
         return corporateMapper.selectById(id);
     }
 
+    @Override
+    public List<TblCsrrgCorporate> queryDetailByIdcard(String idcard) {
+        return corporateMapper.selectDetailByIdcard(idcard);
+    }
+
+    @Override
+    public Integer countCorporateByRecord() {
+        return corporateMapper.countCorporate();
+    }
+
 }

@@ -36,5 +36,13 @@
         limit 1
     </select>
 
+    <select id="selectDetailByIdcard" resultType="com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgCorporate">
+        select <include refid="Base_Column_List"/> from tbl_csrrg_corporate where legal_idcard = #{idcard,jdbcType=VARCHAR}
+    </select>
+
+    <select id="countCorporate" resultType="java.lang.Integer">
+        select count(distinct corporate_id) from tbl_csrrg_record
+    </select>
+
 
 </mapper>

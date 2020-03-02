@@ -2,11 +2,14 @@ package com.wlcb.wlj.module.dbs.entity.tiwen;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
 @Data
-public class Wend {
+public class Wend implements Serializable {
+
+    private static final long serialVersionUID = -289991068376786232L;
     private String uuid;
     private String img;
     private String wendu;
