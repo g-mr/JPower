@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@Configuration
+//@Configuration
 public class CorsConfig implements WebMvcConfigurer {
 
     @Override
@@ -18,7 +18,7 @@ public class CorsConfig implements WebMvcConfigurer {
                 .allowCredentials(true)
                 .allowedMethods("PUT","GET","POST","DELETE","OPTIONS")
                 .allowedHeaders("*")
-                .exposedHeaders("appId")
+                .exposedHeaders("appId","x-requested-with","openid")
                 .maxAge(3600);
     }
 
