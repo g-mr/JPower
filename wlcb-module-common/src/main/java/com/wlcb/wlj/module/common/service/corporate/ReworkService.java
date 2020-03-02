@@ -9,7 +9,7 @@ import com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgRework;
  */
 public interface ReworkService {
 
-    PageBean<TblCsrrgRework> listPage(String corporateId);
+    PageBean<TblCsrrgRework> listPage(TblCsrrgRework rework);
 
     TblCsrrgRework detail(String id);
 

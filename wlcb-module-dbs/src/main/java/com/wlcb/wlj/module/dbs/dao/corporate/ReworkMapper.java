@@ -13,5 +13,5 @@ import java.util.List;
 public interface ReworkMapper extends BaseMapper<TblCsrrgRework> {
 
 
-    List<TblCsrrgRework> listAll(String corporateId);
+    List<TblCsrrgRework> listAll(TblCsrrgRework rework);
 }

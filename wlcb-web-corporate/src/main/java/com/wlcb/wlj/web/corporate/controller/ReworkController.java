@@ -76,13 +76,9 @@ public class ReworkController {
      * @return ResponseData
      **/
     @RequestMapping(value = "/list",method = RequestMethod.POST,produces="application/json")
-    public ResponseData list(String corporateId, HttpServletRequest request, HttpServletResponse response){
+    public ResponseData list(TblCsrrgRework rework, HttpServletRequest request, HttpServletResponse response){
 
-        if (StringUtils.isBlank(corporateId)){
-            return ReturnJsonUtil.printJson(-1,"企业ID不可为空",false);
-        }
-
-        PageBean<TblCsrrgRework> pageBean = reworkService.listPage(corporateId);
+        PageBean<TblCsrrgRework> pageBean = reworkService.listPage(rework);
 
         return ReturnJsonUtil.printJson(0,"查询成功",pageBean,true);
     }
@@ -172,9 +168,9 @@ public class ReworkController {
             return ReturnJsonUtil.printJson(-1,"openid不可为空",false);
         }
 
-        if (planFile==null || planFile.isEmpty()){
-            return ReturnJsonUtil.printJson(-1,"企业防疫预案文件不可为空",false);
-        }
+//        if (planFile==null || planFile.isEmpty()){
+//            return ReturnJsonUtil.printJson(-1,"企业防疫预案文件不可为空",false);
+//        }
 
         if (committedFile==null || committedFile.isEmpty()){
             return ReturnJsonUtil.printJson(-1,"承诺书文件不可为空",false);
@@ -193,11 +189,11 @@ public class ReworkController {
         }
 
         try {
-            String planPath = saveFile(planFile);
-            if (StringUtils.equals(planPath,"-1")){
-                return ReturnJsonUtil.printJson(-1,"企业防疫预案文件类型不符，请上传"+fileSuffixName+"文件类型",false);
-            }
-            rework.setPlanPath(planPath);
+//            String planPath = saveFile(planFile);
+//            if (StringUtils.equals(planPath,"-1")){
+//                return ReturnJsonUtil.printJson(-1,"企业防疫预案文件类型不符，请上传"+fileSuffixName+"文件类型",false);
+//            }
+//            rework.setPlanPath(planPath);
 
             String committedPath = saveFile(committedFile);
             if (StringUtils.equals(committedPath,"-1")){

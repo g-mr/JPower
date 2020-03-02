@@ -38,9 +38,9 @@ public class ReworkServiceImpl implements ReworkService {
      * @return PageBean<TblCsrrgRecord>
      **/
     @Override
-    public PageBean<TblCsrrgRework> listPage(String corporateId) {
+    public PageBean<TblCsrrgRework> listPage(TblCsrrgRework rework) {
         PageHelper.startPage(PaginationContext.getPageNum(), PaginationContext.getPageSize());
-        List<TblCsrrgRework> list = reworkMapper.listAll(corporateId);
+        List<TblCsrrgRework> list = reworkMapper.listAll(rework);
         return new PageBean<>(list);
     }
 

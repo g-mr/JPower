@@ -33,5 +33,7 @@ public class TblCsrrgRework implements Serializable {
 
     //申请人姓名
     private String name;
+    //公司名称
+    private String enterpriseName;
 
 }

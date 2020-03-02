@@ -34,9 +34,17 @@
         a.update_time,
         a.status,
         b.applicant_name as name
+        d.enterprise_name as enterpriseName
         from tbl_csrrg_rework a
         left join tbl_csrrg_record b on a.openid = b.applicant_openid
-        where a.corporate_id = #{corporateId,jdbcType=VARCHAR}
+        left join tbl_csrrg_corporate d on a.corporate_id = d.id
+        where 1=1
+        <if test="corporateId != null and corporateId!=''" >
+            and a.corporate_id = #{corporateId,jdbcType=VARCHAR}
+        </if>
+        <if test="openid != null and openid!=''" >
+            and a.openid = #{openid,jdbcType=VARCHAR}
+        </if>
     </select>
 
     <select id="selectById" resultType="com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgRework">
