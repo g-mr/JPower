@@ -6,6 +6,7 @@
         `id`,
         `corporate_id`,
         `applicant_openid`,
+        enterprise_name,
         `applicant_name`,
         `applicant_idcard`,
         `applicant_username`,
