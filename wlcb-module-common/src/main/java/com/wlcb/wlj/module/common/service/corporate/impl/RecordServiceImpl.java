@@ -38,7 +38,6 @@ public class RecordServiceImpl implements RecordService {
         PageHelper.startPage(PaginationContext.getPageNum(), PaginationContext.getPageSize());
         List<TblCsrrgRecord> list = recordMapper.listAll(record);
         return new PageBean<>(list);
-
     }
 
     @Override
@@ -46,6 +45,12 @@ public class RecordServiceImpl implements RecordService {
 
         String msg = "提交成功";
         record.setApplicantStatus(ConstantsEnum.APPLICANT_STATUS.REVIEW.getValue());
+
+        //判断该联系人是否已经申请了该公司
+        Integer i = recordMapper.selectAppCountByStatus(record);
+        if (i > 0){
+            return ReturnJsonUtil.printJson(2,"已经提交过申请，不可重复提交",false);
+        }
 
         if (StringUtils.isBlank(record.getFilePath())){
             TblCsrrgCorporate csrrgCorporate = corporateMapper.selectDetailByLegal(record);
@@ -59,7 +64,6 @@ public class RecordServiceImpl implements RecordService {
         }
 
         record.setId(UUIDUtil.getUUID());
-
         Integer count = recordMapper.insterSelective(record);
 
         if (count>0){

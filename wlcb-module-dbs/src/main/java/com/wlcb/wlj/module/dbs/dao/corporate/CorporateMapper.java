@@ -29,4 +29,7 @@ public interface CorporateMapper extends BaseMapper<TblCsrrgCorporate> {
      **/
     Integer countCorporate();
 
+    Integer countCorporateByReview(String organizationCode, String enterpriseName);
+
+    Integer insterByReview(String id);
 }

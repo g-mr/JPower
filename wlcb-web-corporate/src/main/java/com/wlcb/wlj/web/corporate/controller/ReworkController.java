@@ -188,6 +188,12 @@ public class ReworkController {
             return ReturnJsonUtil.printJson(-1,"该openId未关联该企业，不可申请",false);
         }
 
+        //判断该企业是否已经申请中或者申请通过
+        Integer c = reworkService.selectStatusCountByCid(rework.getCorporateId());
+        if (c > 0){
+            return ReturnJsonUtil.printJson(2,"该企业提交过申请，不可重复提交",false);
+        }
+
         try {
 //            String planPath = saveFile(planFile);
 //            if (StringUtils.equals(planPath,"-1")){

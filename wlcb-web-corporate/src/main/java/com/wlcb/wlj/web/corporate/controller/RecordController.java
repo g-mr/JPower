@@ -204,8 +204,6 @@ public class RecordController {
                 return ReturnJsonUtil.printJson(-1,"企业ID不可为空",false);
             }
 
-
-
             TblCsrrgCorporate csrrgCorporate = corporateService.selectById(record.getCorporateId());
             if (csrrgCorporate == null){
                 return ReturnJsonUtil.printJson(-1,"未查找到该企业："+record.getCorporateId(),false);

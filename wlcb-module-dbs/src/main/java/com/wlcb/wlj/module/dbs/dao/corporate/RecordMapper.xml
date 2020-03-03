@@ -68,6 +68,17 @@
         and corporate_id = #{corporateId,jdbcType=VARCHAR}
     </select>
 
+    <select id="selectAppCountByStatus" resultType="java.lang.Integer">
+        select count(1) from tbl_csrrg_record
+        where
+        applicant_openid = #{applicantOpenid,jdbcType=VARCHAR}
+        and corporate_id = #{corporateId,jdbcType=VARCHAR}
+        and applicant_name = #{applicantName,jdbcType=VARCHAR}
+        and applicant_idcard = #{applicantIdcard,jdbcType=VARCHAR}
+        and applicant_phone = #{applicantPhone,jdbcType=VARCHAR}
+        and applicant_status in (1,3,4)
+    </select>
+
     <insert id="insterSelective">
         insert into tbl_csrrg_record
         <trim prefix="(" suffix=")" suffixOverrides="," >

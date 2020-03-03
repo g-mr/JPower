@@ -28,6 +28,40 @@ CREATE TABLE `tbl_csrrg_corporate` (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='企业法人表';
 
+
+drop table if exists tbl_csrrg_corporate_review;
+CREATE TABLE `tbl_csrrg_corporate_review` (
+  `id` varchar(32) NOT NULL COMMENT 'id',
+
+  `registered_number` varchar(30)  DEFAULT NULL COMMENT '注册号',
+  `organization_code` varchar(50)  DEFAULT NULL COMMENT '统一社会信用代码',
+  `enterprise_name` varchar(100)  NOT NULL COMMENT '企业名称',
+  `area` varchar(100)  DEFAULT NULL COMMENT '地址',
+  `enterprise_type` varchar(100)  DEFAULT NULL COMMENT '企业类型',
+  `legal_person` varchar(100)  NOT NULL COMMENT '法人',
+  `legal_phone` varchar(100)  NOT NULL COMMENT '法人电话',
+  `liaison_name` varchar(30)  NOT NULL COMMENT '联络人姓名',
+  `liaison_phone` varchar(30)  NOT NULL COMMENT '联络人手机号',
+  `enterprise_authority` varchar(50)  DEFAULT NULL COMMENT '登记发照机关',
+  `enterprise_phone` varchar(30)  DEFAULT NULL COMMENT '企业电话',
+  `registered_money` varchar(50)  DEFAULT NULL COMMENT '注册资本',
+  `enterprise_range` text  DEFAULT NULL COMMENT '经营范围',
+  `registered_date` varchar(100)  DEFAULT NULL COMMENT '成立日期',
+  `legal_idcard` varchar(100)  DEFAULT NULL COMMENT '法人身份证号',
+  `liaison_idcard` varchar(100)  NOT NULL COMMENT '联络人证件号',
+  `authority_file` varchar(100)  NOT NULL COMMENT '营业执照',
+
+  `review_stats` int(1) DEFAULT '3' COMMENT '审核状态 1:申请通过 2：申请拒绝 3：审核中',
+  `refuse_reason` varchar(30) DEFAULT NULL COMMENT '审核拒绝原因',
+
+  `create_user` varchar(32) DEFAULT 'root' COMMENT '作成者',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成时间',
+  `update_user` varchar(32) DEFAULT 'root' COMMENT '修改者',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  `status` int(2) DEFAULT '1' COMMENT '状态',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='公司法人审核表';
+
 drop table if exists tbl_csrrg_record;
 CREATE TABLE `tbl_csrrg_record` (
   `id` varchar(32) NOT NULL COMMENT 'id',

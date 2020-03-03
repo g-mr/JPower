@@ -2,6 +2,8 @@ package com.wlcb.wlj.module.dbs.dao;
 
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 public interface BaseMapper<T> {
 
     int deleteById(String id);
@@ -15,4 +17,6 @@ public interface BaseMapper<T> {
     int updateByPrimaryKeySelective(T t);
 
     T selectById(@Param("id") String id);
+
+    List<T> listAll(T t);
 }

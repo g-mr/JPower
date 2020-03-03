@@ -16,4 +16,6 @@ public interface ReworkService {
     Integer updateReworkStatus(TblCsrrgLog log, String refuseReason);
 
     Integer addRework(TblCsrrgRework rework);
+
+    Integer selectStatusCountByCid(String corporateId);
 }

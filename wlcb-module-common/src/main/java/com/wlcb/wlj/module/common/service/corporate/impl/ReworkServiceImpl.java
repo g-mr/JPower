@@ -101,4 +101,9 @@ public class ReworkServiceImpl implements ReworkService {
         rework.setRefuseReason(null);
         return reworkMapper.insterSelective(rework);
     }
+
+    @Override
+    public Integer selectStatusCountByCid(String corporateId) {
+        return reworkMapper.selectStatusCountByCid(corporateId);
+    }
 }

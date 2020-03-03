@@ -1,6 +1,9 @@
 package com.wlcb.wlj.module.common.service.corporate;
 
+import com.wlcb.wlj.module.dbs.entity.base.PageBean;
 import com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgCorporate;
+import com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgCorporateReview;
+import com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgLog;
 
 import java.util.List;
 import java.util.Map;
@@ -22,4 +25,11 @@ public interface CorporateService {
      **/
     Integer countCorporateByRecord();
 
+    Integer countCorporateByReview(String organizationCode, String enterpriseName);
+
+    Integer addCorporateReview(TblCsrrgCorporateReview corporateReview);
+
+    Integer updateStatus(TblCsrrgLog log, String reason);
+
+    PageBean<TblCsrrgCorporateReview> listPage(TblCsrrgCorporateReview corporateReview);
 }

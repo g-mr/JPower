@@ -15,4 +15,13 @@ public interface RecordMapper extends BaseMapper<TblCsrrgRecord> {
     List<TblCsrrgRecord> listAll(TblCsrrgRecord record);
 
     Integer selectCountByCidAndOid(String openid, String corporateId);
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 查询该联系对应该公司申请成功和申请中的数量
+     * @Date 15:58 2020-03-03
+     * @Param [record]
+     * @return java.lang.Integer
+     **/
+    Integer selectAppCountByStatus(TblCsrrgRecord record);
 }

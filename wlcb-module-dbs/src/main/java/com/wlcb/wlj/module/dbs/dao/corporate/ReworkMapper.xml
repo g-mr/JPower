@@ -20,7 +20,7 @@
     </sql>
 
     <select id="listAll" resultType="com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgRework">
-        select a.id,
+        select DISTINCT a.id,
         a.openid,
         a.corporate_id,
         a.corporate_people_sum,
@@ -48,11 +48,18 @@
         <if test="reviewStats != null" >
             and a.review_stats = #{reviewStats,jdbcType=INTEGER}
         </if>
+        order by a.create_time desc
     </select>
 
     <select id="selectById" resultType="com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgRework">
         select <include refid="Base_Column_List"/> from tbl_csrrg_rework
         where id = #{id,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectStatusCountByCid" resultType="java.lang.Integer">
+        select count(1) from tbl_csrrg_rework
+        where corporate_id = #{corporateId,jdbcType=VARCHAR}
+        and review_stats in (2,3)
     </select>
 
     <update id="updateByPrimaryKeySelective">

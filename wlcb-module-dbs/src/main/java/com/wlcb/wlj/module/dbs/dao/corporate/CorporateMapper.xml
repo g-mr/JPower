@@ -19,6 +19,43 @@
         `status`
     </sql>
 
+    <insert id="insterByReview">
+        insert into tbl_csrrg_corporate(`id`,
+        `registered_number`,
+        `organization_code`,
+        `enterprise_name`,
+        `area`,
+        `enterprise_type`,
+        `legal_person`,
+        `legal_phone`,
+        `liaison_name`,
+        `liaison_phone`,
+        `enterprise_authority`,
+        `enterprise_phone`,
+        `registered_money`,
+        `enterprise_range`,
+        `registered_date`,
+        `legal_idcard`,
+        `liaison_idcard`)
+        select `id`,
+        `registered_number`,
+        `organization_code`,
+        `enterprise_name`,
+        `area`,
+        `enterprise_type`,
+        `legal_person`,
+        `legal_phone`,
+        `liaison_name`,
+        `liaison_phone`,
+        `enterprise_authority`,
+        `enterprise_phone`,
+        `registered_money`,
+        `enterprise_range`,
+        `registered_date`,
+        `legal_idcard`,
+        `liaison_idcard` from tbl_csrrg_corporate_review where id = #{id,jdbcType=VARCHAR}
+    </insert>
+
     <select id="selectName" resultType="java.util.Map">
         select id,enterprise_name from tbl_csrrg_corporate where enterprise_name like CONCAT('%',#{name,jdbcType=VARCHAR},'%' )
     </select>
@@ -44,5 +81,16 @@
         select count(distinct corporate_id) from tbl_csrrg_record
     </select>
 
+    <select id="countCorporateByReview" resultType="java.lang.Integer">
+        select sum(count) from (
+        select count(1) as count from tbl_csrrg_corporate_review where organization_code = #{organizationCode,jdbcType=VARCHAR} and enterprise_name = #{enterpriseName,jdbcType=VARCHAR} and review_stats in (1,3)
+        union all
+        select count(1) as count from tbl_csrrg_corporate where organization_code = #{organizationCode,jdbcType=VARCHAR} and enterprise_name = #{enterpriseName,jdbcType=VARCHAR}
+        ) a
+    </select>
+
+    <delete id="deleteById">
+        delete from tbl_csrrg_corporate where id = #{id,jdbcType=VARCHAR}
+    </delete>
 
 </mapper>
