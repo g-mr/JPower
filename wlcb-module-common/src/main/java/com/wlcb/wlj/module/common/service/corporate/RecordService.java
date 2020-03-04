@@ -17,5 +17,4 @@ public interface RecordService {
 
     Integer selectCountByCidAndOid(String openid, String corporateId);
 
-    Integer legalConfirm(String id);
 }

@@ -144,29 +144,6 @@ public class RecordController {
 
     /**
      * @Author 郭丁志
-     * @Description //TODO 法人确认
-     * @Date 13:32 2020-03-04
-     * @Param [id, request, response]
-     * @return com.wlcb.wlj.module.base.vo.ResponseData
-     **/
-    @RequestMapping(value = "/legalConfirm",method = RequestMethod.PUT,produces="application/json")
-    public ResponseData legalConfirm(String id, HttpServletRequest request, HttpServletResponse response){
-
-        if (StringUtils.isBlank(id)){
-            return ReturnJsonUtil.printJson(-1,"id不可为空",false);
-        }
-
-        Integer count = recordService.legalConfirm(id);
-
-        if (count > 0){
-            return ReturnJsonUtil.printJson(0,"更新成功",true);
-        }else{
-            return ReturnJsonUtil.printJson(-1,"更新失败",false);
-        }
-    }
-
-    /**
-     * @Author 郭丁志
      * @Description //TODO 新增申请记录
      * @Date 21:52 2020-02-27
      * @Param [record, file, request, response]
@@ -194,6 +171,10 @@ public class RecordController {
 
         if(StringUtils.isBlank(record.getApplicantPhone())){
             return ReturnJsonUtil.printJson(-1,"电话不可为空",false);
+        }
+
+        if(StringUtils.isBlank(record.getCorporateId())){
+            return ReturnJsonUtil.printJson(-1,"公司ID不可为空",false);
         }
 
         if (file!=null && !file.isEmpty()){

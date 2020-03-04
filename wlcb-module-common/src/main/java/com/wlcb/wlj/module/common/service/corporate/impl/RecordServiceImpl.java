@@ -62,6 +62,11 @@ public class RecordServiceImpl implements RecordService {
             record.setCorporateId(csrrgCorporate.getId());
             record.setApplicantStatus(ConstantsEnum.APPLICANT_STATUS.MATCH.getValue());
             msg = ConstantsEnum.APPLICANT_STATUS.MATCH.getName();
+        }else {
+            Integer c = corporateMapper.countZhengfuUserByLidcard(record.getCorporateId());
+            if (c <= 0){
+                return ReturnJsonUtil.printJson(3,"该公司法人未注册市民卡，请先通知法人注册市民卡",false);
+            }
         }
 
         record.setId(UUIDUtil.getUUID());
@@ -105,23 +110,5 @@ public class RecordServiceImpl implements RecordService {
     @Override
     public Integer selectCountByCidAndOid(String openid, String corporateId) {
         return recordMapper.selectCountByCidAndOid(openid,corporateId);
-    }
-
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 法人确认
-     * @Date 14:09 2020-03-04
-     * @Param [id]
-     * @return java.lang.Integer
-     **/
-    @Override
-    public Integer legalConfirm(String id) {
-
-        TblCsrrgRecord record = new TblCsrrgRecord();
-        record.setId(id);
-        //5为法人已确认
-        record.setApplicantStatus(5);
-
-        return recordMapper.updateByPrimaryKeySelective(record);
     }
 }

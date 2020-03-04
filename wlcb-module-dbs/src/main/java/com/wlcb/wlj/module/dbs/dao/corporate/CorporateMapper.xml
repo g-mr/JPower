@@ -85,6 +85,11 @@
         ) a
     </select>
 
+    <select id="countZhengfuUserByLidcard" resultType="java.lang.Integer">
+        SELECT count(1) from tbl_zhengwu_user WHERE idcard =
+        (SELECT legal_idcard from tbl_csrrg_corporate WHERE id = #{id,jdbcType=VARCHAR})
+    </select>
+
     <delete id="deleteById">
         delete from tbl_csrrg_corporate where id = #{id,jdbcType=VARCHAR}
     </delete>

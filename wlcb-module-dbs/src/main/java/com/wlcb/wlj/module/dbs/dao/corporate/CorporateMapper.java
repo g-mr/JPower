@@ -23,4 +23,6 @@ public interface CorporateMapper extends BaseMapper<TblCsrrgCorporate> {
     Integer countCorporateByReview(String organizationCode, String enterpriseName);
 
     Integer insterByReview(String id);
+
+    Integer countZhengfuUserByLidcard(String id);
 }
