@@ -16,4 +16,6 @@ public interface RecordService {
     Integer updateRecordStatus(TblCsrrgLog recordLog, String failReason);
 
     Integer selectCountByCidAndOid(String openid, String corporateId);
+
+    Integer legalConfirm(String id);
 }

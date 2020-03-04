@@ -12,6 +12,7 @@ import java.util.List;
 @Component("recordMapper")
 public interface RecordMapper extends BaseMapper<TblCsrrgRecord> {
 
+    @Override
     List<TblCsrrgRecord> listAll(TblCsrrgRecord record);
 
     Integer selectCountByCidAndOid(String openid, String corporateId);
@@ -24,4 +25,6 @@ public interface RecordMapper extends BaseMapper<TblCsrrgRecord> {
      * @return java.lang.Integer
      **/
     Integer selectAppCountByStatus(TblCsrrgRecord record);
+
+    String countCorporate(String quxian);
 }

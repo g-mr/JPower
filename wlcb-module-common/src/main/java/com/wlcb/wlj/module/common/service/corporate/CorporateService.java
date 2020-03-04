@@ -23,7 +23,7 @@ public interface CorporateService {
      * @Param []
      * @return java.lang.Integer
      **/
-    Integer countCorporateByRecord();
+    String countCorporateByRecord(String quxian);
 
     Integer countCorporateByReview(String organizationCode, String enterpriseName);
 

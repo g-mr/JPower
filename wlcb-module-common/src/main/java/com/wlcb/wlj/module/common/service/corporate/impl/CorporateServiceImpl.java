@@ -8,6 +8,7 @@ import com.wlcb.wlj.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.wlj.module.dbs.dao.corporate.CorporateMapper;
 import com.wlcb.wlj.module.dbs.dao.corporate.CorporateReviewMapper;
 import com.wlcb.wlj.module.dbs.dao.corporate.LogMapper;
+import com.wlcb.wlj.module.dbs.dao.corporate.RecordMapper;
 import com.wlcb.wlj.module.dbs.entity.base.PageBean;
 import com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgCorporate;
 import com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgCorporateReview;
@@ -35,6 +36,8 @@ public class CorporateServiceImpl implements CorporateService {
     @Autowired
     private CorporateReviewMapper corporateReviewMapper;
     @Autowired
+    private RecordMapper recordMapper;
+    @Autowired
     private LogMapper logMapper;
 
     @Override
@@ -53,8 +56,8 @@ public class CorporateServiceImpl implements CorporateService {
     }
 
     @Override
-    public Integer countCorporateByRecord() {
-        return corporateMapper.countCorporate();
+    public String countCorporateByRecord(String quxian) {
+        return recordMapper.countCorporate(quxian);
     }
 
     @Override

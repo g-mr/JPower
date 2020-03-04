@@ -109,7 +109,7 @@ public class RecordController {
             return ReturnJsonUtil.printJson(-1,"申请记录状态不可为空",false);
         }
 
-        if (!ConstantsEnum.APPLICANT_STATUS.SUCCESS.getValue().equals(recordLog.getStatus()) && !ConstantsEnum.APPLICANT_STATUS.FAIL.getValue().equals(recordLog.getStatus())){
+        if (!ConstantsEnum.APPLICANT_STATUS.SUCCESS.getValue().equals(recordLog.getStatus()) && !ConstantsEnum.APPLICANT_STATUS.FAIL.getValue().equals(recordLog.getStatus())&& !ConstantsEnum.APPLICANT_STATUS.CONFIRM.getValue().equals(recordLog.getStatus())){
             return ReturnJsonUtil.printJson(-1,"申请记录状态不合法",false);
         }
 
@@ -125,7 +125,7 @@ public class RecordController {
 
     /**
      * @Author 郭丁志
-     * @Description //TODO 修改申请状态
+     * @Description //TODO 查询详情
      * @Date 21:56 2020-02-27
      * @Param [id, request, response]
      * @return ResponseData
@@ -140,6 +140,29 @@ public class RecordController {
         TblCsrrgRecord record = recordService.detail(id);
 
         return ReturnJsonUtil.printJson(0,"查询成功",record,true);
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 法人确认
+     * @Date 13:32 2020-03-04
+     * @Param [id, request, response]
+     * @return com.wlcb.wlj.module.base.vo.ResponseData
+     **/
+    @RequestMapping(value = "/legalConfirm",method = RequestMethod.PUT,produces="application/json")
+    public ResponseData legalConfirm(String id, HttpServletRequest request, HttpServletResponse response){
+
+        if (StringUtils.isBlank(id)){
+            return ReturnJsonUtil.printJson(-1,"id不可为空",false);
+        }
+
+        Integer count = recordService.legalConfirm(id);
+
+        if (count > 0){
+            return ReturnJsonUtil.printJson(0,"更新成功",true);
+        }else{
+            return ReturnJsonUtil.printJson(-1,"更新失败",false);
+        }
     }
 
     /**

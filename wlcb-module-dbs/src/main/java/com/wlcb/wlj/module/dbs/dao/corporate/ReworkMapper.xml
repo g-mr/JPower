@@ -48,6 +48,12 @@
         <if test="reviewStats != null" >
             and a.review_stats = #{reviewStats,jdbcType=INTEGER}
         </if>
+        <if test="enterpriseName != null and enterpriseName!=''" >
+            and d.enterprise_name like CONCAT('%',#{enterpriseName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="name != null and name!=''" >
+            and b.applicant_name = #{name,jdbcType=VARCHAR}
+        </if>
         order by a.create_time desc
     </select>
 
@@ -59,7 +65,7 @@
     <select id="selectStatusCountByCid" resultType="java.lang.Integer">
         select count(1) from tbl_csrrg_rework
         where corporate_id = #{corporateId,jdbcType=VARCHAR}
-        and review_stats in (2,3)
+        and review_stats in (1,3)
     </select>
 
     <update id="updateByPrimaryKeySelective">

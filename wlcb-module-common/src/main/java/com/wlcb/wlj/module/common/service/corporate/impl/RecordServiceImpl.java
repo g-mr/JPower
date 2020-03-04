@@ -53,6 +53,7 @@ public class RecordServiceImpl implements RecordService {
         }
 
         if (StringUtils.isBlank(record.getFilePath())){
+            //如果文件为空则去判断是否是法人，是则直接关联，不是返回提示
             TblCsrrgCorporate csrrgCorporate = corporateMapper.selectDetailByLegal(record);
             if (csrrgCorporate == null){
                 return ReturnJsonUtil.printJson(1,"您不是该企业的法人，请上传法人授权委托书",false);
@@ -104,5 +105,23 @@ public class RecordServiceImpl implements RecordService {
     @Override
     public Integer selectCountByCidAndOid(String openid, String corporateId) {
         return recordMapper.selectCountByCidAndOid(openid,corporateId);
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 法人确认
+     * @Date 14:09 2020-03-04
+     * @Param [id]
+     * @return java.lang.Integer
+     **/
+    @Override
+    public Integer legalConfirm(String id) {
+
+        TblCsrrgRecord record = new TblCsrrgRecord();
+        record.setId(id);
+        //5为法人已确认
+        record.setApplicantStatus(5);
+
+        return recordMapper.updateByPrimaryKeySelective(record);
     }
 }

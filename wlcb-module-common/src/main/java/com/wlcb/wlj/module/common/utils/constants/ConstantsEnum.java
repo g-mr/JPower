@@ -18,7 +18,7 @@ public class ConstantsEnum {
      **/
     public static enum APPLICANT_STATUS{
 
-        SUCCESS(1,"申请成功"),FAIL(2,"申请失败"),REVIEW(3,"审核中"),MATCH(4,"匹配成功");
+        SUCCESS(1,"申请成功"),FAIL(2,"申请失败"),REVIEW(3,"审核中"),MATCH(4,"匹配成功"),CONFIRM(5,"法人确认");
 
         private APPLICANT_STATUS(Integer value,String name){
             this.value = value;

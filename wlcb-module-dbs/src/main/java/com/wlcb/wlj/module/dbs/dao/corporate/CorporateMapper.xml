@@ -77,10 +77,6 @@
         select <include refid="Base_Column_List"/> from tbl_csrrg_corporate where legal_idcard = #{idcard,jdbcType=VARCHAR}
     </select>
 
-    <select id="countCorporate" resultType="java.lang.Integer">
-        select count(distinct corporate_id) from tbl_csrrg_record
-    </select>
-
     <select id="countCorporateByReview" resultType="java.lang.Integer">
         select sum(count) from (
         select count(1) as count from tbl_csrrg_corporate_review where organization_code = #{organizationCode,jdbcType=VARCHAR} and enterprise_name = #{enterpriseName,jdbcType=VARCHAR} and review_stats in (1,3)

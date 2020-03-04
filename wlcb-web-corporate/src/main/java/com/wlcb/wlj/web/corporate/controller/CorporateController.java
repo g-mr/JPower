@@ -1,5 +1,6 @@
 package com.wlcb.wlj.web.corporate.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.wlcb.wlj.module.base.vo.ResponseData;
 import com.wlcb.wlj.module.common.service.corporate.CorporateService;
 import com.wlcb.wlj.module.common.utils.*;
@@ -99,11 +100,11 @@ public class CorporateController {
      * @return com.wlcb.wlj.module.base.vo.ResponseData
      **/
     @RequestMapping(value = "/countCorporateByRecord",method = RequestMethod.GET,produces="application/json")
-    public ResponseData countCorporateByRecord( HttpServletRequest request, HttpServletResponse response){
+    public ResponseData countCorporateByRecord(String quxian, HttpServletRequest request, HttpServletResponse response){
 
-        Integer count = corporateService.countCorporateByRecord();
+        String count = corporateService.countCorporateByRecord(quxian);
 
-        return ReturnJsonUtil.printJson(0,"查询成功",count,true);
+        return ReturnJsonUtil.printJson(0,"查询成功", JSONObject.parseObject(count),true);
     }
 
     /**
