@@ -118,7 +118,6 @@ public class CorporateController {
     public ResponseData addCorporate(TblCsrrgCorporateReview corporateReview, MultipartFile file, HttpServletRequest request, HttpServletResponse response){
 
         ResponseData responseData = BeanUtil.allFieldIsNULL(corporateReview,
-                "registeredNumber",
                 "organizationCode",
                 "enterpriseName",
                 "area",

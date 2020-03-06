@@ -86,7 +86,7 @@ public class RecordController {
      * @Param [recordLog, request, response]
      * @return ResponseData
      **/
-    @RequestMapping(value = "/updateRecordStatus",method = RequestMethod.POST,produces="application/json")
+    @RequestMapping(value = "/updateRecordStatus",method = RequestMethod.PUT,produces="application/json")
     public ResponseData updateRecordStatus(TblCsrrgLog recordLog, String failReason, HttpServletRequest request, HttpServletResponse response){
 
 //        if (StringUtils.isBlank(recordLog.getOpenid())){

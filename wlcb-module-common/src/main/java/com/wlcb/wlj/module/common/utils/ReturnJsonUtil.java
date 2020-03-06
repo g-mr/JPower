@@ -51,6 +51,21 @@ public class ReturnJsonUtil {
         response.flushBuffer();
     }
 
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 成功的情况
+     * @Date 00:29 2020-03-06
+     * @Param [msg, data]
+     * @return com.wlcb.wlj.module.base.vo.ResponseData
+     **/
+    public static ResponseData printJson(String msg, Object data){
+        ResponseData r = new ResponseData();
+        r.setMessage(msg);
+        r.setCode(200);
+        r.setData(data);
+        r.setStatus(true);
+        return r;
+    }
 
     public static void main(String[] args) {
     }

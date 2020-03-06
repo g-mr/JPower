@@ -79,7 +79,7 @@ public class CorporateServiceImpl implements CorporateService {
 
         if(count > 0){
             //对于申请成功的企业需要加到正式的企业法人表
-            if (ConstantsEnum.APPLICANT_STATUS.SUCCESS.equals(log.getStatus())){
+            if (ConstantsEnum.APPLICANT_STATUS.SUCCESS.getValue().equals(log.getStatus())){
                 corporateMapper.insterByReview(log.getKeyId());
             }else{
                 //防止申请成功后又改为其他状态
