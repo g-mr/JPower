@@ -1,5 +1,6 @@
 package com.wlcb.wlj.web.corporate.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.wlcb.wlj.module.base.vo.ResponseData;
 import com.wlcb.wlj.module.common.service.corporate.CorporateService;
 import com.wlcb.wlj.module.common.service.corporate.RecordService;

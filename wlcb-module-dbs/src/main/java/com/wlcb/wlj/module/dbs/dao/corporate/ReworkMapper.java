@@ -17,4 +17,5 @@ public interface ReworkMapper extends BaseMapper<TblCsrrgRework> {
 
     Integer selectStatusCountByCid(String corporateId);
 
+    String countCorporateByRework(String quxian);
 }

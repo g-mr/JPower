@@ -109,6 +109,21 @@ public class CorporateController {
 
     /**
      * @Author 郭丁志
+     * @Description //TODO 查询有多少企业申请了复工
+     * @Date 15:24 2020-03-06
+     * @Param [quxian, request, response]
+     * @return com.wlcb.wlj.module.base.vo.ResponseData
+     **/
+    @RequestMapping(value = "/countCorporateByRework",method = RequestMethod.GET,produces="application/json")
+    public ResponseData countCorporateByRework(String quxian, HttpServletRequest request, HttpServletResponse response){
+
+        String count = corporateService.countCorporateByRework(quxian);
+
+        return ReturnJsonUtil.printJson(0,"查询成功", JSONObject.parseObject(count),true);
+    }
+
+    /**
+     * @Author 郭丁志
      * @Description //TODO 新增公司法人
      * @Date 21:57 2020-03-02
      * @Param [corporateReview, request, response]

@@ -5,10 +5,7 @@ import com.wlcb.wlj.module.common.page.PaginationContext;
 import com.wlcb.wlj.module.common.service.corporate.CorporateService;
 import com.wlcb.wlj.module.common.utils.UUIDUtil;
 import com.wlcb.wlj.module.common.utils.constants.ConstantsEnum;
-import com.wlcb.wlj.module.dbs.dao.corporate.CorporateMapper;
-import com.wlcb.wlj.module.dbs.dao.corporate.CorporateReviewMapper;
-import com.wlcb.wlj.module.dbs.dao.corporate.LogMapper;
-import com.wlcb.wlj.module.dbs.dao.corporate.RecordMapper;
+import com.wlcb.wlj.module.dbs.dao.corporate.*;
 import com.wlcb.wlj.module.dbs.entity.base.PageBean;
 import com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgCorporate;
 import com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgCorporateReview;
@@ -37,6 +34,8 @@ public class CorporateServiceImpl implements CorporateService {
     private CorporateReviewMapper corporateReviewMapper;
     @Autowired
     private RecordMapper recordMapper;
+    @Autowired
+    private ReworkMapper reworkMapper;
     @Autowired
     private LogMapper logMapper;
 
@@ -104,6 +103,11 @@ public class CorporateServiceImpl implements CorporateService {
         PageHelper.startPage(PaginationContext.getPageNum(), PaginationContext.getPageSize());
         List<TblCsrrgCorporateReview> list = corporateReviewMapper.listAll(corporateReview);
         return new PageBean<>(list);
+    }
+
+    @Override
+    public String countCorporateByRework(String quxian) {
+        return reworkMapper.countCorporateByRework(quxian);
     }
 
 }

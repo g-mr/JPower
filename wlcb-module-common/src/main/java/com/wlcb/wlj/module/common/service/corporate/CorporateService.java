@@ -32,4 +32,6 @@ public interface CorporateService {
     Integer updateStatus(TblCsrrgLog log, String reason);
 
     PageBean<TblCsrrgCorporateReview> listPage(TblCsrrgCorporateReview corporateReview);
+
+    String countCorporateByRework(String quxian);
 }

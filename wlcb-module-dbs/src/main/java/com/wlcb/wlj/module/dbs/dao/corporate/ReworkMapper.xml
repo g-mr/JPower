@@ -68,6 +68,18 @@
         and review_stats in (1,3)
     </select>
 
+    <select id="countCorporateByRework" resultType="java.lang.String">
+        select concat('{',group_concat('"',type,'":',count),'}') from
+        (
+        SELECT COUNT(DISTINCT r.corporate_id) count,r.review_stats type from  tbl_csrrg_rework r
+        <if test="quxian != null and quxian != '' " >
+            left join tbl_csrrg_corporate c on r.corporate_id = c.id
+            where c.enterprise_authority like CONCAT('%',#{quxian,jdbcType=VARCHAR},'%')
+        </if>
+        GROUP BY r.review_stats
+        ) a
+    </select>
+
     <update id="updateByPrimaryKeySelective">
 
         update tbl_csrrg_rework
