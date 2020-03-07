@@ -35,5 +35,7 @@ public class TblCsrrgRework implements Serializable {
     private String name;
     //公司名称
     private String enterpriseName;
+    //区县过滤
+    private String quxian;
 
 }

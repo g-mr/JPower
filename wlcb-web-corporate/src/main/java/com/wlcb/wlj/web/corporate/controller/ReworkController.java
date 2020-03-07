@@ -250,20 +250,4 @@ public class ReworkController {
         return imgPath;
     }
 
-
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 报错接口，测试日志
-     * @Date 23:11 2020-02-28
-     * @Param [corporateId, request, response]
-     * @return ResponseData
-     **/
-    @RequestMapping(value = "/ok",method = RequestMethod.GET,produces="application/json")
-    public ResponseData ok(HttpServletRequest request, HttpServletResponse response){
-
-        int a = Integer.parseInt("报错吧");
-
-        return ReturnJsonUtil.printJson(0,"查询成功",true);
-    }
-
 }

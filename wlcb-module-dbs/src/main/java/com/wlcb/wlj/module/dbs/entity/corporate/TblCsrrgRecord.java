@@ -40,4 +40,6 @@ public class TblCsrrgRecord implements Serializable {
     private String updateTime;
     private Integer status;
 
+    private String quxian;
+
 }

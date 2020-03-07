@@ -49,6 +49,9 @@ mybatis:
     map-underscore-to-camel-case: true
   typeAliasesPackage: com.wlcb.module.dbs.entity
 
+#不拦截的url多个用,分隔
+noFilterUrl: /corporate/countCorporateByRecord,/corporate/countCorporateByRework
+
 #文件保存路径
 fileParentPath: /Users/mr.gmac/IdeaProjects/wlcb/file/
 #支持上传的文件后缀名

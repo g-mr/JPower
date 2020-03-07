@@ -54,6 +54,9 @@
         <if test="name != null and name!=''" >
             and b.applicant_name = #{name,jdbcType=VARCHAR}
         </if>
+        <if test="quxian != null and quxian!=''" >
+            and d.enterprise_authority like CONCAT('%',#{quxian,jdbcType=VARCHAR},'%')
+        </if>
         order by a.create_time desc
     </select>
 

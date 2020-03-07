@@ -29,41 +29,67 @@
     </sql>
 
     <select id="listAll" resultType="com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgRecord">
-        select <include refid="Base_Column_List"/> from tbl_csrrg_record
+        select r.id,
+        r.corporate_id,
+        r.applicant_openid,
+        r.enterprise_name,
+        r.applicant_name,
+        r.applicant_idcard,
+        r.applicant_username,
+        r.applicant_phone,
+        r.applicant_quxian,
+        r.applicant_shequ,
+        r.applicant_jiedao,
+        r.applicant_xiaoqu,
+        r.applicant_shequ_id,
+        r.applicant_jiedao_id,
+        r.applicant_xiaoqu_id,
+        r.file_path,
+        r.applicant_status,
+        r.fail_reason,
+        r.create_user,
+        r.create_time,
+        r.update_user,
+        r.update_time,
+        r.status from tbl_csrrg_record r
+        LEFT JOIN tbl_csrrg_corporate c on r.corporate_id = c.id
         <where>
             1=1
             <if test="applicantOpenid != null and applicantOpenid!=''" >
-                and applicant_openid=#{applicantOpenid,jdbcType=VARCHAR}
+                and r.applicant_openid=#{applicantOpenid,jdbcType=VARCHAR}
             </if>
             <if test="applicantQuxian != null and applicantQuxian != ''" >
-                and applicant_quxian=#{applicantQuxian,jdbcType=VARCHAR}
+                and r.applicant_quxian=#{applicantQuxian,jdbcType=VARCHAR}
             </if>
             <if test="applicantShequId != null and applicantShequId != ''" >
-                and applicant_shequ_id=#{applicantShequId,jdbcType=VARCHAR}
+                and r.applicant_shequ_id=#{applicantShequId,jdbcType=VARCHAR}
             </if>
             <if test="applicantJiedaoId != null and applicantJiedaoId != ''" >
-                and applicant_jiedao_id=#{applicantJiedaoId,jdbcType=VARCHAR}
+                and r.applicant_jiedao_id=#{applicantJiedaoId,jdbcType=VARCHAR}
             </if>
             <if test="applicantXiaoquId != null and applicantXiaoquId != ''" >
-                and applicant_xiaoqu_id=#{applicantXiaoquId,jdbcType=VARCHAR}
+                and r.applicant_xiaoqu_id=#{applicantXiaoquId,jdbcType=VARCHAR}
             </if>
             <if test="applicantStatus != null" >
-                and applicant_status=#{applicantStatus,jdbcType=INTEGER}
+                and r.applicant_status=#{applicantStatus,jdbcType=INTEGER}
             </if>
             <if test="enterpriseName != null and enterpriseName!=''" >
-                and enterprise_name like CONCAT('%',#{enterpriseName,jdbcType=VARCHAR},'%')
+                and r.enterprise_name like CONCAT('%',#{enterpriseName,jdbcType=VARCHAR},'%')
             </if>
             <if test="applicantName != null and applicantName!=''" >
-                and applicant_name = #{applicantName,jdbcType=VARCHAR}
+                and r.applicant_name = #{applicantName,jdbcType=VARCHAR}
             </if>
             <if test="applicantIdcard != null and applicantIdcard!=''" >
-                and applicant_idcard like CONCAT('%',#{applicantIdcard,jdbcType=VARCHAR},'%')
+                and r.applicant_idcard like CONCAT('%',#{applicantIdcard,jdbcType=VARCHAR},'%')
             </if>
             <if test="applicantPhone != null and applicantPhone!=''" >
-                and applicant_phone = #{applicantPhone,jdbcType=VARCHAR}
+                and r.applicant_phone = #{applicantPhone,jdbcType=VARCHAR}
+            </if>
+            <if test="quxian != null and quxian!=''" >
+                and c.enterprise_authority like CONCAT('%',#{quxian,jdbcType=VARCHAR},'%')
             </if>
         </where>
-        order by create_time desc
+        order by r.create_time desc
     </select>
 
     <select id="selectById" resultType="com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgRecord">
