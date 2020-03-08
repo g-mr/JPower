@@ -41,7 +41,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if(isFilter == 1){
 
-            boolean b = JWTUtils.parseJWT(request);
+            boolean b = JWTUtils.parseJWT(request, response);
             if (!b){
                 ResponseData responseData = new ResponseData();
                 responseData.setCode(401);

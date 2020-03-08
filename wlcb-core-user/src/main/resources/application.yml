@@ -1,7 +1,7 @@
 server:
   port: 89
 #  servlet:
-#    context-path: /tiwen
+#    context-path: /user
 
 spring:
   servlet:

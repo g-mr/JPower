@@ -11,6 +11,7 @@ import com.wlcb.wlj.module.dbs.entity.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -30,11 +31,12 @@ public class UserServiceImpl implements UserService {
 
     /**
      * @Author 郭丁志
-     * @Description //TODO token过期时间
+     * @Description //TODO token过期时间 默认40分钟
      * @Date 23:56 2020-03-05
      * @return
      **/
-    private Long tokenExpired = 40 * 60 * 1000L;
+    @Value("${loginTokenExpired:2400000}")
+    private Long tokenExpired;
 
     /**
      * @Author 郭丁志

@@ -1,7 +1,7 @@
 server:
   port: 88
 #  servlet:
-#    context-path: /tiwen
+#    context-path: /corporate
 
 spring:
   servlet:
@@ -58,4 +58,4 @@ fileParentPath: /Users/mr.gmac/IdeaProjects/wlcb/file/
 fileSuffixName: png,jpg,jpeg
 
 #不验证登录
-isFilter: 0
+isFilter: 1

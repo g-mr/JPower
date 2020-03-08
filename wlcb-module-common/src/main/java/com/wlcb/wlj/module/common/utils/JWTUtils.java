@@ -1,6 +1,7 @@
 package com.wlcb.wlj.module.common.utils;
 
 import com.alibaba.fastjson.JSON;
+import com.wlcb.wlj.module.common.utils.cache.LoginTokenCache;
 import com.wlcb.wlj.module.dbs.entity.user.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
@@ -14,7 +15,9 @@ import org.slf4j.LoggerFactory;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -23,6 +26,11 @@ import java.util.Map;
 public class JWTUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(JWTUtils.class);
+
+    //多少时间内要刷新token
+    private static Long refToken = 10 * 60 * 1000L;
+    //登录token过期时间
+    private static Long tokenExpired = 15 * 60 * 1000L;
 
     /**
      * 加密密文
@@ -86,7 +94,7 @@ public class JWTUtils {
      * @Param [jwt]
      * @return io.jsonwebtoken.Claims
      **/
-    public static boolean parseJWT(HttpServletRequest request) {
+    public static boolean parseJWT(HttpServletRequest request, HttpServletResponse response) {
         String currentPath = request.getServletPath();
 
         String jwt = request.getHeader("Authorization");
@@ -100,6 +108,7 @@ public class JWTUtils {
                 c = JWTUtils.parseJWT(jwt);
             }catch (Exception e){
                 logger.warn("未登陆或登陆超时！");
+                e.printStackTrace();
                 return false;
             }
 
@@ -107,8 +116,35 @@ public class JWTUtils {
 
                 String userId = (String) c.get("userId");
                 if (StringUtils.isNotBlank(userId)){
-                    User user = JSON.parseObject((String) c.get("sub"), User.class);
+                    User user = JSON.parseObject(c.getSubject(), User.class);
                     if (user!=null){
+                        Date expDate = c.getExpiration();
+
+                        long time = expDate.getTime() - System.currentTimeMillis();
+
+                        //过期时间小于10分钟则获取新的token
+                        if(time <= refToken){
+
+                            //判断当前userID是否生成了新的token,如果已经生成则不再生成
+                            if (LoginTokenCache.get(userId) == null || !StringUtils.equals(LoginTokenCache.get(userId),jwt)){
+                                try {
+                                    Map<String, Object> payload = new HashMap<String, Object>();
+                                    payload.put("userId", user.getId());
+                                    String token = JWTUtils.createJWT(JSON.toJSONString(user),payload,tokenExpired);
+
+                                    //记录该用户当前token已经刷新了
+                                    LoginTokenCache.put(userId,jwt);
+
+                                    response.setHeader("token",token);
+
+                                    logger.info("{}用户已刷新，用户id={},旧token={},新token={}",user.getUser(),user.getId(),jwt,token);
+                                } catch (Exception e) {
+                                    logger.error("刷新token出错：{}",e.getMessage());
+                                }
+                            }
+
+                        }
+
                         return true;
                     }
                 }
