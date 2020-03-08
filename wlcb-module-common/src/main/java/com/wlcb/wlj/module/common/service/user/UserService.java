@@ -10,4 +10,6 @@ public interface UserService {
     ResponseData login(User user);
 
     User selectByUserName(String username);
+
+    ResponseData wxLogin(String code);
 }

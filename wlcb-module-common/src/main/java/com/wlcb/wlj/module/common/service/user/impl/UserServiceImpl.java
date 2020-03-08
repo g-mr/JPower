@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.wlcb.wlj.module.base.vo.ResponseData;
 import com.wlcb.wlj.module.common.service.user.UserService;
+import com.wlcb.wlj.module.common.utils.HttpClient;
 import com.wlcb.wlj.module.common.utils.JWTUtils;
 import com.wlcb.wlj.module.common.utils.ReturnJsonUtil;
 import com.wlcb.wlj.module.dbs.dao.user.UserMapper;
@@ -28,6 +29,13 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper mapper;
+    @Value("${get_openid}")
+    private String openidUrl;
+    @Value("${appid}")
+    private String appid;
+    @Value("${appsecret}")
+    private String appsecret;
+
 
     /**
      * @Author 郭丁志
@@ -77,5 +85,41 @@ public class UserServiceImpl implements UserService {
     @Override
     public User selectByUserName(String username) {
         return mapper.selectByUser(username);
+    }
+
+    @Override
+    public ResponseData wxLogin(String code) {
+
+        try {
+            String url = openidUrl+"?appid="+appid+"&secret="+appsecret+"&code="+code+"&grant_type=authorization_code";
+
+            String detail = HttpClient.doGet(url);
+
+            JSONObject json = JSONObject.parseObject(detail);
+
+            if(json.containsKey("errcode")){
+                return ReturnJsonUtil.printJson(json.getInteger("errcode"),json.getString("errmsg"),false);
+            }
+
+            String openid = json.getString("openid");
+
+            User user = new User();
+            user.setId(openid);
+
+            Map<String, Object> payload = new HashMap<String, Object>();
+            payload.put("userId", openid);
+            String token = JWTUtils.createJWT(JSON.toJSONString(user),payload,tokenExpired);
+
+
+            JSONObject reJson = new JSONObject();
+            reJson.put("openid",openid);
+            reJson.put("token",token);
+
+            return ReturnJsonUtil.printJson(200,"登录成功",reJson,false);
+        }catch (Exception e){
+            logger.error("登录出错：{}",e.getMessage());
+            return ReturnJsonUtil.printJson(500,"登录失败",false);
+        }
+
     }
 }

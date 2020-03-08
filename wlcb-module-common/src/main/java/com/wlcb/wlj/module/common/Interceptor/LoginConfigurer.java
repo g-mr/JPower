@@ -34,6 +34,7 @@ public class LoginConfigurer extends WebMvcConfigurerAdapter {
     public void addInterceptors(InterceptorRegistry registry) {
         //拦截器不拦截的url  默认login接口统一不做拦截
         exculudesUrl.add("/login");
+        exculudesUrl.add("/wxlogin");
 
         registry.addInterceptor(loginInterceptor).addPathPatterns("/**").excludePathPatterns(exculudesUrl);
         super.addInterceptors(registry);

@@ -52,4 +52,14 @@ public class LoginController {
         user.setPassword(null);
         return userService.login(user);
     }
+
+    @RequestMapping(value = "/wxlogin",method = RequestMethod.POST,produces="application/json")
+    public ResponseData wxLogin(String code, HttpServletRequest request, HttpServletResponse response){
+
+        if (StringUtils.isBlank(code)){
+            return ReturnJsonUtil.printJson(406,"code不可为空",false);
+        }
+
+        return userService.wxLogin(code);
+    }
 }
