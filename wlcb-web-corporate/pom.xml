@@ -37,6 +37,7 @@
             <groupId>com.wlcb</groupId>
             <artifactId>wlcb-module-dbs</artifactId>
         </dependency>
+
     </dependencies>
 
     <build>

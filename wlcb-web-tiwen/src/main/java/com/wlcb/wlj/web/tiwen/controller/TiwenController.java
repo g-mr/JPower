@@ -1,7 +1,7 @@
 package com.wlcb.wlj.web.tiwen.controller;
 
 import com.wlcb.wlj.module.base.vo.ResponseData;
-import com.wlcb.wlj.module.common.service.TiwenService;
+import com.wlcb.wlj.module.common.service.tiwen.TiwenService;
 import com.wlcb.wlj.module.common.utils.ReturnJsonUtil;
 import com.wlcb.wlj.module.dbs.entity.base.PageBean;
 import com.wlcb.wlj.module.dbs.entity.tiwen.User;

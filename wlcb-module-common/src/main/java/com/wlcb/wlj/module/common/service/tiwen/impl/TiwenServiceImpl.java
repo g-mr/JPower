@@ -1,8 +1,8 @@
-package com.wlcb.wlj.module.common.service.impl;
+package com.wlcb.wlj.module.common.service.tiwen.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.wlcb.wlj.module.common.page.PaginationContext;
-import com.wlcb.wlj.module.common.service.TiwenService;
+import com.wlcb.wlj.module.common.service.tiwen.TiwenService;
 import com.wlcb.wlj.module.common.utils.UUIDUtil;
 import com.wlcb.wlj.module.dbs.dao.tiwen.UserMapper;
 import com.wlcb.wlj.module.dbs.dao.tiwen.WendMapper;

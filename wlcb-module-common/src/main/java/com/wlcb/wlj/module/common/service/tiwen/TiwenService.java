@@ -1,4 +1,4 @@
-package com.wlcb.wlj.module.common.service;
+package com.wlcb.wlj.module.common.service.tiwen;
 
 import com.wlcb.wlj.module.dbs.entity.base.PageBean;
 import com.wlcb.wlj.module.dbs.entity.tiwen.User;

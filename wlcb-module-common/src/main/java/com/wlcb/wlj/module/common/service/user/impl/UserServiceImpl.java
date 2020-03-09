@@ -29,11 +29,11 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper mapper;
-    @Value("${get_openid}")
+    @Value("${get_openid:}")
     private String openidUrl;
-    @Value("${appid}")
+    @Value("${appid:}")
     private String appid;
-    @Value("${appsecret}")
+    @Value("${appsecret:}")
     private String appsecret;
 
 

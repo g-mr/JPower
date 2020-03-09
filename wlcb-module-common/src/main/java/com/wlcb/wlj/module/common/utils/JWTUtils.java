@@ -1,8 +1,8 @@
 package com.wlcb.wlj.module.common.utils;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.wlcb.wlj.module.common.utils.cache.LoginTokenCache;
-import com.wlcb.wlj.module.dbs.entity.user.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -116,7 +116,7 @@ public class JWTUtils {
 
                 String userId = (String) c.get("userId");
                 if (StringUtils.isNotBlank(userId)){
-                    User user = JSON.parseObject(c.getSubject(), User.class);
+                    JSONObject user = JSONObject.parseObject(c.getSubject());
                     if (user!=null){
                         Date expDate = c.getExpiration();
 
@@ -129,7 +129,7 @@ public class JWTUtils {
                             if (LoginTokenCache.get(userId) == null || !StringUtils.equals(LoginTokenCache.get(userId),jwt)){
                                 try {
                                     Map<String, Object> payload = new HashMap<String, Object>();
-                                    payload.put("userId", user.getId());
+                                    payload.put("userId", user.getString("id"));
                                     String token = JWTUtils.createJWT(JSON.toJSONString(user),payload,tokenExpired);
 
                                     //记录该用户当前token已经刷新了
@@ -137,7 +137,7 @@ public class JWTUtils {
 
                                     response.setHeader("token",token);
 
-                                    logger.info("{}用户已刷新，用户id={},旧token={},新token={}",user.getUser(),user.getId(),jwt,token);
+                                    logger.info("{}用户已刷新，用户id={},旧token={},新token={}",user.getString("user"),user.getString("id"),jwt,token);
                                 } catch (Exception e) {
                                     logger.error("刷新token出错：{}",e.getMessage());
                                 }
