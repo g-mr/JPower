@@ -58,4 +58,4 @@ fileParentPath: /Users/mr.gmac/IdeaProjects/wlcb/file/
 fileSuffixName: png,jpg,jpeg
 
 #不验证登录
-isFilter: 1
+isFilter: 0

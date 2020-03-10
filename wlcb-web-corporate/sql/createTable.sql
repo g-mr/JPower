@@ -126,3 +126,25 @@ CREATE TABLE `tbl_csrrg_log` (
   `status` int(5) DEFAULT '1' COMMENT '状态',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='操作日志表';
+
+
+drop table if exists tbl_csrrg_corporate_kakou;
+CREATE TABLE `tbl_csrrg_corporate_kakou` (
+  `id` varchar(32) NOT NULL COMMENT 'id',
+
+  `corporate_id` varchar(36) DEFAULT null COMMENT '企业法人ID',
+  `kakou_id` varchar(36) DEFAULT null COMMENT '卡口ID',
+  `record_id` varchar(32) DEFAULT NULL COMMENT '联系人ID',
+  `record_openid` varchar(32) DEFAULT NULL COMMENT '联系人openID',
+
+  `review_status` int(1) DEFAULT null COMMENT '审核状态 1 成功 2失败 3审核中',
+  `refuse_reason` varchar(100) DEFAULT null COMMENT '审核失败原因',
+
+  `create_user` varchar(32) DEFAULT 'root' COMMENT '作成者',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成时间',
+  `update_user` varchar(32) DEFAULT 'root' COMMENT '修改者',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  `status` int(1) DEFAULT '1' COMMENT '状态 0删除 1正常',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='企业卡口关联表';
+

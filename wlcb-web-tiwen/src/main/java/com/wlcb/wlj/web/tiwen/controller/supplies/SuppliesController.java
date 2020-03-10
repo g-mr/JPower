@@ -51,7 +51,7 @@ public class SuppliesController {
                 "name",
                 "phone",
                 "idcard");
-        if (responseData.getCode() == -1){
+        if (responseData.getCode() == 406){
             return responseData;
         }
 
@@ -64,7 +64,7 @@ public class SuppliesController {
                 "jiedao",
                 "shequ",
                 "xiaoqu");
-        if (responseData.getCode() == -1){
+        if (responseData.getCode() == 406){
             return responseData;
         }
 
@@ -81,7 +81,7 @@ public class SuppliesController {
     public ResponseData update(TblSupplies supplies, HttpServletRequest request, HttpServletResponse response){
 
         ResponseData responseData = BeanUtil.allFieldIsNULL(supplies,"id");
-        if (responseData.getCode() == -1){
+        if (responseData.getCode() == 406){
             return responseData;
         }
 

@@ -33,11 +33,11 @@ public class BeanUtil {
                 if(!fieldNullList.contains(name)){
                     if (object instanceof CharSequence) {
                         if (org.springframework.util.ObjectUtils.isEmpty(object)) {
-                            return ReturnJsonUtil.printJson(-1,name+"不可为空",false);
+                            return ReturnJsonUtil.printJson(406,name+"不可为空",false);
                         }
                     } else {
                         if (null == object) {
-                            return ReturnJsonUtil.printJson(-1,name+"不可为空",false);
+                            return ReturnJsonUtil.printJson(406,name+"不可为空",false);
                         }
                     }
                 }
@@ -69,11 +69,11 @@ public class BeanUtil {
                 if(Arrays.binarySearch(fields, name) >= 0){
                     if (object instanceof CharSequence) {
                         if (org.springframework.util.ObjectUtils.isEmpty(object)) {
-                            return ReturnJsonUtil.printJson(-1,name+"不可为空",false);
+                            return ReturnJsonUtil.printJson(406,name+"不可为空",false);
                         }
                     } else {
                         if (null == object) {
-                            return ReturnJsonUtil.printJson(-1,name+"不可为空",false);
+                            return ReturnJsonUtil.printJson(406,name+"不可为空",false);
                         }
                     }
                 }

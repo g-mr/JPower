@@ -2,6 +2,7 @@ package com.wlcb.wlj.module.common.service.corporate;
 
 import com.wlcb.wlj.module.dbs.entity.base.PageBean;
 import com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgCorporate;
+import com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgCorporateKakou;
 import com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgCorporateReview;
 import com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgLog;
 
@@ -34,4 +35,14 @@ public interface CorporateService {
     PageBean<TblCsrrgCorporateReview> listPage(TblCsrrgCorporateReview corporateReview);
 
     String countCorporateByRework(String quxian);
+
+    PageBean<Map<String, String>> listKakou(TblCsrrgCorporateKakou kakou);
+
+    Integer addKakou(TblCsrrgCorporateKakou kakou);
+
+    Integer selectKakouById(String kakouId);
+
+    Integer updateKakouStatus(TblCsrrgLog log,String refuseReason);
+
+    Integer deleteKakou(String id);
 }

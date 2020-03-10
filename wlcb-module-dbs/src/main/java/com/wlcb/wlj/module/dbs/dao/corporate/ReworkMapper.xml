@@ -38,7 +38,7 @@
         from tbl_csrrg_rework a
         left join tbl_csrrg_record b on a.openid = b.applicant_openid
         left join tbl_csrrg_corporate d on a.corporate_id = d.id
-        where 1=1
+        where a.status=1
         <if test="corporateId != null and corporateId!=''" >
             and a.corporate_id = #{corporateId,jdbcType=VARCHAR}
         </if>

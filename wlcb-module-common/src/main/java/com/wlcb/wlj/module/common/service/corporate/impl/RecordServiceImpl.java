@@ -111,4 +111,5 @@ public class RecordServiceImpl implements RecordService {
     public Integer selectCountByCidAndOid(String openid, String corporateId) {
         return recordMapper.selectCountByCidAndOid(openid,corporateId);
     }
+
 }

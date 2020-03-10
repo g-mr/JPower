@@ -148,7 +148,7 @@ public class CorporateController {
                 "registeredDate",
                 "legalIdcard",
                 "liaisonIdcard");
-        if (responseData.getCode() == -1){
+        if (responseData.getCode() == 406){
             return responseData;
         }
 
@@ -232,7 +232,7 @@ public class CorporateController {
                 "userId",
                 "name",
                 "status");
-        if (responseData.getCode() == -1){
+        if (responseData.getCode() == 406){
             return responseData;
         }
 

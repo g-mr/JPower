@@ -3,10 +3,7 @@ package com.wlcb.wlj.module.common.utils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.wlcb.wlj.module.common.utils.cache.LoginTokenCache;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -97,18 +94,22 @@ public class JWTUtils {
     public static boolean parseJWT(HttpServletRequest request, HttpServletResponse response) {
         String currentPath = request.getServletPath();
 
+        logger.info("{}已进入鉴权拦截器",currentPath);
+
         String jwt = request.getHeader("Authorization");
 
-        if (jwt == null) {
-            logger.warn("未登陆或登陆超时！");
+        if (StringUtils.isBlank(jwt)) {
+            logger.info("未登陆或登陆超时！jwt是空的");
         } else {
 
             Claims c = null;
             try{
                 c = JWTUtils.parseJWT(jwt);
+            }catch (ExpiredJwtException e){
+                logger.info("登陆超时请重新登录！{}",e.getMessage());
+                return false;
             }catch (Exception e){
-                logger.warn("未登陆或登陆超时！");
-                e.printStackTrace();
+                logger.error("JWT解析出错！error={},token={}",e.getMessage(),jwt);
                 return false;
             }
 
@@ -117,6 +118,7 @@ public class JWTUtils {
                 String userId = (String) c.get("userId");
                 if (StringUtils.isNotBlank(userId)){
                     JSONObject user = JSONObject.parseObject(c.getSubject());
+                    logger.info("{}用户token已解析，用户信息={}",userId,user.toJSONString());
                     if (user!=null){
                         Date expDate = c.getExpiration();
 
@@ -146,7 +148,11 @@ public class JWTUtils {
                         }
 
                         return true;
+                    }else {
+                        logger.info("未登陆或登陆超时！未解析到用户信息");
                     }
+                }else {
+                    logger.info("未登陆或登陆超时！未解析到userId");
                 }
             }
         }
@@ -164,7 +170,12 @@ public class JWTUtils {
 //        String token = JWTUtils.createJWT(JSON.toJSONString(user),payload,400000L);
 //        System.out.println(token);
 
-        Claims c = JWTUtils.parseJWT("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOlwiMjMyMTNcIixcInJvbGVcIjowLFwic3RhdHVzXCI6MCxcInVzZXJcIjpcInNkd2RxcWRxXCJ9IiwiZXhwIjoxNTgzNDI1NjgzLCJ1c2VySWQiOiIyMTMyMTMxMjMxMiIsImlhdCI6MTU4MzQyNTI4MywianRpIjoiand0TG9naW4ifQ.kJNKLQw5NY-IOTUyhaYppb_g5k_NcttsdZv");
-        System.out.println(c);
+//        Claims c = JWTUtils.parseJWT("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOlwiMjMyMTNcIixcInJvbGVcIjowLFwic3RhdHVzXCI6MCxcInVzZXJcIjpcInNkd2RxcWRxXCJ9IiwiZXhwIjoxNTgzNDI1NjgzLCJ1c2VySWQiOiIyMTMyMTMxMjMxMiIsImlhdCI6MTU4MzQyNTI4MywianRpIjoiand0TG9naW4ifQ.kJNKLQw5NY-IOTUyhaYppb_g5k_NcttsdZv");
+//        System.out.println(c);
+
+
+        JSONObject user = new JSONObject();
+        user.put("12",21);
+        System.out.println(user.toJSONString());
     }
 }

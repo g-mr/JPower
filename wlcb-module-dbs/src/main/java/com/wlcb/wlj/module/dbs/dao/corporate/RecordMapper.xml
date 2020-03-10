@@ -54,7 +54,7 @@
         r.status from tbl_csrrg_record r
         LEFT JOIN tbl_csrrg_corporate c on r.corporate_id = c.id
         <where>
-            1=1
+            r.status=1
             <if test="applicantOpenid != null and applicantOpenid!=''" >
                 and r.applicant_openid=#{applicantOpenid,jdbcType=VARCHAR}
             </if>

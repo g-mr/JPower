@@ -3,6 +3,7 @@ package com.wlcb.wlj.module.dbs.entity.corporate;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @ClassName Corporate
@@ -35,9 +36,9 @@ public class TblCsrrgRecord implements Serializable {
     private Integer applicantStatus;
     private String failReason;
     private String createUser;
-    private String createTime;
+    private Date createTime;
     private String updateUser;
-    private String updateTime;
+    private Date updateTime;
     private Integer status;
 
     private String quxian;

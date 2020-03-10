@@ -7,24 +7,22 @@ import java.util.Date;
 
 /**
  * @ClassName Corporate
- * @Description TODO
+ * @Description TODO 企业卡口关联表
  * @Author 郭丁志
  * @Date 2020-02-27 02:28
  * @Version 1.0
  */
 @Data
-public class TblCsrrgRework implements Serializable {
+public class TblCsrrgCorporateKakou implements Serializable {
 
-    private static final long serialVersionUID = 412755129157532112L;
+    private static final long serialVersionUID = -4931820257117467452L;
 
     private String id;
-    private String openid;
     private String corporateId;
-    private Integer corporatePeopleSum;
-    private Integer corporateRepSum;
-    private String planPath;
-    private String committedPath;
-    private Integer reviewStats;
+    private String kakouId;
+    private String recordId;
+    private String recordOpenid;
+    private Integer reviewStatus;
     private String refuseReason;
     private String createUser;
     private Date createTime;
@@ -32,11 +30,6 @@ public class TblCsrrgRework implements Serializable {
     private Date updateTime;
     private Integer status;
 
-    //申请人姓名
-    private String name;
-    //公司名称
-    private String enterpriseName;
-    //区县过滤
+    //TODO 查询条件
     private String quxian;
-
 }

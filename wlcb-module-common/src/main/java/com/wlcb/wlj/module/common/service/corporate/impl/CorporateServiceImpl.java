@@ -7,10 +7,7 @@ import com.wlcb.wlj.module.common.utils.UUIDUtil;
 import com.wlcb.wlj.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.wlj.module.dbs.dao.corporate.*;
 import com.wlcb.wlj.module.dbs.entity.base.PageBean;
-import com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgCorporate;
-import com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgCorporateReview;
-import com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgLog;
-import com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgRecord;
+import com.wlcb.wlj.module.dbs.entity.corporate.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +29,8 @@ public class CorporateServiceImpl implements CorporateService {
     private CorporateMapper corporateMapper;
     @Autowired
     private CorporateReviewMapper corporateReviewMapper;
+    @Autowired
+    private CorporateKakouMapper corporateKakouMapper;
     @Autowired
     private RecordMapper recordMapper;
     @Autowired
@@ -108,6 +107,57 @@ public class CorporateServiceImpl implements CorporateService {
     @Override
     public String countCorporateByRework(String quxian) {
         return reworkMapper.countCorporateByRework(quxian);
+    }
+
+    @Override
+    public PageBean<Map<String, String>> listKakou(TblCsrrgCorporateKakou kakou) {
+        PageHelper.startPage(PaginationContext.getPageNum(), PaginationContext.getPageSize());
+        List<Map<String, String>> list = corporateKakouMapper.listKakou(kakou);
+        return new PageBean<>(list);
+    }
+
+    @Override
+    public Integer addKakou(TblCsrrgCorporateKakou kakou) {
+        kakou.setId(UUIDUtil.getUUID());
+        kakou.setReviewStatus(ConstantsEnum.APPLICANT_STATUS.REVIEW.getValue());
+        return corporateKakouMapper.inster(kakou);
+    }
+
+    @Override
+    public Integer selectKakouById(String kakouId) {
+        return corporateKakouMapper.selectKakouById(kakouId);
+    }
+
+    @Override
+    public Integer updateKakouStatus(TblCsrrgLog log,String refuseReason) {
+        TblCsrrgCorporateKakou kakou = new TblCsrrgCorporateKakou();
+        kakou.setId(log.getKeyId());
+        kakou.setReviewStatus(log.getStatus());
+        kakou.setUpdateUser(log.getName());
+        kakou.setRefuseReason(refuseReason);
+
+        Integer count = corporateKakouMapper.updateByPrimaryKeySelective(kakou);
+
+        if(count > 0){
+            log.setStatus(null);
+            log.setId(UUIDUtil.getUUID());
+            log.setTableName("tbl_csrrg_corporate_kakou");
+            log.setContent("修改企业卡口审核状态为："+ ConstantsEnum.APPLICANT_STATUS.getName(kakou.getReviewStatus()));
+
+            logMapper.inster(log);
+
+            logger.info("企业卡口审核完成，日志记录成功，日志ID={}",log.getId());
+        }
+
+        return count;
+    }
+
+    @Override
+    public Integer deleteKakou(String id) {
+        TblCsrrgCorporateKakou kakou = new TblCsrrgCorporateKakou();
+        kakou.setId(id);
+        kakou.setStatus(0);
+        return corporateKakouMapper.updateByPrimaryKeySelective(kakou);
     }
 
 }

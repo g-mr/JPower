@@ -11,7 +11,12 @@
         `role`,
         `standby_time`,
         `office_id`,
-        `insert_at`
+        `insert_at`,
+        jiedao,
+        quxian,
+        shequ,
+        xiaoqu,
+        phone
     </sql>
 
     <select id="selectByUser" resultType="com.wlcb.wlj.module.dbs.entity.user.User">
@@ -22,11 +27,11 @@
     </select>
 
     <select id="selectAllRole" resultType="java.lang.String">
-        select id from dic_menu where status=0
+        select uuid from dic_menu where status=0
     </select>
 
     <select id="selectMenuByRole" resultType="java.lang.String">
-        select menu_id from tbl_role_menu where role_id=#{role,jdbcType=INTEGER}
+        select m.uuid from tbl_role_menu r LEFT JOIN dic_menu m on r.menu_id = m.id where r.role_id=#{role,jdbcType=INTEGER}
     </select>
 
 

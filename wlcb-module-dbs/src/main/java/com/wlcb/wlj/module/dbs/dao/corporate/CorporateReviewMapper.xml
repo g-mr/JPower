@@ -58,12 +58,13 @@
     </insert>
 
     <update id="updateStatus">
-        UPDATE tbl_csrrg_corporate_review SET review_stats = #{status,jdbcType=INTEGER},refuse_reason=#{reason,jdbcType=VARCHAR} WHERE id = #{id,jdbcType=INTEGER}
+        UPDATE tbl_csrrg_corporate_review SET review_stats = #{status,jdbcType=INTEGER},refuse_reason=#{reason,jdbcType=VARCHAR} WHERE id = #{id,jdbcType=VARCHAR}
     </update>
 
     <select id="listAll" resultType="com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgCorporateReview">
         select <include refid="Base_Column_List"/> from tbl_csrrg_corporate_review
         <where>
+            status = 1
             <if test="reviewStats != null">
                 and review_stats = #{reviewStats,jdbcType=INTEGER}
             </if>
