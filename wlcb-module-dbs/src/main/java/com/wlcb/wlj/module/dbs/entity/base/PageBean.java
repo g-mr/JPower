@@ -13,6 +13,7 @@ import java.util.List;
  * @Date 2020-02-14 23:24
  * @Version 1.0
  */
+@Deprecated
 @Data
 public class PageBean<T> implements Serializable {
 

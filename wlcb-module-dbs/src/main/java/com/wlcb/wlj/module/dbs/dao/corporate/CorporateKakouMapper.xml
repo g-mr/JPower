@@ -55,6 +55,7 @@
             k.`refuse_reason`,
             k.`create_user`,
             k.`create_time`,
+            DATE_FORMAT(k.`create_time`, '%Y-%m-%d %H:%i:%s') as createTimeStr,
             k.`update_user`,
             k.`update_time`,
             k.`status`,

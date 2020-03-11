@@ -1,6 +1,7 @@
 package com.wlcb.wlj.module.common.service.corporate.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.wlcb.wlj.module.base.vo.ResponseData;
 import com.wlcb.wlj.module.common.page.PaginationContext;
 import com.wlcb.wlj.module.common.service.corporate.RecordService;
@@ -34,10 +35,11 @@ public class RecordServiceImpl implements RecordService {
     private LogMapper logMapper;
 
     @Override
-    public PageBean<TblCsrrgRecord> listPage(TblCsrrgRecord record) {
+    public PageInfo<TblCsrrgRecord> listPage(TblCsrrgRecord record) {
         PageHelper.startPage(PaginationContext.getPageNum(), PaginationContext.getPageSize());
         List<TblCsrrgRecord> list = recordMapper.listAll(record);
-        return new PageBean<>(list);
+
+        return new PageInfo<>(list);
     }
 
     @Override

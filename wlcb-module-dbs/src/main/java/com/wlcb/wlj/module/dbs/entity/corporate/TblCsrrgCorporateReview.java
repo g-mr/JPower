@@ -36,6 +36,7 @@ public class TblCsrrgCorporateReview implements Serializable {
     private String authorityFile;
     private Integer reviewStats;
     private String refuseReason;
+    private String quxian;
     private String createUser;
     private Date createTime;
     private String updateUser;

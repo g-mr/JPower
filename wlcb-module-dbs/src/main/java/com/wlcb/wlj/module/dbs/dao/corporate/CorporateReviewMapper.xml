@@ -23,6 +23,7 @@
         `authority_file`,
         `review_stats`,
         `refuse_reason`,
+        `quxian`,
         `create_user`,
         `create_time`,
         `update_user`,
@@ -49,12 +50,13 @@
         `legal_idcard`,
         `liaison_idcard`,
         `authority_file`,
-        `review_stats`)
+        `review_stats`,
+        `quxian`)
         values (#{id,jdbcType=VARCHAR},#{registeredNumber,jdbcType=VARCHAR},#{organizationCode,jdbcType=VARCHAR},#{enterpriseName,jdbcType=VARCHAR},
         #{area,jdbcType=VARCHAR},#{enterpriseType,jdbcType=VARCHAR},#{legalPerson,jdbcType=VARCHAR},#{legalPhone,jdbcType=VARCHAR},
         #{liaisonName,jdbcType=VARCHAR},#{liaisonName,jdbcType=VARCHAR},#{enterpriseAuthority,jdbcType=VARCHAR},#{enterprisePhone,jdbcType=VARCHAR},
         #{registeredMoney,jdbcType=VARCHAR},#{enterpriseRange,jdbcType=VARCHAR},#{registeredDate,jdbcType=VARCHAR},#{legalIdcard,jdbcType=VARCHAR},
-        #{liaisonIdcard,jdbcType=VARCHAR},#{authorityFile,jdbcType=VARCHAR},#{reviewStats,jdbcType=INTEGER})
+        #{liaisonIdcard,jdbcType=VARCHAR},#{authorityFile,jdbcType=VARCHAR},#{reviewStats,jdbcType=INTEGER},#{quxian,jdbcType=VARCHAR})
     </insert>
 
     <update id="updateStatus">
@@ -76,6 +78,9 @@
             </if>
             <if test="legalPhone != null and legalPhone!=''">
                 and legal_phone = #{legalPhone,jdbcType=VARCHAR}
+            </if>
+            <if test="quxian != null and quxian!=''">
+                and quxian = #{quxian,jdbcType=VARCHAR}
             </if>
         </where>
         order by create_time desc

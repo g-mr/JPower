@@ -66,10 +66,15 @@
                 <version>3.9</version>
             </dependency>
 
-            <dependency>
+            <!--<dependency>
                 <groupId>com.github.pagehelper</groupId>
                 <artifactId>pagehelper</artifactId>
-                <version>4.1.6</version>
+                <version>5.0.0</version>
+            </dependency>-->
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper-spring-boot-starter</artifactId>
+                <version>1.2.5</version>
             </dependency>
 
             <dependency>

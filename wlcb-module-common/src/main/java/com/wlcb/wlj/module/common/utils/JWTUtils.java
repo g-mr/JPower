@@ -26,8 +26,11 @@ public class JWTUtils {
 
     //多少时间内要刷新token
     private static Long refToken = 10 * 60 * 1000L;
-    //登录token过期时间
-    private static Long tokenExpired = 15 * 60 * 1000L;
+    //续期token过期时间
+    private static Long tokenExpired = 60 * 60 * 1000L;
+
+    //token过期多久支持继续刷新
+//    private static Long expRefToken = 60 * 60 * 1000L;
 
     /**
      * 加密密文
@@ -94,22 +97,25 @@ public class JWTUtils {
     public static boolean parseJWT(HttpServletRequest request, HttpServletResponse response) {
         String currentPath = request.getServletPath();
 
-        logger.info("{}已进入鉴权拦截器",currentPath);
-
         String jwt = request.getHeader("Authorization");
 
+        logger.info("{}已进入鉴权拦截器,token={}",currentPath,jwt);
+
         if (StringUtils.isBlank(jwt)) {
-            logger.info("未登陆或登陆超时！jwt是空的");
+            logger.info("未登陆或登陆超时！jwt是空的,请求地址={}",currentPath);
         } else {
 
             Claims c = null;
             try{
                 c = JWTUtils.parseJWT(jwt);
             }catch (ExpiredJwtException e){
-                logger.info("登陆超时请重新登录！{}",e.getMessage());
+                c = e.getClaims();
+                JSONObject user = JSONObject.parseObject(c.getSubject());
+                String type = StringUtils.isBlank(user.getString("user"))?"微信":"后台";
+                logger.info("{}{}用户登陆超时请重新登录！用户ID={},token={},error={}",user.getString("user"),type,(String) c.get("userId"),jwt,e.getMessage());
                 return false;
             }catch (Exception e){
-                logger.error("JWT解析出错！error={},token={}",e.getMessage(),jwt);
+                logger.error("JWT解析出错！error={},token={},请求地址={}",e.getMessage(),jwt,currentPath);
                 return false;
             }
 
@@ -128,7 +134,7 @@ public class JWTUtils {
                         if(time <= refToken){
 
                             //判断当前userID是否生成了新的token,如果已经生成则不再生成
-                            if (LoginTokenCache.get(userId) == null || !StringUtils.equals(LoginTokenCache.get(userId),jwt)){
+//                            if (LoginTokenCache.get(userId) == null || !StringUtils.equals(LoginTokenCache.get(userId),jwt)){
                                 try {
                                     Map<String, Object> payload = new HashMap<String, Object>();
                                     payload.put("userId", user.getString("id"));
@@ -137,14 +143,25 @@ public class JWTUtils {
                                     //记录该用户当前token已经刷新了
                                     LoginTokenCache.put(userId,jwt);
 
+                                    if (StringUtils.isBlank(token)){
+                                        logger.error("token生成错误，token={}",token);
+                                    }
+
                                     response.setHeader("token",token);
 
                                     logger.info("{}用户已刷新，用户id={},旧token={},新token={}",user.getString("user"),user.getString("id"),jwt,token);
                                 } catch (Exception e) {
                                     logger.error("刷新token出错：{}",e.getMessage());
                                 }
-                            }
+//                            }
 
+                        }
+
+                        if(StringUtils.isNotBlank(request.getMethod()) && "POST|PUT|DELETE".contains(request.getMethod())){
+                            //表明是后台的请求
+                            if (StringUtils.isNotBlank(user.getString("user"))){
+                                logger.info("ID={}的用户请求了{}接口，参数={}",userId,currentPath,JSON.toJSONString(request.getParameterMap()));
+                            }
                         }
 
                         return true;
@@ -159,7 +176,7 @@ public class JWTUtils {
         return false;
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 
 //        User user = new User();
 //        user.setId("23213");
@@ -172,10 +189,7 @@ public class JWTUtils {
 
 //        Claims c = JWTUtils.parseJWT("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOlwiMjMyMTNcIixcInJvbGVcIjowLFwic3RhdHVzXCI6MCxcInVzZXJcIjpcInNkd2RxcWRxXCJ9IiwiZXhwIjoxNTgzNDI1NjgzLCJ1c2VySWQiOiIyMTMyMTMxMjMxMiIsImlhdCI6MTU4MzQyNTI4MywianRpIjoiand0TG9naW4ifQ.kJNKLQw5NY-IOTUyhaYppb_g5k_NcttsdZv");
 //        System.out.println(c);
+//        e.getClaims().getExpiration();
 
-
-        JSONObject user = new JSONObject();
-        user.put("12",21);
-        System.out.println(user.toJSONString());
     }
 }

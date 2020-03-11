@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.wlcb.wlj.module.base.vo.ResponseData;
 import com.wlcb.wlj.module.common.service.corporate.CorporateService;
 import com.wlcb.wlj.module.common.utils.*;
+import com.wlcb.wlj.module.common.utils.cache.LoginTokenCache;
 import com.wlcb.wlj.module.dbs.entity.base.PageBean;
 import com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgCorporate;
 import com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgCorporateReview;
@@ -147,6 +148,7 @@ public class CorporateController {
                 "enterpriseRange",
                 "registeredDate",
                 "legalIdcard",
+                "quxian",
                 "liaisonIdcard");
         if (responseData.getCode() == 406){
             return responseData;

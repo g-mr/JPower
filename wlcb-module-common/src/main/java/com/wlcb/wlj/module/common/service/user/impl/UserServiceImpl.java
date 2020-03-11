@@ -9,6 +9,7 @@ import com.wlcb.wlj.module.common.utils.JWTUtils;
 import com.wlcb.wlj.module.common.utils.ReturnJsonUtil;
 import com.wlcb.wlj.module.dbs.dao.user.UserMapper;
 import com.wlcb.wlj.module.dbs.entity.user.User;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,7 @@ public class UserServiceImpl implements UserService {
      * @Date 23:56 2020-03-05
      * @return
      **/
-    @Value("${loginTokenExpired:2400000}")
+    @Value("${loginTokenExpired:3600000}")
     private Long tokenExpired;
 
     /**
@@ -71,9 +72,13 @@ public class UserServiceImpl implements UserService {
             payload.put("userId", user.getId());
             String token = JWTUtils.createJWT(JSON.toJSONString(user),payload,tokenExpired);
 
+            if (StringUtils.isBlank(token)){
+                logger.error("token生成错误，token={}",token);
+            }
+
             json.put("token",token);
 
-            logger.info("登录成功，用户名={},id={}",user.getUser(),user.getId());
+            logger.info("后台用户登录成功，用户名={},id={},token={}",user.getUser(),user.getId(),token);
 
             return ReturnJsonUtil.printJson(200,"登录成功",json,false);
         }catch (Exception e){
@@ -114,6 +119,8 @@ public class UserServiceImpl implements UserService {
             JSONObject reJson = new JSONObject();
             reJson.put("openid",openid);
             reJson.put("token",token);
+
+            logger.info("微信用户登录成功，用户名={},id={},token={}",user.getUser(),user.getId(),token);
 
             return ReturnJsonUtil.printJson(200,"登录成功",reJson,false);
         }catch (Exception e){

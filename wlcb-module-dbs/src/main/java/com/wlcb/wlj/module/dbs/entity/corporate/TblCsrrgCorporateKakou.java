@@ -3,6 +3,7 @@ package com.wlcb.wlj.module.dbs.entity.corporate;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -32,4 +33,8 @@ public class TblCsrrgCorporateKakou implements Serializable {
 
     //TODO 查询条件
     private String quxian;
+
+
+    private String createTimeStr;
+
 }

@@ -12,6 +12,7 @@
         `enterprise_authority`,
         `enterprise_status`,
         `organization_code`,
+        quxian,
         `create_user`,
         `create_time`,
         `update_user`,
@@ -36,7 +37,8 @@
         `enterprise_range`,
         `registered_date`,
         `legal_idcard`,
-        `liaison_idcard`)
+        `liaison_idcard`,
+        `quxian`)
         select `id`,
         `registered_number`,
         `organization_code`,
@@ -53,7 +55,8 @@
         `enterprise_range`,
         `registered_date`,
         `legal_idcard`,
-        `liaison_idcard` from tbl_csrrg_corporate_review where id = #{id,jdbcType=VARCHAR}
+        `liaison_idcard`,
+        `quxian` from tbl_csrrg_corporate_review where id = #{id,jdbcType=VARCHAR}
     </insert>
 
     <select id="selectName" resultType="java.util.Map">

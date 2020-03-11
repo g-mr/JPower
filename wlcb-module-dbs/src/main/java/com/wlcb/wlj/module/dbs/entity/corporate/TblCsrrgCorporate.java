@@ -25,6 +25,7 @@ public class TblCsrrgCorporate implements Serializable {
     private String enterpriseAuthority;
     private String enterpriseStatus;
     private String organizationCode;
+    private String quxian;
     private String createUser;
     private Date createTime;
     private String updateUser;

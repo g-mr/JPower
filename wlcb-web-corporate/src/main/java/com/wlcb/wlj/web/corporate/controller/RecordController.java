@@ -1,5 +1,6 @@
 package com.wlcb.wlj.web.corporate.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.wlcb.wlj.module.base.vo.ResponseData;
 import com.wlcb.wlj.module.common.service.corporate.CorporateService;
 import com.wlcb.wlj.module.common.service.corporate.RecordService;
@@ -74,7 +75,7 @@ public class RecordController {
     @RequestMapping(value = "/list",method = RequestMethod.POST,produces="application/json")
     public ResponseData list(TblCsrrgRecord record, HttpServletRequest request, HttpServletResponse response){
 
-        PageBean<TblCsrrgRecord> pageBean = recordService.listPage(record);
+        PageInfo<TblCsrrgRecord> pageBean = recordService.listPage(record);
 
         return ReturnJsonUtil.printJson(0,"查询成功",pageBean,true);
     }
