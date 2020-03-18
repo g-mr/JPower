@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * @ClassName SpringBootStartApplication
- * @Description TODO
+ * @Description TODO 登录服务入口
  * @Author 郭丁志
  * @Date 2020-02-24 18:41
  * @Version 1.0
@@ -15,10 +15,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 @EnableTransactionManagement
 @MapperScan(basePackages = "com.wlcb.wlj.module.dbs.dao")
-public class UserStartApplication {
+public class LoginStartApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(UserStartApplication.class, args);
+        SpringApplication.run(LoginStartApplication.class, args);
     }
 
 }

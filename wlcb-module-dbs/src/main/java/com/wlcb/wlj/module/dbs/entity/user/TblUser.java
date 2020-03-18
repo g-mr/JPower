@@ -12,7 +12,7 @@ import java.util.Date;
  * @Version 1.0
  */
 @Data
-public class User {
+public class TblUser {
 
     private String id;
     private String name;

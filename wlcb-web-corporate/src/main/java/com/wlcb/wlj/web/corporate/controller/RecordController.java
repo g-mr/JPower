@@ -6,9 +6,9 @@ import com.wlcb.wlj.module.common.service.corporate.CorporateService;
 import com.wlcb.wlj.module.common.service.corporate.RecordService;
 import com.wlcb.wlj.module.common.utils.DateUtils;
 import com.wlcb.wlj.module.common.utils.ReturnJsonUtil;
+import com.wlcb.wlj.module.common.utils.StrUtil;
 import com.wlcb.wlj.module.common.utils.UUIDUtil;
 import com.wlcb.wlj.module.common.utils.constants.ConstantsEnum;
-import com.wlcb.wlj.module.dbs.entity.base.PageBean;
 import com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgCorporate;
 import com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgLog;
 import com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgRecord;
@@ -111,7 +111,7 @@ public class RecordController {
         }
 
         if (!ConstantsEnum.APPLICANT_STATUS.SUCCESS.getValue().equals(recordLog.getStatus()) && !ConstantsEnum.APPLICANT_STATUS.FAIL.getValue().equals(recordLog.getStatus())&& !ConstantsEnum.APPLICANT_STATUS.CONFIRM.getValue().equals(recordLog.getStatus())){
-            return ReturnJsonUtil.printJson(-1,"申请记录状态不合法",false);
+            return ReturnJsonUtil.printJson(-1,"申请记录状态传入不正确",false);
         }
 
         Integer count = recordService.updateRecordStatus(recordLog,failReason);
@@ -135,7 +135,7 @@ public class RecordController {
     public ResponseData detail(String id, HttpServletRequest request, HttpServletResponse response){
 
         if (StringUtils.isBlank(id)){
-            return ReturnJsonUtil.printJson(-1,"参数不合法",false);
+            return ReturnJsonUtil.printJson(-1,"id不可为空",false);
         }
 
         TblCsrrgRecord record = recordService.detail(id);
@@ -155,7 +155,7 @@ public class RecordController {
 
 
         if(StringUtils.isBlank(record.getApplicantName())){
-            return ReturnJsonUtil.printJson(-1,"姓名不可空",false);
+            return ReturnJsonUtil.printJson(-1,"姓名不可空，请联系客服人员修改个人信息",false);
         }
 
         if(StringUtils.isBlank(record.getApplicantIdcard())){
@@ -167,7 +167,7 @@ public class RecordController {
         }
 
         if(StringUtils.isBlank(record.getApplicantOpenid())){
-            return ReturnJsonUtil.printJson(-1,"applicantOpenid不可为空",false);
+            return ReturnJsonUtil.printJson(-1,"联系人openid不可为空",false);
         }
 
         if(StringUtils.isBlank(record.getApplicantPhone())){
@@ -175,8 +175,17 @@ public class RecordController {
         }
 
         if(StringUtils.isBlank(record.getCorporateId())){
-            return ReturnJsonUtil.printJson(-1,"公司ID不可为空",false);
+            return ReturnJsonUtil.printJson(-1,"公司id不可为空",false);
         }
+
+        if(StringUtils.isBlank(record.getApplicantIdcard()) || !StrUtil.cardCodeVerifySimple(record.getApplicantIdcard())){
+            return ReturnJsonUtil.printJson(-1,"身份证号码有误，请联系客服人员修改个人信息",false);
+        }
+
+        if(StringUtils.isBlank(record.getApplicantPhone())|| !StrUtil.isPhone(record.getApplicantPhone())){
+            return ReturnJsonUtil.printJson(-1,"手机号码有误，请联系客服人员修改个人信息",false);
+        }
+
 
         if (file!=null && !file.isEmpty()){
             try {
@@ -199,7 +208,7 @@ public class RecordController {
                 file.transferTo(imgFile);
 
                 record.setFilePath(imgPath);
-                logger.info("文件保存成，文件路径={}",imgFile.getAbsolutePath());
+                logger.info("文件保存成功，文件路径={}",imgFile.getAbsolutePath());
             } catch (IOException e) {
                 logger.error("委托书保存出错：{}",e.getMessage());
                 return ReturnJsonUtil.printJson(-1,"系统出错，稍后重试",false);

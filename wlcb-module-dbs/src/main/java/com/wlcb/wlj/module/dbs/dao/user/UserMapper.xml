@@ -19,10 +19,21 @@
         phone
     </sql>
 
-    <select id="selectByUser" resultType="com.wlcb.wlj.module.dbs.entity.user.User">
+    <update id="updatePassword">
+        update tbl_user SET password = #{password,jdbcType=VARCHAR} WHERE id = #{id}
+    </update>
+
+    <select id="selectByUser" resultType="com.wlcb.wlj.module.dbs.entity.user.TblUser">
         select <include refid="Base_Column_List"/> from tbl_user
         where
         user = #{username,jdbcType=VARCHAR}
+        and status = 0
+    </select>
+
+    <select id="selectById" resultType="com.wlcb.wlj.module.dbs.entity.user.TblUser">
+        select <include refid="Base_Column_List"/> from tbl_user
+        where
+        id = #{id}
         and status = 0
     </select>
 

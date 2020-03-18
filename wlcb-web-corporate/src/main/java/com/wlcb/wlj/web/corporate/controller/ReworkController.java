@@ -129,7 +129,7 @@ public class ReworkController {
         }
 
         if (!ConstantsEnum.APPLICANT_STATUS.SUCCESS.getValue().equals(log.getStatus()) && !ConstantsEnum.APPLICANT_STATUS.FAIL.getValue().equals(log.getStatus())){
-            return ReturnJsonUtil.printJson(-1,"复工审核状态不合法",false);
+            return ReturnJsonUtil.printJson(-1,"复工审核状态只能为通过或拒绝",false);
         }
 
         Integer count  = reworkService.updateReworkStatus(log,refuseReason);

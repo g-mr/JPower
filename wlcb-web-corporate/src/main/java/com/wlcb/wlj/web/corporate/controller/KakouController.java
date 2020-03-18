@@ -58,6 +58,7 @@ public class KakouController {
                 "corporateId",
                 "kakouId",
                 "recordId");
+
         if (responseData.getCode() == 406){
             return responseData;
         }
@@ -96,6 +97,7 @@ public class KakouController {
                 "userId",
                 "name",
                 "status");
+
         if (responseData.getCode() == 406){
             return responseData;
         }
@@ -113,7 +115,7 @@ public class KakouController {
     public ResponseData delete(String id, HttpServletRequest request, HttpServletResponse response){
 
         if (StringUtils.isBlank(id)){
-            return ReturnJsonUtil.printJson(406,"ID不可为空",false);
+            return ReturnJsonUtil.printJson(406,"id不可为空",false);
         }
 
         Integer count = corporateService.deleteKakou(id);

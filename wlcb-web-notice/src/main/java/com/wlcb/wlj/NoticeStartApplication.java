@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * @ClassName SpringBootStartApplication
- * @Description TODO 同步模块入口
+ * @Description TODO 自助注册和协助注册入口
  * @Author 郭丁志
  * @Date 2020-02-24 18:41
  * @Version 1.0
@@ -15,10 +15,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 @EnableTransactionManagement
 @MapperScan(basePackages = "com.wlcb.wlj.module.dbs.dao")
-public class SyncStartApplication {
+public class NoticeStartApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SyncStartApplication.class, args);
+        SpringApplication.run(NoticeStartApplication.class, args);
     }
 
 }

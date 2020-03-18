@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.wlcb.wlj.module.base.vo.ResponseData;
 import com.wlcb.wlj.module.common.service.corporate.CorporateService;
 import com.wlcb.wlj.module.common.utils.*;
-import com.wlcb.wlj.module.common.utils.cache.LoginTokenCache;
 import com.wlcb.wlj.module.dbs.entity.base.PageBean;
 import com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgCorporate;
 import com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgCorporateReview;
@@ -66,7 +65,7 @@ public class CorporateController {
     public ResponseData queryEnterpriseName(String name, HttpServletRequest request, HttpServletResponse response){
 
         if(StringUtils.isBlank(name)){
-            return ReturnJsonUtil.printJson(-1,"参数不合法",false);
+            return ReturnJsonUtil.printJson(-1,"name不可为空",false);
         }
 
         List<Map<String,String>> list = corporateService.queryEnterpriseName(name);
@@ -155,23 +154,23 @@ public class CorporateController {
         }
 
         if(!StrUtil.isPhone(corporateReview.getLegalPhone())){
-            return ReturnJsonUtil.printJson(-1,"legalPhone不合法",false);
+            return ReturnJsonUtil.printJson(-1,"法人手机号不正确",false);
         }
 
         if(!StrUtil.isPhone(corporateReview.getEnterprisePhone())){
-            return ReturnJsonUtil.printJson(-1,"enterprisePhone不合法",false);
+            return ReturnJsonUtil.printJson(-1,"企业手机号输入不正确",false);
         }
 
         if(!StrUtil.isPhone(corporateReview.getLiaisonPhone())){
-            return ReturnJsonUtil.printJson(-1,"liaisonPhone不合法",false);
+            return ReturnJsonUtil.printJson(-1,"联络人手机号输入不正确",false);
         }
 
         if(!StrUtil.cardCodeVerifySimple(corporateReview.getLegalIdcard())){
-            return ReturnJsonUtil.printJson(-1,"legalIdcard不合法",false);
+            return ReturnJsonUtil.printJson(-1,"法人身份证号不正确",false);
         }
 
         if(!StrUtil.cardCodeVerifySimple(corporateReview.getLiaisonIdcard())){
-            return ReturnJsonUtil.printJson(-1,"liaisonIdcar不合法",false);
+            return ReturnJsonUtil.printJson(-1,"联系人身份证号输入不正确",false);
         }
 
         if (file==null || file.isEmpty()){
@@ -234,12 +233,13 @@ public class CorporateController {
                 "userId",
                 "name",
                 "status");
+
         if (responseData.getCode() == 406){
             return responseData;
         }
 
         if (log.getStatus()<1||log.getStatus()>3){
-            return ReturnJsonUtil.printJson(-1,"status参数不合法",false);
+            return ReturnJsonUtil.printJson(-1,"审核状态只能为通过或拒绝",false);
         }
 
         Integer count = corporateService.updateStatus(log,reason);

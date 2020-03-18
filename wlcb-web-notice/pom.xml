@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>wlcb-core-user</artifactId>
+    <artifactId>wlcb-web-notice</artifactId>
 
     <dependencies>
 
@@ -31,13 +31,12 @@
         </dependency>
         <dependency>
             <groupId>com.wlcb</groupId>
-            <artifactId>wlcb-module-dbs</artifactId>
+            <artifactId>wlcb-module-common</artifactId>
         </dependency>
         <dependency>
             <groupId>com.wlcb</groupId>
-            <artifactId>wlcb-module-common</artifactId>
+            <artifactId>wlcb-module-dbs</artifactId>
         </dependency>
-
     </dependencies>
 
     <build>

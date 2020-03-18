@@ -29,7 +29,8 @@
         <module>wlcb-web-tiwen</module>
         <module>wlcb-web-corporate</module>
         <module>wlcb-web-sync</module>
-        <module>wlcb-core-user</module>
+        <module>wlcb-core-login</module>
+        <module>wlcb-web-notice</module>
     </modules>
 
     <dependencyManagement>
@@ -94,7 +95,7 @@
             </dependency>
             <dependency>
                 <groupId>com.wlcb</groupId>
-                <artifactId>wlcb-core-user</artifactId>
+                <artifactId>wlcb-core-login</artifactId>
                 <version>${com.wlcb.version}</version>
             </dependency>
             <dependency>

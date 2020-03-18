@@ -8,7 +8,7 @@ import com.wlcb.wlj.module.common.utils.HttpClient;
 import com.wlcb.wlj.module.common.utils.JWTUtils;
 import com.wlcb.wlj.module.common.utils.ReturnJsonUtil;
 import com.wlcb.wlj.module.dbs.dao.user.UserMapper;
-import com.wlcb.wlj.module.dbs.entity.user.User;
+import com.wlcb.wlj.module.dbs.entity.user.TblUser;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
-    private UserMapper mapper;
+    private UserMapper userMapper;
     @Value("${get_openid:}")
     private String openidUrl;
     @Value("${appid:}")
@@ -55,14 +55,14 @@ public class UserServiceImpl implements UserService {
      * @return com.wlcb.wlj.module.base.vo.ResponseData
      **/
     @Override
-    public ResponseData login(User user) {
+    public ResponseData login(TblUser user) {
         try {
             List<String> list = null;
 
             if (user.getRole() == 1) {
-                list = mapper.selectAllRole();
+                list = userMapper.selectAllRole();
             } else {
-                list = mapper.selectMenuByRole(user.getRole());
+                list = userMapper.selectMenuByRole(user.getRole());
             }
 
             JSONObject json = JSON.parseObject(JSON.toJSONString(user));
@@ -88,8 +88,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User selectByUserName(String username) {
-        return mapper.selectByUser(username);
+    public TblUser selectByUserName(String username) {
+        return userMapper.selectByUser(username);
     }
 
     @Override
@@ -108,7 +108,7 @@ public class UserServiceImpl implements UserService {
 
             String openid = json.getString("openid");
 
-            User user = new User();
+            TblUser user = new TblUser();
             user.setId(openid);
 
             Map<String, Object> payload = new HashMap<String, Object>();
@@ -122,11 +122,32 @@ public class UserServiceImpl implements UserService {
 
             logger.info("微信用户登录成功，用户名={},id={},token={}",user.getUser(),user.getId(),token);
 
-            return ReturnJsonUtil.printJson(200,"登录成功",reJson,false);
+            return ReturnJsonUtil.printJson(200,"登录成功",reJson,true);
         }catch (Exception e){
             logger.error("登录出错：{}",e.getMessage());
             return ReturnJsonUtil.printJson(500,"登录失败",false);
         }
 
+    }
+
+    @Override
+    public TblUser selectByUserNameAndId(String id, String username) {
+
+        TblUser user = userMapper.selectById(id);
+
+        if (user == null){
+            return null;
+        }
+
+        if (StringUtils.equals(user.getUser(),username)){
+            return user;
+        }
+
+        return null;
+    }
+
+    @Override
+    public Integer updatePassword(TblUser user) {
+        return userMapper.updatePassword(user);
     }
 }
