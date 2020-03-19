@@ -3,6 +3,7 @@ package com.wlcb.wlj.module.common.utils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.wlcb.wlj.module.common.utils.cache.LoginTokenCache;
+import com.wlcb.wlj.module.dbs.entity.user.TblUser;
 import io.jsonwebtoken.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
@@ -105,87 +106,111 @@ public class JWTUtils {
             logger.info("未登陆或登陆超时！jwt是空的,请求地址={}",currentPath);
         } else {
 
-            Claims c = null;
-            try{
-                c = JWTUtils.parseJWT(jwt);
-            }catch (ExpiredJwtException e){
-                c = e.getClaims();
-                JSONObject user = JSONObject.parseObject(c.getSubject());
-                String type = StringUtils.isBlank(user.getString("user"))?"微信":"后台";
-                logger.info("{}{}用户登陆超时请重新登录！用户ID={},token={},error={}",user.getString("user"),type,(String) c.get("userId"),jwt,e.getMessage());
-                return false;
-            }catch (Exception e){
-                logger.error("JWT解析出错！error={},token={},请求地址={}",e.getMessage(),jwt,currentPath);
-                return false;
-            }
+            JSONObject jsonObject = parsingJwt(jwt);
+            if (jsonObject.getBoolean("status")){
 
-            if(c != null){
-
-                String userId = (String) c.get("userId");
-                if (StringUtils.isNotBlank(userId)){
-                    JSONObject user = JSONObject.parseObject(c.getSubject());
-                    logger.info("{}用户token已解析，用户信息={}",userId,user.toJSONString());
-                    if (user!=null){
-                        Date expDate = c.getExpiration();
-
-                        long time = expDate.getTime() - System.currentTimeMillis();
-
-                        //过期时间小于10分钟则获取新的token
-                        if(time <= refToken){
-
-                            //判断当前userID是否生成了新的token,如果已经生成则不再生成
-//                            if (LoginTokenCache.get(userId) == null || !StringUtils.equals(LoginTokenCache.get(userId),jwt)){
-                                try {
-                                    Map<String, Object> payload = new HashMap<String, Object>();
-                                    payload.put("userId", user.getString("id"));
-                                    String token = JWTUtils.createJWT(JSON.toJSONString(user),payload,tokenExpired);
-
-                                    //记录该用户当前token已经刷新了
-                                    LoginTokenCache.put(userId,jwt);
-
-                                    if (StringUtils.isBlank(token)){
-                                        logger.error("token生成错误，token={}",token);
-                                    }
-
-                                    response.setHeader("token",token);
-
-                                    logger.info("{}用户已刷新，用户id={},旧token={},新token={}",user.getString("user"),user.getString("id"),jwt,token);
-                                } catch (Exception e) {
-                                    logger.error("刷新token出错：{}",e.getMessage());
-                                }
-//                            }
-
-                        }
-
-                        if(StringUtils.isNotBlank(request.getMethod()) && "POST|PUT|DELETE".contains(request.getMethod())){
-                            //表明是后台的请求
-                            if (StringUtils.isNotBlank(user.getString("user"))){
-                                logger.info("ID={}的用户请求了{}接口，参数={}",userId,currentPath,JSON.toJSONString(request.getParameterMap()));
-                            }
-                        }
-
-                        return true;
-                    }else {
-                        logger.info("未登陆或登陆超时！未解析到用户信息");
+                if(StringUtils.isNotBlank(request.getMethod()) && "POST|PUT|DELETE".contains(request.getMethod())){
+                    //表明是后台的请求
+                    JSONObject user = jsonObject.getJSONObject("user");
+                    if (StringUtils.isNotBlank(user.getString("user"))){
+                        String userId = jsonObject.getString("userId");
+                        logger.info("ID={}的用户请求了{}接口，参数={}",userId,currentPath,JSON.toJSONString(request.getParameterMap()));
                     }
-                }else {
-                    logger.info("未登陆或登陆超时！未解析到userId");
                 }
+
+                if (jsonObject.containsKey("token")){
+                    response.setHeader("token",jsonObject.getString("token"));
+                }
+
+                return true;
             }
         }
         return false;
     }
 
-    public static void main(String[] args) {
+    public static JSONObject parsingJwt(String jwt){
 
-//        User user = new User();
-//        user.setId("23213");
-//        user.setUser("sdwdqqdq");
+        JSONObject json = new JSONObject();
+        json.put("code",401);
+        json.put("status",false);
+        json.put("msg","解析失败");
+
+
+        Claims c = null;
+        try{
+            c = JWTUtils.parseJWT(jwt);
+        }catch (ExpiredJwtException e){
+            c = e.getClaims();
+            JSONObject user = JSONObject.parseObject(c.getSubject());
+            String type = StringUtils.isBlank(user.getString("user"))?"微信":"后台";
+            logger.info("{}{}用户登陆超时请重新登录！用户ID={},token={},error={}",user.getString("user"),type,(String) c.get("userId"),jwt,e.getMessage());
+            json.put("msg","用户登陆超时请重新登录！用户ID="+user.getString("user"));
+            return json;
+        }catch (Exception e){
+            logger.error("JWT解析出错！error={},token={}",e.getMessage(),jwt);
+            json.put("msg","JWT解析出错！token="+e.getMessage());
+            return json;
+        }
+
+        if(c != null){
+
+            String userId = (String) c.get("userId");
+            if (StringUtils.isNotBlank(userId)){
+                JSONObject user = JSONObject.parseObject(c.getSubject());
+                logger.info("{}用户token已解析，用户信息={}",userId,user.toJSONString());
+                if (user!=null){
+                    Date expDate = c.getExpiration();
+
+                    long time = expDate.getTime() - System.currentTimeMillis();
+
+                    //过期时间小于10分钟则获取新的token
+                    if(time <= refToken){
+
+                        try {
+                            Map<String, Object> payload = new HashMap<String, Object>();
+                            payload.put("userId", user.getString("id"));
+                            String token = JWTUtils.createJWT(JSON.toJSONString(user),payload,tokenExpired);
+
+                            if (StringUtils.isBlank(token)){
+                                logger.error("token生成错误，token={}",token);
+                            }
+
+                            json.put("token",token);
+
+                            logger.info("{}用户已刷新，用户id={},旧token={},新token={}",user.getString("user"),user.getString("id"),jwt,token);
+                        } catch (Exception e) {
+                            logger.error("刷新token出错：{}",e.getMessage());
+                        }
+                    }
+
+                    json.put("code",200);
+                    json.put("status",true);
+                    json.put("msg","解析成功");
+                    json.put("userId",userId);
+                    json.put("user",user);
+                    return json;
+                }else {
+                    logger.info("未登陆或登陆超时！未解析到用户信息");
+                    json.put("msg","未登陆或登陆超时！未解析到用户信息");
+                }
+            }else {
+                logger.info("未登陆或登陆超时！未解析到userId");
+                json.put("msg","未登陆或登陆超时！未解析到userId");
+            }
+        }
+        return json;
+    }
+
+    public static void main(String[] args) throws Exception {
+
+        TblUser user = new TblUser();
+        user.setId("23213");
+        user.setUser("sdwdqqdq");
 //
-//        Map<String, Object> payload = new HashMap<String, Object>();
-//        payload.put("userId", "21321312312");
-//        String token = JWTUtils.createJWT(JSON.toJSONString(user),payload,400000L);
-//        System.out.println(token);
+        Map<String, Object> payload = new HashMap<String, Object>();
+        payload.put("userId", "21321312312");
+        String token = JWTUtils.createJWT(JSON.toJSONString(user),payload,400000L);
+        System.out.println(token);
 
 //        Claims c = JWTUtils.parseJWT("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOlwiMjMyMTNcIixcInJvbGVcIjowLFwic3RhdHVzXCI6MCxcInVzZXJcIjpcInNkd2RxcWRxXCJ9IiwiZXhwIjoxNTgzNDI1NjgzLCJ1c2VySWQiOiIyMTMyMTMxMjMxMiIsImlhdCI6MTU4MzQyNTI4MywianRpIjoiand0TG9naW4ifQ.kJNKLQw5NY-IOTUyhaYppb_g5k_NcttsdZv");
 //        System.out.println(c);

@@ -1,8 +1,10 @@
 package com.wlcb.wlj.core.login.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.wlcb.wlj.core.login.utils.RSAUtil;
 import com.wlcb.wlj.module.base.vo.ResponseData;
 import com.wlcb.wlj.module.common.service.user.UserService;
+import com.wlcb.wlj.module.common.utils.JWTUtils;
 import com.wlcb.wlj.module.common.utils.MD5;
 import com.wlcb.wlj.module.common.utils.ReturnJsonUtil;
 import com.wlcb.wlj.module.dbs.entity.user.TblUser;
@@ -17,6 +19,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLDecoder;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @ClassName LoginController
@@ -148,4 +151,17 @@ public class LoginController {
 
         return userService.wxLogin(code);
     }
+
+    @RequestMapping(value = "/parseJwt",method = RequestMethod.POST,produces="application/json")
+    public ResponseData parseJwt(String token, HttpServletRequest request, HttpServletResponse response){
+
+        if (StringUtils.isBlank(token)){
+            return ReturnJsonUtil.printJson(406,"token不可为空",false);
+        }
+
+        JSONObject jsonObject = JWTUtils.parsingJwt(token);
+
+        return ReturnJsonUtil.printJson(jsonObject.getInteger("code"),jsonObject.getString("msg"),jsonObject.getString("token"),jsonObject.getBoolean("status"));
+    }
+
 }
