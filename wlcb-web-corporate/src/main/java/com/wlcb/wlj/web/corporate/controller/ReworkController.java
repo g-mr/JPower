@@ -5,6 +5,7 @@ import com.wlcb.wlj.module.common.service.corporate.CorporateService;
 import com.wlcb.wlj.module.common.service.corporate.RecordService;
 import com.wlcb.wlj.module.common.service.corporate.ReworkService;
 import com.wlcb.wlj.module.common.utils.DateUtils;
+import com.wlcb.wlj.module.common.utils.QuxianUtils;
 import com.wlcb.wlj.module.common.utils.ReturnJsonUtil;
 import com.wlcb.wlj.module.common.utils.UUIDUtil;
 import com.wlcb.wlj.module.common.utils.constants.ConstantsEnum;
@@ -77,6 +78,10 @@ public class ReworkController {
      **/
     @RequestMapping(value = "/list",method = RequestMethod.POST,produces="application/json")
     public ResponseData list(TblCsrrgRework rework, HttpServletRequest request, HttpServletResponse response){
+
+        if (StringUtils.isNotBlank(rework.getQuxian())){
+            rework.setQuxian(QuxianUtils.simplifyQuxian(rework.getQuxian()));
+        }
 
         PageBean<TblCsrrgRework> pageBean = reworkService.listPage(rework);
 

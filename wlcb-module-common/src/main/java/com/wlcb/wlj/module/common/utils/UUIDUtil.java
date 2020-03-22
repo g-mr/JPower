@@ -214,7 +214,41 @@ public class UUIDUtil {
 		return id;
 	}
 
+    /**
+     * 生成指定长度UUID字符串（去除下划线）
+     *
+     * @param num
+     * @return
+     */
+    public static synchronized String createUuid(int num) {
+        String s = UUID.randomUUID().toString();
+        String sub = s.substring(0, 8) + s.substring(9, 13) + s.substring(14, 18)
+                + s.substring(19, 23) + s.substring(24);
+        if (num > 0) {
+            sub = sub.substring(0, num);
+        }
+        return sub;
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 生成10位数字型UUId
+     * @Date 16:20 2020-03-22
+     * @Param []
+     * @return java.lang.String
+     **/
+    public static String create10UUidNum() {
+        int hashCodeV = UUID.randomUUID().toString().hashCode();
+        if(hashCodeV < 0) {//有可能是负数
+            hashCodeV = - hashCodeV;
+        }
+        // 0 代表前面补充0
+        // 4 代表长度为4
+        // d 代表参数为正数型
+        return String.format("%010d", hashCodeV);
+    }
+
 	public static void main(String[] args) {
-        System.out.println(getUUID62Decimal());
+        System.out.println(getUUID());
 	}
 }

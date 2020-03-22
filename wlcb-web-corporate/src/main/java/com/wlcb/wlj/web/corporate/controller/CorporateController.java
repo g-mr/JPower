@@ -3,6 +3,7 @@ package com.wlcb.wlj.web.corporate.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.wlcb.wlj.module.base.vo.ResponseData;
 import com.wlcb.wlj.module.common.service.corporate.CorporateService;
+import com.wlcb.wlj.module.common.service.pay.PayService;
 import com.wlcb.wlj.module.common.utils.*;
 import com.wlcb.wlj.module.dbs.entity.base.PageBean;
 import com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgCorporate;
@@ -102,6 +103,10 @@ public class CorporateController {
     @RequestMapping(value = "/countCorporateByRecord",method = RequestMethod.GET,produces="application/json")
     public ResponseData countCorporateByRecord(String quxian, HttpServletRequest request, HttpServletResponse response){
 
+        if (StringUtils.isNotBlank(quxian)){
+            quxian = QuxianUtils.simplifyQuxian(quxian);
+        }
+
         String count = corporateService.countCorporateByRecord(quxian);
 
         return ReturnJsonUtil.printJson(0,"查询成功", JSONObject.parseObject(count),true);
@@ -116,6 +121,10 @@ public class CorporateController {
      **/
     @RequestMapping(value = "/countCorporateByRework",method = RequestMethod.GET,produces="application/json")
     public ResponseData countCorporateByRework(String quxian, HttpServletRequest request, HttpServletResponse response){
+
+        if (StringUtils.isNotBlank(quxian)){
+            quxian = QuxianUtils.simplifyQuxian(quxian);
+        }
 
         String count = corporateService.countCorporateByRework(quxian);
 

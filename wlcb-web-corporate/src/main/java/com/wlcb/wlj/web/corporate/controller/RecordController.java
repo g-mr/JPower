@@ -4,10 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.wlcb.wlj.module.base.vo.ResponseData;
 import com.wlcb.wlj.module.common.service.corporate.CorporateService;
 import com.wlcb.wlj.module.common.service.corporate.RecordService;
-import com.wlcb.wlj.module.common.utils.DateUtils;
-import com.wlcb.wlj.module.common.utils.ReturnJsonUtil;
-import com.wlcb.wlj.module.common.utils.StrUtil;
-import com.wlcb.wlj.module.common.utils.UUIDUtil;
+import com.wlcb.wlj.module.common.utils.*;
 import com.wlcb.wlj.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgCorporate;
 import com.wlcb.wlj.module.dbs.entity.corporate.TblCsrrgLog;
@@ -74,6 +71,10 @@ public class RecordController {
      **/
     @RequestMapping(value = "/list",method = RequestMethod.POST,produces="application/json")
     public ResponseData list(TblCsrrgRecord record, HttpServletRequest request, HttpServletResponse response){
+
+        if (StringUtils.isNotBlank(record.getQuxian())){
+            record.setQuxian(QuxianUtils.simplifyQuxian(record.getQuxian()));
+        }
 
         PageInfo<TblCsrrgRecord> pageBean = recordService.listPage(record);
 

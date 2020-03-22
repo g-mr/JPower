@@ -17,8 +17,15 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.security.KeyStore;
+import java.security.SecureRandom;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -146,6 +153,78 @@ public class HttpClient {
         }
         return result;
     }
+
+    public static String requestWithCert(String strUrl, String reqBody, String cerPath, String cerPassword) {
+        String UTF8 = "UTF-8";
+        String resp = null;
+        StringBuffer stringBuffer = new StringBuffer();
+        BufferedReader bufferedReader = null;
+        InputStream inputStream = null;
+        OutputStream outputStream = null;
+        InputStream certStream = null;
+        try {
+            URL httpUrl = new URL(strUrl);
+            char[] password = cerPassword.toCharArray();
+            certStream = new FileInputStream(new File(cerPath));
+            KeyStore ks = KeyStore.getInstance("PKCS12");
+            ks.load(certStream, password);
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+            kmf.init(ks, password);
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(kmf.getKeyManagers(), (TrustManager[])null, new SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
+            HttpURLConnection httpURLConnection = (HttpURLConnection)httpUrl.openConnection();
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setRequestMethod("POST");
+            httpURLConnection.setConnectTimeout(3000);
+            httpURLConnection.setReadTimeout(3000);
+            httpURLConnection.connect();
+            outputStream = httpURLConnection.getOutputStream();
+            outputStream.write(reqBody.getBytes(UTF8));
+            inputStream = httpURLConnection.getInputStream();
+            bufferedReader = new BufferedReader(new InputStreamReader(inputStream, UTF8));
+            String line = null;
+
+            while((line = bufferedReader.readLine()) != null) {
+                stringBuffer.append(line);
+            }
+
+            resp = stringBuffer.toString();
+        }catch (Exception e){
+            logger.info("请求接口{}失败，error={}",strUrl,e.getMessage());
+        }finally {
+            if (stringBuffer != null && bufferedReader!=null) {
+                try {
+                    bufferedReader.close();
+                } catch (IOException var24) {
+                }
+            }
+
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException var23) {
+                }
+            }
+
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException var22) {
+                }
+            }
+
+            if (certStream != null) {
+                try {
+                    certStream.close();
+                } catch (IOException var21) {
+                }
+            }
+        }
+
+        return resp;
+    }
+
 
     public static String doPostJson(String url, String param) {
         String result = "";

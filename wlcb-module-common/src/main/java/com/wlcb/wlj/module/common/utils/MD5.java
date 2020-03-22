@@ -99,11 +99,15 @@ public class MD5 {
     
     
     public static void main(String[] args) {
-    	LinkedHashMap<String, String> map = new LinkedHashMap<>();
-    	map.put("CustomerNumber", "N0002017010610000307");
-    	map.put("systemType", "CSMP");
-    	map.put("customerName", "测试验证5");
-    	System.out.println(sign(map,"icloudsystem").toLowerCase());
+
+//    	LinkedHashMap<String, String> map = new LinkedHashMap<>();
+//    	map.put("CustomerNumber", "N0002017010610000307");
+//    	map.put("systemType", "CSMP");
+//    	map.put("customerName", "测试验证5");
+//    	System.out.println(sign(map,"icloudsystem").toLowerCase());
+
+        String keyBeforeMd5 = "oRbMPw55ybBXPE7ritJG6lxm2Bqc"+"&"+"方宇擘"+"&"+"1000"+"&"+"测试"+"csrrgRed";
+        System.out.println(parseStrToMd5U32(keyBeforeMd5));
 	}
     
 }

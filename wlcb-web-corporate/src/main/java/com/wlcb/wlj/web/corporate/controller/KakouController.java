@@ -46,6 +46,10 @@ public class KakouController {
     @RequestMapping(value = "/list",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
     public ResponseData list(TblCsrrgCorporateKakou kakou, HttpServletRequest request, HttpServletResponse response){
 
+        if (StringUtils.isNotBlank(kakou.getQuxian())){
+            kakou.setQuxian(QuxianUtils.simplifyQuxian(kakou.getQuxian()));
+        }
+
         PageBean<Map<String, String>> list = corporateService.listKakou(kakou);
 
         return ReturnJsonUtil.printJson(200,"查询成功",list,true);

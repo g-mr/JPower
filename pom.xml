@@ -31,6 +31,7 @@
         <module>wlcb-web-sync</module>
         <module>wlcb-core-login</module>
         <module>wlcb-web-notice</module>
+        <module>wlcb-web-csrrg</module>
     </modules>
 
     <dependencyManagement>

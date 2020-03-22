@@ -1,5 +1,10 @@
 package com.wlcb.wlj.module.common.utils;
 
+import org.apache.commons.lang3.StringUtils;
+import org.dom4j.Element;
+
+import java.util.*;
+
 /**
  * @ClassName StrUtil
  * @Description TODO
@@ -113,5 +118,133 @@ public class StrUtil {
         } else {
             return phone.matches(phoneRegex);
         }
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 将map转为xml格式字符串
+     * @Date 17:18 2020-03-21
+     * @Param [map]
+     * @return java.lang.String
+     **/
+    public static String mapToXmlStr(Map<String,String> map){
+
+        StringBuffer stringBuffer = new StringBuffer("<xml>");
+
+        for (String key : map.keySet()) {
+            stringBuffer.append("<").append(key).append(">").append(map.get(key)).append("</").append(key).append(">");
+        }
+        stringBuffer.append("</xml>");
+        return stringBuffer.toString();
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO xml转map
+     * @Date 15:56 2020-03-22
+     * @Param [root]
+     * @return java.util.Map
+     **/
+    public static Map iterateElement(Element root) {
+        List childrenList = root.elements();
+        Element element = null;
+        Map map = new HashMap();
+        List list = null;
+        for (int i = 0; i < childrenList.size(); i++) {
+            list = new ArrayList();
+            element = (Element) childrenList.get(i);
+            if(element.elements().size()>0){
+                if(root.elements(element.getName()).size()>1){
+                    if (map.containsKey(element.getName())) {
+                        list = (List) map.get(element.getName());
+                    }
+                    list.add(iterateElement(element));
+                    map.put(element.getName(), list);
+                }else{
+                    map.put(element.getName(), iterateElement(element));
+                }
+            }else {
+                if(root.elements(element.getName()).size()>1){
+                    if (map.containsKey(element.getName())) {
+                        list = (List) map.get(element.getName());
+                    }
+                    list.add(element.getTextTrim());
+                    map.put(element.getName(), list);
+                }else{
+                    map.put(element.getName(), element.getTextTrim());
+                }
+            }
+        }
+
+        return map;
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 生成唯一的订单号
+     * @Date 17:30 2020-03-21
+     * @Param []
+     * @return java.lang.String
+     **/
+    public static String createOrderId(String mchid) {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(mchid);
+        buffer.append(createTime());
+        buffer.append(UUIDUtil.create10UUidNum());
+        return buffer.toString();
+    }
+
+    /**
+     * 生成时间戳字符串，格式：yyyyMMddhhMMss
+     *
+     * @return
+     */
+    private static synchronized String createTimestamp() {
+        Date date = new Date();
+        date.setTime(System.currentTimeMillis());
+        // 时间精确到秒
+        String str = String.format("%1$tY%1$tm%1$td%1$tk%1$tM%1$tS", date);
+        return str;
+    }
+
+    /**
+     * 生成时间戳字符串，格式：yyyyMMdd
+     *
+     * @return
+     */
+    private static synchronized String createTime() {
+        Date date = new Date();
+        date.setTime(System.currentTimeMillis());
+        // 时间精确到秒
+        String str = String.format("%1$tY%1$tm%1$td", date);
+        return str;
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 将map转换成Ascii码从小到大排序的keyvalue格式字符串
+     * @Date 17:47 2020-03-21
+     * @Param [map]
+     * @return java.lang.String
+     **/
+    public static String getAsciiKeyValue(Map<String, String> map) {
+
+        Set<String> keySet = map.keySet();
+        String[] keyArray = (String[])keySet.toArray(new String[keySet.size()]);
+        Arrays.sort(keyArray);
+
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < keyArray.length; ++i) {
+            String k = keyArray[i];
+            if (StringUtils.isNotBlank(k) && !k.equals("sign") && ((String)map.get(k)).trim().length() > 0) {
+                sb.append(k).append("=").append(((String)map.get(k)).trim()).append("&");
+            }
+        }
+
+        return sb.toString();
+    }
+
+    public static void main(String[] args) {
+        System.out.println(createOrderId("1570167581").length());
     }
 }
