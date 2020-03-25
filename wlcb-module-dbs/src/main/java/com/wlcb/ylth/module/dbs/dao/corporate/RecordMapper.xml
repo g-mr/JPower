@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wlcb.ylth.module.dbs.dao.corporate.RecordMapper">
+
+    <sql id="Base_Column_List">
+        `id`,
+        `corporate_id`,
+        `applicant_openid`,
+        enterprise_name,
+        `applicant_name`,
+        `applicant_idcard`,
+        `applicant_username`,
+        `applicant_phone`,
+        `applicant_quxian`,
+        `applicant_shequ`,
+        `applicant_jiedao`,
+        `applicant_xiaoqu`,
+        `applicant_shequ_id`,
+        `applicant_jiedao_id`,
+        `applicant_xiaoqu_id`,
+        `file_path`,
+        `applicant_status`,
+        `fail_reason`,
+        `create_user`,
+        `create_time`,
+        `update_user`,
+        `update_time`,
+        `status`
+    </sql>
+
+    <select id="listAll" resultType="com.wlcb.ylth.module.dbs.entity.corporate.TblCsrrgRecord">
+        select r.id,
+        r.corporate_id,
+        r.applicant_openid,
+        r.enterprise_name,
+        r.applicant_name,
+        r.applicant_idcard,
+        r.applicant_username,
+        r.applicant_phone,
+        r.applicant_quxian,
+        r.applicant_shequ,
+        r.applicant_jiedao,
+        r.applicant_xiaoqu,
+        r.applicant_shequ_id,
+        r.applicant_jiedao_id,
+        r.applicant_xiaoqu_id,
+        r.file_path,
+        r.applicant_status,
+        r.fail_reason,
+        r.create_user,
+        r.create_time,
+        r.update_user,
+        r.update_time,
+        r.status from tbl_csrrg_record r
+        LEFT JOIN tbl_csrrg_corporate c on r.corporate_id = c.id
+        <where>
+            r.status=1
+            <if test="applicantOpenid != null and applicantOpenid!=''" >
+                and r.applicant_openid=#{applicantOpenid,jdbcType=VARCHAR}
+            </if>
+            <if test="applicantQuxian != null and applicantQuxian != ''" >
+                and r.applicant_quxian=#{applicantQuxian,jdbcType=VARCHAR}
+            </if>
+            <if test="applicantShequId != null and applicantShequId != ''" >
+                and r.applicant_shequ_id=#{applicantShequId,jdbcType=VARCHAR}
+            </if>
+            <if test="applicantJiedaoId != null and applicantJiedaoId != ''" >
+                and r.applicant_jiedao_id=#{applicantJiedaoId,jdbcType=VARCHAR}
+            </if>
+            <if test="applicantXiaoquId != null and applicantXiaoquId != ''" >
+                and r.applicant_xiaoqu_id=#{applicantXiaoquId,jdbcType=VARCHAR}
+            </if>
+            <if test="applicantStatus != null" >
+                and r.applicant_status=#{applicantStatus,jdbcType=INTEGER}
+            </if>
+            <if test="enterpriseName != null and enterpriseName!=''" >
+                and r.enterprise_name like CONCAT('%',#{enterpriseName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="applicantName != null and applicantName!=''" >
+                and r.applicant_name = #{applicantName,jdbcType=VARCHAR}
+            </if>
+            <if test="applicantIdcard != null and applicantIdcard!=''" >
+                and r.applicant_idcard like CONCAT('%',#{applicantIdcard,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="applicantPhone != null and applicantPhone!=''" >
+                and r.applicant_phone = #{applicantPhone,jdbcType=VARCHAR}
+            </if>
+            <if test="quxian != null and quxian!=''" >
+                and c.quxian = #{quxian,jdbcType=VARCHAR}
+            </if>
+        </where>
+        order by r.create_time desc
+    </select>
+
+    <select id="selectById" resultType="com.wlcb.ylth.module.dbs.entity.corporate.TblCsrrgRecord">
+        select <include refid="Base_Column_List"/> from tbl_csrrg_record
+        <where>
+            and id=#{id,jdbcType=VARCHAR}
+        </where>
+    </select>
+
+    <select id="selectCountByCidAndOid" resultType="java.lang.Integer">
+        select count(1) from tbl_csrrg_record
+        where
+        applicant_openid = #{openid,jdbcType=VARCHAR}
+        and corporate_id = #{corporateId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectAppCountByStatus" resultType="java.lang.Integer">
+        select count(1) from tbl_csrrg_record
+        where
+        applicant_openid = #{applicantOpenid,jdbcType=VARCHAR}
+        and corporate_id = #{corporateId,jdbcType=VARCHAR}
+        and applicant_name = #{applicantName,jdbcType=VARCHAR}
+        and applicant_idcard = #{applicantIdcard,jdbcType=VARCHAR}
+        and applicant_phone = #{applicantPhone,jdbcType=VARCHAR}
+        and applicant_status in (1,3,4)
+    </select>
+
+    <insert id="insterSelective">
+        insert into tbl_csrrg_record
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null and id != ''" >
+                id,
+            </if>
+            <if test="corporateId != null and corporateId != ''" >
+                corporate_id,
+            </if>
+            <if test="enterpriseName != null and enterpriseName != ''" >
+                enterprise_name,
+            </if>
+            <if test="applicantOpenid != null and applicantOpenid != ''" >
+                applicant_openid,
+            </if>
+            <if test="applicantName != null and applicantName!=''" >
+                applicant_name,
+            </if>
+            <if test="applicantIdcard != null and applicantIdcard != ''" >
+                applicant_idcard,
+            </if>
+            <if test="applicantUsername != null and applicantUsername!=''" >
+                applicant_username,
+            </if>
+            <if test="applicantPhone != null and applicantPhone != ''" >
+                applicant_phone,
+            </if>
+            <if test="applicantQuxian != null and applicantQuxian != ''" >
+                applicant_quxian,
+            </if>
+            <if test="applicantShequ != null and applicantShequ != ''" >
+                applicant_shequ,
+            </if>
+            <if test="applicantJiedao != null and applicantJiedao != ''" >
+                applicant_jiedao,
+            </if>
+            <if test="applicantXiaoqu != null and applicantXiaoqu != ''" >
+                applicant_xiaoqu,
+            </if>
+            <if test="applicantShequId != null and applicantShequId != ''" >
+                applicant_shequ_id,
+            </if>
+            <if test="applicantJiedaoId != null and applicantJiedaoId != ''" >
+                applicant_jiedao_id,
+            </if>
+            <if test="applicantXiaoquId != null and applicantXiaoquId != ''" >
+                applicant_xiaoqu_id,
+            </if>
+            <if test="filePath != null and filePath != ''" >
+                file_path,
+            </if>
+            <if test="applicantStatus != null" >
+                applicant_status,
+            </if>
+            <if test="createUser != null and createUser != ''" >
+                create_user,
+            </if>
+            <if test="updateUser != null and updateUser != ''" >
+                update_user,
+            </if>
+            <if test="status != null" >
+                status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null and id != ''" >
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="corporateId != null and corporateId != ''" >
+                #{corporateId,jdbcType=VARCHAR},
+            </if>
+            <if test="enterpriseName != null and enterpriseName != ''" >
+                #{enterpriseName,jdbcType=VARCHAR},
+            </if>
+            <if test="applicantOpenid != null and applicantOpenid != ''" >
+                #{applicantOpenid,jdbcType=VARCHAR},
+            </if>
+            <if test="applicantName != null and applicantName!=''" >
+                #{applicantName,jdbcType=VARCHAR},
+            </if>
+            <if test="applicantIdcard != null and applicantIdcard != ''" >
+                #{applicantIdcard,jdbcType=VARCHAR},
+            </if>
+            <if test="applicantUsername != null and applicantUsername!=''" >
+                #{applicantUsername,jdbcType=VARCHAR},
+            </if>
+            <if test="applicantPhone != null and applicantPhone != ''" >
+                #{applicantPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="applicantQuxian != null and applicantQuxian != ''" >
+                #{applicantQuxian,jdbcType=VARCHAR},
+            </if>
+            <if test="applicantShequ != null and applicantShequ != ''" >
+                #{applicantShequ,jdbcType=VARCHAR},
+            </if>
+            <if test="applicantJiedao != null and applicantJiedao != ''" >
+                #{applicantJiedao,jdbcType=VARCHAR},
+            </if>
+            <if test="applicantXiaoqu != null and applicantXiaoqu != ''" >
+                #{applicantXiaoqu,jdbcType=VARCHAR},
+            </if>
+            <if test="applicantShequId != null and applicantShequId != ''" >
+                #{applicantShequId,jdbcType=VARCHAR},
+            </if>
+            <if test="applicantJiedaoId != null and applicantJiedaoId != ''" >
+                #{applicantJiedaoId,jdbcType=VARCHAR},
+            </if>
+            <if test="applicantXiaoquId != null and applicantXiaoquId != ''" >
+                #{applicantXiaoquId,jdbcType=VARCHAR},
+            </if>
+            <if test="filePath != null and filePath != ''" >
+                #{filePath,jdbcType=VARCHAR},
+            </if>
+            <if test="applicantStatus != null" >
+                #{applicantStatus,jdbcType=INTEGER},
+            </if>
+            <if test="createUser != null and createUser != ''" >
+                #{createUser,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUser != null and updateUser != ''" >
+                #{updateUser,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null and status != ''" >
+                #{status,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective">
+
+        update tbl_csrrg_record
+        <set >
+            <if test="corporateId != null" >
+                corporate_id = #{corporateId,jdbcType=VARCHAR},
+            </if>
+            <if test="enterpriseName != null and enterpriseName != ''" >
+                enterprise_name = #{enterpriseName,jdbcType=VARCHAR},
+            </if>
+            <if test="applicantOpenid != null and applicantOpenid != ''" >
+                applicant_openid = #{applicantOpenid,jdbcType=VARCHAR},
+            </if>
+            <if test="applicantName != null and applicantName!=''" >
+                applicant_name = #{applicantName,jdbcType=VARCHAR},
+            </if>
+            <if test="applicantIdcard != null and applicantIdcard != ''" >
+                applicant_idcard = #{applicantIdcard,jdbcType=VARCHAR},
+            </if>
+            <if test="applicantUsername != null and applicantUsername!=''" >
+                applicant_username = #{applicantUsername,jdbcType=VARCHAR},
+            </if>
+            <if test="applicantPhone != null and applicantPhone != ''" >
+                applicant_phone = #{applicantPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="applicantQuxian != null and applicantQuxian != ''" >
+                applicant_quxian = #{applicantQuxian,jdbcType=VARCHAR},
+            </if>
+            <if test="applicantShequ != null and applicantShequ != ''" >
+                applicant_shequ = #{applicantShequ,jdbcType=VARCHAR},
+            </if>
+            <if test="applicantJiedao != null and applicantJiedao != ''" >
+                applicant_jiedao = #{applicantJiedao,jdbcType=VARCHAR},
+            </if>
+            <if test="applicantXiaoqu != null and applicantXiaoqu != ''" >
+                applicant_xiaoqu = #{applicantXiaoqu,jdbcType=VARCHAR},
+            </if>
+            <if test="applicantShequId != null and applicantShequId != ''" >
+                applicant_shequ_id = #{applicantShequId,jdbcType=VARCHAR},
+            </if>
+            <if test="applicantJiedaoId != null and applicantJiedaoId != ''" >
+                applicant_jiedao_id = #{applicantJiedaoId,jdbcType=VARCHAR},
+            </if>
+            <if test="applicantXiaoquId != null and applicantXiaoquId != ''" >
+                applicant_xiaoqu_id = #{applicantXiaoquId,jdbcType=VARCHAR},
+            </if>
+            <if test="filePath != null and filePath != ''" >
+                file_path = #{filePath,jdbcType=VARCHAR},
+            </if>
+            <if test="applicantStatus != null" >
+                applicant_status = #{applicantStatus,jdbcType=INTEGER},
+            </if>
+            <if test="failReason != null" >
+                fail_reason = #{failReason,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUser != null and updateUser != ''" >
+                update_user = #{updateUser,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null" >
+                status = #{status,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+
+    </update>
+
+    <select id="countCorporate" resultType="java.lang.String">
+        select concat('{',group_concat('"',type,'":',count),'}') from
+        (
+            select count(distinct r.corporate_id) count,r.applicant_status type
+            from tbl_csrrg_record r
+            <if test="quxian != null and quxian != '' " >
+                left join tbl_csrrg_corporate c on r.corporate_id = c.id
+                where c.quxian = #{quxian,jdbcType=VARCHAR}
+            </if>
+            GROUP BY r.applicant_status
+        ) a
+    </select>
+
+</mapper>

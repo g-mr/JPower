@@ -47,7 +47,7 @@ logging:
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
-  typeAliasesPackage: com.wlcb.module.dbs.entity
+  typeAliasesPackage: com.wlcb.ylth.*.dbs.entity.**
 
 #不拦截的url多个用,分隔
 noFilterUrl: /corporate/countCorporateByRecord,/corporate/countCorporateByRework,/**/*.*

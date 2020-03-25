@@ -1,7 +1,5 @@
 server:
   port: 89
-#  servlet:
-#    context-path: /user
 
 spring:
   servlet:
@@ -61,7 +59,7 @@ logging:
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
-  typeAliasesPackage: com.wlcb.module.dbs.entity
+  typeAliasesPackage: com.wlcb.ylth.module.dbs.entity
 
 #获取openid接口
 get_openid: https://api.weixin.qq.com/sns/oauth2/access_token

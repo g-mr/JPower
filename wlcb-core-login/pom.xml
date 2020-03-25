@@ -11,6 +11,8 @@
 
     <artifactId>wlcb-core-login</artifactId>
 
+    <name>login</name>
+
     <dependencies>
 
         <dependency>
@@ -53,6 +55,11 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <classifier>exec</classifier>
+                    <!--生成可执行jar的名称-->
+                    <finalName>${name}</finalName>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -70,7 +77,7 @@
                 <version>3.0.0</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
-                    <warName>${artifactId}</warName>
+                    <warName>${name}</warName>
                 </configuration>
             </plugin>
         </plugins>

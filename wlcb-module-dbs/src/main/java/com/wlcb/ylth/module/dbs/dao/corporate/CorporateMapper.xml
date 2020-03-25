@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wlcb.ylth.module.dbs.dao.corporate.CorporateMapper">
+
+    <sql id="Base_Column_List">
+        `id`,
+        `area`,
+        `enterprise_name`,
+        `legal_person`,
+        legal_phone,
+        `enterprise_range`,
+        `legal_idcard`,
+        `enterprise_authority`,
+        `enterprise_status`,
+        `organization_code`,
+        enterprise_phone,
+        registered_money,
+        enterprise_type,
+        quxian,
+        `create_user`,
+        `create_time`,
+        `update_user`,
+        `update_time`,
+        `status`
+    </sql>
+
+    <update id="updateByPrimaryKeySelective">
+        update tbl_csrrg_corporate
+        <set >
+            <if test="area != null" >
+                area = #{area,jdbcType=VARCHAR},
+            </if>
+            <if test="enterpriseName != null and enterpriseName != ''" >
+                enterprise_name = #{enterpriseName,jdbcType=VARCHAR},
+            </if>
+            <if test="legalPerson != null and legalPerson!=''" >
+                legal_person = #{legalPerson,jdbcType=VARCHAR},
+            </if>
+            <if test="enterpriseRange != null and enterpriseRange != ''" >
+                enterprise_range = #{enterpriseRange,jdbcType=VARCHAR},
+            </if>
+            <if test="legalIdcard != null and legalIdcard!=''" >
+                legal_idcard = #{legalIdcard,jdbcType=VARCHAR},
+            </if>
+            <if test="legalPhone != null and legalPhone!=''" >
+                legal_phone = #{legalPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="enterpriseAuthority != null and enterpriseAuthority!=''" >
+                enterprise_authority = #{enterpriseAuthority,jdbcType=VARCHAR},
+            </if>
+            <if test="organizationCode != null and organizationCode != ''" >
+                organization_code = #{organizationCode,jdbcType=VARCHAR},
+            </if>
+            <if test="enterprisePhone != null and enterprisePhone != ''" >
+                enterprise_phone = #{enterprisePhone,jdbcType=VARCHAR},
+            </if>
+            <if test="registeredMoney != null and registeredMoney != ''" >
+                registered_money = #{registeredMoney,jdbcType=VARCHAR},
+            </if>
+            <if test="enterpriseType != null and enterpriseType != ''" >
+                enterprise_type = #{enterpriseType,jdbcType=VARCHAR},
+            </if>
+            <if test="quxian != null and quxian != ''" >
+                quxian = #{quxian,jdbcType=VARCHAR},
+            </if>
+            <if test="updateUser != null and updateUser != ''" >
+                update_user = #{updateUser,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null" >
+                status = #{status,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <insert id="insterByReview">
+        insert into tbl_csrrg_corporate(`id`,
+        `registered_number`,
+        `organization_code`,
+        `enterprise_name`,
+        `area`,
+        `enterprise_type`,
+        `legal_person`,
+        `legal_phone`,
+        `liaison_name`,
+        `liaison_phone`,
+        `enterprise_authority`,
+        `enterprise_phone`,
+        `registered_money`,
+        `enterprise_range`,
+        `registered_date`,
+        `legal_idcard`,
+        `liaison_idcard`,
+        `quxian`)
+        select `id`,
+        `registered_number`,
+        `organization_code`,
+        `enterprise_name`,
+        `area`,
+        `enterprise_type`,
+        `legal_person`,
+        `legal_phone`,
+        `liaison_name`,
+        `liaison_phone`,
+        `enterprise_authority`,
+        `enterprise_phone`,
+        `registered_money`,
+        `enterprise_range`,
+        `registered_date`,
+        `legal_idcard`,
+        `liaison_idcard`,
+        `quxian` from tbl_csrrg_corporate_review where id = #{id,jdbcType=VARCHAR}
+    </insert>
+
+    <select id="selectName" resultType="java.util.Map">
+        select id,enterprise_name from tbl_csrrg_corporate where enterprise_name like CONCAT('%',#{name,jdbcType=VARCHAR},'%' )
+    </select>
+
+    <select id="selectById" resultType="com.wlcb.ylth.module.dbs.entity.corporate.TblCsrrgCorporate">
+        select <include refid="Base_Column_List"/> from tbl_csrrg_corporate where id = #{id,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectDetailByLegal" resultType="com.wlcb.ylth.module.dbs.entity.corporate.TblCsrrgCorporate">
+        select <include refid="Base_Column_List"/> from tbl_csrrg_corporate
+        where
+        enterprise_name = #{enterpriseName,jdbcType=VARCHAR}
+        and legal_person = #{applicantName,jdbcType=VARCHAR}
+        and legal_idcard = #{applicantIdcard,jdbcType=VARCHAR}
+        limit 1
+    </select>
+
+    <select id="listAll" resultType="com.wlcb.ylth.module.dbs.entity.corporate.TblCsrrgCorporate">
+        select <include refid="Base_Column_List"/> from tbl_csrrg_corporate
+        <where>
+            status = 1
+            <if test="area != null  and area!=''">
+                and area like CONCAT('%',#{area},'%')
+            </if>
+            <if test="enterpriseName != null  and enterpriseName!=''">
+                and enterprise_name like CONCAT('%',#{enterpriseName},'%')
+            </if>
+            <if test="legalPerson != null  and legalPerson!=''">
+                and legal_person = #{legalPerson}
+            </if>
+            <if test="enterpriseRange != null  and enterpriseRange!=''">
+                and enterprise_range like CONCAT('%',#{enterpriseRange},'%')
+            </if>
+            <if test="legalIdcard != null  and legalIdcard!=''">
+                and legal_idcard = #{legalIdcard}
+            </if>
+            <if test="enterpriseAuthority != null  and enterpriseAuthority!=''">
+                and enterprise_authority = #{enterpriseAuthority}
+            </if>
+            <if test="organizationCode != null  and organizationCode!=''">
+                and organization_code = #{organizationCode}
+            </if>
+            <if test="quxian != null  and quxian!=''">
+                and quxian = #{quxian}
+            </if>
+            <if test="legalPhone != null  and legalPhone!=''">
+                and legal_phone = #{legalPhone}
+            </if>
+            <if test="registeredMoney != null and registeredMoney != ''" >
+                and registered_money = #{registeredMoney,jdbcType=VARCHAR}
+            </if>
+            <if test="enterpriseType != null and enterpriseType != ''" >
+                and enterprise_type like CONCAT(#{enterpriseType,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="params.startTime != null  and params.startTime!=''">
+                <![CDATA[ and create_time >= #{params.startTime} ]]>
+            </if>
+            <if test="params.endTime != null  and params.endTime!=''">
+                <![CDATA[ and create_time <= #{params.endTime} ]]>
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectDetailByIdcard" resultType="com.wlcb.ylth.module.dbs.entity.corporate.TblCsrrgCorporate">
+        select <include refid="Base_Column_List"/> from tbl_csrrg_corporate where legal_idcard = #{idcard,jdbcType=VARCHAR}
+    </select>
+
+    <select id="countCorporateByReview" resultType="java.lang.Integer">
+        select sum(count) from (
+        select count(1) as count from tbl_csrrg_corporate_review where organization_code = #{organizationCode,jdbcType=VARCHAR} and enterprise_name = #{enterpriseName,jdbcType=VARCHAR} and review_stats in (1,3)
+        union all
+        select count(1) as count from tbl_csrrg_corporate where organization_code = #{organizationCode,jdbcType=VARCHAR} and enterprise_name = #{enterpriseName,jdbcType=VARCHAR}
+        ) a
+    </select>
+
+    <select id="countZhengfuUserByLidcard" resultType="java.lang.Integer">
+        SELECT count(1) from tbl_zhengwu_user WHERE idcard =
+        (SELECT legal_idcard from tbl_csrrg_corporate WHERE id = #{id,jdbcType=VARCHAR})
+    </select>
+
+    <delete id="deleteById">
+        delete from tbl_csrrg_corporate where id = #{id,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

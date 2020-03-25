@@ -47,7 +47,7 @@ logging:
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
-  typeAliasesPackage: com.wlcb.module.dbs.entity
+  typeAliasesPackage: com.wlcb.ylth.module.dbs.entity
 
 #不验证登录
 isFilter: 0

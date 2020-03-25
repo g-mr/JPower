@@ -11,6 +11,8 @@
 
     <artifactId>wlcb-web-corporate</artifactId>
 
+    <name>corporate</name>
+
     <dependencies>
 
         <dependency>
@@ -38,6 +40,11 @@
             <artifactId>wlcb-module-dbs</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.wlcb</groupId>
+            <artifactId>wlcb-core-login</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -45,6 +52,11 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <!--生成可执行jar的名称-->
+                    <classifier>exec</classifier>
+                    <finalName>${name}</finalName>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -62,7 +74,7 @@
                 <version>3.0.0</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
-                    <warName>${artifactId}</warName>
+                    <warName>${name}</warName>
                 </configuration>
             </plugin>
         </plugins>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wlcb.ylth.module.dbs.dao.corporate.CorporateKakouMapper">
+
+    <sql id="Base_Column_List">
+        `id`,
+        `corporate_id`,
+        `kakou_id`,
+        `record_id`,
+        `record_openid`,
+        `review_status`,
+        `refuse_reason`,
+        `create_user`,
+        `create_time`,
+        `update_user`,
+        `update_time`,
+        `status`
+    </sql>
+
+    <insert id="inster">
+        insert into tbl_csrrg_corporate_kakou (
+        `id`,
+        `corporate_id`,
+        `kakou_id`,
+        `record_id`,
+        `record_openid`,
+        `review_status`)
+        values (#{id,jdbcType=VARCHAR},#{corporateId,jdbcType=VARCHAR},#{kakouId,jdbcType=VARCHAR},
+        #{recordId,jdbcType=VARCHAR},#{recordOpenid,jdbcType=VARCHAR},#{reviewStatus,jdbcType=INTEGER})
+    </insert>
+
+    <update id="updateByPrimaryKeySelective">
+        UPDATE tbl_csrrg_corporate_kakou
+        <set>
+            <if test="reviewStatus != null">
+                review_status = #{reviewStatus,jdbcType=INTEGER},
+            </if>
+            <if test="refuseReason != null and refuseReason != '' ">
+                refuse_reason=#{refuseReason,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null ">
+                status=#{status,jdbcType=INTEGER},
+            </if>
+        </set>
+        WHERE id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <select id="listKakou" resultType="java.util.Map">
+        select k.`id`,
+            k.`corporate_id`,
+            k.`kakou_id`,
+            k.`record_id`,
+            k.`record_openid`,
+            k.`review_status`,
+            k.`refuse_reason`,
+            k.`create_user`,
+            k.`create_time`,
+            DATE_FORMAT(k.`create_time`, '%Y-%m-%d %H:%i:%s') as createTimeStr,
+            k.`update_user`,
+            k.`update_time`,
+            k.`status`,
+            t.xiaoqu as kakouName,
+            c.enterprise_name as enterpriseName from tbl_csrrg_corporate_kakou k
+        left join tbl_csrrg_corporate c on k.corporate_id = c.id
+--         left join tbl_csrrg_record r on k.record_id = r.id
+        left join tbl_kakou t on k.kakou_id = t.id
+        <where>
+            k.status = 1
+            <if test="corporateId != null and corporateId != ''">
+                and k.corporate_id = #{corporateId,jdbcType=VARCHAR}
+            </if>
+            <if test="kakouId != null and kakouId != ''">
+                and k.kakou_id = #{kakouId,jdbcType=VARCHAR}
+            </if>
+            <if test="recordId != null and recordId != ''">
+                and k.record_id = #{recordId,jdbcType=VARCHAR}
+            </if>
+            <if test="recordOpenid != null and recordOpenid != ''">
+                and k.record_openid = #{recordOpenid,jdbcType=VARCHAR}
+            </if>
+            <if test="reviewStatus != null">
+                and k.review_status = #{reviewStatus,jdbcType=INTEGER}
+            </if>
+            <if test="quxian != null and quxian!=''">
+                and c.quxian = #{quxian,jdbcType=VARCHAR}
+            </if>
+        </where>
+        order by k.create_time desc
+    </select>
+
+    <select id="selectKakouById" resultType="java.lang.Integer">
+        select count(1) from tbl_kakou where id = #{id,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectKakouByCorporateId" resultType="com.wlcb.ylth.module.dbs.entity.corporate.TblCsrrgCorporateKakou">
+        select <include refid="Base_Column_List"/> from tbl_csrrg_corporate_kakou where corporate_id = #{corporateId,jdbcType=VARCHAR}
+    </select>
+
+
+</mapper>
