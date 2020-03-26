@@ -1,4 +1,4 @@
-package com.wlcb.ylth.web.controller;
+package com.wlcb.ylth.web.controller.pay;
 
 import com.github.pagehelper.PageInfo;
 import com.wlcb.ylth.module.base.vo.ResponseData;

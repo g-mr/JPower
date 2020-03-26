@@ -1,9 +1,13 @@
 package com.wlcb.ylth.module.common.page;
 
 
+import com.github.pagehelper.PageHelper;
+import com.wlcb.ylth.module.common.utils.sql.SqlUtil;
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * @ClassName PaginationContext
- * @Description TODO
+ * @Description TODO 分页
  * @Author 郭丁志
  * @Date 2020-02-14 23:27
  * @Version 1.0
@@ -14,6 +18,22 @@ public class PaginationContext {
     private static ThreadLocal<Integer> pageNum = new ThreadLocal<Integer>();
     // 保存每页记录条数
     private static ThreadLocal<Integer> pageSize = new ThreadLocal<Integer>();
+    // 排序字段
+    private static ThreadLocal<String> orderBy = new ThreadLocal<String>();
+
+    public static void startPage()
+    {
+        Integer pageNum = PaginationContext.getPageNum();
+        Integer pageSize = PaginationContext.getPageSize();
+        if (pageNum != null && pageSize != null){
+            String orderBy = SqlUtil.escapeOrderBySql(PaginationContext.getOrderBy());
+            if (StringUtils.isNotBlank(orderBy)){
+                PageHelper.startPage(pageNum, pageSize, orderBy);
+            }else {
+                PageHelper.startPage(pageNum, pageSize);
+            }
+        }
+    }
 
     /*
      * pageNum ：get、set、remove
@@ -51,5 +71,13 @@ public class PaginationContext {
 
     public static void removePageSize() {
         pageSize.remove();
+    }
+
+    public static String getOrderBy() {
+        return orderBy.get();
+    }
+
+    public static void setOrderBy(String orderByValue) {
+        orderBy.set(orderByValue);
     }
 }

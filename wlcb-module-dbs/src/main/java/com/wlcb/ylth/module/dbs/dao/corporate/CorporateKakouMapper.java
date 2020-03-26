@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
-@Component("corporateKakouMapper")
+//@Component("corporateKakouMapper")
 public interface CorporateKakouMapper extends BaseMapper<TblCsrrgCorporateKakou> {
 
     List<Map<String, String>> listKakou(TblCsrrgCorporateKakou kakou);

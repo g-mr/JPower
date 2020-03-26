@@ -241,9 +241,9 @@ public class HttpClient {
             entity = execute.getEntity();
             result = EntityUtils.toString(entity);
         } catch (ClientProtocolException e) {
-            logger.error(e.getMessage());
+            logger.error("{}接口调用失败",e.getMessage());
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            logger.error("{}接口调用失败",e.getMessage());
         } finally {
             // 关闭资源
             if (null != execute) {

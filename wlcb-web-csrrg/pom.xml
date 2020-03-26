@@ -11,6 +11,8 @@
 
     <artifactId>wlcb-web-csrrg</artifactId>
 
+    <name>csrrg</name>
+
     <dependencies>
 
         <dependency>
@@ -48,6 +50,7 @@
                 <configuration>
                     <!--生成可执行jar的名称-->
                     <classifier>exec</classifier>
+                    <finalName>${name}</finalName>
                 </configuration>
             </plugin>
             <plugin>
@@ -66,7 +69,7 @@
                 <version>3.0.0</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
-                    <warName>${artifactId}</warName>
+                    <warName>${name}</warName>
                 </configuration>
             </plugin>
         </plugins>

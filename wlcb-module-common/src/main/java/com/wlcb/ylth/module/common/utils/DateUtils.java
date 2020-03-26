@@ -12,12 +12,16 @@ import java.util.Date;
  * @Date 2020-02-03 18:40
  * @Version 1.0
  */
-public class DateUtils {
+public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
 
     public static final String dateFormat = "yyyyMMdd";
     public static final String timeFormat = "HHmmss";
     public static final String dateTimeFormat = "yyyyMMddHHmmss";
     public static final String dateTimeMsFormat = "yyyyMMddHHmmssSSS";
+    private static String[] parsePatterns = {
+            "yyyy-MM-dd", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM",
+            "yyyy/MM/dd", "yyyy/MM/dd HH:mm:ss", "yyyy/MM/dd HH:mm", "yyyy/MM",
+            "yyyy.MM.dd", "yyyy.MM.dd HH:mm:ss", "yyyy.MM.dd HH:mm", "yyyy.MM"};
 
     public DateUtils() {
     }
@@ -65,7 +69,26 @@ public class DateUtils {
         return (new SimpleDateFormat(format)).format(date);
     }
 
-    public static Date parseDate(String date, String format) {
+    /**
+     * 日期型字符串转化为日期 格式
+     */
+    public static Date parseDate(Object str)
+    {
+        if (str == null)
+        {
+            return null;
+        }
+        try
+        {
+            return parseDate(str.toString(), parsePatterns);
+        }
+        catch (ParseException e)
+        {
+            return null;
+        }
+    }
+
+    public static Date parseDateFormat(String date, String format) {
         SimpleDateFormat sf = new SimpleDateFormat(format);
 
         try {
