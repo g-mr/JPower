@@ -1,5 +1,6 @@
 package com.wlcb.ylth.module.dbs.entity.user;
 
+import com.wlcb.ylth.module.dbs.entity.base.BaseEntity;
 import lombok.Data;
 
 import java.util.Date;
@@ -12,13 +13,12 @@ import java.util.Date;
  * @Version 1.0
  */
 @Data
-public class TblUser {
+public class TblUser extends BaseEntity {
 
-    private String id;
     private String name;
     private String user;
     private String password;
-    private int status;
+    private Integer status;
     private int role;
     private String roleStr;
     private Integer standbyTime;

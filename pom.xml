@@ -26,11 +26,8 @@
         <module>wlcb-module-base</module>
         <module>wlcb-module-common</module>
         <module>wlcb-module-dbs</module>
-        <module>wlcb-web-tiwen</module>
-        <module>wlcb-web-corporate</module>
         <module>wlcb-web-sync</module>
         <module>wlcb-core-login</module>
-        <module>wlcb-web-csrrg</module>
     </modules>
 
     <dependencyManagement>
@@ -112,16 +109,6 @@
             <dependency>
                 <groupId>com.wlcb</groupId>
                 <artifactId>wlcb-web-sync</artifactId>
-                <version>${com.wlcb.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.wlcb</groupId>
-                <artifactId>wlcb-web-corporate</artifactId>
-                <version>${com.wlcb.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.wlcb</groupId>
-                <artifactId>wlcb-web-tiwen</artifactId>
                 <version>${com.wlcb.version}</version>
             </dependency>
 

@@ -8,9 +8,9 @@ public interface BaseMapper<T> {
 
     int deleteById(String id);
 
-    int inster(T t);
+    int insert(T t);
 
-    int insterSelective(T t);
+    int insertSelective(T t);
 
     int updateByPrimaryKey(T t);
 

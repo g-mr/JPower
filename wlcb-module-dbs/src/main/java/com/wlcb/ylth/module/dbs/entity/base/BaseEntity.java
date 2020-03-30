@@ -42,7 +42,7 @@ public class BaseEntity implements Serializable {
     public String getUpdateTimeStr() {
 
         if (getUpdateTime()!=null){
-            createTimeStr = sdf.format(getUpdateTime());
+            updateTimeStr = sdf.format(getUpdateTime());
         }
 
         return updateTimeStr;

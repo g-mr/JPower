@@ -1,6 +1,9 @@
 package com.wlcb.ylth.module.common.utils;
 
 import com.wlcb.ylth.module.base.vo.ResponseData;
+import com.wlcb.ylth.module.common.utils.constants.ConstantsReturn;
+import com.wlcb.ylth.module.dbs.entity.base.BaseEntity;
+import com.wlcb.ylth.module.dbs.entity.user.TblUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,11 +36,11 @@ public class BeanUtil {
                 if(!fieldNullList.contains(name)){
                     if (object instanceof CharSequence) {
                         if (org.springframework.util.ObjectUtils.isEmpty(object)) {
-                            return ReturnJsonUtil.printJson(406,name+"不可为空",false);
+                            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,name+"不可为空",false);
                         }
                     } else {
                         if (null == object) {
-                            return ReturnJsonUtil.printJson(406,name+"不可为空",false);
+                            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,name+"不可为空",false);
                         }
                     }
                 }
@@ -69,11 +72,11 @@ public class BeanUtil {
                 if(Arrays.binarySearch(fields, name) >= 0){
                     if (object instanceof CharSequence) {
                         if (org.springframework.util.ObjectUtils.isEmpty(object)) {
-                            return ReturnJsonUtil.printJson(406,name+"不可为空",false);
+                            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,name+"不可为空",false);
                         }
                     } else {
                         if (null == object) {
-                            return ReturnJsonUtil.printJson(406,name+"不可为空",false);
+                            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,name+"不可为空",false);
                         }
                     }
                 }
@@ -89,7 +92,7 @@ public class BeanUtil {
 
     /**
      * @Author 郭丁志
-     * @Description //TODO 获取属性列表
+     * @Description //TODO 获取属性列表 去除继承的属性
      * @Date 18:50 2020-03-03
      * @Param [clazz]
      * @return java.util.List<java.lang.reflect.Field>
@@ -117,7 +120,9 @@ public class BeanUtil {
             return fieldList;
         }
 
-        if(superClass.getName().equals("com.gdz.work.core.dbs.entity.BaseBean")){
+
+
+        if(superClass.getName().equals(BaseEntity.class.getName())){
             fieldList.addAll(getFieldList(superClass));
         }
         return fieldList;
