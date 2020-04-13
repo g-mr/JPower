@@ -80,4 +80,8 @@ public class PaginationContext {
     public static void setOrderBy(String orderByValue) {
         orderBy.set(orderByValue);
     }
+
+    public static void removeOrderBy() {
+        orderBy.remove();
+    }
 }

@@ -1,5 +1,5 @@
 
-package com.wlcb.ylth.module.common.utils;
+package com.wlcb.ylth.module.base.properties;
 
 import java.io.*;
 import java.net.URLDecoder;

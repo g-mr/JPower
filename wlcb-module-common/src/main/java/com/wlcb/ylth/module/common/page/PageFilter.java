@@ -28,6 +28,7 @@ public class PageFilter implements Filter {
 
         PaginationContext.setPageNum(getPageNum(httpRequest));
         PaginationContext.setPageSize(getPageSize(httpRequest));
+        PaginationContext.setOrderBy(getOrderBy(httpRequest));
 
         try {
             chain.doFilter(request, response);
@@ -36,6 +37,7 @@ public class PageFilter implements Filter {
         finally {
             PaginationContext.removePageNum();
             PaginationContext.removePageSize();
+            PaginationContext.removeOrderBy();
         }
     }
 
@@ -75,6 +77,27 @@ public class PageFilter implements Filter {
             e.printStackTrace();
         }
         return pageSize;
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 获取排序方式字段
+     * @Date 15:43 2020-04-05
+     * @Param [request]
+     * @return int
+     **/
+    protected String getOrderBy(HttpServletRequest request) {
+        // 默认每页10条记录
+        String orderBy = null;
+        try {
+            String orderBys = request.getParameter("orderBy");
+            if (StringUtils.isNotBlank(orderBys)) {
+                orderBy = orderBys;
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return orderBy;
     }
 
     /**

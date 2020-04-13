@@ -1,6 +1,6 @@
 package com.wlcb.ylth.core.login.utils;
 
-import com.wlcb.ylth.module.common.utils.SysProperties;
+import com.wlcb.ylth.module.base.properties.SysProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -14,12 +14,65 @@ import java.util.*;
  */
 public class StrUtil {
 
+    /**普通的英文半角空格Unicode编码*/
+    private static final int SPACE_32 = 32;
+
+    /**中文全角空格Unicode编码(一个中文宽度)*/
+    private static final int SPACE_12288 = 12288;
+
+    /**普通的英文半角空格但不换行Unicode编码(== &nbsp; == &#xA0; == no-break space)*/
+    private static final int SPACE_160 = 160;
+
+    /**半个中文宽度(== &ensp; == en空格)*/
+    private static final int SPACE_8194 = 8194;
+
+    /**一个中文宽度(== &emsp; == em空格)*/
+    private static final int SPACE_8195 = 8195;
+
+    /**四分之一中文宽度(四分之一em空格)*/
+    private static final int SPACE_8197 = 8197;
+
+    /**窄空格*/
+    private static final int SPACE_8201 = 8201;
+
     //第一代身份证正则表达式(15位)
     private static final String isIDCard1 = "^[1-9]\\d{7}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}$";
     //第二代身份证正则表达式(18位)
     private static final String isIDCard2 ="^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])((\\d{4})|\\d{3}[A-Z])$";
     //手机号正则
     private static final String phoneRegex = "^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(166)|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\d{8}$";
+
+    /**
+     * 去除字符串前后的空格, 包括半角空格和全角空格(中文)等各种空格, java的string.trim()只能去英文半角空格
+     * 以及去除字符串当中的空白字符
+     * @param str
+     */
+    public static String trim(String str) {
+        if (StringUtils.isBlank(str)) {
+            return str;
+        }
+
+        str = StringUtils.trim(str.trim());
+
+        str = str.replace("\n","").replace("\t","").replace("\r","");
+
+        char[] val = str.toCharArray();
+        int st = 0;
+        int len=val.length;
+        while ((st < len) && isSpace(val[st])) {
+            st++;
+        }
+        while ((st < len) && isSpace(val[len - 1])) {
+            len--;
+        }
+        return ((st > 0) || (len < val.length)) ? str.substring(st, len) : str;
+    }
+
+    public static boolean isSpace(char aChar) {
+        return aChar == SPACE_32 || aChar == SPACE_12288 || aChar == SPACE_160 || aChar == SPACE_8194
+                || aChar == SPACE_8195 || aChar == SPACE_8197 || aChar == SPACE_8201;
+    }
+
     /**
      * @Author 郭丁志
      * @Description //TODO 正则校验身份证是否符合第一代第二代标准
@@ -245,6 +298,6 @@ public class StrUtil {
     }
 
     public static void main(String[] args) {
-        System.out.println(createOrderId("1570167581").length());
+        System.out.println(cardCodeVerifySimple("15090219787707211X"));
     }
 }

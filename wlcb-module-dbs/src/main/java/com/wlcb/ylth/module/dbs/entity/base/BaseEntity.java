@@ -1,5 +1,7 @@
 package com.wlcb.ylth.module.dbs.entity.base;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.wlcb.ylth.module.base.annotation.Excel;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -14,37 +16,21 @@ import java.util.Map;
 @Data
 public class BaseEntity implements Serializable {
 
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd HH:mm:ss");
+    protected static final SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd HH:mm:ss");
 
     private static final long serialVersionUID = 1L;
 
     private String id;
+    @Excel(name = "创建人")
     private String createUser;
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "创建时间",width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss", type = Excel.Type.EXPORT)
     private Date createTime;
     private String updateUser;
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
     private Integer status;
 
-    private String createTimeStr;
-    private String updateTimeStr;
-
     private Map<String, Object> params = new HashMap<>();
 
-    public String getCreateTimeStr() {
-
-        if (getCreateTime()!=null){
-            createTimeStr = sdf.format(getCreateTime());
-        }
-
-        return createTimeStr;
-    }
-
-    public String getUpdateTimeStr() {
-
-        if (getUpdateTime()!=null){
-            updateTimeStr = sdf.format(getUpdateTime());
-        }
-
-        return updateTimeStr;
-    }
 }

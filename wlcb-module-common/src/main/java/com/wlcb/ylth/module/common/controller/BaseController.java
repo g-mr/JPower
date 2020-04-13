@@ -4,6 +4,7 @@ import com.wlcb.ylth.module.common.utils.DateUtils;
 import com.wlcb.ylth.module.common.utils.ServletUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 
@@ -15,12 +16,15 @@ import java.util.Date;
 
 /**
  * web层通用数据处理
- * 
- * @author ruoyi
  */
 public class BaseController
 {
     protected final Logger logger = LoggerFactory.getLogger(BaseController.class);
+
+    @Value("${fileParentPath:}")
+    protected String fileParentPath;
+    @Value("${downloadPath:}")
+    protected String downloadPath;
 
     /**
      * 将前台传递过来的日期格式的字符串，自动转化为Date类型

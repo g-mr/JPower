@@ -10,6 +10,66 @@ import org.apache.commons.lang3.StringUtils;
  * @Version 1.0
  */
 public class ConstantsEnum {
+
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 审核状态
+     * @Date 18:24 2020-02-03
+     * @Param
+     * @return
+     **/
+    public static enum AUDIT_STATUS{
+
+        AGREE(1,"审核通过"),REFUSE(2,"审核拒绝"),PROCESSING(3,"审核中");
+
+        private AUDIT_STATUS(Integer value,String name){
+            this.value = value;
+            this.name = name;
+        }
+        private final Integer value;
+        private final String name;
+
+        public Integer getValue() {
+            return value;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public static String getName(Integer value) {
+            AUDIT_STATUS[] businessModeEnums = values();
+            for (AUDIT_STATUS businessModeEnum : businessModeEnums) {
+                if (businessModeEnum.value.equals(value)) {
+                    return businessModeEnum.name;
+                }
+            }
+            return null;
+        }
+
+        /**
+         * @Author 郭丁志
+         * @Description //TODO 是否包含key
+         * @Date 12:50 2020-04-09
+         * @Param [value]
+         * @return boolean
+         **/
+        public static boolean containsKey(Integer key) {
+
+            boolean isContains = false;
+
+            AUDIT_STATUS[] businessModeEnums = values();
+            for (AUDIT_STATUS businessModeEnum : businessModeEnums) {
+                if (businessModeEnum.value.equals(key)) {
+                    isContains = true;
+                    break;
+                }
+            }
+            return isContains;
+        }
+    }
+
     
     /**
      * @Author 郭丁志

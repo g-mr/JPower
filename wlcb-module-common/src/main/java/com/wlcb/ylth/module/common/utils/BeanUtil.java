@@ -17,7 +17,7 @@ public class BeanUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(BeanUtil.class);
 
-    private static final String fieldNullList = "serialVersionUID,id,createUser,createTime,updateUser,updateTime,createDate,updateDate,status";
+    private static final String fieldNullList = "serialVersionUID,id,createUser,createTime,updateUser,updateTime,createDate,updateDate,status,createTimeStr,updateTimeStr";
 
     /**
      * @Author 郭丁志

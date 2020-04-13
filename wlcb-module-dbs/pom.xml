@@ -43,6 +43,11 @@
             <groupId>com.wlcb</groupId>
             <artifactId>wlcb-module-base</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
