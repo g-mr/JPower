@@ -57,6 +57,8 @@ public class FileController extends BaseController {
             }
 
             FileUtils.deleteFile(file);
+        }else {
+            throw new BusinessException(fileName+"文件不存在，无法下载");
         }
     }
 

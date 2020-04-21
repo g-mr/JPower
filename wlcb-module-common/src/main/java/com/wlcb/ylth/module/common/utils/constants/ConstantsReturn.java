@@ -38,7 +38,7 @@ public class ConstantsReturn {
      * @Description //TODO 报错
      * @Date 14:37 2020-03-27
      **/
-    public static final Integer RECODE_ERROR = 500;
+    public static final Integer RECODE_ERROR = 501;
     /**
      * @Author 郭丁志
      * @Description //TODO 操作失败

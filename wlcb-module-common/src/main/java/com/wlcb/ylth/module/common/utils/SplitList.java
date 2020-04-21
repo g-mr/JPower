@@ -3,6 +3,9 @@ package com.wlcb.ylth.module.common.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author mr.gmac
+ */
 public class SplitList {
 
 	/**

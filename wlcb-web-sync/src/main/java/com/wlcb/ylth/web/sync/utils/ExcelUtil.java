@@ -119,7 +119,7 @@ public class ExcelUtil {
         return list;
     }
 
-    private static Workbook getExcel(String filePath){
+    public static Workbook getExcel(String filePath){
         Workbook wb=null;
         String fileType=filePath.substring(filePath.lastIndexOf("."));//获得后缀名
         File file = new File(filePath);
@@ -147,6 +147,10 @@ public class ExcelUtil {
         return wb;
     }
 
+    public static void writer(String path, String fileName,String fileType,List<Map<String,String>> list,List<String> titleRow) throws Exception {
+        writer(path, fileName, null, fileType, list, titleRow);
+    }
+
     /**
      * @Author 郭丁志
      * @Description //TODO 生成Ecel
@@ -154,7 +158,7 @@ public class ExcelUtil {
      * @Param [path, fileName, fileType, list, titleRow]
      * @return void
      **/
-    public static void writer(String path, String fileName,String fileType,List<Map<String,String>> list,List<String> titleRow) throws Exception {
+    public static void writer(String path, String fileName,String sheetName,String fileType,List<Map<String,String>> list,List<String> titleRow) throws Exception {
         String excelPath = path+File.separator+fileName+"."+fileType;
         File file = new File(excelPath);
         if (!file.getParentFile().exists()){
@@ -167,12 +171,19 @@ public class ExcelUtil {
             throw new Exception("未获取到文件");
         }
 
-        Sheet sheet =wb.getSheet("sheet1");
+        Sheet sheet = wb.getSheet("sheet1");
+        if (StringUtils.isBlank(sheetName)){
+            if (wb.getNumberOfSheets() > 0){
+                sheet = wb.getSheetAt(0);
+            }
+        }else {
+            sheet = wb.getSheet(sheetName);
+        }
 
         //创建工作文档对象
         if (!file.exists()) {
             //创建sheet对象
-            sheet = wb.createSheet("sheet1");
+            sheet = wb.createSheet(StringUtils.isBlank(sheetName)?"sheet1":sheetName);
             OutputStream outputStream = new FileOutputStream(excelPath);
             wb.write(outputStream);
             outputStream.flush();
@@ -181,7 +192,7 @@ public class ExcelUtil {
         }
         //创建sheet对象
         if (sheet==null) {
-            sheet = wb.createSheet("sheet1");
+            sheet = wb.createSheet(StringUtils.isBlank(sheetName)?"sheet1":sheetName);
         }
         sheet.setSelected(true);
 
@@ -191,6 +202,16 @@ public class ExcelUtil {
         style.setVerticalAlignment(VerticalAlignment.CENTER);
         // 水平
         style.setAlignment(HorizontalAlignment.CENTER);
+
+        // 错误数据样式对象
+        CellStyle styleRed = wb.createCellStyle();
+        // 垂直
+        styleRed.setVerticalAlignment(VerticalAlignment.CENTER);
+        // 水平
+        styleRed.setAlignment(HorizontalAlignment.CENTER);
+        // 背景红色
+        styleRed.setFillForegroundColor(HSSFColor.HSSFColorPredefined.RED.getIndex());
+        styleRed.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
         // 数据样式对象
         CellStyle styleData = wb.createCellStyle();
@@ -224,8 +245,15 @@ public class ExcelUtil {
 
             for(int j = 0;j < titleRow.size();j++){
                 Cell cellData = rowData.createCell(j);
-                cellData.setCellValue(map.get(titleRow.get(j)));
-                cellData.setCellStyle(styleData);
+
+                String str = map.get(titleRow.get(j));
+                if (str.contains(":red")){
+                    cellData.setCellValue(str.split(":")[0]);
+                    cellData.setCellStyle(styleRed);
+                }else {
+                    cellData.setCellValue(str);
+                    cellData.setCellStyle(styleData);
+                }
             }
         }
 

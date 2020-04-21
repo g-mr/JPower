@@ -298,6 +298,6 @@ public class StrUtil {
     }
 
     public static void main(String[] args) {
-        System.out.println(cardCodeVerifySimple("15090219787707211X"));
+        System.out.println(cardCodeVerifySimple("152630196212112075"));
     }
 }

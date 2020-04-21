@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
@@ -98,6 +99,19 @@ public class JWTUtils {
         String currentPath = request.getServletPath();
 
         String jwt = request.getHeader("Authorization");
+        if (StringUtils.isBlank(jwt)){
+            Cookie[] cookies = request.getCookies();
+            if (cookies!=null){
+                for (Cookie cookie : cookies) {
+                    if (StringUtils.equals(cookie.getName(),"Authorization")){
+                        jwt = cookie.getValue();
+                        logger.info("通过cookie获取到token",cookie.getValue());
+                        break;
+                    }
+                }
+            }
+        }
+
 
         logger.info("{}已进入鉴权拦截器,token={}",currentPath,jwt);
 

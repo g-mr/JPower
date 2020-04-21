@@ -28,13 +28,18 @@ public class MultipartFileUtil {
      * @Param [file, fileSuffixName 支持的文件后缀名 多个,分割, savePath]
      * @return java.lang.String
      **/
+    public static String saveFile(MultipartFile file,String savePath) throws Exception{
+
+        return saveFile(file,null,savePath);
+    }
+
     public static String saveFile(MultipartFile file,String fileSuffixName,String savePath) throws Exception{
 
         String fileName = UUIDUtil.getUUID();
         //获得文件后缀名
         String suffixName=file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1);
 
-        if (!StringUtils.containsIgnoreCase(fileSuffixName,suffixName)){
+        if (StringUtils.isNotBlank(fileSuffixName) && !StringUtils.containsIgnoreCase(fileSuffixName,suffixName)){
             return "-1";
         }
 

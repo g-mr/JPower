@@ -132,8 +132,10 @@ public class HttpClient {
             result = EntityUtils.toString(entity);
         } catch (ClientProtocolException e) {
             e.printStackTrace();
+            logger.error("post请求失败：{}",e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
+            logger.error("post请求失败：{}",e.getMessage());
         } finally {
             // 关闭资源
             if (null != httpResponse) {

@@ -8,6 +8,7 @@ import com.wlcb.ylth.module.common.utils.DateUtils;
 import com.wlcb.ylth.module.common.utils.ReturnJsonUtil;
 import com.wlcb.ylth.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.ylth.module.common.utils.reflect.ReflectUtils;
+import com.wlcb.ylth.web.sync.utils.ExcelUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFFont;
@@ -85,6 +86,10 @@ public class BeanExcelUtil<T> {
     public BeanExcelUtil(Class<T> clazz,String downloadPath){
         this.clazz = clazz;
         this.downloadPath = downloadPath;
+    }
+
+    public BeanExcelUtil(Class<T> clazz){
+        this.clazz = clazz;
     }
 
 
@@ -523,22 +528,27 @@ public class BeanExcelUtil<T> {
         }
     }
 
-    public List<T> importExcel(InputStream is) throws Exception
+    public List<T> importExcel(File file) throws Exception
     {
-        return importExcel("",is);
+        return importExcel("",file);
     }
 
     /**
      * 对excel表单指定表格索引名转换成list
      *
      * @param sheetName 表格索引名
-     * @param is 输入流
+     * @param file 文件
      * @return 转换后集合
      */
-    public List<T> importExcel(String sheetName, InputStream is) throws Exception
-    {
+    public List<T> importExcel(String sheetName, File file) throws Exception {
+
+        if (!file.exists()){
+            throw new BusinessException("文件不存在,"+file.getAbsolutePath());
+        }
+
         this.type = Excel.Type.IMPORT;
-        this.wb = WorkbookFactory.create(is);
+//        this.wb = WorkbookFactory.create(is);
+        this.wb = ExcelUtil.getExcel(file.getAbsolutePath());
         List<T> list = new ArrayList<T>();
         Sheet sheet = null;
         if (StringUtils.isNotEmpty(sheetName))
@@ -600,72 +610,73 @@ public class BeanExcelUtil<T> {
                 // 从第2行开始取数据,默认第一行是表头.
                 Row row = sheet.getRow(i);
                 T entity = null;
-                for (Map.Entry<Integer, Field> entry : fieldsMap.entrySet())
-                {
-                    Object val = this.getCellValue(row, entry.getKey());
+                for (Map.Entry<Integer, Field> entry : fieldsMap.entrySet()){
+                    if (entry.getKey() != null){
+                        Object val = this.getCellValue(row, entry.getKey());
 
-                    // 如果不存在实例则新建.
-                    entity = (entity == null ? clazz.newInstance() : entity);
-                    // 从map中得到对应列的field.
-                    Field field = fieldsMap.get(entry.getKey());
-                    // 取得类型,并根据对象类型设置值.
-                    Class<?> fieldType = field.getType();
-                    if (String.class == fieldType)
-                    {
-                        String s = Convert.toStr(val);
-                        if (StringUtils.endsWith(s, ".0"))
+                        // 如果不存在实例则新建.
+                        entity = (entity == null ? clazz.newInstance() : entity);
+                        // 从map中得到对应列的field.
+                        Field field = fieldsMap.get(entry.getKey());
+                        // 取得类型,并根据对象类型设置值.
+                        Class<?> fieldType = field.getType();
+                        if (String.class == fieldType)
                         {
-                            val = StringUtils.substringBefore(s, ".0");
+                            String s = Convert.toStr(val);
+                            if (StringUtils.endsWith(s, ".0"))
+                            {
+                                val = StringUtils.substringBefore(s, ".0");
+                            }
+                            else
+                            {
+                                val = Convert.toStr(val);
+                            }
                         }
-                        else
+                        else if ((Integer.TYPE == fieldType) || (Integer.class == fieldType))
                         {
-                            val = Convert.toStr(val);
+                            val = Convert.toInt(val);
                         }
-                    }
-                    else if ((Integer.TYPE == fieldType) || (Integer.class == fieldType))
-                    {
-                        val = Convert.toInt(val);
-                    }
-                    else if ((Long.TYPE == fieldType) || (Long.class == fieldType))
-                    {
-                        val = Convert.toLong(val);
-                    }
-                    else if ((Double.TYPE == fieldType) || (Double.class == fieldType))
-                    {
-                        val = Convert.toDouble(val);
-                    }
-                    else if ((Float.TYPE == fieldType) || (Float.class == fieldType))
-                    {
-                        val = Convert.toFloat(val);
-                    }
-                    else if (BigDecimal.class == fieldType)
-                    {
-                        val = Convert.toBigDecimal(val);
-                    }
-                    else if (Date.class == fieldType)
-                    {
-                        if (val instanceof String)
+                        else if ((Long.TYPE == fieldType) || (Long.class == fieldType))
                         {
-                            val = DateUtils.parseDate(val);
+                            val = Convert.toLong(val);
                         }
-                        else if (val instanceof Double)
+                        else if ((Double.TYPE == fieldType) || (Double.class == fieldType))
                         {
-                            val = DateUtil.getJavaDate((Double) val);
+                            val = Convert.toDouble(val);
                         }
-                    }
-                    if (fieldType != null)
-                    {
-                        Excel attr = field.getAnnotation(Excel.class);
-                        String propertyName = field.getName();
-                        if (StringUtils.isNotEmpty(attr.targetAttr()))
+                        else if ((Float.TYPE == fieldType) || (Float.class == fieldType))
                         {
-                            propertyName = field.getName() + "." + attr.targetAttr();
+                            val = Convert.toFloat(val);
                         }
-                        else if (StringUtils.isNotEmpty(attr.readConverterExp()))
+                        else if (BigDecimal.class == fieldType)
                         {
-                            val = reverseByExp(String.valueOf(val), attr.readConverterExp());
+                            val = Convert.toBigDecimal(val);
                         }
-                        ReflectUtils.invokeSetter(entity, propertyName, val);
+                        else if (Date.class == fieldType)
+                        {
+                            if (val instanceof String)
+                            {
+                                val = DateUtils.parseDate(val);
+                            }
+                            else if (val instanceof Double)
+                            {
+                                val = DateUtil.getJavaDate((Double) val);
+                            }
+                        }
+                        if (fieldType != null)
+                        {
+                            Excel attr = field.getAnnotation(Excel.class);
+                            String propertyName = field.getName();
+                            if (StringUtils.isNotEmpty(attr.targetAttr()))
+                            {
+                                propertyName = field.getName() + "." + attr.targetAttr();
+                            }
+                            else if (StringUtils.isNotEmpty(attr.readConverterExp()))
+                            {
+                                val = reverseByExp(String.valueOf(val), attr.readConverterExp());
+                            }
+                            ReflectUtils.invokeSetter(entity, propertyName, val);
+                        }
                     }
                 }
                 list.add(entity);

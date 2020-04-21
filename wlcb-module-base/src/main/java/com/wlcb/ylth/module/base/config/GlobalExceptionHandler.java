@@ -1,5 +1,6 @@
 package com.wlcb.ylth.module.base.config;
 
+import com.wlcb.ylth.module.base.exception.BusinessException;
 import com.wlcb.ylth.module.base.vo.ErrorReturnJson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +47,10 @@ public class GlobalExceptionHandler {
             }
 
             r.setCode(404);
+        }else if (e instanceof BusinessException) {
+
+            r.setCode(501);
+            logger.error("{}", e);
         } else {
             r.setCode(500);
             logger.error("{}", e);
