@@ -37,6 +37,7 @@ public class GlobalExceptionHandler {
 
         ErrorReturnJson r = new ErrorReturnJson();
         r.setMessage(e.getMessage());
+//        r.setMessage("系统异常，请联系管理员");
         if (e instanceof org.springframework.web.servlet.NoHandlerFoundException) {
 
             if("/".equals(currentPath)){
@@ -53,7 +54,7 @@ public class GlobalExceptionHandler {
             logger.error("{}", e);
         } else {
             r.setCode(500);
-            logger.error("{}", e);
+            logger.error("message={},！！！{}", e.getMessage() , e);
         }
         r.setData(null);
         r.setStatus(false);
