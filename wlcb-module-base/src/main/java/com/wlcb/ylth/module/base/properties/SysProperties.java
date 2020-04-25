@@ -1,6 +1,8 @@
 
 package com.wlcb.ylth.module.base.properties;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.*;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -32,6 +34,13 @@ public class SysProperties {
     }
 
     public String getProperties(String para){
+        return (String)prop.get(para);
+    }
+
+    public String getProperties(String para,String defVal){
+        if (prop.get(para) == null || prop.get(para) == ""){
+            return defVal;
+        }
         return (String)prop.get(para);
     }
 
