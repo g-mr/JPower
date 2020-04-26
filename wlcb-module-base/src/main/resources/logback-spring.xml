@@ -54,7 +54,7 @@
             <!--日志文件保留天数-->
             <MaxHistory>30</MaxHistory>
         </rollingPolicy>
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+	<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>error</level>
         </filter>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
@@ -107,11 +107,11 @@
     <logger name="java.sql.Statement" level="info" />
     <logger name="java.sql.PreparedStatement" level="info" />
 
-    <logger name="com.wlcb.ylth.module.dbs.dao" level="DEBUG" additivity="false" />
+    <logger name="com.wlcb.wlj.module.dbs.dao" level="DEBUG" />
 
-    <logger name="com.wlcb" level="debug" >
+    <logger name="com.wlcb" level="INFO" additivity="false">
         <appender-ref ref="log" />
-        <appender-ref ref="stdout" />
+       <!-- <appender-ref ref="stdout" />-->
         <appender-ref ref="error" />
     </logger>
 
