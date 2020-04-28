@@ -22,6 +22,31 @@
         <com.wlcb.version>1.0.1-SNAPSHOT</com.wlcb.version>
     </properties>
 
+    <!--profile配置-->
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <profilea.active>dev</profilea.active>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>test</id>
+            <properties>
+                <profilea.active>test</profilea.active>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <profilea.active>prod</profilea.active>
+            </properties>
+        </profile>
+    </profiles>
+
     <modules>
         <module>wlcb-module-base</module>
         <module>wlcb-module-common</module>
