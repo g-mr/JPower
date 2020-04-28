@@ -10,7 +10,7 @@ package com.wlcb.ylth.module.common.utils;
 public class TestUtil {
 
 
-    public String getName(){
+    public static String getName(){
         return "测试一下";
     }
 
