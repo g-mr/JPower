@@ -1,4 +1,3 @@
-
 spring:
   servlet:
     multipart:
@@ -19,9 +18,6 @@ spring:
     url: jdbc:mysql://192.168.1.200:3306/csrrg?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8
     username: root
     password: Passw0rdVmw@re!
-    #    url: jdbc:mysql://localhost:3306/file_admin?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8
-    #    username: root
-    #    password: 12345678
     # 下面为连接池的补充设置
     druid:
       initialSize: 10   #初始化连接个数
@@ -43,17 +39,23 @@ spring:
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
-  typeAliasesPackage: com.wlcb.ylth.*.dbs.entity
+    call-setters-on-nulls: true
+  typeAliasesPackage: com.wlcb.module.dbs.entity
 
 logging:
   level:
-    root: info
+    root: debug
 
-#学生体温照片保存路径
-fileParentPath: /root/data/subservice/tiwen/file/
-downloadPath: /root/data/subservice/tiwen/file/download/
+#获取openid接口
+get_openid: https://api.weixin.qq.com/sns/oauth2/access_token
+#appid
+appid: wx56182c8a1b2fdea8
+#appsecret
+appsecret: aad93525a1ae5bb85aea8f3d674662a9
 
-noFilterUrl: /**/*.*,/manage/downErrorFile
+#初次token过期时间 40 * 60 * 1000L
+tokenExpired: 2400000
 
-#不验证登录
+
+#验证登录
 isFilter: 1
