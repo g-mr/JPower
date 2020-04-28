@@ -58,7 +58,7 @@ public class SmsSend {
     }
 
     public static void main(String[] args) {
-        JSONObject a = sendLiantong("15011071226","123456");
+        JSONObject a = sendLiantong("15011071226","您的健康验证码:123456，如非本人操作，请忽略本短信！");
         System.out.println(a);
     }
 
