@@ -88,6 +88,65 @@ public class HttpClient {
         return result;
     }
 
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 下载文件
+     * @Date 01:37 2020-04-30
+     * @Param [requestUrl,path]
+     * @return java.lang.String
+     **/
+    public static void doGetDowload(String requestUrl,String path) {
+        InputStream is = null;
+        BufferedOutputStream bos = null;
+        FileOutputStream fos = null;
+        byte[] buff = new byte[1024];
+        int len = 0;
+        try {
+            URL url = new URL(requestUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestProperty("Content-Type", "APPLICATION/OCTET-STREAM;charset=UTF-8");
+            conn.setRequestProperty("charset", "UTF-8");
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            conn.setRequestMethod("GET");
+            conn.setReadTimeout(80000);
+            conn.connect();
+            is = conn.getInputStream();
+
+            File file = new File(path);
+            fos = new FileOutputStream(file);
+            bos = new BufferedOutputStream(fos);
+            while ((len = is.read(buff)) != -1) {
+                bos.write(buff, 0, len);
+            }
+
+        } catch (IOException e) {
+            logger.error("文件下载失败：{}",e.getMessage());
+            e.printStackTrace();
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                }
+            }
+            if (bos != null) {
+                try {
+                    bos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     public static String doPost(String url, Map<String, Object> paramMap) {
         CloseableHttpClient httpClient = null;
         CloseableHttpResponse httpResponse = null;

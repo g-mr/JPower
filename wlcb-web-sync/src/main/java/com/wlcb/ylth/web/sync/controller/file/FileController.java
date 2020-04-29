@@ -35,9 +35,6 @@ public class FileController extends BaseController {
 
     private static final Logger logger = LoggerFactory.getLogger(FileController.class);
 
-    @Value("${downloadPath:}")
-    private String downloadPath;
-
     @GetMapping("/export/download")
     public void syncStart(String fileName) throws Exception {
 
