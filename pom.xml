@@ -12,14 +12,14 @@
     </parent>
 
     <groupId>com.wlcb</groupId>
-    <artifactId>wlcb</artifactId>
+    <artifactId>jpower</artifactId>
     <version>1.0.1-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 
     <properties>
         <java.version>1.8</java.version>
-        <com.wlcb.version>1.0.1-SNAPSHOT</com.wlcb.version>
+        <com.jpower.version>1.0.1-SNAPSHOT</com.jpower.version>
     </properties>
 
     <!--profile配置-->
@@ -48,11 +48,11 @@
     </profiles>
 
     <modules>
-        <module>wlcb-module-base</module>
-        <module>wlcb-module-common</module>
-        <module>wlcb-module-dbs</module>
-        <module>wlcb-web-sync</module>
-        <module>wlcb-core-login</module>
+        <module>jpower-module-base</module>
+        <module>jpower-module-common</module>
+        <module>jpower-module-dbs</module>
+        <module>jpower-web-sync</module>
+        <module>jpower-core-login</module>
     </modules>
 
     <dependencyManagement>
@@ -126,28 +126,28 @@
 
             <dependency>
                 <groupId>com.wlcb</groupId>
-                <artifactId>wlcb-module-base</artifactId>
-                <version>${com.wlcb.version}</version>
+                <artifactId>jpower-module-base</artifactId>
+                <version>${com.jpower.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.wlcb</groupId>
-                <artifactId>wlcb-module-dbs</artifactId>
-                <version>${com.wlcb.version}</version>
+                <artifactId>jpower-module-dbs</artifactId>
+                <version>${com.jpower.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.wlcb</groupId>
-                <artifactId>wlcb-module-common</artifactId>
-                <version>${com.wlcb.version}</version>
+                <artifactId>jpower-module-common</artifactId>
+                <version>${com.jpower.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.wlcb</groupId>
-                <artifactId>wlcb-core-login</artifactId>
-                <version>${com.wlcb.version}</version>
+                <artifactId>jpower-core-login</artifactId>
+                <version>${com.jpower.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.wlcb</groupId>
-                <artifactId>wlcb-web-sync</artifactId>
-                <version>${com.wlcb.version}</version>
+                <artifactId>jpower-web-sync</artifactId>
+                <version>${com.jpower.version}</version>
             </dependency>
 
         </dependencies>
