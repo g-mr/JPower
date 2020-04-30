@@ -30,6 +30,13 @@
         and status = 0
     </select>
 
+    <select id="selectByPhone" resultType="com.wlcb.jpower.module.dbs.entity.user.TblUser">
+        select <include refid="Base_Column_List"/> from tbl_user
+        where
+        phone = #{phone,jdbcType=VARCHAR}
+        and status = 0 limit 1
+    </select>
+
     <select id="selectById" resultType="com.wlcb.jpower.module.dbs.entity.user.TblUser">
         select <include refid="Base_Column_List"/> from tbl_user
         where

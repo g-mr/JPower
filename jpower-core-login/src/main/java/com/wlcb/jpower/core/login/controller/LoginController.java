@@ -3,11 +3,13 @@ package com.wlcb.jpower.core.login.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.wlcb.jpower.core.login.utils.RSAUtil;
 import com.wlcb.jpower.module.base.vo.ResponseData;
+import com.wlcb.jpower.module.common.controller.BaseController;
+import com.wlcb.jpower.module.common.service.redis.RedisUtils;
 import com.wlcb.jpower.module.common.service.user.UserService;
-import com.wlcb.jpower.module.common.utils.JWTUtils;
-import com.wlcb.jpower.module.common.utils.MD5;
-import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
+import com.wlcb.jpower.module.common.utils.*;
+import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.dbs.entity.user.TblUser;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +22,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLDecoder;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @ClassName LoginController
@@ -30,12 +33,14 @@ import java.net.URLDecoder;
  */
 @EnableAutoConfiguration
 @RestController
-public class LoginController {
+public class LoginController extends BaseController {
 
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
     @Resource
     private UserService userService;
+    @Resource
+    private RedisUtils redisUtils;
 
     @RequestMapping(value = "/login",method = RequestMethod.POST,produces="application/json")
     public ResponseData login(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -83,6 +88,93 @@ public class LoginController {
         user.setPassword(null);
         return userService.login(user);
 
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 发送登录验证码
+     * @Date 17:10 2020-04-30
+     * @Param [phone]
+     * @return com.wlcb.jpower.module.base.vo.ResponseData
+     **/
+    @RequestMapping(value = "/loginVercode",method = RequestMethod.POST,produces="application/json")
+    public ResponseData loginVercode(String phone) {
+
+        if (StringUtils.isBlank(phone) || !StrUtil.isPhone(phone)){
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"手机号不合法",false);
+        }
+
+        TblUser user = userService.selectByPhone(phone);
+
+        if (user == null){
+            //用户名空则返回
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NOTFOUND,"手机号不存在",false);
+        }
+
+
+        String code = RandomStringUtils.randomNumeric(6);
+
+        String content = "【乌丽吉】您的登录验证码:" + code + "，如非本人操作，请忽略本短信！";
+
+        JSONObject json = SmsSend.sendLiantong(phone,content);
+
+        if (json.getInteger("status") == 1){
+            redisUtils.set(phone+"-login",code,5L, TimeUnit.MINUTES);
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,user.getName()+"的验证码发送成功",true);
+        }else {
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"验证码发送失败",false);
+        }
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 手机号验证码登录
+     * @Date 17:10 2020-04-30
+     * @Param [request]
+     * @return com.wlcb.jpower.module.base.vo.ResponseData
+     **/
+    @RequestMapping(value = "/phoneLogin",method = RequestMethod.POST,produces="application/json")
+    public ResponseData phoneLogin(HttpServletRequest request) throws Exception {
+
+        String md5Key = request.getParameter("key1");
+
+        //解密
+        String phone = request.getParameter("phone");
+        String vercode = request.getParameter("vercode");
+
+        if (StringUtils.isBlank(phone) || StringUtils.isBlank(vercode)){
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,"手机号或者验证码不可为空",false);
+        }
+
+        //防篡改校验
+        String keyBeforeMd5 = phone + vercode + "wlcbPortal";
+        String keyAfterMd5 = MD5.parseStrToMd5U32(keyBeforeMd5);
+        if(null == md5Key || "".equals(md5Key) || !keyAfterMd5.equals(md5Key)) {
+            logger.info("检测到信息被篡改，不可登录～～～手机号={}",phone);
+            return ReturnJsonUtil.printJson(400,"用户不存在",false);
+        }
+
+        TblUser user = userService.selectByPhone(phone);
+
+        if (user == null){
+            //用户名空则返回
+            return ReturnJsonUtil.printJson(400,"用户不存在",false);
+        }
+
+        if (!vercode.equals(redisUtils.get(phone+"-login"))) {
+            //密码错误直接返回
+            return ReturnJsonUtil.printJson(300,"验证码错误或过期",false);
+        }
+
+        user.setPassword(null);
+        return userService.login(user);
+
+    }
+
+    public static void main(String[] args) {
+        String keyBeforeMd5 = "15011071226994033wlcbPortal";
+        String keyAfterMd5 = MD5.parseStrToMd5U32(keyBeforeMd5);
+        System.out.println(keyAfterMd5);
     }
 
 

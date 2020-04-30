@@ -16,4 +16,6 @@ public interface UserService {
     TblUser selectByUserNameAndId(String id, String username);
 
     Integer updatePassword(TblUser user);
+
+    TblUser selectByPhone(String phone);
 }

@@ -15,6 +15,8 @@ public interface UserMapper extends BaseMapper<TblUser> {
 
     TblUser selectByUser(String username);
 
+    TblUser selectByPhone(String phone);
+
     List<String> selectAllRole();
 
     List<String> selectMenuByRole(int role);

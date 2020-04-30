@@ -150,4 +150,9 @@ public class UserServiceImpl implements UserService {
     public Integer updatePassword(TblUser user) {
         return userMapper.updatePassword(user);
     }
+
+    @Override
+    public TblUser selectByPhone(String phone) {
+        return userMapper.selectByPhone(phone);
+    }
 }
