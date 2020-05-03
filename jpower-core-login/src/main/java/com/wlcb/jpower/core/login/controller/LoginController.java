@@ -104,6 +104,10 @@ public class LoginController extends BaseController {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"手机号不合法",false);
         }
 
+        if (redisUtils.getExpire(phone+"-login",TimeUnit.MINUTES) >= 4){
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该验证码已经发送，请一分钟后重试",false);
+        }
+
         TblUser user = userService.selectByPhone(phone);
 
         if (user == null){

@@ -92,6 +92,29 @@ public class RedisUtils {
     public boolean exists(final String key) {
         return redisTemplate.hasKey(key);
     }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 获取key的过期时间,并指定返回数据单位
+     * @Date 02:29 2020-05-02
+     * @Param [key]
+     * @return java.lang.Long
+     **/
+    public Long getExpire(final String key,TimeUnit timeUnit) {
+        return redisTemplate.getExpire(key,timeUnit);
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 获取key的过期时间,返回秒
+     * @Date 02:29 2020-05-02
+     * @Param [key]
+     * @return java.lang.Long
+     **/
+    public Long getExpire(final String key) {
+        return redisTemplate.getExpire(key);
+    }
+
     /**
      * 读取缓存
      * @param key
