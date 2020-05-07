@@ -1,8 +1,12 @@
 package com.wlcb.jpower.module.common.utils;
 
+import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 /**
@@ -13,6 +17,8 @@ import java.util.*;
  * @Version 1.0
  */
 public class StrUtil {
+
+    private static Logger logger = LoggerFactory.getLogger(StrUtil.class);
 
     /**普通的英文半角空格Unicode编码*/
     private static final int SPACE_32 = 32;
@@ -295,6 +301,26 @@ public class StrUtil {
         }
 
         return sb.toString();
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 对字符串进行UTF8编码
+     * @Date 11:31 2020-05-07
+     * @Param [map]
+     * @return java.lang.String
+     **/
+    public static String strToUtf8(String str) {
+
+        String utf8Str = null;
+        try {
+            byte[] utf8Bytes = str.getBytes("UTF-8");
+            utf8Str = new String(utf8Bytes, "UTF-8");
+        }catch (UnsupportedEncodingException e){
+            logger.error("编码转换出错：{}",e.getMessage());
+        }
+
+        return utf8Str;
     }
 
     public static void main(String[] args) {

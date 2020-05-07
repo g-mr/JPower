@@ -38,7 +38,7 @@ spring:
   application:
     name: spirng-boot-redis
   redis:
-    host: 192.168.1.88
+    host: 192.168.1.30
     timeout: 3000
     password: Passw0rdVmw@re!
     port: 6379
