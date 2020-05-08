@@ -53,6 +53,7 @@
         <module>jpower-module-dbs</module>
         <module>jpower-web-sync</module>
         <module>jpower-core-login</module>
+        <module>jpower-core-params</module>
     </modules>
 
     <dependencyManagement>

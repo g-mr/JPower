@@ -9,6 +9,8 @@ package com.wlcb.jpower.module.common.utils.constants;
  */
 public class ConstantsUtils {
 
+    public static final String PROPERTIES_PREFIX = "code:params:";
+
 //    短信APPKEY
     public static final String APP_KEY = "102138";
 //    短信密钥
