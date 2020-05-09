@@ -97,7 +97,7 @@ public class LoginController extends BaseController {
      * @Param [phone]
      * @return com.wlcb.jpower.module.base.vo.ResponseData
      **/
-    @RequestMapping(value = "/loginVercode",method = RequestMethod.POST,produces="application/json")
+    @RequestMapping(value = "/loginVercode",method = RequestMethod.GET,produces="application/json")
     public ResponseData loginVercode(String phone) {
 
         if (StringUtils.isBlank(phone) || !StrUtil.isPhone(phone)){
