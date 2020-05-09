@@ -8,10 +8,10 @@
         name,
         value,
         note,
-        createUser,
-        createTime,
-        updateUser,
-        updateTime,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
         status
     </sql>
 
@@ -32,7 +32,7 @@
             and name = #{name,jdbcType=VARCHAR}
         </if>
         <if test="value != null and value!=''">
-            and value = #{value,jdbcType=VARCHAR}
+            and value like CONCAT('%',#{value,jdbcType=VARCHAR},'%')
         </if>
         order by create_time desc
     </select>
@@ -57,17 +57,4 @@
         WHERE id = #{id,jdbcType=VARCHAR}
     </update>
 
-    <insert id="insert">
-        insert into tb_core_param (
-        id,code,name,value,note,createUser,update_user
-        ) values (
-        #{id,jdbcType=VARCHAR},
-        #{code,jdbcType=VARCHAR},
-        #{name,jdbcType=VARCHAR},
-        #{value,jdbcType=VARCHAR},
-        #{note,jdbcType=VARCHAR},
-        #{createUser,jdbcType=TIMESTAMP},
-        #{updateUser,jdbcType=TIMESTAMP}
-        )
-    </insert>
 </mapper>

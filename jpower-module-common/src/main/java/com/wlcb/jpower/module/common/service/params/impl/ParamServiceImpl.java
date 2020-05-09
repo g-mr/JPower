@@ -1,10 +1,12 @@
 package com.wlcb.jpower.module.common.service.params.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.wlcb.jpower.module.common.service.params.ParamService;
 import com.wlcb.jpower.module.common.service.redis.RedisUtils;
 import com.wlcb.jpower.module.common.utils.UUIDUtil;
 import com.wlcb.jpower.module.dbs.dao.core.params.TbCoreParamsMapper;
 import com.wlcb.jpower.module.dbs.entity.core.params.TbCoreParam;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +30,24 @@ public class ParamServiceImpl implements ParamService {
 
     @Override
     public List<TbCoreParam> list(TbCoreParam coreParam) {
-        return paramsMapper.listAll(coreParam);
+
+        EntityWrapper wrapper = new EntityWrapper<TbCoreParam>();
+
+        if (StringUtils.isNotBlank(coreParam.getCode())){
+            wrapper.like("code",coreParam.getCode());
+        }
+
+        if (StringUtils.isNotBlank(coreParam.getName())){
+            wrapper.like("name",coreParam.getName());
+        }
+
+        if (StringUtils.isNotBlank(coreParam.getName())){
+            wrapper.like("value",coreParam.getValue());
+        }
+
+        wrapper.orderBy("create_time",false);
+
+        return paramsMapper.selectList(wrapper);
     }
 
     @Override
@@ -47,12 +66,11 @@ public class ParamServiceImpl implements ParamService {
 
     @Override
     public Integer update(TbCoreParam coreParam) {
-        return paramsMapper.updateByPrimaryKeySelective(coreParam);
+        return paramsMapper.updateById(coreParam);
     }
 
     @Override
     public Integer add(TbCoreParam coreParam) {
-        coreParam.setId(UUIDUtil.getUUID());
         coreParam.setUpdateUser(coreParam.getCreateUser());
         return paramsMapper.insert(coreParam);
     }

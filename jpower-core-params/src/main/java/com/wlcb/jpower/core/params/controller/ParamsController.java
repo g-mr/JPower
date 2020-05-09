@@ -117,7 +117,7 @@ public class ParamsController extends BaseController {
     @RequestMapping(value = "/add",method = RequestMethod.POST,produces="application/json")
     public ResponseData add(TbCoreParam coreParam){
 
-        ResponseData responseData = BeanUtil.allFieldIsNULL(coreParam,"id",
+        ResponseData responseData = BeanUtil.allFieldIsNULL(coreParam,
                 "createUser","code","name","value");
 
         if (responseData.getCode() == ConstantsReturn.RECODE_NULL){
