@@ -30,7 +30,7 @@ import java.util.List;
  * @Version 1.0
  */
 @RestController
-@RequestMapping("/param")
+@RequestMapping("/core/param")
 public class ParamsController extends BaseController {
 
     private static final Logger logger = LoggerFactory.getLogger(ParamsController.class);
