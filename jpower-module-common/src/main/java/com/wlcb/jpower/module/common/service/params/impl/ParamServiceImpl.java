@@ -34,11 +34,11 @@ public class ParamServiceImpl implements ParamService {
         EntityWrapper wrapper = new EntityWrapper<TbCoreParam>();
 
         if (StringUtils.isNotBlank(coreParam.getCode())){
-            wrapper.like("code",coreParam.getCode());
+            wrapper.eq("code",coreParam.getCode());
         }
 
         if (StringUtils.isNotBlank(coreParam.getName())){
-            wrapper.like("name",coreParam.getName());
+            wrapper.eq("name",coreParam.getName());
         }
 
         if (StringUtils.isNotBlank(coreParam.getName())){
