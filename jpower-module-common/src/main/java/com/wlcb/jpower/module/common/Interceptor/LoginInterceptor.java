@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.utils.JWTUtils;
+import com.wlcb.jpower.module.common.utils.param.ParamConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,8 +28,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(LoginInterceptor.class);
 
-    @Value("${isFilter:1}")
-    Integer isFilter;
+    private final String isLogin = "isLogin";
 
     /**
      * @Author 郭丁志
@@ -39,7 +39,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
      **/
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if(isFilter == 1){
+        if(ParamConfig.getInt(isLogin) == 1){
 
             boolean b = JWTUtils.parseJWT(request, response);
             if (!b){

@@ -1,6 +1,6 @@
 package com.wlcb.jpower.module.common.utils;
 
-import com.wlcb.jpower.module.base.properties.SysProperties;
+import com.wlcb.jpower.module.common.utils.param.ParamConfig;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
@@ -26,16 +26,23 @@ public class SendmailUtil {
 
     private static Properties prop = new Properties();
 
-    private static final String host = SysProperties.getInstance().getProperties("email.host","smtp.mxhichina.com");
-    private static final String protocol = SysProperties.getInstance().getProperties("email.protocol","smtp");
-    private static final String emailDir = SysProperties.getInstance().getProperties("email.dir","/");
+//    private static final String host = SysProperties.getInstance().getProperties("email.host","smtp.mxhichina.com");
+//    private static final String protocol = SysProperties.getInstance().getProperties("email.protocol","smtp");
+//    private static final String emailDir = SysProperties.getInstance().getProperties("email.dir","/");
+//
+//    private static final String emailUser = SysProperties.getInstance().getProperties("email.username","gaojing@nmgylth.com");
+//    private static final String emailPassword = SysProperties.getInstance().getProperties("email.password","Ll123456");
 
-    private static final String emailUser = SysProperties.getInstance().getProperties("email.username","gaojing@nmgylth.com");
-    private static final String emailPassword = SysProperties.getInstance().getProperties("email.password","Ll123456");
+    private static final String host = "email.host";
+    private static final String protocol = "email.protocol";
+    private static final String emailDir = "email.dir";
+    private static final String emailUser = "email.username";
+    private static final String emailPassword = "email.password";
+
 
     static {
-        prop.setProperty("mail.host", host);
-        prop.setProperty("mail.transport.protocol", protocol);
+        prop.setProperty("mail.host", ParamConfig.getString(host));
+        prop.setProperty("mail.transport.protocol", ParamConfig.getString(protocol));
         prop.setProperty("mail.smtp.auth", "true");
     }
 
@@ -74,7 +81,7 @@ public class SendmailUtil {
         //2、通过session得到transport对象
         Transport ts = session.getTransport();
         //3、使用邮箱的用户名和密码连上邮件服务器，发送邮件时，发件人需要提交邮箱的用户名和密码给smtp服务器，用户名和密码都通过验证之后才能够正常发送邮件给收件人。
-        ts.connect(host, emailUser, emailPassword);
+        ts.connect(ParamConfig.getString(host), ParamConfig.getString(emailUser), ParamConfig.getString(emailPassword));
         //4、创建邮件
         Message message;
         if (file==null){
@@ -99,7 +106,7 @@ public class SendmailUtil {
         //创建邮件对象
         MimeMessage message = new MimeMessage(session);
         //指明邮件的发件人
-        message.setFrom(new InternetAddress(emailUser));
+        message.setFrom(new InternetAddress(ParamConfig.getString(emailUser)));
 
         //指明邮件的收件人
         message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(username));
@@ -123,7 +130,7 @@ public class SendmailUtil {
 
         //设置邮件的基本信息
         //发件人
-        message.setFrom(new InternetAddress(emailUser));
+        message.setFrom(new InternetAddress(ParamConfig.getString(emailUser)));
         //收件人
         message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(username));
         //邮件标题
@@ -148,7 +155,7 @@ public class SendmailUtil {
         message.setContent(mp);
         message.saveChanges();
         //将创建的Email写入到E盘存储
-        message.writeTo(new FileOutputStream(emailDir+ File.separator +"attachMail.eml"));
+        message.writeTo(new FileOutputStream(ParamConfig.getString(emailDir)+ File.separator +"attachMail.eml"));
         //返回生成的邮件
         return message;
     }

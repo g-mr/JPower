@@ -71,17 +71,3 @@ mybatis-plus:
 logging:
   level:
     root: info
-
-#获取openid接口
-get_openid: https://api.weixin.qq.com/sns/oauth2/access_token
-#appid
-appid: wx56182c8a1b2fdea8
-#appsecret
-appsecret: aad93525a1ae5bb85aea8f3d674662a9
-
-#初次token过期时间 40 * 60 * 1000L
-tokenExpired: 2400000
-
-
-#验证登录
-isFilter: 1

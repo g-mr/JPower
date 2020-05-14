@@ -2,6 +2,7 @@ package com.wlcb.jpower.module.common.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.wlcb.jpower.module.common.utils.param.ParamConfig;
 import com.wlcb.jpower.module.dbs.entity.user.TblUser;
 import io.jsonwebtoken.*;
 import org.apache.commons.codec.binary.Base64;
@@ -28,10 +29,8 @@ public class JWTUtils {
     //多少时间内要刷新token
     private static Long refToken = 10 * 60 * 1000L;
     //续期token过期时间
-    private static Long tokenExpired = 60 * 60 * 1000L;
-
-    //token过期多久支持继续刷新
-//    private static Long expRefToken = 60 * 60 * 1000L;
+    private static final String tokenExpired = "tokenExpired";
+    private static final Long tokenExpiredDefVal = 2400000L;
 
     /**
      * 加密密文
@@ -182,7 +181,7 @@ public class JWTUtils {
                         try {
                             Map<String, Object> payload = new HashMap<String, Object>();
                             payload.put("userId", user.getString("id"));
-                            String token = JWTUtils.createJWT(JSON.toJSONString(user),payload,tokenExpired);
+                            String token = JWTUtils.createJWT(JSON.toJSONString(user),payload, ParamConfig.getLong(tokenExpired,tokenExpiredDefVal));
 
                             if (StringUtils.isBlank(token)){
                                 logger.error("token生成错误，token={}",token);

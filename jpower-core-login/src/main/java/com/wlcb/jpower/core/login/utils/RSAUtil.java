@@ -1,6 +1,7 @@
 package com.wlcb.jpower.core.login.utils;
 
 import com.wlcb.jpower.module.base.properties.SysProperties;
+import com.wlcb.jpower.module.common.utils.param.ParamConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +19,8 @@ public class RSAUtil {
     private static final Logger logger = LoggerFactory.getLogger(RSAUtil.class);
 
     //加密文件路径
-    public static String filePath = SysProperties.getInstance().getProperties("rsa_file_path");
+//    public static String filePath = SysProperties.getInstance().getProperties("rsa_file_path");
+    public static String filePath = "rsa_file_path";
 
      //密钥对
     public static  KeyPair keyPair;
@@ -35,7 +37,7 @@ public class RSAUtil {
     //初始化密钥对
     public static KeyPair initKeyPair(){
         try {
-            FileInputStream fis = new FileInputStream(filePath);
+            FileInputStream fis = new FileInputStream(ParamConfig.getString(filePath));
             ObjectInputStream oos = new ObjectInputStream(fis);
             keyPair = (KeyPair) oos.readObject();
             oos.close();

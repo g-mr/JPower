@@ -34,6 +34,7 @@ public class GlobalExceptionHandler {
 
     private Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    private static final String isSend = SysProperties.getInstance().getProperties("isSend");
     private static final String host = SysProperties.getInstance().getProperties("email.host");
     private static final String protocol = SysProperties.getInstance().getProperties("email.protocol");
 
@@ -79,8 +80,10 @@ public class GlobalExceptionHandler {
             e.printStackTrace(pw);
             String msg=sw.toString();
 
-            //异常警告
-            sendEmail(request,msg);
+            if (StringUtils.isNotBlank(isSend) && Integer.parseInt(isSend) == 1){
+                //异常警告
+                sendEmail(request,msg);
+            }
         }
 //        r.setData(null);
         r.setStatus(false);

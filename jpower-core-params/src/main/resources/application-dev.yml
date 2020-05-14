@@ -76,7 +76,3 @@ mybatis-plus:
 logging:
   level:
     root: debug
-
-
-#不验证登录
-isFilter: 0

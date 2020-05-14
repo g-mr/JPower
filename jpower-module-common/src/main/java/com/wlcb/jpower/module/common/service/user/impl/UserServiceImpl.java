@@ -7,6 +7,7 @@ import com.wlcb.jpower.module.common.service.user.UserService;
 import com.wlcb.jpower.module.common.utils.HttpClient;
 import com.wlcb.jpower.module.common.utils.JWTUtils;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
+import com.wlcb.jpower.module.common.utils.param.ParamConfig;
 import com.wlcb.jpower.module.dbs.dao.user.UserMapper;
 import com.wlcb.jpower.module.dbs.entity.user.TblUser;
 import org.apache.commons.lang3.StringUtils;
@@ -30,22 +31,13 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper userMapper;
-    @Value("${get_openid:}")
-    private String openidUrl;
-    @Value("${appid:}")
-    private String appid;
-    @Value("${appsecret:}")
-    private String appsecret;
 
+    private String appid = "appid";
+    private final String appsecret = "appsecret";
+    private final String openid = "get_openid";
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO token过期时间 默认40分钟
-     * @Date 23:56 2020-03-05
-     * @return
-     **/
-    @Value("${loginTokenExpired:3600000}")
-    private Long tokenExpired;
+    private final String tokenExpired = "tokenExpired";
+    private final Long tokenExpiredDefVal = 2400000L;
 
     /**
      * @Author 郭丁志
@@ -70,7 +62,7 @@ public class UserServiceImpl implements UserService {
 
             Map<String, Object> payload = new HashMap<String, Object>();
             payload.put("userId", user.getId());
-            String token = JWTUtils.createJWT(JSON.toJSONString(user),payload,tokenExpired);
+            String token = JWTUtils.createJWT(JSON.toJSONString(user),payload,ParamConfig.getLong(tokenExpired,tokenExpiredDefVal));
 
             if (StringUtils.isBlank(token)){
                 logger.error("token生成错误，token={}",token);
@@ -96,7 +88,7 @@ public class UserServiceImpl implements UserService {
     public ResponseData wxLogin(String code) {
 
         try {
-            String url = openidUrl+"?appid="+appid+"&secret="+appsecret+"&code="+code+"&grant_type=authorization_code";
+            String url = ParamConfig.getString(openid)+"?appid="+ParamConfig.getString(appid)+"&secret="+ParamConfig.getString(appsecret)+"&code="+code+"&grant_type=authorization_code";
 
             String detail = HttpClient.doGet(url);
 
@@ -113,7 +105,7 @@ public class UserServiceImpl implements UserService {
 
             Map<String, Object> payload = new HashMap<String, Object>();
             payload.put("userId", openid);
-            String token = JWTUtils.createJWT(JSON.toJSONString(user),payload,tokenExpired);
+            String token = JWTUtils.createJWT(JSON.toJSONString(user),payload,ParamConfig.getLong(tokenExpired,tokenExpiredDefVal));
 
 
             JSONObject reJson = new JSONObject();

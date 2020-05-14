@@ -1,4 +1,4 @@
-package com.wlcb.jpower.core.params.utils;
+package com.wlcb.jpower.module.common.utils.param;
 
 import com.wlcb.jpower.module.common.service.params.ParamService;
 import com.wlcb.jpower.module.common.service.redis.RedisUtils;
