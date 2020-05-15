@@ -291,9 +291,18 @@ public class HttpClient {
         String result = "";
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost post = new HttpPost(url);
+
+        //配置超时时间
+        RequestConfig requestConfig = RequestConfig.custom().
+                setConnectTimeout(30000).setConnectionRequestTimeout(30000)
+                .setSocketTimeout(30000).setRedirectsEnabled(true).build();
+
+        post.setConfig(requestConfig);
+
         HttpEntity entity = EntityBuilder.create().setText(param).setContentType(ContentType.APPLICATION_JSON).build();
         post.setEntity(entity);
         post.setHeader("Content-Type", "application/json");
+
         CloseableHttpResponse execute = null;
         try {
             // httpClient对象执行post请求,并返回响应参数对象

@@ -94,6 +94,10 @@ public class StrUtil {
         return false;
     }
 
+    public static void main(String[] args) {
+        System.out.println(cardCodeVerify("152601199503093128"));
+    }
+
     /**
      * @Author 郭丁志
      * @Description //TODO 验证第二代身份证是否符合国家规范
@@ -323,7 +327,4 @@ public class StrUtil {
         return utf8Str;
     }
 
-    public static void main(String[] args) {
-        System.out.println(cardCodeVerifySimple("152630196212112075"));
-    }
 }
