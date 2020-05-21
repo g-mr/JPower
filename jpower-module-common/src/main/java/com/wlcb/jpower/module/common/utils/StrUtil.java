@@ -47,6 +47,8 @@ public class StrUtil {
     private static final String isIDCard2 ="^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])((\\d{4})|\\d{3}[A-Z])$";
     //手机号正则
     private static final String phoneRegex = "^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(166)|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\d{8}$";
+    //邮箱正则
+    private static final String emailRegex = "^([a-z0-9A-Z]+[-|\\.]?[_|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
 
     /**
      * 去除字符串前后的空格, 包括半角空格和全角空格(中文)等各种空格, java的string.trim()只能去英文半角空格
@@ -88,14 +90,11 @@ public class StrUtil {
      **/
     public static boolean cardCodeVerifySimple(String cardcode) {
         //验证身份证
-        if (cardcode.matches(isIDCard1) || cardcode.matches(isIDCard2)) {
+//        if (cardcode.matches(isIDCard1) || cardcode.matches(isIDCard2)) {
+        if (cardcode.matches(isIDCard1) || cardCodeVerify(isIDCard2)) {
             return true;
         }
         return false;
-    }
-
-    public static void main(String[] args) {
-        System.out.println(cardCodeVerify("152601199503093128"));
     }
 
     /**
@@ -168,6 +167,53 @@ public class StrUtil {
         return false;
     }
 
+    public static Integer sexCard(String cardCode) {
+        if (StringUtils.isBlank(cardCode) || cardCode.length()< 15){
+            return 0;
+        }
+
+        if (cardCode.length() == 18){
+            return sexCard18(cardCode);
+        }else {
+            return sexCard15(cardCode);
+        }
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 判断18位身份证性别
+     * @Date 16:34 2020-05-21
+     * @Param [cardCode]
+     * @return java.lang.Integer
+     **/
+    public static Integer sexCard18(String cardCode) {
+        Integer sex;
+        // 判断性别
+        if (Integer.parseInt(cardCode.substring(16).substring(0, 1)) % 2 == 0) {
+            sex = 2;
+        } else {
+            sex = 1;
+        }
+        return sex;
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 判断15位身份证性别
+     * @Date 16:33 2020-05-21
+     * @Param [card]
+     * @return java.lang.Integer
+     **/
+    public static Integer sexCard15(String card) {
+        Integer sex;
+        if (Integer.parseInt(card.substring(14, 15)) % 2 == 0) {
+            sex = 2;
+        } else {
+            sex = 1;
+        }
+        return sex;
+    }
+
     /**
      * @Author 郭丁志
      * @Description //TODO 判断是否是手机号
@@ -180,6 +226,14 @@ public class StrUtil {
             return false;
         } else {
             return phone.matches(phoneRegex);
+        }
+    }
+
+    public static boolean isEmail(String email) {
+        if (email.split("@").length != 2) {
+            return false;
+        } else {
+            return email.matches(emailRegex);
         }
     }
 
