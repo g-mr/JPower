@@ -91,7 +91,7 @@ public class StrUtil {
     public static boolean cardCodeVerifySimple(String cardcode) {
         //验证身份证
 //        if (cardcode.matches(isIDCard1) || cardcode.matches(isIDCard2)) {
-        if (cardcode.matches(isIDCard1) || cardCodeVerify(isIDCard2)) {
+        if (cardcode.matches(isIDCard1) || cardCodeVerify(cardcode)) {
             return true;
         }
         return false;
