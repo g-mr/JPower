@@ -1,6 +1,8 @@
 package com.wlcb.jpower.module.dbs.entity.core.user;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.wlcb.jpower.module.base.annotation.Excel;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import lombok.Data;
 
@@ -19,22 +21,42 @@ public class TbCoreUser extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 8829495593714085987L;
 
+    @Excel(name = "部门ID",isExport = false)
     private String orgId;
+    @Excel(name = "登录用户名")
     private String loginId;
+    @Excel(name = "密码",isExport = false)
     private String password;
+    @Excel(name = "登录用户名")
     private String userName;
+    @Excel(name = "证件类型",readConverterExp = "1=身份证,2=中国护照,3=台胞证,4=外国护照,5=外国人永居证")
     private Integer idType;
+    @Excel(name = "证件号码")
     private String idNo;
+    @Excel(name ="用户类型",readConverterExp = "0=系统用户,1=普通用户,2=单位用户,3=会员,9=匿名用户")
     private Integer userType;
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @Excel(name ="出生日期")
+    @JSONField(format="yyyy-MM-dd")
     private Date birthday;
+    @Excel(name ="邮箱")
     private String email;
+    @Excel(name ="电话")
     private String telephone;
+    @Excel(name ="地址")
     private String address;
+    @Excel(name ="邮编")
     private String postCode;
+    @Excel(name ="最后登录日期",dateFormat = "yyyy-MM-dd HH:mm:ss",type = Excel.Type.EXPORT)
     @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date lastLoginTime;
+    @Excel(name ="登录次数",type = Excel.Type.EXPORT)
     private Integer loginCount;
+    @Excel(name ="激活状态",readConverterExp = "1=激活,0=未激活",type = Excel.Type.EXPORT)
     private Integer activationStatus;
+    @Excel(name ="激活码",isExport = false)
     private String activationCode;
+
+    @TableField(exist = false)
+    @Excel(name = "部门名称")
+    private String orgName;
 }

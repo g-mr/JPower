@@ -53,4 +53,32 @@ public interface CoreUserService {
      * @return com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser
      **/
     TbCoreUser selectUserLoginId(String loginId);
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 通过id查询用户信息
+     * @date 1:27 2020/5/24 0024
+     * @param id 用户id
+     * @return com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser
+     */
+    TbCoreUser selectUserById(String id);
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 修改用户密码
+     * @date 1:28 2020/5/24 0024
+     * @param ids 用户id
+     * @param pass 用户加密后密码
+     * @return java.lang.Integer
+     */
+    Integer updateUserPassword(String ids, String pass);
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 批量新增
+     * @date 2:55 2020/5/24 0024
+     * @param list
+     * @return java.lang.Integer
+     */
+    Integer insterBatch(List<TbCoreUser> list);
 }

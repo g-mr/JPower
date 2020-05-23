@@ -6,18 +6,21 @@ import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.service.core.user.CoreUserService;
-import com.wlcb.jpower.module.common.utils.BeanUtil;
-import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
-import com.wlcb.jpower.module.common.utils.StrUtil;
+import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
+import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
+import com.wlcb.jpower.module.common.utils.param.ParamConfig;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
+import com.wlcb.jpower.utils.excel.BeanExcelUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.util.List;
 
 /**
@@ -163,6 +166,92 @@ public class UserController extends BaseController {
         }else {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"修改失败", false);
         }
+    }
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 重置用户登陆密码
+     * @date 1:12 2020/5/24 0024
+     * @param ids 用户主键ID
+     * @return com.wlcb.jpower.module.base.vo.ResponseData
+     */
+    @RequestMapping(value = "/resetPassword",method = {RequestMethod.PUT},produces="application/json")
+    public ResponseData resetPassword(String ids){
+
+        String pass = MD5.parseStrToMd5U32(ConstantsUtils.DEFAULT_PASSWORD);
+
+        if (StringUtils.isBlank(ids)){
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,"用户id不可为空", false);
+        }
+
+        Integer count = coreUserService.updateUserPassword(ids,pass);
+
+        if (count > 0){
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,count+"位用户密码重置成功", true);
+        }else {
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"重置失败", false);
+        }
+    }
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 批量导入用户
+     * @date 3:14 2020/5/24 0024
+     * @param file 导入文件
+     * @param createUser 创建人
+     * @return com.wlcb.jpower.module.base.vo.ResponseData
+     */
+    @RequestMapping(value = "/importUser",method = {RequestMethod.POST},produces="application/json")
+    public ResponseData importUser(MultipartFile file,String createUser){
+
+        if (file == null || file.isEmpty()){
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,"文件不可位空", false);
+        }
+
+        String path = fileParentPath + File.separator + "import" + File.separator + "user";
+
+        try{
+            String savePaths = MultipartFileUtil.saveFile(file,"xls,xlsx",path);
+
+            File saveFile = new File(fileParentPath + File.separator + "import" + File.separator + "user" + savePaths);
+
+            if (saveFile.exists()){
+                BeanExcelUtil<TbCoreUser> beanExcelUtil = new BeanExcelUtil<>(TbCoreUser.class);
+                List<TbCoreUser> list = beanExcelUtil.importExcel(saveFile);
+
+                for (TbCoreUser coreUser : list) {
+                    coreUser.setId(UUIDUtil.getUUID());
+                    coreUser.setPassword(MD5.parseStrToMd5U32(ConstantsUtils.DEFAULT_PASSWORD));
+                    coreUser.setCreateUser(createUser);
+
+                    //判断用户是否指定激活，如果没有指定就去读取默认配置
+                    if (coreUser.getActivationStatus() == null){
+                        Integer isActivation = ParamConfig.getInt("isActivation");
+                        coreUser.setActivationStatus(isActivation);
+                    }
+                    // 如果不是激活状态则去生成激活码
+                    if (!ConstantsEnum.ACTIVATION_STATUS.ACTIVATION_YES.getValue().equals(coreUser.getActivationStatus())){
+                        coreUser.setActivationCode(UUIDUtil.create10UUidNum());
+                        coreUser.setActivationStatus(ConstantsEnum.ACTIVATION_STATUS.ACTIVATION_NO.getValue());
+                    }
+
+                }
+
+                Integer count = coreUserService.insterBatch(list);
+                if (count > 0){
+                    return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"成功导入"+count+"条", true);
+                }else {
+                    return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"导入失败", false);
+                }
+            }
+
+            logger.error("文件上传出错，文件不存在,{}",saveFile.getAbsolutePath());
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"上传出错，请稍后重试", false);
+        }catch (Exception e){
+            logger.error("文件上传出错，error={}",e.getMessage());
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_ERROR,"上传出错，请稍后重试", false);
+        }
+
     }
 
 }

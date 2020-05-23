@@ -51,5 +51,12 @@ public interface CoreOrgService {
      **/
     Integer delete(String ids);
 
+    /**
+     * @author 郭丁志
+     * @Description //TODO 更新组织机构
+     * @date 0:01 2020/5/24 0024
+     * @param coreOrg
+     * @return java.lang.Integer
+     */
     Integer update(TbCoreOrg coreOrg);
 }

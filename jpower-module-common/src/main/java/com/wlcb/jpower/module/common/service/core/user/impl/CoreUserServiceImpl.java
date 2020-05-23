@@ -100,4 +100,21 @@ public class CoreUserServiceImpl implements CoreUserService {
         coreUser.setLoginId(loginId);
         return coreUserMapper.selectOne(coreUser);
     }
+
+    @Override
+    public TbCoreUser selectUserById(String id) {
+        return coreUserMapper.selectById(id);
+    }
+
+    @Override
+    public Integer updateUserPassword(String ids, String pass) {
+        EntityWrapper wrapper = new EntityWrapper<TbCoreUser>();
+        wrapper.in("id",ids);
+        return coreUserMapper.updateForSet("password = "+pass,wrapper);
+    }
+
+    @Override
+    public Integer insterBatch(List<TbCoreUser> list) {
+        return coreUserMapper.insertList(list);
+    }
 }

@@ -9,6 +9,9 @@ package com.wlcb.jpower.module.common.utils.constants;
  */
 public class ConstantsUtils {
 
+    /** 系统登陆默认密码 **/
+    public static final String DEFAULT_PASSWORD = "123456";
+
     public static final String PROPERTIES_PREFIX = "code:params:";
 
 //    短信APPKEY

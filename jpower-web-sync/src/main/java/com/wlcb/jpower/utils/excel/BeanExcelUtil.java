@@ -530,7 +530,7 @@ public class BeanExcelUtil<T> {
 
     public List<T> importExcel(File file) throws Exception
     {
-        return importExcel("",file);
+        return importExcel(null,file);
     }
 
     /**
@@ -671,7 +671,7 @@ public class BeanExcelUtil<T> {
                             {
                                 propertyName = field.getName() + "." + attr.targetAttr();
                             }
-                            else if (StringUtils.isNotEmpty(attr.readConverterExp()))
+                            if (StringUtils.isNotEmpty(attr.readConverterExp()))
                             {
                                 val = reverseByExp(String.valueOf(val), attr.readConverterExp());
                             }

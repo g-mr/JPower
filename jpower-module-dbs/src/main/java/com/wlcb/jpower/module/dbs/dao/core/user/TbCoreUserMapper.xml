@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wlcb.jpower.module.dbs.dao.core.user.TbCoreUserMapper">
+
+    <sql id="Base_Column_List">
+        id,
+        org_id,
+        login_id,
+        password,
+        user_name,
+        id_type,
+        id_no,
+        user_type,
+        birthday,
+        email,
+        telephone,
+        address,
+        post_code,
+        last_login_time,
+        login_count,
+        activation_status,
+        activation_code,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        status
+    </sql>
+
+    <insert id="insertList">
+        insert into tb_core_user
+        (id,
+        org_id,
+        login_id,
+        password,
+        user_name,
+        id_type,
+        id_no,
+        user_type,
+        birthday,
+        email,
+        telephone,
+        address,
+        post_code,
+        activation_status,
+        activation_code,
+        create_user,
+        update_user)
+        values
+        <foreach collection="list" item="user" separator=",">
+            (
+            #{user.id
+            (SELECT id FROM tb_core_org WHERE name = #{user.orgName} limit 1),
+            #{user.loginId},
+            #{user.password},
+            #{user.userName},
+            #{user.idType},
+            #{user.idNo},
+            #{user.userType},
+            #{user.birthday},
+            #{user.email},
+            #{user.telephone},
+            #{user.address},
+            #{user.postCode},
+            #{user.activationStatus},
+            #{user.activationCode},
+            #{user.createUser},
+            #{user.updateUser}
+            )
+        </foreach>
+    </insert>
+</mapper>
