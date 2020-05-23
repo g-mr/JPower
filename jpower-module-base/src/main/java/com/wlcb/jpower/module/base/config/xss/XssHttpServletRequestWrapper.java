@@ -38,6 +38,9 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
         String value = super.getParameter(name);
         if (StringUtils.isNotBlank(value)) {
             value = SqlInjectionUtil.filter(value);//JsoupUtils.clean(value);
+            if (StringUtils.equals(value,"null") || StringUtils.equals(value,"undefined")){
+                value = null;
+            }
         }
         return value;
     }
@@ -65,6 +68,9 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
         String value = super.getHeader(name);
         if (StringUtils.isNotBlank(value)) {
             value = SqlInjectionUtil.filter(value);//JsoupUtils.clean(value);
+            if (StringUtils.equals(value,"null") || StringUtils.equals(value,"undefined")){
+                value = null;
+            }
         }
         return value;
     }

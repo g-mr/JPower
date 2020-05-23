@@ -1,9 +1,9 @@
-package com.wlcb.jpower.module.common.service.params.impl;
+package com.wlcb.jpower.module.common.service.core.params.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.wlcb.jpower.module.common.service.params.ParamService;
+import com.wlcb.jpower.module.common.service.core.params.CoreParamService;
 import com.wlcb.jpower.module.common.service.redis.RedisUtils;
-import com.wlcb.jpower.module.common.utils.UUIDUtil;
+import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
 import com.wlcb.jpower.module.dbs.dao.core.params.TbCoreParamsMapper;
 import com.wlcb.jpower.module.dbs.entity.core.params.TbCoreParam;
 import org.apache.commons.lang3.StringUtils;
@@ -15,8 +15,8 @@ import java.util.List;
 /**
  * @author mr.gmac
  */
-@Service("paramService")
-public class ParamServiceImpl implements ParamService {
+@Service("coreParamService")
+public class CoreParamServiceImpl implements CoreParamService {
 
     @Autowired
     private TbCoreParamsMapper paramsMapper;
@@ -73,6 +73,17 @@ public class ParamServiceImpl implements ParamService {
     public Integer add(TbCoreParam coreParam) {
         coreParam.setUpdateUser(coreParam.getCreateUser());
         return paramsMapper.insert(coreParam);
+    }
+
+    @Override
+    public void effectAll() {
+        List<TbCoreParam> params = list(new TbCoreParam());
+
+        for (TbCoreParam param : params) {
+            if (StringUtils.isNotBlank(param.getValue())){
+                redisUtils.set(ConstantsUtils.PROPERTIES_PREFIX+param.getCode(),param.getValue());
+            }
+        }
     }
 
 }

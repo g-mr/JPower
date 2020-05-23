@@ -1,4 +1,4 @@
-package com.wlcb.jpower.module.common.service.params;
+package com.wlcb.jpower.module.common.service.core.params;
 
 import com.wlcb.jpower.module.dbs.entity.core.params.TbCoreParam;
 
@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * @author mr.gmac
  */
-public interface ParamService {
+public interface CoreParamService {
 
     /**
      * @Author 郭丁志
@@ -53,4 +53,14 @@ public interface ParamService {
      * @return java.lang.Integer
      **/
     Integer add(TbCoreParam coreParam);
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 参数生效
+     * @Date 10:23 2020-05-18
+     * @Param
+     * @return
+     **/
+    void effectAll();
+
 }

@@ -1,6 +1,6 @@
 package com.wlcb.jpower.module.common.utils.param;
 
-import com.wlcb.jpower.module.common.service.params.ParamService;
+import com.wlcb.jpower.module.common.service.core.params.CoreParamService;
 import com.wlcb.jpower.module.common.service.redis.RedisUtils;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -22,10 +22,10 @@ public class ParamConfig {
     @Autowired
     private RedisUtils utils;
     @Autowired
-    private ParamService service;
+    private CoreParamService service;
 
     private static RedisUtils redisUtils;
-    private static ParamService paramService;
+    private static CoreParamService paramService;
 
     @PostConstruct
     public void init() {

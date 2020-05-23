@@ -5,7 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.page.PaginationContext;
-import com.wlcb.jpower.module.common.service.params.ParamService;
+import com.wlcb.jpower.module.common.service.core.params.CoreParamService;
 import com.wlcb.jpower.module.common.service.redis.RedisUtils;
 import com.wlcb.jpower.module.common.utils.BeanUtil;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
@@ -38,7 +38,7 @@ public class ParamsController extends BaseController {
     @Resource
     private RedisUtils redisUtils;
     @Resource
-    private ParamService paramService;
+    private CoreParamService paramService;
 
     /**
      * @Author 郭丁志
@@ -165,19 +165,12 @@ public class ParamsController extends BaseController {
      * @Author 郭丁志
      * @Description //TODO 全部生效
      * @Date 17:29 2020-05-07
-     * @Param []
      * @return com.wlcb.jpower.module.base.vo.ResponseData
      **/
     @RequestMapping(value = "/effectAll",method = RequestMethod.GET,produces="application/json")
     public ResponseData effectAll(){
 
-        List<TbCoreParam> params = paramService.list(new TbCoreParam());
-
-        for (TbCoreParam param : params) {
-            if (StringUtils.isNotBlank(param.getValue())){
-                redisUtils.set(ConstantsUtils.PROPERTIES_PREFIX+param.getCode(),param.getValue());
-            }
-        }
+        paramService.effectAll();
 
         return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"操作完成",true);
     }
