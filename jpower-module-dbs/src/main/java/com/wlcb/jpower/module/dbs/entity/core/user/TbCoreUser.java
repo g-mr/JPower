@@ -29,11 +29,11 @@ public class TbCoreUser extends BaseEntity implements Serializable {
     private String password;
     @Excel(name = "登录用户名")
     private String userName;
-    @Excel(name = "证件类型",readConverterExp = "1=身份证,2=中国护照,3=台胞证,4=外国护照,5=外国人永居证")
+    @Excel(name = "证件类型",readConverterExp = "1=身份证,2=中国护照,3=台胞证,4=外国护照,5=外国人永居证",combo={"身份证","中国护照","台胞证","外国护照","外国人永居证"})
     private Integer idType;
     @Excel(name = "证件号码")
     private String idNo;
-    @Excel(name ="用户类型",readConverterExp = "0=系统用户,1=普通用户,2=单位用户,3=会员,9=匿名用户")
+    @Excel(name ="用户类型",readConverterExp = "0=系统用户,1=普通用户,2=单位用户,3=会员,9=匿名用户",combo={"系统用户,","普通用户","单位用户","会员"})
     private Integer userType;
     @Excel(name ="出生日期")
     @JSONField(format="yyyy-MM-dd")
@@ -51,7 +51,7 @@ public class TbCoreUser extends BaseEntity implements Serializable {
     private Date lastLoginTime;
     @Excel(name ="登录次数",type = Excel.Type.EXPORT)
     private Integer loginCount;
-    @Excel(name ="激活状态",readConverterExp = "1=激活,0=未激活",type = Excel.Type.EXPORT)
+    @Excel(name ="激活状态",readConverterExp = "1=激活,0=未激活",combo={"激活,","未激活"})
     private Integer activationStatus;
     @Excel(name ="激活码",isExport = false)
     private String activationCode;

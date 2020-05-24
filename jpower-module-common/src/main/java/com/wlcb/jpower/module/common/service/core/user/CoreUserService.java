@@ -81,4 +81,14 @@ public interface CoreUserService {
      * @return java.lang.Integer
      */
     Integer insterBatch(List<TbCoreUser> list);
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 更新用户角色
+     * @date 0:44 2020/5/25 0025
+     * @param userId 用户ID
+    * @param roleIds  角色ID
+     * @return java.lang.Integer
+     */
+    Integer updateUserRole(String userId, String roleIds);
 }

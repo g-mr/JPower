@@ -6,14 +6,14 @@ import com.wlcb.jpower.module.common.utils.UUIDUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.param.ParamConfig;
 import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreUserMapper;
+import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreUserRoleMapper;
+import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreUserRole;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author mr.gmac
@@ -23,6 +23,8 @@ public class CoreUserServiceImpl implements CoreUserService {
 
     @Autowired
     private TbCoreUserMapper coreUserMapper;
+    @Autowired
+    private TbCoreUserRoleMapper coreUserRoleMapper;
 
     @Override
     public List<TbCoreUser> list(TbCoreUser coreUser) {
@@ -116,5 +118,29 @@ public class CoreUserServiceImpl implements CoreUserService {
     @Override
     public Integer insterBatch(List<TbCoreUser> list) {
         return coreUserMapper.insertList(list);
+    }
+
+    @Override
+    public Integer updateUserRole(String userId, String roleIds) {
+        String[] rIds = roleIds.split(",");
+        List<TbCoreUserRole> userRoles = new ArrayList<>();
+        for (String rId : rIds) {
+            TbCoreUserRole userRole = new TbCoreUserRole();
+            userRole.setId(UUIDUtil.getUUID());
+            userRole.setUserId(userId);
+            userRole.setRoleId(rId);
+            userRoles.add(userRole);
+        }
+
+        //先删除用户原有角色
+        Map<String, Object> columnMap = new HashMap<String, Object>();
+        columnMap.put("user_id", userId);
+        coreUserRoleMapper.deleteByMap(columnMap);
+
+        if (userRoles.size() > 0){
+            Integer count = coreUserRoleMapper.insertList(userRoles);
+            return count;
+        }
+        return 1;
     }
 }

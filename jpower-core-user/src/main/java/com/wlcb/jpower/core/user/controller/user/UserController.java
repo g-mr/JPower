@@ -11,6 +11,7 @@ import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
 import com.wlcb.jpower.module.common.utils.param.ParamConfig;
+import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreUserRole;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
 import com.wlcb.jpower.utils.excel.BeanExcelUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -21,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -252,6 +254,45 @@ public class UserController extends BaseController {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_ERROR,"上传出错，请稍后重试", false);
         }
 
+    }
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 导出用户
+     * @date 23:42 2020/5/24 0024
+     * @param coreUser
+     * @return com.wlcb.jpower.module.base.vo.ResponseData
+     */
+    @RequestMapping(value = "/exportUser",method = {RequestMethod.POST},produces="application/json")
+    public ResponseData exportUser(TbCoreUser coreUser){
+        List<TbCoreUser> list = coreUserService.list(coreUser);
+
+        BeanExcelUtil<TbCoreUser> beanExcelUtil = new BeanExcelUtil<>(TbCoreUser.class,downloadPath);
+        return beanExcelUtil.exportExcel(list,"用户列表");
+    }
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 给用户新增角色
+     * @date 0:28 2020/5/25 0025
+     * @param userId 用户ID
+     * @param roleIds 角色ID 多个用,分割
+     * @return com.wlcb.jpower.module.base.vo.ResponseData
+     */
+    @RequestMapping(value = "/addRole",method = {RequestMethod.POST},produces="application/json")
+    public ResponseData exportUser(String userId,String roleIds){
+
+        if (StringUtils.isBlank(userId)){
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,"用户ID不可位空", false);
+        }
+
+        Integer count = coreUserService.updateUserRole(userId,roleIds);
+
+        if (count > 0){
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"设置成功", true);
+        }else {
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"设置失败", false);
+        }
     }
 
 }

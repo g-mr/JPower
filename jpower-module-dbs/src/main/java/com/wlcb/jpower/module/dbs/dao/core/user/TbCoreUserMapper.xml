@@ -65,7 +65,7 @@
             #{user.activationStatus},
             #{user.activationCode},
             #{user.createUser},
-            #{user.updateUser}
+            #{user.createUser}
             )
         </foreach>
     </insert>
