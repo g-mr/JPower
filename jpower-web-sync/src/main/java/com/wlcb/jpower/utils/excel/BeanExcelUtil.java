@@ -239,7 +239,9 @@ public class BeanExcelUtil<T> {
                 }
             }
             String filename = encodingFilename(sheetName);
-            out = new FileOutputStream(getAbsoluteFile(filename));
+            String path = getAbsoluteFile(filename);
+            log.info("文件生成路径={}",path);
+            out = new FileOutputStream(path);
             wb.write(out);
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"生成成功",filename,true);
         }
