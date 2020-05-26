@@ -15,4 +15,5 @@ public interface TbCoreUserMapper extends BaseMapper<TbCoreUser> {
 
     Integer insertList(@Param("list") List<TbCoreUser> list);
 
+    TbCoreUser selectAllById(String id);
 }

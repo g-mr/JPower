@@ -105,7 +105,7 @@ public class CoreUserServiceImpl implements CoreUserService {
 
     @Override
     public TbCoreUser selectUserById(String id) {
-        return coreUserMapper.selectById(id);
+        return coreUserMapper.selectAllById(id);
     }
 
     @Override
@@ -121,21 +121,24 @@ public class CoreUserServiceImpl implements CoreUserService {
     }
 
     @Override
-    public Integer updateUserRole(String userId, String roleIds) {
+    public Integer updateUsersRole(String userIds, String roleIds) {
         String[] rIds = roleIds.split(",");
+        String[] uIds = userIds.split(",");
         List<TbCoreUserRole> userRoles = new ArrayList<>();
         for (String rId : rIds) {
-            TbCoreUserRole userRole = new TbCoreUserRole();
-            userRole.setId(UUIDUtil.getUUID());
-            userRole.setUserId(userId);
-            userRole.setRoleId(rId);
-            userRoles.add(userRole);
+            for (String userId : uIds) {
+                TbCoreUserRole userRole = new TbCoreUserRole();
+                userRole.setId(UUIDUtil.getUUID());
+                userRole.setUserId(userId);
+                userRole.setRoleId(rId);
+                userRoles.add(userRole);
+            }
         }
 
         //先删除用户原有角色
-        Map<String, Object> columnMap = new HashMap<String, Object>();
-        columnMap.put("user_id", userId);
-        coreUserRoleMapper.deleteByMap(columnMap);
+        EntityWrapper wrapper = new EntityWrapper<TbCoreUserRole>();
+        wrapper.in("user_id",uIds);
+        coreUserRoleMapper.delete(wrapper);
 
         if (userRoles.size() > 0){
             Integer count = coreUserRoleMapper.insertList(userRoles);

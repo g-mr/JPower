@@ -7,20 +7,20 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * @ClassName TbCoreUserRole
- * @Description TODO 用户角色关联信息
+ * @ClassName TbCoreRoleFunction
+ * @Description TODO 角色权限信息
  * @Author 郭丁志
  * @Date 2020-05-18 17:12
  * @Version 1.0
  */
 @Data
-public class TbCoreUserRole extends BaseEntity implements Serializable {
+public class TbCoreRoleFunction extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private String userId;
     private String roleId;
+    private String functionId;
 
     @TableField(exist = false)
-    private String roleName;
+    private String functionName;
 }

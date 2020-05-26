@@ -5,10 +5,12 @@ import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.service.core.user.CoreRoleService;
+import com.wlcb.jpower.module.common.service.core.user.CoreRolefunctionService;
 import com.wlcb.jpower.module.common.utils.BeanUtil;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreRole;
+import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreRoleFunction;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,6 +32,8 @@ public class RoleController extends BaseController {
 
     @Resource
     private CoreRoleService coreRoleService;
+    @Resource
+    private CoreRolefunctionService coreRolefunctionService;
 
     /**
      * @Author 郭丁志
@@ -137,4 +141,44 @@ public class RoleController extends BaseController {
         }
     }
 
+    /**
+     * @author 郭丁志
+     * @Description //TODO 查询角色权限
+     * @date 23:53 2020/5/26 0026
+     * @param roleId 
+     * @return com.wlcb.jpower.module.base.vo.ResponseData
+     */
+    @RequestMapping(value = "/roleFunction",method = {RequestMethod.GET},produces="application/json")
+    public ResponseData roleFunction(String roleId){
+        
+        if (StringUtils.isBlank(roleId)){
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,"角色ID不可为空", false);
+        }
+
+        TbCoreRoleFunction roleFunction = coreRolefunctionService.selectRoleFunctionByRoleId(roleId);
+        return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"查询成功", roleFunction, true);
+    }
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 新增权限
+     * @date 0:13 2020/5/27 0027
+     * @param roleId
+     * @return com.wlcb.jpower.module.base.vo.ResponseData
+     */
+    @RequestMapping(value = "/addFunction",method = {RequestMethod.POST},produces="application/json")
+    public ResponseData addFunction(String roleId,String functionIds){
+
+        if (StringUtils.isBlank(roleId)){
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,"用户ID不可位空", false);
+        }
+
+        Integer count = coreRolefunctionService.addRolefunctions(roleId,functionIds);
+
+        if (count > 0){
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"设置成功", true);
+        }else {
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"设置失败", false);
+        }
+    }
 }

@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.page.PaginationContext;
+import com.wlcb.jpower.module.common.service.core.user.CoreUserRoleService;
 import com.wlcb.jpower.module.common.service.core.user.CoreUserService;
 import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
@@ -38,6 +39,8 @@ public class UserController extends BaseController {
 
     @Resource
     private CoreUserService coreUserService;
+    @Resource
+    private CoreUserRoleService coreUserRoleService;
 
     /**
      * @Author 郭丁志
@@ -53,6 +56,23 @@ public class UserController extends BaseController {
         List<TbCoreUser> list = coreUserService.list(coreUser);
 
         return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"获取成功", JSON.toJSON(new PageInfo<>(list)),true);
+    }
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 查询用户详情
+     * @date 23:29 2020/5/26 0026
+     * @param id 用户ID
+     * @return com.wlcb.jpower.module.base.vo.ResponseData
+     */
+    @RequestMapping(value = "/get",method = RequestMethod.GET,produces="application/json")
+    public ResponseData list(String id){
+        if (StringUtils.isBlank(id)){
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,"ID不可为空", false);
+        }
+
+        TbCoreUser user = coreUserService.selectUserById(id);
+        return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"查询成功", user, true);
     }
 
     /**
@@ -263,7 +283,7 @@ public class UserController extends BaseController {
      * @param coreUser
      * @return com.wlcb.jpower.module.base.vo.ResponseData
      */
-    @RequestMapping(value = "/exportUser",method = {RequestMethod.POST},produces="application/json")
+    @RequestMapping(value = "/exportUser",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
     public ResponseData exportUser(TbCoreUser coreUser){
         List<TbCoreUser> list = coreUserService.list(coreUser);
 
@@ -275,24 +295,47 @@ public class UserController extends BaseController {
      * @author 郭丁志
      * @Description //TODO 给用户新增角色
      * @date 0:28 2020/5/25 0025
-     * @param userId 用户ID
+     * @param userIds 用户ID 多个用,分割
      * @param roleIds 角色ID 多个用,分割
      * @return com.wlcb.jpower.module.base.vo.ResponseData
      */
     @RequestMapping(value = "/addRole",method = {RequestMethod.POST},produces="application/json")
-    public ResponseData exportUser(String userId,String roleIds){
+    public ResponseData exportUser(String userIds,String roleIds){
 
-        if (StringUtils.isBlank(userId)){
+        if (StringUtils.isBlank(userIds)){
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,"用户ID不可位空", false);
         }
 
-        Integer count = coreUserService.updateUserRole(userId,roleIds);
+        String[] userIdss = userIds.split(",");
+        if (userIdss.length <= 0){
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,"用户ID不可位空", false);
+        }
+
+        Integer count = coreUserService.updateUsersRole(userIds,roleIds);
 
         if (count > 0){
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"设置成功", true);
         }else {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"设置失败", false);
         }
+    }
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 查询用户所有角色
+     * @date 22:48 2020/5/26 0026
+     * @param userId 用户ID
+     * @return com.wlcb.jpower.module.base.vo.ResponseData
+     */
+    @RequestMapping(value = "/userRole",method = {RequestMethod.GET},produces="application/json")
+    public ResponseData exportUser(String userId){
+
+        if (StringUtils.isBlank(userId)){
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,"用户ID不可为空", false);
+        }
+
+        List<TbCoreUserRole> userRoleList = coreUserRoleService.selectUserRoleByUserId(userId);
+        return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"查询成功",userRoleList, true);
     }
 
 }
