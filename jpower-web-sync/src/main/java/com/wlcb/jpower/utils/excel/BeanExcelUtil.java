@@ -167,8 +167,8 @@ public class BeanExcelUtil<T> {
      *
      * @return 结果
      */
-    public ResponseData exportExcel()
-    {
+    public ResponseData exportExcel(){
+        log.info("开始生成文件");
         OutputStream out = null;
         try
         {
@@ -181,6 +181,7 @@ public class BeanExcelUtil<T> {
 
                 // 产生一行
                 Row row = sheet.createRow(0);
+                log.info("开始写入数据");
                 // 写入各个字段的列头名称
                 for (int i = 0; i < fields.size(); i++)
                 {
@@ -213,13 +214,14 @@ public class BeanExcelUtil<T> {
                         sheet.setColumnWidth(i, (int) ((attr.width() + 0.72) * 256));
                         row.setHeight((short) (attr.height() * 20));
                     }
+                    log.info("结束写入数据");
                     cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
                     cellStyle.setWrapText(true);
                     cell.setCellStyle(cellStyle);
 
                     // 写入列名
                     cell.setCellValue(attr.name());
-
+                    log.info("===================");
                     // 如果设置了提示信息则鼠标放上去提示.
                     if (StringUtils.isNotEmpty(attr.prompt()))
                     {
@@ -233,13 +235,16 @@ public class BeanExcelUtil<T> {
                         setXSSFValidation(sheet, attr.combo(), 1, 100, i, i);
                     }
                 }
+                log.info("=========---------==========");
                 if (Excel.Type.EXPORT.equals(type))
                 {
                     fillExcelData(index, row, cell);
                 }
             }
             String filename = encodingFilename(sheetName);
-            out = new FileOutputStream(getAbsoluteFile(filename));
+            String path = getAbsoluteFile(filename);
+            log.info("文件生成路径={}",path);
+            out = new FileOutputStream(path);
             wb.write(out);
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"生成成功",filename,true);
         }
