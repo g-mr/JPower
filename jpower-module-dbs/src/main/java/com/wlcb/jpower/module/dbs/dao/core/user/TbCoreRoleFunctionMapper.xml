@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wlcb.jpower.module.dbs.dao.core.user.TbCoreRoleFunctionMapper">
+
+    <sql id="Base_Column_List">
+        id,
+        role_id,
+        function_id,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        status
+    </sql>
+
+    <insert id="insertList">
+        insert into tb_core_user_role
+        (id,
+        role_id,
+        function_id)
+        values
+        <foreach collection="roleFunctions" item="rf" separator=",">
+            (
+            #{rf.id},
+            #{rf.roleId},
+            #{rf.functionId}
+            )
+        </foreach>
+    </insert>
+
+    <select id="selectRoleFunctionByRoleId"
+            resultType="com.wlcb.jpower.module.dbs.entity.core.role.TbCoreRoleFunction">
+        select rf.role_id,rf.function_id,f.function_name from tb_core_role_function rf
+        left join tb_core_function f on f.id = rf.function_id
+        where rf.role_id = #{roleId,jdbcType=VARCHAR}
+    </select>
+
+</mapper>

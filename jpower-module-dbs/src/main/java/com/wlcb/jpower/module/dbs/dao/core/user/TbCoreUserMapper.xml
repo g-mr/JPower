@@ -27,6 +27,31 @@
         status
     </sql>
 
+    <sql id="Base_Column_List_Alias">
+        u.id,
+        u.org_id,
+        u.login_id,
+        u.password,
+        u.user_name,
+        u.id_type,
+        u.id_no,
+        u.user_type,
+        u.birthday,
+        u.email,
+        u.telephone,
+        u.address,
+        u.post_code,
+        u.last_login_time,
+        u.login_count,
+        u.activation_status,
+        u.activation_code,
+        u.create_user,
+        u.create_time,
+        u.update_user,
+        u.update_time,
+        u.status
+    </sql>
+
     <insert id="insertList">
         insert into tb_core_user
         (id,
@@ -49,7 +74,7 @@
         values
         <foreach collection="list" item="user" separator=",">
             (
-            #{user.id
+            #{user.id},
             (SELECT id FROM tb_core_org WHERE name = #{user.orgName} limit 1),
             #{user.loginId},
             #{user.password},
@@ -69,4 +94,10 @@
             )
         </foreach>
     </insert>
+
+    <select id="selectAllById" resultType="com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser">
+        select <include refid="Base_Column_List_Alias"/>,o.name as orgName from tb_core_user u
+        left join tb_core_org o on o.id = u.org_id
+        where u.id = #{id,jdbcType=VARCHAR}
+    </select>
 </mapper>
