@@ -66,7 +66,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
     public String getHeader(String name) {
         name = SqlInjectionUtil.filter(name);//JsoupUtils.clean(name);
         String value = super.getHeader(name);
-        if (StringUtils.isNotBlank(value)) {
+        if (StringUtils.isNotBlank(value) && !StringUtils.equals(name,"Accept") ) {
             value = SqlInjectionUtil.filter(value);//JsoupUtils.clean(value);
             if (StringUtils.equals(value,"null") || StringUtils.equals(value,"undefined")){
                 value = null;
