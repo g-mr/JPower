@@ -29,8 +29,8 @@ public class JWTUtils {
     //多少时间内要刷新token
     private static Long refToken = 10 * 60 * 1000L;
     //续期token过期时间
-    private static final String tokenExpired = "tokenExpired";
-    private static final Long tokenExpiredDefVal = 2400000L;
+    public static final String tokenExpired = "tokenExpired";
+    public static final Long tokenExpiredDefVal = 2400000L;
 
     /**
      * 加密密文
@@ -94,6 +94,7 @@ public class JWTUtils {
      * @Param [jwt]
      * @return io.jsonwebtoken.Claims
      **/
+    @Deprecated
     public static boolean parseJWT(HttpServletRequest request, HttpServletResponse response) {
         String currentPath = request.getServletPath();
 
