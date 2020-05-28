@@ -26,7 +26,7 @@ public class XssConfig {
         Map<String, String> initParameters = new HashMap<>();
         initParameters.put("excludes", "/favicon.ico,/img/*,/js/*,/css/*");
         //是否开启富文本过滤，目前已经开启，需要的时候关闭即可
-        initParameters.put("isIncludeRichText", "true");
+        initParameters.put("isIncludeRichText", "false");
         filterRegistrationBean.setInitParameters(initParameters);
         return filterRegistrationBean;
     }

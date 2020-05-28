@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 public class SqlInjectionUtil {
     private static final Logger logger = LoggerFactory.getLogger(SqlInjectionUtil.class);
 
-    static final String[] char0  = new String[]{"'","/*","*/","--","|","<",">"," or "," xor "," and ",
+    static final String[] char0  = new String[]{"'","--","|","<",">"," or "," xor "," and ",
             "&lt;","&gt;","&#34","&#349","%27"};
     static final String[] keys1  = new String[]{"delete","drop","create","select","truncate","update","insert",
             "alter","declare","xp_cmdshell","exec","execute"};
