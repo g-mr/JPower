@@ -80,5 +80,41 @@ public class ConstantsEnum {
         }
     }
 
+    /**
+     * @author 郭丁志
+     * @Description //TODO 用户类型
+     * @date 0:04 2020/6/2 0002
+     * @return
+     */
+
+    public static enum USER_TYPE{
+
+        USER_TYPE_SYSTEM(0,"系统用户"),USER_TYPE_GENERAL(1,"普通用户"),USER_TYPE_FIRM(2,"单位用户"),USER_TYPE_MEMBER(3,"会员"),USER_TYPE_ANONYMOUS(9,"匿名用户");
+
+        private USER_TYPE(Integer value, String name){
+            this.value = value;
+            this.name = name;
+        }
+        private final Integer value;
+        private final String name;
+
+        public Integer getValue() {
+            return value;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public static String getName(Integer value) {
+            ConstantsEnum.USER_TYPE[] businessModeEnums = values();
+            for (ConstantsEnum.USER_TYPE businessModeEnum : businessModeEnums) {
+                if (businessModeEnum.value.equals(value)) {
+                    return businessModeEnum.name;
+                }
+            }
+            return null;
+        }
+    }
 
 }

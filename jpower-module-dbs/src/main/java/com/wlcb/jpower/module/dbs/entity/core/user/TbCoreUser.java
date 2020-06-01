@@ -27,7 +27,7 @@ public class TbCoreUser extends BaseEntity implements Serializable {
     private String loginId;
     @Excel(name = "密码",isExport = false)
     private String password;
-    @Excel(name = "登录用户名")
+    @Excel(name = "用户姓名")
     private String userName;
     @Excel(name = "证件类型",readConverterExp = "1=身份证,2=中国护照,3=台胞证,4=外国护照,5=外国人永居证",combo={"身份证","中国护照","台胞证","外国护照","外国人永居证"})
     private Integer idType;

@@ -68,7 +68,7 @@ public class JWTUtils {
      * @return
      * @throws Exception
      */
-    private static Claims parseJWT(String jwt) {
+    public static Claims parseJWT(String jwt) {
         SecretKey key = generalKey(); // 签名秘钥，和生成的签名的秘钥一模一样
         Claims claims = Jwts.parser() // 得到DefaultJwtParser
                 .setSigningKey(key) // 设置签名的秘钥
@@ -141,6 +141,7 @@ public class JWTUtils {
         return false;
     }
 
+    @Deprecated
     public static JSONObject parsingJwt(String jwt){
 
         JSONObject json = new JSONObject();

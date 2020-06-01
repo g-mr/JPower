@@ -6,7 +6,12 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.service.redis.RedisUtils;
 import com.wlcb.jpower.module.common.utils.JWTUtils;
+import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.param.ParamConfig;
+import com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction;
+import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +25,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -39,6 +48,12 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     /** 用户权限redis Key **/
     private final String USER_KEY = "user:loginFunction:";
 
+    //多少时间内要刷新token
+    private static Long refToken = 10 * 60 * 1000L;
+    //续期token过期时间
+    public static final String tokenExpired = "tokenExpired";
+    public static final Long tokenExpiredDefVal = 2400000L;
+
     @Autowired
     private RedisUtils redisUtils;
 
@@ -53,20 +68,15 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if(ParamConfig.getInt(isLogin) == 1){
 
-            if(ParamConfig.getInt(isLogin) == 1){
-
-                boolean b = JWTUtils.parseJWT(request, response);
-                if (!b){
-                    ResponseData responseData = new ResponseData();
-                    responseData.setCode(401);
-                    responseData.setStatus(false);
-                    responseData.setMessage("您没有权限访问");
-                    sendJsonMessage(response,responseData);
-                }
-                return b;
-            }else {
-                return true;
+            boolean b = JWTUtils.parseJWT(request, response);
+            if (!b){
+                ResponseData responseData = new ResponseData();
+                responseData.setCode(401);
+                responseData.setStatus(false);
+                responseData.setMessage("您没有权限访问");
+                sendJsonMessage(response,responseData);
             }
+            return b;
 
             //下面注释得方法是新得拦截逻辑，等tb_core_user表上线，需要使用下面得代码同步上线
 //            ResponseData responseData = new ResponseData();
@@ -93,34 +103,88 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 //
 //            logger.info("{}已进入鉴权拦截器,token={}",currentPath,jwt);
 //
+//
+//            TbCoreUser coreUser = null;
 //            if (StringUtils.isBlank(jwt)) {
 //                logger.info("未登陆或登陆超时！jwt是空的,请求地址={}",currentPath);
 //
 //                //这里需要新增匿名用户
-//            }
+//                coreUser = new TbCoreUser();
+//                coreUser.setLoginId("anonymous");
+//                coreUser.setId("2");
+//                coreUser.setUserName("匿名用户");
+//                coreUser.setUserType(9);
+//            }else {
+//                try{
+//                    Claims c = JWTUtils.parseJWT(jwt);
+//                    coreUser = JSON.parseObject(c.getSubject(),TbCoreUser.class);
+//                    logger.info("{}用户token已解析，用户信息={}", c.get("userId"),JSON.toJSONString(coreUser));
 //
-//            JSONObject jsonObject = JWTUtils.parsingJwt(jwt);
-//            if (jsonObject.getBoolean("status")){
+//                    long time = c.getExpiration().getTime() - System.currentTimeMillis();
+//                    //过期时间小于10分钟则获取新的token
+//                    if(time <= refToken){
+//                        try {
+//                            Map<String, Object> payload = new HashMap<String, Object>();
+//                            payload.put("userId", c.get("userId"));
+//                            String token = JWTUtils.createJWT(JSON.toJSONString(coreUser),payload, ParamConfig.getLong(tokenExpired,tokenExpiredDefVal));
 //
-////                String userId = jsonObject.getString("userId");
-//                JSONObject functionJson = (JSONObject) redisUtils.get(USER_KEY+jwt);
+//                            if (StringUtils.isBlank(token)){
+//                                logger.error("token生成错误，token={}",token);
+//                            }
+//                            response.setHeader("token",token);
+//                            redisUtils.set(USER_KEY+c.get("userId"),redisUtils.get(USER_KEY+c.get("userId")),ParamConfig.getLong(tokenExpired,tokenExpiredDefVal),TimeUnit.MILLISECONDS);
 //
-//                if (functionJson!=null && functionJson.containsKey(currentPath)){
-//
-//                    if (jsonObject.containsKey("token")){
-//                        response.setHeader("token",jsonObject.getString("token"));
-//                        Long time = ParamConfig.getLong(JWTUtils.tokenExpired,JWTUtils.tokenExpiredDefVal);
-//                        redisUtils.set(USER_KEY+jsonObject.getString("token"),functionJson,time, TimeUnit.SECONDS);
+//                            logger.info("{}用户已刷新，用户id={},旧token={},新token={}",coreUser.getLoginId(),c.get("userId"),jwt,token);
+//                        } catch (Exception e) {
+//                            logger.error("刷新token出错：{}",e.getMessage());
+//                        }
 //                    }
 //
+//
+//                }catch (ExpiredJwtException e){
+//                    Claims claims = e.getClaims();
+//                    TbCoreUser user = JSON.parseObject(claims.getSubject(),TbCoreUser.class);
+//                    logger.info("{}{}用户登陆超时请重新登录！用户ID={},token={},error={}",user.getLoginId(), ConstantsEnum.USER_TYPE.getName(user.getUserType()),claims.get("userId"),jwt,e.getMessage());
+//                    responseData.setCode(403);
+//                    responseData.setMessage("用户登陆超时请重新登录");
+//                }catch (Exception e){
+//                    logger.error("JWT解析出错！error={},token={}",e.getMessage(),jwt);
+//                    responseData.setCode(405);
+//                    responseData.setMessage("JWT解析出错");
+//                }
+//            }
+//
+//            if(coreUser != null){
+//                List<TbCoreFunction> functionList = (List<TbCoreFunction>) redisUtils.get(USER_KEY+coreUser.getId());
+//                boolean isAuthority = findAuthority(currentPath,functionList);
+//                if (isAuthority){
 //                    return true;
 //                }
 //            }
+//
 //            sendJsonMessage(response,responseData);
 //            return false;
         }else {
             return true;
         }
+    }
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 判断是否有权限
+     * @date 1:33 2020/6/2 0002
+     * @param currentPath 当前url
+     * @param functionList 权限列表
+     * @return boolean
+     */
+    private boolean findAuthority(String currentPath, List<TbCoreFunction> functionList) {
+        for (TbCoreFunction tbCoreFunction : functionList) {
+            //如果存在则说明有权限
+            if (StringUtils.equals(tbCoreFunction.getUrl(),currentPath)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public static void sendJsonMessage(HttpServletResponse response, ResponseData responseData) throws Exception {
