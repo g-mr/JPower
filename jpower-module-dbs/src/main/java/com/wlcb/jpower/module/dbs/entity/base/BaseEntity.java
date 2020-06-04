@@ -39,6 +39,7 @@ public class BaseEntity implements Serializable {
     private Date updateTime;
     private Integer status;
 
+    @JSONField(serialize = false)
     @TableField(exist = false)
     private Map<String, Object> params = new HashMap<>();
 
