@@ -1,5 +1,6 @@
 package com.wlcb.jpower.module.common.service.core.user;
 
+import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
 
 import java.util.List;
@@ -91,4 +92,13 @@ public interface CoreUserService {
      * @return java.lang.Integer
      */
     Integer updateUsersRole(String userIds, String roleIds);
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 登陆，并生成token
+     * @date 23:47 2020/6/9 0009
+     * @param user
+     * @return com.wlcb.jpower.module.base.vo.ResponseData
+     */
+    ResponseData createToken(TbCoreUser user);
 }

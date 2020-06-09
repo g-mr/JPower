@@ -35,4 +35,12 @@
         where rf.role_id = #{roleId,jdbcType=VARCHAR}
     </select>
 
+    <select id="selectFunctionIdInRoleIds" resultType="java.lang.String">
+        select rf.function_id from tb_core_role_function rf
+        where rf.role_id in
+        <foreach collection="list" item="roleId" open="(" close=")" separator=",">
+            #{roleId,jdbcType=VARCHAR}
+        </foreach>
+    </select>
+
 </mapper>

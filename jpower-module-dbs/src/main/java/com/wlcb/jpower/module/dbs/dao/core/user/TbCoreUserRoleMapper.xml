@@ -38,4 +38,11 @@
         left join tb_core_role r on r.id = ur.role_id
         where ur.user_id = #{userId,jdbcType=VARCHAR}
     </select>
+
+    <select id="selectRoleIdByUserId" resultType="java.lang.String">
+        select
+        ur.role_id
+        from tb_core_user_role ur
+        where ur.user_id = #{userId,jdbcType=VARCHAR}
+    </select>
 </mapper>

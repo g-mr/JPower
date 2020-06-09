@@ -108,7 +108,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 //            if (StringUtils.isBlank(jwt)) {
 //                logger.info("未登陆或登陆超时！jwt是空的,请求地址={}",currentPath);
 //
-//                //这里需要新增匿名用户
+//                //这里需要新增匿名用户,没有登陆得用户默认给一个匿名用户
 //                coreUser = new TbCoreUser();
 //                coreUser.setLoginId("anonymous");
 //                coreUser.setId("2");

@@ -4,10 +4,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.wlcb.jpower.core.login.utils.RSAUtil;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
+import com.wlcb.jpower.module.common.service.core.user.CoreUserService;
 import com.wlcb.jpower.module.common.service.redis.RedisUtils;
 import com.wlcb.jpower.module.common.service.user.UserService;
 import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
+import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
 import com.wlcb.jpower.module.dbs.entity.user.TblUser;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -16,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -40,19 +43,28 @@ public class LoginController extends BaseController {
     @Resource
     private UserService userService;
     @Resource
+    private CoreUserService coreUserService;
+    @Resource
     private RedisUtils redisUtils;
 
+    /**
+     * @author 郭丁志
+     * @Description //TODO 用户登陆
+     * @date 0:35 2020/6/10 0010
+     * @param userName
+     * @param passWord
+     * @param md5Key
+     * @return com.wlcb.jpower.module.base.vo.ResponseData
+     */
     @RequestMapping(value = "/login",method = RequestMethod.POST,produces="application/json")
-    public ResponseData login(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        String md5Key = request.getParameter("key1");
+    public ResponseData login(String userName,String passWord,@RequestParam(name = "key1")String md5Key) throws Exception {
 
         //解密
-        byte[] enUserName = RSAUtil.hexStringToBytes(request.getParameter("userName"));
-        byte[] enPassWord = RSAUtil.hexStringToBytes(request.getParameter("passWord"));
+        byte[] enUserName = RSAUtil.hexStringToBytes(userName);
+        byte[] enPassWord = RSAUtil.hexStringToBytes(passWord);
 
         if (enUserName == null || enPassWord == null){
-            return ReturnJsonUtil.printJson(406,"用户名或者密码不可为空",false);
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,"用户名或者密码不可为空",false);
         }
 
         byte[] deUserName = RSAUtil.decrypt(RSAUtil.getPrivateKey(), enUserName);
@@ -62,7 +74,7 @@ public class LoginController extends BaseController {
         String password = new StringBuilder(new String(dePassWord, "UTF-8")).reverse().toString();
 
         if (StringUtils.isBlank(username) || StringUtils.isBlank(password)){
-            return ReturnJsonUtil.printJson(406,"用户名或者密码不可为空",false);
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,"用户名或者密码不可为空",false);
         }
 
         //防篡改校验
@@ -74,6 +86,7 @@ public class LoginController extends BaseController {
         }
 
         TblUser user = userService.selectByUserName(username);
+//        TbCoreUser user = coreUserService.selectUserLoginId(username);
 
         if (user == null){
             //用户名空则返回
@@ -82,12 +95,12 @@ public class LoginController extends BaseController {
 
         if (!password.equals(user.getPassword().toUpperCase())) {
             //密码错误直接返回
-            return ReturnJsonUtil.printJson(300,"密码错误",false);
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"密码错误",false);
         }
 
         user.setPassword(null);
         return userService.login(user);
-
+//        return coreUserService.createToken(user);
     }
 
     /**

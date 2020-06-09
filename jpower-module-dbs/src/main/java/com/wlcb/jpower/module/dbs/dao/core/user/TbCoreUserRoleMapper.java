@@ -27,4 +27,13 @@ public interface TbCoreUserRoleMapper extends BaseMapper<TbCoreUserRole> {
      * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.role.TbCoreUserRole>
      */
     List<TbCoreUserRole> selectUserRoleByUserId(String userId);
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 查询用户所属所有的角色ID
+     * @date 0:14 2020/6/10 0010
+     * @param userId
+     * @return java.util.List<java.lang.String>
+     */
+    List<String> selectRoleIdByUserId(String userId);
 }

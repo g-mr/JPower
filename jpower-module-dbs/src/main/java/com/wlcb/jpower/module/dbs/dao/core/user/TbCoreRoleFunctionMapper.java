@@ -13,4 +13,6 @@ public interface TbCoreRoleFunctionMapper extends BaseMapper<TbCoreRoleFunction>
     TbCoreRoleFunction selectRoleFunctionByRoleId(String roleId);
 
     Integer insertList(@Param("roleFunctions") List<TbCoreRoleFunction> roleFunctions);
+
+    List<String> selectFunctionIdInRoleIds(@Param("list") List<String> roleIdList);
 }
