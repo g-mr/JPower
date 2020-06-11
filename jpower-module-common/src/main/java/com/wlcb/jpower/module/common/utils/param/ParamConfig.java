@@ -74,7 +74,11 @@ public class ParamConfig {
      * @return java.lang.Integer
      **/
     public static Integer getInt(String code){
-        Integer vlaue = Integer.parseInt(getString(code));
+        String p = getString(code);
+        Integer vlaue = null;
+        if (StringUtils.isNotBlank(p)){
+            vlaue = Integer.parseInt(p);
+        }
         return vlaue;
     }
 

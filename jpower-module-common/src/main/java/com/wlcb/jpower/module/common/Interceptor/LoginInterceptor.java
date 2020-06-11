@@ -56,6 +56,9 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
     @Autowired
     private RedisUtils redisUtils;
+    
+    @Value("${isLogin:}")
+    private Integer isSystemLogin;
 
     /**
      * @Author 郭丁志
@@ -66,7 +69,8 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
      **/
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if(ParamConfig.getInt(isLogin) == 1){
+        Integer isl = isSystemLogin == null?ParamConfig.getInt(isLogin):isSystemLogin;
+        if(1 == isl){
 
             boolean b = JWTUtils.parseJWT(request, response);
             if (!b){
