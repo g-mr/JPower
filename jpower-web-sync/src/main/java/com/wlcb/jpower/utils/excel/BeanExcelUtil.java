@@ -620,6 +620,17 @@ public class BeanExcelUtil<T> {
                         Field field = fieldsMap.get(entry.getKey());
                         // 取得类型,并根据对象类型设置值.
                         Class<?> fieldType = field.getType();
+
+                        if (fieldType != null)
+                        {
+                            Excel attr = field.getAnnotation(Excel.class);
+                            if (StringUtils.isNotEmpty(attr.readConverterExp()))
+                            {
+                                val = reverseByExp(String.valueOf(val), attr.readConverterExp());
+                            }
+                        }
+
+
                         if (String.class == fieldType)
                         {
                             String s = Convert.toStr(val);
