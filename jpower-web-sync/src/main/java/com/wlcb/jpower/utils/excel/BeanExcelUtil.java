@@ -682,10 +682,10 @@ public class BeanExcelUtil<T> {
                             {
                                 propertyName = field.getName() + "." + attr.targetAttr();
                             }
-                            if (StringUtils.isNotEmpty(attr.readConverterExp()))
-                            {
-                                val = reverseByExp(String.valueOf(val), attr.readConverterExp());
-                            }
+//                            if (StringUtils.isNotEmpty(attr.readConverterExp()))
+//                            {
+//                                val = reverseByExp(String.valueOf(val), attr.readConverterExp());
+//                            }
                             ReflectUtils.invokeSetter(entity, propertyName, val);
                         }
                     }
