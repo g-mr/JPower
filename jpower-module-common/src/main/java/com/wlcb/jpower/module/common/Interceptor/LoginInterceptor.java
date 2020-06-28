@@ -93,7 +93,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         saveCeShi("获取配置参数完成"+isl,request);
         if (isSystemLogin == null){
             saveCeShi("配置参数为空获取param，"+isl,request);
-            isl = (Integer) redisUtils.get(ConstantsUtils.PROPERTIES_PREFIX+isLogin);
+            isl = Integer.parseInt((String) redisUtils.get(ConstantsUtils.PROPERTIES_PREFIX+isLogin));
             saveCeShi("获取param完成，"+isl,request);
         }
 
