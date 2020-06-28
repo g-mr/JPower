@@ -20,6 +20,7 @@
     <properties>
         <java.version>1.8</java.version>
         <com.jpower.version>1.0.1-SNAPSHOT</com.jpower.version>
+        <springboot.data.redis.version>1.5.8.RELEASE</springboot.data.redis.version>
     </properties>
 
     <!--profile配置-->
@@ -65,11 +66,21 @@
                 <artifactId>druid-spring-boot-starter</artifactId>
                 <version>1.1.10</version>
             </dependency>
-
+            <dependency>
+                <groupId>redis.clients</groupId>
+                <artifactId>jedis</artifactId>
+                <version>${jedis.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-redis</artifactId>
-                <version>1.4.1.RELEASE</version>
+                <artifactId>spring-boot-starter-data-redis</artifactId>
+                <exclusions>
+                    <exclusion>
+                        <groupId>redis.clients</groupId>
+                        <artifactId>jedis</artifactId>
+                    </exclusion>
+                </exclusions>
+                <version>${springboot.data.redis.version}</version>
             </dependency>
 
             <dependency>
