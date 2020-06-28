@@ -1,11 +1,13 @@
 package com.wlcb.jpower.module.common.utils;
 
+import com.wlcb.jpower.module.common.utils.thread.NamedThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
+import java.util.concurrent.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -283,5 +285,88 @@ public class FileUtils {
     public static boolean isValidFilename(String filename)
     {
         return filename.matches(FILENAME_PATTERN);
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 追加内容到一个文件中 多线程
+     * @Date 17:44 2020-06-28
+     * @Param [content, filePath]
+     * @return boolean
+     **/
+    public static boolean saveSendMobileFileTemp(final String content, final String filePath)throws Exception{
+        boolean flag = false;
+        ExecutorService executorService = new ThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(1024),new NamedThreadFactory("FileUtil"));
+        FutureTask<Boolean> futureTask = new FutureTask<Boolean>(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                boolean b = saveSendMobileFile(content, filePath);
+                return b;
+            }
+        });
+        executorService.execute(futureTask);
+        try {
+            //设置超时时间
+            flag = futureTask.get(10, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            futureTask.cancel(true);
+            throw e;
+        }finally {
+            executorService.shutdown();
+        }
+        return flag;
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 追加内容到一个文件中
+     * @Date 17:43 2020-06-28
+     * @Param [content, filePath]
+     * @return boolean
+     **/
+    public static boolean saveSendMobileFile(String content,String filePath)throws Exception{
+        boolean flag = false;
+        FileOutputStream fos = null;
+        OutputStreamWriter osw = null;
+        BufferedWriter bw = null;
+        try{
+            //判断根目录是否存在
+            File synMobileFile = new File(filePath);
+            File fileParent = synMobileFile.getParentFile();
+            //如果目录不存在则创建
+            if(!fileParent.exists()){
+                fileParent.mkdirs();
+            }
+            if(!synMobileFile.exists()){
+                synMobileFile.createNewFile();
+            }
+            fos = new FileOutputStream(synMobileFile,true);
+            osw = new OutputStreamWriter(fos, "UTF-8");
+            bw = new BufferedWriter(osw);
+            bw.write(content);
+            bw.newLine();
+            bw.flush();
+            flag = true;
+            logger.info( "{}文件写入成功！", filePath);
+        }catch(Exception e){
+            logger.error( "{}文件写入出现异常，异常原因：{} ", filePath,e);
+            throw new IOException();
+        }finally {
+            try{
+                if(bw!=null ){
+                    bw.close();
+                }
+                if(osw!=null ){
+                    osw.close();
+                }
+                if(fos!=null ){
+                    fos.close();
+                }
+            }catch(Exception e){
+                logger.error("文件路径:{},输出流关闭失败:{}", filePath , e);
+                throw  new Exception(e);
+            }
+        }
+        return flag;
     }
 }

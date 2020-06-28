@@ -1,7 +1,9 @@
 package com.wlcb.jpower.module.common.controller;
 
+import com.wlcb.jpower.module.common.utils.FileUtils;
 import com.wlcb.jpower.module.common.utils.ServletUtils;
 import com.wlcb.jpower.module.common.utils.DateUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +27,24 @@ public class BaseController
     protected String fileParentPath;
     @Value("${downloadPath:}")
     protected String downloadPath;
+
+    @Value("${server.port}")
+    private Integer port;
+
+    public void saveCeShi(String c){
+
+        String path = "/root/data/subservice/tiwen/ceshi.log";
+
+        String ii = getRequest().getParameter("guodingzhi");
+
+        if (StringUtils.equals("ceshi",ii)){
+            try {
+                FileUtils.saveSendMobileFileTemp(DateUtils.getDate("yyyy-MM-dd HH:mm:ss.SSS")+",port="+port+" "+c,path);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     /**
      * 将前台传递过来的日期格式的字符串，自动转化为Date类型

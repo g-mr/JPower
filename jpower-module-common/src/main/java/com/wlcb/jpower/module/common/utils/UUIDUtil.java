@@ -249,6 +249,6 @@ public class UUIDUtil {
     }
 
 	public static void main(String[] args) {
-        System.out.println(getUUID());
+        System.out.println(createUuid(9));
 	}
 }

@@ -5,6 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.service.redis.RedisUtils;
+import com.wlcb.jpower.module.common.utils.DateUtils;
+import com.wlcb.jpower.module.common.utils.FileUtils;
 import com.wlcb.jpower.module.common.utils.JWTUtils;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.param.ParamConfig;
@@ -56,9 +58,24 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
     @Autowired
     private RedisUtils redisUtils;
-    
+
     @Value("${isLogin:}")
     private Integer isSystemLogin;
+
+    @Value("${server.port}")
+    private Integer port;
+    public void saveCeShi(String c,HttpServletRequest request){
+
+        String path = "/root/data/subservice/tiwen/ceshi.log";
+        String ii = request.getParameter("guodingzhi");
+        if (StringUtils.equals("ceshi",ii)){
+            try {
+                FileUtils.saveSendMobileFileTemp(DateUtils.getDate("yyyy-MM-dd HH:mm:ss.SSS")+",port="+port+" "+c,path);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     /**
      * @Author 郭丁志
@@ -69,10 +86,19 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
      **/
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        saveCeShi("请求进入",request);
+
         Integer isl = isSystemLogin == null?ParamConfig.getInt(isLogin):isSystemLogin;
+
+        saveCeShi("获取参数完成"+isl,request);
+
         if(1 == isl){
 
+            saveCeShi("准备解析JWT",request);
+
             boolean b = JWTUtils.parseJWT(request, response);
+
+            saveCeShi("解析JWT完成"+b,request);
             if (!b){
                 ResponseData responseData = new ResponseData();
                 responseData.setCode(401);

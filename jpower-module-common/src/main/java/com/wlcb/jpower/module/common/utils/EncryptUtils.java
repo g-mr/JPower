@@ -139,7 +139,7 @@ public class EncryptUtils {
     }
 
     public static void main(String[] args) throws Exception {
-        String content = "f363a9a1074e4449ba80eb092f0bd1ff";
+        String content = "{\"park_id\":\"001\",\"plate\":\"陕K629Z8\",\"entry_time\":1587744007}";
 
         String encryptResult = aesEncrypt(content);
 
