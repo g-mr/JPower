@@ -48,21 +48,33 @@ public class ParamConfig {
      * @return java.lang.String
      **/
     public static String getString(String code){
-
-        saveCeShi("开始获取参数");
         String vlaue = (String) redisUtils.get(prefix+code);
-        saveCeShi("获取redis中的参数，"+vlaue);
+        if (StringUtils.isBlank(vlaue)){
+            vlaue = paramService.selectByCode(code);
+
+            if (StringUtils.isNotBlank(vlaue)){
+                redisUtils.set(prefix+code,vlaue);
+            }
+        }
+        return vlaue;
+    }
+
+    public static String getString(String code,HttpServletRequest request){
+
+        saveCeShi("开始获取参数",request);
+        String vlaue = (String) redisUtils.get(prefix+code);
+        saveCeShi("获取redis中的参数，"+vlaue,request);
 
 
         if (StringUtils.isBlank(vlaue)){
-            saveCeShi("开始获取数据库参数");
+            saveCeShi("开始获取数据库参数",request);
             vlaue = paramService.selectByCode(code);
-            saveCeShi("获取数据库参数完成，"+vlaue);
+            saveCeShi("获取数据库参数完成，"+vlaue,request);
 
             if (StringUtils.isNotBlank(vlaue)){
-                saveCeShi("写入redis");
+                saveCeShi("写入redis",request);
                 redisUtils.set(prefix+code,vlaue);
-                saveCeShi("写入redis完成");
+                saveCeShi("写入redis完成",request);
             }
         }
         return vlaue;
@@ -70,10 +82,10 @@ public class ParamConfig {
 
     @Value("${server.port}")
     private static Integer port;
-    public static void saveCeShi(String c){
+    public static void saveCeShi(String c,HttpServletRequest request){
 
         String path = "/root/data/subservice/tiwen/ceshi.log";
-        String ii = ServletUtils.getRequest().getParameter("guodingzhi");
+        String ii = request.getParameter("guodingzhi");
         if (StringUtils.equals("ceshi",ii)){
             try {
                 FileUtils.saveSendMobileFileTemp(DateUtils.getDate("yyyy-MM-dd HH:mm:ss.SSS")+",port="+port+" "+c,path);
@@ -104,6 +116,14 @@ public class ParamConfig {
      **/
     public static Integer getInt(String code){
         String p = getString(code);
+        Integer vlaue = null;
+        if (StringUtils.isNotBlank(p)){
+            vlaue = Integer.parseInt(p);
+        }
+        return vlaue;
+    }
+    public static Integer getInt(String code,HttpServletRequest request){
+        String p = getString(code,request);
         Integer vlaue = null;
         if (StringUtils.isNotBlank(p)){
             vlaue = Integer.parseInt(p);

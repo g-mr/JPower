@@ -92,7 +92,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         saveCeShi("获取配置参数完成"+isl,request);
         if (isSystemLogin == null){
             saveCeShi("配置参数为空获取param，"+isl,request);
-            isl = ParamConfig.getInt(isLogin);
+            isl = ParamConfig.getInt(isLogin,request);
             saveCeShi("获取param完成，"+isl,request);
         }
 
