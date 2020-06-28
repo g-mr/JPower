@@ -88,7 +88,15 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         saveCeShi("请求进入",request);
 
-        Integer isl = isSystemLogin == null?ParamConfig.getInt(isLogin):isSystemLogin;
+        Integer isl = isSystemLogin;
+        saveCeShi("获取配置参数完成"+isl,request);
+        if (isSystemLogin == null){
+            saveCeShi("配置参数为空获取param，"+isl,request);
+            isl = ParamConfig.getInt(isLogin);
+            saveCeShi("获取param完成，"+isl,request);
+        }
+
+//        Integer isl = isSystemLogin == null?ParamConfig.getInt(isLogin):isSystemLogin;
 
         saveCeShi("获取参数完成"+isl,request);
 

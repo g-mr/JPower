@@ -2,12 +2,17 @@ package com.wlcb.jpower.module.common.utils.param;
 
 import com.wlcb.jpower.module.common.service.core.params.CoreParamService;
 import com.wlcb.jpower.module.common.service.redis.RedisUtils;
+import com.wlcb.jpower.module.common.utils.DateUtils;
+import com.wlcb.jpower.module.common.utils.FileUtils;
+import com.wlcb.jpower.module.common.utils.ServletUtils;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @ClassName ParamConfig
@@ -43,15 +48,39 @@ public class ParamConfig {
      * @return java.lang.String
      **/
     public static String getString(String code){
+
+        saveCeShi("开始获取参数");
         String vlaue = (String) redisUtils.get(prefix+code);
+        saveCeShi("获取redis中的参数，"+vlaue);
+
+
         if (StringUtils.isBlank(vlaue)){
+            saveCeShi("开始获取数据库参数");
             vlaue = paramService.selectByCode(code);
+            saveCeShi("获取数据库参数完成，"+vlaue);
 
             if (StringUtils.isNotBlank(vlaue)){
+                saveCeShi("写入redis");
                 redisUtils.set(prefix+code,vlaue);
+                saveCeShi("写入redis完成");
             }
         }
         return vlaue;
+    }
+
+    @Value("${server.port}")
+    private static Integer port;
+    public static void saveCeShi(String c){
+
+        String path = "/root/data/subservice/tiwen/ceshi.log";
+        String ii = ServletUtils.getRequest().getParameter("guodingzhi");
+        if (StringUtils.equals("ceshi",ii)){
+            try {
+                FileUtils.saveSendMobileFileTemp(DateUtils.getDate("yyyy-MM-dd HH:mm:ss.SSS")+",port="+port+" "+c,path);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
