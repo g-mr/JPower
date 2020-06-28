@@ -9,6 +9,7 @@ import com.wlcb.jpower.module.common.utils.DateUtils;
 import com.wlcb.jpower.module.common.utils.FileUtils;
 import com.wlcb.jpower.module.common.utils.JWTUtils;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
+import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
 import com.wlcb.jpower.module.common.utils.param.ParamConfig;
 import com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
@@ -92,7 +93,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         saveCeShi("获取配置参数完成"+isl,request);
         if (isSystemLogin == null){
             saveCeShi("配置参数为空获取param，"+isl,request);
-            isl = ParamConfig.getInt(isLogin,request);
+            isl = (Integer) redisUtils.get(ConstantsUtils.PROPERTIES_PREFIX+isLogin);
             saveCeShi("获取param完成，"+isl,request);
         }
 
