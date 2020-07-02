@@ -83,6 +83,9 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
         String ip = IpUtils.getRemortIP(request);
         String ips = ParamConfig.getString(ip_list);
+        if (StringUtils.contains(ips,ip)){
+            logger.info("接口请求已进入--{}--{}",ip,request.getServletPath());
+        }
 
         if(1 == isl && !StringUtils.contains(ips,ip)){
 
