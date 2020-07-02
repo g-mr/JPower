@@ -1,5 +1,7 @@
 package com.wlcb.jpower.module.common.utils;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,5 +38,18 @@ public class SplitList {
 			listArray.add(subList);// 将分割后的list放入对应的数组的位中
 		}
 		return listArray;
+	}
+
+	/**
+	 * @Author 郭丁志
+	 * @Description //TODO 删除数组第一个元素
+	 * @Date 16:11 2020-07-02
+	 * @Param [ips]
+	 * @return java.lang.String
+	 **/
+	public static String[] removeStart(String[] arrays){
+		String[] ss = new String[arrays.length-1];
+		System.arraycopy(arrays, 1, ss, 0, ss.length);
+		return ss;
 	}
 }

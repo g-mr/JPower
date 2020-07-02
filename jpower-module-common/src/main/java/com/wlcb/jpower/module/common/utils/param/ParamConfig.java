@@ -59,42 +59,6 @@ public class ParamConfig {
         return vlaue;
     }
 
-    public static String getString(String code,HttpServletRequest request){
-
-        saveCeShi("开始获取参数",request);
-        String vlaue = (String) redisUtils.get(prefix+code);
-        saveCeShi("获取redis中的参数，"+vlaue,request);
-
-
-        if (StringUtils.isBlank(vlaue)){
-            saveCeShi("开始获取数据库参数",request);
-            vlaue = paramService.selectByCode(code);
-            saveCeShi("获取数据库参数完成，"+vlaue,request);
-
-            if (StringUtils.isNotBlank(vlaue)){
-                saveCeShi("写入redis",request);
-                redisUtils.set(prefix+code,vlaue);
-                saveCeShi("写入redis完成",request);
-            }
-        }
-        return vlaue;
-    }
-
-    @Value("${server.port}")
-    private static Integer port;
-    public static void saveCeShi(String c,HttpServletRequest request){
-
-        String path = "/root/data/subservice/tiwen/ceshi.log";
-        String ii = request.getParameter("guodingzhi");
-        if (StringUtils.equals("ceshi",ii)){
-            try {
-                FileUtils.saveSendMobileFileTemp(DateUtils.getDate("yyyy-MM-dd HH:mm:ss.SSS")+",port="+port+" "+c,path);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     /**
      * @Author 郭丁志
      * @Description //TODO 获取string类型参数,并给一个默认值
@@ -116,14 +80,6 @@ public class ParamConfig {
      **/
     public static Integer getInt(String code){
         String p = getString(code);
-        Integer vlaue = null;
-        if (StringUtils.isNotBlank(p)){
-            vlaue = Integer.parseInt(p);
-        }
-        return vlaue;
-    }
-    public static Integer getInt(String code,HttpServletRequest request){
-        String p = getString(code,request);
         Integer vlaue = null;
         if (StringUtils.isNotBlank(p)){
             vlaue = Integer.parseInt(p);

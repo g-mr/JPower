@@ -31,21 +31,6 @@ public class BaseController
     @Value("${server.port}")
     private Integer port;
 
-    public void saveCeShi(String c){
-
-        String path = "/root/data/subservice/tiwen/ceshi.log";
-
-        String ii = getRequest().getParameter("guodingzhi");
-
-        if (StringUtils.equals("ceshi",ii)){
-            try {
-                FileUtils.saveSendMobileFileTemp(DateUtils.getDate("yyyy-MM-dd HH:mm:ss.SSS")+",port="+port+" "+c,path);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     /**
      * 将前台传递过来的日期格式的字符串，自动转化为Date类型
      */

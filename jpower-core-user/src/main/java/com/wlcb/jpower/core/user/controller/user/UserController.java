@@ -300,7 +300,7 @@ public class UserController extends BaseController {
      * @return com.wlcb.jpower.module.base.vo.ResponseData
      */
     @RequestMapping(value = "/addRole",method = {RequestMethod.POST},produces="application/json")
-    public ResponseData exportUser(String userIds,String roleIds){
+    public ResponseData addRole(String userIds,String roleIds){
 
         if (StringUtils.isBlank(userIds)){
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,"用户ID不可位空", false);
@@ -328,7 +328,7 @@ public class UserController extends BaseController {
      * @return com.wlcb.jpower.module.base.vo.ResponseData
      */
     @RequestMapping(value = "/userRole",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData exportUser(String userId){
+    public ResponseData userRole(String userId){
 
         if (StringUtils.isBlank(userId)){
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,"用户ID不可为空", false);

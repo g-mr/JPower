@@ -7,6 +7,7 @@ import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.service.redis.RedisUtils;
 import com.wlcb.jpower.module.common.utils.DateUtils;
 import com.wlcb.jpower.module.common.utils.FileUtils;
+import com.wlcb.jpower.module.common.utils.IpUtils;
 import com.wlcb.jpower.module.common.utils.JWTUtils;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
@@ -47,6 +48,8 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     private static final Logger logger = LoggerFactory.getLogger(LoginInterceptor.class);
 
     private final String isLogin = "isLogin";
+    /** ip白名单 **/
+    private final String ip_list = "ip_list";
 
     /** 用户权限redis Key **/
     private final String USER_KEY = "user:loginFunction:";
@@ -65,18 +68,6 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
     @Value("${server.port}")
     private Integer port;
-    public void saveCeShi(String c,HttpServletRequest request){
-
-        String path = "/root/data/subservice/tiwen/ceshi.log";
-        String ii = request.getParameter("guodingzhi");
-        if (StringUtils.equals("ceshi",ii)){
-            try {
-                FileUtils.saveSendMobileFileTemp(DateUtils.getDate("yyyy-MM-dd HH:mm:ss.SSS")+",port="+port+" "+c,path);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     /**
      * @Author 郭丁志
@@ -87,28 +78,16 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
      **/
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        saveCeShi("请求进入",request);
 
-        Integer isl = isSystemLogin;
-        saveCeShi("获取配置参数完成"+isl,request);
-        if (isSystemLogin == null){
-            saveCeShi("配置参数为空获取param，"+isl,request);
-//            isl = Integer.parseInt((String) redisUtils.get(ConstantsUtils.PROPERTIES_PREFIX+isLogin));
-            isl = ParamConfig.getInt(isLogin);
-            saveCeShi("获取param完成，"+isl,request);
-        }
+        Integer isl = isSystemLogin == null?ParamConfig.getInt(isLogin):isSystemLogin;
 
-//        Integer isl = isSystemLogin == null?ParamConfig.getInt(isLogin):isSystemLogin;
+        String ip = IpUtils.getRemortIP(request);
+        String ips = ParamConfig.getString(ip_list);
 
-        saveCeShi("获取参数完成"+isl,request);
-
-        if(1 == isl){
-
-            saveCeShi("准备解析JWT",request);
+        if(1 == isl && !StringUtils.contains(ips,ip)){
 
             boolean b = JWTUtils.parseJWT(request, response);
 
-            saveCeShi("解析JWT完成"+b,request);
             if (!b){
                 ResponseData responseData = new ResponseData();
                 responseData.setCode(401);

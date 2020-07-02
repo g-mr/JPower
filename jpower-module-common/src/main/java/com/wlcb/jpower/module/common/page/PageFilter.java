@@ -29,44 +29,26 @@ public class PageFilter implements Filter {
 
     @Value("${server.port}")
     private Integer port;
-    public void saveCeShi(String c,HttpServletRequest request){
-
-        String path = "/root/data/subservice/tiwen/ceshi.log";
-        String ii = request.getParameter("guodingzhi");
-        if (StringUtils.equals("ceshi",ii)){
-            try {
-                FileUtils.saveSendMobileFileTemp(DateUtils.getDate("yyyy-MM-dd HH:mm:ss.SSS")+",port="+port+" "+c,path);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
-        saveCeShi("进入过滤器",httpRequest);
 
         PaginationContext.setPageNum(getPageNum(httpRequest));
         PaginationContext.setPageSize(getPageSize(httpRequest));
         PaginationContext.setOrderBy(getOrderBy(httpRequest));
 
-        saveCeShi("过滤器赋值完成",httpRequest);
         try {
             chain.doFilter(request, response);
         }
         // 使用完Threadlocal，将其删除。使用finally确保一定将其删除
         finally {
-
-            saveCeShi("开始删除过滤值",httpRequest);
-
             PaginationContext.removePageNum();
             PaginationContext.removePageSize();
             PaginationContext.removeOrderBy();
 
-            saveCeShi("删除过滤值完成",httpRequest);
         }
     }
 
