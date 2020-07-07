@@ -1,7 +1,7 @@
 package com.wlcb.jpower.module.dbs.entity.core.user;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.wlcb.jpower.module.base.annotation.Excel;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import lombok.Data;

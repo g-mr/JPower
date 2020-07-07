@@ -1,6 +1,6 @@
-package com.wlcb.jpower.module.dbs.dao.core.user;
+package com.wlcb.jpower.module.dbs.dao.core.user.mapper;
 
-import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;

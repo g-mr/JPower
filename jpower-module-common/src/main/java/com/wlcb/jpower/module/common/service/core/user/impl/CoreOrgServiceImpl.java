@@ -1,8 +1,9 @@
 package com.wlcb.jpower.module.common.service.core.user.impl;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wlcb.jpower.module.common.service.core.user.CoreOrgService;
-import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreOrgMapper;
+import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreOrgDao;
+import com.wlcb.jpower.module.dbs.dao.core.user.mapper.TbCoreOrgMapper;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreOrg;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +21,13 @@ public class CoreOrgServiceImpl implements CoreOrgService {
 
     @Autowired
     private TbCoreOrgMapper coreOrgMapper;
+    @Autowired
+    private TbCoreOrgDao coreOrgDao;
 
     @Override
     public List<TbCoreOrg> listByParent(TbCoreOrg coreOrg) {
 
-        EntityWrapper wrapper = new EntityWrapper<TbCoreOrg>();
+        QueryWrapper wrapper = new QueryWrapper<TbCoreOrg>();
 
         if (StringUtils.isNotBlank(coreOrg.getCode())){
             wrapper.eq("code",coreOrg.getCode());
@@ -66,40 +69,36 @@ public class CoreOrgServiceImpl implements CoreOrgService {
             wrapper.eq("is_virtual",coreOrg.getIsVirtual());
         }
 
-        wrapper.orderBy("sort",true);
+        wrapper.orderByAsc("sort");
 
         return coreOrgMapper.selectList(wrapper);
     }
 
     @Override
     public TbCoreOrg selectOrgByCode(String code) {
-        TbCoreOrg org = new TbCoreOrg();
-        org.setCode(code);
-        return coreOrgMapper.selectOne(org);
+        return coreOrgDao.getOne(new QueryWrapper<TbCoreOrg>().lambda().eq(TbCoreOrg::getCode,code));
     }
 
     @Override
     public Integer add(TbCoreOrg coreOrg) {
         coreOrg.setUpdateUser(coreOrg.getCreateUser());
-        return coreOrgMapper.insert(coreOrg);
+        return coreOrgDao.save(coreOrg)?1:0;
     }
 
     @Override
     public Integer listOrgByPids(String ids) {
-        EntityWrapper wrapper = new EntityWrapper<TbCoreOrg>();
-        wrapper.in("id",ids);
-        return coreOrgMapper.selectCount(wrapper);
+        return coreOrgDao.count(new QueryWrapper<TbCoreOrg>().lambda().in(TbCoreOrg::getId,ids));
     }
 
     @Override
     public Integer delete(String ids) {
         List<String> list = new ArrayList<>(Arrays.asList(ids.split(",")));
-        return coreOrgMapper.deleteBatchIds(list);
+        return coreOrgDao.removeByIds(list)?1:0;
     }
 
     @Override
     public Integer update(TbCoreOrg coreUser) {
-        return coreOrgMapper.updateById(coreUser);
+        return coreOrgDao.updateById(coreUser)?1:0;
     }
 
 }

@@ -1,7 +1,7 @@
 package com.wlcb.jpower.module.common.service.core.user.impl;
 
 import com.wlcb.jpower.module.common.service.core.user.CoreUserRoleService;
-import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreUserRoleMapper;
+import com.wlcb.jpower.module.dbs.dao.core.user.mapper.TbCoreUserRoleMapper;
 import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreUserRole;
 import org.springframework.stereotype.Service;
 

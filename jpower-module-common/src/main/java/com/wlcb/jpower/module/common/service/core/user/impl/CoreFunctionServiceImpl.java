@@ -1,12 +1,11 @@
 package com.wlcb.jpower.module.common.service.core.user.impl;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wlcb.jpower.module.common.service.core.user.CoreFunctionService;
-import com.wlcb.jpower.module.common.service.core.user.CoreRoleService;
-import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreFunctionMapper;
-import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreRoleMapper;
+import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreFunctionDao;
+import com.wlcb.jpower.module.dbs.dao.core.user.mapper.TbCoreFunctionMapper;
 import com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction;
-import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreRole;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,48 +22,50 @@ public class CoreFunctionServiceImpl implements CoreFunctionService {
 
     @Autowired
     private TbCoreFunctionMapper coreFunctionMapper;
+    @Autowired
+    private TbCoreFunctionDao coreFunctionDao;
 
     @Override
     public List<TbCoreFunction> listByParent(TbCoreFunction coreFunction) {
-        EntityWrapper wrapper = new EntityWrapper<TbCoreFunction>();
+        LambdaQueryWrapper<TbCoreFunction> wrapper = new QueryWrapper<TbCoreFunction>().lambda();
 
-        wrapper.eq("status",1);
+        wrapper.eq(TbCoreFunction::getStatus,1);
 
         if (StringUtils.isNotBlank(coreFunction.getAlias())){
-            wrapper.eq("alias",coreFunction.getAlias());
+            wrapper.eq(TbCoreFunction::getAlias,coreFunction.getAlias());
         }
 
         if (StringUtils.isNotBlank(coreFunction.getParentId())){
-            wrapper.eq("parent_id",coreFunction.getParentId());
+            wrapper.eq(TbCoreFunction::getParentId,coreFunction.getParentId());
         }else {
-            wrapper.isNull("parent_id");
+            wrapper.isNull(TbCoreFunction::getParentId);
         }
 
         if (StringUtils.isNotBlank(coreFunction.getCode())){
-            wrapper.eq("code",coreFunction.getCode());
+            wrapper.eq(TbCoreFunction::getCode,coreFunction.getCode());
         }
 
         if (StringUtils.isNotBlank(coreFunction.getParentCode())){
-            wrapper.eq("parent_code",coreFunction.getParentCode());
+            wrapper.eq(TbCoreFunction::getParentCode,coreFunction.getParentCode());
         }else {
-            wrapper.isNull("parent_code");
+            wrapper.isNull(TbCoreFunction::getParentCode);
         }
 
         if (coreFunction.getIsMenu() != null){
-            wrapper.eq("is_menu",coreFunction.getIsMenu());
+            wrapper.eq(TbCoreFunction::getIsMenu,coreFunction.getIsMenu());
         }
 
         if (StringUtils.isNotBlank(coreFunction.getFunctionName())){
-            wrapper.like("function_name",coreFunction.getFunctionName());
+            wrapper.like(TbCoreFunction::getFunctionName,coreFunction.getFunctionName());
         }
 
         if (StringUtils.isNotBlank(coreFunction.getUrl())){
-            wrapper.like("url",coreFunction.getUrl());
+            wrapper.like(TbCoreFunction::getUrl,coreFunction.getUrl());
         }
 
-        wrapper.orderBy("sort",true);
+        wrapper.orderByAsc(TbCoreFunction::getSort);
 
-        return coreFunctionMapper.selectList(wrapper);
+        return coreFunctionDao.list(wrapper);
     }
 
     @Override
@@ -76,34 +77,34 @@ public class CoreFunctionServiceImpl implements CoreFunctionService {
     @Override
     public Integer delete(String ids) {
 
-        //这里还要删除和角色的关联信息
+        // TODO: 2020-07-03  这里还要删除和角色的关联信息
 
 
 
-        return coreFunctionMapper.deleteBatchIds(new ArrayList<>(Arrays.asList(ids.split(","))));
+        return coreFunctionDao.removeByIds(new ArrayList<>(Arrays.asList(ids.split(","))))?1:0;
     }
 
     @Override
     public Integer listByPids(String ids) {
-        EntityWrapper wrapper = new EntityWrapper<TbCoreFunction>();
+        LambdaQueryWrapper<TbCoreFunction> wrapper = new QueryWrapper<TbCoreFunction>().lambda();
 
-        wrapper.in("parent_id",ids);
+        wrapper.in(TbCoreFunction::getParentId,ids);
 
-        return coreFunctionMapper.selectCount(wrapper);
+        return coreFunctionDao.count(wrapper);
     }
 
     @Override
     public TbCoreFunction selectFunctionByCode(String code) {
-        TbCoreFunction coreFunction = new TbCoreFunction();
-        coreFunction.setCode(code);
-        return coreFunctionMapper.selectOne(coreFunction);
+        LambdaQueryWrapper<TbCoreFunction> wrapper = new QueryWrapper<TbCoreFunction>().lambda();
+        wrapper.eq(TbCoreFunction::getCode,code);
+        return coreFunctionDao.getOne(wrapper);
     }
 
     @Override
     public TbCoreFunction selectFunctionByUrl(String url) {
-        TbCoreFunction coreFunction = new TbCoreFunction();
-        coreFunction.setUrl(url);
-        return coreFunctionMapper.selectOne(coreFunction);
+        LambdaQueryWrapper<TbCoreFunction> wrapper = new QueryWrapper<TbCoreFunction>().lambda();
+        wrapper.eq(TbCoreFunction::getUrl,url);
+        return coreFunctionDao.getOne(wrapper);
     }
 
     @Override

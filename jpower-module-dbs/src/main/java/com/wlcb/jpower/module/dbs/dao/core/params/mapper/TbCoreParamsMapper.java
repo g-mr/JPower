@@ -1,7 +1,7 @@
-package com.wlcb.jpower.module.dbs.dao.core.params;
+package com.wlcb.jpower.module.dbs.dao.core.params.mapper;
 
 
-import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.wlcb.jpower.module.dbs.entity.core.params.TbCoreParam;
 import org.springframework.stereotype.Component;
 

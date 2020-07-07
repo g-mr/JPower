@@ -2,7 +2,9 @@ package com.wlcb.jpower.module.common.service.core.user.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.service.core.user.CoreUserService;
 import com.wlcb.jpower.module.common.service.redis.RedisUtils;
@@ -10,11 +12,14 @@ import com.wlcb.jpower.module.common.utils.JWTUtils;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.UUIDUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
+import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
 import com.wlcb.jpower.module.common.utils.param.ParamConfig;
-import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreFunctionMapper;
-import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreRoleFunctionMapper;
-import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreUserMapper;
-import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreUserRoleMapper;
+import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreUserDao;
+import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreUserRoleDao;
+import com.wlcb.jpower.module.dbs.dao.core.user.mapper.TbCoreFunctionMapper;
+import com.wlcb.jpower.module.dbs.dao.core.user.mapper.TbCoreRoleFunctionMapper;
+import com.wlcb.jpower.module.dbs.dao.core.user.mapper.TbCoreUserMapper;
+import com.wlcb.jpower.module.dbs.dao.core.user.mapper.TbCoreUserRoleMapper;
 import com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction;
 import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreUserRole;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
@@ -36,7 +41,11 @@ public class CoreUserServiceImpl implements CoreUserService {
     @Autowired
     private TbCoreUserMapper coreUserMapper;
     @Autowired
+    private TbCoreUserDao coreUserDao;
+    @Autowired
     private TbCoreUserRoleMapper coreUserRoleMapper;
+    @Autowired
+    private TbCoreUserRoleDao coreUserRoleDao;
     @Autowired
     private TbCoreRoleFunctionMapper coreRoleFunctionMapper;
     @Autowired
@@ -47,13 +56,10 @@ public class CoreUserServiceImpl implements CoreUserService {
     private final String tokenExpired = "tokenExpired";
     private final Long tokenExpiredDefVal = 2400000L;
 
-    /** 用户权限redis Key **/
-    private final String USER_KEY = "user:loginFunction:";
-
     @Override
     public List<TbCoreUser> list(TbCoreUser coreUser) {
 
-        EntityWrapper wrapper = new EntityWrapper<TbCoreUser>();
+        QueryWrapper wrapper = new QueryWrapper<TbCoreUser>();
 
         if (StringUtils.isNotBlank(coreUser.getOrgId())){
             wrapper.eq("org_id",coreUser.getOrgId());
@@ -87,9 +93,9 @@ public class CoreUserServiceImpl implements CoreUserService {
             wrapper.eq("status",coreUser.getStatus());
         }
 
-        wrapper.orderBy("create_time",false);
+        wrapper.orderByDesc("create_time");
 
-        return coreUserMapper.selectList(wrapper);
+        return coreUserDao.list(wrapper);
     }
 
     @Override
@@ -106,13 +112,13 @@ public class CoreUserServiceImpl implements CoreUserService {
         }
 
         coreUser.setUpdateUser(coreUser.getCreateUser());
-        return coreUserMapper.insert(coreUser);
+        return coreUserDao.save(coreUser)?1:0;
     }
 
     @Override
     public Integer delete(String ids) {
         List<String> list = new ArrayList<>(Arrays.asList(ids.split(",")));
-        return coreUserMapper.deleteBatchIds(list);
+        return coreUserDao.removeByIds(list)?1:0;
     }
 
     @Override
@@ -122,9 +128,7 @@ public class CoreUserServiceImpl implements CoreUserService {
 
     @Override
     public TbCoreUser selectUserLoginId(String loginId) {
-        TbCoreUser coreUser = new TbCoreUser();
-        coreUser.setLoginId(loginId);
-        return coreUserMapper.selectOne(coreUser);
+        return coreUserDao.getOne(new QueryWrapper<TbCoreUser>().lambda().eq(TbCoreUser::getLoginId,loginId));
     }
 
     @Override
@@ -134,9 +138,10 @@ public class CoreUserServiceImpl implements CoreUserService {
 
     @Override
     public Integer updateUserPassword(String ids, String pass) {
-        EntityWrapper wrapper = new EntityWrapper<TbCoreUser>();
+        UpdateWrapper wrapper = new UpdateWrapper<TbCoreUser>();
         wrapper.in("id",ids);
-        return coreUserMapper.updateForSet("password = "+pass,wrapper);
+        wrapper.set("password",pass);
+        return coreUserDao.update(null,wrapper)?1:0;
     }
 
     @Override
@@ -160,9 +165,9 @@ public class CoreUserServiceImpl implements CoreUserService {
         }
 
         //先删除用户原有角色
-        EntityWrapper wrapper = new EntityWrapper<TbCoreUserRole>();
+        QueryWrapper wrapper = new QueryWrapper<TbCoreUserRole>();
         wrapper.in("user_id",uIds);
-        coreUserRoleMapper.delete(wrapper);
+        coreUserRoleDao.remove(wrapper);
 
         if (userRoles.size() > 0){
             Integer count = coreUserRoleMapper.insertList(userRoles);
@@ -191,7 +196,7 @@ public class CoreUserServiceImpl implements CoreUserService {
 
             json.put("token",token);
 
-            redisUtils.set(USER_KEY+user.getId(),list,ParamConfig.getLong(tokenExpired,tokenExpiredDefVal), TimeUnit.MILLISECONDS);
+            redisUtils.set(ConstantsUtils.USER_KEY +user.getId(),list,ParamConfig.getLong(tokenExpired,tokenExpiredDefVal), TimeUnit.MILLISECONDS);
 
             log.info("后台用户登录成功，用户名={},id={},token={}",user.getLoginId(),user.getId(),token);
 
@@ -201,4 +206,20 @@ public class CoreUserServiceImpl implements CoreUserService {
             return ReturnJsonUtil.printJson(500,"登录失败",false);
         }
     }
+
+    @Override
+    public TbCoreUser selectByPhone(String phone) {
+        QueryWrapper wrapper = new QueryWrapper<TbCoreUserRole>();
+        wrapper.eq("telephone",phone);
+        return coreUserDao.getOne(wrapper);
+    }
+
+    @Override
+    public TbCoreUser selectByUserNameAndId(String id, String username) {
+        LambdaQueryWrapper<TbCoreUser> wrapper = new QueryWrapper<TbCoreUser>().lambda();
+        wrapper.eq(TbCoreUser::getLoginId,username);
+        wrapper.eq(TbCoreUser::getId,id);
+        return coreUserDao.getOne(wrapper);
+    }
+
 }

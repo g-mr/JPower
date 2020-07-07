@@ -1,11 +1,11 @@
 package com.wlcb.jpower.module.common.service.core.user.impl;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.wlcb.jpower.module.common.service.core.user.CoreRolefunctionService;
 import com.wlcb.jpower.module.common.utils.UUIDUtil;
-import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreRoleFunctionMapper;
+import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreRoleFunctionDao;
+import com.wlcb.jpower.module.dbs.dao.core.user.mapper.TbCoreRoleFunctionMapper;
 import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreRoleFunction;
-import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreUserRole;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,7 +16,10 @@ import java.util.Map;
 @Service("coreRolefunctionService")
 public class CoreRolefunctionServiceImpl implements CoreRolefunctionService {
 
+    @Autowired
     public TbCoreRoleFunctionMapper coreRoleFunctionMapper;
+    @Autowired
+    public TbCoreRoleFunctionDao coreRoleFunctionDao;
 
     @Override
     public TbCoreRoleFunction selectRoleFunctionByRoleId(String roleId) {
@@ -39,7 +42,7 @@ public class CoreRolefunctionServiceImpl implements CoreRolefunctionService {
         //先删除角色原有权限
         Map<String,Object> map = new HashMap<>();
         map.put("role_id",roleId);
-        coreRoleFunctionMapper.deleteByMap(map);
+        coreRoleFunctionDao.removeByMap(map);
 
         if (roleFunctions.size() > 0){
             Integer count = coreRoleFunctionMapper.insertList(roleFunctions);

@@ -1,8 +1,8 @@
-package com.wlcb.jpower.module.dbs.dao.user;
+package com.wlcb.jpower.module.dbs.dao.user.mapper;
 
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.wlcb.jpower.module.dbs.entity.user.TblUser;
-import com.wlcb.jpower.module.dbs.dao.BaseMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

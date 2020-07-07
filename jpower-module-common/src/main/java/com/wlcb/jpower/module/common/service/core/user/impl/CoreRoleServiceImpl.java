@@ -1,8 +1,10 @@
 package com.wlcb.jpower.module.common.service.core.user.impl;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.wlcb.jpower.module.common.service.core.user.CoreRoleService;
-import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreRoleMapper;
+import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreRoleDao;
+import com.wlcb.jpower.module.dbs.dao.core.user.mapper.TbCoreRoleMapper;
 import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreRole;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +20,12 @@ public class CoreRoleServiceImpl implements CoreRoleService {
 
     @Autowired
     private TbCoreRoleMapper coreRoleMapper;
+    @Autowired
+    private TbCoreRoleDao coreRoleDao;
 
     @Override
     public List<TbCoreRole> listByParent(TbCoreRole coreRole) {
-        EntityWrapper wrapper = new EntityWrapper<TbCoreRole>();
+        QueryWrapper wrapper = new QueryWrapper<TbCoreRole>();
 
         if (StringUtils.isNotBlank(coreRole.getCode())){
             wrapper.eq("code",coreRole.getCode());
@@ -49,7 +53,7 @@ public class CoreRoleServiceImpl implements CoreRoleService {
 
         wrapper.eq("status",1);
 
-        wrapper.orderBy("sort",true);
+        wrapper.orderByAsc("sort");
 
         return coreRoleMapper.selectList(wrapper);
     }
@@ -57,34 +61,33 @@ public class CoreRoleServiceImpl implements CoreRoleService {
     @Override
     public Integer add(TbCoreRole coreRole) {
         coreRole.setUpdateUser(coreRole.getCreateUser());
-        return coreRoleMapper.insert(coreRole);
+        return coreRoleDao.save(coreRole)?1:0;
     }
 
     @Override
     public Integer deleteStatus(String ids) {
-        EntityWrapper wrapper = new EntityWrapper<TbCoreRole>();
+        UpdateWrapper wrapper = new UpdateWrapper<TbCoreRole>();
         wrapper.in("id",ids);
-        return coreRoleMapper.updateForSet("status=0",wrapper);
+        wrapper.set("status",0);
+        return coreRoleDao.update(null,wrapper)?1:0;
     }
 
     @Override
     public Integer listByPids(String ids) {
-        EntityWrapper wrapper = new EntityWrapper<TbCoreRole>();
+        QueryWrapper wrapper = new QueryWrapper<TbCoreRole>();
 
         wrapper.in("parent_id",ids);
 
-        return coreRoleMapper.selectCount(wrapper);
+        return coreRoleDao.count(wrapper);
     }
 
     @Override
     public TbCoreRole selectRoleByCode(String code) {
-        TbCoreRole coreRole = new TbCoreRole();
-        coreRole.setCode(code);
-        return coreRoleMapper.selectOne(coreRole);
+        return coreRoleDao.getOne(new QueryWrapper<TbCoreRole>().lambda().eq(TbCoreRole::getCode,code));
     }
 
     @Override
     public Integer update(TbCoreRole coreRole) {
-        return coreRoleMapper.updateById(coreRole);
+        return coreRoleDao.updateById(coreRole)?1:0;
     }
 }

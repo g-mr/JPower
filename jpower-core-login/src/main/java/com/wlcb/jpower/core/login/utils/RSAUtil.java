@@ -2,16 +2,15 @@ package com.wlcb.jpower.core.login.utils;
 
 import com.wlcb.jpower.module.base.properties.SysProperties;
 import com.wlcb.jpower.module.common.utils.param.ParamConfig;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.crypto.Cipher;
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
-import java.security.KeyPair;
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.io.*;
+import java.net.URLDecoder;
+import java.security.*;
+import java.security.interfaces.RSAPublicKey;
 
 
 public class RSAUtil {
@@ -51,23 +50,23 @@ public class RSAUtil {
     /**
      * * 生成密钥对 *
      */
-    /*public static KeyPair generateKeyPair() throws Exception {
-        try {
-            KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA",
-                    new BouncyCastleProvider());
-            final int KEY_SIZE = 1024;
-            keyPairGen.initialize(KEY_SIZE, new SecureRandom());
-            KeyPair keyPair = keyPairGen.generateKeyPair();
-
-            System.out.println("private----" + keyPair.getPrivate());
-            System.out.println("public----" + keyPair.getPublic());
-
-            saveKeyPair(keyPair);
-            return keyPair;
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }*/
+//    public static KeyPair generateKeyPair() throws Exception {
+//        try {
+//            KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA",
+//                    new BouncyCastleProvider());
+//            final int KEY_SIZE = 1024;
+//            keyPairGen.initialize(KEY_SIZE, new SecureRandom());
+//            KeyPair keyPair = keyPairGen.generateKeyPair();
+//
+//            System.out.println("private----" + keyPair.getPrivate());
+//            System.out.println("public----" + keyPair.getPublic());
+//
+//            saveKeyPair(keyPair);
+//            return keyPair;
+//        } catch (Exception e) {
+//            throw new Exception(e.getMessage());
+//        }
+//    }
 
     public static KeyPair getKeyPair(String url) throws Exception {
         FileInputStream fis = new FileInputStream(url);
@@ -80,7 +79,7 @@ public class RSAUtil {
 //    public static void main(String[] args) throws Exception {
 //      getKeyPair("/RSAKey.txt");
 //    }
-//
+
 //    public static void saveKeyPair(KeyPair kp) throws Exception {
 //
 //        FileOutputStream fos = new FileOutputStream(RSAKeyStore);
@@ -233,21 +232,24 @@ public class RSAUtil {
      *
      * @param args *
      */
-   /* public static void main(String[] args) throws Exception {
-        RSAPublicKey rsap = (RSAPublicKey) RSAUtil.generateKeyPair().getPublic();
-        String test = "liyl";
-        String keyUrl = "RSAKey.txt";
-//
+    public static void main(String[] args) throws Exception {
+//        RSAPublicKey rsap = (RSAPublicKey) RSAUtil.generateKeyPair().getPublic();
+        String test = "92D7DDD2A010C59511DC2905B7E14F64";
+
+        String keyUrl = "/Users/mr.gmac/RSAKey.txt";
+
+        System.out.println(getKeyPair(keyUrl).getPublic());
+        System.out.println("-------------------");
+
         byte[] en_test = encrypt(getKeyPair(keyUrl).getPublic(), test.getBytes());
         byte[] de_test = decrypt(getKeyPair(keyUrl).getPrivate(), en_test);
         System.out.println(new String(en_test));
         System.out.println(new String(de_test));
 
-        byte[] aa = hexStringToBytes("1f959b8496e47430ead3434dd2e92b7b5f6746fc5422f689411b1797fe55e67febe9a176be93e5ebcba826821c154b77480c063334ec065371adb600eb5b22c9d23305bc365cb4a24754a22801c9526d442656f26d47cac78f03006e7beef11a97b26b6342461a9a9efe97060ffeb86bdea0d098607b9b1628255656f6179c0a");
+        byte[] aa = hexStringToBytes("44d142f966d88cc34e49882c848d1c46b16003b4fde1830779a9beb4d1fca6f500e8cb199d10ae5211a1a311287ae4f5850401dcdafe4f00d46edafbe36530298c1539050bfbd3cdcd0881cf6d8eb8231bbe6637338bac5f9bb0c6edfcdcc20aac2902a9adda3e287b2537ad752982eb33656d192e6d408b08d8f3c521c960e4");
         System.out.println(aa.toString());
         byte[] bb = decrypt(getKeyPair(keyUrl).getPrivate(), aa);
-        System.out.println(new String(bb));
+        System.out.println(new StringBuilder(new StringBuilder(new String(bb, "UTF-8")).reverse().toString()));
     }
-*/
 
 }

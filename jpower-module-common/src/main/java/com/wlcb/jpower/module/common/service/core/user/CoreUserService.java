@@ -2,6 +2,7 @@ package com.wlcb.jpower.module.common.service.core.user;
 
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
+import com.wlcb.jpower.module.dbs.entity.user.TblUser;
 
 import java.util.List;
 
@@ -101,4 +102,23 @@ public interface CoreUserService {
      * @return com.wlcb.jpower.module.base.vo.ResponseData
      */
     ResponseData createToken(TbCoreUser user);
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 通过手机号查找用户
+     * @Date 10:38 2020-07-03
+     * @Param [phone]
+     * @return com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser
+     **/
+    TbCoreUser selectByPhone(String phone);
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 通过用户名和ID查询用户信息
+     * @Date 10:53 2020-07-03
+     * @Param [id, username]
+     * @return com.wlcb.jpower.module.dbs.entity.user.TblUser
+     **/
+    TbCoreUser selectByUserNameAndId(String id, String username);
+
 }

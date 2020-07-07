@@ -5,8 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.service.redis.RedisUtils;
-import com.wlcb.jpower.module.common.utils.DateUtils;
-import com.wlcb.jpower.module.common.utils.FileUtils;
 import com.wlcb.jpower.module.common.utils.IpUtils;
 import com.wlcb.jpower.module.common.utils.JWTUtils;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
@@ -29,7 +27,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,9 +47,6 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     private final String isLogin = "isLogin";
     /** ip白名单 **/
     private final String ip_list = "ip_list";
-
-    /** 用户权限redis Key **/
-    private final String USER_KEY = "user:loginFunction:";
 
     //多少时间内要刷新token
     private static Long refToken = 10 * 60 * 1000L;
@@ -82,111 +76,111 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         Integer isl = isSystemLogin == null?ParamConfig.getInt(isLogin):isSystemLogin;
 
         String ip = IpUtils.getRemortIP(request);
-        logger.info("请求来自：{}",ip);
         String ips = ParamConfig.getString(ip_list);
+        logger.info("请求来自：{}————可以通过的IP：{}",ip,ips);
         if (StringUtils.contains(ips,ip)){
             logger.info("接口请求已进入--{}--{}",ip,request.getServletPath());
         }
 
         if(1 == isl && !StringUtils.contains(ips,ip)){
 
-            boolean b = JWTUtils.parseJWT(request, response);
-
-            if (!b){
-                ResponseData responseData = new ResponseData();
-                responseData.setCode(401);
-                responseData.setStatus(false);
-                responseData.setMessage("您没有权限访问");
-                sendJsonMessage(response,responseData);
-            }
-            return b;
+//            boolean b = JWTUtils.parseJWT(request, response);
+//
+//            if (!b){
+//                ResponseData responseData = new ResponseData();
+//                responseData.setCode(401);
+//                responseData.setStatus(false);
+//                responseData.setMessage("您没有权限访问");
+//                sendJsonMessage(response,responseData);
+//            }
+//            return b;
 
             //下面注释得方法是新得拦截逻辑，等tb_core_user表上线，需要使用下面得代码同步上线
-//            ResponseData responseData = new ResponseData();
-//            responseData.setCode(401);
-//            responseData.setStatus(false);
-//            responseData.setMessage("您没有权限访问");
-//
-//            String currentPath = request.getServletPath();
-//
-//            String jwt = request.getHeader("Authorization");
-//            if (StringUtils.isBlank(jwt)){
-//                Cookie[] cookies = request.getCookies();
-//                if (cookies!=null){
-//                    for (Cookie cookie : cookies) {
-//                        if (StringUtils.equals(cookie.getName(),"Authorization")){
-//                            jwt = cookie.getValue();
-//                            logger.info("通过cookie获取到token",cookie.getValue());
-//                            break;
-//                        }
-//                    }
-//                }
-//            }
-//
-//
-//            logger.info("{}已进入鉴权拦截器,token={}",currentPath,jwt);
-//
-//
-//            TbCoreUser coreUser = null;
-//            if (StringUtils.isBlank(jwt)) {
-//                logger.info("未登陆或登陆超时！jwt是空的,请求地址={}",currentPath);
-//
-//                //这里需要新增匿名用户,没有登陆得用户默认给一个匿名用户
-//                coreUser = new TbCoreUser();
-//                coreUser.setLoginId("anonymous");
-//                coreUser.setId("2");
-//                coreUser.setUserName("匿名用户");
-//                coreUser.setUserType(9);
-//            }else {
-//                try{
-//                    Claims c = JWTUtils.parseJWT(jwt);
-//                    coreUser = JSON.parseObject(c.getSubject(),TbCoreUser.class);
-//                    logger.info("{}用户token已解析，用户信息={}", c.get("userId"),JSON.toJSONString(coreUser));
-//
-//                    long time = c.getExpiration().getTime() - System.currentTimeMillis();
-//                    //过期时间小于10分钟则获取新的token
-//                    if(time <= refToken){
-//                        try {
-//                            Map<String, Object> payload = new HashMap<String, Object>();
-//                            payload.put("userId", c.get("userId"));
-//                            String token = JWTUtils.createJWT(JSON.toJSONString(coreUser),payload, ParamConfig.getLong(tokenExpired,tokenExpiredDefVal));
-//
-//                            if (StringUtils.isBlank(token)){
-//                                logger.error("token生成错误，token={}",token);
-//                            }
-//                            response.setHeader("token",token);
-//                            redisUtils.set(USER_KEY+c.get("userId"),redisUtils.get(USER_KEY+c.get("userId")),ParamConfig.getLong(tokenExpired,tokenExpiredDefVal),TimeUnit.MILLISECONDS);
-//
-//                            logger.info("{}用户已刷新，用户id={},旧token={},新token={}",coreUser.getLoginId(),c.get("userId"),jwt,token);
-//                        } catch (Exception e) {
-//                            logger.error("刷新token出错：{}",e.getMessage());
-//                        }
-//                    }
-//
-//
-//                }catch (ExpiredJwtException e){
-//                    Claims claims = e.getClaims();
-//                    TbCoreUser user = JSON.parseObject(claims.getSubject(),TbCoreUser.class);
-//                    logger.info("{}{}用户登陆超时请重新登录！用户ID={},token={},error={}",user.getLoginId(), ConstantsEnum.USER_TYPE.getName(user.getUserType()),claims.get("userId"),jwt,e.getMessage());
-//                    responseData.setCode(403);
-//                    responseData.setMessage("用户登陆超时请重新登录");
-//                }catch (Exception e){
-//                    logger.error("JWT解析出错！error={},token={}",e.getMessage(),jwt);
-//                    responseData.setCode(405);
-//                    responseData.setMessage("JWT解析出错");
-//                }
-//            }
-//
-//            if(coreUser != null){
-//                List<TbCoreFunction> functionList = (List<TbCoreFunction>) redisUtils.get(USER_KEY+coreUser.getId());
-//                boolean isAuthority = findAuthority(currentPath,functionList);
-//                if (isAuthority){
-//                    return true;
-//                }
-//            }
-//
-//            sendJsonMessage(response,responseData);
-//            return false;
+            ResponseData responseData = new ResponseData();
+            responseData.setCode(401);
+            responseData.setStatus(false);
+            responseData.setMessage("您没有权限访问");
+
+            String currentPath = request.getServletPath();
+
+            String jwt = request.getHeader("Authorization");
+            if (StringUtils.isBlank(jwt)){
+                Cookie[] cookies = request.getCookies();
+                if (cookies!=null){
+                    for (Cookie cookie : cookies) {
+                        if (StringUtils.equals(cookie.getName(),"Authorization")){
+                            jwt = cookie.getValue();
+                            logger.info("通过cookie获取到token",cookie.getValue());
+                            break;
+                        }
+                    }
+                }
+            }
+
+
+            logger.info("{}已进入鉴权拦截器,token={}",currentPath,jwt);
+
+
+            TbCoreUser coreUser = null;
+            if (StringUtils.isBlank(jwt)) {
+                logger.info("未登陆或登陆超时！jwt是空的,请求地址={}",currentPath);
+
+                //这里需要新增匿名用户,没有登陆得用户默认给一个匿名用户
+                coreUser = new TbCoreUser();
+                coreUser.setLoginId("anonymous");
+                coreUser.setId("2");
+                coreUser.setUserName("匿名用户");
+                coreUser.setUserType(9);
+            }else {
+                try{
+                    Claims c = JWTUtils.parseJWT(jwt);
+                    coreUser = JSON.parseObject(c.getSubject(),TbCoreUser.class);
+                    logger.info("{}用户token已解析，用户信息={}", c.get("userId"),JSON.toJSONString(coreUser));
+
+                    long time = c.getExpiration().getTime() - System.currentTimeMillis();
+                    //过期时间小于10分钟则获取新的token
+                    if(time <= refToken){
+                        try {
+                            Map<String, Object> payload = new HashMap<String, Object>();
+                            payload.put("userId", c.get("userId"));
+                            String token = JWTUtils.createJWT(JSON.toJSONString(coreUser),payload, ParamConfig.getLong(tokenExpired,tokenExpiredDefVal));
+
+                            if (StringUtils.isBlank(token)){
+                                logger.error("token生成错误，token={}",token);
+                            }
+                            response.setHeader("token",token);
+                            redisUtils.set(ConstantsUtils.USER_KEY+c.get("userId"),redisUtils.get(ConstantsUtils.USER_KEY+c.get("userId")),ParamConfig.getLong(tokenExpired,tokenExpiredDefVal),TimeUnit.MILLISECONDS);
+
+                            logger.info("{}用户已刷新，用户id={},旧token={},新token={}",coreUser.getLoginId(),c.get("userId"),jwt,token);
+                        } catch (Exception e) {
+                            logger.error("刷新token出错：{}",e.getMessage());
+                        }
+                    }
+
+
+                }catch (ExpiredJwtException e){
+                    Claims claims = e.getClaims();
+                    TbCoreUser user = JSON.parseObject(claims.getSubject(),TbCoreUser.class);
+                    logger.info("{}{}用户登陆超时请重新登录！用户ID={},token={},error={}",user.getLoginId(), ConstantsEnum.USER_TYPE.getName(user.getUserType()),claims.get("userId"),jwt,e.getMessage());
+                    responseData.setCode(403);
+                    responseData.setMessage("用户登陆超时请重新登录");
+                }catch (Exception e){
+                    logger.error("JWT解析出错！error={},token={}",e.getMessage(),jwt);
+                    responseData.setCode(405);
+                    responseData.setMessage("JWT解析出错");
+                }
+            }
+
+            if(coreUser != null){
+                List<TbCoreFunction> functionList = (List<TbCoreFunction>) redisUtils.get(ConstantsUtils.USER_KEY+coreUser.getId());
+                boolean isAuthority = findAuthority(currentPath,functionList);
+                if (isAuthority){
+                    return true;
+                }
+            }
+
+            sendJsonMessage(response,responseData);
+            return false;
         }else {
             return true;
         }

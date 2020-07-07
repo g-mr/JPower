@@ -5,7 +5,7 @@ import com.wlcb.jpower.module.common.service.sync.SyncService;
 import com.wlcb.jpower.module.common.utils.CsvUtil;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.SplitList;
-import com.wlcb.jpower.module.dbs.dao.sync.SyncMapper;
+import com.wlcb.jpower.module.dbs.dao.sync.mapper.SyncMapper;
 import com.wlcb.jpower.module.dbs.entity.sync.ImportInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

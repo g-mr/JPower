@@ -1,6 +1,6 @@
 package com.wlcb.jpower.module.dbs.entity.core.role;
 
-import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import lombok.Data;
 

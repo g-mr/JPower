@@ -24,4 +24,7 @@ public class ConstantsUtils {
     public static final String SMS_QUERY_REPORT_URL = HTTP_SERVER + "/api/sms/air/report";
     public static final String SMS_QUERY_MO_URL = HTTP_SERVER + "/api/sms/air/mo";
     public static final String SMS_SECURITY_SEND_URL = HTTP_SERVER + "/api/sms/air/encrptySend";
+
+    /** 用户权限redis Key **/
+    public static final String USER_KEY = "user:loginFunction:";
 }

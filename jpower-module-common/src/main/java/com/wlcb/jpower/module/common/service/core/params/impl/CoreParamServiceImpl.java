@@ -1,10 +1,12 @@
 package com.wlcb.jpower.module.common.service.core.params.impl;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wlcb.jpower.module.common.service.core.params.CoreParamService;
 import com.wlcb.jpower.module.common.service.redis.RedisUtils;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
-import com.wlcb.jpower.module.dbs.dao.core.params.TbCoreParamsMapper;
+import com.wlcb.jpower.module.dbs.dao.core.params.TbCoreParamsDao;
+import com.wlcb.jpower.module.dbs.dao.core.params.mapper.TbCoreParamsMapper;
 import com.wlcb.jpower.module.dbs.entity.core.params.TbCoreParam;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,8 @@ public class CoreParamServiceImpl implements CoreParamService {
     @Autowired
     private TbCoreParamsMapper paramsMapper;
     @Autowired
+    private TbCoreParamsDao paramsDao;
+    @Autowired
     private RedisUtils redisUtils;
 
     @Override
@@ -31,48 +35,48 @@ public class CoreParamServiceImpl implements CoreParamService {
     @Override
     public List<TbCoreParam> list(TbCoreParam coreParam) {
 
-        EntityWrapper wrapper = new EntityWrapper<TbCoreParam>();
+        LambdaQueryWrapper<TbCoreParam> wrapper = new QueryWrapper<TbCoreParam>().lambda();
 
         if (StringUtils.isNotBlank(coreParam.getCode())){
-            wrapper.eq("code",coreParam.getCode());
+            wrapper.eq(TbCoreParam::getCode,coreParam.getCode());
         }
 
         if (StringUtils.isNotBlank(coreParam.getName())){
-            wrapper.eq("name",coreParam.getName());
+            wrapper.eq(TbCoreParam::getName,coreParam.getName());
         }
 
         if (StringUtils.isNotBlank(coreParam.getName())){
-            wrapper.like("value",coreParam.getValue());
+            wrapper.like(TbCoreParam::getValue,coreParam.getValue());
         }
 
-        wrapper.orderBy("create_time",false);
+        wrapper.orderByDesc(TbCoreParam::getCreateTime);
 
-        return paramsMapper.selectList(wrapper);
+        return paramsDao.list(wrapper);
     }
 
     @Override
     public Integer delete(String id) {
 
-        TbCoreParam coreParam = paramsMapper.selectById(id);
+        TbCoreParam coreParam = paramsDao.getById(id);
 
-        Integer c = paramsMapper.deleteById(id);
+        Boolean c = paramsDao.removeById(id);
 
-        if (c > 0){
+        if (c){
             redisUtils.remove(coreParam.getCode());
         }
 
-        return c;
+        return c?1:0;
     }
 
     @Override
     public Integer update(TbCoreParam coreParam) {
-        return paramsMapper.updateById(coreParam);
+        return paramsDao.updateById(coreParam)?1:0;
     }
 
     @Override
     public Integer add(TbCoreParam coreParam) {
         coreParam.setUpdateUser(coreParam.getCreateUser());
-        return paramsMapper.insert(coreParam);
+        return paramsDao.save(coreParam)?1:0;
     }
 
     @Override

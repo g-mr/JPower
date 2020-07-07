@@ -8,13 +8,12 @@ import com.wlcb.jpower.module.common.utils.HttpClient;
 import com.wlcb.jpower.module.common.utils.JWTUtils;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.param.ParamConfig;
-import com.wlcb.jpower.module.dbs.dao.user.UserMapper;
+import com.wlcb.jpower.module.dbs.dao.user.mapper.UserMapper;
 import com.wlcb.jpower.module.dbs.entity.user.TblUser;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;

@@ -51,16 +51,16 @@ public class LoginController extends BaseController {
      * @author 郭丁志
      * @Description //TODO 用户登陆
      * @date 0:35 2020/6/10 0010
-     * @param userName
+     * @param loginId
      * @param passWord
      * @param md5Key
      * @return com.wlcb.jpower.module.base.vo.ResponseData
      */
     @RequestMapping(value = "/login",method = RequestMethod.POST,produces="application/json")
-    public ResponseData login(String userName,String passWord,@RequestParam(name = "key1")String md5Key) throws Exception {
+    public ResponseData login(String loginId,String passWord,@RequestParam(name = "key1")String md5Key) throws Exception {
 
         //解密
-        byte[] enUserName = RSAUtil.hexStringToBytes(userName);
+        byte[] enUserName = RSAUtil.hexStringToBytes(loginId);
         byte[] enPassWord = RSAUtil.hexStringToBytes(passWord);
 
         if (enUserName == null || enPassWord == null){
@@ -70,8 +70,8 @@ public class LoginController extends BaseController {
         byte[] deUserName = RSAUtil.decrypt(RSAUtil.getPrivateKey(), enUserName);
         byte[] dePassWord = RSAUtil.decrypt(RSAUtil.getPrivateKey(), enPassWord);
 
-        String username = URLDecoder.decode(new StringBuilder(new String(deUserName)).reverse().toString(), "UTF-8");
         String password = new StringBuilder(new String(dePassWord, "UTF-8")).reverse().toString();
+        String username = URLDecoder.decode(new StringBuilder(new String(deUserName)).reverse().toString(), "UTF-8");
 
         if (StringUtils.isBlank(username) || StringUtils.isBlank(password)){
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,"用户名或者密码不可为空",false);
@@ -80,17 +80,17 @@ public class LoginController extends BaseController {
         //防篡改校验
         String keyBeforeMd5 = username + password + "wlcbPortal";
         String keyAfterMd5 = MD5.parseStrToMd5U32(keyBeforeMd5);
-        if(null == md5Key || "".equals(md5Key) || !keyAfterMd5.equals(md5Key)) {
+        if(StringUtils.isBlank(md5Key) || !keyAfterMd5.equals(md5Key)) {
             logger.info("检测到信息被篡改，不可登录～～～用户名={}",username);
-            return ReturnJsonUtil.printJson(400,"用户名不存在",false);
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NOTFOUND,"用户名不存在",false);
         }
 
-        TblUser user = userService.selectByUserName(username);
-//        TbCoreUser user = coreUserService.selectUserLoginId(username);
+//        TblUser user = userService.selectByUserName(username);
+        TbCoreUser user = coreUserService.selectUserLoginId(username);
 
         if (user == null){
             //用户名空则返回
-            return ReturnJsonUtil.printJson(400,"用户名不存在",false);
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NOTFOUND,"用户名不存在",false);
         }
 
         if (!password.equals(user.getPassword().toUpperCase())) {
@@ -99,8 +99,8 @@ public class LoginController extends BaseController {
         }
 
         user.setPassword(null);
-        return userService.login(user);
-//        return coreUserService.createToken(user);
+//        return userService.login(user);
+        return coreUserService.createToken(user);
     }
 
     /**
@@ -171,11 +171,11 @@ public class LoginController extends BaseController {
             return ReturnJsonUtil.printJson(400,"用户不存在",false);
         }
 
-        TblUser user = userService.selectByPhone(phone);
+        TbCoreUser user = coreUserService.selectByPhone(phone);
 
         if (user == null){
             //用户名空则返回
-            return ReturnJsonUtil.printJson(400,"用户不存在",false);
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NOTFOUND,"用户不存在",false);
         }
 
         if (!vercode.equals(redisUtils.get(phone+"-login"))) {
@@ -184,19 +184,19 @@ public class LoginController extends BaseController {
         }
 
         user.setPassword(null);
-        return userService.login(user);
+        return coreUserService.createToken(user);
 
     }
 
-    public static void main(String[] args) {
-        String keyBeforeMd5 = "15011071226994033wlcbPortal";
-        String keyAfterMd5 = MD5.parseStrToMd5U32(keyBeforeMd5);
-        System.out.println(keyAfterMd5);
-    }
-
-
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 修改密码
+     * @Date 10:40 2020-07-03
+     * @Param [request, response]
+     * @return com.wlcb.jpower.module.base.vo.ResponseData
+     **/
     @RequestMapping(value = "/updatePassword",method = RequestMethod.POST,produces="application/json")
-    public ResponseData updatePassword(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ResponseData updatePassword(HttpServletRequest request) throws Exception {
 
         String md5Key = request.getParameter("key1");
 
@@ -230,11 +230,11 @@ public class LoginController extends BaseController {
             return ReturnJsonUtil.printJson(400,"用户不存在",false);
         }
 
-        TblUser user = userService.selectByUserNameAndId(id,username);
+        TbCoreUser user = coreUserService.selectByUserNameAndId(id,username);
 
         if (user == null){
             //用户名空则返回
-            return ReturnJsonUtil.printJson(400,"用户不存在",false);
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NOTFOUND,"用户不存在",false);
         }
 
         if (!oldPassWord.equals(user.getPassword().toUpperCase())) {
@@ -242,8 +242,7 @@ public class LoginController extends BaseController {
             return ReturnJsonUtil.printJson(300,"旧密码错误",false);
         }
 
-        user.setPassword(newPassWord);
-        Integer count = userService.updatePassword(user);
+        Integer count = coreUserService.updateUserPassword(user.getId(),newPassWord);
         if (count > 0){
             return ReturnJsonUtil.printJson(200,"修改成功",true);
         }else {
