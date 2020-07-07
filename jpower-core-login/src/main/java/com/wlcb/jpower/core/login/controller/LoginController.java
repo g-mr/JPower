@@ -25,6 +25,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLDecoder;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -97,6 +98,14 @@ public class LoginController extends BaseController {
             //密码错误直接返回
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"密码错误",false);
         }
+
+        if (user.getActivationStatus() != 1){
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该用户未激活，请先激活",false);
+        }
+
+        user.setLastLoginTime(new Date());
+        user.setLoginCount(user.getLoginCount()+1);
+        coreUserService.updateLoginInfo(user);
 
         user.setPassword(null);
 //        return userService.login(user);

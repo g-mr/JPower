@@ -69,7 +69,7 @@ public class CoreRoleServiceImpl implements CoreRoleService {
         UpdateWrapper wrapper = new UpdateWrapper<TbCoreRole>();
         wrapper.in("id",ids);
         wrapper.set("status",0);
-        return coreRoleDao.update(null,wrapper)?1:0;
+        return coreRoleDao.update(new TbCoreRole(),wrapper)?1:0;
     }
 
     @Override

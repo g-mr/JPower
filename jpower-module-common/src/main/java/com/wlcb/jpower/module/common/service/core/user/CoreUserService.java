@@ -121,4 +121,5 @@ public interface CoreUserService {
      **/
     TbCoreUser selectByUserNameAndId(String id, String username);
 
+    Boolean updateLoginInfo(TbCoreUser user);
 }

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.service.core.user.CoreUserService;
@@ -128,7 +129,7 @@ public class CoreUserServiceImpl implements CoreUserService {
 
     @Override
     public TbCoreUser selectUserLoginId(String loginId) {
-        return coreUserDao.getOne(new QueryWrapper<TbCoreUser>().lambda().eq(TbCoreUser::getLoginId,loginId));
+        return coreUserDao.getOne(new QueryWrapper<TbCoreUser>().lambda().eq(TbCoreUser::getLoginId,loginId).eq(TbCoreUser::getStatus,1));
     }
 
     @Override
@@ -141,7 +142,7 @@ public class CoreUserServiceImpl implements CoreUserService {
         UpdateWrapper wrapper = new UpdateWrapper<TbCoreUser>();
         wrapper.in("id",ids);
         wrapper.set("password",pass);
-        return coreUserDao.update(null,wrapper)?1:0;
+        return coreUserDao.update(new TbCoreUser(),wrapper)?1:0;
     }
 
     @Override
@@ -220,6 +221,15 @@ public class CoreUserServiceImpl implements CoreUserService {
         wrapper.eq(TbCoreUser::getLoginId,username);
         wrapper.eq(TbCoreUser::getId,id);
         return coreUserDao.getOne(wrapper);
+    }
+
+    @Override
+    public Boolean updateLoginInfo(TbCoreUser user) {
+        LambdaUpdateWrapper<TbCoreUser> wrapper = new UpdateWrapper<TbCoreUser>().lambda()
+        .set(TbCoreUser::getLoginCount,user.getLoginCount())
+        .set(TbCoreUser::getLastLoginTime,user.getLastLoginTime())
+        .eq(TbCoreUser::getId,user.getId());
+        return coreUserDao.update(new TbCoreUser(),wrapper);
     }
 
 }
