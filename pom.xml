@@ -21,6 +21,7 @@
         <java.version>1.8</java.version>
         <com.jpower.version>1.0.1-SNAPSHOT</com.jpower.version>
         <springboot.data.redis.version>1.5.8.RELEASE</springboot.data.redis.version>
+        <mybatis-plus.version>3.3.2</mybatis-plus.version>
     </properties>
 
     <!--profile配置-->
@@ -97,7 +98,14 @@
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>
 <!--                <version>2.3</version>-->
-                <version>3.0.6</version>
+<!--                <version>3.0.6</version>-->
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-extension</artifactId>
+                <version>${mybatis-plus.version}</version>
             </dependency>
 
             <dependency>
@@ -140,6 +148,12 @@
                 <groupId>com.github.pagehelper</groupId>
                 <artifactId>pagehelper-spring-boot-starter</artifactId>
                 <version>1.2.5</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.mybatis</groupId>
+                        <artifactId>mybatis</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
