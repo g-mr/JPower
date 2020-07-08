@@ -45,7 +45,7 @@ public class MybatisPlusConfig {
         paginationInterceptor.setCountSqlParser(new JsqlParserCountOptimize(true));
         return paginationInterceptor;
 //        paginationInterceptor.setDialectType("mysql");
-//        return new PaginationInterceptor();
+//        return paginationInterceptor;
     }
 
 }
