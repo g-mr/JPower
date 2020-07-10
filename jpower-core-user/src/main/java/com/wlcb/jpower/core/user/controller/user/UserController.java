@@ -2,6 +2,8 @@ package com.wlcb.jpower.core.user.controller.user;
 
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
+import com.wlcb.jpower.module.base.annotation.Log;
+import com.wlcb.jpower.module.base.enums.BusinessType;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.page.PaginationContext;
@@ -15,7 +17,9 @@ import com.wlcb.jpower.module.common.utils.param.ParamConfig;
 import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreUserRole;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
 import com.wlcb.jpower.utils.excel.BeanExcelUtil;
+import lombok.extern.log4j.Log4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,9 +53,9 @@ public class UserController extends BaseController {
      * @Param [coreUser]
      * @return com.wlcb.jpower.module.base.vo.ResponseData
      **/
+    @Log(title = "查询用户列表")
     @RequestMapping(value = "/list",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
     public ResponseData list(TbCoreUser coreUser){
-
         PaginationContext.startPage();
         List<TbCoreUser> list = coreUserService.list(coreUser);
 
@@ -127,6 +131,7 @@ public class UserController extends BaseController {
      * @Param [coreUser]
      * @return com.wlcb.jpower.module.base.vo.ResponseData
      **/
+    @Log(title = "删除登录用户",businessType = BusinessType.DELETE)
     @RequestMapping(value = "/delete",method = {RequestMethod.DELETE},produces="application/json")
     public ResponseData delete(String ids){
 
@@ -150,11 +155,12 @@ public class UserController extends BaseController {
      * @Param [coreUser]
      * @return com.wlcb.jpower.module.base.vo.ResponseData
      **/
+    @Log(title = "修改系统用户信息",businessType = BusinessType.UPDATE)
     @RequestMapping(value = "/update",method = {RequestMethod.PUT},produces="application/json")
     public ResponseData update(TbCoreUser coreUser){
 
         ResponseData responseData = BeanUtil.allFieldIsNULL(coreUser,
-                "updateUser","id");
+                "id");
 
         if (responseData.getCode() == ConstantsReturn.RECODE_NULL){
             return responseData;

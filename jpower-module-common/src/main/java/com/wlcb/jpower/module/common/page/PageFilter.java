@@ -27,9 +27,6 @@ public class PageFilter implements Filter {
     @Override
     public void destroy() {}
 
-    @Value("${server.port}")
-    private Integer port;
-
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
@@ -99,7 +96,7 @@ public class PageFilter implements Filter {
      **/
     protected String getOrderBy(HttpServletRequest request) {
         // 默认每页10条记录
-        String orderBy = null;
+        String orderBy = "create_time";
         try {
             String orderBys = request.getParameter("orderBy");
             if (StringUtils.isNotBlank(orderBys)) {

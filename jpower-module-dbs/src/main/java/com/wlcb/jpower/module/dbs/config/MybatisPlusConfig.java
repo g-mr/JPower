@@ -1,5 +1,6 @@
-package com.wlcb.jpower.module.dbs.dao.config;
+package com.wlcb.jpower.module.dbs.config;
 
+import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.extension.plugins.OptimisticLockerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.optimize.JsqlParserCountOptimize;
@@ -17,7 +18,22 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @EnableTransactionManagement
 @Configuration
+//@MapperScan(basePackages = "com.wlcb.*.*.dbs.dao")
 public class MybatisPlusConfig {
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 配置公用字段
+     * @Date 17:48 2020-07-09
+     * @Param []
+     * @return com.baomidou.mybatisplus.core.config.GlobalConfig
+     **/
+    @Bean
+    public GlobalConfig globalConfig() {
+        GlobalConfig globalConfig = new GlobalConfig();
+        globalConfig.setMetaObjectHandler(new UpdateRelatedFieldsMetaHandler());
+        return globalConfig;
+    }
 
     @Bean
     public OptimisticLockerInterceptor optimisticLockerInterceptor(){
@@ -27,7 +43,7 @@ public class MybatisPlusConfig {
     @Bean
     public MapperScannerConfigurer mapperScannerConfigurer() {
         MapperScannerConfigurer mapperScannerConfigurer = new MapperScannerConfigurer();
-        mapperScannerConfigurer.setBasePackage("com.wlcb.jpower.module.dbs.dao");
+        mapperScannerConfigurer.setBasePackage("com.wlcb.*.*.dbs.dao");
         return mapperScannerConfigurer;
     }
 

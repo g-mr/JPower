@@ -10,6 +10,7 @@ import com.wlcb.jpower.module.common.utils.JWTUtils;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
 import com.wlcb.jpower.module.common.utils.param.ParamConfig;
+import com.wlcb.jpower.module.dbs.config.*;
 import com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
 import io.jsonwebtoken.Claims;
@@ -60,9 +61,6 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     @Value("${isLogin:}")
     private Integer isSystemLogin;
 
-    @Value("${server.port}")
-    private Integer port;
-
     /**
      * @Author 郭丁志
      * @Description //TODO 请求处理前调用,我们只需要在这里写验证登陆状态的业务逻辑，就可以在用户调用指定接口之前验证登陆状态了
@@ -78,22 +76,8 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         String ip = IpUtils.getRemortIP(request);
         String ips = ParamConfig.getString(ip_list);
         logger.info("请求来自：{}————可以通过的IP：{}",ip,ips);
-        if (StringUtils.contains(ips,ip)){
-            logger.info("接口请求已进入--{}--{}",ip,request.getServletPath());
-        }
 
         if(1 == isl && !StringUtils.contains(ips,ip)){
-
-//            boolean b = JWTUtils.parseJWT(request, response);
-//
-//            if (!b){
-//                ResponseData responseData = new ResponseData();
-//                responseData.setCode(401);
-//                responseData.setStatus(false);
-//                responseData.setMessage("您没有权限访问");
-//                sendJsonMessage(response,responseData);
-//            }
-//            return b;
 
             //下面注释得方法是新得拦截逻辑，等tb_core_user表上线，需要使用下面得代码同步上线
             ResponseData responseData = new ResponseData();
@@ -130,6 +114,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 coreUser.setLoginId("anonymous");
                 coreUser.setId("2");
                 coreUser.setUserName("匿名用户");
+                coreUser.setIsSysUser(0);
                 coreUser.setUserType(9);
             }else {
                 try{
@@ -175,6 +160,9 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 List<TbCoreFunction> functionList = (List<TbCoreFunction>) redisUtils.get(ConstantsUtils.USER_KEY+coreUser.getId());
                 boolean isAuthority = findAuthority(currentPath,functionList);
                 if (isAuthority){
+                    //存储当前登录用户
+                    LoginUserContext.set(coreUser);
+                    LoginUserContext.setIp(ip);
                     return true;
                 }
             }
@@ -182,6 +170,24 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
             sendJsonMessage(response,responseData);
             return false;
         }else {
+            TbCoreUser coreUser = new TbCoreUser();
+            if (StringUtils.contains(ips,ip)){
+                logger.info("接口请求已进入--{}--{}",ip,request.getServletPath());
+                coreUser.setUserName(ip);
+                coreUser.setLoginId(ip);
+                coreUser.setUserType(9);
+                coreUser.setIsSysUser(2);
+                coreUser.setId("3");
+            }else {
+                coreUser = new TbCoreUser();
+                coreUser.setLoginId("anonymous");
+                coreUser.setId("2");
+                coreUser.setUserName("匿名用户");
+                coreUser.setIsSysUser(0);
+                coreUser.setUserType(9);
+            }
+            LoginUserContext.set(coreUser);
+            LoginUserContext.setIp(ip);
             return true;
         }
     }
@@ -232,6 +238,8 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
      **/
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        //接口请求完成后删除掉存储的用户信息
+        LoginUserContext.remove();
     }
 
 }

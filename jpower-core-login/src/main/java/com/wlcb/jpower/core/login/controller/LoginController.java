@@ -99,6 +99,7 @@ public class LoginController extends BaseController {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"密码错误",false);
         }
 
+        //用户未激活
         if (user.getActivationStatus() != 1){
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该用户未激活，请先激活",false);
         }
