@@ -1,4 +1,4 @@
-package com.wlcb.jpower.core.params.config;
+package com.wlcb.jpower.module.common.loader;
 
 import com.wlcb.jpower.module.common.service.core.params.CoreParamService;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import javax.annotation.Resource;
  */
 @Slf4j
 @Component
-public class ParamsLoadImpl implements CommandLineRunner {
+public class ParamsLoader implements CommandLineRunner {
 
     @Resource
     private CoreParamService paramService;

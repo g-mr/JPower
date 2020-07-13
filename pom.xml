@@ -57,8 +57,7 @@
         <module>jpower-module-dbs</module>
         <module>jpower-web-sync</module>
         <module>jpower-core-login</module>
-        <module>jpower-core-params</module>
-        <module>jpower-core-user</module>
+        <module>jpower-core-web</module>
     </modules>
 
     <dependencyManagement>
@@ -192,12 +191,7 @@
             </dependency>
             <dependency>
                 <groupId>com.wlcb</groupId>
-                <artifactId>jpower-core-params</artifactId>
-                <version>${com.jpower.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.wlcb</groupId>
-                <artifactId>jpower-core-user</artifactId>
+                <artifactId>jpower-core-web</artifactId>
                 <version>${com.jpower.version}</version>
             </dependency>
             <dependency>

@@ -1,4 +1,4 @@
-package com.wlcb.jpower.core.user.controller.role;
+package com.wlcb.jpower.web.controller.core.role;
 
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;

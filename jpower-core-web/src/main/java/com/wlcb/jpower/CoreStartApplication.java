@@ -15,10 +15,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 @EnableTransactionManagement
 //@MapperScan(basePackages = "com.wlcb.jpower.module.dbs.dao")
-public class UserStartApplication {
+public class CoreStartApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(UserStartApplication.class, args);
+        SpringApplication.run(CoreStartApplication.class, args);
     }
 
 }

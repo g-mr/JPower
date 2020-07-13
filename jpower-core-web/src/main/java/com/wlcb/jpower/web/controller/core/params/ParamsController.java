@@ -1,4 +1,4 @@
-package com.wlcb.jpower.core.params.controller;
+package com.wlcb.jpower.web.controller.core.params;
 
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
