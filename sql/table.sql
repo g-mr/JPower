@@ -99,7 +99,6 @@ create table tb_core_function(
  unique key code_index(code) USING BTREE
 );
 
-
 drop table if exists tb_core_param;
 create table tb_core_param(
   id varchar(32) not null COMMENT '主建',
@@ -126,3 +125,45 @@ INSERT INTO tb_core_param (id, code, name, value, note, create_user, create_time
 INSERT INTO tb_core_param (id, code, name, value, note, create_user, create_time, update_user, update_time, status) VALUES ('e19e2592933911eaa1c1159dd451177f', 'email.host', '邮箱服务器', 'smtp.mxhichina.com', '邮件发送使用的服务器', 'root', '2020-05-11 11:45:39', 'root', '2020-05-11 11:45:39', 1);
 INSERT INTO tb_core_param (id, code, name, value, note, create_user, create_time, update_user, update_time, status) VALUES ('f36e13fa933811eaa1c1159dd451177f', 'rsa_file_path', '登录密钥文件', '/root/data/subservice/login/config/RSAKey.txt', '密钥文件所在全路径', 'root', '2020-05-11 11:38:59', 'root', '2020-05-12 14:51:30', 1);
 INSERT INTO tb_core_param (id, code, name, value, note, create_user, create_time, update_user, update_time, status) VALUES ('aa0274c4932c11eaa1c1159dd451177f', 'tokenExpired', '登录token过期时长', '2400000', null, 'root', '2020-05-11 10:11:02', 'root', '2020-05-11 10:11:02', 1);
+
+
+
+drop table if exists tb_core_dict_type;
+create table tb_core_dict_type(
+  id varchar(32) not null comment '主键',
+  dict_type_code varchar(50) not null comment '字典类型代码',
+  dict_type_name varchar(100) not null comment '',
+  locale_code varchar(20) default 'zh_cn' not null comment '语言  zh_cn en_us',
+  note varchar(100) comment '描述',
+  del_enabled varchar(1) default '0' not null comment '是否允许删除 n:不允许 y允许',
+  sort_num int(6) default 0 comment '排序',
+  dict_type_pcode varchar(50) comment '父字典类型代码',
+  create_user varchar(32) default 'root' not null comment '创建人',
+  create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
+  update_user varchar(32) default 'root' not null comment '更新人',
+  update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
+  status   tinyint(1) default 1 comment '状态',
+  PRIMARY KEY (id) USING BTREE,
+  unique key core_dict_type(dict_type_code, locale_code) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '字典类型表';
+
+drop table if exists tb_core_dict;
+create table tb_core_dict
+(
+  id varchar(32) not null comment '主键',
+  dict_type_code varchar(50) not null comment '字典类型代码',
+  code varchar(100) not null comment '字典代码',
+  name varchar(250) not null comment '字典名称',
+  locale_id varchar(20) default 'zh_cn' not null comment '语言 zh_cn en_us',
+  note varchar(100) comment '备注',
+  sort_num int(6) default 0 comment '排序',
+  dict_type_id varchar(32) comment '字典类型id',
+  pcode varchar(100) comment '上级代码',
+  dict_level int(6) comment '树形字典结构的级别',
+  create_user varchar(32) default 'root' not null comment '创建人',
+  create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
+  update_user varchar(32) default 'root' not null comment '更新人',
+  update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
+  status   tinyint(1) default 1 comment '状态',
+  PRIMARY KEY (id) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '字典表';
