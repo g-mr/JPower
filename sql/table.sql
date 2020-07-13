@@ -167,3 +167,45 @@ create table tb_core_dict
   status   tinyint(1) default 1 comment '状态',
   PRIMARY KEY (id) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '字典表';
+
+drop table if exists tb_core_city;
+create table tb_core_city(
+  id varchar(32) not null comment '主键',
+  code varchar(100) not null comment '城市编码',
+  pcode varchar(100) not null comment '上级编码',
+  name varchar(100) not null comment '名称',
+  fullname varchar(150) comment '全称',
+  rankd int(6) comment '级别',
+  lon double(10,6) comment '经度',
+  lat double(10,6) comment '维度',
+  country_code varchar(100) comment '国家编码',
+  city_type varchar(10) comment '城市类型1：首都、2：直辖市、3：地级市、4县级市',
+  note varchar(100) comment '备注',
+  sort_num int(6) default 0 comment '排序',
+  sub int(6) default 0 comment '下级个数',
+  create_user varchar(32) default 'root' not null comment '创建人',
+  create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
+  update_user varchar(32) default 'root' not null comment '更新人',
+  update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
+  status   tinyint(1) default 1 comment '状态',
+  PRIMARY KEY (id) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '城市地区表';
+
+drop table if exists tb_core_file;
+create table tb_core_file
+(
+  id varchar(32) comment '主键',
+  name varchar(127) comment '文件名称',
+  file_size int comment '文件大小 单位：K',
+  file_type varchar(31) comment '文件类型',
+  path varchar(255) comment '文件路径',
+  content longblob comment '文件内容',
+  sort_num int(6) comment '排序',
+  note varchar(255) comment '备注',
+  create_user varchar(32) default 'root' not null comment '创建人',
+  create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
+  update_user varchar(32) default 'root' not null comment '更新人',
+  update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
+  status   tinyint(1) default 1 comment '状态',
+  PRIMARY KEY (id) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '文件表';
