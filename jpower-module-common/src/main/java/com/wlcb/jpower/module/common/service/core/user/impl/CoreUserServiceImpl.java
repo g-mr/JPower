@@ -13,6 +13,7 @@ import com.wlcb.jpower.module.common.utils.JWTUtils;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.UUIDUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
+import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
 import com.wlcb.jpower.module.common.utils.param.ParamConfig;
 import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreUserDao;
@@ -181,14 +182,15 @@ public class CoreUserServiceImpl implements CoreUserService {
     public ResponseData createToken(TbCoreUser user) {
         try {
             List<String> roleIdList = coreUserRoleMapper.selectRoleIdByUserId(user.getId());
-            List<String> functionIdList = coreRoleFunctionMapper.selectFunctionIdInRoleIds(roleIdList);
-            List<TbCoreFunction> list = coreFunctionMapper.selectBatchIds(functionIdList);
+            List<String> functionIdList = (roleIdList!=null&&roleIdList.size()>0)?coreRoleFunctionMapper.selectFunctionIdInRoleIds(roleIdList):new ArrayList<>();
+            List<TbCoreFunction> list = (functionIdList!=null&&functionIdList.size()>0)?coreFunctionMapper.selectBatchIds(functionIdList):new ArrayList<>();
 
             JSONObject json = JSON.parseObject(JSON.toJSONString(user));
             json.put("menu",list);
 
             Map<String, Object> payload = new HashMap<String, Object>();
             payload.put("userId", user.getId());
+            payload.put("isSysUser", user.getIsSysUser());
             String token = JWTUtils.createJWT(JSON.toJSONString(user),payload,ParamConfig.getLong(tokenExpired,tokenExpiredDefVal));
 
             if (StringUtils.isBlank(token)){
@@ -197,11 +199,11 @@ public class CoreUserServiceImpl implements CoreUserService {
 
             json.put("token",token);
 
-            redisUtils.set(ConstantsUtils.USER_KEY +user.getId(),list,ParamConfig.getLong(tokenExpired,tokenExpiredDefVal), TimeUnit.MILLISECONDS);
+            redisUtils.set(ConstantsUtils.USER_KEY +user.getId()+":"+user.getIsSysUser(),list,ParamConfig.getLong(tokenExpired,tokenExpiredDefVal), TimeUnit.MILLISECONDS);
 
             log.info("用户登录成功，用户名={},id={},token={}",user.getLoginId(),user.getId(),token);
 
-            return ReturnJsonUtil.printJson(200,"登录成功",json,false);
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"登录成功",json,false);
         }catch (Exception e){
             log.error("登录出错：{}",e.getMessage());
             return ReturnJsonUtil.printJson(500,"登录失败",false);

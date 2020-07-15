@@ -128,13 +128,17 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                         try {
                             Map<String, Object> payload = new HashMap<String, Object>();
                             payload.put("userId", c.get("userId"));
+                            payload.put("isSysUser", c.get("isSysUser"));
+                            if (1 == c.get("isSysUser")){
+                                payload.put("openid", c.get("openid"));
+                            }
                             String token = JWTUtils.createJWT(JSON.toJSONString(coreUser),payload, ParamConfig.getLong(tokenExpired,tokenExpiredDefVal));
 
                             if (StringUtils.isBlank(token)){
                                 logger.error("token生成错误，token={}",token);
                             }
                             response.setHeader("token",token);
-                            redisUtils.set(ConstantsUtils.USER_KEY+c.get("userId"),redisUtils.get(ConstantsUtils.USER_KEY+c.get("userId")),ParamConfig.getLong(tokenExpired,tokenExpiredDefVal),TimeUnit.MILLISECONDS);
+                            redisUtils.set(ConstantsUtils.USER_KEY+c.get("userId")+":"+c.get("isSysUser"),redisUtils.get(ConstantsUtils.USER_KEY+c.get("userId")+":"+c.get("isSysUser")),ParamConfig.getLong(tokenExpired,tokenExpiredDefVal),TimeUnit.MILLISECONDS);
 
                             logger.info("{}用户已刷新，用户id={},旧token={},新token={}",coreUser.getLoginId(),c.get("userId"),jwt,token);
                         } catch (Exception e) {

@@ -7,6 +7,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * @author mr.gmac
+ */
 @Component("tbCoreUserRoleMapper")
 public interface TbCoreUserRoleMapper extends BaseMapper<TbCoreUserRole> {
 

@@ -183,6 +183,10 @@ public class JWTUtils {
                         try {
                             Map<String, Object> payload = new HashMap<String, Object>();
                             payload.put("userId", user.getString("id"));
+                            payload.put("isSysUser", user.getString("isSysUser"));
+                            if (1 == user.getInteger("isSysUser")){
+                                payload.put("openid", user.getString("loginId"));
+                            }
                             String token = JWTUtils.createJWT(JSON.toJSONString(user),payload, ParamConfig.getLong(tokenExpired,tokenExpiredDefVal));
 
                             if (StringUtils.isBlank(token)){
