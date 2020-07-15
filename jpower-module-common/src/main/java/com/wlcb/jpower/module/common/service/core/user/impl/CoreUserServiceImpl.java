@@ -199,7 +199,7 @@ public class CoreUserServiceImpl implements CoreUserService {
 
             redisUtils.set(ConstantsUtils.USER_KEY +user.getId(),list,ParamConfig.getLong(tokenExpired,tokenExpiredDefVal), TimeUnit.MILLISECONDS);
 
-            log.info("后台用户登录成功，用户名={},id={},token={}",user.getLoginId(),user.getId(),token);
+            log.info("用户登录成功，用户名={},id={},token={}",user.getLoginId(),user.getId(),token);
 
             return ReturnJsonUtil.printJson(200,"登录成功",json,false);
         }catch (Exception e){

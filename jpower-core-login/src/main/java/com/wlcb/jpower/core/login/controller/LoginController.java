@@ -6,11 +6,9 @@ import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.service.core.user.CoreUserService;
 import com.wlcb.jpower.module.common.service.redis.RedisUtils;
-import com.wlcb.jpower.module.common.service.user.UserService;
 import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
-import com.wlcb.jpower.module.dbs.entity.user.TblUser;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -41,8 +39,6 @@ public class LoginController extends BaseController {
 
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
-    @Resource
-    private UserService userService;
     @Resource
     private CoreUserService coreUserService;
     @Resource
@@ -77,6 +73,8 @@ public class LoginController extends BaseController {
         if (StringUtils.isBlank(username) || StringUtils.isBlank(password)){
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,"用户名或者密码不可为空",false);
         }
+        //对MD5进行加密
+        password = MD5.parseStrToMd5U32(password);
 
         //防篡改校验
         String keyBeforeMd5 = username + password + "wlcbPortal";
@@ -109,6 +107,7 @@ public class LoginController extends BaseController {
         coreUserService.updateLoginInfo(user);
 
         user.setPassword(null);
+        user.setIsSysUser(0);
 //        return userService.login(user);
         return coreUserService.createToken(user);
     }
@@ -131,7 +130,7 @@ public class LoginController extends BaseController {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该验证码已经发送，请一分钟后重试",false);
         }
 
-        TblUser user = userService.selectByPhone(phone);
+        TbCoreUser user = coreUserService.selectByPhone(phone);
 
         if (user == null){
             //用户名空则返回
@@ -147,7 +146,7 @@ public class LoginController extends BaseController {
 
         if (json.getInteger("status") == 1){
             redisUtils.set(phone+"-login",code,5L, TimeUnit.MINUTES);
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,user.getName()+"的验证码发送成功",true);
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,user.getLoginId()+"的验证码发送成功",true);
         }else {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"验证码发送失败",false);
         }
@@ -259,16 +258,6 @@ public class LoginController extends BaseController {
             return ReturnJsonUtil.printJson(400,"修改失败",false);
         }
 
-    }
-
-    @RequestMapping(value = "/wxlogin",method = RequestMethod.POST,produces="application/json")
-    public ResponseData wxLogin(String code, HttpServletRequest request, HttpServletResponse response){
-
-        if (StringUtils.isBlank(code)){
-            return ReturnJsonUtil.printJson(406,"code不可为空",false);
-        }
-
-        return userService.wxLogin(code);
     }
 
     @RequestMapping(value = "/parseJwt",method = RequestMethod.POST,produces="application/json")

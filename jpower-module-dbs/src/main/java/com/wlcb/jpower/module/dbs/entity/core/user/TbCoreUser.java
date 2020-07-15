@@ -62,5 +62,5 @@ public class TbCoreUser extends BaseEntity implements Serializable {
 
     //用来表示是本表数据还是其他表映射的数据 0系统表 1业务表 2白名单
     @TableField(exist = false)
-    private Integer isSysUser = 0;
+    private Integer isSysUser;
 }

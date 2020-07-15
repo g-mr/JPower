@@ -3,7 +3,7 @@ package com.wlcb.jpower.module.common.utils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.wlcb.jpower.module.common.utils.param.ParamConfig;
-import com.wlcb.jpower.module.dbs.entity.user.TblUser;
+import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
 import io.jsonwebtoken.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
@@ -217,9 +217,9 @@ public class JWTUtils {
 
     public static void main(String[] args) throws Exception {
 
-        TblUser user = new TblUser();
+        TbCoreUser user = new TbCoreUser();
         user.setId("23213");
-        user.setUser("sdwdqqdq");
+        user.setUserName("sdwdqqdq");
 //
         Map<String, Object> payload = new HashMap<String, Object>();
         payload.put("userId", "21321312312");

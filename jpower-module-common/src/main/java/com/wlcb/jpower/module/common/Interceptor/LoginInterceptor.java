@@ -201,10 +201,12 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
      * @return boolean
      */
     private boolean findAuthority(String currentPath, List<TbCoreFunction> functionList) {
-        for (TbCoreFunction tbCoreFunction : functionList) {
-            //如果存在则说明有权限
-            if (StringUtils.equals(tbCoreFunction.getUrl(),currentPath)){
-                return true;
+        if (functionList != null){
+            for (TbCoreFunction tbCoreFunction : functionList) {
+                //如果存在则说明有权限
+                if (StringUtils.equals(tbCoreFunction.getUrl(),currentPath)){
+                    return true;
+                }
             }
         }
         return false;

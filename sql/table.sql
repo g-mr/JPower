@@ -26,6 +26,37 @@ create table tb_core_user(
   unique key login_id_index(login_id) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统登录用户表';
 
+
+
+drop table if exists tb_core_role_function;
+create table tb_core_role_function(
+  id varchar(32) not null comment '主键',
+  role_id varchar(50) not null comment '角色ID',
+  function_id varchar(100) not null comment '菜单ID',
+  create_user varchar(32) default 'root' not null comment '创建人',
+  create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
+  update_user varchar(32) default 'root' not null comment '更新人',
+  update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
+  status   tinyint(1) default 1 comment '状态',
+  PRIMARY KEY (id) USING BTREE,
+  unique key core_dict_type(role_id, function_id) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '角色菜单表';
+
+
+drop table if exists tb_core_user_role;
+create table tb_core_user_role(
+  id varchar(32) not null comment '主键',
+  role_id varchar(50) not null comment '角色ID',
+  user_id varchar(100) not null comment '用户ID',
+  create_user varchar(32) default 'root' not null comment '创建人',
+  create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
+  update_user varchar(32) default 'root' not null comment '更新人',
+  update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
+  status   tinyint(1) default 1 comment '状态',
+  PRIMARY KEY (id) USING BTREE,
+  unique key core_dict_type(role_id, user_id) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '用户角色表';
+
 drop table if exists tb_core_org;
 create table tb_core_org(
  id varchar(32) not null,
@@ -114,8 +145,8 @@ create table tb_core_param(
   PRIMARY KEY (id) USING BTREE,
   unique key code_index(code) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统参数表';
-INSERT INTO tb_core_param (id, code, name, value, note, create_user, create_time, update_user, update_time, status) VALUES ('39d36d80997f11ea80eb7a10df2f4ffc', 'isActivation', '用户激活状态', '1', '注册用户默认是否激活', 'root', '2020-05-12 10:33:50', 'root', '2020-05-12 10:33:50', 1);
 
+INSERT INTO tb_core_param (id, code, name, value, note, create_user, create_time, update_user, update_time, status) VALUES ('39d36d80997f11ea80eb7a10df2f4ffc', 'isActivation', '用户激活状态', '1', '注册用户默认是否激活', 'root', '2020-05-12 10:33:50', 'root', '2020-05-12 10:33:50', 1);
 INSERT INTO tb_core_param (id, code, name, value, note, create_user, create_time, update_user, update_time, status) VALUES ('a3bf0b1c935a11eaa1c1159dd451177f', 'email.protocol', '邮箱服务器配置', 'smtp', '邮件发送使用的服务器', 'root', '2020-05-11 15:40:09', 'root', '2020-05-11 15:40:09', 1);
 INSERT INTO tb_core_param (id, code, name, value, note, create_user, create_time, update_user, update_time, status) VALUES ('c2597620935a11eaa1c1159dd451177f', 'email.dir', '邮箱服务器附件邮箱保存路径', '/', '邮件发送使用的服务器', 'root', '2020-05-11 15:41:00', 'root', '2020-05-11 15:41:00', 1);
 INSERT INTO tb_core_param (id, code, name, value, note, create_user, create_time, update_user, update_time, status) VALUES ('c2b19bae932b11eaa1c1159dd451177f', 'noLoginUrl', '登录过滤接口', '/file/export/download', '多个用,分隔', 'root', '2020-05-11 10:04:34', 'root', '2020-05-12 14:52:18', 1);

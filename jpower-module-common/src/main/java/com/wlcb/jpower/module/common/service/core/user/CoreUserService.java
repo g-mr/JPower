@@ -2,7 +2,6 @@ package com.wlcb.jpower.module.common.service.core.user;
 
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
-import com.wlcb.jpower.module.dbs.entity.user.TblUser;
 
 import java.util.List;
 
