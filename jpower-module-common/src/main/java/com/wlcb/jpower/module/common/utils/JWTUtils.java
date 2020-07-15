@@ -230,6 +230,10 @@ public class JWTUtils {
         String token = JWTUtils.createJWT(JSON.toJSONString(user),payload,400000L);
         System.out.println(token);
 
+
+        System.out.println(Base64.decodeBase64("woyebuzhidaoxiediansha"));
+
+
 //        Claims c = JWTUtils.parseJWT("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOlwiMjMyMTNcIixcInJvbGVcIjowLFwic3RhdHVzXCI6MCxcInVzZXJcIjpcInNkd2RxcWRxXCJ9IiwiZXhwIjoxNTgzNDI1NjgzLCJ1c2VySWQiOiIyMTMyMTMxMjMxMiIsImlhdCI6MTU4MzQyNTI4MywianRpIjoiand0TG9naW4ifQ.kJNKLQw5NY-IOTUyhaYppb_g5k_NcttsdZv");
 //        System.out.println(c);
 //        e.getClaims().getExpiration();

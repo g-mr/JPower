@@ -1,6 +1,7 @@
 package com.wlcb.jpower.module.dbs.config;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 
@@ -25,9 +26,10 @@ public class UpdateRelatedFieldsMetaHandler implements MetaObjectHandler {
      **/
     @Override
     public void insertFill(MetaObject metaObject) {
-        this.strictInsertFill(metaObject, "createUser", String.class, LoginUserContext.getUserName());
+
+        this.strictInsertFill(metaObject, "createUser", String.class, getUserName());
+        this.strictInsertFill(metaObject, "updateUser", String.class, getUserName());
         this.strictInsertFill(metaObject, "createTime", Date.class, new Date());
-        this.strictInsertFill(metaObject, "updateUser", String.class, LoginUserContext.getUserName());
         this.strictInsertFill(metaObject, "updateTime", Date.class, new Date());
         this.strictInsertFill(metaObject, "status", Integer.class, 1);
     }
@@ -41,8 +43,13 @@ public class UpdateRelatedFieldsMetaHandler implements MetaObjectHandler {
      **/
     @Override
     public void updateFill(MetaObject metaObject) {
-        this.strictUpdateFill(metaObject, "updateUser", String.class, LoginUserContext.getUserName());
+        this.strictUpdateFill(metaObject, "updateUser", String.class, getUserName());
         this.strictUpdateFill(metaObject, "updateTime", Date.class, new Date());
+    }
+
+    private String getUserName(){
+        String username = LoginUserContext.getUserName()==null?"":LoginUserContext.getUserName();
+        return username;
     }
 
 }

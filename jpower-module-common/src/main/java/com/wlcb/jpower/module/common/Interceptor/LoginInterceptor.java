@@ -129,7 +129,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                             Map<String, Object> payload = new HashMap<String, Object>();
                             payload.put("userId", c.get("userId"));
                             payload.put("isSysUser", c.get("isSysUser"));
-                            if (1 == c.get("isSysUser")){
+                            if (StringUtils.equals(String.valueOf(c.get("isSysUser")),"1")){
                                 payload.put("openid", c.get("openid"));
                             }
                             String token = JWTUtils.createJWT(JSON.toJSONString(coreUser),payload, ParamConfig.getLong(tokenExpired,tokenExpiredDefVal));
