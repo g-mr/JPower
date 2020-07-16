@@ -1,6 +1,7 @@
 package com.wlcb.jpower.module.base.config;
 
 import com.wlcb.jpower.module.base.exception.BusinessException;
+import com.wlcb.jpower.module.base.exception.JpowerException;
 import com.wlcb.jpower.module.base.properties.SysProperties;
 import com.wlcb.jpower.module.base.vo.ErrorReturnJson;
 import org.apache.commons.lang3.StringUtils;
@@ -70,11 +71,13 @@ public class GlobalExceptionHandler {
             r.setCode(404);
         }else if (e instanceof BusinessException) {
             r.setCode(501);
-            logger.error("{}", e);
+//            logger.error("{}", e);
+        }else if (e instanceof JpowerException) {
+            r.setCode(((JpowerException) e).getCode());
+//            logger.error("{}", e);
         } else {
             r.setCode(500);
-            logger.error("message={},！！！{}", e.getMessage() , e);
-
+//            logger.error("message={},！！！{}", e.getMessage() , e);
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             e.printStackTrace(pw);

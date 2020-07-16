@@ -91,20 +91,15 @@ public class CoreUserServiceImpl implements CoreUserService {
             wrapper.eq("activation_status",coreUser.getActivationStatus());
         }
 
-        if (coreUser.getStatus() != null){
-            wrapper.eq("status",coreUser.getStatus());
-        }
-
         wrapper.orderByDesc("create_time");
 
         return coreUserDao.list(wrapper);
     }
 
     @Override
-    public Integer add(TbCoreUser coreUser) {
+    public Boolean add(TbCoreUser coreUser) {
         if (coreUser.getActivationStatus() == null){
             Integer isActivation = ParamConfig.getInt("isActivation");
-
             coreUser.setActivationStatus(isActivation);
         }
 
@@ -113,19 +108,22 @@ public class CoreUserServiceImpl implements CoreUserService {
             coreUser.setActivationStatus(ConstantsEnum.ACTIVATION_STATUS.ACTIVATION_NO.getValue());
         }
 
-        coreUser.setUpdateUser(coreUser.getCreateUser());
-        return coreUserDao.save(coreUser)?1:0;
+        return coreUserDao.save(coreUser);
     }
 
     @Override
-    public Integer delete(String ids) {
+    public Boolean delete(String ids) {
         List<String> list = new ArrayList<>(Arrays.asList(ids.split(",")));
-        return coreUserDao.removeByIds(list)?1:0;
+        boolean is = coreUserDao.removeByIds(list);
+        if (is){
+            coreUserRoleDao.remove(new QueryWrapper<TbCoreUserRole>().lambda().in(TbCoreUserRole::getUserId,list));
+        }
+        return is;
     }
 
     @Override
-    public Integer update(TbCoreUser coreUser) {
-        return coreUserMapper.updateById(coreUser);
+    public Boolean update(TbCoreUser coreUser) {
+        return coreUserDao.updateById(coreUser);
     }
 
     @Override
@@ -139,20 +137,20 @@ public class CoreUserServiceImpl implements CoreUserService {
     }
 
     @Override
-    public Integer updateUserPassword(String ids, String pass) {
+    public Boolean updateUserPassword(String ids, String pass) {
         UpdateWrapper wrapper = new UpdateWrapper<TbCoreUser>();
         wrapper.in("id",ids);
         wrapper.set("password",pass);
-        return coreUserDao.update(new TbCoreUser(),wrapper)?1:0;
+        return coreUserDao.update(new TbCoreUser(),wrapper);
     }
 
     @Override
-    public Integer insterBatch(List<TbCoreUser> list) {
-        return coreUserMapper.insertList(list);
+    public Boolean insterBatch(List<TbCoreUser> list) {
+        return coreUserDao.saveBatch(list);
     }
 
     @Override
-    public Integer updateUsersRole(String userIds, String roleIds) {
+    public Boolean updateUsersRole(String userIds, String roleIds) {
         String[] rIds = roleIds.split(",");
         String[] uIds = userIds.split(",");
         List<TbCoreUserRole> userRoles = new ArrayList<>();
@@ -172,10 +170,10 @@ public class CoreUserServiceImpl implements CoreUserService {
         coreUserRoleDao.remove(wrapper);
 
         if (userRoles.size() > 0){
-            Integer count = coreUserRoleMapper.insertList(userRoles);
-            return count;
+            Boolean is = coreUserRoleDao.saveBatch(userRoles);
+            return is;
         }
-        return 1;
+        return true;
     }
 
     @Override

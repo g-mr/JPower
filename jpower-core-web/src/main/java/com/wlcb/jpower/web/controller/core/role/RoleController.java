@@ -2,6 +2,9 @@ package com.wlcb.jpower.web.controller.core.role;
 
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
+import com.wlcb.jpower.module.base.annotation.Log;
+import com.wlcb.jpower.module.base.enums.JpowerError;
+import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.service.core.user.CoreRoleService;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName RoleController
@@ -37,15 +41,20 @@ public class RoleController extends BaseController {
 
     /**
      * @Author 郭丁志
-     * @Description //TODO 查询角色列表
+     * @Description //TODO 查询下级角色列表
      * @Date 09:41 2020-05-19
      * @Param [coreUser]
      * @return com.wlcb.jpower.module.base.vo.ResponseData
      **/
     @RequestMapping(value = "/listByParent",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
     public ResponseData listByParent(TbCoreRole coreRole){
+
+        if(StringUtils.isBlank(coreRole.getParentId()) && StringUtils.isBlank(coreRole.getParentCode())){
+            coreRole.setParentCode("-1");
+        }
+
         List<TbCoreRole> list = coreRoleService.listByParent(coreRole);
-        return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"获取成功", JSON.toJSON(new PageInfo<>(list)),true);
+        return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"获取成功", JSON.toJSON(list),true);
     }
 
     /**
@@ -59,10 +68,19 @@ public class RoleController extends BaseController {
     public ResponseData add(TbCoreRole coreRole){
 
         ResponseData responseData = BeanUtil.allFieldIsNULL(coreRole,
-                "createUser","code","name");
+                "code","name");
 
         if (responseData.getCode() == ConstantsReturn.RECODE_NULL){
             return responseData;
+        }
+
+        if (StringUtils.isBlank(coreRole.getParentCode()) || StringUtils.isBlank(coreRole.getParentId())){
+            coreRole.setParentCode("-1");
+            coreRole.setParentId("-1");
+        }
+
+        if (coreRole.getIsSysRole() == null){
+            coreRole.setIsSysRole(0);
         }
 
         TbCoreRole role = coreRoleService.selectRoleByCode(coreRole.getCode());
@@ -70,10 +88,9 @@ public class RoleController extends BaseController {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该角色已存在", false);
         }
 
+        Boolean is = coreRoleService.add(coreRole);
 
-        Integer count = coreRoleService.add(coreRole);
-
-        if (count > 0){
+        if (is){
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"新增成功", true);
         }else {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"新增失败", false);
@@ -90,18 +107,16 @@ public class RoleController extends BaseController {
     @RequestMapping(value = "/deleteStatus",method = {RequestMethod.DELETE},produces="application/json")
     public ResponseData deleteStatus(String ids){
 
-        if (StringUtils.isBlank(ids)){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"ID不可为空", false);
-        }
+        JpowerAssert.notEmpty(ids, JpowerError.Arg,"ids不可为空");
 
         Integer c = coreRoleService.listByPids(ids);
         if (c > 0){
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该角色存在下级角色，请先删除下级角色", false);
         }
 
-        Integer count = coreRoleService.deleteStatus(ids);
+        Boolean is = coreRoleService.deleteStatus(ids);
 
-        if (count > 0){
+        if (is){
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"删除成功", true);
         }else {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"删除失败", false);
@@ -118,12 +133,7 @@ public class RoleController extends BaseController {
     @RequestMapping(value = "/update",method = {RequestMethod.PUT},produces="application/json")
     public ResponseData update(TbCoreRole coreRole){
 
-        ResponseData responseData = BeanUtil.allFieldIsNULL(coreRole,
-                "updateUser","id");
-
-        if (responseData.getCode() == ConstantsReturn.RECODE_NULL){
-            return responseData;
-        }
+        JpowerAssert.notEmpty(coreRole.getId(), JpowerError.Arg,"id不可为空");
 
         if (StringUtils.isNotBlank(coreRole.getCode())){
             TbCoreRole role = coreRoleService.selectRoleByCode(coreRole.getCode());
@@ -132,9 +142,9 @@ public class RoleController extends BaseController {
             }
         }
 
-        Integer count = coreRoleService.update(coreRole);
+        Boolean is = coreRoleService.update(coreRole);
 
-        if (count > 0){
+        if (is){
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"修改成功", true);
         }else {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"修改失败", false);
@@ -150,28 +160,25 @@ public class RoleController extends BaseController {
      */
     @RequestMapping(value = "/roleFunction",method = {RequestMethod.GET},produces="application/json")
     public ResponseData roleFunction(String roleId){
-        
-        if (StringUtils.isBlank(roleId)){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,"角色ID不可为空", false);
-        }
 
-        TbCoreRoleFunction roleFunction = coreRolefunctionService.selectRoleFunctionByRoleId(roleId);
+        JpowerAssert.notEmpty(roleId, JpowerError.Arg,"角色id不可为空");
+
+        List<Map<String,Object>> roleFunction = coreRolefunctionService.selectRoleFunctionByRoleId(roleId);
         return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"查询成功", roleFunction, true);
     }
 
     /**
      * @author 郭丁志
-     * @Description //TODO 新增权限
+     * @Description //TODO 重新给角色赋权
      * @date 0:13 2020/5/27 0027
      * @param roleId
      * @return com.wlcb.jpower.module.base.vo.ResponseData
      */
+    @Log(title = "重新给角色赋权",isSaveLog = true)
     @RequestMapping(value = "/addFunction",method = {RequestMethod.POST},produces="application/json")
     public ResponseData addFunction(String roleId,String functionIds){
 
-        if (StringUtils.isBlank(roleId)){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,"用户ID不可位空", false);
-        }
+        JpowerAssert.notEmpty(roleId, JpowerError.Arg,"角色id不可为空");
 
         Integer count = coreRolefunctionService.addRolefunctions(roleId,functionIds);
 

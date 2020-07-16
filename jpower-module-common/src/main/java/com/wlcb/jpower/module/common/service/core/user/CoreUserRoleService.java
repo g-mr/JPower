@@ -3,6 +3,7 @@ package com.wlcb.jpower.module.common.service.core.user;
 import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreUserRole;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author 郭丁志
@@ -18,5 +19,5 @@ public interface CoreUserRoleService {
      * @param userId 用户ID
      * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.role.TbCoreUserRole>
      */
-    List<TbCoreUserRole> selectUserRoleByUserId(String userId);
+    List<Map<String,Object>> selectUserRoleByUserId(String userId);
 }

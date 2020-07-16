@@ -2,6 +2,9 @@ package com.wlcb.jpower.module.common.service.core.user;
 
 import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreRoleFunction;
 
+import java.util.List;
+import java.util.Map;
+
 public interface CoreRolefunctionService {
 
     /**
@@ -11,7 +14,7 @@ public interface CoreRolefunctionService {
      * @param roleId 角色ID
      * @return com.wlcb.jpower.module.dbs.entity.core.role.TbCoreRoleFunction
      */
-    TbCoreRoleFunction selectRoleFunctionByRoleId(String roleId);
+    List<Map<String,Object>> selectRoleFunctionByRoleId(String roleId);
 
     /**
      * @author 郭丁志

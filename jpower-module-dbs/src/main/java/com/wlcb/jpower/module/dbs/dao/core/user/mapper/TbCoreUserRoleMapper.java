@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author mr.gmac
@@ -29,7 +30,7 @@ public interface TbCoreUserRoleMapper extends BaseMapper<TbCoreUserRole> {
      * @param userId 用户ID
      * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.role.TbCoreUserRole>
      */
-    List<TbCoreUserRole> selectUserRoleByUserId(String userId);
+    List<Map<String,Object>> selectUserRoleByUserId(String userId);
 
     /**
      * @author 郭丁志

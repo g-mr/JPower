@@ -25,7 +25,7 @@ public interface CoreRoleService {
      * @Param [coreRole]
      * @return java.lang.Integer
      **/
-    Integer add(TbCoreRole coreRole);
+    Boolean add(TbCoreRole coreRole);
 
     /**
      * @Author 郭丁志
@@ -34,7 +34,7 @@ public interface CoreRoleService {
      * @Param [ids]
      * @return java.lang.Integer
      **/
-    Integer deleteStatus(String ids);
+    Boolean deleteStatus(String ids);
 
     /**
      * @Author 郭丁志
@@ -61,5 +61,5 @@ public interface CoreRoleService {
      * @Param [coreRole]
      * @return java.lang.Integer
      **/
-    Integer update(TbCoreRole coreRole);
+    Boolean update(TbCoreRole coreRole);
 }

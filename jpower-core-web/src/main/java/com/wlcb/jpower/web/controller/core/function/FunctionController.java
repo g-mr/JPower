@@ -1,7 +1,8 @@
 package com.wlcb.jpower.web.controller.core.function;
 
 import com.alibaba.fastjson.JSON;
-import com.github.pagehelper.PageInfo;
+import com.wlcb.jpower.module.base.enums.JpowerError;
+import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.service.core.user.CoreFunctionService;
@@ -41,8 +42,13 @@ public class FunctionController extends BaseController {
      **/
     @RequestMapping(value = "/listByParent",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
     public ResponseData list(TbCoreFunction coreFunction){
+
+        if(StringUtils.isBlank(coreFunction.getParentId()) && StringUtils.isBlank(coreFunction.getParentCode())){
+            coreFunction.setParentCode("-1");
+        }
+
         List<TbCoreFunction> list = coreFunctionService.listByParent(coreFunction);
-        return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"获取成功", JSON.toJSON(new PageInfo<>(list)),true);
+        return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"获取成功", JSON.toJSON(list),true);
     }
 
     /**
@@ -56,10 +62,15 @@ public class FunctionController extends BaseController {
     public ResponseData add(TbCoreFunction coreFunction){
 
         ResponseData responseData = BeanUtil.allFieldIsNULL(coreFunction,
-                "createUser","functionName","code", "url", "isMenu");
+                "functionName","code", "url", "isMenu");
 
         if (responseData.getCode() == ConstantsReturn.RECODE_NULL){
             return responseData;
+        }
+
+        if(StringUtils.isBlank(coreFunction.getParentCode()) || StringUtils.isBlank(coreFunction.getParentId())){
+            coreFunction.setParentCode("-1");
+            coreFunction.setParentId("-1");
         }
 
         TbCoreFunction function = coreFunctionService.selectFunctionByCode(coreFunction.getCode());
@@ -72,9 +83,9 @@ public class FunctionController extends BaseController {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该资源URL已存在", false);
         }
 
-        Integer count = coreFunctionService.add(coreFunction);
+        Boolean is = coreFunctionService.add(coreFunction);
 
-        if (count > 0){
+        if (is){
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"新增成功", true);
         }else {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"新增失败", false);
@@ -91,9 +102,7 @@ public class FunctionController extends BaseController {
     @RequestMapping(value = "/delete",method = {RequestMethod.DELETE},produces="application/json")
     public ResponseData delete(String ids){
 
-        if (StringUtils.isBlank(ids)){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"ID不可为空", false);
-        }
+        JpowerAssert.notEmpty(ids, JpowerError.Arg, "ids不可为空");
 
         Integer c = coreFunctionService.listByPids(ids);
         if (c > 0){
@@ -119,12 +128,7 @@ public class FunctionController extends BaseController {
     @RequestMapping(value = "/update",method = {RequestMethod.PUT},produces="application/json")
     public ResponseData update(TbCoreFunction coreFunction){
 
-        ResponseData responseData = BeanUtil.allFieldIsNULL(coreFunction,
-                "updateUser","id");
-
-        if (responseData.getCode() == ConstantsReturn.RECODE_NULL){
-            return responseData;
-        }
+        JpowerAssert.notEmpty(coreFunction.getId(), JpowerError.Arg, "id不可为空");
 
         if (StringUtils.isNotBlank(coreFunction.getCode())){
             TbCoreFunction function = coreFunctionService.selectFunctionByCode(coreFunction.getCode());
@@ -140,9 +144,9 @@ public class FunctionController extends BaseController {
             }
         }
 
-        Integer count = coreFunctionService.update(coreFunction);
+        Boolean is = coreFunctionService.update(coreFunction);
 
-        if (count > 0){
+        if (is){
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"修改成功", true);
         }else {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"修改失败", false);

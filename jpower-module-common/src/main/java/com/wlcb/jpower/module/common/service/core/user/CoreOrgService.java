@@ -31,7 +31,7 @@ public interface CoreOrgService {
      * @Param [coreOrg]
      * @return java.lang.Integer
      **/
-    Integer add(TbCoreOrg coreOrg);
+    Boolean add(TbCoreOrg coreOrg);
 
     /**
      * @Author 郭丁志
@@ -49,7 +49,7 @@ public interface CoreOrgService {
      * @Param [ids]
      * @return java.lang.Integer
      **/
-    Integer delete(String ids);
+    boolean delete(String ids);
 
     /**
      * @author 郭丁志
@@ -58,5 +58,5 @@ public interface CoreOrgService {
      * @param coreOrg
      * @return java.lang.Integer
      */
-    Integer update(TbCoreOrg coreOrg);
+    Boolean update(TbCoreOrg coreOrg);
 }

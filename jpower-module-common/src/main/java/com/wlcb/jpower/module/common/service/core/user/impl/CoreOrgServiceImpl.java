@@ -1,6 +1,7 @@
 package com.wlcb.jpower.module.common.service.core.user.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.wlcb.jpower.module.common.service.core.user.CoreOrgService;
 import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreOrgDao;
 import com.wlcb.jpower.module.dbs.dao.core.user.mapper.TbCoreOrgMapper;
@@ -9,8 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -39,14 +38,10 @@ public class CoreOrgServiceImpl implements CoreOrgService {
 
         if (StringUtils.isNotBlank(coreOrg.getParentId())){
             wrapper.eq("parent_id",coreOrg.getParentId());
-        }else {
-            wrapper.isNull("parent_id");
         }
 
         if (StringUtils.isNotBlank(coreOrg.getParentCode())){
             wrapper.eq("parent_code",coreOrg.getParentCode());
-        }else {
-            wrapper.isNull("parent_code");
         }
 
         if (StringUtils.isNotBlank(coreOrg.getHeadName())){
@@ -80,25 +75,26 @@ public class CoreOrgServiceImpl implements CoreOrgService {
     }
 
     @Override
-    public Integer add(TbCoreOrg coreOrg) {
-        coreOrg.setUpdateUser(coreOrg.getCreateUser());
-        return coreOrgDao.save(coreOrg)?1:0;
+    public Boolean add(TbCoreOrg coreOrg) {
+        return coreOrgDao.save(coreOrg);
     }
 
     @Override
     public Integer listOrgByPids(String ids) {
-        return coreOrgDao.count(new QueryWrapper<TbCoreOrg>().lambda().in(TbCoreOrg::getId,ids));
+        return coreOrgDao.count(new QueryWrapper<TbCoreOrg>().lambda().in(TbCoreOrg::getParentId,ids));
     }
 
     @Override
-    public Integer delete(String ids) {
-        List<String> list = new ArrayList<>(Arrays.asList(ids.split(",")));
-        return coreOrgDao.removeByIds(list)?1:0;
+    public boolean delete(String ids) {
+        UpdateWrapper wrapper = new UpdateWrapper<TbCoreOrg>();
+        wrapper.in("id",ids.split(","));
+        wrapper.set("status",0);
+        return coreOrgDao.update(new TbCoreOrg(),wrapper);
     }
 
     @Override
-    public Integer update(TbCoreOrg coreUser) {
-        return coreOrgDao.updateById(coreUser)?1:0;
+    public Boolean update(TbCoreOrg coreUser) {
+        return coreOrgDao.updateById(coreUser);
     }
 
 }

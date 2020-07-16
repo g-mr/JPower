@@ -17,13 +17,11 @@ import java.util.Map;
 public class CoreRolefunctionServiceImpl implements CoreRolefunctionService {
 
     @Autowired
-    public TbCoreRoleFunctionMapper coreRoleFunctionMapper;
-    @Autowired
     public TbCoreRoleFunctionDao coreRoleFunctionDao;
 
     @Override
-    public TbCoreRoleFunction selectRoleFunctionByRoleId(String roleId) {
-        return coreRoleFunctionMapper.selectRoleFunctionByRoleId(roleId);
+    public List<Map<String,Object>> selectRoleFunctionByRoleId(String roleId) {
+        return coreRoleFunctionDao.getBaseMapper().selectRoleFunctionByRoleId(roleId);
     }
 
     @Override
@@ -45,8 +43,8 @@ public class CoreRolefunctionServiceImpl implements CoreRolefunctionService {
         coreRoleFunctionDao.removeByMap(map);
 
         if (roleFunctions.size() > 0){
-            Integer count = coreRoleFunctionMapper.insertList(roleFunctions);
-            return count;
+            boolean is = coreRoleFunctionDao.saveBatch(roleFunctions);
+            return is?roleFunctions.size():0;
         }
         return 1;
     }

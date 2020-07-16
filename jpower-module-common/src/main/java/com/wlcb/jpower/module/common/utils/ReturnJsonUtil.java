@@ -3,6 +3,7 @@ package com.wlcb.jpower.module.common.utils;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.wlcb.jpower.module.base.vo.ResponseData;
+import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
@@ -58,10 +59,10 @@ public class ReturnJsonUtil {
      * @Param [msg, data]
      * @return ResponseData
      **/
-    public static ResponseData printJson(String msg, Object data){
+    public static ResponseData ok(String msg, Object data){
         ResponseData r = new ResponseData();
         r.setMessage(msg);
-        r.setCode(200);
+        r.setCode(ConstantsReturn.RECODE_SUCCESS);
         r.setData(data);
         r.setStatus(true);
         return r;

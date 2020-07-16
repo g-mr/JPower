@@ -35,20 +35,16 @@ public class CoreFunctionServiceImpl implements CoreFunctionService {
             wrapper.eq(TbCoreFunction::getAlias,coreFunction.getAlias());
         }
 
-        if (StringUtils.isNotBlank(coreFunction.getParentId())){
-            wrapper.eq(TbCoreFunction::getParentId,coreFunction.getParentId());
-        }else {
-            wrapper.isNull(TbCoreFunction::getParentId);
-        }
-
         if (StringUtils.isNotBlank(coreFunction.getCode())){
             wrapper.eq(TbCoreFunction::getCode,coreFunction.getCode());
         }
 
+        if (StringUtils.isNotBlank(coreFunction.getParentId())){
+            wrapper.eq(TbCoreFunction::getParentId,coreFunction.getParentId());
+        }
+
         if (StringUtils.isNotBlank(coreFunction.getParentCode())){
             wrapper.eq(TbCoreFunction::getParentCode,coreFunction.getParentCode());
-        }else {
-            wrapper.isNull(TbCoreFunction::getParentCode);
         }
 
         if (coreFunction.getIsMenu() != null){
@@ -69,9 +65,8 @@ public class CoreFunctionServiceImpl implements CoreFunctionService {
     }
 
     @Override
-    public Integer add(TbCoreFunction coreFunction) {
-        coreFunction.setUpdateUser(coreFunction.getCreateUser());
-        return coreFunctionMapper.insert(coreFunction);
+    public Boolean add(TbCoreFunction coreFunction) {
+        return coreFunctionDao.save(coreFunction);
     }
 
     @Override
@@ -108,7 +103,7 @@ public class CoreFunctionServiceImpl implements CoreFunctionService {
     }
 
     @Override
-    public Integer update(TbCoreFunction coreFunction) {
-        return coreFunctionMapper.updateById(coreFunction);
+    public Boolean update(TbCoreFunction coreFunction) {
+        return coreFunctionDao.updateById(coreFunction);
     }
 }

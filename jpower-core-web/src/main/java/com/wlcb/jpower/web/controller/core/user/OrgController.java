@@ -2,6 +2,8 @@ package com.wlcb.jpower.web.controller.core.user;
 
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
+import com.wlcb.jpower.module.base.enums.JpowerError;
+import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.page.PaginationContext;
@@ -43,6 +45,7 @@ public class OrgController extends BaseController {
 
         Object json;
         if (StringUtils.isBlank(coreOrg.getParentId()) && StringUtils.isBlank(coreOrg.getParentCode())){
+            coreOrg.setParentCode("-1");
             PaginationContext.startPage();
             json = JSON.toJSON(new PageInfo<TbCoreOrg>(coreOrgService.listByParent(coreOrg)));
         }else {
@@ -63,7 +66,7 @@ public class OrgController extends BaseController {
     public ResponseData add(TbCoreOrg coreOrg){
 
         ResponseData responseData = BeanUtil.allFieldIsNULL(coreOrg,
-                "createUser","name","code");
+                "name","code");
 
         if (responseData.getCode() == ConstantsReturn.RECODE_NULL){
             return responseData;
@@ -74,9 +77,13 @@ public class OrgController extends BaseController {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该组织机构已存在", false);
         }
 
-        Integer count = coreOrgService.add(coreOrg);
+        if (StringUtils.isBlank(coreOrg.getParentCode())){
+            coreOrg.setParentCode("-1");
+            coreOrg.setParentId("-1");
+        }
+        Boolean is = coreOrgService.add(coreOrg);
 
-        if (count > 0){
+        if (is){
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"新增成功", true);
         }else {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"新增失败", false);
@@ -90,21 +97,19 @@ public class OrgController extends BaseController {
      * @Param [coreUser]
      * @return com.wlcb.jpower.module.base.vo.ResponseData
      **/
-    @RequestMapping(value = "/delete",method = {RequestMethod.DELETE},produces="application/json")
-    public ResponseData delete(String ids){
+    @RequestMapping(value = "/deleteStatus",method = {RequestMethod.DELETE},produces="application/json")
+    public ResponseData deleteStatus(String ids){
 
-        if (StringUtils.isBlank(ids)){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"ID不可为空", false);
-        }
+        JpowerAssert.notEmpty(ids, JpowerError.Arg,"ids不可为空");
 
         Integer c = coreOrgService.listOrgByPids(ids);
         if (c > 0){
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"您选中的组织机构存在下级机构，请先删除下级机构", false);
         }
 
-        Integer count = coreOrgService.delete(ids);
+        Boolean is = coreOrgService.delete(ids);
 
-        if (count > 0){
+        if (is){
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"删除成功", true);
         }else {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"删除失败", false);
@@ -121,23 +126,18 @@ public class OrgController extends BaseController {
     @RequestMapping(value = "/update",method = {RequestMethod.PUT},produces="application/json")
     public ResponseData update(TbCoreOrg coreOrg){
 
-        ResponseData responseData = BeanUtil.allFieldIsNULL(coreOrg,
-                "updateUser","id");
-
-        if (responseData.getCode() == ConstantsReturn.RECODE_NULL){
-            return responseData;
-        }
+        JpowerAssert.notEmpty(coreOrg.getId(), JpowerError.Arg,"id不可为空");
 
         if (StringUtils.isNotBlank(coreOrg.getCode())){
             TbCoreOrg org = coreOrgService.selectOrgByCode(coreOrg.getCode());
-            if (org != null && !StringUtils.equals(org.getCode(),coreOrg.getCode())){
+            if (org != null && !StringUtils.equals(org.getId(),coreOrg.getId())){
                 return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该组织机构编码已存在", false);
             }
         }
 
-        Integer count = coreOrgService.update(coreOrg);
+        Boolean is = coreOrgService.update(coreOrg);
 
-        if (count > 0){
+        if (is){
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"修改成功", true);
         }else {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"修改失败", false);

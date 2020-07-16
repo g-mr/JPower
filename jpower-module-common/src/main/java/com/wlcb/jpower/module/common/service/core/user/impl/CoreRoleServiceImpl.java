@@ -19,8 +19,6 @@ import java.util.List;
 public class CoreRoleServiceImpl implements CoreRoleService {
 
     @Autowired
-    private TbCoreRoleMapper coreRoleMapper;
-    @Autowired
     private TbCoreRoleDao coreRoleDao;
 
     @Override
@@ -37,14 +35,10 @@ public class CoreRoleServiceImpl implements CoreRoleService {
 
         if (StringUtils.isNotBlank(coreRole.getParentId())){
             wrapper.eq("parent_id",coreRole.getParentId());
-        }else {
-            wrapper.isNull("parent_id");
         }
 
         if (StringUtils.isNotBlank(coreRole.getParentCode())){
             wrapper.eq("parent_code",coreRole.getParentCode());
-        }else {
-            wrapper.isNull("parent_code");
         }
 
         if (coreRole.getIsSysRole() != null){
@@ -52,24 +46,22 @@ public class CoreRoleServiceImpl implements CoreRoleService {
         }
 
         wrapper.eq("status",1);
-
         wrapper.orderByAsc("sort");
 
-        return coreRoleMapper.selectList(wrapper);
+        return coreRoleDao.list(wrapper);
     }
 
     @Override
-    public Integer add(TbCoreRole coreRole) {
-        coreRole.setUpdateUser(coreRole.getCreateUser());
-        return coreRoleDao.save(coreRole)?1:0;
+    public Boolean add(TbCoreRole coreRole) {
+        return coreRoleDao.save(coreRole);
     }
 
     @Override
-    public Integer deleteStatus(String ids) {
+    public Boolean deleteStatus(String ids) {
         UpdateWrapper wrapper = new UpdateWrapper<TbCoreRole>();
-        wrapper.in("id",ids);
+        wrapper.in("id",ids.split(","));
         wrapper.set("status",0);
-        return coreRoleDao.update(new TbCoreRole(),wrapper)?1:0;
+        return coreRoleDao.update(new TbCoreRole(),wrapper);
     }
 
     @Override
@@ -87,7 +79,7 @@ public class CoreRoleServiceImpl implements CoreRoleService {
     }
 
     @Override
-    public Integer update(TbCoreRole coreRole) {
-        return coreRoleDao.updateById(coreRole)?1:0;
+    public Boolean update(TbCoreRole coreRole) {
+        return coreRoleDao.updateById(coreRole);
     }
 }

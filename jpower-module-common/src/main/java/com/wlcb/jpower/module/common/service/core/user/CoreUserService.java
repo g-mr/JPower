@@ -26,7 +26,7 @@ public interface CoreUserService {
      * @Param [coreUser]
      * @return java.lang.Integer
      **/
-    Integer add(TbCoreUser coreUser);
+    Boolean add(TbCoreUser coreUser);
 
     /**
      * @Author 郭丁志
@@ -35,7 +35,7 @@ public interface CoreUserService {
      * @Param [ids]
      * @return java.lang.Integer
      **/
-    Integer delete(String ids);
+    Boolean delete(String ids);
 
     /**
      * @Author 郭丁志
@@ -44,7 +44,7 @@ public interface CoreUserService {
      * @Param [coreUser]
      * @return java.lang.Integer
      **/
-    Integer update(TbCoreUser coreUser);
+    Boolean update(TbCoreUser coreUser);
 
     /**
      * @Author 郭丁志
@@ -72,7 +72,7 @@ public interface CoreUserService {
      * @param pass 用户加密后密码
      * @return java.lang.Integer
      */
-    Integer updateUserPassword(String ids, String pass);
+    Boolean updateUserPassword(String ids, String pass);
 
     /**
      * @author 郭丁志
@@ -81,7 +81,7 @@ public interface CoreUserService {
      * @param list
      * @return java.lang.Integer
      */
-    Integer insterBatch(List<TbCoreUser> list);
+    Boolean insterBatch(List<TbCoreUser> list);
 
     /**
      * @author 郭丁志
@@ -91,7 +91,7 @@ public interface CoreUserService {
      * @param roleIds  角色ID 多个逗号分隔
      * @return java.lang.Integer
      */
-    Integer updateUsersRole(String userIds, String roleIds);
+    Boolean updateUsersRole(String userIds, String roleIds);
 
     /**
      * @author 郭丁志

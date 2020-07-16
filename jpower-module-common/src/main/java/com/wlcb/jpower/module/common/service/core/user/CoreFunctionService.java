@@ -40,7 +40,7 @@ public interface CoreFunctionService {
      * @Param [coreFunction]
      * @return java.lang.Integer
      **/
-    Integer add(TbCoreFunction coreFunction);
+    Boolean add(TbCoreFunction coreFunction);
 
     /**
      * @Author 郭丁志
@@ -60,5 +60,12 @@ public interface CoreFunctionService {
      **/
     Integer delete(String ids);
 
-    Integer update(TbCoreFunction coreFunction);
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 修改菜单
+     * @Date 11:19 2020-07-16
+     * @Param [coreFunction]
+     * @return java.lang.Integer
+     **/
+    Boolean update(TbCoreFunction coreFunction);
 }

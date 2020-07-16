@@ -14,23 +14,34 @@
     </sql>
 
     <insert id="insertList">
-        insert into tb_core_user_role
+        insert into tb_core_role_function
         (id,
         role_id,
-        function_id)
+        function_id,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        status
+        )
         values
         <foreach collection="roleFunctions" item="rf" separator=",">
             (
             #{rf.id},
             #{rf.roleId},
-            #{rf.functionId}
+            #{rf.functionId},
+            #{rf.createUser},
+            #{rf.createTime},
+            #{rf.updateUser},
+            #{rf.updateTime},
+            #{rf.status}
             )
         </foreach>
     </insert>
 
     <select id="selectRoleFunctionByRoleId"
-            resultType="com.wlcb.jpower.module.dbs.entity.core.role.TbCoreRoleFunction">
-        select rf.role_id,rf.function_id,f.function_name from tb_core_role_function rf
+            resultType="java.util.Map">
+        select rf.role_id as roleId,rf.function_id as functionId,f.function_name as functionName,f.url as url from tb_core_role_function rf
         left join tb_core_function f on f.id = rf.function_id
         where rf.role_id = #{roleId,jdbcType=VARCHAR}
     </select>

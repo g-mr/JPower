@@ -6,11 +6,12 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 @Component("tbCoreRoleFunctionMapper")
 public interface TbCoreRoleFunctionMapper extends BaseMapper<TbCoreRoleFunction> {
 
-    TbCoreRoleFunction selectRoleFunctionByRoleId(String roleId);
+    List<Map<String,Object>> selectRoleFunctionByRoleId(String roleId);
 
     Integer insertList(@Param("roleFunctions") List<TbCoreRoleFunction> roleFunctions);
 

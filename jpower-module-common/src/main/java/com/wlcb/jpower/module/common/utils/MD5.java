@@ -106,7 +106,7 @@ public class MD5 {
 //    	map.put("customerName", "测试验证5");
 //    	System.out.println(sign(map,"icloudsystem").toLowerCase());
 
-        String keyBeforeMd5 = "rootE10ADC3949BA59ABBE56E057F20F883E"+"wlcbPortal";
+        String keyBeforeMd5 = "123456";
 //        String keyBeforeMd5 = "123456";
         System.out.println(parseStrToMd5U32(keyBeforeMd5));
 	}

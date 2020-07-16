@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.module.base.annotation.Log;
 import com.wlcb.jpower.module.base.enums.BusinessType;
+import com.wlcb.jpower.module.base.enums.JpowerError;
+import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.page.PaginationContext;
@@ -29,6 +31,7 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName UserController
@@ -53,7 +56,6 @@ public class UserController extends BaseController {
      * @Param [coreUser]
      * @return com.wlcb.jpower.module.base.vo.ResponseData
      **/
-    @Log(title = "查询用户列表")
     @RequestMapping(value = "/list",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
     public ResponseData list(TbCoreUser coreUser){
         PaginationContext.startPage();
@@ -71,9 +73,7 @@ public class UserController extends BaseController {
      */
     @RequestMapping(value = "/get",method = RequestMethod.GET,produces="application/json")
     public ResponseData list(String id){
-        if (StringUtils.isBlank(id)){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,"ID不可为空", false);
-        }
+        JpowerAssert.notEmpty(id, JpowerError.Arg,"id不可为空");
 
         TbCoreUser user = coreUserService.selectUserById(id);
         return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"查询成功", user, true);
@@ -89,12 +89,7 @@ public class UserController extends BaseController {
     @RequestMapping(value = "/add",method = {RequestMethod.POST},produces="application/json")
     public ResponseData add(TbCoreUser coreUser){
 
-        ResponseData responseData = BeanUtil.allFieldIsNULL(coreUser,
-                "createUser","loginId","password");
-
-        if (responseData.getCode() == ConstantsReturn.RECODE_NULL){
-            return responseData;
-        }
+        JpowerAssert.notEmpty(coreUser.getLoginId(), JpowerError.Arg,"用户名不可为空");
 
         if (coreUser.getIdType() != null && ConstantsEnum.ID_TYPE.ID_CARD.getValue().equals(coreUser.getIdType())){
             if (!StrUtil.cardCodeVerifySimple(coreUser.getIdNo())){
@@ -115,9 +110,11 @@ public class UserController extends BaseController {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该登录用户名已存在", false);
         }
 
-        Integer count = coreUserService.add(coreUser);
+        coreUser.setPassword(MD5.parseStrToMd5U32(ConstantsUtils.DEFAULT_PASSWORD));
+        coreUser.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_SYSTEM.getValue());
+        Boolean is = coreUserService.add(coreUser);
 
-        if (count > 0){
+        if (is){
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"新增成功", true);
         }else {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"新增失败", false);
@@ -135,13 +132,11 @@ public class UserController extends BaseController {
     @RequestMapping(value = "/delete",method = {RequestMethod.DELETE},produces="application/json")
     public ResponseData delete(String ids){
 
-        if (StringUtils.isBlank(ids)){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"ID不可为空", false);
-        }
+        JpowerAssert.notEmpty(ids, JpowerError.Arg,"ids不可为空");
 
-        Integer count = coreUserService.delete(ids);
+        Boolean is = coreUserService.delete(ids);
 
-        if (count > 0){
+        if (is){
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"删除成功", true);
         }else {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"删除失败", false);
@@ -159,12 +154,7 @@ public class UserController extends BaseController {
     @RequestMapping(value = "/update",method = {RequestMethod.PUT},produces="application/json")
     public ResponseData update(TbCoreUser coreUser){
 
-        ResponseData responseData = BeanUtil.allFieldIsNULL(coreUser,
-                "id");
-
-        if (responseData.getCode() == ConstantsReturn.RECODE_NULL){
-            return responseData;
-        }
+        JpowerAssert.notEmpty(coreUser.getId(), JpowerError.Arg,"用户名不可为空");
 
         if (coreUser.getIdType() != null && ConstantsEnum.ID_TYPE.ID_CARD.getValue().equals(coreUser.getIdType())){
             if (!StrUtil.cardCodeVerifySimple(coreUser.getIdNo())){
@@ -187,9 +177,10 @@ public class UserController extends BaseController {
             }
         }
 
-        Integer count = coreUserService.update(coreUser);
+        coreUser.setPassword(null);
+        Boolean is = coreUserService.update(coreUser);
 
-        if (count > 0){
+        if (is){
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"修改成功", true);
         }else {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"修改失败", false);
@@ -208,14 +199,12 @@ public class UserController extends BaseController {
 
         String pass = MD5.parseStrToMd5U32(ConstantsUtils.DEFAULT_PASSWORD);
 
-        if (StringUtils.isBlank(ids)){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,"用户id不可为空", false);
-        }
+        JpowerAssert.notEmpty(ids, JpowerError.Arg,"用户ids不可为空");
 
-        Integer count = coreUserService.updateUserPassword(ids,pass);
+        Boolean is = coreUserService.updateUserPassword(ids,pass);
 
-        if (count > 0){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,count+"位用户密码重置成功", true);
+        if (is){
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,ids.split(",").length+"位用户密码重置成功", true);
         }else {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"重置失败", false);
         }
@@ -226,15 +215,12 @@ public class UserController extends BaseController {
      * @Description //TODO 批量导入用户
      * @date 3:14 2020/5/24 0024
      * @param file 导入文件
-     * @param createUser 创建人
      * @return com.wlcb.jpower.module.base.vo.ResponseData
      */
     @RequestMapping(value = "/importUser",method = {RequestMethod.POST},produces="application/json")
-    public ResponseData importUser(MultipartFile file,String createUser){
+    public ResponseData importUser(MultipartFile file){
 
-        if (file == null || file.isEmpty()){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,"文件不可位空", false);
-        }
+        JpowerAssert.notTrue(file == null || file.isEmpty(),JpowerError.Arg,"文件不可为空");
 
         String path = fileParentPath + File.separator + "import" + File.separator + "user";
 
@@ -250,7 +236,7 @@ public class UserController extends BaseController {
                 for (TbCoreUser coreUser : list) {
                     coreUser.setId(UUIDUtil.getUUID());
                     coreUser.setPassword(MD5.parseStrToMd5U32(ConstantsUtils.DEFAULT_PASSWORD));
-                    coreUser.setCreateUser(createUser);
+                    coreUser.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_SYSTEM.getValue());
 
                     //判断用户是否指定激活，如果没有指定就去读取默认配置
                     if (coreUser.getActivationStatus() == null){
@@ -265,9 +251,9 @@ public class UserController extends BaseController {
 
                 }
 
-                Integer count = coreUserService.insterBatch(list);
-                if (count > 0){
-                    return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"成功导入"+count+"条", true);
+                Boolean is = coreUserService.insterBatch(list);
+                if (is){
+                    return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"成功导入"+list.size()+"条", true);
                 }else {
                     return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"导入失败", false);
                 }
@@ -299,7 +285,7 @@ public class UserController extends BaseController {
 
     /**
      * @author 郭丁志
-     * @Description //TODO 给用户新增角色
+     * @Description //TODO 给用户重新设置角色
      * @date 0:28 2020/5/25 0025
      * @param userIds 用户ID 多个用,分割
      * @param roleIds 角色ID 多个用,分割
@@ -308,18 +294,14 @@ public class UserController extends BaseController {
     @RequestMapping(value = "/addRole",method = {RequestMethod.POST},produces="application/json")
     public ResponseData addRole(String userIds,String roleIds){
 
-        if (StringUtils.isBlank(userIds)){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,"用户ID不可位空", false);
-        }
+        JpowerAssert.notEmpty(userIds, JpowerError.Arg,"userIds不可为空");
 
         String[] userIdss = userIds.split(",");
-        if (userIdss.length <= 0){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,"用户ID不可位空", false);
-        }
+        JpowerAssert.notTrue(userIdss.length <= 0, JpowerError.Arg,"userIds不可为空");
 
-        Integer count = coreUserService.updateUsersRole(userIds,roleIds);
+        Boolean is = coreUserService.updateUsersRole(userIds,roleIds);
 
-        if (count > 0){
+        if (is){
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"设置成功", true);
         }else {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"设置失败", false);
@@ -336,11 +318,9 @@ public class UserController extends BaseController {
     @RequestMapping(value = "/userRole",method = {RequestMethod.GET},produces="application/json")
     public ResponseData userRole(String userId){
 
-        if (StringUtils.isBlank(userId)){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,"用户ID不可为空", false);
-        }
+        JpowerAssert.notEmpty(userId, JpowerError.Arg,"用户ID不可为空");
 
-        List<TbCoreUserRole> userRoleList = coreUserRoleService.selectUserRoleByUserId(userId);
+        List<Map<String,Object>> userRoleList = coreUserRoleService.selectUserRoleByUserId(userId);
         return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"查询成功",userRoleList, true);
     }
 

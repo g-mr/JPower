@@ -251,8 +251,8 @@ public class LoginController extends BaseController {
             return ReturnJsonUtil.printJson(300,"旧密码错误",false);
         }
 
-        Integer count = coreUserService.updateUserPassword(user.getId(),newPassWord);
-        if (count > 0){
+        Boolean is = coreUserService.updateUserPassword(user.getId(),newPassWord);
+        if (is){
             return ReturnJsonUtil.printJson(200,"修改成功",true);
         }else {
             return ReturnJsonUtil.printJson(400,"修改失败",false);

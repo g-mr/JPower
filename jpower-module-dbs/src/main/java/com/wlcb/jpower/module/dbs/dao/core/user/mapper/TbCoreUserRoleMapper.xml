@@ -29,11 +29,12 @@
     </insert>
 
     <select id="selectUserRoleByUserId"
-            resultType="com.wlcb.jpower.module.dbs.entity.core.role.TbCoreUserRole">
+            resultType="java.util.Map">
         select
-        ur.user_id,
-        ur.role_id,
-        r.name as roleName
+        ur.user_id as userId,
+        ur.role_id as roleId,
+        r.name as roleName,
+        r.code as code
         from tb_core_user_role ur
         left join tb_core_role r on r.id = ur.role_id
         where ur.user_id = #{userId,jdbcType=VARCHAR}
