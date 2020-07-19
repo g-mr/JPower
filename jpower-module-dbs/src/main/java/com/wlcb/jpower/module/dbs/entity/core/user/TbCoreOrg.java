@@ -1,5 +1,7 @@
 package com.wlcb.jpower.module.dbs.entity.core.user;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import lombok.Data;
 
@@ -30,6 +32,10 @@ public class TbCoreOrg extends BaseEntity implements Serializable {
     private String contactPhone;
     private String contactEmail;
     private String address;
+    @Dict(name = "YN01",attributes = "isVirtualStr")
     private Integer isVirtual;
     private String remark;
+
+    @TableField(exist = false)
+    private String isVirtualStr;
 }

@@ -1,5 +1,7 @@
 package com.wlcb.jpower.module.dbs.entity.core.function;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import lombok.Data;
 
@@ -23,6 +25,7 @@ public class TbCoreFunction extends BaseEntity implements Serializable {
     private String code;
     private String parentCode;
     private String url;
+    @Dict(name = "YN01",attributes = "isMenuStr")
     private Integer isMenu;
     private String icon;
     private Integer sort;
@@ -30,4 +33,7 @@ public class TbCoreFunction extends BaseEntity implements Serializable {
     private String moudeSummary;
     private String operateInstruction;
     private Integer functionLevel;
+
+    @TableField(exist = false)
+    private String isMenuStr;
 }

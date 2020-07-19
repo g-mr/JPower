@@ -2,6 +2,7 @@ package com.wlcb.jpower.module.dbs.entity.core.user;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.base.annotation.Excel;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import lombok.Data;
@@ -30,10 +31,12 @@ public class TbCoreUser extends BaseEntity implements Serializable {
     @Excel(name = "用户姓名")
     private String userName;
     @Excel(name = "证件类型",readConverterExp = "1=身份证,2=中国护照,3=台胞证,4=外国护照,5=外国人永居证",combo={"身份证","中国护照","台胞证","外国护照","外国人永居证"})
+    @Dict(name = "ID_TYPE",attributes = "idTypeStr")
     private Integer idType;
     @Excel(name = "证件号码")
     private String idNo;
     @Excel(name ="用户类型",readConverterExp = "0=系统用户,1=普通用户,2=单位用户,3=会员,9=匿名用户",combo={"系统用户,","普通用户","单位用户","会员"})
+    @Dict(name = "USER_TYPE",attributes = "userTypeStr")
     private Integer userType;
     @Excel(name ="出生日期")
     @JSONField(format="yyyy-MM-dd")
@@ -52,6 +55,7 @@ public class TbCoreUser extends BaseEntity implements Serializable {
     @Excel(name ="登录次数",type = Excel.Type.EXPORT)
     private Integer loginCount;
     @Excel(name ="激活状态",readConverterExp = "1=激活,0=未激活",combo={"激活,","未激活"})
+    @Dict(name = "ACTIVATION_STATUS",attributes = "activationStatusStr")
     private Integer activationStatus;
     @Excel(name ="激活码",isExport = false)
     private String activationCode;
@@ -60,7 +64,14 @@ public class TbCoreUser extends BaseEntity implements Serializable {
     @Excel(name = "部门名称")
     private String orgName;
 
-    //用来表示是本表数据还是其他表映射的数据 0系统表 1业务表 2白名单
+    @TableField(exist = false)
+    private String activationStatusStr;
+    @TableField(exist = false)
+    private String userTypeStr;
+    @TableField(exist = false)
+    private String idTypeStr;
+
+    /** 用来表示是本表数据还是其他表映射的数据 0系统表 1业务表 2白名单 **/
     @TableField(exist = false)
     private Integer isSysUser;
 }

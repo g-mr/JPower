@@ -166,7 +166,7 @@ create table tb_core_dict_type(
   dict_type_name varchar(100) not null comment '',
   locale_code varchar(20) default 'zh_cn' not null comment '语言  zh_cn en_us',
   note varchar(100) comment '描述',
-  del_enabled varchar(1) default '0' not null comment '是否允许删除 n:不允许 y允许',
+  del_enabled varchar(1) default '0' not null comment '是否允许删除 N:不允许 Y允许',
   sort_num int(6) default 0 comment '排序',
   dict_type_pcode varchar(50) comment '父字典类型代码',
   create_user varchar(32) default 'root' not null comment '创建人',

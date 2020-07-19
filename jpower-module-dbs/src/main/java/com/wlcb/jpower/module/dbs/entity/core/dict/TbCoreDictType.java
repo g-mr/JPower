@@ -1,5 +1,7 @@
 package com.wlcb.jpower.module.dbs.entity.core.dict;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import lombok.Data;
 
@@ -19,8 +21,11 @@ public class TbCoreDictType extends BaseEntity {
     private String dictTypeName;
     private String localeCode;
     private String note;
+    @Dict(name = "YN",attributes = "delEnabledStr")
     private String delEnabled;
     private Integer sortNum;
     private String dictTypePcode;
 
+    @TableField(exist = false)
+    private String delEnabledStr;
 }

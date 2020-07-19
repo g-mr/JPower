@@ -1,6 +1,7 @@
 package com.wlcb.jpower.module.common.service.core.city;
 
 
+import com.wlcb.jpower.module.dbs.entity.core.city.TbCoreCity;
 import com.wlcb.jpower.module.dbs.entity.core.dict.TbCoreDict;
 
 import java.util.List;
@@ -19,4 +20,5 @@ public interface CoreCityService {
      * @return java.util.List<java.util.Map<java.lang.String,java.lang.String>>
      **/
     List<Map<String, Object>> listChild(String code);
+
 }
