@@ -16,6 +16,7 @@ import java.util.Date;
 
 /**
  * web层通用数据处理
+ * @author mr.gmac
  */
 public class BaseController
 {

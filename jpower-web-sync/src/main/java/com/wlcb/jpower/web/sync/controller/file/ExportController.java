@@ -3,8 +3,6 @@ package com.wlcb.jpower.web.sync.controller.file;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.utils.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,9 +20,7 @@ import java.io.IOException;
  */
 @RestController
 @RequestMapping("file")
-public class FileController extends BaseController {
-
-    private static final Logger logger = LoggerFactory.getLogger(FileController.class);
+public class ExportController extends BaseController {
 
     @GetMapping("/export/download")
     public void syncStart(String fileName) throws Exception {

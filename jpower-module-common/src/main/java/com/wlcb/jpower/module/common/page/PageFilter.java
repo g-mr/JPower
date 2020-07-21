@@ -1,10 +1,6 @@
 package com.wlcb.jpower.module.common.page;
 
-import com.wlcb.jpower.module.common.utils.DateUtils;
-import com.wlcb.jpower.module.common.utils.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 

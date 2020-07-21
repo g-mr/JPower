@@ -2,17 +2,12 @@ package com.wlcb.jpower.module.common.utils.param;
 
 import com.wlcb.jpower.module.common.service.core.params.CoreParamService;
 import com.wlcb.jpower.module.common.service.redis.RedisUtils;
-import com.wlcb.jpower.module.common.utils.DateUtils;
-import com.wlcb.jpower.module.common.utils.FileUtils;
-import com.wlcb.jpower.module.common.utils.ServletUtils;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @ClassName ParamConfig

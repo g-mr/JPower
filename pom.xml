@@ -54,20 +54,47 @@
         <module>jpower-module-base</module>
         <module>jpower-module-common</module>
         <module>jpower-module-dbs</module>
+        <module>jpower-module-service</module>
         <module>jpower-web-sync</module>
         <module>jpower-core-login</module>
         <module>jpower-core-web</module>
         <module>jpower-web-file</module>
     </modules>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context-support</artifactId>
+                <version>5.2.5.RELEASE</version>
+            </dependency>
 
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid-spring-boot-starter</artifactId>
                 <version>1.1.10</version>
             </dependency>
+
             <dependency>
                 <groupId>redis.clients</groupId>
                 <artifactId>jedis</artifactId>
@@ -181,6 +208,11 @@
             <dependency>
                 <groupId>com.wlcb</groupId>
                 <artifactId>jpower-module-common</artifactId>
+                <version>${com.jpower.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.wlcb</groupId>
+                <artifactId>jpower-module-service</artifactId>
                 <version>${com.jpower.version}</version>
             </dependency>
             <dependency>

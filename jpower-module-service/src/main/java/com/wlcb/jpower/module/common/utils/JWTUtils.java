@@ -3,7 +3,7 @@ package com.wlcb.jpower.module.common.utils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.wlcb.jpower.module.common.utils.param.ParamConfig;
-import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
+import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import io.jsonwebtoken.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
@@ -15,6 +15,7 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -221,17 +222,18 @@ public class JWTUtils {
 
     public static void main(String[] args) throws Exception {
 
-        TbCoreUser user = new TbCoreUser();
-        user.setId("23213");
-        user.setUserName("sdwdqqdq");
+
+//        Map user =  new HashMap<>();
+//        user.put("id","23213");
+//        user.put("userName","sdwdqqdq");
+////
+//        Map<String, Object> payload = new HashMap<String, Object>();
+//        payload.put("userId", "21321312312");
+//        String token = JWTUtils.createJWT(JSON.toJSONString(user),payload,400000L);
+//        System.out.println(token);
 //
-        Map<String, Object> payload = new HashMap<String, Object>();
-        payload.put("userId", "21321312312");
-        String token = JWTUtils.createJWT(JSON.toJSONString(user),payload,400000L);
-        System.out.println(token);
-
-
-        System.out.println(Base64.decodeBase64("woyebuzhidaoxiediansha"));
+//
+//        System.out.println(Base64.decodeBase64("woyebuzhidaoxiediansha"));
 
 
 //        Claims c = JWTUtils.parseJWT("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ7XCJpZFwiOlwiMjMyMTNcIixcInJvbGVcIjowLFwic3RhdHVzXCI6MCxcInVzZXJcIjpcInNkd2RxcWRxXCJ9IiwiZXhwIjoxNTgzNDI1NjgzLCJ1c2VySWQiOiIyMTMyMTMxMjMxMiIsImlhdCI6MTU4MzQyNTI4MywianRpIjoiand0TG9naW4ifQ.kJNKLQw5NY-IOTUyhaYppb_g5k_NcttsdZv");

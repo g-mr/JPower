@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.wlcb.jpower.module.base.annotation.Dict;
+import com.wlcb.jpower.module.common.utils.CameUtils;
 import com.wlcb.jpower.module.dbs.dao.core.dict.mapper.TbCoreDictMapper;
 import com.wlcb.jpower.module.dbs.entity.core.dict.TbCoreDict;
 import org.apache.commons.lang3.StringUtils;
@@ -36,29 +37,6 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
 
     public static final char UNDERLINE = '_';
 
-    /**
-     * 驼峰格式字符串转换为下划线格式字符串
-     * @param param
-     * @return
-     */
-    public static String camelToUnderline(String param) {
-        if (param == null || "".equals(param.trim())) {
-            return "";
-        }
-        int len = param.length();
-        StringBuilder sb = new StringBuilder(len);
-        for (int i = 0; i < len; i++) {
-            char c = param.charAt(i);
-            if (Character.isUpperCase(c)) {
-                sb.append(UNDERLINE);
-                sb.append(Character.toLowerCase(c));
-            } else {
-                sb.append(c);
-            }
-        }
-        return sb.toString();
-    }
-
     private Class<T> getTClass(){
         Type genType = getClass().getGenericSuperclass();
         Type[] params = ((ParameterizedType) genType).getActualTypeArguments();
@@ -80,7 +58,7 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
         List<Field> fields = FieldUtils.getAllFieldsList(cls);
         for (Field field : fields) {
             Dict dictType = field.getAnnotation(Dict.class);
-            if (dictType != null && (selects == null || selects.contains(camelToUnderline(field.getName())))){
+            if (dictType != null && (selects == null || selects.contains(CameUtils.camelToUnderline(field.getName())))){
                 map.put(field.getName(),dictType);
             }
         }
@@ -147,7 +125,7 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
             List<TbCoreDict> dictList = dictMap.get(dict.name());
             if (dictList != null){
                 for (TbCoreDict tbCoreDict : dictList) {
-                    if (StringUtils.equals(tbCoreDict.getCode(),String.valueOf(map.get(camelToUnderline(filedName))))){
+                    if (StringUtils.equals(tbCoreDict.getCode(),String.valueOf(map.get(CameUtils.camelToUnderline(filedName))))){
                         map.put(dict.attributes(),tbCoreDict.getName());
                     }
                 }

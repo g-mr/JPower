@@ -2,7 +2,6 @@ package com.wlcb.jpower.module.common.Interceptor;
 
 import com.wlcb.jpower.module.common.utils.param.ParamConfig;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;

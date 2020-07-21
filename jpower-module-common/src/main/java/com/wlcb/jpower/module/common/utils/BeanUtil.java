@@ -2,10 +2,10 @@ package com.wlcb.jpower.module.common.utils;
 
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
-import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -119,9 +119,7 @@ public class BeanUtil {
             return fieldList;
         }
 
-
-
-        if(superClass.getName().equals(BaseEntity.class.getName())){
+        if(!superClass.getName().equals(Serializable.class.getName()) && superClass instanceof Serializable){
             fieldList.addAll(getFieldList(superClass));
         }
         return fieldList;

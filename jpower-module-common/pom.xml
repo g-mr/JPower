@@ -15,6 +15,11 @@
     <dependencies>
 
         <dependency>
+            <groupId>com.wlcb</groupId>
+            <artifactId>jpower-module-base</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
         </dependency>
@@ -38,11 +43,6 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.wlcb</groupId>
-            <artifactId>jpower-module-dbs</artifactId>
         </dependency>
 
         <!-- JWT -->
@@ -72,6 +72,13 @@
             <groupId>com.github.wxpay</groupId>
             <artifactId>wxpay-sdk</artifactId>
             <version>0.0.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <!--            <scope>provided</scope>-->
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
