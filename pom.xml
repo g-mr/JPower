@@ -23,7 +23,6 @@
         <com.jpower.version>1.0.1-SNAPSHOT</com.jpower.version>
         <springboot.data.redis.version>1.5.8.RELEASE</springboot.data.redis.version>
         <mybatis-plus.version>3.3.2</mybatis-plus.version>
-<!--        <mybatis-plus.version>3.0.6</mybatis-plus.version>-->
     </properties>
 
     <!--profile配置-->
@@ -58,6 +57,7 @@
         <module>jpower-web-sync</module>
         <module>jpower-core-login</module>
         <module>jpower-core-web</module>
+        <module>jpower-web-file</module>
     </modules>
 
     <dependencyManagement>
@@ -99,7 +99,6 @@
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>
 <!--                <version>2.3</version>-->
-<!--                <version>3.0.6</version>-->
                 <version>${mybatis-plus.version}</version>
             </dependency>
 

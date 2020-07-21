@@ -227,7 +227,7 @@ create table tb_core_file
 (
   id varchar(32) comment '主键',
   name varchar(127) comment '文件名称',
-  file_size int comment '文件大小 单位：K',
+  file_size int comment '文件大小 单位：字节',
   file_type varchar(31) comment '文件类型',
   path varchar(255) comment '文件路径',
   content longblob comment '文件内容',

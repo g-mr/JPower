@@ -14,6 +14,8 @@ public class ConstantsUtils {
 
     public static final String PROPERTIES_PREFIX = "code:params:";
 
+    public static final String FILE_DES_KEY = "COREFILEENCRYPTKEY20200720";
+
 //    短信APPKEY
     public static final String APP_KEY = "102138";
 //    短信密钥

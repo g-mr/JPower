@@ -1,0 +1,9 @@
+server:
+  port: 74
+
+logging:
+  config: classpath:logback-spring.xml
+
+spring:
+  profiles:
+    active: @profilea.active@

@@ -16,10 +16,10 @@ public class TbCoreFile extends BaseEntity {
     private static final long serialVersionUID = -6889020017108014146L;
 
     private String name;
-    private Integer fileSize;
+    private Long fileSize;
     private String fileType;
     private String path;
     private byte[] content;
-    private Integer sortNm;
+    private Integer sortNum;
     private String note;
 }

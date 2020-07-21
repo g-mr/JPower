@@ -43,9 +43,9 @@ public class DESUtil {
     private static final String PAD_STR = "\0";
 
     public static void main(String[] args) throws Exception {
-        String clearText = "123";
+        String clearText = "d7320de3c8a011ea87a2fa163e5c4fd4";
 
-        String key = "QSWERFTGYHIOU377";
+        String key = "COREFILEENCRYPTKEY20200720";
         System.out.println("明文：" + clearText + "\n密钥：" + key);
         String encryptText = encrypt(clearText, key);
         System.out.println("加密后：" + encryptText);

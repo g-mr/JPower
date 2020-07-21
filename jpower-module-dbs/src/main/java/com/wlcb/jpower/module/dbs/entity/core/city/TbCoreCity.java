@@ -13,6 +13,7 @@ import lombok.Data;
  * @Version 1.0
  */
 @Data
+//@Crud(path = "")
 public class TbCoreCity extends BaseEntity {
 
     private static final long serialVersionUID = 5502650422939440849L;
