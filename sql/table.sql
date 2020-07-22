@@ -82,7 +82,7 @@ create table tb_core_org(
  status tinyint(1) default 1 comment '状态',
  PRIMARY KEY (id) USING BTREE,
  unique key code_index(code) USING BTREE
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '部门表';
 
 
 drop table if exists tb_core_role;
@@ -102,7 +102,7 @@ create table tb_core_role(
   update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
   status   tinyint(1) default 1 comment '状态',
   PRIMARY KEY (id) USING BTREE
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '角色表';
 
 drop table if exists tb_core_function;
 create table tb_core_function(
@@ -128,7 +128,7 @@ create table tb_core_function(
  PRIMARY KEY (id) USING BTREE,
  unique key url_index(url) USING BTREE,
  unique key code_index(code) USING BTREE
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '功能菜单表';
 
 drop table if exists tb_core_param;
 create table tb_core_param(
