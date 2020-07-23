@@ -33,8 +33,6 @@ import java.util.List;
 @RequestMapping("/core/param")
 public class ParamsController extends BaseController {
 
-    private static final Logger logger = LoggerFactory.getLogger(ParamsController.class);
-
     @Resource
     private RedisUtils redisUtils;
     @Resource

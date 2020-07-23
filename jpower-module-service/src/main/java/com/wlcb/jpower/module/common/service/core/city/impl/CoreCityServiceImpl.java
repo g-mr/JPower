@@ -1,9 +1,9 @@
 package com.wlcb.jpower.module.common.service.core.city.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wlcb.jpower.module.common.service.core.city.CoreCityService;
 import com.wlcb.jpower.module.dbs.dao.core.city.TbCoreCityDao;
 import com.wlcb.jpower.module.dbs.entity.core.city.TbCoreCity;
+import com.wlcb.jpower.module.mp.support.Condition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,13 +19,16 @@ public class CoreCityServiceImpl implements CoreCityService {
     private TbCoreCityDao coreCityDao;
 
     @Override
-    public List<Map<String, Object>> listChild(String code) {
+    public List<Map<String, Object>> listCodeNme(TbCoreCity coreCity) {
 
-        return coreCityDao.listMaps(new QueryWrapper<TbCoreCity>().lambda().setEntity(new TbCoreCity())
+        return coreCityDao.listMaps(Condition.getQueryWrapper(coreCity).lambda()
                 .select(TbCoreCity::getCode,TbCoreCity::getName)
-                .eq(TbCoreCity::getPcode,code)
-                .eq(TbCoreCity::getStatus,1)
                 .orderByAsc(TbCoreCity::getSortNum));
+    }
+
+    @Override
+    public List<TbCoreCity> listChild(Map<String, Object> coreCity) {
+        return coreCityDao.list(Condition.getQueryWrapper(coreCity,TbCoreCity.class).lambda().orderByAsc(TbCoreCity::getSortNum));
     }
 
 }

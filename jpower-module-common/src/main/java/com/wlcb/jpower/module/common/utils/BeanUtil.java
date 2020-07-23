@@ -1,10 +1,19 @@
 package com.wlcb.jpower.module.common.utils;
 
 import com.wlcb.jpower.module.base.vo.ResponseData;
+import com.wlcb.jpower.module.common.support.BaseBeanCopier;
+import com.wlcb.jpower.module.common.support.BeanProperty;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeansException;
+import org.springframework.cglib.beans.BeanGenerator;
+import org.springframework.cglib.beans.BeanMap;
+import org.springframework.cglib.core.CodeGenerationException;
+import org.springframework.util.Assert;
 
+import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -12,11 +21,160 @@ import java.lang.reflect.Modifier;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class BeanUtil {
+public class BeanUtil  extends org.springframework.beans.BeanUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(BeanUtil.class);
 
     private static final String fieldNullList = "serialVersionUID,id,createUser,createTime,updateUser,updateTime,createDate,updateDate,status,createTimeStr,updateTimeStr";
+
+    /**
+     * 实例化对象
+     * @param clazz 类
+     * @param <T> 泛型标记
+     * @return 对象
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T newInstance(Class<?> clazz) {
+        return (T) instantiateClass(clazz);
+    }
+
+    /**
+     * 实例化对象
+     * @param clazzStr 类名
+     * @param <T> 泛型标记
+     * @return 对象
+     */
+    public static <T> T newInstance(String clazzStr) {
+        try {
+            Class<?> clazz = Class.forName(clazzStr);
+            return newInstance(clazz);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 获取Bean的属性
+     * @param bean bean
+     * @param propertyName 属性名
+     * @return 属性值
+     */
+    public static Object getProperty(Object bean, String propertyName) {
+        Assert.notNull(bean, "bean Could not null");
+        return BeanMap.create(bean).get(propertyName);
+    }
+
+    /**
+     * 设置Bean属性
+     * @param bean bean
+     * @param propertyName 属性名
+     * @param value 属性值
+     */
+    public static void setProperty(Object bean, String propertyName, Object value) {
+        Assert.notNull(bean, "bean Could not null");
+        BeanMap.create(bean).put(propertyName, value);
+    }
+
+    /**
+     * copy 对象属性到另一个对象，默认不使用Convert
+     *
+     * 注意：不支持链式Bean，链式用 copyProperties
+     *
+     * @param source 源对象
+     * @param clazz 类名
+     * @param <T> 泛型标记
+     * @return T
+     */
+    public static <T> T copy(Object source, Class<T> clazz) {
+        BaseBeanCopier copier = BaseBeanCopier.create(source.getClass(), clazz, false);
+
+        T to = newInstance(clazz);
+        copier.copy(source, to, null);
+        return to;
+    }
+
+    /**
+     * 拷贝对象
+     *
+     * 注意：不支持链式Bean，链式用 copyProperties
+     *
+     * @param source 源对象
+     * @param targetBean 需要赋值的对象
+     */
+    public static void copy(Object source, Object targetBean) {
+        BaseBeanCopier copier = BaseBeanCopier
+                .create(source.getClass(), targetBean.getClass(), false);
+
+        copier.copy(source, targetBean, null);
+    }
+
+    /**
+     * 给一个Bean添加字段
+     * @param superBean 父级Bean
+     * @param props 新增属性
+     * @return  {Object}
+     */
+    public static Object generator(Object superBean, BeanProperty... props) {
+        Class<?> superclass = superBean.getClass();
+        Object genBean = generator(superclass, props);
+        BeanUtil.copy(superBean, genBean);
+        return genBean;
+    }
+
+    /**
+     * 给一个class添加字段
+     * @param superclass 父级
+     * @param props 新增属性
+     * @return {Object}
+     */
+    public static Object generator(Class<?> superclass, BeanProperty... props) {
+        BeanGenerator generator = new BeanGenerator();
+        generator.setSuperclass(superclass);
+        generator.setUseCache(true);
+        for (BeanProperty prop : props) {
+            generator.addProperty(prop.getName(), prop.getType());
+        }
+        return generator.create();
+    }
+
+    /**
+     * 获取 Bean 的所有 get方法
+     * @param type 类
+     * @return PropertyDescriptor数组
+     */
+    public static PropertyDescriptor[] getBeanGetters(Class type) {
+        return getPropertiesHelper(type, true, false);
+    }
+
+    /**
+     * 获取 Bean 的所有 set方法
+     * @param type 类
+     * @return PropertyDescriptor数组
+     */
+    public static PropertyDescriptor[] getBeanSetters(Class type) {
+        return getPropertiesHelper(type, false, true);
+    }
+
+    private static PropertyDescriptor[] getPropertiesHelper(Class type, boolean read, boolean write) {
+        try {
+            PropertyDescriptor[] all = BeanUtil.getPropertyDescriptors(type);
+            if (read && write) {
+                return all;
+            } else {
+                List<PropertyDescriptor> properties = new ArrayList<>(all.length);
+                for (PropertyDescriptor pd : all) {
+                    if (read && pd.getReadMethod() != null) {
+                        properties.add(pd);
+                    } else if (write && pd.getWriteMethod() != null) {
+                        properties.add(pd);
+                    }
+                }
+                return properties.toArray(new PropertyDescriptor[0]);
+            }
+        } catch (BeansException ex) {
+            throw new CodeGenerationException(ex);
+        }
+    }
 
     /**
      * @Author 郭丁志
@@ -153,7 +311,7 @@ public class BeanUtil {
                     if ("String".equals(fieldType)) {
                         fieldSetMet.invoke(bean, value);
                     } else if ("Date".equals(fieldType)) {
-                        Date temp = parseDate(value);
+                        Date temp = Fc.parseDate(value);
                         fieldSetMet.invoke(bean, temp);
                     } else if ("Integer".equals(fieldType)
                             || "int".equals(fieldType)) {
@@ -177,32 +335,6 @@ public class BeanUtil {
             }
         }
 
-    }
-
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 格式化string为Date
-     * @Date 18:56 2020-03-03
-     * @Param [datestr]
-     * @return java.util.Date
-     **/
-    public static Date parseDate(String datestr) {
-        if (null == datestr || "".equals(datestr)) {
-            return null;
-        }
-        try {
-            String fmtstr = null;
-            if (datestr.indexOf(':') > 0) {
-                fmtstr = "yyyy-MM-dd HH:mm:ss";
-            } else {
-
-                fmtstr = "yyyy-MM-dd";
-            }
-            SimpleDateFormat sdf = new SimpleDateFormat(fmtstr, Locale.UK);
-            return sdf.parse(datestr);
-        } catch (Exception e) {
-            return null;
-        }
     }
 
     /**
@@ -231,10 +363,10 @@ public class BeanUtil {
                 Object fieldVal = fieldGetMet.invoke(bean, new Object[] {});
                 String result = null;
                 if ("Date".equals(fieldType)) {
-                    result = fmtDate((Date) fieldVal);
+                    result = Fc.formatDateTime((Date) fieldVal);
                 } else {
                     if (null != fieldVal) {
-                        result = String.valueOf(fieldVal);
+                        result = Fc.toStr(fieldVal);
                     }
                 }
                 valueMap.put(field.getName(), result);
@@ -300,24 +432,6 @@ public class BeanUtil {
             }
         }
         return false;
-    }
-
-    /**
-     * 日期转化为String
-     * @param date
-     * @return date string
-     */
-    public static String fmtDate(Date date) {
-        if (null == date) {
-            return null;
-        }
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
-                    Locale.US);
-            return sdf.format(date);
-        } catch (Exception e) {
-            return null;
-        }
     }
 
 }

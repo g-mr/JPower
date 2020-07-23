@@ -2,7 +2,6 @@ package com.wlcb.jpower.module.common.service.core.city;
 
 
 import com.wlcb.jpower.module.dbs.entity.core.city.TbCoreCity;
-import com.wlcb.jpower.module.dbs.entity.core.dict.TbCoreDict;
 
 import java.util.List;
 import java.util.Map;
@@ -19,6 +18,15 @@ public interface CoreCityService {
      * @Param [code]
      * @return java.util.List<java.util.Map<java.lang.String,java.lang.String>>
      **/
-    List<Map<String, Object>> listChild(String code);
+    List<Map<String, Object>> listCodeNme(TbCoreCity coreCity);
 
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 查询行政取区域列表
+     * @Date 11:16 2020-07-23
+     * @Param [coreCity]
+     * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.city.TbCoreCity>
+     *
+     * @param coreCity*/
+    List<TbCoreCity> listChild(Map<String, Object> coreCity);
 }

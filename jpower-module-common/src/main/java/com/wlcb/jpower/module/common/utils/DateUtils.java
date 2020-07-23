@@ -14,10 +14,15 @@ import java.util.Date;
  */
 public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
 
-    public static final String dateFormat = "yyyyMMdd";
-    public static final String timeFormat = "HHmmss";
-    public static final String dateTimeFormat = "yyyyMMddHHmmss";
-    public static final String dateTimeMsFormat = "yyyyMMddHHmmssSSS";
+    public static final String PATTERN_DATETIME = "yyyy-MM-dd HH:mm:ss";
+    public static final String PATTERN_DATE = "yyyy-MM-dd";
+    public static final String PATTERN_TIME = "HH:mm:ss";
+
+    public static final String DATE_FORMAT = "yyyyMMdd";
+    public static final String TIME_FORMAT = "HHmmss";
+    public static final String DATE_TIME_FORMAT = "yyyyMMddHHmmss";
+    public static final String DATE_TIME_MS_FORMAT = "yyyyMMddHHmmssSSS";
+
     private static String[] parsePatterns = {
             "yyyy-MM-dd", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM",
             "yyyy/MM/dd", "yyyy/MM/dd HH:mm:ss", "yyyy/MM/dd HH:mm", "yyyy/MM",
@@ -27,20 +32,20 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
     }
 
     public static String getDateTime() {
-        return (new SimpleDateFormat("yyyyMMddHHmmss")).format(Calendar.getInstance().getTime());
+        return (new SimpleDateFormat(DATE_TIME_FORMAT)).format(Calendar.getInstance().getTime());
     }
 
     public static String getDate() {
-        return (new SimpleDateFormat("yyyyMMdd")).format(Calendar.getInstance().getTime());
+        return (new SimpleDateFormat(DATE_FORMAT)).format(Calendar.getInstance().getTime());
     }
 
     public static String getTime() {
-        return (new SimpleDateFormat("HHmmss")).format(Calendar.getInstance().getTime());
+        return (new SimpleDateFormat(TIME_FORMAT)).format(Calendar.getInstance().getTime());
     }
 
     public static String getDate(int nday) {
         Date d = Calendar.getInstance().getTime();
-        return (new SimpleDateFormat("yyyyMMdd")).format(getDate(d, nday));
+        return (new SimpleDateFormat(DATE_FORMAT)).format(getDate(d, nday));
     }
 
     public static String getDate(String date, int nday) {
