@@ -1,4 +1,4 @@
-package com.wlcb.jpower.module.common.utils.sql;
+package com.wlcb.jpower.module.common.utils;
 
 
 import org.apache.commons.lang3.StringUtils;

@@ -2,7 +2,7 @@ package com.wlcb.jpower.module.common.page;
 
 
 import com.github.pagehelper.PageHelper;
-import com.wlcb.jpower.module.common.utils.sql.SqlUtil;
+import com.wlcb.jpower.module.common.utils.SqlUtil;
 import org.apache.commons.lang3.StringUtils;
 
 /**

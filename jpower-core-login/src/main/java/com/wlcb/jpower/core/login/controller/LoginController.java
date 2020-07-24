@@ -140,9 +140,9 @@ public class LoginController extends BaseController {
 
         String code = RandomStringUtils.randomNumeric(6);
 
-        String content = "【乌丽吉】您的登录验证码:" + code + "，如非本人操作，请忽略本短信！";
+//        String content = "【乌丽吉】您的登录验证码:" + code + "，如非本人操作，请忽略本短信！";
 
-        JSONObject json = SmsSend.sendLiantong(phone,content);
+        JSONObject json = SmsAliyun.send(phone,"乌丽吉","code");
 
         if (json.getInteger("status") == 1){
             redisUtils.set(phone+"-login",code,5L, TimeUnit.MINUTES);

@@ -2,6 +2,7 @@ package com.wlcb.jpower.module.common.utils;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -246,8 +247,22 @@ public class UUIDUtil {
         return String.format("%010d", hashCodeV);
     }
 
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 生成唯一的订单号
+     * @Date 17:30 2020-03-21
+     * @Param []
+     * @return java.lang.String
+     **/
+    public static String createOrderId(String mchid) {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(mchid);
+        buffer.append(Fc.format(new Date(),DateUtil.DATE_FORMAT));
+        buffer.append(create10UUidNum());
+        return buffer.toString();
+    }
+
 	public static void main(String[] args) {
-        System.out.println(getUUID());
-        System.out.println(Fc.randomUUID());
+        System.out.println(Fc.format(new Date(),DateUtil.DATE_FORMAT));
 	}
 }

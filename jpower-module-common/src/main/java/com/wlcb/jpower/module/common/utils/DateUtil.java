@@ -12,7 +12,7 @@ import java.util.Date;
  * @Date 2020-02-03 18:40
  * @Version 1.0
  */
-public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
+public class DateUtil extends org.apache.commons.lang3.time.DateUtils {
 
     public static final String PATTERN_DATETIME = "yyyy-MM-dd HH:mm:ss";
     public static final String PATTERN_DATE = "yyyy-MM-dd";
@@ -28,7 +28,7 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
             "yyyy/MM/dd", "yyyy/MM/dd HH:mm:ss", "yyyy/MM/dd HH:mm", "yyyy/MM",
             "yyyy.MM.dd", "yyyy.MM.dd HH:mm:ss", "yyyy.MM.dd HH:mm", "yyyy.MM"};
 
-    public DateUtils() {
+    public DateUtil() {
     }
 
     public static String getDateTime() {
@@ -103,12 +103,12 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
         }
     }
 
-    public static DateUtils.DateAndTime getDateAndTime() {
-        return new DateUtils.DateAndTime();
+    public static DateUtil.DateAndTime getDateAndTime() {
+        return new DateUtil.DateAndTime();
     }
 
-    public static DateUtils.DateAndTime getDateAndTime(Date date) {
-        return new DateUtils.DateAndTime(date);
+    public static DateUtil.DateAndTime getDateAndTime(Date date) {
+        return new DateUtil.DateAndTime(date);
     }
 
     public static void main(String[] args) throws ParseException {

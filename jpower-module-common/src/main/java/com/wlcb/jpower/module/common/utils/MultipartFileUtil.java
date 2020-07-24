@@ -45,7 +45,7 @@ public class MultipartFileUtil{
             throw new BusinessException("不支持的后缀类型");
         }
 
-        String imgPath = DateUtils.getDate(new Date(), DateUtils.PATTERN_DATE) + File.separator + fileName + "." + suffixName;
+        String imgPath = DateUtil.getDate(new Date(), DateUtil.PATTERN_DATE) + File.separator + fileName + "." + suffixName;
 
         File imgFile = new File(savePath+File.separator+imgPath);
 

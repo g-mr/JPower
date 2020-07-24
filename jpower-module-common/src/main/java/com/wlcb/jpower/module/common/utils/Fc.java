@@ -13,6 +13,7 @@ import org.springframework.web.method.HandlerMethod;
 import java.io.Closeable;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
@@ -1192,7 +1193,7 @@ public class Fc {
      * @return 格式化后的时间
      */
     public static String formatDateTime(Date date) {
-        return DateUtils.getDate(date, DateUtils.PATTERN_DATETIME);
+        return DateUtil.getDate(date, DateUtil.PATTERN_DATETIME);
     }
 
     /**
@@ -1202,7 +1203,7 @@ public class Fc {
      * @return 格式化后的时间
      */
     public static String formatDate(Date date) {
-        return DateUtils.getDate(date,DateUtils.PATTERN_DATE);
+        return DateUtil.getDate(date,DateUtil.PATTERN_DATE);
     }
 
     /**
@@ -1212,7 +1213,7 @@ public class Fc {
      * @return 格式化后的时间
      */
     public static String formatTime(Date date) {
-        return DateUtils.getDate(date,DateUtils.PATTERN_TIME);
+        return DateUtil.getDate(date,DateUtil.PATTERN_TIME);
     }
 
     /**
@@ -1223,7 +1224,7 @@ public class Fc {
      * @return 格式化后的时间
      */
     public static String format(Date date, String pattern) {
-        return DateUtils.getDate(date, pattern);
+        return DateUtil.getDate(date, pattern);
     }
 
     /**
@@ -1233,7 +1234,7 @@ public class Fc {
      * @return 时间
      */
     public static Date parseDate(String dateStr) {
-        return DateUtils.parseDate(dateStr);
+        return DateUtil.parseDate(dateStr);
     }
 
     /**

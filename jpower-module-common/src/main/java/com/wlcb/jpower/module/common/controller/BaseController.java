@@ -1,6 +1,6 @@
 package com.wlcb.jpower.module.common.controller;
 
-import com.wlcb.jpower.module.common.utils.DateUtils;
+import com.wlcb.jpower.module.common.utils.DateUtil;
 import com.wlcb.jpower.module.common.utils.WebUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +42,7 @@ public class BaseController
             @Override
             public void setAsText(String text)
             {
-                setValue(DateUtils.parseDate(text));
+                setValue(DateUtil.parseDate(text));
             }
         });
     }
