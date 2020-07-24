@@ -2,7 +2,7 @@ package com.wlcb.jpower.web.sync.controller.file;
 
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.common.controller.BaseController;
-import com.wlcb.jpower.module.common.utils.FileUtils;
+import com.wlcb.jpower.module.common.utils.FileUtil;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +25,7 @@ public class ExportController extends BaseController {
     @GetMapping("/export/download")
     public void syncStart(String fileName) throws Exception {
 
-        if (!FileUtils.isValidFilename(fileName))
+        if (!FileUtil.isValidFilename(fileName))
         {
             throw new Exception("文件名称("+fileName+")非法，不允许下载。 ");
         }
@@ -34,13 +34,13 @@ public class ExportController extends BaseController {
         if (file.exists()){
             HttpServletResponse response = getResponse();
             try {
-                FileUtils.download(file, response,"导出数据.xlsx");
+                FileUtil.download(file, response,"导出数据.xlsx");
             } catch (IOException e) {
                 logger.error("下载文件出错。file={},error={}",file.getAbsolutePath(),e.getMessage());
                 throw new BusinessException("下载文件出错，请联系网站管理员");
             }
 
-            FileUtils.deleteFile(file);
+            FileUtil.deleteFile(file);
         }else {
             throw new BusinessException(fileName+"文件不存在，无法下载");
         }

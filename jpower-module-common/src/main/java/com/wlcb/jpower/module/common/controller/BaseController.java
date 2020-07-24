@@ -1,7 +1,7 @@
 package com.wlcb.jpower.module.common.controller;
 
-import com.wlcb.jpower.module.common.utils.ServletUtils;
 import com.wlcb.jpower.module.common.utils.DateUtils;
+import com.wlcb.jpower.module.common.utils.WebUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,7 +52,7 @@ public class BaseController
      */
     public HttpServletRequest getRequest()
     {
-        return ServletUtils.getRequest();
+        return WebUtil.getRequest();
     }
 
     /**
@@ -60,7 +60,7 @@ public class BaseController
      */
     public HttpServletResponse getResponse()
     {
-        return ServletUtils.getResponse();
+        return WebUtil.getResponse();
     }
 
     /**

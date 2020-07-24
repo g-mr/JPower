@@ -2,9 +2,9 @@ package com.wlcb.jpower.module.common.service.sync.impl;
 
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.service.sync.SyncService;
+import com.wlcb.jpower.module.common.utils.CollectionUtil;
 import com.wlcb.jpower.module.common.utils.CsvUtil;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
-import com.wlcb.jpower.module.common.utils.SplitList;
 import com.wlcb.jpower.module.dbs.dao.sync.mapper.SyncMapper;
 import com.wlcb.jpower.module.dbs.entity.sync.ImportInfo;
 import org.slf4j.Logger;
@@ -43,7 +43,7 @@ public class SyncServiceImpl implements SyncService {
             List<Map<String,Object>> list = CsvUtil.readCSVFileData(inputStream,listFileds,importInfo.getStartColumn(),importInfo.getEndColumn(),importInfo.getStartRow());
 
 
-            List<List<Map<String,Object>>> phoneSplit = SplitList.splitList(list,importInfo.getLimit());
+            List<List<Map<String,Object>>> phoneSplit = CollectionUtil.split(list,importInfo.getLimit());
 
 
             int counts = 0;

@@ -1,7 +1,7 @@
 package com.wlcb.jpower.module.common.support;
 
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.StringPool;
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
 
 /**
  * @ClassName StrFormatter

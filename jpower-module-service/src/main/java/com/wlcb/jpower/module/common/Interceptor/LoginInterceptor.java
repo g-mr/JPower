@@ -5,8 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.service.redis.RedisUtils;
-import com.wlcb.jpower.module.common.utils.IpUtils;
 import com.wlcb.jpower.module.common.utils.JWTUtils;
+import com.wlcb.jpower.module.common.utils.WebUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
 import com.wlcb.jpower.module.common.utils.param.ParamConfig;
@@ -73,7 +73,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
         Integer isl = isSystemLogin == null?ParamConfig.getInt(isLogin):isSystemLogin;
 
-        String ip = IpUtils.getRemortIP(request);
+        String ip = WebUtil.getIP(request);
         String ips = ParamConfig.getString(ip_list);
         logger.info("请求来自：{}————可以通过的IP：{}",ip,ips);
 

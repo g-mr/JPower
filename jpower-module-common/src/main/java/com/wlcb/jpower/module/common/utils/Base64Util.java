@@ -1,6 +1,11 @@
 package com.wlcb.jpower.module.common.utils;
 
 import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
+import sun.misc.BASE64Decoder;
+
+import java.io.*;
 
 /**
  * @ClassName Base64Util
@@ -99,5 +104,79 @@ public class Base64Util extends org.springframework.util.Base64Utils {
         byte[] val = value.getBytes(charset);
         byte[] decodedValue = Base64Util.decodeUrlSafe(val);
         return new String(decodedValue, charset);
+    }
+
+    /**
+     * base 64 decode
+     * @param base64Code 待解码的base 64 code
+     * @return 解码后的byte[]
+     * @throws Exception
+     */
+    public static byte[] base64Decode(String base64Code) throws Exception{
+        return Fc.isEmpty(base64Code) ? null : new BASE64Decoder().decodeBuffer(base64Code);
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO BASE64转文件
+     * @Date 18:17 2020-06-16
+     * @Param [fileBase64String, filePath, fileName]
+     * @return java.io.File
+     **/
+    public static File convertBase64ToFile(String fileBase64String, String filePath, String fileName) {
+
+        BufferedOutputStream bos = null;
+        FileOutputStream fos = null;
+        File file = null;
+        try {
+            File dir = new File(filePath);
+            //判断文件目录是否存在
+            if (!dir.exists() && dir.isDirectory()) {
+                dir.mkdirs();
+            }
+
+            byte[] bfile = decodeFromString(fileBase64String);
+
+            file = new File(filePath + File.separator + fileName);
+            fos = new FileOutputStream(file);
+            bos = new BufferedOutputStream(fos);
+            bos.write(bfile);
+            return file;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            Fc.closeQuietly(bos);
+            Fc.closeQuietly(fos);
+        }
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 将图片文件转化为字节数组字符串，并对其进行Base64编码处理
+     * @Date 18:17 2020-06-16
+     * @Param [imgFilePath]
+     * @return java.lang.String
+     **/
+    public static String getImageStr(String imgFilePath) {
+        byte[] data = null;
+        InputStream in = null;
+        // 读取图片字节数组
+        try {
+            in = new FileInputStream(imgFilePath);
+            data = new byte[in.available()];
+            in.read(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            Fc.closeQuietly(in);
+        }
+        // 返回Base64编码过的字节数组字符串
+        return Base64Util.encodeToString(data);
+    }
+
+    public static void main(String[] args) throws Exception {
+        System.out.println(new String(decodeFromString("312e")));
+        System.out.println(new String(base64Decode("312e")));
     }
 }

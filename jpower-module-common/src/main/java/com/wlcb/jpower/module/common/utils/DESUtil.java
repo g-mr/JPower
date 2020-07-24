@@ -1,12 +1,4 @@
 package com.wlcb.jpower.module.common.utils;
-
-/**
- * @ClassName DESUtil
- * @Description TODO
- * @Author 郭丁志
- * @Date 2020-03-26 12:08
- * @Version 1.0
- */
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +12,11 @@ import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 
 /**
- * 该加密工具兼容PHP
+ * @ClassName DESUtil
+ * @Description TODO 该加密工具兼容PHP
+ * @Author 郭丁志
+ * @Date 2020-03-26 12:08
+ * @Version 1.0
  */
 public class DESUtil {
 
@@ -43,6 +39,10 @@ public class DESUtil {
     private static final String PAD_STR = "\0";
 
     public static void main(String[] args) throws Exception {
+//e6b58be8af95
+        System.out.println(DigestUtil.toHex("s都吃完".getBytes()));
+
+
         String clearText = "d7320de3c8a011ea87a2fa163e5c4fd4";
 
         String key = "COREFILEENCRYPTKEY20200720";
@@ -94,7 +94,7 @@ public class DESUtil {
         // 通过BASE64位编码成字符创形式
 //        String base64Str = new BASE64Encoder().encode(encryptedData);
 
-        return bytes2Hex(encryptedData,false);
+        return DigestUtil.toHex(encryptedData);
     }
 
     private static String decryptByDes(final String souce, final String key) throws InvalidKeyException,
@@ -115,40 +115,10 @@ public class DESUtil {
 
         // 将加密报文用BASE64算法转化为字节数组
 //        byte[] encryptedData = new BASE64Decoder().decodeBuffer(souce);
-        byte[] encryptedData = hex2Bytes(souce);
+        byte[] encryptedData = DigestUtil.hex2Bytes(souce);
         // 用DES算法解密报文
-        byte decryptedData[] = cipher.doFinal(encryptedData);
+        byte[] decryptedData = cipher.doFinal(encryptedData);
         return new String(decryptedData, CHARSET);
-    }
-
-    //二进制转十六进制
-    public static String bytes2Hex(byte[] bytes, boolean upperCase) {
-        if (bytes == null || bytes.length <= 0) {
-            return "";
-        }
-        StringBuilder sb = new StringBuilder();
-        for (byte b : bytes) {
-            sb.append(String.format("%02x", b));
-        }
-        return upperCase ? sb.toString().toUpperCase() : sb.toString();
-    }
-
-    //十六进制转二进制
-    public static byte[] hex2Bytes(String hex) {
-        if ((hex.length() % 2) != 0) {
-            String errMsg = "hex.length()=" + hex.length() + ", not an even number";
-            throw new IllegalArgumentException(errMsg);
-        }
-
-        final byte[] result = new byte[hex.length() / 2];
-        final char[] enc = hex.toCharArray();
-        StringBuilder sb = new StringBuilder(2);
-        for (int i = 0; i < enc.length; i += 2) {
-            sb.delete(0, sb.length());
-            sb.append(enc[i]).append(enc[i + 1]);
-            result[i / 2] = (byte) Integer.parseInt(sb.toString(), 16);
-        }
-        return result;
     }
 
     private static String pkcs5Pad(final String souce) {

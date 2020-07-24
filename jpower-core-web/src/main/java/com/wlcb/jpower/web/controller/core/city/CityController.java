@@ -9,10 +9,12 @@ import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.service.core.city.CoreCityService;
 import com.wlcb.jpower.module.common.service.core.user.CoreFunctionService;
+import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.BeanUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
+import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.dbs.entity.core.city.TbCoreCity;
 import com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction;
 import org.apache.commons.lang3.StringUtils;
@@ -49,14 +51,9 @@ public class CityController extends BaseController {
      * @return com.wlcb.jpower.module.base.vo.ResponseData
      **/
     @RequestMapping(value = "/listChild",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData listChild(String pcode,String name){
+    public ResponseData listChild(@RequestParam(defaultValue = JpowerConstants.TOP_CODE) String pcode, String name){
 
-        JpowerAssert.notEmpty(pcode,JpowerError.Arg,"父级编码不可为空");
-        Map<String,Object> map = new HashMap<>();
-        map.put("pcode_eq",pcode);
-        map.put("name",name);
-
-        List<Map<String,Object>> list = coreCityService.listChild(map);
+        List<Map<String,Object>> list = coreCityService.listChild(ChainMap.init().set("pcode_eq",pcode).set("name",name));
         return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"获取成功", JSON.toJSON(list),true);
     }
 
@@ -69,8 +66,7 @@ public class CityController extends BaseController {
      **/
     @RequestMapping(value = "/listPage",method = {RequestMethod.GET},produces="application/json")
     public ResponseData listPage( TbCoreCity coreCity){
-
-        JpowerAssert.notEmpty(coreCity.getPcode(),JpowerError.Arg,"父级编码不可为空");
+        coreCity.setPcode(Fc.isNotBlank(coreCity.getPcode())?coreCity.getPcode():JpowerConstants.TOP_CODE);
 
         PaginationContext.startPage();
         List<TbCoreCity> list = coreCityService.list(coreCity);

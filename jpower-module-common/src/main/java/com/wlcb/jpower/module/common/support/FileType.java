@@ -1,4 +1,4 @@
-package com.wlcb.jpower.module.common.utils.file;
+package com.wlcb.jpower.module.common.support;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

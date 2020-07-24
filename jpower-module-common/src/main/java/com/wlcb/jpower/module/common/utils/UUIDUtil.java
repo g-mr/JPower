@@ -209,9 +209,7 @@ public class UUIDUtil {
 	 * @return: String
 	 */
 	public static String getUUID(){
-		String randomUUID = UUID.randomUUID().toString();
-		String id = randomUUID.replace("-", "");
-		return id;
+		return Fc.randomUUID();
 	}
 
     /**
@@ -249,6 +247,7 @@ public class UUIDUtil {
     }
 
 	public static void main(String[] args) {
-        System.out.println(create10UUidNum());
+        System.out.println(getUUID());
+        System.out.println(Fc.randomUUID());
 	}
 }

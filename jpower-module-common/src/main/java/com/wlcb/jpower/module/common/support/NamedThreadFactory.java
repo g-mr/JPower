@@ -1,4 +1,4 @@
-package com.wlcb.jpower.module.common.utils.thread;
+package com.wlcb.jpower.module.common.support;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

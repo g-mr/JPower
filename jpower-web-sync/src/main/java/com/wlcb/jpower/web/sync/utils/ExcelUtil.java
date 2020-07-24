@@ -81,7 +81,7 @@ public class ExcelUtil {
             if (headerRow.getCell(i) == null){
                 headerText[i] = i+"";
             }else {
-                headerText[i] = StrUtil.trim(headerRow.getCell(i).toString());
+                headerText[i] = Fc.trim(headerRow.getCell(i).toString());
             }
         }
 
@@ -106,9 +106,9 @@ public class ExcelUtil {
                         }
                     } else {
                         if (StringUtils.isNotBlank(headerText[j])){
-                            map.put(headerText[j],StrUtil.trim(cell.toString()));
+                            map.put(headerText[j],Fc.trim(cell.toString()));
                         }else {
-                            map.put(j+"",StrUtil.trim(cell.toString()));
+                            map.put(j+"",Fc.trim(cell.toString()));
                         }
                     }
                 }

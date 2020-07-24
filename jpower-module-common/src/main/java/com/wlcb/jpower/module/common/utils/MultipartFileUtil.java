@@ -1,6 +1,7 @@
 package com.wlcb.jpower.module.common.utils;
 
-import com.wlcb.jpower.module.common.utils.file.FileType;
+import com.wlcb.jpower.module.base.exception.BusinessException;
+import com.wlcb.jpower.module.common.support.FileType;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +19,7 @@ import java.util.List;
  * @Date 2020-03-31 00:45
  * @Version 1.0
  */
-public class MultipartFileUtil {
+public class MultipartFileUtil{
 
     private static final Logger logger = LoggerFactory.getLogger(MultipartFileUtil.class);
 
@@ -34,18 +35,17 @@ public class MultipartFileUtil {
         return saveFile(file,null,savePath);
     }
 
-    public static String saveFile(MultipartFile file,String fileSuffixName,String savePath) throws Exception{
+    public static String saveFile(MultipartFile file,String fileSuffixName,String savePath) throws IOException {
 
         String fileName = UUIDUtil.getUUID();
         //获得文件后缀名
         String suffixName=file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1);
 
         if (StringUtils.isNotBlank(fileSuffixName) && !StringUtils.containsIgnoreCase(fileSuffixName,suffixName) && !StringUtils.containsIgnoreCase(fileSuffixName, FileType.getFileType(file.getInputStream()))){
-
-            return "-1";
+            throw new BusinessException("不支持的后缀类型");
         }
 
-        String imgPath = DateUtils.getDate(new Date(), "yyyy-MM-dd") + File.separator + fileName + "." + suffixName;
+        String imgPath = DateUtils.getDate(new Date(), DateUtils.PATTERN_DATE) + File.separator + fileName + "." + suffixName;
 
         File imgFile = new File(savePath+File.separator+imgPath);
 
@@ -83,15 +83,9 @@ public class MultipartFileUtil {
                 }
             }
         }catch (Exception e){
-            logger.info("上传文件读取失败,error={}",e.getMessage());
+            logger.info("上传文件读取失败,error={}",ExceptionsUtil.getStackTraceAsString(e));
         } finally {
-            try {
-                if (reader != null){
-                    reader.close();
-                }
-            } catch (IOException ex) {
-                logger.info("上传文件流关闭错误,error={}",ex.getMessage());
-            }
+            Fc.closeQuietly(reader);
         }
 
         return list;
@@ -121,17 +115,12 @@ public class MultipartFileUtil {
                 break;
             }
         }catch (Exception e){
-            logger.info("上传文件读取失败,error={}",e.getMessage());
+            logger.info("上传文件读取失败,error={}",ExceptionsUtil.getStackTraceAsString(e));
         } finally {
-            try {
-                if (reader != null){
-                    reader.close();
-                }
-            } catch (IOException ex) {
-                logger.info("上传文件流关闭错误,error={}",ex.getMessage());
-            }
+            Fc.closeQuietly(reader);
         }
 
         return s;
     }
+
 }

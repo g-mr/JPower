@@ -1,8 +1,9 @@
 package com.wlcb.jpower.module.common.utils;
 
-import com.wlcb.jpower.module.common.utils.thread.NamedThreadFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.wlcb.jpower.module.common.utils.constants.CharPool;
+import com.wlcb.jpower.module.common.support.NamedThreadFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.Assert;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -18,21 +19,10 @@ import java.util.zip.ZipOutputStream;
  * @Date 2020-02-05 00:57
  * @Version 1.0
  */
-public class FileUtils {
+@Slf4j
+public class FileUtil extends org.apache.commons.io.FileUtils {
 
     public static String FILENAME_PATTERN = "[a-zA-Z0-9_\\-\\|\\.\\u4e00-\\u9fa5]+";
-
-    private static final Logger logger = LoggerFactory.getLogger(FileUtils.class);
-
-    public static String getFileType(String filename) {
-        if (filename.equals("jpg") || filename.endsWith("jpeg")) {
-            return ".jpg";
-        } else if (filename.equals("png") || filename.equals("PNG")) {
-            return ".png";
-        } else {
-            return "application/octet-stream";
-        }
-    }
 
     /**
      * 移动文件，未传完用临时文件代替
@@ -48,7 +38,7 @@ public class FileUtils {
         String tmpTarget = target.getName( ) + ".tmp";
         File desfile = new File( targetDir.getPath( ) + "/" + tmpTarget );
         try {
-            org.apache.commons.io.FileUtils.copyFile( target, desfile );
+            copyFile( target, desfile );
             if( target.length( ) == desfile.length( ) ) {
                 fnew = new File( targetDir.getPath( ), target.getName( ) );
 
@@ -60,11 +50,11 @@ public class FileUtils {
             }
             if( target.exists( ) ) {
                 if( !target.delete( ) ) {
-                    logger.info( "target canonicalPath {}", target.getCanonicalPath( ) );
+                    log.info( "target canonicalPath {}", target.getCanonicalPath( ) );
                 }
             }
         } catch( IOException e ) {
-            logger.error( e.getMessage( ) );
+            log.error( e.getMessage( ) );
         }
         return desfile;
 
@@ -120,7 +110,8 @@ public class FileUtils {
                 temp.delete();
             }
             if (temp.isDirectory()) {
-                delDirectory(path + "/" + tempList[i]);// 先删除文件夹里面的文件
+                // 先删除文件夹里面的文件
+                delDirectory(path + File.separator + tempList[i]);
                 flag = true;
             }
         }
@@ -129,7 +120,7 @@ public class FileUtils {
     }
 
     /**
-     * @Description: 根据文件名（路径+名称）删除文件
+     * @Description: 删除文件
      * @author: suyutang
      * @param: [fileName]
      * @return: void
@@ -139,12 +130,12 @@ public class FileUtils {
         try{
             if(file.exists()){
                 file.delete();
-                logger.info( "{}文件删除成功！", file.getAbsolutePath());
+                log.info( "{}文件删除成功！", file.getAbsolutePath());
             }else{
-                logger.info( "{}文件不存在！", file.getAbsolutePath());
+                log.info( "{}文件不存在！", file.getAbsolutePath());
             }
         }catch(Exception e){
-            logger.error( "{}文件删除失败！失败原因{}", file.getAbsolutePath(),e);
+            log.error( "{}文件删除失败！失败原因{}", file.getAbsolutePath(),e);
             e.printStackTrace();
         }
     }
@@ -181,22 +172,10 @@ public class FileUtils {
                     return 0;
 
                 } catch (Exception e) {
-                    logger.error("下载文件错误，error={}",e.getMessage());
+                    log.error("下载文件错误，error={}",e.getMessage());
                 } finally {
-                    if (bis != null) {
-                        try {
-                            bis.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    if (fis != null) {
-                        try {
-                            fis.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
+                    Fc.closeQuietly(bis);
+                    Fc.closeQuietly(fis);
                 }
             }
         }
@@ -220,15 +199,9 @@ public class FileUtils {
             compress(sourceFile,zos,sourceFile.getName(),keepDirStructure);
             long end = System.currentTimeMillis();
         } catch (Exception e) {
-            logger.error("压缩出错：{}",e.getMessage());
+            log.error("压缩出错：{}",e.getMessage());
         }finally{
-            if(zos != null){
-                try {
-                    zos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            Fc.closeQuietly(zos);
         }
 
     }
@@ -282,8 +255,7 @@ public class FileUtils {
      * @param filename 文件名称
      * @return true 正常 false 非法
      */
-    public static boolean isValidFilename(String filename)
-    {
+    public static boolean isValidFilename(String filename){
         return filename.matches(FILENAME_PATTERN);
     }
 
@@ -347,26 +319,39 @@ public class FileUtils {
             bw.newLine();
             bw.flush();
             flag = true;
-            logger.info( "{}文件写入成功！", filePath);
+            log.info( "{}文件写入成功！", filePath);
         }catch(Exception e){
-            logger.error( "{}文件写入出现异常，异常原因：{} ", filePath,e);
+            log.error( "{}文件写入出现异常，异常原因：{} ", filePath,e);
             throw new IOException();
         }finally {
-            try{
-                if(bw!=null ){
-                    bw.close();
-                }
-                if(osw!=null ){
-                    osw.close();
-                }
-                if(fos!=null ){
-                    fos.close();
-                }
-            }catch(Exception e){
-                logger.error("文件路径:{},输出流关闭失败:{}", filePath , e);
-                throw  new Exception(e);
-            }
+            Fc.closeQuietly(bw);
+            Fc.closeQuietly(osw);
+            Fc.closeQuietly(fos);
         }
         return flag;
+    }
+
+    /**
+     * 获取文件后缀名
+     * @param fullName 文件全名
+     * @return {String}
+     */
+    public static String getFileExtension(String fullName) {
+        Assert.notNull(fullName, "file fullName is null.");
+        String fileName = new File(fullName).getName();
+        int dotIndex = fileName.lastIndexOf('.');
+        return (dotIndex == -1) ? "" : fileName.substring(dotIndex + 1);
+    }
+
+    /**
+     * 获取文件名，去除后缀名
+     * @param file 文件
+     * @return {String}
+     */
+    public static String getNameWithoutExtension(String file) {
+        Assert.notNull(file, "file is null.");
+        String fileName = new File(file).getName();
+        int dotIndex = fileName.lastIndexOf(CharPool.DOT);
+        return (dotIndex == -1) ? fileName : fileName.substring(0, dotIndex);
     }
 }

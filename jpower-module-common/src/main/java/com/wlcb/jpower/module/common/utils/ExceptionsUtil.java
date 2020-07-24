@@ -13,7 +13,7 @@ import java.lang.reflect.UndeclaredThrowableException;
  * @Date 2020-07-23 15:47
  * @Version 1.0
  */
-public class Exceptions {
+public class ExceptionsUtil {
 
     /**
      * 将CheckedException转换为UncheckedException.

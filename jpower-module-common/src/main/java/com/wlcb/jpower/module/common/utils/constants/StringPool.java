@@ -1,4 +1,4 @@
-package com.wlcb.jpower.module.common.utils;
+package com.wlcb.jpower.module.common.utils.constants;
 
 /**
  * @ClassName StringPool

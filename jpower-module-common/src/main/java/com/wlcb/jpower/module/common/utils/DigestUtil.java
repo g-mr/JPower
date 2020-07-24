@@ -59,10 +59,17 @@ public class DigestUtil extends org.springframework.util.DigestUtils {
             byte[] bytes = md.digest(srcStr.getBytes(CharsetKit.CHARSET_UTF_8));
             return toHex(bytes);
         } catch (NoSuchAlgorithmException e) {
-            throw Exceptions.unchecked(e);
+            throw ExceptionsUtil.unchecked(e);
         }
     }
 
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 把二进制转换成十六进制
+     * @Date 00:06 2020-07-24
+     * @Param [bytes]
+     * @return java.lang.String
+     **/
     public static String toHex(byte[] bytes) {
         StringBuilder ret = new StringBuilder(bytes.length * 2);
         for (int i = 0; i < bytes.length; i++) {
@@ -70,6 +77,30 @@ public class DigestUtil extends org.springframework.util.DigestUtils {
             ret.append(HEX_DIGITS[bytes[i] & 0x0f]);
         }
         return ret.toString();
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 十六进制转二进制
+     * @Date 01:29 2020-07-24
+     * @Param [hex]
+     * @return byte[]
+     **/
+    public static byte[] hex2Bytes(String hex) {
+        if ((hex.length() % 2) != 0) {
+            String errMsg = "hex.length()=" + hex.length() + ", not an even number";
+            throw new IllegalArgumentException(errMsg);
+        }
+
+        final byte[] result = new byte[hex.length() / 2];
+        final char[] enc = hex.toCharArray();
+        StringBuilder sb = new StringBuilder(2);
+        for (int i = 0; i < enc.length; i += 2) {
+            sb.delete(0, sb.length());
+            sb.append(enc[i]).append(enc[i + 1]);
+            result[i / 2] = (byte) Integer.parseInt(sb.toString(), 16);
+        }
+        return result;
     }
 
     public static boolean slowEquals(@Nullable String a, @Nullable String b) {

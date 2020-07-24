@@ -53,7 +53,7 @@ public class IoUtil extends org.springframework.util.StreamUtils {
         try {
             return IoUtil.copyToString(input, charset);
         } catch (IOException e) {
-            throw Exceptions.unchecked(e);
+            throw ExceptionsUtil.unchecked(e);
         } finally {
             IoUtil.closeQuietly(input);
         }
@@ -63,7 +63,7 @@ public class IoUtil extends org.springframework.util.StreamUtils {
         try {
             return IoUtil.copyToByteArray(input);
         } catch (IOException e) {
-            throw Exceptions.unchecked(e);
+            throw ExceptionsUtil.unchecked(e);
         } finally {
             IoUtil.closeQuietly(input);
         }

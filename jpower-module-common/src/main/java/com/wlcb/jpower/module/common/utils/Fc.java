@@ -10,9 +10,9 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
-
 import java.io.Closeable;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
@@ -34,6 +34,10 @@ import java.util.function.Supplier;
  * @Version 1.0
  */
 public class Fc {
+
+    public static String trim(String str){
+        return StringUtil.trim(str);
+    }
 
     /**
      * Checks that the specified object reference is not {@code null}. This
@@ -1243,7 +1247,7 @@ public class Fc {
         try {
             return format.parse(dateStr);
         } catch (ParseException e) {
-            throw Exceptions.unchecked(e);
+            throw ExceptionsUtil.unchecked(e);
         }
     }
 
@@ -1452,7 +1456,7 @@ public class Fc {
      * @param beanList 源对象
      * @return {Map}
      */
-    public static <T> List<Map<String, Object>> toListMap(List<T> beanList, Class<T> T){
+    public static <T> List<Map<String, Object>> toListMap(List<? extends Serializable> beanList){
         List<Map<String, Object>> mapList = new ArrayList<>();
         for (int i = 0, n = beanList.size(); i < n; i++){
             Object bean = beanList.get(i);

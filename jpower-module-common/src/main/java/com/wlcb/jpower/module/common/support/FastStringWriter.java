@@ -1,6 +1,6 @@
 package com.wlcb.jpower.module.common.support;
 
-import com.wlcb.jpower.module.common.utils.StringPool;
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import org.springframework.lang.Nullable;
 
 import java.io.Writer;

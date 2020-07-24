@@ -3,7 +3,7 @@ package com.wlcb.jpower.module.common.aspectj;
 import com.alibaba.fastjson.JSONObject;
 import com.wlcb.jpower.module.base.annotation.Log;
 import com.wlcb.jpower.module.base.enums.BusinessStatus;
-import com.wlcb.jpower.module.common.utils.ServletUtils;
+import com.wlcb.jpower.module.common.utils.WebUtil;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
 import com.wlcb.jpower.module.dbs.entity.log.SysOperLog;
 import lombok.extern.slf4j.Slf4j;
@@ -76,7 +76,7 @@ public class LogAspect
             String ip = LoginUserContext.getIp();
             operLog.setOperIp(ip);
 
-            operLog.setOperUrl(ServletUtils.getRequest().getRequestURI());
+            operLog.setOperUrl(WebUtil.getRequest().getRequestURI());
             if (currentUser != null)
             {
                 operLog.setOperId(currentUser.getId());
@@ -141,7 +141,7 @@ public class LogAspect
      */
     private void setRequestValue(SysOperLog operLog) throws Exception
     {
-        Map<String, String[]> map = ServletUtils.getRequest().getParameterMap();
+        Map<String, String[]> map = WebUtil.getRequest().getParameterMap();
         String params = JSONObject.toJSONString(map);
         operLog.setOperParam(params);
     }

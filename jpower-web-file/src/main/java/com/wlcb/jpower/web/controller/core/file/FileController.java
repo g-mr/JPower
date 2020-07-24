@@ -64,7 +64,7 @@ public class FileController extends BaseController {
             if (is){
                 return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"获取成功", DESUtil.encrypt(coreFile.getId(), ConstantsUtils.FILE_DES_KEY),true);
             }else {
-                FileUtils.deleteFile(saveFile);
+                FileUtil.deleteFile(saveFile);
                 return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"文件保存失败", false);
             }
         }catch (Exception e){
@@ -100,7 +100,7 @@ public class FileController extends BaseController {
         }
 
         try {
-            Integer is = FileUtils.download(file,getResponse(),file.getName());
+            Integer is = FileUtil.download(file,getResponse(),file.getName());
             if (is != 0){
                 throw new BusinessException(file.getName()+"文件下载失败");
             }

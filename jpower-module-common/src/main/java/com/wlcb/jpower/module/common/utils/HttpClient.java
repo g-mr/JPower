@@ -40,7 +40,29 @@ public class HttpClient {
 
     private static final Logger logger = LoggerFactory.getLogger(HttpClient.class);
 
+    /**
+     * @Author 郭丁志
+     * @Description //TODO get请求
+     * @Date 11:34 2020-07-24
+     * @Param [url]
+     * @return java.lang.String
+     **/
     public static String doGet(String url) {
+        return doGet(url,null);
+    }
+
+    public static String doGet(String url,Map<String, Object> params) {
+        return doGet(url,null,params);
+    }
+
+    public static String doGet(String url,Map<String, String> headers,Map<String, Object> params) {
+
+        StringBuffer sb = new StringBuffer(url);
+        if (params != null && params.keySet().size() > 0) {
+            sb.append("?clientId=jpower");
+            params.forEach((k, v) -> sb.append("&").append(k).append("=").append(v));
+        }
+
         CloseableHttpClient httpClient = null;
         CloseableHttpResponse response = null;
         String result = "";
@@ -50,7 +72,9 @@ public class HttpClient {
             // 创建httpGet远程连接实例
             HttpGet httpGet = new HttpGet(url);
             // 设置请求头信息，鉴权
-//            httpGet.setHeader("Authorization", "Bearer da3efcbf-0845-4fe3-8aba-ee040be542c0");
+            if (Fc.isNotEmpty(headers)){
+                headers.forEach(httpGet::addHeader);
+            }
             // 设置配置请求参数
             RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(35000)// 连接主机服务超时时间
                     .setConnectionRequestTimeout(35000)// 请求超时时间
@@ -70,20 +94,8 @@ public class HttpClient {
             e.printStackTrace();
         } finally {
             // 关闭资源
-            if (null != response) {
-                try {
-                    response.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (null != httpClient) {
-                try {
-                    httpClient.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            Fc.closeQuietly(response);
+            Fc.closeQuietly(httpClient);
         }
         return result;
     }
@@ -124,30 +136,24 @@ public class HttpClient {
             logger.error("文件下载失败：{}",e.getMessage());
             e.printStackTrace();
         } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                }
-            }
-            if (bos != null) {
-                try {
-                    bos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (fos != null) {
-                try {
-                    fos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            Fc.closeQuietly(is);
+            Fc.closeQuietly(bos);
+            Fc.closeQuietly(fos);
         }
     }
 
+    /**
+     * @Author 郭丁志
+     * @Description //TODO post请求
+     * @Date 11:37 2020-07-24
+     * @Param [url, paramMap]
+     * @return java.lang.String
+     **/
     public static String doPost(String url, Map<String, Object> paramMap) {
+        return doPost(url,null,paramMap);
+    }
+
+    public static String doPost(String url, Map<String, String> headers, Map<String, Object> paramMap) {
         CloseableHttpClient httpClient = null;
         CloseableHttpResponse httpResponse = null;
         String result = "";
@@ -164,6 +170,9 @@ public class HttpClient {
         httpPost.setConfig(requestConfig);
         // 设置请求头
         httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
+        if (Fc.isNotEmpty(headers)){
+            headers.forEach(httpPost::addHeader);
+        }
         // 封装post请求参数
         if (null != paramMap && paramMap.size() > 0) {
             List<NameValuePair> nvps = new ArrayList<NameValuePair>();
@@ -197,20 +206,8 @@ public class HttpClient {
             logger.error("post请求失败：{}",e.getMessage());
         } finally {
             // 关闭资源
-            if (null != httpResponse) {
-                try {
-                    httpResponse.close();
-                } catch (IOException e) {
-                    logger.error(e.getMessage());
-                }
-            }
-            if (null != httpClient) {
-                try {
-                    httpClient.close();
-                } catch (IOException e) {
-                    logger.error(e.getMessage());
-                }
-            }
+            Fc.closeQuietly(httpResponse);
+            Fc.closeQuietly(httpClient);
         }
         return result;
     }
@@ -254,33 +251,10 @@ public class HttpClient {
         }catch (Exception e){
             logger.info("请求接口{}失败，error={}",strUrl,e.getMessage());
         }finally {
-            if (stringBuffer != null && bufferedReader!=null) {
-                try {
-                    bufferedReader.close();
-                } catch (IOException var24) {
-                }
-            }
-
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException var23) {
-                }
-            }
-
-            if (outputStream != null) {
-                try {
-                    outputStream.close();
-                } catch (IOException var22) {
-                }
-            }
-
-            if (certStream != null) {
-                try {
-                    certStream.close();
-                } catch (IOException var21) {
-                }
-            }
+            Fc.closeQuietly(bufferedReader);
+            Fc.closeQuietly(inputStream);
+            Fc.closeQuietly(outputStream);
+            Fc.closeQuietly(certStream);
         }
 
         return resp;
@@ -315,21 +289,9 @@ public class HttpClient {
         } catch (IOException e) {
             logger.error("{}接口调用失败",e.getMessage());
         } finally {
+            Fc.closeQuietly(execute);
+            Fc.closeQuietly(httpClient);
             // 关闭资源
-            if (null != execute) {
-                try {
-                    execute.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (null != httpClient) {
-                try {
-                    httpClient.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
         return result;
 

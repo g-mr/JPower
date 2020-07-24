@@ -1,8 +1,6 @@
 package com.wlcb.jpower.module.common.utils;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
-import sun.misc.BASE64Decoder;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -13,10 +11,8 @@ import java.math.BigInteger;
  * @Author 郭丁志
  * @Description //TODO AES加密工具类
  * @Date 17:51 2020-02-13
- * @Param 
- * @return 
  **/
-public class EncryptUtils {
+public class AESUtils {
     /**
      * 密钥
      */
@@ -61,26 +57,6 @@ public class EncryptUtils {
     }
 
     /**
-     * base 64 encode
-     * @param bytes 待编码的byte[]
-     * @return 编码后的base 64 code
-     */
-    public static String base64Encode(byte[] bytes){
-        return Base64.encodeBase64String(bytes);
-    }
-
-    /**
-     * base 64 decode
-     * @param base64Code 待解码的base 64 code
-     * @return 解码后的byte[]
-     * @throws Exception
-     */
-    public static byte[] base64Decode(String base64Code) throws Exception{
-        return StringUtils.isEmpty(base64Code) ? null : new BASE64Decoder().decodeBuffer(base64Code);
-    }
-
-
-    /**
      * AES加密
      * @param content 待加密的内容
      * @param encryptKey 加密密钥
@@ -105,7 +81,7 @@ public class EncryptUtils {
      * @throws Exception
      */
     public static String aesEncrypt(String content, String encryptKey) throws Exception {
-        return base64Encode(aesEncryptToBytes(content, encryptKey));
+        return Base64Util.encodeToString(aesEncryptToBytes(content, encryptKey));
     }
 
     /**
@@ -135,7 +111,7 @@ public class EncryptUtils {
      * @throws Exception
      */
     public static String aesDecrypt(String encryptStr, String decryptKey) throws Exception {
-        return StringUtils.isEmpty(encryptStr) ? null : aesDecryptByBytes(base64Decode(encryptStr), decryptKey);
+        return StringUtils.isEmpty(encryptStr) ? null : aesDecryptByBytes(Base64Util.decodeFromString(encryptStr), decryptKey);
     }
 
     public static void main(String[] args) throws Exception {
