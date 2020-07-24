@@ -18,7 +18,7 @@ public interface CoreCityService {
      * @Param [code]
      * @return java.util.List<java.util.Map<java.lang.String,java.lang.String>>
      **/
-    List<Map<String, Object>> listCodeNme(TbCoreCity coreCity);
+    List<Map<String, Object>> listChild(Map<String, Object> city);
 
     /**
      * @Author 郭丁志
@@ -28,5 +28,5 @@ public interface CoreCityService {
      * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.city.TbCoreCity>
      *
      * @param coreCity*/
-    List<TbCoreCity> listChild(Map<String, Object> coreCity);
+    List<TbCoreCity> list(TbCoreCity coreCity);
 }

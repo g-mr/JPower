@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,12 +48,15 @@ public class CityController extends BaseController {
      * @Param [code 默认为-1]
      * @return com.wlcb.jpower.module.base.vo.ResponseData
      **/
-    @RequestMapping(value = "/listCodeName",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData listCodeName(TbCoreCity coreCity){
+    @RequestMapping(value = "/listChild",method = {RequestMethod.GET},produces="application/json")
+    public ResponseData listChild(String pcode,String name){
 
-        JpowerAssert.notEmpty(coreCity.getCode(),JpowerError.Arg,"父级编码不可为空");
+        JpowerAssert.notEmpty(pcode,JpowerError.Arg,"父级编码不可为空");
+        Map<String,Object> map = new HashMap<>();
+        map.put("pcode_eq",pcode);
+        map.put("name",name);
 
-        List<Map<String,Object>> list = coreCityService.listCodeNme(coreCity);
+        List<Map<String,Object>> list = coreCityService.listChild(map);
         return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"获取成功", JSON.toJSON(list),true);
     }
 
@@ -63,13 +67,13 @@ public class CityController extends BaseController {
      * @Param [coreCity]
      * @return com.wlcb.jpower.module.base.vo.ResponseData
      **/
-    @RequestMapping(value = "/listChild",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData listChild( @RequestParam Map<String, Object> city){
+    @RequestMapping(value = "/listPage",method = {RequestMethod.GET},produces="application/json")
+    public ResponseData listPage( TbCoreCity coreCity){
 
-        JpowerAssert.notEmpty(Fc.toStr(city.get("pcode")),JpowerError.Arg,"父级编码不可为空");
+        JpowerAssert.notEmpty(coreCity.getPcode(),JpowerError.Arg,"父级编码不可为空");
 
         PaginationContext.startPage();
-        List<TbCoreCity> list = coreCityService.listChild(city);
+        List<TbCoreCity> list = coreCityService.list(coreCity);
         return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"获取成功", JSON.toJSON(new PageInfo<>(list)),true);
     }
 

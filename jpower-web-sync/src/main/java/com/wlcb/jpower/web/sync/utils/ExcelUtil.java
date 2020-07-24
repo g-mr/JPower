@@ -1,6 +1,7 @@
 package com.wlcb.jpower.web.sync.utils;
 
 import com.alibaba.fastjson.JSON;
+import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.StrUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -34,7 +35,7 @@ public class ExcelUtil {
      * @Param [path, startRow 开始行, endRow 结束行]
      * @return java.util.List<java.util.Map<java.lang.String,java.lang.String>>
      **/
-    public static List<Map<String,String>> excel2List(String path,Integer startRow,Integer endRow){
+    public static List<Map<String,Object>> excel2List(String path,Integer startRow,Integer endRow){
 
         File file=new File(path);
         if(!file.exists()){
@@ -50,7 +51,7 @@ public class ExcelUtil {
             return analyzeExcel(wb,(startRow == null?1:startRow),endRow);
         }
     }
-    public static List<Map<String,String>> excel2List(String path){
+    public static List<Map<String,Object>> excel2List(String path){
 
         File file=new File(path);
         if(!file.exists()){
@@ -67,9 +68,9 @@ public class ExcelUtil {
         }
     }
 
-    private static List<Map<String, String>> analyzeExcel(Workbook wb, Integer startRow, Integer endRow){
+    private static List<Map<String, Object>> analyzeExcel(Workbook wb, Integer startRow, Integer endRow){
         //读取第一个sheet
-        List<Map<String, String>> list = new ArrayList<>();
+        List<Map<String, Object>> list = new ArrayList<>();
         Sheet sheet=wb.getSheetAt(0);
 
         //获取头列
@@ -87,7 +88,7 @@ public class ExcelUtil {
         int rowNum=endRow==null?sheet.getLastRowNum():endRow;
         for(int i=startRow;i<=rowNum;i++){
 
-            Map<String,String> map = new HashMap<>();
+            Map<String,Object> map = new HashMap<>();
 
             //获得行
             Row row=sheet.getRow(i);
@@ -146,7 +147,7 @@ public class ExcelUtil {
         return wb;
     }
 
-    public static void writer(String path, String fileName,String fileType,List<Map<String,String>> list,List<String> titleRow) throws Exception {
+    public static void writer(String path, String fileName,String fileType,List<Map<String,Object>> list,List<String> titleRow) throws Exception {
         writer(path, fileName, null, fileType, list, titleRow);
     }
 
@@ -157,7 +158,7 @@ public class ExcelUtil {
      * @Param [path, fileName, fileType, list, titleRow]
      * @return void
      **/
-    public static void writer(String path, String fileName,String sheetName,String fileType,List<Map<String,String>> list,List<String> titleRow) throws Exception {
+    public static void writer(String path, String fileName,String sheetName,String fileType,List<Map<String,Object>> list,List<String> titleRow) throws Exception {
         String excelPath = path+File.separator+fileName+"."+fileType;
         File file = new File(excelPath);
         if (!file.getParentFile().exists()){
@@ -238,14 +239,14 @@ public class ExcelUtil {
 
         //循环写入行数据
         for (int i = 0; i < list.size(); i++) {
-            Map<String,String> map = list.get(i);
+            Map<String,Object> map = list.get(i);
 
             Row rowData = sheet.createRow(i+1);
 
             for(int j = 0;j < titleRow.size();j++){
                 Cell cellData = rowData.createCell(j);
 
-                String str = map.get(titleRow.get(j));
+                String str = Fc.toStr(map.get(titleRow.get(j)));
                 if (str.contains(":red")){
                     cellData.setCellValue(str.split(":")[0]);
                     cellData.setCellStyle(styleRed);
@@ -265,9 +266,9 @@ public class ExcelUtil {
     }
 
     public static void main(String[] args) {
-        List<Map<String,String>> list = excel2List("/Users/mr.gmac/Desktop/111.xlsx",null,null);
+        List<Map<String,Object>> list = excel2List("/Users/mr.gmac/Desktop/111.xlsx",null,null);
 
-        for (Map<String, String> stringStringMap : list) {
+        for (Map<String, Object> stringStringMap : list) {
 
             System.out.println(JSON.toJSONString(stringStringMap));
 

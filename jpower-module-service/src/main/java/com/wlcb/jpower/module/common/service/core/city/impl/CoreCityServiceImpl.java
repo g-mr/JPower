@@ -19,16 +19,15 @@ public class CoreCityServiceImpl implements CoreCityService {
     private TbCoreCityDao coreCityDao;
 
     @Override
-    public List<Map<String, Object>> listCodeNme(TbCoreCity coreCity) {
-
-        return coreCityDao.listMaps(Condition.getQueryWrapper(coreCity).lambda()
+    public List<Map<String, Object>> listChild(Map<String, Object> city) {
+        return coreCityDao.listMaps(Condition.getQueryWrapper(city,TbCoreCity.class).lambda()
                 .select(TbCoreCity::getCode,TbCoreCity::getName)
                 .orderByAsc(TbCoreCity::getSortNum));
     }
 
     @Override
-    public List<TbCoreCity> listChild(Map<String, Object> coreCity) {
-        return coreCityDao.list(Condition.getQueryWrapper(coreCity,TbCoreCity.class).lambda().orderByAsc(TbCoreCity::getSortNum));
+    public List<TbCoreCity> list(TbCoreCity coreCity) {
+        return coreCityDao.list(Condition.getQueryWrapper(coreCity).lambda().orderByAsc(TbCoreCity::getSortNum));
     }
 
 }

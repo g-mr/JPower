@@ -10,7 +10,7 @@ import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.wlcb.jpower.module.base.annotation.Dict;
-import com.wlcb.jpower.module.common.utils.CameUtils;
+import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.dbs.dao.core.dict.mapper.TbCoreDictMapper;
 import com.wlcb.jpower.module.dbs.entity.core.dict.TbCoreDict;
 import org.apache.commons.lang3.StringUtils;
@@ -58,7 +58,7 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
         List<Field> fields = FieldUtils.getAllFieldsList(cls);
         for (Field field : fields) {
             Dict dictType = field.getAnnotation(Dict.class);
-            if (dictType != null && (selects == null || selects.contains(CameUtils.camelToUnderline(field.getName())))){
+            if (dictType != null && (selects == null || selects.contains(StringUtil.humpToUnderline(field.getName())))){
                 map.put(field.getName(),dictType);
             }
         }
@@ -125,7 +125,7 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
             List<TbCoreDict> dictList = dictMap.get(dict.name());
             if (dictList != null){
                 for (TbCoreDict tbCoreDict : dictList) {
-                    if (StringUtils.equals(tbCoreDict.getCode(),String.valueOf(map.get(CameUtils.camelToUnderline(filedName))))){
+                    if (StringUtils.equals(tbCoreDict.getCode(),String.valueOf(map.get(StringUtil.humpToUnderline(filedName))))){
                         map.put(dict.attributes(),tbCoreDict.getName());
                     }
                 }
@@ -158,9 +158,6 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
     @Override
     public List<Map<String, Object>> listMaps(Wrapper<T> queryWrapper) {
         List<Map<String, Object>> list = super.listMaps(queryWrapper);
-
-
-
         return list;
     }
 

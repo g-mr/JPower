@@ -3,8 +3,8 @@ package com.wlcb.jpower.utils.excel;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.base.annotation.Excel;
-import com.wlcb.jpower.module.common.utils.Convert;
 import com.wlcb.jpower.module.common.utils.DateUtils;
+import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.common.utils.reflect.ReflectUtils;
@@ -633,35 +633,35 @@ public class BeanExcelUtil<T> {
 
                         if (String.class == fieldType)
                         {
-                            String s = Convert.toStr(val);
+                            String s = Fc.toStr(val);
                             if (StringUtils.endsWith(s, ".0"))
                             {
                                 val = StringUtils.substringBefore(s, ".0");
                             }
                             else
                             {
-                                val = Convert.toStr(val);
+                                val = Fc.toStr(val);
                             }
                         }
                         else if ((Integer.TYPE == fieldType) || (Integer.class == fieldType))
                         {
-                            val = Convert.toInt(val);
+                            val = Fc.toInt(val);
                         }
                         else if ((Long.TYPE == fieldType) || (Long.class == fieldType))
                         {
-                            val = Convert.toLong(val);
+                            val = Fc.toLong(val);
                         }
                         else if ((Double.TYPE == fieldType) || (Double.class == fieldType))
                         {
-                            val = Convert.toDouble(val);
+                            val = Fc.toDouble(val);
                         }
                         else if ((Float.TYPE == fieldType) || (Float.class == fieldType))
                         {
-                            val = Convert.toFloat(val);
+                            val = Fc.toFloat(val);
                         }
                         else if (BigDecimal.class == fieldType)
                         {
-                            val = Convert.toBigDecimal(val);
+                            val = Fc.toBigDecimal(val);
                         }
                         else if (Date.class == fieldType)
                         {
