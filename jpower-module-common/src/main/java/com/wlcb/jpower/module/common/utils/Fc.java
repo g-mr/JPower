@@ -17,6 +17,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.time.Duration;
@@ -597,6 +599,65 @@ public class Fc {
     }
 
     /**
+     * 转换为boolean<br>
+     * String支持的值为：true、false、yes、ok、no，1,0 如果给定的值为空，或者转换失败，返回默认值<br>
+     * 转换失败不会报错
+     *
+     * @param value 被转换的值
+     * @param defaultValue 转换错误时的默认值
+     * @return 结果
+     */
+    public static Boolean toBool(Object value, Boolean defaultValue)
+    {
+        if (value == null)
+        {
+            return defaultValue;
+        }
+        if (value instanceof Boolean)
+        {
+            return (Boolean) value;
+        }
+        String valueStr = toStr(value, null);
+        if (StringUtils.isEmpty(valueStr))
+        {
+            return defaultValue;
+        }
+        valueStr = valueStr.trim().toLowerCase();
+        switch (valueStr)
+        {
+            case "true":
+                return true;
+            case "false":
+                return false;
+            case "yes":
+                return true;
+            case "ok":
+                return true;
+            case "no":
+                return false;
+            case "1":
+                return true;
+            case "0":
+                return false;
+            default:
+                return defaultValue;
+        }
+    }
+
+    /**
+     * 转换为boolean<br>
+     * 如果给定的值为空，或者转换失败，返回默认值<code>null</code><br>
+     * 转换失败不会报错
+     *
+     * @param value 被转换的值
+     * @return 结果
+     */
+    public static Boolean toBool(Object value)
+    {
+        return toBool(value, null);
+    }
+
+    /**
      * 转换为Integer数组<br>
      *
      * @param str 被转换的值
@@ -753,6 +814,61 @@ public class Fc {
         return NumberUtil.to62String(num);
     }
 
+
+    /**
+     * 转换为BigInteger<br>
+     * 如果给定的值为空，或者转换失败，返回默认值<br>
+     * 转换失败不会报错
+     *
+     * @param value 被转换的值
+     * @param defaultValue 转换错误时的默认值
+     * @return 结果
+     */
+    public static BigInteger toBigInteger(Object value, BigInteger defaultValue)
+    {
+        return NumberUtil.toBigInteger(value,defaultValue);
+    }
+
+    /**
+     * 转换为BigInteger<br>
+     * 如果给定的值为空，或者转换失败，返回默认值<code>null</code><br>
+     * 转换失败不会报错
+     *
+     * @param value 被转换的值
+     * @return 结果
+     */
+    public static BigInteger toBigInteger(Object value)
+    {
+        return toBigInteger(value, null);
+    }
+
+    /**
+     * 转换为BigDecimal<br>
+     * 如果给定的值为空，或者转换失败，返回默认值<br>
+     * 转换失败不会报错
+     *
+     * @param value 被转换的值
+     * @param defaultValue 转换错误时的默认值
+     * @return 结果
+     */
+    public static BigDecimal toBigDecimal(Object value, BigDecimal defaultValue)
+    {
+        return toBigDecimal(value,defaultValue);
+    }
+
+    /**
+     * 转换为BigDecimal<br>
+     * 如果给定的值为空，或者转换失败，返回默认值<br>
+     * 转换失败不会报错
+     *
+     * @param value 被转换的值
+     * @return 结果
+     */
+    public static BigDecimal toBigDecimal(Object value)
+    {
+        return toBigDecimal(value, null);
+    }
+
     /**
      * Convert a {@code Collection} into a delimited {@code String} (e.g., CSV).
      * <p>Useful for {@code toString()} implementations.
@@ -841,7 +957,7 @@ public class Fc {
     }
 
     /**
-     * Calculates the MD5 digest and returns the value as a 32 character hex string.
+     * 计算MD5摘要，并以32个字符的十六进制字符串形式返回值。
      *
      * @param data Data to digest
      * @return MD5 digest as a hex string
@@ -1328,6 +1444,22 @@ public class Fc {
         T bean = BeanUtil.newInstance(valueType);
         BeanMap.create(bean).putAll(beanMap);
         return bean;
+    }
+
+    /**
+     * 将List对象装成List<map>形式
+     *
+     * @param beanList 源对象
+     * @return {Map}
+     */
+    public static <T> List<Map<String, Object>> toListMap(List<T> beanList, Class<T> T){
+        List<Map<String, Object>> mapList = new ArrayList<>();
+        for (int i = 0, n = beanList.size(); i < n; i++){
+            Object bean = beanList.get(i);
+            Map<String, Object> map = toMap(bean);
+            mapList.add(map);
+        }
+        return mapList;
     }
 
 }
