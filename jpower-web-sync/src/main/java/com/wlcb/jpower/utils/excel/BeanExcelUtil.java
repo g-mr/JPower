@@ -3,7 +3,7 @@ package com.wlcb.jpower.utils.excel;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.base.annotation.Excel;
-import com.wlcb.jpower.module.common.utils.DateUtils;
+import com.wlcb.jpower.module.common.utils.DateUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
@@ -349,7 +349,7 @@ public class BeanExcelUtil<T> {
                         String readConverterExp = attr.readConverterExp();
                         if (StringUtils.isNotEmpty(dateFormat) && value != null)
                         {
-                            cell.setCellValue(DateUtils.getDate((Date) value,dateFormat));
+                            cell.setCellValue(Fc.format((Date) value,dateFormat));
                         }
                         else if (StringUtils.isNotEmpty(readConverterExp) && value != null)
                         {
@@ -667,11 +667,11 @@ public class BeanExcelUtil<T> {
                         {
                             if (val instanceof String)
                             {
-                                val = DateUtils.parseDate(val);
+                                val = DateUtil.parseDate(val);
                             }
                             else if (val instanceof Double)
                             {
-                                val = DateUtil.getJavaDate((Double) val);
+                                val = org.apache.poi.ss.usermodel.DateUtil.getJavaDate((Double) val);
                             }
                         }
                         if (fieldType != null)
@@ -749,7 +749,7 @@ public class BeanExcelUtil<T> {
                     val = cell.getNumericCellValue();
                     if (HSSFDateUtil.isCellDateFormatted(cell))
                     {
-                        val = DateUtil.getJavaDate((Double) val); // POI Excel 日期格式转换
+                        val = org.apache.poi.ss.usermodel.DateUtil.getJavaDate((Double) val); // POI Excel 日期格式转换
                     }
                     else
                     {
