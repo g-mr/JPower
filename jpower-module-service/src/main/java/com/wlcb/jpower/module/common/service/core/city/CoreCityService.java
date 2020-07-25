@@ -51,4 +51,12 @@ public interface CoreCityService extends IService<TbCoreCity> {
      */
     TbCoreCity queryByCode(String cityCode);
 
+    /**
+     * @author 郭丁志
+     * @Description //TODO 批量删除行政区域
+     * @date 22:30 2020/7/25 0025
+     * @param ids
+     * @return java.lang.Boolean
+     */
+    Boolean deleteBatch(List<String> ids);
 }

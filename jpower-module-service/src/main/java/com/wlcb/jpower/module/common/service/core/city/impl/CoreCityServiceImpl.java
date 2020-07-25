@@ -73,7 +73,19 @@ public class CoreCityServiceImpl extends JpowerServiceImpl<TbCoreCityMapper,TbCo
 
     @Override
     public TbCoreCity queryByCode(String cityCode) {
-        return coreCityDao.getOne(Condition.getQueryWrapper(ChainMap.init().set("code"+ SqlKeyword.EQUAL,cityCode),TbCoreCity.class));
+        return coreCityDao.getOne(Condition.<TbCoreCity>getQueryWrapper().lambda().eq(TbCoreCity::getCode,cityCode));
+    }
+
+    @Override
+    public Boolean deleteBatch(List<String> ids) {
+
+        List<Object> listCode = coreCityDao.listObjs(Condition.<TbCoreCity>getQueryWrapper().lambda().select(TbCoreCity::getCode).in(TbCoreCity::getId,ids));
+        if(listCode.size()>0){
+            Integer count = coreCityDao.count(Condition.<TbCoreCity>getQueryWrapper().lambda().in(TbCoreCity::getPcode,listCode));
+            JpowerAssert.notTrue(count>0,JpowerError.BUSINESS,"请先删除子区域");
+        }
+
+        return coreCityDao.removeByIds(ids);
     }
 
 }

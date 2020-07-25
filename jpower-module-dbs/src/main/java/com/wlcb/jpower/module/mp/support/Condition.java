@@ -19,6 +19,10 @@ public class Condition<T> {
     public Condition() {
     }
 
+    public static <T> QueryWrapper<T> getQueryWrapper() {
+        return new QueryWrapper<T>().eq("status",1);
+    }
+
     public static <T> QueryWrapper<T> getQueryWrapper(T entity) {
         return new QueryWrapper<T>(entity).eq("status",1);
     }

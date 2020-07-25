@@ -105,6 +105,6 @@ public class CityController extends BaseController {
      */
     @RequestMapping(value = "/delete",method = {RequestMethod.DELETE},produces="application/json")
     public ResponseData delete( String ids){
-        return ReturnJsonUtil.status(coreCityService.removeByIds(Fc.toStrList(ids)));
+        return ReturnJsonUtil.status(coreCityService.deleteBatch(Fc.toStrList(ids)));
     }
 }

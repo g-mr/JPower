@@ -338,10 +338,6 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
         return e;
     }
 
-    public <V> V getObj(Wrapper<T> queryWrapper) {
-        return SqlHelper.getObject(log, listObjs(queryWrapper, null));
-    }
-
     /**
      * 链式查询 普通
      *
