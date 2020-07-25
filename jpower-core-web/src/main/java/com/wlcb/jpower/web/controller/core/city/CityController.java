@@ -52,7 +52,6 @@ public class CityController extends BaseController {
      **/
     @RequestMapping(value = "/listChild",method = {RequestMethod.GET},produces="application/json")
     public ResponseData listChild(@RequestParam(defaultValue = JpowerConstants.TOP_CODE) String pcode, String name){
-
         List<Map<String,Object>> list = coreCityService.listChild(ChainMap.init().set("pcode_eq",pcode).set("name",name));
         return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"获取成功", JSON.toJSON(list),true);
     }

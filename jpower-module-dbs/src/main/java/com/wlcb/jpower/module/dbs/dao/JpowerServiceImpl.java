@@ -9,7 +9,9 @@ import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapp
 import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
+import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.wlcb.jpower.module.base.annotation.Dict;
+import com.wlcb.jpower.module.common.utils.ReflectUtil;
 import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.dbs.dao.core.dict.mapper.TbCoreDictMapper;
 import com.wlcb.jpower.module.dbs.entity.core.dict.TbCoreDict;
@@ -22,6 +24,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * @ClassName JpowerServiceImpl
@@ -35,8 +38,6 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
     @Autowired
     private TbCoreDictMapper coreDictMapper;
 
-    public static final char UNDERLINE = '_';
-
     private Class<T> getTClass(){
         Type genType = getClass().getGenericSuperclass();
         Type[] params = ((ParameterizedType) genType).getActualTypeArguments();
@@ -48,7 +49,7 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
 
         List<String> selects = null;
         if (StringUtils.isNotBlank(queryWrapper.getSqlSelect())){
-            selects = new ArrayList<>(Arrays.asList(queryWrapper.getSqlSelect().split(",")));
+            selects = StringUtil.splitTrim(queryWrapper.getSqlSelect(),",");
         }
 
         //用来返回匹配结果
@@ -119,6 +120,12 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
         return dictMap;
     }
 
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 给结果MAP新增字典值
+     * @Date 17:29 2020-07-24
+     * @Param [map, mapFieldDicts, dictMap]
+     **/
     private void setMap(Map<String, Object> map,Map<String,Dict> mapFieldDicts,Map<String,List<TbCoreDict>> dictMap){
         for (String filedName : mapFieldDicts.keySet()) {
             Dict dict = mapFieldDicts.get(filedName);
@@ -200,15 +207,11 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
                 if (dictList != null){
                     for (TbCoreDict tbCoreDict : dictList) {
 
-                        Field field = t.getClass().getDeclaredField(filedName);
-                        field.setAccessible(true);
-                        String val = String.valueOf(field.get(t));
+                        String val = ReflectUtil.getFieldValue(t,filedName);
 
                         if (StringUtils.equals(tbCoreDict.getCode(),val)){
                             String attributesName = StringUtils.isBlank(dict.attributes())?filedName:dict.attributes();
-                            Field attributesField = t.getClass().getDeclaredField(attributesName);
-                            attributesField.setAccessible(true);
-                            attributesField.set(t,tbCoreDict.getName());
+                            ReflectUtil.setFieldValue(t,attributesName,tbCoreDict.getName());
                         }
                     }
                 }
@@ -333,6 +336,10 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
         setListMap(list,queryWrapper);
         e.setRecords(list);
         return e;
+    }
+
+    public <V> V getObj(Wrapper<T> queryWrapper) {
+        return SqlHelper.getObject(log, listObjs(queryWrapper, null));
     }
 
     /**

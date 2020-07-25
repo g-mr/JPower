@@ -7,7 +7,7 @@ import com.wlcb.jpower.module.common.utils.DateUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
-import com.wlcb.jpower.module.common.utils.ReflectUtils;
+import com.wlcb.jpower.module.common.utils.ReflectUtil;
 import com.wlcb.jpower.web.sync.utils.ExcelUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
@@ -682,11 +682,7 @@ public class BeanExcelUtil<T> {
                             {
                                 propertyName = field.getName() + "." + attr.targetAttr();
                             }
-//                            if (StringUtils.isNotEmpty(attr.readConverterExp()))
-//                            {
-//                                val = reverseByExp(String.valueOf(val), attr.readConverterExp());
-//                            }
-                            ReflectUtils.invokeSetter(entity, propertyName, val);
+                            ReflectUtil.invokeSetter(entity, propertyName, val);
                         }
                     }
                 }
