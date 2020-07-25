@@ -30,7 +30,6 @@ public class TbCoreCity extends BaseEntity {
     private String cityType;
     private String note;
     private Integer sortNum;
-    private Integer sub;
 
     @TableField(exist = false)
     private String cityTypeStr;

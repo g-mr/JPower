@@ -14,7 +14,7 @@ import java.util.Map;
  * @Date 2020-07-23 15:01
  * @Version 1.0
  */
-public class Condition {
+public class Condition<T> {
 
     public Condition() {
     }

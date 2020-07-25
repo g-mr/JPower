@@ -11,7 +11,7 @@ public enum JpowerError {
     Unknown(500, "系统异常"),
     Api(600, "api错误[retcode:%s,retmsg:%s]"),
     Arg(406, "参数错误:%s"),
-    APPLY(800, "%s");
+    BUSINESS(300, "%s");
 
     private int    code;
     private String message;

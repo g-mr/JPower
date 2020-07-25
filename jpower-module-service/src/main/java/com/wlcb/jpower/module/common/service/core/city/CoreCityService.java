@@ -1,6 +1,9 @@
 package com.wlcb.jpower.module.common.service.core.city;
 
 
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.wlcb.jpower.module.dbs.dao.JpowerServiceImpl;
+import com.wlcb.jpower.module.dbs.dao.core.city.mapper.TbCoreCityMapper;
 import com.wlcb.jpower.module.dbs.entity.core.city.TbCoreCity;
 
 import java.util.List;
@@ -9,7 +12,7 @@ import java.util.Map;
 /**
  * @author mr.gmac
  */
-public interface CoreCityService {
+public interface CoreCityService extends IService<TbCoreCity> {
 
     /**
      * @Author 郭丁志
@@ -29,4 +32,23 @@ public interface CoreCityService {
      *
      * @param coreCity*/
     List<TbCoreCity> list(TbCoreCity coreCity);
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 新增或者新增行政区域
+     * @date 17:55 2020/7/25 0025
+     * @param coreCity
+     * @return java.lang.Boolean
+     */
+    boolean save(TbCoreCity coreCity);
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 通过编号查询城市
+     * @date 19:20 2020/7/25 0025
+     * @param cityCode
+     * @return com.wlcb.jpower.module.dbs.entity.core.city.TbCoreCity
+     */
+    TbCoreCity queryByCode(String cityCode);
+
 }

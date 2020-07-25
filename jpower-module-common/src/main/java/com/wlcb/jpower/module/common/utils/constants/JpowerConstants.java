@@ -13,4 +13,7 @@ public class JpowerConstants {
     /** 顶级节点CODE **/
     public static final String TOP_CODE = "-1";
 
+    /** 默认国家编码 **/
+    public static final String COUNTRY_CODE = "CHN";
+
 }

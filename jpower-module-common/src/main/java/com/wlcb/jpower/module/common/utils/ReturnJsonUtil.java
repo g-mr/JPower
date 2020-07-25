@@ -60,14 +60,51 @@ public class ReturnJsonUtil {
      * @return ResponseData
      **/
     public static ResponseData ok(String msg, Object data){
-        ResponseData r = new ResponseData();
-        r.setMessage(msg);
-        r.setCode(ConstantsReturn.RECODE_SUCCESS);
-        r.setData(data);
-        r.setStatus(true);
-        return r;
+        return printJson(ConstantsReturn.RECODE_SUCCESS, msg, data, true);
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 成功的通知
+     * @Date 00:29 2020-03-06
+     * @Param [msg, data]
+     * @return ResponseData
+     **/
+    public static ResponseData ok(String msg){
+        return ok( msg, null);
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 失败的情况
+     * @Date 00:29 2020-03-06
+     * @Param [msg, data]
+     * @return ResponseData
+     **/
+    public static ResponseData fail(String msg, Object data){
+        return printJson(ConstantsReturn.RECODE_FAIL, msg, data, true);
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 失败的通知
+     * @Date 00:29 2020-03-06
+     * @Param [msg, data]
+     * @return ResponseData
+     **/
+    public static ResponseData fail(String msg){
+        return fail( msg, null);
     }
 
     public static void main(String[] args) {
+    }
+
+    public static ResponseData status(Boolean is) {
+        if(is){
+            return ok("操作成功");
+        }else {
+            return fail("操作失败");
+        }
+
     }
 }

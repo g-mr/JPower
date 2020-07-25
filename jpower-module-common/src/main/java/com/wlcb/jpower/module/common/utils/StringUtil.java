@@ -805,6 +805,21 @@ public class StringUtil extends StringUtils {
     }
 
     /**
+     * 去掉指定的所有后缀
+     * todo 生成的字符串只要是指定的后缀就一直去除
+     * @param str    字符串
+     * @param suffix 后缀
+     * @return 切掉后的字符串，若后缀不是 suffix， 返回原字符串
+     */
+    public static String removeAllSuffix(CharSequence str, CharSequence suffix) {
+        String newStr =  removeSuffix(str,suffix);
+        if(equals(newStr,str)){
+            return newStr;
+        }
+        return removeAllSuffix(newStr,suffix);
+    }
+
+    /**
      * 去掉指定后缀，并小写首字母
      *
      * @param str    字符串
