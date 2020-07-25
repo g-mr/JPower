@@ -2,6 +2,7 @@ package com.wlcb.jpower.module.common.service.core.city;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.dbs.dao.JpowerServiceImpl;
 import com.wlcb.jpower.module.dbs.dao.core.city.mapper.TbCoreCityMapper;
 import com.wlcb.jpower.module.dbs.entity.core.city.TbCoreCity;
@@ -40,6 +41,7 @@ public interface CoreCityService extends IService<TbCoreCity> {
      * @param coreCity
      * @return java.lang.Boolean
      */
+    @Override
     boolean save(TbCoreCity coreCity);
 
     /**
@@ -59,4 +61,13 @@ public interface CoreCityService extends IService<TbCoreCity> {
      * @return java.lang.Boolean
      */
     Boolean deleteBatch(List<String> ids);
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 懒加载树形结构
+     * @Date 23:18 2020-07-25
+     * @Param [pcode]
+     * @return java.util.List<com.wlcb.jpower.module.common.node.Node>
+     **/
+    List<Node> lazyTree(String pcode);
 }

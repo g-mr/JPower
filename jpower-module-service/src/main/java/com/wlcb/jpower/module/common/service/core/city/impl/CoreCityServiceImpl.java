@@ -2,6 +2,8 @@ package com.wlcb.jpower.module.common.service.core.city.impl;
 
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
+import com.wlcb.jpower.module.common.node.ForestNodeMerger;
+import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.service.core.city.CoreCityService;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.CodeUtil;
@@ -86,6 +88,11 @@ public class CoreCityServiceImpl extends JpowerServiceImpl<TbCoreCityMapper,TbCo
         }
 
         return coreCityDao.removeByIds(ids);
+    }
+
+    @Override
+    public List<Node> lazyTree(String pcode) {
+        return ForestNodeMerger.merge(baseMapper.lazyTree(pcode,null));
     }
 
 }

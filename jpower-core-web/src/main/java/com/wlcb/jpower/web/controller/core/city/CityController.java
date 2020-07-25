@@ -7,6 +7,7 @@ import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
+import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.service.core.city.CoreCityService;
 import com.wlcb.jpower.module.common.service.core.user.CoreFunctionService;
@@ -106,5 +107,18 @@ public class CityController extends BaseController {
     @RequestMapping(value = "/delete",method = {RequestMethod.DELETE},produces="application/json")
     public ResponseData delete( String ids){
         return ReturnJsonUtil.status(coreCityService.deleteBatch(Fc.toStrList(ids)));
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 
+     * @Date 22:40 2020-07-25
+     * @Param [ids]
+     * @return com.wlcb.jpower.module.base.vo.ResponseData
+     **/
+    @RequestMapping(value = "/lazyTree",method = {RequestMethod.GET},produces="application/json")
+    public ResponseData lazyTree( String pcode){
+        List<Node> nodeList = coreCityService.lazyTree(pcode);
+        return ReturnJsonUtil.ok("查询成功",nodeList);
     }
 }
