@@ -1,6 +1,7 @@
 package com.wlcb.jpower.module.dbs.dao.core.user.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreRoleFunction;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
@@ -16,4 +17,5 @@ public interface TbCoreRoleFunctionMapper extends BaseMapper<TbCoreRoleFunction>
     Integer insertList(@Param("roleFunctions") List<TbCoreRoleFunction> roleFunctions);
 
     List<String> selectFunctionIdInRoleIds(@Param("list") List<String> roleIdList);
+
 }

@@ -2,15 +2,18 @@ package com.wlcb.jpower.module.common.service.core.user.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.service.core.user.CoreOrgService;
 import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreOrgDao;
 import com.wlcb.jpower.module.dbs.dao.core.user.mapper.TbCoreOrgMapper;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreOrg;
+import com.wlcb.jpower.module.mp.support.Condition;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author mr.gmac
@@ -95,6 +98,16 @@ public class CoreOrgServiceImpl implements CoreOrgService {
     @Override
     public Boolean update(TbCoreOrg coreUser) {
         return coreOrgDao.updateById(coreUser);
+    }
+
+    @Override
+    public List<Node> tree(Map<String, Object> coreOrg) {
+        return coreOrgDao.tree(Condition.getTreeWrapper(TbCoreOrg::getCode,TbCoreOrg::getParentCode,TbCoreOrg::getName).map(coreOrg).lambda().orderByAsc(TbCoreOrg::getSort));
+    }
+
+    @Override
+    public List<Node> tree(String parentCode, Map<String, Object> coreOrg) {
+        return coreOrgDao.tree(Condition.getTreeWrapper(TbCoreOrg::getCode,TbCoreOrg::getParentCode,TbCoreOrg::getName).lazy(parentCode).map(coreOrg).lambda().orderByAsc(TbCoreOrg::getSort));
     }
 
 }

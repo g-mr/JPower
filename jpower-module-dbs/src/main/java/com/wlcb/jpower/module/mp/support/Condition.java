@@ -15,6 +15,7 @@ import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.BeanUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.StringUtil;
+import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import org.apache.ibatis.reflection.property.PropertyNamer;
 
 import java.lang.reflect.ParameterizedType;
@@ -57,7 +58,11 @@ public class Condition<T> {
     }
 
     public static <T> TreeWrapper<T> getTreeWrapper(SFunction<T, ?> code, SFunction<T, ?> parentCode, SFunction<T, ?> title)  {
-        return new TreeWrapper<T>(code,parentCode,title).tree();
+        return new TreeWrapper<T>(code,parentCode,title,null).tree();
+    }
+
+    public static <T> TreeWrapper<T> getTreeWrapper(SFunction<T, ?> code, SFunction<T, ?> parentCode, SFunction<T, ?> title, SFunction<T, ?> value)  {
+        return new TreeWrapper<T>(code,parentCode,title,value).tree();
     }
 
     public static class TreeWrapper<T> extends QueryWrapper<T> {
@@ -65,6 +70,7 @@ public class Condition<T> {
         private String code;
         private String parentCode;
         private String title;
+        private String value;
         private String id;
         private String tableName;
 
@@ -77,11 +83,16 @@ public class Condition<T> {
          * @param title 节点名称
          * @return
          */
-        public TreeWrapper(SFunction<T, ?> code,SFunction<T, ?> parentCode,SFunction<T, ?> title){
+        public TreeWrapper(SFunction<T, ?> code,SFunction<T, ?> parentCode,SFunction<T, ?> title,SFunction<T, ?> value){
+            init(code, parentCode, title, value);
+        }
+
+        public void init(SFunction<T, ?> code,SFunction<T, ?> parentCode,SFunction<T, ?> title,SFunction<T, ?> value){
             TableInfo tableInfo = SqlHelper.table(LambdaUtils.resolve(code).getImplClass());
             setEntity(BeanUtil.newInstance(LambdaUtils.resolve(code).getImplClass()));
             this.tableName = tableInfo.getTableName();
             this.id = tableInfo.getKeyColumn() + " AS id";
+            this.value = tableInfo.getKeyColumn() + " AS value";
             tableInfo.getFieldList().forEach(field -> {
                 if (StringUtil.equals(field.getProperty(),columnsToString(code))){
                     this.code = field.getColumn() + " AS code";
@@ -91,6 +102,9 @@ public class Condition<T> {
                 }
                 if (StringUtil.equals(field.getProperty(),columnsToString(title))){
                     this.title = field.getColumn() + " AS title";
+                }
+                if (value != null && StringUtil.equals(field.getProperty(),columnsToString(value))){
+                    this.value = field.getColumn() + " AS value";
                 }
             });
         }
@@ -103,7 +117,7 @@ public class Condition<T> {
          * @return com.wlcb.jpower.module.mp.support.Condition.TreeWrapper<T>
          */
         private TreeWrapper<T> tree() {
-            select(this.code,this.parentCode,this.title,this.id);
+            select(this.code,this.parentCode,this.title,this.value,this.id);
             return this;
 
         }
@@ -116,8 +130,8 @@ public class Condition<T> {
          * @return com.wlcb.jpower.module.mp.support.Condition.TreeWrapper<T>
          */
         public TreeWrapper<T> lazy(String pcodeVal){
-            select("( SELECT CASE WHEN count( 1 ) > 0 THEN 1 ELSE 0 END FROM "+tableName+" as c WHERE "+StringUtil.splitTrim(this.parentCode,"AS").get(0)+" = "+tableName+"."+StringUtil.splitTrim(this.code,"AS").get(0)+" ) AS hasChildren",this.code,this.parentCode,this.title,this.id);
-            eq(StringUtil.splitTrim(this.parentCode,"AS").get(0),pcodeVal);
+            select("( SELECT CASE WHEN count( 1 ) > 0 THEN 1 ELSE 0 END FROM "+tableName+" as c WHERE "+StringUtil.splitTrim(this.parentCode,"AS").get(0)+" = "+tableName+"."+StringUtil.splitTrim(this.code,"AS").get(0)+" ) AS hasChildren",this.code,this.parentCode,this.title,this.value,this.id);
+            eq(StringUtil.splitTrim(this.parentCode,"AS").get(0),StringUtil.isBlank(pcodeVal)?JpowerConstants.TOP_CODE:pcodeVal);
             return this;
         }
 
@@ -137,15 +151,23 @@ public class Condition<T> {
             return PropertyNamer.methodToProperty(LambdaUtils.resolve(column).getImplMethodName());
         }
 
+        /**
+         * @author 郭丁志
+         * @Description //TODO 构造树形节点
+         * @date 16:10 2020/7/26 0026
+         * @param map
+         * @return com.wlcb.jpower.module.common.node.Node
+         */
         public static Node createNode(Map<String, Object> map) {
             TreeNode node = new TreeNode();
             node.setId(Fc.toStr(map.get("code")));
             node.setKey(Fc.toStr(map.get("id")));
-            node.setValue(Fc.toStr(map.get("id")));
+            node.setValue(Fc.toStr(map.get("value")));
             node.setParentId(Fc.toStr(map.get("pcode")));
             node.setTitle(Fc.toStr(map.get("title")));
             node.setHasChildren(Fc.toBool(map.get("hasChildren")));
             return node;
         }
+
     }
 }

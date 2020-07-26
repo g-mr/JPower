@@ -5,6 +5,7 @@ import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
+import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.service.core.user.CoreFunctionService;
 import com.wlcb.jpower.module.common.utils.BeanUtil;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
@@ -151,5 +152,32 @@ public class FunctionController extends BaseController {
         }else {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"修改失败", false);
         }
+    }
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 懒加载所有功能树形结构
+     * @date 22:48 2020/7/26 0026
+     * @param parentCode
+     * @return com.wlcb.jpower.module.base.vo.ResponseData
+     */
+    @RequestMapping(value = "/lazyTree",method = {RequestMethod.GET},produces="application/json")
+    public ResponseData lazyTree(String parentCode){
+        List<Node> list = coreFunctionService.lazyTree(parentCode);
+        return ReturnJsonUtil.ok("查询成功",list);
+    }
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 懒加载角色所有权限功能树形结构
+     * @date 22:55 2020/7/26 0026
+     * @param parentCode
+     * @return com.wlcb.jpower.module.base.vo.ResponseData
+     */
+    @RequestMapping(value = "/lazyTreeByRole",method = {RequestMethod.GET},produces="application/json")
+    public ResponseData lazyTreeByRole(String parentCode,String roleIds){
+        JpowerAssert.notEmpty(roleIds, JpowerError.Arg, "角色id不可为空");
+        List<Node> list = coreFunctionService.lazyTreeByRole(parentCode,roleIds);
+        return ReturnJsonUtil.ok("查询成功",list);
     }
 }

@@ -19,6 +19,7 @@ public class TbCoreDictType extends BaseEntity {
 
     private String dictTypeCode;
     private String dictTypeName;
+    @Dict(name = "YYZL",attributes = "localeCodeStr")
     private String localeCode;
     private String note;
     @Dict(name = "YN",attributes = "delEnabledStr")
@@ -28,4 +29,6 @@ public class TbCoreDictType extends BaseEntity {
 
     @TableField(exist = false)
     private String delEnabledStr;
+    @TableField(exist = false)
+    private String localeCodeStr;
 }

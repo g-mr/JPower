@@ -2,10 +2,17 @@ package com.wlcb.jpower.module.common.service.core.user.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.service.core.user.CoreFunctionService;
+import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.StringUtil;
+import com.wlcb.jpower.module.dbs.dao.JpowerServiceImpl;
 import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreFunctionDao;
+import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreRoleFunctionDao;
 import com.wlcb.jpower.module.dbs.dao.core.user.mapper.TbCoreFunctionMapper;
 import com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction;
+import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreRoleFunction;
+import com.wlcb.jpower.module.mp.support.Condition;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,12 +25,14 @@ import java.util.List;
  * @author mr.gmac
  */
 @Service("coreFunctionService")
-public class CoreFunctionServiceImpl implements CoreFunctionService {
+public class CoreFunctionServiceImpl extends JpowerServiceImpl<TbCoreFunctionMapper,TbCoreFunction> implements CoreFunctionService {
+
+    private final String sql = "(select function_id from tb_core_role_function where role_id in ({}))";
 
     @Autowired
-    private TbCoreFunctionMapper coreFunctionMapper;
-    @Autowired
     private TbCoreFunctionDao coreFunctionDao;
+    @Autowired
+    private TbCoreRoleFunctionDao coreRoleFunctionDao;
 
     @Override
     public List<TbCoreFunction> listByParent(TbCoreFunction coreFunction) {
@@ -106,4 +115,19 @@ public class CoreFunctionServiceImpl implements CoreFunctionService {
     public Boolean update(TbCoreFunction coreFunction) {
         return coreFunctionDao.updateById(coreFunction);
     }
+
+    @Override
+    public List<Node> lazyTree(String parentCode) {
+        return coreFunctionDao.tree(Condition.getTreeWrapper(TbCoreFunction::getCode,TbCoreFunction::getParentCode,TbCoreFunction::getFunctionName,TbCoreFunction::getUrl).lazy(parentCode).lambda().orderByAsc(TbCoreFunction::getSort));
+    }
+
+    @Override
+    public List<Node> lazyTreeByRole(String parentCode, String roleIds) {
+        String inSql = "'"+roleIds.replaceAll(",","','")+"'";
+        return coreFunctionDao.tree(Condition.getTreeWrapper(TbCoreFunction::getCode,TbCoreFunction::getParentCode,TbCoreFunction::getFunctionName,TbCoreFunction::getUrl)
+                .lazy(parentCode).lambda()
+                .inSql(TbCoreFunction::getId, StringUtil.format(sql,inSql))
+                .orderByAsc(TbCoreFunction::getSort));
+    }
+
 }

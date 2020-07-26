@@ -1,9 +1,14 @@
 package com.wlcb.jpower.module.dbs.dao.core.dict;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.dbs.dao.JpowerServiceImpl;
 import com.wlcb.jpower.module.dbs.dao.core.dict.mapper.TbCoreDictMapper;
 import com.wlcb.jpower.module.dbs.entity.core.dict.TbCoreDict;
+import com.wlcb.jpower.module.dbs.entity.core.dict.TbCoreDictType;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * @ClassName TbCoreParamsDao

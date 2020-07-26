@@ -117,4 +117,76 @@ public class ConstantsEnum {
         }
     }
 
+    /**
+     * @author 郭丁志
+     * @Description //TODO 是否YN
+     * @date 18:36 2020/7/26 0026
+     * @return
+     */
+    public static enum YN{
+
+        Y("Y","是"),N("N","否");
+
+        private YN(String value, String name){
+            this.value = value;
+            this.name = name;
+        }
+        private final String value;
+        private final String name;
+
+        public String getValue() {
+            return value;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public static String getName(String value) {
+            ConstantsEnum.YN[] businessModeEnums = values();
+            for (ConstantsEnum.YN businessModeEnum : businessModeEnums) {
+                if (businessModeEnum.value.equals(value)) {
+                    return businessModeEnum.name;
+                }
+            }
+            return null;
+        }
+    }
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 语言种类
+     * @date 18:36 2020/7/26 0026
+     * @return
+     */
+    public static enum YYZL{
+
+        CHINA("zh_cn","中文"),ENG("en","英文");
+
+        private YYZL(String value, String name){
+            this.value = value;
+            this.name = name;
+        }
+        private final String value;
+        private final String name;
+
+        public String getValue() {
+            return value;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public static String getName(String value) {
+            ConstantsEnum.YYZL[] businessModeEnums = values();
+            for (ConstantsEnum.YYZL businessModeEnum : businessModeEnums) {
+                if (businessModeEnum.value.equals(value)) {
+                    return businessModeEnum.name;
+                }
+            }
+            return null;
+        }
+    }
+
 }

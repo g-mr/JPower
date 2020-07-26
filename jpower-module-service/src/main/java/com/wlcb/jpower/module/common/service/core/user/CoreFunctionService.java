@@ -1,10 +1,12 @@
 package com.wlcb.jpower.module.common.service.core.user;
 
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction;
 
 import java.util.List;
 
-public interface CoreFunctionService {
+public interface CoreFunctionService extends IService<TbCoreFunction> {
 
     /**
      * @Author 郭丁志
@@ -68,4 +70,23 @@ public interface CoreFunctionService {
      * @return java.lang.Integer
      **/
     Boolean update(TbCoreFunction coreFunction);
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 懒加载树形功能
+     * @date 22:50 2020/7/26 0026
+     * @param parentCode
+     * @return java.util.List<com.wlcb.jpower.module.common.node.Node>
+     */
+    List<Node> lazyTree(String parentCode);
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 懒加载角色所有功能
+     * @date 23:06 2020/7/26 0026
+     * @param parentCode
+     * @param roleIds
+     * @return java.util.List<com.wlcb.jpower.module.common.node.Node>
+     */
+    List<Node> lazyTreeByRole(String parentCode, String roleIds);
 }

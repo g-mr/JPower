@@ -26,23 +26,6 @@ create table tb_core_user(
   unique key login_id_index(login_id) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统登录用户表';
 
-
-
-drop table if exists tb_core_role_function;
-create table tb_core_role_function(
-  id varchar(32) not null comment '主键',
-  role_id varchar(50) not null comment '角色ID',
-  function_id varchar(100) not null comment '菜单ID',
-  create_user varchar(32) default 'root' not null comment '创建人',
-  create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
-  update_user varchar(32) default 'root' not null comment '更新人',
-  update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
-  status   tinyint(1) default 1 comment '状态',
-  PRIMARY KEY (id) USING BTREE,
-  unique key core_dict_type(role_id, function_id) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '角色菜单表';
-
-
 drop table if exists tb_core_user_role;
 create table tb_core_user_role(
   id varchar(32) not null comment '主键',
@@ -63,7 +46,7 @@ create table tb_core_org(
  code varchar(50) comment '组织机构编码',
  name varchar(100) not null comment '组织机构名称',
  parent_id varchar(32) comment '父级ID',
- parent_code varchar(50) comment '父级编码',
+ parent_code default '-1' varchar(50) comment '父级编码',
  icon varchar(100) comment '图标',
  sort int(6) default 0 comment '排序',
  head_name varchar(30) comment '负责人姓名',
@@ -111,7 +94,7 @@ create table tb_core_function(
  alias varchar(50) comment '别名',
  parent_id varchar(32) comment '父ID',
  code varchar(20) not null comment '功能编码',
- parent_code varchar(20) comment '父级编码',
+ parent_code varchar(20) default '-1' comment '父级编码',
  url varchar(100) not null comment '资源URL',
  is_menu tinyint(1) default 0 not null comment '是否菜单 0：否 1：是',
  icon varchar(50) comment '图标',
@@ -129,6 +112,20 @@ create table tb_core_function(
  unique key url_index(url) USING BTREE,
  unique key code_index(code) USING BTREE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '功能菜单表';
+
+drop table if exists tb_core_role_function;
+create table tb_core_role_function(
+  id varchar(32) not null comment '主键',
+  role_id varchar(50) not null comment '角色ID',
+  function_id varchar(100) not null comment '菜单ID',
+  create_user varchar(32) default 'root' not null comment '创建人',
+  create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
+  update_user varchar(32) default 'root' not null comment '更新人',
+  update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
+  status   tinyint(1) default 1 comment '状态',
+  PRIMARY KEY (id) USING BTREE,
+  unique key core_dict_type(role_id, function_id) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '角色菜单表';
 
 drop table if exists tb_core_param;
 create table tb_core_param(
@@ -163,10 +160,10 @@ drop table if exists tb_core_dict_type;
 create table tb_core_dict_type(
   id varchar(32) not null comment '主键',
   dict_type_code varchar(50) not null comment '字典类型代码',
-  dict_type_name varchar(100) not null comment '',
+  dict_type_name varchar(100) not null comment '字典类型名称',
   locale_code varchar(20) default 'zh_cn' not null comment '语言  zh_cn en_us',
   note varchar(100) comment '描述',
-  del_enabled varchar(1) default '0' not null comment '是否允许删除 N:不允许 Y允许',
+  del_enabled varchar(1) defaul 'N' not null comment '是否允许删除 N:不允许 Y允许',
   sort_num int(6) default 0 comment '排序',
   dict_type_pcode varchar(50) comment '父字典类型代码',
   create_user varchar(32) default 'root' not null comment '创建人',
@@ -188,9 +185,8 @@ create table tb_core_dict
   locale_id varchar(20) default 'zh_cn' not null comment '语言 zh_cn en_us',
   note varchar(100) comment '备注',
   sort_num int(6) default 0 comment '排序',
-  dict_type_id varchar(32) comment '字典类型id',
-  pcode varchar(100) comment '上级代码',
-  dict_level int(6) comment '树形字典结构的级别',
+--   pcode varchar(100) comment '上级代码',
+--   dict_level int(6) comment '树形字典结构的级别',
   create_user varchar(32) default 'root' not null comment '创建人',
   create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
   update_user varchar(32) default 'root' not null comment '更新人',

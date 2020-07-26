@@ -6,6 +6,7 @@ import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
+import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.service.core.user.CoreOrgService;
 import com.wlcb.jpower.module.common.utils.BeanUtil;
@@ -15,9 +16,12 @@ import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreOrg;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName OrgController
@@ -142,6 +146,34 @@ public class OrgController extends BaseController {
         }else {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"修改失败", false);
         }
+    }
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 加载部门树形菜单
+     * @date 22:25 2020/7/26 0026
+     * @param coreOrg
+     * @return com.wlcb.jpower.module.base.vo.ResponseData
+     */
+    @RequestMapping(value = "/tree",method = {RequestMethod.GET},produces="application/json")
+    public ResponseData tree(@RequestParam Map<String,Object> coreOrg){
+        List<Node> list = coreOrgService.tree(coreOrg);
+        return ReturnJsonUtil.ok("查询成功",list);
+    }
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 懒加载部门树形菜单
+     * @date 22:26 2020/7/26 0026
+     * @param parentCode
+     * @param coreOrg
+     * @return com.wlcb.jpower.module.base.vo.ResponseData
+     */
+    @RequestMapping(value = "/lazyTree",method = {RequestMethod.GET},produces="application/json")
+    public ResponseData lazyTree(String parentCode, @RequestParam Map<String,Object> coreOrg){
+        coreOrg.remove("parentCode");
+        List<Node> list = coreOrgService.tree(parentCode,coreOrg);
+        return ReturnJsonUtil.ok("查询成功",list);
     }
 
 }

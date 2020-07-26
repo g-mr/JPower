@@ -53,6 +53,16 @@ public class ReturnJsonUtil {
     }
 
     /**
+     * @author 郭丁志
+     * @Description //TODO 没找到
+     * @date 21:43 2020/7/26 0026
+     * @return com.wlcb.jpower.module.base.vo.ResponseData
+     */
+    public static ResponseData notFind(String msg){
+        return printJson(ConstantsReturn.RECODE_NOTFOUND, msg, false);
+    }
+
+    /**
      * @Author 郭丁志
      * @Description //TODO 成功的情况
      * @Date 00:29 2020-03-06
