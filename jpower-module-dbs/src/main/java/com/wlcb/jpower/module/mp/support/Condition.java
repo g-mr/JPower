@@ -68,6 +68,15 @@ public class Condition<T> {
         private String id;
         private String tableName;
 
+        /**
+         * @author 郭丁志
+         * @Description //TODO 查询树形菜单组装
+         * @date 15:59 2020/7/26 0026
+         * @param code 节点编号
+         * @param parentCode 上级节点编号
+         * @param title 节点名称
+         * @return
+         */
         public TreeWrapper(SFunction<T, ?> code,SFunction<T, ?> parentCode,SFunction<T, ?> title){
             TableInfo tableInfo = SqlHelper.table(LambdaUtils.resolve(code).getImplClass());
             setEntity(BeanUtil.newInstance(LambdaUtils.resolve(code).getImplClass()));
