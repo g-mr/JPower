@@ -1,10 +1,24 @@
 package com.wlcb.jpower.module.mp.support;
 
+import ch.qos.logback.classic.gaffer.PropertyUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
+import com.baomidou.mybatisplus.core.metadata.TableInfo;
+import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
+import com.baomidou.mybatisplus.core.toolkit.LambdaUtils;
+import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
+import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
+import com.wlcb.jpower.module.base.exception.BusinessException;
+import com.wlcb.jpower.module.common.node.Node;
+import com.wlcb.jpower.module.common.node.TreeNode;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.BeanUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.StringUtil;
+import org.apache.ibatis.reflection.property.PropertyNamer;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Map;
 
 /**
@@ -40,5 +54,89 @@ public class Condition<T> {
         qw.setEntity(BeanUtil.newInstance(clazz));
         SqlKeyword.buildCondition(query, qw);
         return qw;
+    }
+
+    public static <T> TreeWrapper<T> getTreeWrapper(SFunction<T, ?> code, SFunction<T, ?> parentCode, SFunction<T, ?> title)  {
+        return new TreeWrapper<T>(code,parentCode,title).tree();
+    }
+
+    public static class TreeWrapper<T> extends QueryWrapper<T> {
+
+        private String code;
+        private String parentCode;
+        private String title;
+        private String id;
+        private String tableName;
+
+        public TreeWrapper(SFunction<T, ?> code,SFunction<T, ?> parentCode,SFunction<T, ?> title){
+            TableInfo tableInfo = SqlHelper.table(LambdaUtils.resolve(code).getImplClass());
+            setEntity(BeanUtil.newInstance(LambdaUtils.resolve(code).getImplClass()));
+            this.tableName = tableInfo.getTableName();
+            this.id = tableInfo.getKeyColumn() + " AS id";
+            tableInfo.getFieldList().forEach(field -> {
+                if (StringUtil.equals(field.getProperty(),columnsToString(code))){
+                    this.code = field.getColumn() + " AS code";
+                }
+                if (StringUtil.equals(field.getProperty(),columnsToString(parentCode))){
+                    this.parentCode = field.getColumn() + " AS pcode";
+                }
+                if (StringUtil.equals(field.getProperty(),columnsToString(title))){
+                    this.title = field.getColumn() + " AS title";
+                }
+            });
+        }
+
+        /**
+         * @author 郭丁志
+         * @Description //TODO 加载树形结构
+         * @date 15:51 2020/7/26 0026
+         * @param
+         * @return com.wlcb.jpower.module.mp.support.Condition.TreeWrapper<T>
+         */
+        private TreeWrapper<T> tree() {
+            select(this.code,this.parentCode,this.title,this.id);
+            return this;
+
+        }
+
+        /**
+         * @author 郭丁志
+         * @Description //TODO 懒加载树形结构，给定pcode值
+         * @date 15:53 2020/7/26 0026
+         * @param pcodeVal
+         * @return com.wlcb.jpower.module.mp.support.Condition.TreeWrapper<T>
+         */
+        public TreeWrapper<T> lazy(String pcodeVal){
+            select("( SELECT CASE WHEN count( 1 ) > 0 THEN 1 ELSE 0 END FROM "+tableName+" as c WHERE "+StringUtil.splitTrim(this.parentCode,"AS").get(0)+" = "+tableName+"."+StringUtil.splitTrim(this.code,"AS").get(0)+" ) AS hasChildren",this.code,this.parentCode,this.title,this.id);
+            eq(StringUtil.splitTrim(this.parentCode,"AS").get(0),pcodeVal);
+            return this;
+        }
+
+        /**
+         * @author 郭丁志
+         * @Description //TODO MAP过滤条件，也可支持原始的warpper查询
+         * @date 15:54 2020/7/26 0026
+         * @param query
+         * @return com.wlcb.jpower.module.mp.support.Condition.TreeWrapper<T>
+         */
+        public TreeWrapper<T> map(Map<String,Object> query){
+            SqlKeyword.buildCondition(query, this);
+            return this;
+        }
+
+        private String columnsToString(SFunction<T, ?> column) {
+            return PropertyNamer.methodToProperty(LambdaUtils.resolve(column).getImplMethodName());
+        }
+
+        public static Node createNode(Map<String, Object> map) {
+            TreeNode node = new TreeNode();
+            node.setId(Fc.toStr(map.get("code")));
+            node.setKey(Fc.toStr(map.get("id")));
+            node.setValue(Fc.toStr(map.get("id")));
+            node.setParentId(Fc.toStr(map.get("pcode")));
+            node.setTitle(Fc.toStr(map.get("title")));
+            node.setHasChildren(Fc.toBool(map.get("hasChildren")));
+            return node;
+        }
     }
 }

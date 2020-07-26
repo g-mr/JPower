@@ -1,5 +1,8 @@
 package com.wlcb.jpower.module.common.node;
 
+import com.wlcb.jpower.module.common.utils.StringUtil;
+import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +23,7 @@ public class ForestNodeManager<T extends Node> {
     /**
      * 森林的父节点ID
      */
-    private List<Long> parentIds = new ArrayList<>();
+    private List<String> parentIds = new ArrayList<>();
 
     public ForestNodeManager(List<T> items) {
         list = items;
@@ -32,9 +35,9 @@ public class ForestNodeManager<T extends Node> {
      * @param id 节点ID
      * @return 对应的节点对象
      */
-    public Node getTreeNodeAT(Long id) {
+    public Node getTreeNodeAT(String id) {
         for (Node forestNode : list) {
-            if (forestNode.getId().longValue() == id) {
+            if (StringUtil.equals(forestNode.getId(),id)) {
                 return forestNode;
             }
         }
@@ -46,7 +49,7 @@ public class ForestNodeManager<T extends Node> {
      *
      * @param parentId 父节点ID
      */
-    public void addParentId(Long parentId) {
+    public void addParentId(String parentId) {
         parentIds.add(parentId);
     }
 
@@ -58,7 +61,7 @@ public class ForestNodeManager<T extends Node> {
     public List<T> getRoot() {
         List<T> roots = new ArrayList<>();
         for (T forestNode : list) {
-            if (forestNode.getParentId() == 0 || parentIds.contains(forestNode.getId())) {
+            if (StringUtil.equals(forestNode.getParentId(), JpowerConstants.TOP_CODE) || parentIds.contains(forestNode.getId())) {
                 roots.add(forestNode);
             }
         }

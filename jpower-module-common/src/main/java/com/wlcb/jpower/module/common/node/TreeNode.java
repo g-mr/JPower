@@ -19,9 +19,9 @@ public class TreeNode extends BaseNode{
     private String title;
 
     @JsonSerialize(using = ToStringSerializer.class)
-    private Long key;
+    private String key;
 
     @JsonSerialize(using = ToStringSerializer.class)
-    private Long value;
+    private String value;
 
 }

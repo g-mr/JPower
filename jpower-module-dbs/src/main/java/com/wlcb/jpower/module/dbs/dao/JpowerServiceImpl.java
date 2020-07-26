@@ -1,20 +1,32 @@
 package com.wlcb.jpower.module.dbs.dao;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.Query;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.wlcb.jpower.module.base.annotation.Dict;
+import com.wlcb.jpower.module.base.exception.BusinessException;
+import com.wlcb.jpower.module.common.node.ForestNodeMerger;
+import com.wlcb.jpower.module.common.node.Node;
+import com.wlcb.jpower.module.common.node.TreeNode;
+import com.wlcb.jpower.module.common.utils.BeanUtil;
+import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReflectUtil;
 import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.dbs.dao.core.dict.mapper.TbCoreDictMapper;
+import com.wlcb.jpower.module.dbs.entity.core.city.TbCoreCity;
 import com.wlcb.jpower.module.dbs.entity.core.dict.TbCoreDict;
+import com.wlcb.jpower.module.mp.support.Condition;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +37,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName JpowerServiceImpl
@@ -165,6 +178,7 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
     @Override
     public List<Map<String, Object>> listMaps(Wrapper<T> queryWrapper) {
         List<Map<String, Object>> list = super.listMaps(queryWrapper);
+        setListMap(list,queryWrapper);
         return list;
     }
 
@@ -318,7 +332,6 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
     @Override
     public  <E extends IPage<T>> E page(E page, Wrapper<T> queryWrapper) {
         E e = super.page(page,queryWrapper);
-
         List<T> list = e.getRecords();
         setListDict(list,queryWrapper);
         e.setRecords(list);
@@ -336,6 +349,21 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
         setListMap(list,queryWrapper);
         e.setRecords(list);
         return e;
+    }
+
+    /**
+     * 加载树形节点
+     *
+     * @param treeWrapper
+     * @return
+     */
+    public List<Node> tree(Wrapper<T> treeWrapper) {
+        List<Map<String,Object>> list = listMaps(treeWrapper);
+        return ForestNodeMerger.merge(list.stream().filter(Objects::nonNull).map(Condition.TreeWrapper::createNode).collect(Collectors.toList()));
+    }
+
+    public  <V> List<V> listObjs(QueryWrapper<T> queryWrapper, Function<T, V> mapper) {
+        return this.getBaseMapper().selectList(queryWrapper).stream().filter(Objects::nonNull).map(mapper).collect(Collectors.toList());
     }
 
     /**
@@ -362,4 +390,5 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
     public LambdaQueryChainWrapper<T> lambdaQuery() {
         return ChainWrappers.lambdaQueryChain(getBaseMapper());
     }
+
 }

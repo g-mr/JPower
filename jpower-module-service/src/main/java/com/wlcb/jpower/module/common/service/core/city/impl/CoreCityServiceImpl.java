@@ -92,7 +92,8 @@ public class CoreCityServiceImpl extends JpowerServiceImpl<TbCoreCityMapper,TbCo
 
     @Override
     public List<Node> lazyTree(String pcode) {
-        return ForestNodeMerger.merge(baseMapper.lazyTree(pcode,null));
+        return coreCityDao.tree(Condition.getTreeWrapper(TbCoreCity::getCode,TbCoreCity::getPcode,TbCoreCity::getName).lazy(pcode));
+//        return ForestNodeMerger.merge(baseMapper.lazyTree(pcode,ChainMap.newMap()));
     }
 
 }

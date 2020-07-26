@@ -24,13 +24,13 @@ public class BaseNode implements Node {
      * 主键ID
      */
     @JsonSerialize(using = ToStringSerializer.class)
-    protected Long id;
+    protected String id;
 
     /**
      * 父节点ID
      */
     @JsonSerialize(using = ToStringSerializer.class)
-    protected Long parentId;
+    protected String parentId;
 
     /**
      * 子孙节点
@@ -49,11 +49,12 @@ public class BaseNode implements Node {
      */
     @Override
     public Boolean getHasChildren() {
-        if (children.size() > 0) {
-            return true;
-        } else {
-            return this.hasChildren;
-        }
+//        if (children.size() > 0) {
+//            return true;
+//        } else {
+//            return this.hasChildren;
+//        }
+        return this.hasChildren;
     }
 
 }

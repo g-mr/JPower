@@ -1,6 +1,10 @@
 package com.wlcb.jpower.module.common.node;
 
+import com.wlcb.jpower.module.common.utils.StringUtil;
+import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
+
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName ForestNodeMerger
@@ -22,7 +26,7 @@ public class ForestNodeMerger {
     public static <T extends Node> List<T> merge(List<T> items) {
         ForestNodeManager<T> forestNodeManager = new ForestNodeManager<>(items);
         items.forEach(forestNode -> {
-            if (forestNode.getParentId() != 0) {
+            if (!StringUtil.equals(forestNode.getParentId(), JpowerConstants.TOP_CODE)) {
                 Node node = forestNodeManager.getTreeNodeAT(forestNode.getParentId());
                 if (node != null) {
                     node.getChildren().add(forestNode);
@@ -33,5 +37,4 @@ public class ForestNodeMerger {
         });
         return forestNodeManager.getRoot();
     }
-
 }
