@@ -1,6 +1,6 @@
 package com.wlcb.jpower.module.dbs.config;
 
-import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
+import com.wlcb.jpower.module.common.auth.UserInfo;
 
 /**
  * @ClassName LoginUserContext
@@ -11,8 +11,7 @@ import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
  */
 public class LoginUserContext {
 
-    private static ThreadLocal<TbCoreUser> coreUser = new ThreadLocal<TbCoreUser>();
-    private static ThreadLocal<String> ip = new ThreadLocal<String>();
+    private static ThreadLocal<UserInfo> coreUser = new ThreadLocal<UserInfo>();
 
     /**
      * @Author 郭丁志
@@ -22,7 +21,7 @@ public class LoginUserContext {
      * @return java.lang.String
      **/
     public static String getLoginId() {
-        TbCoreUser user = coreUser.get();
+        UserInfo user = get();
         if (user == null){
             return null;
         }
@@ -37,7 +36,7 @@ public class LoginUserContext {
      * @return java.lang.String
      **/
     public static String getUserName() {
-        TbCoreUser user = coreUser.get();
+        UserInfo user = get();
         if (user == null){
             return null;
         }
@@ -51,26 +50,18 @@ public class LoginUserContext {
      * @Param []
      * @return com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser
      **/
-    public static TbCoreUser get() {
-        TbCoreUser user = coreUser.get();
+    public static UserInfo get() {
+        UserInfo user = coreUser.get();
+
         return user;
     }
 
-    public static void set(TbCoreUser user) {
+    public static void set(UserInfo user) {
         coreUser.set(user);
-    }
-
-    public static String getIp() {
-        return ip.get();
-    }
-
-    public static void setIp(String rIp) {
-        ip.set(rIp);
     }
 
     public static void remove() {
         coreUser.remove();
-        ip.remove();
     }
 
 }

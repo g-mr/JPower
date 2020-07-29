@@ -3,6 +3,7 @@ package com.wlcb.jpower.module.common.aspectj;
 import com.alibaba.fastjson.JSONObject;
 import com.wlcb.jpower.module.base.annotation.Log;
 import com.wlcb.jpower.module.base.enums.BusinessStatus;
+import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.utils.WebUtil;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
 import com.wlcb.jpower.module.dbs.entity.log.SysOperLog;
@@ -67,19 +68,18 @@ public class LogAspect
             }
 
             // 获取当前的用户
-            TbCoreUser currentUser = LoginUserContext.get();
+            UserInfo currentUser = LoginUserContext.get();
 
             // *========数据库日志=========*//
             SysOperLog operLog = new SysOperLog();
             operLog.setStatus(BusinessStatus.SUCCESS.ordinal());
             // 请求的地址
-            String ip = LoginUserContext.getIp();
-            operLog.setOperIp(ip);
 
             operLog.setOperUrl(WebUtil.getRequest().getRequestURI());
             if (currentUser != null)
             {
-                operLog.setOperId(currentUser.getId());
+                operLog.setOperIp(currentUser.getClientId());
+                operLog.setOperId(currentUser.getUserId());
                 operLog.setOperName(currentUser.getUserName());
                 operLog.setOperUserType(currentUser.getIsSysUser());
             }

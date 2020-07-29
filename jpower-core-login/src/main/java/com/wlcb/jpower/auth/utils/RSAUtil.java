@@ -1,16 +1,12 @@
-package com.wlcb.jpower.core.login.utils;
+package com.wlcb.jpower.auth.utils;
 
-import com.wlcb.jpower.module.base.properties.SysProperties;
 import com.wlcb.jpower.module.common.utils.param.ParamConfig;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.crypto.Cipher;
 import java.io.*;
-import java.net.URLDecoder;
 import java.security.*;
-import java.security.interfaces.RSAPublicKey;
 
 
 public class RSAUtil {

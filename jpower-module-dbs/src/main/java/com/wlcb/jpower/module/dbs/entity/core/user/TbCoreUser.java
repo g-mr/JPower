@@ -28,6 +28,8 @@ public class TbCoreUser extends BaseEntity implements Serializable {
     private String loginId;
     @Excel(name = "密码",isExport = false)
     private String password;
+    @Excel(name = "昵称")
+    private String nickName;
     @Excel(name = "用户姓名")
     private String userName;
     @Excel(name = "证件类型",readConverterExp = "1=身份证,2=中国护照,3=台胞证,4=外国护照,5=外国人永居证",combo={"身份证","中国护照","台胞证","外国护照","外国人永居证"})
@@ -49,6 +51,8 @@ public class TbCoreUser extends BaseEntity implements Serializable {
     private String address;
     @Excel(name ="邮编")
     private String postCode;
+    @Excel(name ="第三方平台标识")
+    private String otherCode;
     @Excel(name ="最后登录日期",dateFormat = "yyyy-MM-dd HH:mm:ss",type = Excel.Type.EXPORT)
     @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date lastLoginTime;
@@ -71,7 +75,4 @@ public class TbCoreUser extends BaseEntity implements Serializable {
     @TableField(exist = false)
     private String idTypeStr;
 
-    /** 用来表示是本表数据还是其他表映射的数据 0系统表 1业务表 2白名单 **/
-    @TableField(exist = false)
-    private Integer isSysUser;
 }

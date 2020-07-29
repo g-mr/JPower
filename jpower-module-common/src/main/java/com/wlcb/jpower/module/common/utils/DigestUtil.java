@@ -134,4 +134,9 @@ public class DigestUtil extends org.springframework.util.DigestUtils {
         return sha1(md5Hex(data));
     }
 
+
+    public static void main(String[] args) {
+        System.out.println(encrypt("123456"));
+    }
+
 }

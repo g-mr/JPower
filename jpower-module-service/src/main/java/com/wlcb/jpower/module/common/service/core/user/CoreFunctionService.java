@@ -60,7 +60,7 @@ public interface CoreFunctionService extends IService<TbCoreFunction> {
      * @Param [ids]
      * @return java.lang.Integer
      **/
-    Integer delete(String ids);
+    Boolean delete(String ids);
 
     /**
      * @Author 郭丁志
@@ -89,4 +89,13 @@ public interface CoreFunctionService extends IService<TbCoreFunction> {
      * @return java.util.List<com.wlcb.jpower.module.common.node.Node>
      */
     List<Node> lazyTreeByRole(String parentCode, String roleIds);
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 根据橘色获取所有的权限放到redis中
+     * @Date 20:20 2020-07-28
+     * @Param [roleIds]
+     * @return void
+     **/
+    void putRedisAllFunctionByRoles(List<String> roleIds, Long expiresIn, String accessToken);
 }

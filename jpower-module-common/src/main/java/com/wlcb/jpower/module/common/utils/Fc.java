@@ -13,7 +13,6 @@ import org.springframework.web.method.HandlerMethod;
 import java.io.Closeable;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;

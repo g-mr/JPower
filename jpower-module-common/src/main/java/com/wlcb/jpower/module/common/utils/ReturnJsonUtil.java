@@ -92,7 +92,7 @@ public class ReturnJsonUtil {
      * @return ResponseData
      **/
     public static ResponseData fail(String msg, Object data){
-        return printJson(ConstantsReturn.RECODE_FAIL, msg, data, true);
+        return printJson(ConstantsReturn.RECODE_FAIL, msg, data, false);
     }
 
     /**

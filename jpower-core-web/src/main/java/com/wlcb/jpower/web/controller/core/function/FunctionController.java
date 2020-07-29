@@ -110,9 +110,9 @@ public class FunctionController extends BaseController {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该菜单存在下级菜单，请先删除下级菜单", false);
         }
 
-        Integer count = coreFunctionService.delete(ids);
+        Boolean is = coreFunctionService.delete(ids);
 
-        if (count > 0){
+        if (is){
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"删除成功", true);
         }else {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"删除失败", false);

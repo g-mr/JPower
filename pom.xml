@@ -23,6 +23,7 @@
         <com.jpower.version>1.0.1-SNAPSHOT</com.jpower.version>
         <springboot.data.redis.version>1.5.8.RELEASE</springboot.data.redis.version>
         <mybatis-plus.version>3.3.2</mybatis-plus.version>
+        <captcha.version>1.6.2</captcha.version>
     </properties>
 
     <!--profile配置-->
@@ -170,7 +171,11 @@
                 <artifactId>commons-lang3</artifactId>
                 <version>3.9</version>
             </dependency>
-
+            <dependency>
+                <groupId>com.github.whvcse</groupId>
+                <artifactId>easy-captcha</artifactId>
+                <version>${captcha.version}</version>
+            </dependency>
             <!--<dependency>
                 <groupId>com.github.pagehelper</groupId>
                 <artifactId>pagehelper</artifactId>

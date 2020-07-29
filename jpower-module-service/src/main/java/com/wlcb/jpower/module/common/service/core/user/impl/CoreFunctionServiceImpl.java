@@ -2,8 +2,10 @@ package com.wlcb.jpower.module.common.service.core.user.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.service.core.user.CoreFunctionService;
+import com.wlcb.jpower.module.common.service.redis.RedisUtils;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.dbs.dao.JpowerServiceImpl;
@@ -17,9 +19,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import javax.annotation.Resource;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author mr.gmac
@@ -33,6 +35,8 @@ public class CoreFunctionServiceImpl extends JpowerServiceImpl<TbCoreFunctionMap
     private TbCoreFunctionDao coreFunctionDao;
     @Autowired
     private TbCoreRoleFunctionDao coreRoleFunctionDao;
+    @Resource
+    private RedisUtils redisUtils;
 
     @Override
     public List<TbCoreFunction> listByParent(TbCoreFunction coreFunction) {
@@ -79,13 +83,9 @@ public class CoreFunctionServiceImpl extends JpowerServiceImpl<TbCoreFunctionMap
     }
 
     @Override
-    public Integer delete(String ids) {
-
-        // TODO: 2020-07-03  这里还要删除和角色的关联信息
-
-
-
-        return coreFunctionDao.removeByIds(new ArrayList<>(Arrays.asList(ids.split(","))))?1:0;
+    public Boolean delete(String ids) {
+        coreRoleFunctionDao.remove(Condition.<TbCoreRoleFunction>getQueryWrapper().lambda().in(TbCoreRoleFunction::getFunctionId,Fc.toStrList(ids)));
+        return coreFunctionDao.removeByIds(Fc.toStrList(ids));
     }
 
     @Override
@@ -128,6 +128,15 @@ public class CoreFunctionServiceImpl extends JpowerServiceImpl<TbCoreFunctionMap
                 .lazy(parentCode).lambda()
                 .inSql(TbCoreFunction::getId, StringUtil.format(sql,inSql))
                 .orderByAsc(TbCoreFunction::getSort));
+    }
+
+    @Override
+    public void putRedisAllFunctionByRoles(List<String> roleIds, Long expiresIn, String accessToken) {
+        String inSql = "'"+Fc.join(roleIds).replaceAll(",","','")+"'";
+        List<Object> listUrl = coreFunctionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
+                .select(TbCoreFunction::getUrl)
+                .inSql(TbCoreFunction::getId,StringUtil.format(sql,inSql)));
+        redisUtils.set(CacheNames.TOKEN_URL_KEY+accessToken,listUrl,expiresIn, TimeUnit.SECONDS);
     }
 
 }
