@@ -62,8 +62,8 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
      **/
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (Fc.equals(active,"dev")){
-            //开发环境不走鉴权
+        if (Fc.equals(active,"dev")||Fc.equals(active,"test")){
+            //开发环境和测试环境不走鉴权
             return true;
         }
 
