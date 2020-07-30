@@ -2,11 +2,13 @@ package com.wlcb.jpower.module.common.service.core.user;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.wlcb.jpower.module.common.node.Node;
+import com.wlcb.jpower.module.common.service.base.BaseService;
 import com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction;
+import com.wlcb.jpower.module.dbs.vo.FunctionVo;
 
 import java.util.List;
 
-public interface CoreFunctionService extends IService<TbCoreFunction> {
+public interface CoreFunctionService extends BaseService<TbCoreFunction> {
 
     /**
      * @Author 郭丁志
@@ -119,10 +121,10 @@ public interface CoreFunctionService extends IService<TbCoreFunction> {
 
     /**
      * @Author 郭丁志
-     * @Description //TODO 根据角色查询所有功能
-     * @Date 11:41 2020-07-30
-     * @Param [roleIds]
-     * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction>
+     * @Description //TODO 查询菜单list树形结构
+     * @Date 21:49 2020-07-30
+     * @Param [roleIds, functionVoClass]
+     * @return java.util.List<com.wlcb.jpower.module.dbs.vo.FunctionVo>
      **/
-    List<TbCoreFunction> listByRoleId(String roleIds);
+    List<FunctionVo> listTreeByRoleId(String roleIds);
 }

@@ -1,7 +1,6 @@
-package com.wlcb.jpower.web.vo;
+package com.wlcb.jpower.module.dbs.vo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.wlcb.jpower.module.common.node.BaseNode;
 import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction;
 import lombok.Data;

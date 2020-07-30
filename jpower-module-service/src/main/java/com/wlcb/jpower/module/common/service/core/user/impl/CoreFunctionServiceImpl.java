@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.node.Node;
+import com.wlcb.jpower.module.common.service.base.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.service.core.user.CoreFunctionService;
 import com.wlcb.jpower.module.common.service.redis.RedisUtils;
 import com.wlcb.jpower.module.common.utils.Fc;
@@ -15,6 +16,7 @@ import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreRoleFunctionDao;
 import com.wlcb.jpower.module.dbs.dao.core.user.mapper.TbCoreFunctionMapper;
 import com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction;
 import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreRoleFunction;
+import com.wlcb.jpower.module.dbs.vo.FunctionVo;
 import com.wlcb.jpower.module.mp.support.Condition;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +25,13 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 /**
  * @author mr.gmac
  */
 @Service("coreFunctionService")
-public class CoreFunctionServiceImpl extends JpowerServiceImpl<TbCoreFunctionMapper,TbCoreFunction> implements CoreFunctionService {
+public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMapper,TbCoreFunction> implements CoreFunctionService {
 
     private final String sql = "(select function_id from tb_core_role_function where role_id in ({}))";
 
@@ -158,10 +161,10 @@ public class CoreFunctionServiceImpl extends JpowerServiceImpl<TbCoreFunctionMap
     }
 
     @Override
-    public List<TbCoreFunction> listByRoleId(String roleIds) {
+    public List<FunctionVo> listTreeByRoleId(String roleIds) {
         String inSql = "'"+roleIds.replaceAll(",","','")+"'";
-        return coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
-                .inSql(TbCoreFunction::getId,StringUtil.format(sql,inSql)).orderByAsc(TbCoreFunction::getSort));
+        return coreFunctionDao.listTree(Condition.<TbCoreFunction>getQueryWrapper().lambda()
+                .inSql(TbCoreFunction::getId, StringUtil.format(sql, inSql)).orderByAsc(TbCoreFunction::getSort),FunctionVo.class);
     }
 
 }

@@ -362,8 +362,32 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
         return ForestNodeMerger.merge(list.stream().filter(Objects::nonNull).map(Condition.TreeWrapper::createNode).collect(Collectors.toList()));
     }
 
-    public  <V> List<V> listObjs(QueryWrapper<T> queryWrapper, Function<T, V> mapper) {
-        return this.getBaseMapper().selectList(queryWrapper).stream().filter(Objects::nonNull).map(mapper).collect(Collectors.toList());
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 把查询结果转换成任何类型
+     * @Date 21:22 2020-07-30
+     * @Param [queryWrapper, mapper]
+     * @return java.util.List<V>
+     **/
+    public  <V> List<V> listToObjs(Wrapper<T> queryWrapper, Function<T, V> mapper) {
+        return list(queryWrapper).stream().filter(Objects::nonNull).map(mapper).collect(Collectors.toList());
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 查询树形结构list
+     * @Date 21:51 2020-07-30
+     * @Param [queryWrapper, clz]
+     * @return java.util.List<V>
+     **/
+    public <V extends Node> List<V> listTree(Wrapper<T> queryWrapper,Class<V> clz) {
+        Function<T, V> mapper = new Function<T, V>() {
+            @Override
+            public V apply(T t) {
+                return (V) BeanUtil.copy(t, clz);
+            }
+        };
+        return ForestNodeMerger.merge(listToObjs(queryWrapper,mapper));
     }
 
     /**

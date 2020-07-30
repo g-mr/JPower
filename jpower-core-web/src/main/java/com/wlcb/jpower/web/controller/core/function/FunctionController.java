@@ -12,7 +12,7 @@ import com.wlcb.jpower.module.common.utils.BeanUtil;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction;
-import com.wlcb.jpower.web.vo.FunctionVo;
+import com.wlcb.jpower.module.dbs.vo.FunctionVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -224,9 +224,8 @@ public class FunctionController extends BaseController {
     @RequestMapping(value = "/listTree",method = {RequestMethod.GET},produces="application/json")
     public ResponseData listTree(String roleIds){
         JpowerAssert.notEmpty(roleIds, JpowerError.Arg, "角色id不可为空");
-        List<TbCoreFunction> list = coreFunctionService.listByRoleId(roleIds);
-        List<FunctionVo> collect = list.stream().map(function -> BeanUtil.copy(function, FunctionVo.class)).collect(Collectors.toList());
-        return ReturnJsonUtil.ok("查询成功", ForestNodeMerger.merge(collect));
+        List<FunctionVo> list = coreFunctionService.listTreeByRoleId(roleIds);
+        return ReturnJsonUtil.ok("查询成功", list);
     }
 
 }
