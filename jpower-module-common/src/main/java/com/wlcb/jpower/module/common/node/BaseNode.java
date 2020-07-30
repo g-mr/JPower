@@ -24,13 +24,13 @@ public class BaseNode implements Node {
      * 主键ID
      */
     @JsonSerialize(using = ToStringSerializer.class)
-    protected String id;
+    protected String code;
 
     /**
      * 父节点ID
      */
     @JsonSerialize(using = ToStringSerializer.class)
-    protected String parentId;
+    protected String parentCode;
 
     /**
      * 子孙节点

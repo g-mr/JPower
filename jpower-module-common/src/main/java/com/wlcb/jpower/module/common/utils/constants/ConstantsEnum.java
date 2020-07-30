@@ -155,6 +155,42 @@ public class ConstantsEnum {
 
     /**
      * @author 郭丁志
+     * @Description //TODO 是否YN 01
+     * @date 18:36 2020/7/26 0026
+     * @return
+     */
+    public static enum YN01{
+
+        Y(1,"是"),N(0,"否");
+
+        private YN01(Integer value, String name){
+            this.value = value;
+            this.name = name;
+        }
+        private final Integer value;
+        private final String name;
+
+        public Integer getValue() {
+            return value;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public static String getName(Integer value) {
+            ConstantsEnum.YN01[] businessModeEnums = values();
+            for (ConstantsEnum.YN01 businessModeEnum : businessModeEnums) {
+                if (businessModeEnum.value.equals(value)) {
+                    return businessModeEnum.name;
+                }
+            }
+            return null;
+        }
+    }
+
+    /**
+     * @author 郭丁志
      * @Description //TODO 语言种类
      * @date 18:36 2020/7/26 0026
      * @return

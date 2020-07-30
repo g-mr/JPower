@@ -8,6 +8,7 @@ import com.wlcb.jpower.module.common.service.core.user.CoreFunctionService;
 import com.wlcb.jpower.module.common.service.redis.RedisUtils;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.StringUtil;
+import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.dbs.dao.JpowerServiceImpl;
 import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreFunctionDao;
 import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreRoleFunctionDao;
@@ -137,6 +138,30 @@ public class CoreFunctionServiceImpl extends JpowerServiceImpl<TbCoreFunctionMap
                 .select(TbCoreFunction::getUrl)
                 .inSql(TbCoreFunction::getId,StringUtil.format(sql,inSql)));
         redisUtils.set(CacheNames.TOKEN_URL_KEY+accessToken,listUrl,expiresIn, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public List<TbCoreFunction> listMenuByRoleId(String roleIds) {
+        String inSql = "'"+roleIds.replaceAll(",","','")+"'";
+        return coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
+                .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.Y.getValue())
+                .inSql(TbCoreFunction::getId,StringUtil.format(sql,inSql)).orderByAsc(TbCoreFunction::getSort));
+    }
+
+    @Override
+    public List<TbCoreFunction> listBtnByRoleIdAndPcode(String roleIds, String code) {
+        String inSql = "'"+roleIds.replaceAll(",","','")+"'";
+        return coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
+                .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.N.getValue())
+                .eq(TbCoreFunction::getParentCode, code)
+                .inSql(TbCoreFunction::getId,StringUtil.format(sql,inSql)).orderByAsc(TbCoreFunction::getSort));
+    }
+
+    @Override
+    public List<TbCoreFunction> listByRoleId(String roleIds) {
+        String inSql = "'"+roleIds.replaceAll(",","','")+"'";
+        return coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
+                .inSql(TbCoreFunction::getId,StringUtil.format(sql,inSql)).orderByAsc(TbCoreFunction::getSort));
     }
 
 }

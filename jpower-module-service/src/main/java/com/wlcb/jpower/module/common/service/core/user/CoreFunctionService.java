@@ -98,4 +98,31 @@ public interface CoreFunctionService extends IService<TbCoreFunction> {
      * @return void
      **/
     void putRedisAllFunctionByRoles(List<String> roleIds, Long expiresIn, String accessToken);
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 根据角色ID查询所有菜单
+     * @Date 11:23 2020-07-30
+     * @Param [roleIds]
+     * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction>
+     **/
+    List<TbCoreFunction> listMenuByRoleId(String roleIds);
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 根据角色，查询一个菜单code下的所有按钮
+     * @Date 11:38 2020-07-30
+     * @Param [roleIds, code]
+     * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction>
+     **/
+    List<TbCoreFunction> listBtnByRoleIdAndPcode(String roleIds, String code);
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 根据角色查询所有功能
+     * @Date 11:41 2020-07-30
+     * @Param [roleIds]
+     * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction>
+     **/
+    List<TbCoreFunction> listByRoleId(String roleIds);
 }

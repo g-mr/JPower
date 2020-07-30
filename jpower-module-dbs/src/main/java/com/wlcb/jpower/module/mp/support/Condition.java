@@ -160,10 +160,10 @@ public class Condition<T> {
          */
         public static Node createNode(Map<String, Object> map) {
             TreeNode node = new TreeNode();
-            node.setId(Fc.toStr(map.get("code")));
+            node.setCode(Fc.toStr(map.get("code")));
             node.setKey(Fc.toStr(map.get("id")));
             node.setValue(Fc.toStr(map.get("value")));
-            node.setParentId(Fc.toStr(map.get("pcode")));
+            node.setParentCode(Fc.toStr(map.get("pcode")));
             node.setTitle(Fc.toStr(map.get("title")));
             node.setHasChildren(Fc.toBool(map.get("hasChildren")));
             return node;

@@ -37,7 +37,7 @@ public class ForestNodeManager<T extends Node> {
      */
     public Node getTreeNodeAT(String id) {
         for (Node forestNode : list) {
-            if (StringUtil.equals(forestNode.getId(),id)) {
+            if (StringUtil.equals(forestNode.getCode(),id)) {
                 return forestNode;
             }
         }
@@ -61,7 +61,7 @@ public class ForestNodeManager<T extends Node> {
     public List<T> getRoot() {
         List<T> roots = new ArrayList<>();
         for (T forestNode : list) {
-            if (StringUtil.equals(forestNode.getParentId(), JpowerConstants.TOP_CODE) || parentIds.contains(forestNode.getId())) {
+            if (StringUtil.equals(forestNode.getParentCode(), JpowerConstants.TOP_CODE) || parentIds.contains(forestNode.getCode())) {
                 roots.add(forestNode);
             }
         }
