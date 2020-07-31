@@ -40,4 +40,8 @@ public class RandomUtil {
         return sb.toString();
     }
 
+    public static void main(String[] args) {
+        System.out.println(randomString(6));
+    }
+
 }

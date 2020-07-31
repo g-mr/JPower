@@ -58,8 +58,8 @@ public class TbCoreUser extends BaseEntity implements Serializable {
     private Date lastLoginTime;
     @Excel(name ="登录次数",type = Excel.Type.EXPORT)
     private Integer loginCount;
-    @Excel(name ="激活状态",readConverterExp = "1=激活,0=未激活",combo={"激活,","未激活"})
-    @Dict(name = "ACTIVATION_STATUS",attributes = "activationStatusStr")
+    @Excel(name ="是否激活",readConverterExp = "1=是,0=否",combo={"是,","否"})
+    @Dict(name = "YN01",attributes = "activationStatusStr")
     private Integer activationStatus;
     @Excel(name ="激活码",isExport = false)
     private String activationCode;

@@ -1,6 +1,5 @@
 package com.wlcb.jpower.module.common.service.core.user;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.service.base.BaseService;
 import com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction;
@@ -8,6 +7,9 @@ import com.wlcb.jpower.module.dbs.vo.FunctionVo;
 
 import java.util.List;
 
+/**
+ * @author mr.gmac
+ */
 public interface CoreFunctionService extends BaseService<TbCoreFunction> {
 
     /**
@@ -112,7 +114,7 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
 
     /**
      * @Author 郭丁志
-     * @Description //TODO 根据角色，查询一个菜单code下的所有按钮
+     * @Description //TODO 根据角色，查询一个菜单code下的所有可用按钮
      * @Date 11:38 2020-07-30
      * @Param [roleIds, code]
      * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction>

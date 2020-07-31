@@ -23,7 +23,6 @@ public class TbCoreRole extends BaseEntity implements Serializable {
 
     private String code;
     private String name;
-    private String parentId;
     private String parentCode;
     private String iconUrl;
     @Dict(name = "YN01",attributes = "isSysRoleStr")

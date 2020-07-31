@@ -12,8 +12,11 @@ import com.wlcb.jpower.module.common.service.core.user.CoreRolefunctionService;
 import com.wlcb.jpower.module.common.utils.BeanUtil;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
+import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreRole;
 import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreRoleFunction;
+import com.wlcb.jpower.module.dbs.vo.RoleVo;
+import com.wlcb.jpower.module.mp.support.Condition;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -48,13 +51,10 @@ public class RoleController extends BaseController {
      **/
     @RequestMapping(value = "/listByParent",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
     public ResponseData listByParent(TbCoreRole coreRole){
-
-        if(StringUtils.isBlank(coreRole.getParentId()) && StringUtils.isBlank(coreRole.getParentCode())){
-            coreRole.setParentCode("-1");
-        }
-
-        List<TbCoreRole> list = coreRoleService.listByParent(coreRole);
-        return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"获取成功", JSON.toJSON(list),true);
+        List<RoleVo> list = coreRoleService.listTree(Condition.getQueryWrapper(coreRole)
+                .lambda().orderByAsc(TbCoreRole::getCreateTime)
+                , RoleVo.class);
+        return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"获取成功", list,true);
     }
 
     /**
@@ -74,13 +74,12 @@ public class RoleController extends BaseController {
             return responseData;
         }
 
-        if (StringUtils.isBlank(coreRole.getParentCode()) || StringUtils.isBlank(coreRole.getParentId())){
-            coreRole.setParentCode("-1");
-            coreRole.setParentId("-1");
+        if (StringUtils.isBlank(coreRole.getParentCode())){
+            coreRole.setParentCode(JpowerConstants.TOP_CODE);
         }
 
         if (coreRole.getIsSysRole() == null){
-            coreRole.setIsSysRole(0);
+            coreRole.setIsSysRole(1);
         }
 
         TbCoreRole role = coreRoleService.selectRoleByCode(coreRole.getCode());

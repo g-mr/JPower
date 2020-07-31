@@ -23,7 +23,6 @@ public class TbCoreDict extends BaseEntity {
     private String localeId;
     private String note;
     private Integer sortNum;
-    private String dictTypeId;
     private String pcode;
     private Integer dictLevel;
 

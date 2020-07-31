@@ -17,4 +17,6 @@ public interface CacheNames {
     String PHONE_KEY = "jpower:auth::phone:";
     String TOKEN_URL_KEY = "jpower:auth::token:";
 
+    String PARAMS_REDIS_KEY = "jpower:params:";
+
 }

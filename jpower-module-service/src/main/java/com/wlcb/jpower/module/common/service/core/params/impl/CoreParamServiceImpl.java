@@ -2,6 +2,8 @@ package com.wlcb.jpower.module.common.service.core.params.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.wlcb.jpower.module.common.cache.CacheNames;
+import com.wlcb.jpower.module.common.service.base.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.service.core.params.CoreParamService;
 import com.wlcb.jpower.module.common.service.redis.RedisUtils;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
@@ -18,7 +20,7 @@ import java.util.List;
  * @author mr.gmac
  */
 @Service("coreParamService")
-public class CoreParamServiceImpl implements CoreParamService {
+public class CoreParamServiceImpl extends BaseServiceImpl<TbCoreParamsMapper,TbCoreParam> implements CoreParamService {
 
     @Autowired
     private TbCoreParamsMapper paramsMapper;
@@ -85,7 +87,7 @@ public class CoreParamServiceImpl implements CoreParamService {
 
         for (TbCoreParam param : params) {
             if (StringUtils.isNotBlank(param.getValue())){
-                redisUtils.set(ConstantsUtils.PROPERTIES_PREFIX+param.getCode(),param.getValue());
+                redisUtils.set(CacheNames.PARAMS_REDIS_KEY+param.getCode(),param.getValue());
             }
         }
     }

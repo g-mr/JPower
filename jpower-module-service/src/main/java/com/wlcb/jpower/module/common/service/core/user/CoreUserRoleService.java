@@ -1,5 +1,6 @@
 package com.wlcb.jpower.module.common.service.core.user;
 
+import com.wlcb.jpower.module.common.service.base.BaseService;
 import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreUserRole;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.Map;
  * @Description //TODO 用户角色
  * @date 22:45 2020/5/26 0026
  */
-public interface CoreUserRoleService {
+public interface CoreUserRoleService extends BaseService<TbCoreUserRole> {
 
     /**
      * @author 郭丁志

@@ -1,12 +1,16 @@
 package com.wlcb.jpower.module.common.service.core.user;
 
 import com.wlcb.jpower.module.common.node.Node;
+import com.wlcb.jpower.module.common.service.base.BaseService;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreOrg;
 
 import java.util.List;
 import java.util.Map;
 
-public interface CoreOrgService {
+/**
+ * @author mr.gmac
+ */
+public interface CoreOrgService extends BaseService<TbCoreOrg> {
     
     /**
      * @Author 郭丁志

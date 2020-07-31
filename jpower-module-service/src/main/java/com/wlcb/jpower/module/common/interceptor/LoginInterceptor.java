@@ -9,6 +9,7 @@ import com.wlcb.jpower.module.common.service.core.user.CoreFunctionService;
 import com.wlcb.jpower.module.common.service.core.user.CoreRolefunctionService;
 import com.wlcb.jpower.module.common.service.redis.RedisUtils;
 import com.wlcb.jpower.module.common.utils.*;
+import com.wlcb.jpower.module.common.utils.constants.ParamsConstants;
 import com.wlcb.jpower.module.common.utils.param.ParamConfig;
 import com.wlcb.jpower.module.dbs.config.*;
 import com.wlcb.jpower.module.dbs.entity.core.client.TbCoreClient;
@@ -39,7 +40,7 @@ import java.util.*;
 public class LoginInterceptor extends HandlerInterceptorAdapter {
 
     /** ip白名单 **/
-    private final String IP_LIST = "IP_LIST";
+    private final String IP_LIST = ParamsConstants.IP_LIST;
 
     @Autowired
     private RedisUtils redisUtils;

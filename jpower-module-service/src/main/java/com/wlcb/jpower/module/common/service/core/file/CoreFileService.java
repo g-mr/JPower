@@ -1,12 +1,13 @@
 package com.wlcb.jpower.module.common.service.core.file;
 
 
+import com.wlcb.jpower.module.common.service.base.BaseService;
 import com.wlcb.jpower.module.dbs.entity.core.file.TbCoreFile;
 
 /**
  * @author mr.gmac
  */
-public interface CoreFileService {
+public interface CoreFileService extends BaseService<TbCoreFile> {
 
     /**
      * @Author 郭丁志

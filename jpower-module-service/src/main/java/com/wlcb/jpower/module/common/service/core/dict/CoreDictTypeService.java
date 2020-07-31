@@ -1,13 +1,15 @@
 package com.wlcb.jpower.module.common.service.core.dict;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.wlcb.jpower.module.common.node.Node;
+import com.wlcb.jpower.module.common.service.base.BaseService;
 import com.wlcb.jpower.module.dbs.entity.core.dict.TbCoreDictType;
 
 import java.util.List;
-import java.util.Map;
 
-public interface CoreDictTypeService extends IService<TbCoreDictType> {
+/**
+ * @author mr.gmac
+ */
+public interface CoreDictTypeService extends BaseService<TbCoreDictType> {
 
     /**
      * @author 郭丁志

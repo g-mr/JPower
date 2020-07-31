@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.wlcb.jpower.module.common.service.base.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.service.core.user.CoreUserService;
 import com.wlcb.jpower.module.common.utils.UUIDUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
+import com.wlcb.jpower.module.common.utils.constants.ParamsConstants;
 import com.wlcb.jpower.module.common.utils.param.ParamConfig;
 import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreUserDao;
 import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreUserRoleDao;
@@ -25,7 +27,7 @@ import java.util.*;
  */
 @Slf4j
 @Service("coreUserService")
-public class CoreUserServiceImpl implements CoreUserService {
+public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper,TbCoreUser> implements CoreUserService {
 
     @Autowired
     private TbCoreUserMapper coreUserMapper;
@@ -75,7 +77,7 @@ public class CoreUserServiceImpl implements CoreUserService {
     @Override
     public Boolean add(TbCoreUser coreUser) {
         if (coreUser.getActivationStatus() == null){
-            Integer isActivation = ParamConfig.getInt("isActivation");
+            Integer isActivation = ParamConfig.getInt(ParamsConstants.IS_ACTIVATION);
             coreUser.setActivationStatus(isActivation);
         }
 

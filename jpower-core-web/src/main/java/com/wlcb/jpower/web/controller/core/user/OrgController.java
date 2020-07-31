@@ -48,7 +48,7 @@ public class OrgController extends BaseController {
     public ResponseData listByParent(TbCoreOrg coreOrg){
 
         Object json;
-        if (StringUtils.isBlank(coreOrg.getParentId()) && StringUtils.isBlank(coreOrg.getParentCode())){
+        if (StringUtils.isBlank(coreOrg.getParentCode())){
             coreOrg.setParentCode("-1");
             PaginationContext.startPage();
             json = JSON.toJSON(new PageInfo<TbCoreOrg>(coreOrgService.listByParent(coreOrg)));
@@ -83,7 +83,6 @@ public class OrgController extends BaseController {
 
         if (StringUtils.isBlank(coreOrg.getParentCode())){
             coreOrg.setParentCode("-1");
-            coreOrg.setParentId("-1");
         }
         Boolean is = coreOrgService.add(coreOrg);
 

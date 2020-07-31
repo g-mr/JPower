@@ -1,5 +1,6 @@
 package com.wlcb.jpower.module.common.service.core.user;
 
+import com.wlcb.jpower.module.common.service.base.BaseService;
 import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreRole;
 
 import java.util.List;
@@ -7,16 +8,7 @@ import java.util.List;
 /**
  * @author mr.gmac
  */
-public interface CoreRoleService {
-
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 查询角色列表
-     * @Date 16:39 2020-05-19
-     * @Param [coreRole]
-     * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.role.TbCoreRole>
-     **/
-    List<TbCoreRole> listByParent(TbCoreRole coreRole);
+public interface CoreRoleService extends BaseService<TbCoreRole> {
 
     /**
      * @Author 郭丁志

@@ -136,7 +136,7 @@ public class DigestUtil extends org.springframework.util.DigestUtils {
 
 
     public static void main(String[] args) {
-        System.out.println(encrypt("123456"));
+        System.out.println(encrypt(md5Hex("123456")));
     }
 
 }

@@ -1,5 +1,6 @@
 package com.wlcb.jpower.module.common.utils.param;
 
+import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.service.core.params.CoreParamService;
 import com.wlcb.jpower.module.common.service.redis.RedisUtils;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
@@ -33,7 +34,7 @@ public class ParamConfig {
         paramService = service;
     }
 
-    private static final String prefix = ConstantsUtils.PROPERTIES_PREFIX;
+    private static final String prefix = CacheNames.PARAMS_REDIS_KEY;
 
     /**
      * @Author 郭丁志

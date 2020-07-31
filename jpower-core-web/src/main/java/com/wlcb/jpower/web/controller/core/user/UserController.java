@@ -14,7 +14,7 @@ import com.wlcb.jpower.module.common.service.core.user.CoreUserService;
 import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
-import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
+import com.wlcb.jpower.module.common.utils.constants.ParamsConstants;
 import com.wlcb.jpower.module.common.utils.param.ParamConfig;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
 import com.wlcb.jpower.utils.excel.BeanExcelUtil;
@@ -106,7 +106,7 @@ public class UserController extends BaseController {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该登录用户名已存在", false);
         }
 
-        coreUser.setPassword(MD5.parseStrToMd5U32(ConstantsUtils.DEFAULT_PASSWORD));
+        coreUser.setPassword(DigestUtil.encrypt(MD5.parseStrToMd5U32(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD))));
         coreUser.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_SYSTEM.getValue());
         Boolean is = coreUserService.add(coreUser);
 
@@ -193,7 +193,7 @@ public class UserController extends BaseController {
     @RequestMapping(value = "/resetPassword",method = {RequestMethod.PUT},produces="application/json")
     public ResponseData resetPassword(String ids){
 
-        String pass = MD5.parseStrToMd5U32(ConstantsUtils.DEFAULT_PASSWORD);
+        String pass = DigestUtil.encrypt(MD5.parseStrToMd5U32(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD)));
 
         JpowerAssert.notEmpty(ids, JpowerError.Arg,"用户ids不可为空");
 
@@ -231,12 +231,12 @@ public class UserController extends BaseController {
 
                 for (TbCoreUser coreUser : list) {
                     coreUser.setId(UUIDUtil.getUUID());
-                    coreUser.setPassword(MD5.parseStrToMd5U32(ConstantsUtils.DEFAULT_PASSWORD));
+                    coreUser.setPassword(DigestUtil.encrypt(MD5.parseStrToMd5U32(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD))));
                     coreUser.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_SYSTEM.getValue());
 
                     //判断用户是否指定激活，如果没有指定就去读取默认配置
                     if (coreUser.getActivationStatus() == null){
-                        Integer isActivation = ParamConfig.getInt("isActivation");
+                        Integer isActivation = ParamConfig.getInt(ParamsConstants.IS_ACTIVATION);
                         coreUser.setActivationStatus(isActivation);
                     }
                     // 如果不是激活状态则去生成激活码

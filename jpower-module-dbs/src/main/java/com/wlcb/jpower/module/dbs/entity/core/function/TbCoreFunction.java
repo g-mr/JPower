@@ -21,7 +21,6 @@ public class TbCoreFunction extends BaseEntity implements Serializable {
 
     private String functionName;
     private String alias;
-    private String parentId;
     private String code;
     private String parentCode;
     private String url;

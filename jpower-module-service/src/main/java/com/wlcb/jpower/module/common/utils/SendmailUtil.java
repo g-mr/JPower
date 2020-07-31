@@ -22,6 +22,7 @@ import java.util.Properties;
  * @Date 2020-04-24 11:51
  * @Version 1.0
  */
+@Deprecated
 public class SendmailUtil {
 
     private static Properties prop = new Properties();

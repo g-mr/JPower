@@ -9,11 +9,6 @@ package com.wlcb.jpower.module.common.utils.constants;
  */
 public class ConstantsUtils {
 
-    /** 系统登陆默认密码 **/
-    public static final String DEFAULT_PASSWORD = "123456";
-
-    public static final String PROPERTIES_PREFIX = "code:params:";
-
     public static final String FILE_DES_KEY = "COREFILEENCRYPTKEY20200720";
 
 //    短信APPKEY
@@ -27,6 +22,4 @@ public class ConstantsUtils {
     public static final String SMS_QUERY_MO_URL = HTTP_SERVER + "/api/sms/air/mo";
     public static final String SMS_SECURITY_SEND_URL = HTTP_SERVER + "/api/sms/air/encrptySend";
 
-    /** 用户权限redis Key **/
-    public static final String USER_KEY = "user:loginFunction:";
 }

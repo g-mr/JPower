@@ -17,6 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author mr.gmac
+ */
 @Service("coreRolefunctionService")
 public class CoreRolefunctionServiceImpl extends BaseServiceImpl<TbCoreRoleFunctionMapper,TbCoreRoleFunction> implements CoreRolefunctionService {
 

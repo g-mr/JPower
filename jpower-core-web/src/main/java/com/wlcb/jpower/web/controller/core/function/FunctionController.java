@@ -47,7 +47,7 @@ public class FunctionController extends BaseController {
     @RequestMapping(value = "/listByParent",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
     public ResponseData list(TbCoreFunction coreFunction){
 
-        if(StringUtils.isBlank(coreFunction.getParentId()) && StringUtils.isBlank(coreFunction.getParentCode())){
+        if(StringUtils.isBlank(coreFunction.getParentCode())){
             coreFunction.setParentCode("-1");
         }
 
@@ -72,19 +72,13 @@ public class FunctionController extends BaseController {
             return responseData;
         }
 
-        if(StringUtils.isBlank(coreFunction.getParentCode()) || StringUtils.isBlank(coreFunction.getParentId())){
+        if(StringUtils.isBlank(coreFunction.getParentCode())){
             coreFunction.setParentCode("-1");
-            coreFunction.setParentId("-1");
         }
 
         TbCoreFunction function = coreFunctionService.selectFunctionByCode(coreFunction.getCode());
         if (function != null){
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该菜单已存在", false);
-        }
-
-        function = coreFunctionService.selectFunctionByUrl(coreFunction.getUrl());
-        if (function != null){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该资源URL已存在", false);
         }
 
         Boolean is = coreFunctionService.add(coreFunction);

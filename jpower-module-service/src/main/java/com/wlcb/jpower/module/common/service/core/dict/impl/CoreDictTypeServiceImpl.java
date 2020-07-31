@@ -3,6 +3,7 @@ package com.wlcb.jpower.module.common.service.core.dict.impl;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.common.node.Node;
+import com.wlcb.jpower.module.common.service.base.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.service.core.dict.CoreDictService;
 import com.wlcb.jpower.module.common.service.core.dict.CoreDictTypeService;
 import com.wlcb.jpower.module.common.utils.Fc;
@@ -21,8 +22,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author mr.gmac
+ */
 @Service("tbCoreDictTypeService")
-public class CoreDictTypeServiceImpl extends JpowerServiceImpl<TbCoreDictTypeMapper,TbCoreDictType> implements CoreDictTypeService {
+public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMapper,TbCoreDictType> implements CoreDictTypeService {
 
     @Autowired
     private TbCoreDictTypeDao coreDictTypeDao;

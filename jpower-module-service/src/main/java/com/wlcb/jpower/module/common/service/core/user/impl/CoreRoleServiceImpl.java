@@ -2,6 +2,7 @@ package com.wlcb.jpower.module.common.service.core.user.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.wlcb.jpower.module.common.service.base.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.service.core.user.CoreRoleService;
 import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreRoleDao;
 import com.wlcb.jpower.module.dbs.dao.core.user.mapper.TbCoreRoleMapper;
@@ -16,40 +17,10 @@ import java.util.List;
  * @author mr.gmac
  */
 @Service("coreRoleService")
-public class CoreRoleServiceImpl implements CoreRoleService {
+public class CoreRoleServiceImpl extends BaseServiceImpl<TbCoreRoleMapper,TbCoreRole> implements CoreRoleService {
 
     @Autowired
     private TbCoreRoleDao coreRoleDao;
-
-    @Override
-    public List<TbCoreRole> listByParent(TbCoreRole coreRole) {
-        QueryWrapper wrapper = new QueryWrapper<TbCoreRole>();
-
-        if (StringUtils.isNotBlank(coreRole.getCode())){
-            wrapper.eq("code",coreRole.getCode());
-        }
-
-        if (StringUtils.isNotBlank(coreRole.getName())){
-            wrapper.eq("name",coreRole.getName());
-        }
-
-        if (StringUtils.isNotBlank(coreRole.getParentId())){
-            wrapper.eq("parent_id",coreRole.getParentId());
-        }
-
-        if (StringUtils.isNotBlank(coreRole.getParentCode())){
-            wrapper.eq("parent_code",coreRole.getParentCode());
-        }
-
-        if (coreRole.getIsSysRole() != null){
-            wrapper.eq("is_sys_role",coreRole.getIsSysRole());
-        }
-
-        wrapper.eq("status",1);
-        wrapper.orderByAsc("sort");
-
-        return coreRoleDao.list(wrapper);
-    }
 
     @Override
     public Boolean add(TbCoreRole coreRole) {

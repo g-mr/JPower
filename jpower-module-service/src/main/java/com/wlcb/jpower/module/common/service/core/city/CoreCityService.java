@@ -3,6 +3,7 @@ package com.wlcb.jpower.module.common.service.core.city;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.wlcb.jpower.module.common.node.Node;
+import com.wlcb.jpower.module.common.service.base.BaseService;
 import com.wlcb.jpower.module.dbs.dao.JpowerServiceImpl;
 import com.wlcb.jpower.module.dbs.dao.core.city.mapper.TbCoreCityMapper;
 import com.wlcb.jpower.module.dbs.entity.core.city.TbCoreCity;
@@ -13,7 +14,7 @@ import java.util.Map;
 /**
  * @author mr.gmac
  */
-public interface CoreCityService extends IService<TbCoreCity> {
+public interface CoreCityService extends BaseService<TbCoreCity> {
 
     /**
      * @Author 郭丁志

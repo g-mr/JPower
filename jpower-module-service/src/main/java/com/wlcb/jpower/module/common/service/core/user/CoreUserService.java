@@ -1,5 +1,6 @@
 package com.wlcb.jpower.module.common.service.core.user;
 
+import com.wlcb.jpower.module.common.service.base.BaseService;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
 
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.List;
 /**
  * @author mr.gmac
  */
-public interface CoreUserService {
+public interface CoreUserService extends BaseService<TbCoreUser> {
 
     /**
      * @Author 郭丁志

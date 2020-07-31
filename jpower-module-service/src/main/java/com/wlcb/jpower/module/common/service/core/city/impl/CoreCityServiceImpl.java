@@ -4,6 +4,7 @@ import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.common.node.ForestNodeMerger;
 import com.wlcb.jpower.module.common.node.Node;
+import com.wlcb.jpower.module.common.service.base.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.service.core.city.CoreCityService;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.CodeUtil;
@@ -25,18 +26,7 @@ import java.util.*;
  * @author mr.gmac
  */
 @Service("coreCityService")
-public class CoreCityServiceImpl extends JpowerServiceImpl<TbCoreCityMapper,TbCoreCity> implements CoreCityService {
-
-    /** 省级别 **/
-    private final Integer PROVINCE_RANKD = 1;
-    /** 市级别 **/
-    private final Integer CITY_RANKD = 2;
-    /** 区级别 **/
-    private final Integer DISTRICT_RANKD = 3;
-    /** 县级别 **/
-    private final Integer TOWN_RANKD = 4;
-    /** 乡村级别 **/
-    private final Integer VILLAGE_RANKD = 5;
+public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper,TbCoreCity> implements CoreCityService {
 
     @Autowired
     private TbCoreCityDao coreCityDao;

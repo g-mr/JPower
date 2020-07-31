@@ -10,6 +10,7 @@ import com.wlcb.jpower.module.common.service.redis.RedisUtils;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
+import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.dbs.dao.JpowerServiceImpl;
 import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreFunctionDao;
 import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreRoleFunctionDao;
@@ -33,7 +34,10 @@ import java.util.function.Function;
 @Service("coreFunctionService")
 public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMapper,TbCoreFunction> implements CoreFunctionService {
 
-    private final String sql = "(select function_id from tb_core_role_function where role_id in ({}))";
+    private final String sql = "select function_id from tb_core_role_function where role_id in ({})";
+
+    private final String SEL_CODE_IN_IDS_SQL = "select code from tb_core_function where id in ({})";
+
 
     @Autowired
     private TbCoreFunctionDao coreFunctionDao;
@@ -54,10 +58,6 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
 
         if (StringUtils.isNotBlank(coreFunction.getCode())){
             wrapper.eq(TbCoreFunction::getCode,coreFunction.getCode());
-        }
-
-        if (StringUtils.isNotBlank(coreFunction.getParentId())){
-            wrapper.eq(TbCoreFunction::getParentId,coreFunction.getParentId());
         }
 
         if (StringUtils.isNotBlank(coreFunction.getParentCode())){
@@ -94,11 +94,10 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
 
     @Override
     public Integer listByPids(String ids) {
-        LambdaQueryWrapper<TbCoreFunction> wrapper = new QueryWrapper<TbCoreFunction>().lambda();
-
-        wrapper.in(TbCoreFunction::getParentId,ids);
-
-        return coreFunctionDao.count(wrapper);
+        String inSql = "'"+ids.replaceAll(",","','")+"'";
+        return coreFunctionDao.count(Condition.<TbCoreFunction>getQueryWrapper()
+                .lambda()
+                .inSql(TbCoreFunction::getParentCode,StringUtil.format(SEL_CODE_IN_IDS_SQL,inSql)));
     }
 
     @Override
@@ -156,7 +155,8 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
         String inSql = "'"+roleIds.replaceAll(",","','")+"'";
         return coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                 .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.N.getValue())
-                .eq(TbCoreFunction::getParentCode, code)
+                .and(consumer -> consumer.eq(TbCoreFunction::getParentCode, code).or(c
+                        -> c.eq(TbCoreFunction::getParentCode, JpowerConstants.TOP_CODE)))
                 .inSql(TbCoreFunction::getId,StringUtil.format(sql,inSql)).orderByAsc(TbCoreFunction::getSort));
     }
 

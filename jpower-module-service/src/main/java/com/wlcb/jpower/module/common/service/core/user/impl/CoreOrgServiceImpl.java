@@ -3,7 +3,9 @@ package com.wlcb.jpower.module.common.service.core.user.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.wlcb.jpower.module.common.node.Node;
+import com.wlcb.jpower.module.common.service.base.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.service.core.user.CoreOrgService;
+import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreOrgDao;
 import com.wlcb.jpower.module.dbs.dao.core.user.mapper.TbCoreOrgMapper;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreOrg;
@@ -19,7 +21,9 @@ import java.util.Map;
  * @author mr.gmac
  */
 @Service("coreOrgService")
-public class CoreOrgServiceImpl implements CoreOrgService {
+public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper,TbCoreOrg> implements CoreOrgService {
+
+    private final String sql = "(select code from tb_core_org where id in ({}))";
 
     @Autowired
     private TbCoreOrgMapper coreOrgMapper;
@@ -37,10 +41,6 @@ public class CoreOrgServiceImpl implements CoreOrgService {
 
         if (StringUtils.isNotBlank(coreOrg.getName())){
             wrapper.like("name",coreOrg.getName());
-        }
-
-        if (StringUtils.isNotBlank(coreOrg.getParentId())){
-            wrapper.eq("parent_id",coreOrg.getParentId());
         }
 
         if (StringUtils.isNotBlank(coreOrg.getParentCode())){
@@ -84,7 +84,9 @@ public class CoreOrgServiceImpl implements CoreOrgService {
 
     @Override
     public Integer listOrgByPids(String ids) {
-        return coreOrgDao.count(new QueryWrapper<TbCoreOrg>().lambda().in(TbCoreOrg::getParentId,ids));
+        ids = "'"+ids.replaceAll(",","','")+"'";
+        return coreOrgDao.count(new QueryWrapper<TbCoreOrg>()
+                .lambda().inSql(TbCoreOrg::getParentCode,StringUtil.format(sql,ids)));
     }
 
     @Override

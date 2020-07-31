@@ -1,5 +1,6 @@
 package com.wlcb.jpower.module.common.service.core.params;
 
+import com.wlcb.jpower.module.common.service.base.BaseService;
 import com.wlcb.jpower.module.dbs.entity.core.params.TbCoreParam;
 
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.List;
 /**
  * @author mr.gmac
  */
-public interface CoreParamService {
+public interface CoreParamService extends BaseService<TbCoreParam> {
 
     /**
      * @Author 郭丁志

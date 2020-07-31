@@ -3,6 +3,7 @@ package com.wlcb.jpower.web.controller.core.params;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.module.base.vo.ResponseData;
+import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.service.core.params.CoreParamService;
@@ -153,7 +154,7 @@ public class ParamsController extends BaseController {
 
         String value = paramService.selectByCode(code);
         if (StringUtils.isNotBlank(value)){
-            redisUtils.set(ConstantsUtils.PROPERTIES_PREFIX+code,value);
+            redisUtils.set(CacheNames.PARAMS_REDIS_KEY+code,value);
         }
 
         return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"操作成功",true);

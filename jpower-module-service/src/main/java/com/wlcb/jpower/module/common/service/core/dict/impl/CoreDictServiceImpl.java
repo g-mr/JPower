@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.common.node.Node;
+import com.wlcb.jpower.module.common.service.base.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.service.core.dict.CoreDictService;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.StringUtil;
@@ -25,7 +26,7 @@ import java.util.List;
  * @author mr.gmac
  */
 @Service("coreDictService")
-public class CoreDictServiceImpl extends JpowerServiceImpl<TbCoreDictMapper,TbCoreDict> implements CoreDictService {
+public class CoreDictServiceImpl extends BaseServiceImpl<TbCoreDictMapper,TbCoreDict> implements CoreDictService {
 
     @Autowired
     private TbCoreDictDao dictDao;
