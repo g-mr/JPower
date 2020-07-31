@@ -80,4 +80,4 @@ logging:
 
 jpower:
   auth:
-    client_id: wx,admin
+    client_code: wx,admin

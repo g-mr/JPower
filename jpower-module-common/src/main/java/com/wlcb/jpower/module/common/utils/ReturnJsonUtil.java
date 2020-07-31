@@ -117,4 +117,16 @@ public class ReturnJsonUtil {
         }
 
     }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 业务失败
+     * @Date 15:16 2020-07-31
+     * @Param [该客户端已存在]
+     * @return com.wlcb.jpower.module.base.vo.ResponseData
+     **/
+    public static ResponseData busFail(String msg) {
+        return printJson(ConstantsReturn.RECODE_BUSINESS,msg,false);
+
+    }
 }

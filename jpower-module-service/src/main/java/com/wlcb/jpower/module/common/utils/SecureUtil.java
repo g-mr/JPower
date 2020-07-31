@@ -349,7 +349,7 @@ public class SecureUtil {
         if (tokenType.equals(TokenConstant.ACCESS_TOKEN)) {
             expireMillis = clientDetails.getAccessTokenValidity() * 1000;
         } else if (tokenType.equals(TokenConstant.REFRESH_TOKEN)) {
-            expireMillis = clientDetails.getRefreshTokeValidity() * 1000;
+            expireMillis = clientDetails.getRefreshTokenValidity() * 1000;
         } else {
             expireMillis = getExpire();
         }

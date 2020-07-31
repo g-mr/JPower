@@ -18,7 +18,7 @@ public class TbCoreClient extends BaseEntity {
     private String clientCode;
     private String clientSecret;
     private Integer accessTokenValidity;
-    private Integer refreshTokeValidity;
+    private Integer refreshTokenValidity;
     private String sortNum;
     private String note;
 

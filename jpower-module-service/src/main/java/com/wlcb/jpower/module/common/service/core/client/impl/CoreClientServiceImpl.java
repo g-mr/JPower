@@ -2,6 +2,8 @@ package com.wlcb.jpower.module.common.service.core.client.impl;
 
 import com.wlcb.jpower.module.common.service.base.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.service.core.client.CoreClientService;
+import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.RandomUtil;
 import com.wlcb.jpower.module.dbs.dao.core.client.TbCoreClientDao;
 import com.wlcb.jpower.module.dbs.dao.core.client.mapper.TbCoreClientMapper;
 import com.wlcb.jpower.module.dbs.entity.core.client.TbCoreClient;
@@ -26,5 +28,19 @@ public class CoreClientServiceImpl extends BaseServiceImpl<TbCoreClientMapper, T
     public TbCoreClient loadClientByClientCode(String clientCode) {
         return coreClientDao.getOne(Condition.<TbCoreClient>getQueryWrapper().lambda()
                 .eq(TbCoreClient::getClientCode,clientCode));
+    }
+
+    @Override
+    public boolean saveOrUpdate(TbCoreClient coreClient){
+        if (Fc.isBlank(coreClient.getId())){
+            coreClient.setClientSecret(RandomUtil.randomString(6));
+        }
+        return coreClientDao.saveOrUpdate(coreClient);
+    }
+
+    @Override
+    public boolean save(TbCoreClient coreClient){
+        coreClient.setClientSecret(RandomUtil.randomString(6));
+        return coreClientDao.save(coreClient);
     }
 }
