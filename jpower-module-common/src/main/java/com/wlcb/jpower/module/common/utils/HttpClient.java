@@ -59,7 +59,7 @@ public class HttpClient {
 
         StringBuffer sb = new StringBuffer(url);
         if (params != null && params.keySet().size() > 0) {
-            sb.append("?clientId=jpower");
+            sb.append("?clientCode=jpower");
             params.forEach((k, v) -> sb.append("&").append(k).append("=").append(v));
         }
 

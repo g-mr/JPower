@@ -238,3 +238,24 @@ create table tb_core_file
   status   tinyint(1) default 1 comment '状态',
   PRIMARY KEY (id) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '文件表';
+
+drop table if exists tb_core_client;
+create table tb_core_client
+(
+  id varchar(32) comment '主键',
+  name varchar(128) comment '客户端名称',
+  role_ids varchar(512) comment '角色ID，多个用逗号分割；all代表有全部权限',
+  client_code varchar(31) not null comment '客户端CODE，唯一约束',
+  client_secret varchar(31) not null comment '客户端密钥',
+  access_token_validity int(10) not null comment 'token过期时间，单位秒',
+  refresh_token_validity int(10) not null comment '刷新token时间，单位秒，时间应该比token过期时间更长',
+  sort_num int(6) comment '排序',
+  note varchar(255) comment '备注',
+  create_user varchar(32) default 'root' not null comment '创建人',
+  create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
+  update_user varchar(32) default 'root' not null comment '更新人',
+  update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
+  status   tinyint(1) default 1 comment '状态',
+  PRIMARY KEY (id) USING BTREE,
+  unique key unique_client_code (client_code) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '客户端系统表';

@@ -30,7 +30,7 @@ public class UserInfo {
      *
      * 不用管，在获取当前登录用户的时候会自动获取到
      */
-    private String clientId;
+    private String clientCode;
 
     /**
      * 账号

@@ -78,7 +78,7 @@ public class LogAspect
             operLog.setOperUrl(WebUtil.getRequest().getRequestURI());
             if (currentUser != null)
             {
-                operLog.setOperIp(currentUser.getClientId());
+                operLog.setOperIp(currentUser.getClientCode());
                 operLog.setOperId(currentUser.getUserId());
                 operLog.setOperName(currentUser.getUserName());
                 operLog.setOperUserType(currentUser.getIsSysUser());

@@ -1,11 +1,16 @@
 package com.wlcb.jpower.module.common.service.core.user;
 
+import com.wlcb.jpower.module.common.service.base.BaseService;
+import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreRoleFunction;
 
 import java.util.List;
 import java.util.Map;
 
-public interface CoreRolefunctionService {
+/**
+ * @author mr.gmac
+ */
+public interface CoreRolefunctionService extends BaseService<TbCoreRoleFunction> {
 
     /**
      * @author 郭丁志
@@ -25,4 +30,13 @@ public interface CoreRolefunctionService {
      * @return java.lang.Integer
      */
     Integer addRolefunctions(String roleId, String functionIds);
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 通过角色和菜单查询是否有权限
+     * @Date 14:00 2020-07-31
+     * @Param [toStrList, id]
+     * @return com.wlcb.jpower.module.common.utils.StringUtil
+     **/
+    Integer countByRoleIdsAndFunctionId(List<String> toStrList, String id);
 }

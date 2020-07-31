@@ -376,6 +376,7 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
     /**
      * @Author 郭丁志
      * @Description //TODO 查询树形结构list
+     *                  查询字段中必须包含code和parentCode字段，否则无法形成tree列表
      * @Date 21:51 2020-07-30
      * @Param [queryWrapper, clz]
      * @return java.util.List<V>

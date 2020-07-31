@@ -4,12 +4,14 @@ import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.auth.RoleConstant;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.cache.CacheNames;
+import com.wlcb.jpower.module.common.service.core.client.CoreClientService;
 import com.wlcb.jpower.module.common.service.core.user.CoreFunctionService;
+import com.wlcb.jpower.module.common.service.core.user.CoreRolefunctionService;
 import com.wlcb.jpower.module.common.service.redis.RedisUtils;
 import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.param.ParamConfig;
 import com.wlcb.jpower.module.dbs.config.*;
-import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreRoleFunctionDao;
+import com.wlcb.jpower.module.dbs.entity.core.client.TbCoreClient;
 import com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction;
 import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreRoleFunction;
 import com.wlcb.jpower.module.mp.support.Condition;
@@ -44,10 +46,12 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     @Autowired
     private CoreFunctionService coreFunctionService;
     @Autowired
-    private TbCoreRoleFunctionDao coreRoleFunctionDao;
+    private CoreRolefunctionService coreRolefunctionService;
+    @Autowired
+    private CoreClientService coreClientService;
 
-    @Value("${jpower.auth.client_id}")
-    private String clientId;
+    @Value("${jpower.auth.client_code}")
+    private String clientCode;
 
     /** 环境 **/
     @Value("${spring.profiles.active}")
@@ -72,8 +76,10 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         String currentPath = request.getServletPath();
 
         UserInfo user = SecureUtil.getUser(request);
-        // TODO: 2020-07-28 这里的判断最后要加一个查询系统表，存在则通过
-        if (user != null && Fc.toStrList(clientId).contains(SecureUtil.getClientIdFromHeader()) && Fc.toStrList(clientId).contains(user.getClientId())) {
+
+        TbCoreClient coreClient = coreClientService.loadClientByClientCode(user.getClientCode());
+
+        if (user != null && coreClient!=null && Fc.toStrList(clientCode).contains(SecureUtil.getClientCodeFromHeader()) && Fc.toStrList(clientCode).contains(user.getClientCode())) {
 
             List<String> listUrl = (List<String>) redisUtils.get(CacheNames.TOKEN_URL_KEY+JwtUtil.getToken(request));
             if (Fc.contains(listUrl.iterator(),currentPath)){
@@ -82,33 +88,39 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 return true;
             }
 
-        }else if (Fc.toStrList(clientId).contains(SecureUtil.getClientIdFromHeader())) {
+        }else if (coreClient!=null && Fc.toStrList(clientCode).contains(SecureUtil.getClientCodeFromHeader())) {
             String ip = WebUtil.getIP(request);
-            if(Fc.contains(Fc.toStrList(ParamConfig.getString(IP_LIST)).iterator(),ip)){
-                log.warn("{} 白名单授权通过，请求接口：{}",ip,currentPath);
-                // TODO: 2020-07-28 这里白名单登录成功去获取这个客户端所拥有的角色ID，判断访问接口是否是该角色权限。
-                //暂时没有实现客户端管理，暂时白名单给所有权限
-                user.setUserName(ip);
-                user.setLoginId(ip);
-                user.setUserType(RoleConstant.ANONYMOUS_UESR_TYPE);
-                user.setIsSysUser(UserInfo.TBALE_USER_TYPE_WHILT);
-                user.setUserId(ip);
-                LoginUserContext.set(user);
-                return true;
-            }else {
-                //匿名用户登录
-                TbCoreFunction function = coreFunctionService.selectFunctionByUrl(currentPath);
-                TbCoreRoleFunction roleFunction = coreRoleFunctionDao.getOne(Condition.<TbCoreRoleFunction>getQueryWrapper().lambda()
-                        .eq(TbCoreRoleFunction::getRoleId,RoleConstant.ANONYMOUS_ID));
-                if(function!=null&&roleFunction!=null&&Fc.equals(function.getId(),roleFunction.getFunctionId())){
-                    log.warn("{} 授权通过，请求接口：{}", RoleConstant.ANONYMOUS_NAME,currentPath);
-                    user = new UserInfo();
-                    user.setLoginId(RoleConstant.ANONYMOUS);
-                    user.setUserId(RoleConstant.ANONYMOUS_ID);
-                    user.setUserName(RoleConstant.ANONYMOUS_NAME);
-                    user.setUserType(RoleConstant.ANONYMOUS_UESR_TYPE);
-                    LoginUserContext.set(user);
-                    return true;
+            TbCoreFunction function = coreFunctionService.selectFunctionByUrl(currentPath);
+            if (function != null){
+                if(Fc.contains(Fc.toStrList(ParamConfig.getString(IP_LIST)).iterator(),ip) && Fc.isNotBlank(coreClient.getRoleIds())){
+                    //白名单登录
+                    if (StringUtil.equalsIgnoreCase(coreClient.getRoleIds(),"all") ||
+                            coreRolefunctionService.countByRoleIdsAndFunctionId(Fc.toStrList(coreClient.getRoleIds()),function.getId()) > 0){
+                        log.warn("{} 白名单授权通过，请求接口：{}",ip,currentPath);
+                        user.setUserName(ip);
+                        user.setLoginId(ip);
+                        user.setUserType(RoleConstant.ANONYMOUS_UESR_TYPE);
+                        user.setIsSysUser(UserInfo.TBALE_USER_TYPE_WHILT);
+                        user.setUserId(ip);
+                        LoginUserContext.set(user);
+                        return true;
+                    }
+
+                }else {
+                    //匿名用户登录
+                    Integer roleCount = coreRolefunctionService.count(Condition.<TbCoreRoleFunction>getQueryWrapper().lambda()
+                            .eq(TbCoreRoleFunction::getRoleId,RoleConstant.ANONYMOUS_ID)
+                            .eq(TbCoreRoleFunction::getFunctionId,function.getId()));
+                    if(roleCount>0){
+                        log.warn("{} 授权通过，请求接口：{}", RoleConstant.ANONYMOUS_NAME,currentPath);
+                        user = new UserInfo();
+                        user.setLoginId(RoleConstant.ANONYMOUS);
+                        user.setUserId(RoleConstant.ANONYMOUS_ID);
+                        user.setUserName(RoleConstant.ANONYMOUS_NAME);
+                        user.setUserType(RoleConstant.ANONYMOUS_UESR_TYPE);
+                        LoginUserContext.set(user);
+                        return true;
+                    }
                 }
             }
         }else {

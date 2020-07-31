@@ -18,7 +18,7 @@ public interface TokenConstant {
     String USER_ID = "userId";
     String USER_NAME = "userName";
 //    String TENANT_ID = "tenantId";
-    String CLIENT_ID = "clientId";
+    String CLIENT_CODE = "clientCode";
     String TELE_PHONE = "telephone";
     String USER_TYPE = "userType";
     String ORG_ID = "orgId";

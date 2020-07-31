@@ -3,9 +3,10 @@ package com.wlcb.jpower.module.common.utils;
 
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.common.auth.*;
-import com.wlcb.jpower.module.common.service.core.user.CoreUserService;
+import com.wlcb.jpower.module.common.service.core.client.CoreClientService;
 import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
+import com.wlcb.jpower.module.dbs.entity.core.client.TbCoreClient;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -32,7 +33,7 @@ public class SecureUtil {
     private final static String USER_ID = TokenConstant.USER_ID;
     private final static String USER_NAME = TokenConstant.USER_NAME;
 //    private final static String TENANT_ID = TokenConstant.TENANT_ID;
-    private final static String CLIENT_ID = TokenConstant.CLIENT_ID;
+    private final static String CLIENT_CODE = TokenConstant.CLIENT_CODE;
     private final static String TELE_PHONE = TokenConstant.TELE_PHONE;
     private final static String USER_TYPE = TokenConstant.USER_TYPE;
     private final static String ORG_ID = TokenConstant.ORG_ID;
@@ -44,10 +45,10 @@ public class SecureUtil {
     private static String BASE64_SECURITY = Base64.getEncoder().encodeToString(TokenConstant.SIGN_KEY.getBytes(CharsetKit.CHARSET_UTF_8));
 
     // TODO: 2020-07-27 先放在这里不报错，后期要实现系统表替换成系统的service
-    private static CoreUserService clientDetailsService;
+    private static CoreClientService coreClientService;
 
     static {
-        clientDetailsService = SpringUtil.getBean(CoreUserService.class);
+        coreClientService = SpringUtil.getBean(CoreClientService.class);
     }
 
     /**
@@ -89,7 +90,7 @@ public class SecureUtil {
             return null;
         }
 
-        String clientId = Fc.toStr(claims.get(SecureUtil.CLIENT_ID));
+        String clientCode = Fc.toStr(claims.get(SecureUtil.CLIENT_CODE));
         String userId = Fc.toStr(claims.get(SecureUtil.USER_ID));
 //        String tenantId = Fc.toStr(claims.get(SecureUtil.TENANT_ID));
         List<String> roleIds = (List<String>) claims.get(SecureUtil.ROLE_IDS);
@@ -101,7 +102,7 @@ public class SecureUtil {
         Integer isSysUser = Fc.toInt(claims.get(SecureUtil.IS_SYS_USER));
 
         UserInfo coreUser = new UserInfo();
-        coreUser.setClientId(clientId);
+        coreUser.setClientCode(clientCode);
         coreUser.setUserId(userId);
 //        coreUser.setTenantId(tenantId);
         coreUser.setLoginId(account);
@@ -233,9 +234,9 @@ public class SecureUtil {
      *
      * @return tenantId
      */
-    public static String getClientId() {
+    public static String getClientCode() {
         UserInfo user = getUser();
-        return (null == user) ? StringPool.EMPTY : user.getClientId();
+        return (null == user) ? StringPool.EMPTY : user.getClientCode();
     }
 
     /**
@@ -244,9 +245,9 @@ public class SecureUtil {
      * @param request request
      * @return tenantId
      */
-    public static String getClientId(HttpServletRequest request) {
+    public static String getClientCode(HttpServletRequest request) {
         UserInfo user = getUser(request);
-        return (null == user) ? StringPool.EMPTY : user.getClientId();
+        return (null == user) ? StringPool.EMPTY : user.getClientCode();
     }
 
     /**
@@ -311,15 +312,14 @@ public class SecureUtil {
 
         String[] tokens = extractAndDecodeHeader();
         assert tokens.length == 2;
-        String clientId = tokens[0];
+        String clientCode = tokens[0];
         String clientSecret = tokens[1];
 
         // 获取客户端信息
-//        IClientDetails clientDetails = clientDetails(clientId);
-        Map<String,String> clientDetails = clientDetails(clientId);
+        TbCoreClient clientDetails = clientDetails(clientCode);
 
         // 校验客户端信息
-        if (!validateClient(clientDetails, clientId, clientSecret)) {
+        if (!validateClient(clientDetails, clientCode, clientSecret)) {
             throw new BusinessException("客户端认证失败!");
         }
 
@@ -342,14 +342,14 @@ public class SecureUtil {
         user.forEach(builder::claim);
 
         //设置应用id
-        builder.claim(CLIENT_ID, clientId);
+        builder.claim(CLIENT_CODE, clientCode);
 
         //添加Token过期时间
         long expireMillis;
         if (tokenType.equals(TokenConstant.ACCESS_TOKEN)) {
-            expireMillis = NumberUtil.toInt(clientDetails.get("accessTokenValidity")) * 1000;
+            expireMillis = clientDetails.getAccessTokenValidity() * 1000;
         } else if (tokenType.equals(TokenConstant.REFRESH_TOKEN)) {
-            expireMillis = NumberUtil.toInt(clientDetails.get("refreshTokenValidity")) * 1000;
+            expireMillis = clientDetails.getRefreshTokeValidity() * 1000;
         } else {
             expireMillis = getExpire();
         }
@@ -412,7 +412,7 @@ public class SecureUtil {
     /**
      * 获取请求头中的客户端id
      */
-    public static String getClientIdFromHeader() {
+    public static String getClientCodeFromHeader() {
         String[] tokens = extractAndDecodeHeader();
         assert tokens.length == 2;
         return tokens[0];
@@ -421,49 +421,23 @@ public class SecureUtil {
     /**
      * 获取客户端信息
      *
-     * @param clientId 客户端id
+     * @param clientCode 客户端code
      * @return clientDetails
      */
-//    private static IClientDetails clientDetails(String clientId) {
-//        return clientDetailsService.loadClientByClientId(clientId);
-//    }
-    private static Map<String,String> clientDetails(String clientId) {
-        //暂时先支持后台和微信，之后新增了system维护再加进来
-        Map<String,String> map = new HashMap<>();
-        if(StringUtil.equals(clientId,"wx")){
-            map.put("clientId","wx");
-            map.put("clientSecret","jpower_wx");
-            map.put("accessTokenValidity","1800");
-            map.put("refreshTokenValidity","2400");
-            return map;
-        }else if(StringUtil.equals(clientId,"admin")){
-            map.put("clientId","admin");
-            map.put("clientSecret","jpower_admin");
-            map.put("accessTokenValidity","1800");
-            map.put("refreshTokenValidity","2400");
-            return map;
-        }else {
-            return null;
-        }
+    private static TbCoreClient clientDetails(String clientCode) {
+        return coreClientService.loadClientByClientCode(clientCode);
     }
 
     /**
      * 校验Client
      *
-     * @param clientId     客户端id
+     * @param clientCode     客户端code
      * @param clientSecret 客户端密钥
      * @return boolean
      */
-//    private static boolean validateClient(IClientDetails clientDetails, String clientId, String clientSecret) {
-//        if (clientDetails != null) {
-//            return StringUtil.equals(clientId, clientDetails.getClientId()) && StringUtil.equals(clientSecret, clientDetails.getClientSecret());
-//        }
-//        return false;
-//    }
-    private static boolean validateClient(Map<String,String> map, String clientId, String clientSecret) {
-        //暂时先支持后台和微信，之后新增了system维护再加进来
-        if (map != null) {
-            return StringUtil.equals(clientId, map.get("clientId")) && StringUtil.equals(clientSecret, map.get("clientSecret"));
+    private static boolean validateClient(TbCoreClient clientDetails, String clientCode, String clientSecret) {
+        if (clientDetails != null) {
+            return StringUtil.equals(clientCode, clientDetails.getClientCode()) && StringUtil.equals(clientSecret, clientDetails.getClientSecret());
         }
         return false;
     }
