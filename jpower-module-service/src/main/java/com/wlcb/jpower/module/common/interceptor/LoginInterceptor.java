@@ -51,7 +51,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     @Autowired
     private CoreClientService coreClientService;
 
-    @Value("${jpower.auth.client-code}")
+    @Value("${jpower.client-code}")
     private String clientCode;
 
     /** 环境 **/

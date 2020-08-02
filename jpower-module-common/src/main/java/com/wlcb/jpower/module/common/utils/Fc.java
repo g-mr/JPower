@@ -332,6 +332,10 @@ public class Fc {
         return ObjectUtil.nullSafeEquals(o1, o2);
     }
 
+    public static boolean equalsValue(@Nullable Object o1, @Nullable Object o2) {
+        return ObjectUtil.equalsValue(o1, o2);
+    }
+
     /**
      * Check whether the given Array contains the given element.
      *

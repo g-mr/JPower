@@ -19,10 +19,7 @@ import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.common.node.ForestNodeMerger;
 import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.node.TreeNode;
-import com.wlcb.jpower.module.common.utils.BeanUtil;
-import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.ReflectUtil;
-import com.wlcb.jpower.module.common.utils.StringUtil;
+import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.dbs.dao.core.dict.mapper.TbCoreDictMapper;
 import com.wlcb.jpower.module.dbs.entity.core.city.TbCoreCity;
 import com.wlcb.jpower.module.dbs.entity.core.dict.TbCoreDict;
@@ -220,10 +217,7 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
 
                 if (dictList != null){
                     for (TbCoreDict tbCoreDict : dictList) {
-
-                        String val = ReflectUtil.getFieldValue(t,filedName);
-
-                        if (StringUtils.equals(tbCoreDict.getCode(),val)){
+                        if (Fc.equalsValue(tbCoreDict.getCode(),ReflectUtil.getFieldValue(t,filedName))){
                             String attributesName = StringUtils.isBlank(dict.attributes())?filedName:dict.attributes();
                             ReflectUtil.setFieldValue(t,attributesName,tbCoreDict.getName());
                         }
@@ -231,7 +225,7 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
                 }
             }
         }catch (Exception e){
-            log.error("设置DICT失败，error={}");
+            log.error("设置DICT失败，error=",e);
             e.printStackTrace();
         }
     }

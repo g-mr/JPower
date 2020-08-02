@@ -1,5 +1,6 @@
 package com.wlcb.jpower;
 
+import com.wlcb.jpower.module.base.JpowerApplication;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -16,7 +17,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class LoginStartApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(LoginStartApplication.class, args);
+        JpowerApplication.run("admin-login",LoginStartApplication.class,args);
     }
 
 }
