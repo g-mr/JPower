@@ -39,7 +39,7 @@ public class JpowerApplication {
         props.setProperty("spring.application.name", appName);
         props.setProperty("jpower.client-code", appName);
         props.setProperty("logging.config", "classpath:logback-spring.xml");
-        props.setProperty("blade.is-local", String.valueOf(isLocalDev()));
+        props.setProperty("jpower.is-local", String.valueOf(isLocalDev()));
         return builder;
     }
 
