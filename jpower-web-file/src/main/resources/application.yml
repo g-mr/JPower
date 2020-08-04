@@ -1,11 +1,6 @@
 server:
   port: 82
 
-#暂时写在这里，后期加入docker去掉这块配置
-spring:
-  profiles:
-    active: @profilea.active@
-
 jpower:
   #  开发环境
   dev:
