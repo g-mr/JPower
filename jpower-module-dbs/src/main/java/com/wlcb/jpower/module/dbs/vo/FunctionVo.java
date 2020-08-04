@@ -1,5 +1,6 @@
 package com.wlcb.jpower.module.dbs.vo;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction;
@@ -23,7 +24,6 @@ public class FunctionVo extends TbCoreFunction implements Node {
      */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<Node> children;
-
 
     @Override
     public List<Node> getChildren() {

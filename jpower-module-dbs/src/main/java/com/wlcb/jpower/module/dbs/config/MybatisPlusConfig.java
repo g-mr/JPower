@@ -44,7 +44,7 @@ public class MybatisPlusConfig {
     @Bean
     public MapperScannerConfigurer mapperScannerConfigurer() {
         MapperScannerConfigurer mapperScannerConfigurer = new MapperScannerConfigurer();
-        mapperScannerConfigurer.setBasePackage("com.wlcb.*.*.dbs.dao");
+        mapperScannerConfigurer.setBasePackage("com.wlcb.**.dbs.dao");
         return mapperScannerConfigurer;
     }
 

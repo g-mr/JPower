@@ -35,7 +35,10 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
 
     @Override
     public List<Node> tree() {
-        return coreDictTypeDao.tree(Condition.getTreeWrapper(TbCoreDictType::getDictTypeCode,TbCoreDictType::getDictTypePcode,TbCoreDictType::getDictTypeName).lambda().orderByAsc(TbCoreDictType::getSortNum));
+        return coreDictTypeDao.tree(Condition.getTreeWrapper(TbCoreDictType::getDictTypeCode,
+                TbCoreDictType::getDictTypePcode,
+                TbCoreDictType::getDictTypeName)
+                .lambda().orderByAsc(TbCoreDictType::getSortNum));
     }
 
     @Override

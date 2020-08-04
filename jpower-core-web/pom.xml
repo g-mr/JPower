@@ -28,6 +28,11 @@
 
         <dependency>
             <groupId>com.wlcb</groupId>
+            <artifactId>jpower-core-login</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wlcb</groupId>
             <artifactId>jpower-web-sync</artifactId>
         </dependency>
 
