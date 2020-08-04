@@ -1,0 +1,45 @@
+server:
+  port: 82
+
+#暂时写在这里，后期加入docker去掉这块配置
+spring:
+  profiles:
+    active: @profilea.active@
+
+jpower:
+  #  开发环境
+  dev:
+    datasource:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/jpower?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8
+      username: root
+      password: 123456
+    redis:
+      host: 127.0.0.1
+      password:
+      port: 6379
+      database: 0
+  #   测试环境
+  test:
+    datasource:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://219.148.186.214:18995/jpower?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8
+      username: root
+      password: Wlcb@20200515
+    redis:
+      host: 192.168.128.104
+      password: Wlcb20200515
+      port: 6379
+      database: 0
+  #  正式环境
+  prod:
+    datasource:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://119.3.189.156:18992/csrrg?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8
+      username: root
+      password: root
+    redis:
+      host: 192.168.128.100
+      password: Wlcb20200515
+      port: 6379
+      database: 0

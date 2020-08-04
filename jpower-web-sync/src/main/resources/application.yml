@@ -1,5 +1,5 @@
 server:
-  port: 73
+  port: 83
 
 #暂时写在这里，后期加入docker去掉这块配置
 spring:
@@ -7,7 +7,7 @@ spring:
     active: @profilea.active@
 
 jpower:
-#  开发环境
+  #  开发环境
   dev:
     datasource:
       driver-class-name: com.mysql.cj.jdbc.Driver
@@ -19,7 +19,7 @@ jpower:
       password:
       port: 6379
       database: 0
-#   测试环境
+  #   测试环境
   test:
     datasource:
       driver-class-name: com.mysql.cj.jdbc.Driver
@@ -31,7 +31,7 @@ jpower:
       password: Wlcb20200515
       port: 6379
       database: 0
-#  正式环境
+  #  正式环境
   prod:
     datasource:
       driver-class-name: com.mysql.cj.jdbc.Driver
