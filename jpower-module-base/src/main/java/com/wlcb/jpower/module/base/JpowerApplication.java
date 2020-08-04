@@ -40,6 +40,7 @@ public class JpowerApplication {
         props.setProperty("jpower.client-code", appName);
         props.setProperty("logging.config", "classpath:logback-spring.xml");
         props.setProperty("jpower.is-local", String.valueOf(isLocalDev()));
+
         return builder;
     }
 

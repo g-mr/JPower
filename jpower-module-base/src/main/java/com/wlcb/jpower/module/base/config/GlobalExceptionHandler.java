@@ -2,25 +2,12 @@ package com.wlcb.jpower.module.base.config;
 
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.base.exception.JpowerException;
-import com.wlcb.jpower.module.base.properties.SysProperties;
 import com.wlcb.jpower.module.base.vo.ErrorReturnJson;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.mail.Message;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.Map;
-import java.util.Properties;
 
 /**
  * @ClassName GlobalExceptionHandler
