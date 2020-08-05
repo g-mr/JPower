@@ -13,7 +13,7 @@ import java.util.Map;
 
 /**
  * @ClassName BaseBeanCopier
- * @Description TODO
+ * @Description TODO bean复制支持
  * @Author 郭丁志
  * @Date 2020-07-23 16:43
  * @Version 1.0

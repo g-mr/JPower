@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
  * @Description //TODO
  * @Date 11:02 2019-11-26
  **/
+@Deprecated
 public class LoginTokenCache {
 
     /**

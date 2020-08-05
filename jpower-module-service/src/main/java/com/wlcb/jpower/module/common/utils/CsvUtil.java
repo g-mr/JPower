@@ -69,13 +69,7 @@ public class CsvUtil {
             logger.error("读取文件出错：{}",e.getMessage());
             throw e;
         }finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    logger.error("流关闭出错：{}",e.getMessage());
-                }
-            }
+            Fc.closeQuietly(reader);
         }
 
     }

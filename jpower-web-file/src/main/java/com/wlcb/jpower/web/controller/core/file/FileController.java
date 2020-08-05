@@ -11,12 +11,14 @@ import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
 import com.wlcb.jpower.module.dbs.entity.core.file.TbCoreFile;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 
@@ -109,6 +111,33 @@ public class FileController extends BaseController {
             logger.error("文件下载失败，e={}",e.getMessage());
             throw new BusinessException(file.getName()+"文件下载失败");
         }
+    }
 
+    /**
+     * @author 郭丁志
+     * @Description //TODO 对导出文件进行下载
+     * @date 20:59 2020/8/5 0005
+     * @param fileName 下载完成
+     * @return void
+     */
+    @GetMapping("/export/download")
+    public void syncStart(String fileName){
+
+        JpowerAssert.isTrue(FileUtil.isValidFilename(fileName), JpowerError.BUSINESS,"文件名称("+fileName+")非法，不允许下载。 ");
+
+        File file = new File(downloadPath+File.separator+fileName);
+        if (file.exists()){
+            HttpServletResponse response = getResponse();
+            try {
+                FileUtil.download(file, response,"导出数据.xlsx");
+            } catch (IOException e) {
+                logger.error("下载文件出错。file={},error={}",file.getAbsolutePath(),e.getMessage());
+                throw new BusinessException("下载文件出错，请联系网站管理员");
+            }
+
+            FileUtil.deleteFile(file);
+        }else {
+            throw new BusinessException(fileName+"文件不存在，无法下载");
+        }
     }
 }

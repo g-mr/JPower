@@ -1,8 +1,6 @@
-package com.wlcb.jpower.web.sync.utils;
+package com.wlcb.jpower.module.common.utils;
 
 import com.alibaba.fastjson.JSON;
-import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.StrUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
@@ -11,7 +9,10 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -262,7 +263,7 @@ public class ExcelUtil {
         //写入数据
         wb.write(stream);
         //关闭文件流
-        stream.close();
+        Fc.closeQuietly(stream);
     }
 
     public static void main(String[] args) {

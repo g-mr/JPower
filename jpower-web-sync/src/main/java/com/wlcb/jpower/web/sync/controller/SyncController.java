@@ -26,8 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("sync")
 public class SyncController {
 
-    private static final Logger logger = LoggerFactory.getLogger(SyncController.class);
-
     @Resource
     private SyncService syncService;
 

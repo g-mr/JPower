@@ -1,14 +1,11 @@
-package com.wlcb.jpower.utils.excel;
+package com.wlcb.jpower.module.common.support;
 
+import com.wlcb.jpower.module.base.annotation.Excel;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.base.vo.ResponseData;
-import com.wlcb.jpower.module.base.annotation.Excel;
+import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.DateUtil;
-import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
-import com.wlcb.jpower.module.common.utils.ReflectUtil;
-import com.wlcb.jpower.web.sync.utils.ExcelUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFFont;
@@ -20,7 +17,10 @@ import org.apache.poi.xssf.usermodel.XSSFDataValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -83,7 +83,7 @@ public class BeanExcelUtil<T> {
      */
     private Sheet sheet;
 
-    public BeanExcelUtil(Class<T> clazz,String downloadPath){
+    public BeanExcelUtil(Class<T> clazz, String downloadPath){
         this.clazz = clazz;
         this.downloadPath = downloadPath;
     }
@@ -250,28 +250,8 @@ public class BeanExcelUtil<T> {
         }
         finally
         {
-            if (wb != null)
-            {
-                try
-                {
-                    wb.close();
-                }
-                catch (IOException e1)
-                {
-                    e1.printStackTrace();
-                }
-            }
-            if (out != null)
-            {
-                try
-                {
-                    out.close();
-                }
-                catch (IOException e1)
-                {
-                    e1.printStackTrace();
-                }
-            }
+            Fc.closeQuietly(wb);
+            Fc.closeQuietly(out);
         }
     }
 
