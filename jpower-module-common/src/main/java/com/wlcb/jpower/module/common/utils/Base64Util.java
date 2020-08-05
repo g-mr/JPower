@@ -1,8 +1,6 @@
 package com.wlcb.jpower.module.common.utils;
 
 import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
 import sun.misc.BASE64Decoder;
 
 import java.io.*;

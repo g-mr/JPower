@@ -1,14 +1,10 @@
 package com.wlcb.jpower.module.common.utils;
 
 import com.wlcb.jpower.module.common.auth.TokenConstant;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 
 /**
  * @author mr.gmac

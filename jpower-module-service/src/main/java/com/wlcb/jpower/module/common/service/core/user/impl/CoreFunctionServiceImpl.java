@@ -11,7 +11,6 @@ import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
-import com.wlcb.jpower.module.dbs.dao.JpowerServiceImpl;
 import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreFunctionDao;
 import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreRoleFunctionDao;
 import com.wlcb.jpower.module.dbs.dao.core.user.mapper.TbCoreFunctionMapper;
@@ -26,7 +25,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 
 /**
  * @author mr.gmac

@@ -1,14 +1,10 @@
 package com.wlcb.jpower.module.mp.support;
 
-import ch.qos.logback.classic.gaffer.PropertyUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
-import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.LambdaUtils;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
-import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.node.TreeNode;
 import com.wlcb.jpower.module.common.support.ChainMap;
@@ -18,8 +14,6 @@ import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import org.apache.ibatis.reflection.property.PropertyNamer;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Map;
 
 /**

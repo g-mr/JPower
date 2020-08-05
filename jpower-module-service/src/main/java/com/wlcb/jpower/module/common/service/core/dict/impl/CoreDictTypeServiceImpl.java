@@ -10,7 +10,6 @@ import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
-import com.wlcb.jpower.module.dbs.dao.JpowerServiceImpl;
 import com.wlcb.jpower.module.dbs.dao.core.dict.TbCoreDictTypeDao;
 import com.wlcb.jpower.module.dbs.dao.core.dict.mapper.TbCoreDictTypeMapper;
 import com.wlcb.jpower.module.dbs.entity.core.dict.TbCoreDict;
@@ -20,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author mr.gmac

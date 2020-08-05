@@ -16,8 +16,11 @@ public class UserInfo {
 
     private static final long serialVersionUID = 1L;
 
+    /** core_user表 **/
     public static final Integer TBALE_USER_TYPE_CORE = 0;
+    /** 其他表 **/
     public static final Integer TBALE_USER_TYPE_BUSS = 1;
+    /** 白名单 **/
     public static final Integer TBALE_USER_TYPE_WHILT = 2;
 
     /**
@@ -72,6 +75,6 @@ public class UserInfo {
      */
     private List<String> roleIds;
 
-    /** 用来表示是core_user数据还是其他表映射的数据 0系统表 1业务表 2白名单 **/
-    private Integer isSysUser = 0;
+    /** 用来表示是core_user表数据还是其他表映射的数据 0core_user系统表 1业务表 2白名单 **/
+    private Integer isSysUser = TBALE_USER_TYPE_CORE;
 }

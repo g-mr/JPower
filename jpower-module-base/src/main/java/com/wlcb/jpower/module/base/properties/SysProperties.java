@@ -1,6 +1,9 @@
 
 package com.wlcb.jpower.module.base.properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -11,6 +14,9 @@ import java.util.Properties;
  * @author mr.gmac
  */
 public class SysProperties {
+
+    private final Logger logger = LoggerFactory.getLogger(SysProperties.class);
+
     private static SysProperties configuration = null;
     private String PROD_FILE_PATH = "sysConfig.properties";
     Properties prop = null;
@@ -45,9 +51,13 @@ public class SysProperties {
     private void readConfig(){
         try{
             prop = new Properties();
-//            inputStream = this.getClass().getClassLoader().getResourceAsStream(PROD_FILE_PATH);
-            inputStream = new FileInputStream(getRootPath()+File.separator+PROD_FILE_PATH);
-            prop.load(inputStream);
+            File file = new File(getRootPath()+File.separator+PROD_FILE_PATH);
+            if (file.exists()){
+                inputStream = new FileInputStream(file);
+                prop.load(inputStream);
+            }else {
+                logger.warn("未查找到sysConfig.properties配置文件");
+            }
         }catch (IOException e){
             e.printStackTrace();
         } finally {
@@ -55,7 +65,7 @@ public class SysProperties {
                 try{
                     inputStream.close();
                 } catch (Exception e) {
-
+                    e.printStackTrace();
                 }
             }
         }
@@ -66,7 +76,7 @@ public class SysProperties {
      * 如果未打成jar，则返回resources所在目录
      * @return
      */
-    public String getRootPath() throws UnsupportedEncodingException {
+    private String getRootPath() throws UnsupportedEncodingException {
         // 项目的编译文件的根目录
         String path = URLDecoder.decode(this.getClass().getResource("/").getPath(), String.valueOf(StandardCharsets.UTF_8));
         if (path.startsWith("file:")) {

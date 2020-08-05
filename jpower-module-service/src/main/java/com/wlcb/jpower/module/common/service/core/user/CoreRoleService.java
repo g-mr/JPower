@@ -3,8 +3,6 @@ package com.wlcb.jpower.module.common.service.core.user;
 import com.wlcb.jpower.module.common.service.base.BaseService;
 import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreRole;
 
-import java.util.List;
-
 /**
  * @author mr.gmac
  */

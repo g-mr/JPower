@@ -1,7 +1,6 @@
 package com.wlcb.jpower.module.dbs.entity.core.city;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import lombok.Data;

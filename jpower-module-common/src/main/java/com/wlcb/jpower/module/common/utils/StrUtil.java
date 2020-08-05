@@ -1,12 +1,8 @@
 package com.wlcb.jpower.module.common.utils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.UnsupportedEncodingException;
-import java.util.*;
 
 /**
  * @ClassName StrUtil

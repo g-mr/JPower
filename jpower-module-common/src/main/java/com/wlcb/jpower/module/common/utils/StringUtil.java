@@ -4,8 +4,8 @@ import com.wlcb.jpower.module.base.enums.RandomType;
 import com.wlcb.jpower.module.common.support.StrFormatter;
 import com.wlcb.jpower.module.common.support.StrSpliter;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
-import org.springframework.util.StringUtils;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 import org.springframework.web.util.HtmlUtils;
 
 import java.io.StringReader;

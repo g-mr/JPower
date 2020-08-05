@@ -3,11 +3,11 @@ package com.wlcb.jpower.module.common.support;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.lang.Thread.UncaughtExceptionHandler;
 
 /**
  * @ClassName NamedThreadFactory

@@ -129,9 +129,9 @@ INSERT INTO tb_core_role_function (id, role_id, function_id, create_user, create
 INSERT INTO tb_core_role_function (id, role_id, function_id, create_user, create_time, update_user, update_time, status, is_deleted) VALUES ('0d4983b8d34911ea97e4a34c90effc21', '1', 'a4d1c7e2d34711ea97e4a34c90effc21', 'root', '2020-08-01 00:15:29', 'root', '2020-08-01 00:15:29', 1, 0);
 
 
-INSERT INTO tb_core_param (id, code, name, value, note, create_user, create_time, update_user, update_time, status,is_deleted) VALUES ('39d36d80997f11ea80eb7a10df2f4ffc', 'JPOWER_IS_ACTIVATION', '新增用户默认是否激活', '1', '注册用户默认是否激活', 'root', '2020-05-12 10:33:50', 'root', '2020-05-12 10:33:50', 1,0);
-INSERT INTO tb_core_param (id, code, name, value, note, create_user, create_time, update_user, update_time, status,is_deleted) VALUES ('39d36d80127f11ea80eb7a10df2f4ffc', 'JPOWER_USER_DEFAULT_PASSWORD', '用户默认登录密码', '123456', '系统用户默认登录密码', 'root', '2020-05-12 10:33:50', 'root', '2020-05-12 10:33:50', 1,0);
-INSERT INTO tb_core_param (id, code, name, value, note, create_user, create_time, update_user, update_time, status,is_deleted) VALUES ('39d36d80127d11ea80eb7a10df2f4ffc', 'JPOWER_IP_LIST', '白名单地址', '', '白名单地址,多个逗号分割', 'root', '2020-05-12 10:33:50', 'root', '2020-05-12 10:33:50', 1,0);
+INSERT INTO tb_core_param (id, code, name, value, note, create_user, create_time, update_user, update_time, status,is_deleted,is_effect) VALUES ('39d36d80997f11ea80eb7a10df2f4ffc', 'JPOWER_IS_ACTIVATION', '新增用户默认是否激活', '1', '注册用户默认是否激活', 'root', '2020-05-12 10:33:50', 'root', '2020-05-12 10:33:50', 1,0,1);
+INSERT INTO tb_core_param (id, code, name, value, note, create_user, create_time, update_user, update_time, status,is_deleted,is_effect) VALUES ('39d36d80127f11ea80eb7a10df2f4ffc', 'JPOWER_USER_DEFAULT_PASSWORD', '用户默认登录密码', '123456', '系统用户默认登录密码', 'root', '2020-05-12 10:33:50', 'root', '2020-05-12 10:33:50', 1,0,1);
+INSERT INTO tb_core_param (id, code, name, value, note, create_user, create_time, update_user, update_time, status,is_deleted,is_effect) VALUES ('39d36d80127d11ea80eb7a10df2f4ffc', 'JPOWER_IP_LIST', '白名单地址', '', '白名单地址,多个逗号分割', 'root', '2020-05-12 10:33:50', 'root', '2020-05-12 10:33:50', 1,0,1);
 
 
 INSERT INTO tb_core_dict_type (id, dict_type_code, dict_type_name, locale_code, note, del_enabled, sort_num, dict_type_pcode, create_user, create_time, update_user, update_time, status, is_deleted) VALUES ('35b523cad34e11ea97e4a34c90effc21', 'TOP_SYSTEM', '系统框架', 'zh_cn', null, 'N', 1, '-1', 'root', '2020-08-01 00:52:25', 'root', '2020-08-01 00:52:25', 1, 0);

@@ -3,35 +3,26 @@ package com.wlcb.jpower.module.common.utils.param;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.service.core.params.CoreParamService;
 import com.wlcb.jpower.module.common.service.redis.RedisUtils;
-import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
+import com.wlcb.jpower.module.common.utils.SpringUtil;
+import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
 
 /**
  * @ClassName ParamConfig
- * @Description TODO 获取参数
+ * @Description TODO 获取配置文件参数
  * @Author 郭丁志
  * @Date 2020-05-06 14:55
  * @Version 1.0
  */
-@Component
+@AllArgsConstructor
 public class ParamConfig {
-
-    @Autowired
-    private RedisUtils utils;
-    @Autowired
-    private CoreParamService service;
 
     private static RedisUtils redisUtils;
     private static CoreParamService paramService;
 
-    @PostConstruct
-    public void init() {
-        redisUtils = utils;
-        paramService = service;
+    static {
+        redisUtils = SpringUtil.getBean(RedisUtils.class);
+        paramService = SpringUtil.getBean(CoreParamService.class);
     }
 
     private static final String prefix = CacheNames.PARAMS_REDIS_KEY;
@@ -40,8 +31,6 @@ public class ParamConfig {
      * @Author 郭丁志
      * @Description //TODO 获取string类型参数
      * @Date 15:47 2020-05-06
-     * @Param [key]
-     * @return java.lang.String
      **/
     public static String getString(String code){
         String vlaue = (String) redisUtils.get(prefix+code);

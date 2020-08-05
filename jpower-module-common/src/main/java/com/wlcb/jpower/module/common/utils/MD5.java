@@ -1,11 +1,5 @@
 package com.wlcb.jpower.module.common.utils;
 
-import java.security.MessageDigest;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * MD5
  * MD5加密算法

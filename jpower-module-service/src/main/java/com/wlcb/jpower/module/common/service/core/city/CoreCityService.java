@@ -1,11 +1,8 @@
 package com.wlcb.jpower.module.common.service.core.city;
 
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.service.base.BaseService;
-import com.wlcb.jpower.module.dbs.dao.JpowerServiceImpl;
-import com.wlcb.jpower.module.dbs.dao.core.city.mapper.TbCoreCityMapper;
 import com.wlcb.jpower.module.dbs.entity.core.city.TbCoreCity;
 
 import java.util.List;

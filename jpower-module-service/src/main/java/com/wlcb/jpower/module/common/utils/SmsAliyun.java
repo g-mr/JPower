@@ -12,8 +12,6 @@ import com.aliyuncs.http.MethodType;
 import com.aliyuncs.profile.DefaultProfile;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Map;
-
 /**
  * @ClassName SmsAliyun
  * @Description TODO 阿里云短信

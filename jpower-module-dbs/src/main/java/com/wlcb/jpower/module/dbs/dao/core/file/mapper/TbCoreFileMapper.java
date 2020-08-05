@@ -1,7 +1,6 @@
 package com.wlcb.jpower.module.dbs.dao.core.file.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.wlcb.jpower.module.dbs.entity.core.dict.TbCoreDict;
 import com.wlcb.jpower.module.dbs.entity.core.file.TbCoreFile;
 import org.springframework.stereotype.Component;
 

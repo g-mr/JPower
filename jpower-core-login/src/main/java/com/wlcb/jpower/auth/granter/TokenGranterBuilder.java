@@ -1,9 +1,11 @@
 package com.wlcb.jpower.auth.granter;
 
+import com.wlcb.jpower.auth.utils.TokenUtil;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SpringUtil;
+import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreUserDao;
 import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreUserRoleDao;
 import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreUserRole;
@@ -65,6 +67,11 @@ public class TokenGranterBuilder {
     public static UserInfo toUserInfo(TbCoreUser result) {
         UserInfo userInfo = null;
         if(result != null){
+
+            if (Fc.equals(result.getActivationStatus(), ConstantsEnum.YN01.N.getValue())){
+                throw new BusinessException(TokenUtil.USER_NOT_ACTIVATION);
+            }
+
             List list  = coreUserRoleDao.listObjs(Condition.<TbCoreUserRole>getQueryWrapper()
                     .lambda().select(TbCoreUserRole::getRoleId).eq(TbCoreUserRole::getUserId,result.getId()));
             userInfo = new UserInfo();

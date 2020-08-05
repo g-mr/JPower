@@ -6,12 +6,11 @@ import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.service.base.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.service.core.params.CoreParamService;
 import com.wlcb.jpower.module.common.service.redis.RedisUtils;
-import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
 import com.wlcb.jpower.module.dbs.dao.core.params.TbCoreParamsDao;
 import com.wlcb.jpower.module.dbs.dao.core.params.mapper.TbCoreParamsMapper;
 import com.wlcb.jpower.module.dbs.entity.core.params.TbCoreParam;
+import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,18 +19,15 @@ import java.util.List;
  * @author mr.gmac
  */
 @Service("coreParamService")
+@AllArgsConstructor
 public class CoreParamServiceImpl extends BaseServiceImpl<TbCoreParamsMapper,TbCoreParam> implements CoreParamService {
 
-    @Autowired
-    private TbCoreParamsMapper paramsMapper;
-    @Autowired
     private TbCoreParamsDao paramsDao;
-    @Autowired
     private RedisUtils redisUtils;
 
     @Override
     public String selectByCode(String code) {
-        return paramsMapper.selectByCode(code);
+        return baseMapper.selectByCode(code);
     }
 
     @Override
@@ -57,34 +53,23 @@ public class CoreParamServiceImpl extends BaseServiceImpl<TbCoreParamsMapper,TbC
     }
 
     @Override
-    public Integer delete(String id) {
-
+    public Boolean delete(String id) {
         TbCoreParam coreParam = paramsDao.getById(id);
-
         Boolean c = paramsDao.removeById(id);
-
         if (c){
-            redisUtils.remove(coreParam.getCode());
+            redisUtils.remove(CacheNames.PARAMS_REDIS_KEY+coreParam.getCode());
         }
-
-        return c?1:0;
+        return c;
     }
 
     @Override
-    public Integer update(TbCoreParam coreParam) {
-        return paramsDao.updateById(coreParam)?1:0;
-    }
-
-    @Override
-    public Integer add(TbCoreParam coreParam) {
-        coreParam.setUpdateUser(coreParam.getCreateUser());
-        return paramsDao.save(coreParam)?1:0;
+    public Boolean update(TbCoreParam coreParam) {
+        return paramsDao.updateById(coreParam);
     }
 
     @Override
     public void effectAll() {
-        List<TbCoreParam> params = list(new TbCoreParam());
-
+        List<TbCoreParam> params = paramsDao.list();
         for (TbCoreParam param : params) {
             if (StringUtils.isNotBlank(param.getValue())){
                 redisUtils.set(CacheNames.PARAMS_REDIS_KEY+param.getCode(),param.getValue());

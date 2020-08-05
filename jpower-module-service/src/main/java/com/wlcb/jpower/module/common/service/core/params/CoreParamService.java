@@ -35,7 +35,7 @@ public interface CoreParamService extends BaseService<TbCoreParam> {
      * @Param [id]
      * @return java.lang.Integer
      **/
-    Integer delete(String id);
+    Boolean delete(String id);
 
     /**
      * @Author 郭丁志
@@ -44,16 +44,7 @@ public interface CoreParamService extends BaseService<TbCoreParam> {
      * @Param [coreParam]
      * @return java.lang.Integer
      **/
-    Integer update(TbCoreParam coreParam);
-
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 新增系统参数
-     * @Date 10:17 2020-05-08
-     * @Param [coreParam]
-     * @return java.lang.Integer
-     **/
-    Integer add(TbCoreParam coreParam);
+    Boolean update(TbCoreParam coreParam);
 
     /**
      * @Author 郭丁志

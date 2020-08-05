@@ -1,26 +1,24 @@
 package com.wlcb.jpower.web.controller.core.params;
 
-import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
+import com.wlcb.jpower.module.base.enums.JpowerError;
+import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.service.core.params.CoreParamService;
 import com.wlcb.jpower.module.common.service.redis.RedisUtils;
-import com.wlcb.jpower.module.common.utils.BeanUtil;
+import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
-import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
-import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
+import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.dbs.entity.core.params.TbCoreParam;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.wlcb.jpower.module.mp.support.Condition;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -32,27 +30,24 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/core/param")
+@AllArgsConstructor
 public class ParamsController extends BaseController {
 
-    @Resource
     private RedisUtils redisUtils;
-    @Resource
     private CoreParamService paramService;
 
     /**
      * @Author 郭丁志
      * @Description //TODO 系统参数列表
-     * @Date 16:57 2020-05-07
+         * @Date 16:57 2020-05-07
      * @Param [coreParam]
      * @return com.wlcb.jpower.module.base.vo.ResponseData
      **/
     @RequestMapping(value = "/list",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
     public ResponseData list(TbCoreParam coreParam){
-
         PaginationContext.startPage();
         List<TbCoreParam> list = paramService.list(coreParam);
-
-        return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"获取成功", JSON.toJSON(new PageInfo<>(list)),true);
+        return ReturnJsonUtil.ok("获取成功", new PageInfo<>(list));
     }
 
     /**
@@ -64,19 +59,8 @@ public class ParamsController extends BaseController {
      **/
     @RequestMapping(value = "/delete",method = RequestMethod.DELETE,produces="application/json")
     public ResponseData delete(String id){
-
-        if (StringUtils.isBlank(id)){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,"id不可为空",false);
-        }
-
-        Integer count = paramService.delete(id);
-
-        if (count > 0){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"删除成功",true);
-        }else {
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"删除失败",false);
-        }
-
+        JpowerAssert.notEmpty(id, JpowerError.Arg,"id不可为空");
+        return ReturnJsonUtil.status(paramService.delete(id));
     }
 
     /**
@@ -88,22 +72,8 @@ public class ParamsController extends BaseController {
      **/
     @RequestMapping(value = "/update",method = RequestMethod.PUT,produces="application/json")
     public ResponseData update(TbCoreParam coreParam){
-
-        ResponseData responseData = BeanUtil.allFieldIsNULL(coreParam,"id",
-                "updateUser");
-
-        if (responseData.getCode() == ConstantsReturn.RECODE_NULL){
-            return responseData;
-        }
-
-        Integer count = paramService.update(coreParam);
-
-        if (count > 0){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"更新成功",true);
-        }else {
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"更新失败",false);
-        }
-
+        JpowerAssert.notEmpty(coreParam.getId(), JpowerError.Arg,"id不可为空");
+        return ReturnJsonUtil.status(paramService.update(coreParam));
     }
 
     /**
@@ -115,27 +85,13 @@ public class ParamsController extends BaseController {
      **/
     @RequestMapping(value = "/add",method = RequestMethod.POST,produces="application/json")
     public ResponseData add(TbCoreParam coreParam){
+        JpowerAssert.notEmpty(coreParam.getCode(), JpowerError.Arg,"编号值不可为空");
+        JpowerAssert.notEmpty(coreParam.getName(), JpowerError.Arg,"参数名称不可为空");
+        JpowerAssert.notEmpty(coreParam.getValue(), JpowerError.Arg,"参数值不可为空");
 
-        ResponseData responseData = BeanUtil.allFieldIsNULL(coreParam,
-                "createUser","code","name","value");
+        JpowerAssert.isEmpty(paramService.selectByCode(coreParam.getCode()), JpowerError.BUSINESS,"该系统参数已存在");
 
-        if (responseData.getCode() == ConstantsReturn.RECODE_NULL){
-            return responseData;
-        }
-
-        String value = paramService.selectByCode(coreParam.getCode());
-        if (StringUtils.isNotBlank(value)){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该系统参数已存在",false);
-        }
-
-        Integer count = paramService.add(coreParam);
-
-        if (count > 0){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"新增成功",true);
-        }else {
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"新增失败",false);
-        }
-
+        return ReturnJsonUtil.status(paramService.save(coreParam));
     }
 
     /**
@@ -147,17 +103,19 @@ public class ParamsController extends BaseController {
      **/
     @RequestMapping(value = "/takeEffect",method = RequestMethod.GET,produces="application/json")
     public ResponseData takeEffect(String code){
+        JpowerAssert.notEmpty(code, JpowerError.Arg,"编号值不可为空");
 
-        if (StringUtils.isBlank(code)){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,"code不可为空",false);
+        TbCoreParam param = paramService.getOne(Condition.<TbCoreParam>getQueryWrapper().lambda().eq(TbCoreParam::getCode,code));
+        JpowerAssert.notTrue(Fc.equals(param.getIsEffect(), ConstantsEnum.YN01.N.getValue()), JpowerError.BUSINESS,"该参数无法立即生效，请重启项目");
+
+        if (Fc.isNotEmpty(param) && Fc.isNotBlank(param.getValue())){
+            redisUtils.set(CacheNames.PARAMS_REDIS_KEY+code,param.getValue());
+        }else {
+            if (Fc.isNull(param)){
+                return ReturnJsonUtil.fail("该参数不存在");
+            }
         }
-
-        String value = paramService.selectByCode(code);
-        if (StringUtils.isNotBlank(value)){
-            redisUtils.set(CacheNames.PARAMS_REDIS_KEY+code,value);
-        }
-
-        return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"操作成功",true);
+        return ReturnJsonUtil.ok("操作成功");
     }
 
     /**
@@ -168,10 +126,8 @@ public class ParamsController extends BaseController {
      **/
     @RequestMapping(value = "/effectAll",method = RequestMethod.GET,produces="application/json")
     public ResponseData effectAll(){
-
         paramService.effectAll();
-
-        return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"操作完成",true);
+        return ReturnJsonUtil.ok("操作完成");
     }
 
 }

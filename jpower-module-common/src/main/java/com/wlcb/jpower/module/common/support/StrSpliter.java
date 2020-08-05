@@ -1,8 +1,8 @@
 package com.wlcb.jpower.module.common.support;
 
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.common.utils.StringUtil;
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
 
 import java.util.ArrayList;
 import java.util.List;

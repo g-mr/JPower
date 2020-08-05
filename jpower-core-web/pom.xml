@@ -26,10 +26,6 @@
             <artifactId>jpower-module-service</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.wlcb</groupId>
-            <artifactId>jpower-web-sync</artifactId>
-        </dependency>
 
     </dependencies>
 

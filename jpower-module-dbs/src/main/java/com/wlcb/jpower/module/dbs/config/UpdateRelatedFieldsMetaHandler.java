@@ -2,7 +2,6 @@ package com.wlcb.jpower.module.dbs.config;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.wlcb.jpower.module.common.utils.StringUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 

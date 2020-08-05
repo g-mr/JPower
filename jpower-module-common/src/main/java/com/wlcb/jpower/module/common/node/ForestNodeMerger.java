@@ -4,7 +4,6 @@ import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @ClassName ForestNodeMerger

@@ -1,7 +1,6 @@
 package com.wlcb.jpower.module.common.service.core.user;
 
 import com.wlcb.jpower.module.common.service.base.BaseService;
-import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreRoleFunction;
 
 import java.util.List;

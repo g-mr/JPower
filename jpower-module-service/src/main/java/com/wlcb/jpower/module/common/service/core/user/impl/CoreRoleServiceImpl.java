@@ -7,11 +7,8 @@ import com.wlcb.jpower.module.common.service.core.user.CoreRoleService;
 import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreRoleDao;
 import com.wlcb.jpower.module.dbs.dao.core.user.mapper.TbCoreRoleMapper;
 import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreRole;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * @author mr.gmac

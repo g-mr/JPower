@@ -13,8 +13,6 @@ import org.springframework.transaction.interceptor.DefaultTransactionAttribute;
 import org.springframework.transaction.interceptor.NameMatchTransactionAttributeSource;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 
-import javax.annotation.Resource;
-
 /**
  * @ClassName TransactionAdviceConfig
  * @Description TODO 全局事务配置

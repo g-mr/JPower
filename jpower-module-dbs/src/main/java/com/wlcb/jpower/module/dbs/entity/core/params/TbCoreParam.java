@@ -1,5 +1,7 @@
 package com.wlcb.jpower.module.dbs.entity.core.params;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import lombok.Data;
 
@@ -20,5 +22,11 @@ public class TbCoreParam extends BaseEntity implements Serializable {
     private String code;
     private String name;
     private String value;
+    /** 是否支持立即生效，0否 1是 **/
+    @Dict(name = "YN01", attributes = "isEffectStr")
+    private Integer isEffect;
     private String note;
+
+    @TableField(exist = false)
+    private Integer isEffectStr;
 }

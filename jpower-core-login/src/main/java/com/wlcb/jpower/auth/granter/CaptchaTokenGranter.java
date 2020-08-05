@@ -27,7 +27,6 @@ import com.wlcb.jpower.module.common.utils.WebUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 /**

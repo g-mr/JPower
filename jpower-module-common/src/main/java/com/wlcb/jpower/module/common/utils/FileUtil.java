@@ -1,7 +1,7 @@
 package com.wlcb.jpower.module.common.utils;
 
-import com.wlcb.jpower.module.common.utils.constants.CharPool;
 import com.wlcb.jpower.module.common.support.NamedThreadFactory;
+import com.wlcb.jpower.module.common.utils.constants.CharPool;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
 

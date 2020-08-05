@@ -1,7 +1,5 @@
 package com.wlcb.jpower.web.controller.core.role;
 
-import com.alibaba.fastjson.JSON;
-import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.module.base.annotation.Log;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
@@ -14,7 +12,6 @@ import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreRole;
-import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreRoleFunction;
 import com.wlcb.jpower.module.dbs.vo.RoleVo;
 import com.wlcb.jpower.module.mp.support.Condition;
 import org.apache.commons.lang3.StringUtils;

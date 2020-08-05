@@ -139,13 +139,13 @@ create table tb_core_role_function(
   unique key core_dict_type(role_id, function_id) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '角色菜单表';
 
-
 drop table if exists tb_core_param;
 create table tb_core_param(
   id varchar(32) not null COMMENT '主建',
   code varchar(100) not null COMMENT '参数code',
   name varchar(100) default null COMMENT '参数名称',
   value text not null COMMENT '参数值',
+  is_effect tinyint(1) default 1 comment '是否支持立即生效 0否 1是',
   note varchar(256)  default null COMMENT '备注',
   create_user varchar(32) default 'root' not null comment '创建人',
   create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
@@ -156,9 +156,6 @@ create table tb_core_param(
   PRIMARY KEY (id) USING BTREE,
   unique key code_index(code) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统参数表';
-
-
-
 
 drop table if exists tb_core_dict_type;
 create table tb_core_dict_type(
