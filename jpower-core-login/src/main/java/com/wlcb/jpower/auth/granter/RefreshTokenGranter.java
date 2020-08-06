@@ -15,6 +15,9 @@
  */
 package com.wlcb.jpower.auth.granter;
 
+import com.wlcb.jpower.auth.utils.TokenUtil;
+import com.wlcb.jpower.module.base.enums.JpowerError;
+import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.common.auth.TokenConstant;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.support.ChainMap;
@@ -25,8 +28,6 @@ import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Objects;
 
 /**
  * @Author 郭丁志
@@ -53,7 +54,8 @@ public class RefreshTokenGranter implements TokenGranter {
 		String userType = tokenParameter.getStr("userType");
 		if (Fc.isNoneBlank(grantType, refreshToken) && grantType.equals(TokenConstant.REFRESH_TOKEN)) {
 			Claims claims = SecureUtil.parseJWT(refreshToken);
-			String tokenType = Fc.toStr(Objects.requireNonNull(claims).get(TokenConstant.TOKEN_TYPE));
+			JpowerAssert.notTrue(Fc.isNull(claims), JpowerError.BUSINESS, TokenUtil.TOKEN_EXPIRED);
+			String tokenType = Fc.toStr(claims.get(TokenConstant.TOKEN_TYPE));
 			if (tokenType.equals(TokenConstant.REFRESH_TOKEN)) {
 				String userId = Fc.toStr(claims.get(TokenConstant.USER_ID));
 

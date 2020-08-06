@@ -2,12 +2,20 @@ package com.wlcb.jpower.auth.granter;
 
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.support.ChainMap;
+import com.wlcb.jpower.module.common.utils.DigestUtil;
+import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.SpringUtil;
+import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreUserDao;
+import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
+import com.wlcb.jpower.module.mp.support.Condition;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author 郭丁志
- * @Description //TODO 授权需求实现，如果有业务上的特殊需求，继承该类实现即可
+ * @Description //TODO 授权需求实现，如果有业务上的特殊需求，继承该类实现即可；继承的必须加上@Configuration注解
  * @date 22:05 2020/8/6 0006
  */
+@Configuration
 public interface AuthUserInfo {
 
     /**
@@ -16,7 +24,12 @@ public interface AuthUserInfo {
      * @date 22:43 2020/8/6 0006
      */
     default UserInfo getPasswordUserInfo(ChainMap tokenParameter){
-        return null;
+        String account = tokenParameter.getStr("account");
+        String password = tokenParameter.getStr("password");
+
+        TbCoreUser result = SpringUtil.getBean(TbCoreUserDao.class).getOne(Condition.<TbCoreUser>getQueryWrapper()
+                .lambda().eq(TbCoreUser::getLoginId,account).eq(TbCoreUser::getPassword, DigestUtil.encrypt(password)));
+        return TokenGranterBuilder.toUserInfo(result);
     }
 
     /**
@@ -25,6 +38,11 @@ public interface AuthUserInfo {
      * @date 22:43 2020/8/6 0006
      */
     default UserInfo getCaptchaUserInfo(ChainMap tokenParameter){
+        String account = tokenParameter.getStr("account");
+        String password = tokenParameter.getStr("password");
+        if (Fc.isNoneBlank(account, password)) {
+            return getPasswordUserInfo(tokenParameter);
+        }
         return null;
     }
 
@@ -34,7 +52,11 @@ public interface AuthUserInfo {
      * @date 22:43 2020/8/6 0006
      */
     default UserInfo getOtherCodeUserInfo(ChainMap tokenParameter){
-        return null;
+        String otherCode = tokenParameter.getStr("otherCode");
+
+        TbCoreUser result = SpringUtil.getBean(TbCoreUserDao.class).getOne(Condition.<TbCoreUser>getQueryWrapper()
+                .lambda().eq(TbCoreUser::getOtherCode,otherCode));
+        return TokenGranterBuilder.toUserInfo(result);
     }
 
     /**
@@ -46,6 +68,7 @@ public interface AuthUserInfo {
      * @return UserInfo 只需要实现获取UserInfo即可，token的刷新不用去管
      */
     default UserInfo getRefreshUserInfo(String userType,String userId){
-        return null;
+        TbCoreUser result = SpringUtil.getBean(TbCoreUserDao.class).getById(userId);
+        return TokenGranterBuilder.toUserInfo(result);
     }
 }

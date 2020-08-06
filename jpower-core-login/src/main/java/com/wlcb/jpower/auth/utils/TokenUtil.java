@@ -26,6 +26,7 @@ public class TokenUtil {
     public final static String USER_TYPE_HEADER_KEY = "User-Type";
     public final static String DEFAULT_USER_TYPE = "web";
     public final static String USER_NOT_FOUND = "用户名或密码错误";
+    public final static String TOKEN_EXPIRED = "token已过期，请重新登陆";
     public final static String USER_NOT_ACTIVATION = "用户尚未激活";
 
     /**
