@@ -36,7 +36,7 @@
                 <configuration>
                     <classifier>exec</classifier>
                     <!--生成可执行jar的名称-->
-                    <finalName>user</finalName>
+                    <finalName>file</finalName>
                 </configuration>
             </plugin>
             <plugin>
@@ -55,7 +55,7 @@
                 <version>3.0.0</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
-                    <warName>user</warName>
+                    <warName>file</warName>
                 </configuration>
             </plugin>
         </plugins>

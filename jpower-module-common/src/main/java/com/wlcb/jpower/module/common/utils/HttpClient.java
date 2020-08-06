@@ -16,6 +16,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.KeyManagerFactory;
@@ -90,8 +91,10 @@ public class HttpClient {
             result = EntityUtils.toString(entity);
         } catch (ClientProtocolException e) {
             e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         } finally {
             // 关闭资源
             Fc.closeQuietly(response);
