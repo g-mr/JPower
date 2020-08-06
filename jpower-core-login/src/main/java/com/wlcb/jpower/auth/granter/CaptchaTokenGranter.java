@@ -22,9 +22,10 @@ import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.service.redis.RedisUtils;
 import com.wlcb.jpower.module.common.support.ChainMap;
+import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.WebUtil;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,13 +36,16 @@ import javax.servlet.http.HttpServletRequest;
  * @Date 00:50 2020-07-28
  **/
 @Component
-@AllArgsConstructor
 public class CaptchaTokenGranter implements TokenGranter {
 
 	public static final String GRANT_TYPE = "captcha";
 
+	@Autowired
 	private RedisUtils redisUtil;
+	@Autowired
 	private PasswordTokenGranter passwordTokenGranter;
+	@Autowired(required = false)
+	private AuthUserInfo authUserInfo;
 
 	@Override
 	public UserInfo grant(ChainMap tokenParameter) {
@@ -55,6 +59,18 @@ public class CaptchaTokenGranter implements TokenGranter {
 		if (code == null || !StringUtil.equalsIgnoreCase(redisCode, code)) {
 			throw new BusinessException(TokenUtil.CAPTCHA_NOT_CORRECT);
 		}
-		return passwordTokenGranter.grant(tokenParameter);
+
+		String account = tokenParameter.getStr("account");
+		String password = tokenParameter.getStr("password");
+
+		if (!Fc.isNull(authUserInfo)){
+			if (Fc.isNoneBlank(account, password)) {
+				return authUserInfo.getCaptchaUserInfo(tokenParameter);
+			}
+		}else {
+			return passwordTokenGranter.grant(tokenParameter);
+		}
+
+		return null;
 	}
 }

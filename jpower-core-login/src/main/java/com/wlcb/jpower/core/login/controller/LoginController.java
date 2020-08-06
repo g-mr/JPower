@@ -73,7 +73,7 @@ public class LoginController extends BaseController {
                 .set("password", passWord)
                 .set("grantType", grantType)
                 .set("refreshToken", refreshToken)
-                .set("userType", userType)
+                .set("userType", userType)  //扩展参数，各自业务根据需求使用
                 .set("phone", phone)
                 .set("phoneCode", phoneCode)
                 .set("otherCode", otherCode);

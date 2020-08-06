@@ -28,5 +28,5 @@ public class TbCoreParam extends BaseEntity implements Serializable {
     private String note;
 
     @TableField(exist = false)
-    private Integer isEffectStr;
+    private String isEffectStr;
 }

@@ -22,7 +22,7 @@ import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreUserDao;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
 import com.wlcb.jpower.module.mp.support.Condition;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
@@ -32,33 +32,29 @@ import org.springframework.stereotype.Component;
  * @Date 00:50 2020-07-28
  **/
 @Component("passwordTokenGranter")
-@AllArgsConstructor
 public class PasswordTokenGranter implements TokenGranter {
 
 	public static final String GRANT_TYPE = "password";
 
+	@Autowired
 	private TbCoreUserDao coreUserDao;
+	@Autowired(required = false)
+	private AuthUserInfo authUserInfo;
 
 	@Override
 	public UserInfo grant(ChainMap tokenParameter) {
 		String account = tokenParameter.getStr("account");
 		String password = tokenParameter.getStr("password");
-		UserInfo userInfo = null;
 		if (Fc.isNoneBlank(account, password)) {
-			// 获取用户类型
-			String userType = tokenParameter.getStr("userType");
-			//不同的用户类型都可以在这里写逻辑，或者重写这个类的方法
-			if (Fc.equals(userType,"web")){
-				TbCoreUser result = coreUserDao.getOne(Condition.<TbCoreUser>getQueryWrapper()
-						.lambda().eq(TbCoreUser::getLoginId,account).eq(TbCoreUser::getPassword, DigestUtil.encrypt(password)));
-				return TokenGranterBuilder.toUserInfo(result);
+			if (!Fc.isNull(authUserInfo)){
+				return authUserInfo.getPasswordUserInfo(tokenParameter);
 			}else {
 				TbCoreUser result = coreUserDao.getOne(Condition.<TbCoreUser>getQueryWrapper()
 						.lambda().eq(TbCoreUser::getLoginId,account).eq(TbCoreUser::getPassword, DigestUtil.encrypt(password)));
 				return TokenGranterBuilder.toUserInfo(result);
 			}
 		}
-		return userInfo;
+		return null;
 	}
 
 }

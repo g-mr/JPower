@@ -391,7 +391,7 @@ public class SecureUtil {
         if (!header.startsWith(SecureConstant.BASIC_HEADER_PREFIX)) {
             throw new BusinessException("No client information in request header");
         }
-        byte[] base64Token = header.substring(6).getBytes(CharsetKit.UTF_8);
+        byte[] base64Token = header.substring(7).getBytes(CharsetKit.UTF_8);
 
         byte[] decoded;
         try {

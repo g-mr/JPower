@@ -1,13 +1,13 @@
-
+﻿
 insert into tb_core_role(id, code, name, parent_code, is_sys_role, sort)
 VALUES ('1','root','超级管理员','-1','1',1);
 insert into tb_core_role(id, code, name, parent_code, is_sys_role, sort)
 VALUES ('2','anonymous','匿名用户','-1','1',1);
 
 
-insert into tb_core_user(id,login_id,password,user_name,user_type,telephone,login_count,nickName,activation_status)
+insert into tb_core_user(id,login_id,password,user_name,user_type,telephone,login_count,nick_name,activation_status)
 values ('1','root','f122db007ed655921f98184e4302bba84990ff68','超级管理员','0','15011071226','0','超级管理员','1');
-insert into tb_core_user(id,login_id,password,user_name,user_type,telephone,login_count,nickName,activation_status)
+insert into tb_core_user(id,login_id,password,user_name,user_type,telephone,login_count,nick_name,activation_status)
 values ('2','anonymous','','匿名用户','0',null,'0','匿名用户','1');
 
 
@@ -175,5 +175,5 @@ INSERT INTO tb_core_dict (id, dict_type_code, code, name, locale_id, note, sort_
 INSERT INTO tb_core_dict (id, dict_type_code, code, name, locale_id, note, sort_num, create_user, create_time, update_user, update_time, status, is_deleted) VALUES ('3add39aad34e11ea97e4a34c90effc21', 'XBIE', 'FEMALE', '女', 'zh_cn', null, 1, 'root', '2020-08-01 00:52:33', 'root', '2020-08-01 00:52:33', 1, 0);
 INSERT INTO tb_core_dict (id, dict_type_code, code, name, locale_id, note, sort_num, create_user, create_time, update_user, update_time, status, is_deleted) VALUES ('3ade7ce8d34e11ea97e4a34c90effc21', 'XBIE', 'MAN', '男', 'zh_cn', null, 1, 'root', '2020-08-01 00:52:33', 'root', '2020-08-01 00:52:33', 1, 0);
 
-INSERT INTO tb_core_client (id, name, role_ids, client_code, client_secret, access_token_validity, refresh_token_validity, sort_num, note, create_user, create_time, update_user, update_time, status, is_deleted) VALUES ('75cfc202d34f11ea97e4a34c90effc21', '后台管理平台', 'all', 'Backstage', 'SCewmm', 1800, 2400, 1, null, 'root', '2020-08-01 01:01:22', 'root', '2020-08-01 01:01:22', 1, 0);
+INSERT INTO tb_core_client (id, name, role_ids, client_code, client_secret, access_token_validity, refresh_token_validity, sort_num, note, create_user, create_time, update_user, update_time, status, is_deleted) VALUES ('75cfc202d34f11ea97e4a34c90effc21', '后台管理平台', 'all', 'admin', 'SCewmm', 1800, 2400, 1, null, 'root', '2020-08-01 01:01:22', 'root', '2020-08-01 01:01:22', 1, 0);
 INSERT INTO tb_core_client (id, name, role_ids, client_code, client_secret, access_token_validity, refresh_token_validity, sort_num, note, create_user, create_time, update_user, update_time, status, is_deleted) VALUES ('75d2f77ed34f11ea97e4a34c90effc21', '微信端', null, 'wx', 'fGoKex', 600, 900, 2, null, 'root', '2020-08-01 01:01:22', 'root', '2020-08-01 01:01:22', 1, 0);

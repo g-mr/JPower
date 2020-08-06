@@ -6,8 +6,8 @@ import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreUserDao;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
 import com.wlcb.jpower.module.mp.support.Condition;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
@@ -18,30 +18,29 @@ import org.springframework.stereotype.Component;
  **/
 @Slf4j
 @Component
-@AllArgsConstructor
 public class OtherCodeTokenGranter implements TokenGranter {
     public static final String GRANT_TYPE = "otherCode";
 
+    @Autowired
     protected TbCoreUserDao coreUserDao;
+    @Autowired(required = false)
+    private AuthUserInfo authUserInfo;
 
     @Override
     public UserInfo grant(ChainMap tokenParameter) {
         String otherCode = tokenParameter.getStr("otherCode");
-        String userType = tokenParameter.getStr("userType");
-        UserInfo userInfo = null;
         if (Fc.isNotBlank(otherCode)) {
-            //不同的用户类型都可以在这里写逻辑，或者重写这个类的方法
-            if(Fc.equals(userType,"web")){
-                TbCoreUser result = coreUserDao.getOne(Condition.<TbCoreUser>getQueryWrapper()
-                        .lambda().eq(TbCoreUser::getOtherCode,otherCode));
-                return TokenGranterBuilder.toUserInfo(result);
+
+            if (!Fc.isNull(authUserInfo)){
+                return authUserInfo.getOtherCodeUserInfo(tokenParameter);
             }else {
                 TbCoreUser result = coreUserDao.getOne(Condition.<TbCoreUser>getQueryWrapper()
                         .lambda().eq(TbCoreUser::getOtherCode,otherCode));
                 return TokenGranterBuilder.toUserInfo(result);
             }
+
         }
-        return userInfo;
+        return null;
     }
 
 }

@@ -35,7 +35,7 @@ public class MD5 {
 //    	map.put("customerName", "测试验证5");
 //    	System.out.println(sign(map,"icloudsystem").toLowerCase());
 
-        String keyBeforeMd5 = "测试";
+        String keyBeforeMd5 = "123456";
 //        String keyBeforeMd5 = "123456";
         System.out.println(parseStrToMd5L32(keyBeforeMd5));
         System.out.println(Fc.md5Hex(keyBeforeMd5));

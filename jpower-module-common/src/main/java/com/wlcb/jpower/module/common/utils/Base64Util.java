@@ -175,6 +175,6 @@ public class Base64Util extends org.springframework.util.Base64Utils {
 
     public static void main(String[] args) throws Exception {
 //        System.out.println(new String(decodeFromString("admin:123456789")));
-        System.out.println(new String(encode("admin:jpower_admin")));
+        System.out.println(new String(encode("admin:SCewmm")));
     }
 }

@@ -23,7 +23,7 @@ import com.wlcb.jpower.module.common.utils.SecureUtil;
 import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreUserDao;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
 import io.jsonwebtoken.Claims;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -36,34 +36,35 @@ import java.util.Objects;
  * @Date 00:50 2020-07-28
  **/
 @Component
-@AllArgsConstructor
 public class RefreshTokenGranter implements TokenGranter {
 
 	public static final String GRANT_TYPE = "refresh_token";
 
+	@Autowired
 	private TbCoreUserDao coreUserDao;
+	@Autowired(required = false)
+	private AuthUserInfo authUserInfo;
 
 	@Override
 	public UserInfo grant(ChainMap tokenParameter) {
 		String grantType = tokenParameter.getStr("grantType");
 		String refreshToken = tokenParameter.getStr("refreshToken");
+		//业务扩展字段
 		String userType = tokenParameter.getStr("userType");
-		UserInfo userInfo = null;
 		if (Fc.isNoneBlank(grantType, refreshToken) && grantType.equals(TokenConstant.REFRESH_TOKEN)) {
 			Claims claims = SecureUtil.parseJWT(refreshToken);
 			String tokenType = Fc.toStr(Objects.requireNonNull(claims).get(TokenConstant.TOKEN_TYPE));
 			if (tokenType.equals(TokenConstant.REFRESH_TOKEN)) {
 				String userId = Fc.toStr(claims.get(TokenConstant.USER_ID));
-				//不同的用户类型都可以在这里写逻辑，或者重写这个类的方法
-				if (Fc.equals(userType,"web")){
-					TbCoreUser result = coreUserDao.getById(userId);
-					return TokenGranterBuilder.toUserInfo(result);
+
+				if (!Fc.isNull(authUserInfo)){
+					return authUserInfo.getRefreshUserInfo(userType,userId);
 				}else {
 					TbCoreUser result = coreUserDao.getById(userId);
 					return TokenGranterBuilder.toUserInfo(result);
 				}
 			}
 		}
-		return userInfo;
+		return null;
 	}
 }
