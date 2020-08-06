@@ -23,8 +23,8 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * @ClassName RoleController
- * @Description TODO 菜单相关
+ * @ClassName FileController
+ * @Description TODO 文件相关
  * @Author 郭丁志
  * @Date 2020-02-13 14:10
  * @Version 1.0
@@ -48,6 +48,7 @@ public class FileController extends BaseController {
     public ResponseData upload(MultipartFile file){
 
         JpowerAssert.notTrue(file == null || file.isEmpty(),JpowerError.Arg,"文件不可为空");
+        JpowerAssert.notEmpty(fileParentPath,JpowerError.Unknown,"未配置文件保存路径");
 
         try {
             String path = MultipartFileUtil.saveFile(file,fileParentPath + File.separator +"file");
