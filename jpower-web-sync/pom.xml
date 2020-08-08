@@ -11,9 +11,7 @@
 
     <artifactId>jpower-web-sync</artifactId>
 
-
     <dependencies>
-
         <dependency>
             <groupId>com.wlcb</groupId>
             <artifactId>jpower-module-base</artifactId>
@@ -26,7 +24,6 @@
             <groupId>com.wlcb</groupId>
             <artifactId>jpower-module-dbs</artifactId>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -37,15 +34,6 @@
                 <configuration>
                     <!--生成可执行jar的名称-->
                     <classifier>exec</classifier>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                    <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
             <!-- war包解析 -->
@@ -59,12 +47,6 @@
                 </configuration>
             </plugin>
         </plugins>
-        <testResources>
-            <testResource>
-                <directory>src/test/resources</directory>
-                <filtering>true</filtering>
-            </testResource>
-        </testResources>
 
     </build>
 </project>

@@ -31,7 +31,8 @@ public class PageFilter implements Filter {
 
         PaginationContext.setPageNum(getPageNum(httpRequest));
         PaginationContext.setPageSize(getPageSize(httpRequest));
-        PaginationContext.setOrderBy(getOrderBy(httpRequest));
+        PaginationContext.setAsc(getAsc(httpRequest));
+        PaginationContext.setDesc(getDesc(httpRequest));
 
         try {
             chain.doFilter(request, response);
@@ -85,23 +86,34 @@ public class PageFilter implements Filter {
 
     /**
      * @Author 郭丁志
-     * @Description //TODO 获取排序方式字段
+     * @Description //TODO 获取升序排序方式字段
      * @Date 15:43 2020-04-05
      * @Param [request]
      * @return int
      **/
-    protected String getOrderBy(HttpServletRequest request) {
-        // 默认每页10条记录
-        String orderBy = "create_time";
-        try {
-            String orderBys = request.getParameter("orderBy");
-            if (StringUtils.isNotBlank(orderBys)) {
-                orderBy = orderBys;
-            }
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
+    protected String getAsc(HttpServletRequest request) {
+        String asc = null;
+        String ascs = request.getParameter("asc");
+        if (StringUtils.isNotBlank(ascs)) {
+            asc = ascs;
         }
-        return orderBy;
+        return asc;
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 获取降序排序方式字段
+     * @Date 15:43 2020-04-05
+     * @Param [request]
+     * @return int
+     **/
+    protected String getDesc(HttpServletRequest request) {
+        String desc = null;
+        String descs = request.getParameter("desc");
+        if (StringUtils.isNotBlank(descs)) {
+            desc = descs;
+        }
+        return desc;
     }
 
     /**

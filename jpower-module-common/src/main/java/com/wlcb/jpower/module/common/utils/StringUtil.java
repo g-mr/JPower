@@ -767,6 +767,21 @@ public class StringUtil extends StringUtils {
     }
 
     /**
+     * 去掉指定的所有前缀
+     * todo 生成的字符串只要是指定的前缀就一直去除
+     * @param str    字符串
+     * @param suffix 前缀
+     * @return 切掉后的字符串，若前缀不是 suffix， 返回原字符串
+     */
+    public static String removeAllPrefix(CharSequence str, CharSequence suffix) {
+        String newStr =  removePrefix(str,suffix);
+        if(equals(newStr,str)){
+            return newStr;
+        }
+        return removeAllPrefix(newStr,suffix);
+    }
+
+    /**
      * 忽略大小写去掉指定前缀
      *
      * @param str    字符串
@@ -783,6 +798,30 @@ public class StringUtil extends StringUtils {
             return subSuf(str2, prefix.length());
         }
         return str2;
+    }
+
+    /**
+     * 去掉指定的所有前缀后缀
+     * todo 生成的字符串只要是指定的前缀后缀就一直去除
+     * @param str    字符串
+     * @param suffix 前缀后缀
+     * @return 切掉后的字符串，若前缀后缀不是 suffix， 返回原字符串
+     */
+    public static String removeAllPrefixAndSuffix(CharSequence str, CharSequence suffix) {
+        String newStr =  removeAllPrefix(str,suffix);
+        return removeAllSuffix(newStr,suffix);
+    }
+
+    /**
+     * 去掉指定的所有前缀后缀,并小写should字母
+     * todo 生成的字符串只要是指定的前缀后缀就一直去除
+     * @param str    字符串
+     * @param suffix 前缀后缀
+     * @return 切掉后的字符串，若前缀后缀不是 suffix， 返回原字符串
+     */
+    public static String removeAllPrefixAndSuffixLowerFirst(CharSequence str, CharSequence suffix) {
+        String newStr =  removeAllPrefix(str,suffix);
+        return lowerFirst(removeAllSuffix(newStr,suffix));
     }
 
     /**
@@ -856,6 +895,10 @@ public class StringUtil extends StringUtils {
      * @return {String}
      */
     public static String lowerFirst(String str) {
+        if (isEmpty(str)){
+            return str;
+        }
+
         char firstChar = str.charAt(0);
         if (firstChar >= StringPool.U_A && firstChar <= StringPool.U_Z) {
             char[] arr = str.toCharArray();
@@ -1392,6 +1435,9 @@ public class StringUtil extends StringUtils {
      * @return String
      */
     public static String humpToUnderline(String para) {
+        if (isBlank(para)){
+            return para;
+        }
         para = lowerFirst(para);
         StringBuilder sb = new StringBuilder(para);
         int temp = 0;
@@ -1411,6 +1457,9 @@ public class StringUtil extends StringUtils {
      * @return String
      */
     public static String lineToHump(String para) {
+        if (isBlank(para)){
+            return para;
+        }
         StringBuilder result = new StringBuilder();
         String[] a = para.split("-");
         for (String s : a) {

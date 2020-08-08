@@ -1,8 +1,13 @@
 package com.wlcb.jpower.module.common.page;
 
 
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
+import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SqlUtil;
+import com.wlcb.jpower.module.common.utils.StringUtil;
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -13,26 +18,59 @@ import org.apache.commons.lang3.StringUtils;
  * @Version 1.0
  */
 public class PaginationContext {
-    // 定义两个threadLocal变量：pageNum和pageSize
     // 保存第几页
     private static ThreadLocal<Integer> pageNum = new ThreadLocal<Integer>();
     // 保存每页记录条数
     private static ThreadLocal<Integer> pageSize = new ThreadLocal<Integer>();
-    // 排序字段
-    private static ThreadLocal<String> orderBy = new ThreadLocal<String>();
+    // 升序排序字段
+    private static ThreadLocal<String> asc = new ThreadLocal<String>();
+    // 降序排序字段
+    private static ThreadLocal<String> desc = new ThreadLocal<String>();
 
-    public static void startPage()
-    {
-        Integer pageNum = PaginationContext.getPageNum();
-        Integer pageSize = PaginationContext.getPageSize();
-        if (pageNum != null && pageSize != null){
-            String orderBy = SqlUtil.escapeOrderBySql(PaginationContext.getOrderBy());
-            if (StringUtils.isNotBlank(orderBy)){
-                PageHelper.startPage(pageNum, pageSize, orderBy);
-            }else {
-                PageHelper.startPage(pageNum, pageSize);
-            }
+    /**
+     * @author 郭丁志
+     * @Description //TODO 分页工具分页
+     * @date 1:13 2020/8/9 0009
+     */
+    public static void startPage() {
+        PageHelper.startPage(PaginationContext.getPageNum(), PaginationContext.getPageSize());
+
+        String asc = StringUtil.removeAllPrefixAndSuffixLowerFirst(Fc.toStr(PaginationContext.getAsc()),StringPool.COMMA);
+        String desc = StringUtil.removeAllPrefixAndSuffixLowerFirst(Fc.toStr(PaginationContext.getDesc()),StringPool.COMMA);
+
+        if (Fc.isNotBlank(desc)){
+            desc = StringUtil.replace(desc,StringPool.COMMA,StringPool.SPACE+StringPool.DESC+StringPool.COMMA)+StringPool.SPACE+StringPool.DESC;
         }
+
+        if (Fc.isNotBlank(asc)){
+            asc = StringUtil.replace(asc,StringPool.COMMA,StringPool.SPACE+StringPool.ASC+StringPool.COMMA)+StringPool.SPACE+StringPool.ASC;
+        }
+
+        String orderBy = StringUtil.removeAllPrefixAndSuffix(asc + StringPool.COMMA + desc,StringPool.COMMA);
+
+        if (Fc.isNotBlank(orderBy)){
+            PageHelper.orderBy(orderBy);
+        }
+    }
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 获取MP的分页类
+     * @date 1:14 2020/8/9 0009
+     */
+    public static Page getMpPage() {
+        Page page = new Page(PaginationContext.getPageNum(),PaginationContext.getPageSize());
+
+        String asc = PaginationContext.getAsc();
+        if (StringUtils.isNotBlank(asc)){
+            page.addOrder(OrderItem.ascs(Fc.toStrArray(asc)));
+        }
+
+        String desc = PaginationContext.getDesc();
+        if (StringUtils.isNotBlank(desc)){
+            page.addOrder(OrderItem.descs(Fc.toStrArray(desc)));
+        }
+        return page;
     }
 
     /*
@@ -73,15 +111,24 @@ public class PaginationContext {
         pageSize.remove();
     }
 
-    public static String getOrderBy() {
-        return orderBy.get();
+    public static String getAsc() {
+        return StringUtil.humpToUnderline(SqlUtil.escapeOrderBySql(asc.get()));
     }
 
-    public static void setOrderBy(String orderByValue) {
-        orderBy.set(orderByValue);
+    public static void setAsc(String ascValue) {
+        asc.set(ascValue);
+    }
+
+    public static String getDesc() {
+        return StringUtil.humpToUnderline(SqlUtil.escapeOrderBySql(desc.get()));
+    }
+
+    public static void setDesc(String descValue) {
+        desc.set(descValue);
     }
 
     public static void removeOrderBy() {
-        orderBy.remove();
+        asc.remove();
+        desc.remove();
     }
 }

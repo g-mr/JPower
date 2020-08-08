@@ -30,6 +30,11 @@
         </dependency>
 
         <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-generator</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper-spring-boot-starter</artifactId>
             <exclusions>
@@ -49,29 +54,23 @@
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
-            <version>0.6.0</version>
+            <version>${jwt.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.5.3</version>
+            <version>${httpclient.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
-            <version>3.1</version>
+            <version>${commons-httpclient.version}</version>
         </dependency>
 
         <dependency>
             <groupId>dom4j</groupId>
             <artifactId>dom4j</artifactId>
-            <version>1.6.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.github.wxpay</groupId>
-            <artifactId>wxpay-sdk</artifactId>
-            <version>0.0.3</version>
+            <version>${dom4j.version}</version>
         </dependency>
 
         <dependency>
@@ -83,20 +82,23 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>25.0-jre</version>
+            <version>${guava.version}</version>
         </dependency>
 
+        <!--微信支付，后期把红包功能移动到支付服务后，移除这块-->
         <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>3.17</version>
+            <groupId>com.github.wxpay</groupId>
+            <artifactId>wxpay-sdk</artifactId>
+            <version>${wxpay.version}</version>
         </dependency>
 
+        <!--阿里云短信jdk，后期移到短信服务工具服务中-->
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>aliyun-java-sdk-core</artifactId>
-            <version>4.5.3</version>
+            <version>${aliyun.version}</version>
         </dependency>
+
         <dependency>
             <groupId>com.github.whvcse</groupId>
             <artifactId>easy-captcha</artifactId>
@@ -105,13 +107,14 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
-            <version>3.17</version>
+            <version>${poi.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>3.15</version>
+            <version>${poi.version}</version>
         </dependency>
     </dependencies>
 
@@ -130,16 +133,12 @@
                         <goals><goal>jar</goal></goals>
                         <phase>package</phase>
                         <configuration>
-
                             <archive>
-
                                 <manifest>
-
                                     <!-- 是否添加依赖的jar路径配置 -->
                                     <addClasspath>true</addClasspath>
                                     <!-- 依赖的jar包存放位置，和生成的jar放在同一级目录下 -->
                                     <classpathPrefix>lib/</classpathPrefix>
-
                                 </manifest>
                             </archive>
 
@@ -153,21 +152,6 @@
 
             </plugin>
 
-
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-compiler-plugin</artifactId>-->
-<!--                <version>2.3.2</version>-->
-<!--                <configuration>-->
-<!--                    <source>${java.version}</source>-->
-<!--                    <target>${java.version}</target>-->
-<!--                    <encoding>UTF-8</encoding>-->
-<!--                    <compilerArguments>-->
-<!--                        <verbose/>-->
-<!--                        <bootclasspath>${java.home}/lib/rt.jar:${java.home}/lib/jce.jar</bootclasspath>-->
-<!--                    </compilerArguments>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
         </plugins>
 
     </build>
