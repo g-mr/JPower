@@ -1,7 +1,6 @@
 package com.wlcb.jpower.module.dbs.dao;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -9,25 +8,20 @@ import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapp
 import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
-import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.common.node.ForestNodeMerger;
 import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.utils.BeanUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.ReflectUtil;
-import com.wlcb.jpower.module.common.utils.StringUtil;
-import com.wlcb.jpower.module.dbs.dao.core.dict.mapper.TbCoreDictMapper;
 import com.wlcb.jpower.module.dbs.entity.core.dict.TbCoreDict;
+import com.wlcb.jpower.module.dbs.support.DictSupport;
 import com.wlcb.jpower.module.mp.support.Condition;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.reflect.FieldUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -40,127 +34,35 @@ import java.util.stream.Collectors;
  */
 public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M, T> {
 
-    @Autowired
-    private TbCoreDictMapper coreDictMapper;
-
-    private Class<T> getTClass(){
-        Type genType = getClass().getGenericSuperclass();
-        Type[] params = ((ParameterizedType) genType).getActualTypeArguments();
-        Class<T> cls = (Class) params[1];
-        return cls;
-    }
-
-    private Map<String,Dict> getDictFiled(Wrapper<T> queryWrapper){
-
-        List<String> selects = null;
-        if (StringUtils.isNotBlank(queryWrapper.getSqlSelect())){
-            selects = StringUtil.splitTrim(queryWrapper.getSqlSelect(),",");
+    /**
+     * @author 郭丁志
+     * @Description //TODO 为结果查询字典
+     * @date 23:49 2020/8/9 0009
+     * @param result 查询结果
+     * @param queryWrapper 查询条件
+     * @return void
+     */
+    private void queryDict(Object result, Wrapper<T> queryWrapper){
+        if (Fc.isNull(result) || (result instanceof List && ((List) result).size() <= 0) ){
+            return;
         }
 
-        //用来返回匹配结果
-        Map<String,Dict> map = new HashMap<>();
+        List<Field> fields = DictSupport.getDictFiled(queryWrapper.getSqlSelect(),this.getClass());
+        if(fields.size() > 0){
+            List<TbCoreDict> dicts = DictSupport.listDict(DictSupport.listDictName(fields));
+            Map<String,List<TbCoreDict>> dictMap =  DictSupport.listDictMap(dicts);
 
-        Class<?> cls = getTClass();
-        List<Field> fields = FieldUtils.getAllFieldsList(cls);
-        for (Field field : fields) {
-            Dict dictType = field.getAnnotation(Dict.class);
-            if (dictType != null && (selects == null || selects.contains(StringUtil.humpToUnderline(field.getName())))){
-                map.put(field.getName(),dictType);
-            }
-        }
-        return map;
-    }
-
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 返回所有的字典类型名称 并去重
-     * @Date 02:21 2020-07-18
-     * @Param [mapFieldDicts]
-     * @return java.util.Set<java.lang.String>
-     **/
-    private Set<String> listDictName(Map<String,Dict> mapFieldDicts){
-        Set<String> typeNames = new HashSet<>();
-        Collection<Dict> dictNameList = mapFieldDicts.values();
-        for (Dict dict : dictNameList) {
-            typeNames.add(dict.name());
-        }
-        return typeNames;
-    }
-
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 查询所有字典
-     * @Date 02:21 2020-07-18
-     * @Param [dictTypeNames]
-     * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.dict.TbCoreDict>
-     **/
-    protected List<TbCoreDict> listDict(Collection<String> dictTypeNames){
-        List<TbCoreDict> listDict = coreDictMapper.selectList(new QueryWrapper<TbCoreDict>().lambda()
-                .select(TbCoreDict::getCode,TbCoreDict::getName,TbCoreDict::getDictTypeCode)
-                .in(TbCoreDict::getDictTypeCode,dictTypeNames)
-                .eq(TbCoreDict::getStatus,1));
-        return listDict;
-    }
-
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 把查询根据字典项分割
-     * @Date 02:23 2020-07-18
-     * @Param [dicts]
-     * @return java.util.Map<java.lang.String,java.util.List<com.wlcb.jpower.module.dbs.entity.core.dict.TbCoreDict>>
-     **/
-    private Map<String,List<TbCoreDict>> listDictMap(List<TbCoreDict> dicts){
-        Map<String,List<TbCoreDict>> dictMap = new HashMap<>();
-        if (dicts != null){
-            for (TbCoreDict tbCoreDict : dicts) {
-
-                List<TbCoreDict> dictList = dictMap.get(tbCoreDict.getDictTypeCode());
-                if (dictList == null){
-                    dictList = new ArrayList<>();
-                }
-                dictList.add(tbCoreDict);
-                dictMap.put(tbCoreDict.getDictTypeCode(),dictList);
-            }
-        }
-        return dictMap;
-    }
-
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 给结果MAP新增字典值
-     * @Date 17:29 2020-07-24
-     * @Param [map, mapFieldDicts, dictMap]
-     **/
-    private void setMap(Map<String, Object> map,Map<String,Dict> mapFieldDicts,Map<String,List<TbCoreDict>> dictMap){
-        for (String filedName : mapFieldDicts.keySet()) {
-            Dict dict = mapFieldDicts.get(filedName);
-            List<TbCoreDict> dictList = dictMap.get(dict.name());
-            if (dictList != null){
-                for (TbCoreDict tbCoreDict : dictList) {
-                    if (StringUtils.equals(tbCoreDict.getCode(),String.valueOf(map.get(StringUtil.humpToUnderline(filedName))))){
-                        map.put(dict.attributes(),tbCoreDict.getName());
-                    }
+            if (dictMap.size() > 0){
+                if (result instanceof List){
+                    ((List) result).forEach(i -> {
+                        DictSupport.setDict(i,fields,dictMap);
+                    });
+                }else {
+                    DictSupport.setDict(result,fields,dictMap);
                 }
             }
         }
-    }
 
-    private void setListMap(List<Map<String, Object>> list,Wrapper<T> queryWrapper){
-        if (list != null && list.size()>0){
-            Map<String,Dict> mapFieldDicts = getDictFiled(queryWrapper);
-
-            if(mapFieldDicts.size() > 0){
-
-                List<TbCoreDict> dicts = listDict(listDictName(mapFieldDicts));
-                Map<String,List<TbCoreDict>> dictMap =  listDictMap(dicts);
-
-                if (dictMap.size() > 0){
-                    for (Map<String, Object> map : list) {
-                        setMap(map,mapFieldDicts,dictMap);
-                    }
-                }
-            }
-        }
     }
 
     /**
@@ -170,7 +72,7 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
     @Override
     public List<Map<String, Object>> listMaps(Wrapper<T> queryWrapper) {
         List<Map<String, Object>> list = super.listMaps(queryWrapper);
-        setListMap(list,queryWrapper);
+        queryDict(list,queryWrapper);
         return list;
     }
 
@@ -181,90 +83,8 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
     @Override
     public Map<String, Object> getMap(Wrapper<T> queryWrapper) {
         Map<String, Object> map = super.getMap(queryWrapper);
-
-        if (map != null){
-            Map<String,Dict> mapFieldDicts = getDictFiled(queryWrapper);
-            if(mapFieldDicts.size() > 0){
-
-                List<TbCoreDict> dicts = listDict(listDictName(mapFieldDicts));
-                Map<String,List<TbCoreDict>> dictMap =  listDictMap(dicts);
-
-                if (dictMap.size() > 0){
-                    setMap(map,mapFieldDicts,dictMap);
-                }
-            }
-        }
-
+        queryDict(map,queryWrapper);
         return map;
-    }
-
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 获取bean的DICT属性并赋值
-     * @Date 03:23 2020-07-19
-     * @Param [mapFieldDicts, dictMap, t]
-     **/
-    private void setBean(Map<String,Dict> mapFieldDicts,Map<String,List<TbCoreDict>> dictMap,T t){
-        try {
-            for (String filedName : mapFieldDicts.keySet()) {
-                Dict dict = mapFieldDicts.get(filedName);
-                List<TbCoreDict> dictList = dictMap.get(dict.name());
-
-                if (dictList != null){
-                    for (TbCoreDict tbCoreDict : dictList) {
-                        if (Fc.equalsValue(tbCoreDict.getCode(),ReflectUtil.getFieldValue(t,filedName))){
-                            String attributesName = StringUtils.isBlank(dict.attributes())?filedName:dict.attributes();
-                            ReflectUtil.setFieldValue(t,attributesName,tbCoreDict.getName());
-                        }
-                    }
-                }
-            }
-        }catch (Exception e){
-            log.error("设置DICT失败，error=",e);
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 给单条bean查字典
-     * @Date 23:55 2020-07-18
-     **/
-    private void setBeanDict(T t,Wrapper<T> queryWrapper){
-        if (t != null){
-            Map<String,Dict> mapFieldDicts = getDictFiled(queryWrapper);
-            if(mapFieldDicts.size() > 0){
-                List<TbCoreDict> dicts = listDict(listDictName(mapFieldDicts));
-                Map<String,List<TbCoreDict>> dictMap =  listDictMap(dicts);
-
-                if (dictMap.size() > 0){
-                    setBean(mapFieldDicts,dictMap,t);
-                }
-
-            }
-        }
-    }
-
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 给多条bean查字典
-     * @Date 23:55 2020-07-18
-     **/
-    private void setListDict(List<T> list,Wrapper<T> queryWrapper){
-        if (list != null){
-            Map<String,Dict> mapFieldDicts = getDictFiled(queryWrapper);
-            if(mapFieldDicts.size() > 0){
-                List<TbCoreDict> dicts = listDict(listDictName(mapFieldDicts));
-                Map<String,List<TbCoreDict>> dictMap =  listDictMap(dicts);
-
-                if (dictMap.size() > 0){
-                    for (T t : list) {
-                        setBean(mapFieldDicts,dictMap,t);
-                    }
-                }
-
-            }
-        }
     }
 
     /**
@@ -274,7 +94,7 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
     @Override
     public T getById(Serializable id){
         T t = super.getById(id);
-        setBeanDict(t,Wrappers.emptyWrapper());
+        queryDict(t,Wrappers.emptyWrapper());
         return t;
     }
 
@@ -285,21 +105,21 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
     @Override
     public List<T> listByIds(Collection<? extends Serializable> idList) {
         List<T> list = super.listByIds(idList);
-        setListDict(list,Wrappers.emptyWrapper());
+        queryDict(list,Wrappers.emptyWrapper());
         return list;
     }
 
     @Override
     public List<T> listByMap(Map<String, Object> columnMap) {
         List<T> list = super.listByMap(columnMap);
-        setListDict(list,Wrappers.emptyWrapper());
+        queryDict(list,Wrappers.emptyWrapper());
         return list;
     }
 
     @Override
     public T getOne(Wrapper<T> queryWrapper, boolean throwEx) {
         T t = super.getOne(queryWrapper,throwEx);
-        setBeanDict(t,queryWrapper);
+        queryDict(t,queryWrapper);
         return t;
     }
 
@@ -310,7 +130,7 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
     @Override
     public List<T> list(Wrapper<T> queryWrapper) {
         List<T> list = super.list(queryWrapper);
-        setListDict(list,queryWrapper);
+        queryDict(list,queryWrapper);
         return list;
     }
 
@@ -322,7 +142,7 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
     public  <E extends IPage<T>> E page(E page, Wrapper<T> queryWrapper) {
         E e = super.page(page,queryWrapper);
         List<T> list = e.getRecords();
-        setListDict(list,queryWrapper);
+        queryDict(list,queryWrapper);
         e.setRecords(list);
         return e;
     }
@@ -335,7 +155,7 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
     public <E extends IPage<Map<String, Object>>> E pageMaps(E page, Wrapper<T> queryWrapper) {
         E e =  super.pageMaps(page,queryWrapper);
         List<Map<String, Object>> list = e.getRecords();
-        setListMap(list,queryWrapper);
+        queryDict(list,queryWrapper);
         e.setRecords(list);
         return e;
     }

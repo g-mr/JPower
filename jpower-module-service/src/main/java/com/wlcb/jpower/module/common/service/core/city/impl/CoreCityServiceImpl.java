@@ -80,7 +80,6 @@ public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper,TbCore
     @Override
     public List<Node> lazyTree(String pcode) {
         return coreCityDao.tree(Condition.getTreeWrapper(TbCoreCity::getCode,TbCoreCity::getPcode,TbCoreCity::getName).lazy(pcode).lambda().orderByAsc(TbCoreCity::getSortNum));
-//        return ForestNodeMerger.merge(baseMapper.lazyTree(pcode,ChainMap.newMap()));
     }
 
 }

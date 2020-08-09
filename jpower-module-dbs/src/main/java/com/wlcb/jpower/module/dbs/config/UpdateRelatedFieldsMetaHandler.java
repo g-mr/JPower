@@ -1,7 +1,7 @@
 package com.wlcb.jpower.module.dbs.config;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.wlcb.jpower.module.common.utils.StringUtil;
+import com.wlcb.jpower.module.common.utils.Fc;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 
@@ -21,12 +21,9 @@ public class UpdateRelatedFieldsMetaHandler implements MetaObjectHandler {
      * @Author 郭丁志
      * @Description //TODO 新增时配置的字段
      * @Date 17:48 2020-07-09
-     * @Param [metaObject]
-     * @return void
      **/
     @Override
     public void insertFill(MetaObject metaObject) {
-
         this.strictInsertFill(metaObject, "createUser", String.class, getUserName());
         this.strictInsertFill(metaObject, "updateUser", String.class, getUserName());
         this.strictInsertFill(metaObject, "createTime", Date.class, new Date());
@@ -38,8 +35,6 @@ public class UpdateRelatedFieldsMetaHandler implements MetaObjectHandler {
      * @Author 郭丁志
      * @Description //TODO 更新时候配置的字段
      * @Date 17:49 2020-07-09
-     * @Param
-     * @return
      **/
     @Override
     public void updateFill(MetaObject metaObject) {
@@ -47,9 +42,13 @@ public class UpdateRelatedFieldsMetaHandler implements MetaObjectHandler {
         this.strictUpdateFill(metaObject, "updateTime", Date.class, new Date());
     }
 
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 获取当前登陆用户
+     * @Date 17:49 2020-07-09
+     **/
     private String getUserName(){
-        String username = LoginUserContext.getLoginId()==null?"":LoginUserContext.getLoginId();
-        return StringUtil.isBlank(username)?"匿名用户":username;
+        return Fc.isBlank(LoginUserContext.getLoginId())?"匿名用户":LoginUserContext.getLoginId();
     }
 
 }

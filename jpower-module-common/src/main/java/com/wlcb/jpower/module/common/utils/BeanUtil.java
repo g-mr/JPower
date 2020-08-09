@@ -4,6 +4,7 @@ import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.support.BaseBeanCopier;
 import com.wlcb.jpower.module.common.support.BeanProperty;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -14,6 +15,7 @@ import org.springframework.util.Assert;
 
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -432,4 +434,24 @@ public class BeanUtil  extends org.springframework.beans.BeanUtils {
         return false;
     }
 
+    /**
+     * @author 郭丁志
+     * @Description //TODO 获取所有拥有指定注解得属性
+     * @date 22:23 2020/8/9 0009
+     * @param cls BEAN类
+     * @param annotationType 指定得注解
+     * @return java.util.List<java.lang.reflect.Field>
+     */
+    public static List<Field> getFiledHaveAnnotation(Class<?> cls, Class<? extends Annotation> annotationType) {
+        List<Field> fieldList = new ArrayList<>();
+
+        List<Field> fields = FieldUtils.getAllFieldsList(cls);
+        for (Field field : fields) {
+            Annotation annotation = field.getAnnotation(annotationType);
+            if (annotation != null){
+                fieldList.add(field);
+            }
+        }
+        return fieldList;
+    }
 }

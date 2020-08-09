@@ -26,7 +26,7 @@ public class BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "id",type = IdType.UUID)
+    @TableId(value = "id",type = IdType.ASSIGN_UUID)
     private String id;
 
     @Excel(name = "创建人")
