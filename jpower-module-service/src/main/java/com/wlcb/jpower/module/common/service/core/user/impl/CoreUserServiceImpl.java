@@ -11,15 +11,17 @@ import com.wlcb.jpower.module.common.utils.UUIDUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
 import com.wlcb.jpower.module.common.utils.constants.ParamsConstants;
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.common.utils.param.ParamConfig;
 import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreUserDao;
 import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreUserRoleDao;
 import com.wlcb.jpower.module.dbs.dao.core.user.mapper.TbCoreUserMapper;
 import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreUserRole;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
+import com.wlcb.jpower.module.mp.support.Condition;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -30,14 +32,11 @@ import java.util.List;
  * @author mr.gmac
  */
 @Slf4j
+@AllArgsConstructor
 @Service("coreUserService")
 public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper,TbCoreUser> implements CoreUserService {
 
-    @Autowired
-    private TbCoreUserMapper coreUserMapper;
-    @Autowired
     private TbCoreUserDao coreUserDao;
-    @Autowired
     private TbCoreUserRoleDao coreUserRoleDao;
 
     @Override
@@ -79,7 +78,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper,TbCore
     }
 
     @Override
-    public Boolean add(TbCoreUser coreUser) {
+    public boolean save(TbCoreUser coreUser) {
         if (Fc.isNull(coreUser.getActivationStatus())){
             Integer isActivation = ParamConfig.getInt(ParamsConstants.IS_ACTIVATION, ConstantsUtils.DEFAULT_USER_ACTIVATION);
             coreUser.setActivationStatus(isActivation);
@@ -110,12 +109,12 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper,TbCore
 
     @Override
     public TbCoreUser selectUserLoginId(String loginId) {
-        return coreUserDao.getOne(new QueryWrapper<TbCoreUser>().lambda().eq(TbCoreUser::getLoginId,loginId).eq(TbCoreUser::getStatus,1));
+        return coreUserDao.getOne(Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getLoginId,loginId));
     }
 
     @Override
     public TbCoreUser selectUserById(String id) {
-        return coreUserMapper.selectAllById(id);
+        return baseMapper.selectAllById(id);
     }
 
     @Override
@@ -133,8 +132,8 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper,TbCore
 
     @Override
     public Boolean updateUsersRole(String userIds, String roleIds) {
-        String[] rIds = roleIds.split(",");
-        String[] uIds = userIds.split(",");
+        String[] rIds = roleIds.split(StringPool.COMMA);
+        String[] uIds = userIds.split(StringPool.COMMA);
         List<TbCoreUserRole> userRoles = new ArrayList<>();
         for (String rId : rIds) {
             for (String userId : uIds) {

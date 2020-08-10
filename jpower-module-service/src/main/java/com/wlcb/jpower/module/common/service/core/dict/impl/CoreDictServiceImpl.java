@@ -1,6 +1,5 @@
 package com.wlcb.jpower.module.common.service.core.dict.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.common.service.base.impl.BaseServiceImpl;
@@ -11,6 +10,7 @@ import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.dbs.dao.core.dict.TbCoreDictDao;
 import com.wlcb.jpower.module.dbs.dao.core.dict.mapper.TbCoreDictMapper;
 import com.wlcb.jpower.module.dbs.entity.core.dict.TbCoreDict;
+import com.wlcb.jpower.module.mp.support.Condition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,10 +25,9 @@ public class CoreDictServiceImpl extends BaseServiceImpl<TbCoreDictMapper,TbCore
 
     @Override
     public TbCoreDict queryDictTypeByCode(String dictTypeCode, String code) {
-        return dictDao.getOne(new QueryWrapper<TbCoreDict>().lambda()
+        return dictDao.getOne(Condition.<TbCoreDict>getQueryWrapper().lambda()
                 .eq(TbCoreDict::getDictTypeCode,dictTypeCode)
-                .eq(TbCoreDict::getCode,code)
-                .eq(TbCoreDict::getStatus,1));
+                .eq(TbCoreDict::getCode,code));
     }
 
     @Override

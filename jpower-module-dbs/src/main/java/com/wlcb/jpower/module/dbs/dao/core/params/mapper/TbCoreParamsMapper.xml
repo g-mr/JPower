@@ -19,10 +19,6 @@
         select value from tb_core_param where code = #{code,jdbcType=VARCHAR}
     </select>
 
-    <select id="selectById" resultType="com.wlcb.jpower.module.dbs.entity.core.params.TbCoreParam">
-        select <include refid="Base_Column_List"/> from tb_core_param where id = #{id,jdbcType=VARCHAR}
-    </select>
-
     <select id="listAll" resultType="com.wlcb.jpower.module.dbs.entity.core.params.TbCoreParam">
         select <include refid="Base_Column_List"/> from tb_core_param where status = 1
         <if test="code != null and code!=''">

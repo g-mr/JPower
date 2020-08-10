@@ -26,7 +26,7 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
      * @Param [coreUser]
      * @return java.lang.Integer
      **/
-    Boolean add(TbCoreUser coreUser);
+    boolean save(TbCoreUser coreUser);
 
     /**
      * @Author 郭丁志

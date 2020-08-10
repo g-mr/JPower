@@ -1,6 +1,5 @@
 package com.wlcb.jpower.web.controller.core.user;
 
-import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.module.base.annotation.Log;
 import com.wlcb.jpower.module.base.enums.BusinessType;
@@ -19,13 +18,13 @@ import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
 import com.wlcb.jpower.module.common.utils.constants.ParamsConstants;
 import com.wlcb.jpower.module.common.utils.param.ParamConfig;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
+import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
@@ -38,12 +37,11 @@ import java.util.Map;
  * @Version 1.0
  */
 @RestController
+@AllArgsConstructor
 @RequestMapping("/core/user")
 public class UserController extends BaseController {
 
-    @Resource
     private CoreUserService coreUserService;
-    @Resource
     private CoreUserRoleService coreUserRoleService;
 
     /**
@@ -57,8 +55,7 @@ public class UserController extends BaseController {
     public ResponseData list(TbCoreUser coreUser){
         PaginationContext.startPage();
         List<TbCoreUser> list = coreUserService.list(coreUser);
-
-        return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"获取成功", JSON.toJSON(new PageInfo<>(list)),true);
+        return ReturnJsonUtil.ok("获取成功", new PageInfo<>(list));
     }
 
     /**
@@ -109,12 +106,12 @@ public class UserController extends BaseController {
 
         coreUser.setPassword(DigestUtil.encrypt(MD5.parseStrToMd5U32(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD, ConstantsUtils.DEFAULT_USER_PASSWORD))));
         coreUser.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_SYSTEM.getValue());
-        Boolean is = coreUserService.add(coreUser);
+        Boolean is = coreUserService.save(coreUser);
 
         if (is){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"新增成功", true);
+            return ReturnJsonUtil.ok("新增成功");
         }else {
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"新增失败", false);
+            return ReturnJsonUtil.fail("新增失败");
         }
     }
 

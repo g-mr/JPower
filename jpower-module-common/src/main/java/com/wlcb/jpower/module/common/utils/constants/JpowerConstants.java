@@ -16,4 +16,11 @@ public class JpowerConstants {
     /** 默认国家编码 **/
     public static final String COUNTRY_CODE = "CHN";
 
+    /** 默认数据库业务状态 **/
+    public static final Integer DB_STATUS_NORMAL = 1;
+
+    /** 数据库删除状态 {0=未删除，1=删除} **/
+    public static final Integer DB_NOT_DELETE = 0;
+    public static final Integer DB_IS_DELETE = 1;
+
 }

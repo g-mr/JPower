@@ -48,8 +48,6 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     public List<TbCoreFunction> listByParent(TbCoreFunction coreFunction) {
         LambdaQueryWrapper<TbCoreFunction> wrapper = new QueryWrapper<TbCoreFunction>().lambda();
 
-        wrapper.eq(TbCoreFunction::getStatus,1);
-
         if (StringUtils.isNotBlank(coreFunction.getAlias())){
             wrapper.eq(TbCoreFunction::getAlias,coreFunction.getAlias());
         }

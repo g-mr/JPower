@@ -2,6 +2,7 @@ package com.wlcb.jpower.module.dbs.config;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +29,8 @@ public class UpdateRelatedFieldsMetaHandler implements MetaObjectHandler {
         this.strictInsertFill(metaObject, "updateUser", String.class, getUserName());
         this.strictInsertFill(metaObject, "createTime", Date.class, new Date());
         this.strictInsertFill(metaObject, "updateTime", Date.class, new Date());
-        this.strictInsertFill(metaObject, "status", Integer.class, 1);
+        this.strictInsertFill(metaObject, "status", Integer.class, JpowerConstants.DB_STATUS_NORMAL);
+        this.strictInsertFill(metaObject, "isDeleted", Integer.class, JpowerConstants.DB_NOT_DELETE);
     }
 
     /**

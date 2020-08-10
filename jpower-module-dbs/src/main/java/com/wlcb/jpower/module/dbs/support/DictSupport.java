@@ -59,8 +59,7 @@ public class DictSupport<T> {
     public static List<TbCoreDict> listDict(Collection<String> dictTypeNames){
         List<TbCoreDict> listDict = coreDictMapper.selectList(new QueryWrapper<TbCoreDict>().lambda()
                 .select(TbCoreDict::getCode,TbCoreDict::getName,TbCoreDict::getDictTypeCode)
-                .in(TbCoreDict::getDictTypeCode,dictTypeNames)
-                .eq(TbCoreDict::getStatus,1));
+                .in(TbCoreDict::getDictTypeCode,dictTypeNames));
         return listDict;
     }
 

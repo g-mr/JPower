@@ -13,7 +13,7 @@ import com.wlcb.jpower.module.dbs.dao.core.city.TbCoreCityDao;
 import com.wlcb.jpower.module.dbs.dao.core.city.mapper.TbCoreCityMapper;
 import com.wlcb.jpower.module.dbs.entity.core.city.TbCoreCity;
 import com.wlcb.jpower.module.mp.support.Condition;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,9 +23,9 @@ import java.util.Map;
  * @author mr.gmac
  */
 @Service("coreCityService")
+@AllArgsConstructor
 public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper,TbCoreCity> implements CoreCityService {
 
-    @Autowired
     private TbCoreCityDao coreCityDao;
 
     @Override
