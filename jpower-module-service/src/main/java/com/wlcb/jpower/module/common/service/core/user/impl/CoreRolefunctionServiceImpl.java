@@ -45,7 +45,7 @@ public class CoreRolefunctionServiceImpl extends BaseServiceImpl<TbCoreRoleFunct
         //先删除角色原有权限
         Map<String,Object> map = new HashMap<>();
         map.put("role_id",roleId);
-        coreRoleFunctionDao.removeByMap(map);
+        coreRoleFunctionDao.removeRealByMap(map);
 
         if (roleFunctions.size() > 0){
             boolean is = coreRoleFunctionDao.saveBatch(roleFunctions);

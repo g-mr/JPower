@@ -141,7 +141,7 @@ public class DictController {
     @RequestMapping(value = "/deleteDict",method = RequestMethod.DELETE,produces="application/json")
     public ResponseData deleteDict(String ids){
         JpowerAssert.notEmpty(ids, JpowerError.Arg,"字典ID不可为空");
-        return ReturnJsonUtil.status(coreDictService.removeByIds(Fc.toStrList(ids)));
+        return ReturnJsonUtil.status(coreDictService.removeRealByIds(Fc.toStrList(ids)));
     }
 
     /**

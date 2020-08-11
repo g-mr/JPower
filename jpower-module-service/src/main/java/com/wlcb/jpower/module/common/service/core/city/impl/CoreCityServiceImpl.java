@@ -74,7 +74,7 @@ public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper,TbCore
             JpowerAssert.notTrue(count>0,JpowerError.BUSINESS,"请先删除子区域");
         }
 
-        return coreCityDao.removeByIds(ids);
+        return coreCityDao.removeRealByIds(ids);
     }
 
     @Override

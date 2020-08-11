@@ -33,9 +33,9 @@
         order by create_time desc
     </select>
 
-    <delete id="deleteById">
-        delete from tb_core_param where id = #{id,jdbcType=VARCHAR}
-    </delete>
+<!--    <delete id="deleteById">-->
+<!--        delete from tb_core_param where id = #{id,jdbcType=VARCHAR}-->
+<!--    </delete>-->
 
     <update id="updateByPrimaryKeySelective">
         update tb_core_param

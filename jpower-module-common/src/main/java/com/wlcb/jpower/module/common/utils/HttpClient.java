@@ -9,6 +9,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -24,6 +25,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.KeyStore;
 import java.security.SecureRandom;
@@ -58,20 +60,22 @@ public class HttpClient {
 
     public static String doGet(String url,Map<String, String> headers,Map<String, Object> params) {
 
-        StringBuffer sb = new StringBuffer(url);
-        if (params != null && params.keySet().size() > 0) {
-            sb.append("?clientCode=jpower");
-            params.forEach((k, v) -> sb.append("&").append(k).append("=").append(v));
-        }
-
         CloseableHttpClient httpClient = null;
         CloseableHttpResponse response = null;
         String result = "";
         try {
+
+            URIBuilder builder = new URIBuilder(url);
+            builder.setParameter("clientCode", "jpower");
+            if (params != null && params.keySet().size() > 0) {
+                params.forEach((param, value) -> builder.setParameter(param, Fc.toStr(value)));
+            }
+
             // 通过址默认配置创建一个httpClient实例
             httpClient = HttpClients.createDefault();
+
             // 创建httpGet远程连接实例
-            HttpGet httpGet = new HttpGet(url);
+            HttpGet httpGet = new HttpGet(builder.build());
             // 设置请求头信息，鉴权
             if (Fc.isNotEmpty(headers)){
                 headers.forEach(httpGet::addHeader);
@@ -83,6 +87,7 @@ public class HttpClient {
                     .build();
             // 为httpGet实例设置配置
             httpGet.setConfig(requestConfig);
+
             // 执行get请求得到返回对象
             response = httpClient.execute(httpGet);
             // 通过返回对象获取返回数据
@@ -94,6 +99,8 @@ public class HttpClient {
             throw new RuntimeException(e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        } catch (URISyntaxException e) {
             throw new RuntimeException(e.getMessage());
         } finally {
             // 关闭资源
@@ -179,14 +186,10 @@ public class HttpClient {
         // 封装post请求参数
         if (null != paramMap && paramMap.size() > 0) {
             List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-            // 通过map集成entrySet方法获取entity
-            Set<Entry<String, Object>> entrySet = paramMap.entrySet();
-            // 循环遍历，获取迭代器
-            Iterator<Entry<String, Object>> iterator = entrySet.iterator();
-            while (iterator.hasNext()) {
-                Entry<String, Object> mapEntry = iterator.next();
-                nvps.add(new BasicNameValuePair(mapEntry.getKey(), mapEntry.getValue().toString()));
-            }
+
+            paramMap.forEach((k,v) -> {
+                nvps.add(new BasicNameValuePair(k, Fc.toStr(v)));
+            });
 
             // 为httpPost设置封装好的请求参数
             try {

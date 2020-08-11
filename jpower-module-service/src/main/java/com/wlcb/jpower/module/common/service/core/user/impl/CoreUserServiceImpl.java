@@ -95,9 +95,9 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper,TbCore
     @Override
     public Boolean delete(String ids) {
         List<String> list = new ArrayList<>(Arrays.asList(ids.split(",")));
-        boolean is = coreUserDao.removeByIds(list);
+        boolean is = coreUserDao.removeRealByIds(list);
         if (is){
-            coreUserRoleDao.remove(new QueryWrapper<TbCoreUserRole>().lambda().in(TbCoreUserRole::getUserId,list));
+            coreUserRoleDao.removeReal(new QueryWrapper<TbCoreUserRole>().lambda().in(TbCoreUserRole::getUserId,list));
         }
         return is;
     }
@@ -148,7 +148,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper,TbCore
         //先删除用户原有角色
         QueryWrapper wrapper = new QueryWrapper<TbCoreUserRole>();
         wrapper.in("user_id",uIds);
-        coreUserRoleDao.remove(wrapper);
+        coreUserRoleDao.removeReal(wrapper);
 
         if (userRoles.size() > 0){
             Boolean is = coreUserRoleDao.saveBatch(userRoles);

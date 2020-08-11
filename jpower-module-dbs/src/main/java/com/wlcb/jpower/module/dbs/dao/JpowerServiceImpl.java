@@ -3,11 +3,14 @@ package com.wlcb.jpower.module.dbs.dao;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Assert;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
+import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.wlcb.jpower.module.common.node.ForestNodeMerger;
 import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.utils.BeanUtil;
@@ -198,6 +201,46 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
             }
         };
         return ForestNodeMerger.merge(listToObjs(queryWrapper,mapper));
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 根据ID 真实删除
+     * @Date 16:00 2020-08-11
+     **/
+    public boolean removeRealById(Serializable id) {
+        return SqlHelper.retBool(getBaseMapper().deleteRealById(id));
+    }
+
+    /**
+     * 根据 entity 条件，真实删除记录
+     *
+     * @param queryWrapper 实体包装类 {@link com.baomidou.mybatisplus.core.conditions.query.QueryWrapper}
+     */
+    public boolean removeReal(Wrapper<T> queryWrapper) {
+        return SqlHelper.retBool(getBaseMapper().deleteReal(queryWrapper));
+    }
+
+    /**
+     * 真实删除（根据ID 批量删除）
+     *
+     * @param idList 主键ID列表
+     */
+    public boolean removeRealByIds(Collection<? extends Serializable> idList) {
+        if (CollectionUtils.isEmpty(idList)) {
+            return false;
+        }
+        return SqlHelper.retBool(getBaseMapper().deleteRealBatchIds(idList));
+    }
+
+    /**
+     * 根据 columnMap 条件，真实删除记录
+     *
+     * @param columnMap 表字段 map 对象
+     */
+    public boolean removeRealByMap(Map<String, Object> columnMap) {
+        Assert.notEmpty(columnMap, "error: columnMap must not be empty");
+        return SqlHelper.retBool(getBaseMapper().deleteRealByMap(columnMap));
     }
 
     /**

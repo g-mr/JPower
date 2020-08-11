@@ -49,8 +49,8 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
             Integer count = coreDictTypeDao.count(Condition.<TbCoreDictType>getQueryWrapper().lambda().in(TbCoreDictType::getDictTypePcode,listCode));
             JpowerAssert.notTrue(count>0, JpowerError.BUSINESS,"请先删除下级字典类型");
         }
-        if (coreDictTypeDao.remove(Condition.<TbCoreDictType>getQueryWrapper().lambda().in(TbCoreDictType::getId,ids).eq(TbCoreDictType::getDelEnabled, ConstantsEnum.YN.Y.getValue()))){
-            coreDictService.remove(Condition.<TbCoreDict>getQueryWrapper().lambda().in(TbCoreDict::getDictTypeCode,listCode));
+        if (coreDictTypeDao.removeReal(Condition.<TbCoreDictType>getQueryWrapper().lambda().in(TbCoreDictType::getId,ids).eq(TbCoreDictType::getDelEnabled, ConstantsEnum.YN.Y.getValue()))){
+            coreDictService.removeReal(Condition.<TbCoreDict>getQueryWrapper().lambda().in(TbCoreDict::getDictTypeCode,listCode));
             return true;
         }else {
             return false;
