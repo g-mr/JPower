@@ -8,19 +8,21 @@
         name,
         value,
         note,
+        is_effect,
         create_user,
         create_time,
         update_user,
         update_time,
-        status
+        status,
+        is_deleted
     </sql>
 
     <select id="selectByCode" resultType="java.lang.String">
-        select value from tb_core_param where code = #{code,jdbcType=VARCHAR}
+        select value from tb_core_param where code = #{code,jdbcType=VARCHAR} and is_deleted = 0
     </select>
 
     <select id="listAll" resultType="com.wlcb.jpower.module.dbs.entity.core.params.TbCoreParam">
-        select <include refid="Base_Column_List"/> from tb_core_param where status = 1
+        select <include refid="Base_Column_List"/> from tb_core_param where is_deleted = 0
         <if test="code != null and code!=''">
             and code = #{code,jdbcType=VARCHAR}
         </if>
@@ -32,10 +34,6 @@
         </if>
         order by create_time desc
     </select>
-
-<!--    <delete id="deleteById">-->
-<!--        delete from tb_core_param where id = #{id,jdbcType=VARCHAR}-->
-<!--    </delete>-->
 
     <update id="updateByPrimaryKeySelective">
         update tb_core_param
@@ -50,7 +48,7 @@
                 update_user=#{updateUser,jdbcType=VARCHAR},
             </if>
         </set>
-        WHERE id = #{id,jdbcType=VARCHAR}
+        WHERE id = #{id,jdbcType=VARCHAR} and is_deleted = 0
     </update>
 
 </mapper>

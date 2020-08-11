@@ -8,6 +8,7 @@ import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.service.core.user.CoreRoleService;
 import com.wlcb.jpower.module.common.service.core.user.CoreRolefunctionService;
 import com.wlcb.jpower.module.common.utils.BeanUtil;
+import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
@@ -110,7 +111,7 @@ public class RoleController extends BaseController {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该角色存在下级角色，请先删除下级角色", false);
         }
 
-        Boolean is = coreRoleService.deleteStatus(ids);
+        Boolean is = coreRoleService.removeByIds(Fc.toStrList(ids));
 
         if (is){
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"删除成功", true);

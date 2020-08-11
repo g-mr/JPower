@@ -4,8 +4,8 @@
 
 
     <resultMap id="treeNodeResultMap" type="com.wlcb.jpower.module.common.node.TreeNode">
-        <id column="id" property="id"/>
-        <result column="parent_id" property="parentId"/>
+        <id column="code" property="code"/>
+        <result column="parent_code" property="parentCode"/>
         <result column="title" property="title"/>
         <result column="value" property="value"/>
         <result column="key" property="key"/>
@@ -14,8 +14,8 @@
 
     <select id="lazyTree" resultMap="treeNodeResultMap">
         SELECT
-        city.code AS "id",
-        city.pcode AS "parent_id",
+        city.code AS "code",
+        city.pcode AS "parent_code",
         city.name AS "title",
         city.code AS "value",
         city.code AS "key",

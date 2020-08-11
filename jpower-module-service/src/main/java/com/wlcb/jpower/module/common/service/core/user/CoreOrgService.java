@@ -49,15 +49,6 @@ public interface CoreOrgService extends BaseService<TbCoreOrg> {
     Integer listOrgByPids(String ids);
 
     /**
-     * @Author 郭丁志
-     * @Description //TODO 删除组织机构
-     * @Date 17:36 2020-05-20
-     * @Param [ids]
-     * @return java.lang.Integer
-     **/
-    boolean delete(String ids);
-
-    /**
      * @author 郭丁志
      * @Description //TODO 更新组织机构
      * @date 0:01 2020/5/24 0024

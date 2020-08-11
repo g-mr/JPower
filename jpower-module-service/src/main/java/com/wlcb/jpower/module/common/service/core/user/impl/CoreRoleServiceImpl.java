@@ -1,12 +1,13 @@
 package com.wlcb.jpower.module.common.service.core.user.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.wlcb.jpower.module.common.service.base.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.service.core.user.CoreRoleService;
+import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreRoleDao;
 import com.wlcb.jpower.module.dbs.dao.core.user.mapper.TbCoreRoleMapper;
 import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreRole;
+import com.wlcb.jpower.module.mp.support.Condition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,20 +26,8 @@ public class CoreRoleServiceImpl extends BaseServiceImpl<TbCoreRoleMapper,TbCore
     }
 
     @Override
-    public Boolean deleteStatus(String ids) {
-        UpdateWrapper wrapper = new UpdateWrapper<TbCoreRole>();
-        wrapper.in("id",ids.split(","));
-        wrapper.set("status",0);
-        return coreRoleDao.update(new TbCoreRole(),wrapper);
-    }
-
-    @Override
     public Integer listByPids(String ids) {
-        QueryWrapper wrapper = new QueryWrapper<TbCoreRole>();
-
-        wrapper.in("parent_id",ids);
-
-        return coreRoleDao.count(wrapper);
+        return coreRoleDao.count(Condition.<TbCoreRole>getQueryWrapper().lambda().in(TbCoreRole::getParentCode, Fc.toStrList(ids)));
     }
 
     @Override

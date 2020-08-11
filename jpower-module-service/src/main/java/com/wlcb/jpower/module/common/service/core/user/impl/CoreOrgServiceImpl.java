@@ -1,11 +1,10 @@
 package com.wlcb.jpower.module.common.service.core.user.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.service.base.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.service.core.user.CoreOrgService;
-import com.wlcb.jpower.module.common.utils.StringUtil;
+import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreOrgDao;
 import com.wlcb.jpower.module.dbs.dao.core.user.mapper.TbCoreOrgMapper;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreOrg;
@@ -84,17 +83,8 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper,TbCoreOr
 
     @Override
     public Integer listOrgByPids(String ids) {
-        ids = "'"+ids.replaceAll(",","','")+"'";
         return coreOrgDao.count(new QueryWrapper<TbCoreOrg>()
-                .lambda().inSql(TbCoreOrg::getParentCode,StringUtil.format(sql,ids)));
-    }
-
-    @Override
-    public boolean delete(String ids) {
-        UpdateWrapper wrapper = new UpdateWrapper<TbCoreOrg>();
-        wrapper.in("id",ids.split(","));
-        wrapper.set("status",0);
-        return coreOrgDao.update(new TbCoreOrg(),wrapper);
+                .lambda().in(TbCoreOrg::getParentCode, Fc.toStrList(ids)));
     }
 
     @Override

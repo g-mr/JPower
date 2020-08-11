@@ -10,6 +10,7 @@ import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.service.core.user.CoreOrgService;
 import com.wlcb.jpower.module.common.utils.BeanUtil;
+import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreOrg;
@@ -110,7 +111,7 @@ public class OrgController extends BaseController {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"您选中的组织机构存在下级机构，请先删除下级机构", false);
         }
 
-        Boolean is = coreOrgService.delete(ids);
+        Boolean is = coreOrgService.removeByIds(Fc.toStrList(ids));
 
         if (is){
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"删除成功", true);

@@ -25,7 +25,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -94,8 +93,8 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper,TbCore
 
     @Override
     public Boolean delete(String ids) {
-        List<String> list = new ArrayList<>(Arrays.asList(ids.split(",")));
-        boolean is = coreUserDao.removeRealByIds(list);
+        List<String> list = Fc.toStrList(ids);
+        boolean is = coreUserDao.removeByIds(list);
         if (is){
             coreUserRoleDao.removeReal(new QueryWrapper<TbCoreUserRole>().lambda().in(TbCoreUserRole::getUserId,list));
         }

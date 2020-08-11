@@ -25,7 +25,7 @@ public class SqlKeyword {
     public static final String GT = "_gt";
     public static final String LT = "_lt";
     public static final String DATE_GT = "_dategt";
-    public static final String DATE_EQUAL = "_dateequal";
+    public static final String DATE_EQUAL = "_dateeq";
     public static final String DATE_LT = "_datelt";
     public static final String IS_NULL = "_null";
     public static final String NOT_NULL = "_notnull";
@@ -35,9 +35,9 @@ public class SqlKeyword {
      * 条件构造器
      *
      * @param query 查询字段
-     * @param qw    查询包装类
+     * @param wrapper    查询包装类
      */
-    public static void buildCondition(Map<String, Object> query, QueryWrapper<?> qw) {
+    public static void buildCondition(Map<String, Object> query, QueryWrapper<?> wrapper) {
         if (Fc.isEmpty(query)) {
             return;
         }
@@ -46,31 +46,29 @@ public class SqlKeyword {
                 return;
             }
             if (k.endsWith(EQUAL)) {
-                qw.eq(getColumn(k, EQUAL), v);
+                wrapper.eq(getColumn(k, EQUAL), v);
             } else if (k.endsWith(NOT_EQUAL)) {
-                qw.ne(getColumn(k, NOT_EQUAL), v);
+                wrapper.ne(getColumn(k, NOT_EQUAL), v);
             } else if (k.endsWith(NOT_LIKE)) {
-                qw.notLike(getColumn(k, NOT_LIKE), v);
+                wrapper.notLike(getColumn(k, NOT_LIKE), v);
             } else if (k.endsWith(GT)) {
-                qw.gt(getColumn(k, GT), v);
+                wrapper.gt(getColumn(k, GT), v);
             } else if (k.endsWith(LT)) {
-                qw.lt(getColumn(k, LT), v);
+                wrapper.lt(getColumn(k, LT), v);
             } else if (k.endsWith(DATE_GT)) {
-                qw.gt(getColumn(k, DATE_GT), v);
+                wrapper.gt(getColumn(k, DATE_GT), v);
             } else if (k.endsWith(DATE_EQUAL)) {
-                qw.eq(getColumn(k, DATE_EQUAL), v);
+                wrapper.eq(getColumn(k, DATE_EQUAL), v);
             } else if (k.endsWith(DATE_LT)) {
-                qw.lt(getColumn(k, DATE_LT), v);
+                wrapper.lt(getColumn(k, DATE_LT), v);
             } else if (k.endsWith(IS_NULL)) {
-                qw.isNull(getColumn(k, IS_NULL));
+                wrapper.isNull(getColumn(k, IS_NULL));
             } else if (k.endsWith(NOT_NULL)) {
-                qw.isNotNull(getColumn(k, NOT_NULL));
+                wrapper.isNotNull(getColumn(k, NOT_NULL));
             } else {
-                qw.like(getColumn(k, LIKE), v);
+                wrapper.like(getColumn(k, LIKE), v);
             }
         });
-
-        qw.eq("status",1);
     }
 
     /**

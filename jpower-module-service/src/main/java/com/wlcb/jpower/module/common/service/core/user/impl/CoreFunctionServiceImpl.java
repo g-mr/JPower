@@ -34,9 +34,6 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
 
     private final String sql = "select function_id from tb_core_role_function where role_id in ({})";
 
-    private final String SEL_CODE_IN_IDS_SQL = "select code from tb_core_function where id in ({})";
-
-
     @Autowired
     private TbCoreFunctionDao coreFunctionDao;
     @Autowired
@@ -90,10 +87,9 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
 
     @Override
     public Integer listByPids(String ids) {
-        String inSql = "'"+ids.replaceAll(",","','")+"'";
         return coreFunctionDao.count(Condition.<TbCoreFunction>getQueryWrapper()
                 .lambda()
-                .inSql(TbCoreFunction::getParentCode,StringUtil.format(SEL_CODE_IN_IDS_SQL,inSql)));
+                .in(TbCoreFunction::getParentCode,Fc.toStrList(ids)));
     }
 
     @Override

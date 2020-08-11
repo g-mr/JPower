@@ -10,7 +10,8 @@
         create_time,
         update_user,
         update_time,
-        status
+        status,
+        is_deleted
     </sql>
 
     <insert id="insertList">
@@ -22,7 +23,8 @@
         create_time,
         update_user,
         update_time,
-        status
+        status,
+        is_deleted
         )
         values
         <foreach collection="roleFunctions" item="rf" separator=",">
@@ -34,21 +36,23 @@
             #{rf.createTime},
             #{rf.updateUser},
             #{rf.updateTime},
-            #{rf.status}
+            #{rf.status},
+            #{rf.isDeleted}
             )
         </foreach>
     </insert>
 
     <select id="selectRoleFunctionByRoleId"
             resultType="java.util.Map">
-        select rf.role_id as roleId,rf.function_id as functionId,f.function_name as functionName,f.url as url from tb_core_role_function rf
+        select rf.role_id as roleId,rf.function_id as functionId,f.function_name as functionName,f.url as url
+        from tb_core_role_function rf
         left join tb_core_function f on f.id = rf.function_id
-        where rf.role_id = #{roleId,jdbcType=VARCHAR}
+        where rf.role_id = #{roleId,jdbcType=VARCHAR} and rf.is_deleted = 0
     </select>
 
     <select id="selectFunctionIdInRoleIds" resultType="java.lang.String">
         select rf.function_id from tb_core_role_function rf
-        where rf.role_id in
+        where rf.is_deleted = 0 and rf.role_id in
         <foreach collection="list" item="roleId" open="(" close=")" separator=",">
             #{roleId,jdbcType=VARCHAR}
         </foreach>

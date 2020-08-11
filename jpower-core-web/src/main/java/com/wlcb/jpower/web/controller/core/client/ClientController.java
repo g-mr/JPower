@@ -63,7 +63,7 @@ public class ClientController extends BaseController {
     @DeleteMapping("delete")
     public ResponseData delete(String ids){
         JpowerAssert.notEmpty(ids,JpowerError.Arg,"客户端主键不可为空");
-        return ReturnJsonUtil.status(coreClientService.removeRealByIds(Fc.toStrList(ids)));
+        return ReturnJsonUtil.status(coreClientService.removeByIds(Fc.toStrList(ids)));
     }
 
     /**

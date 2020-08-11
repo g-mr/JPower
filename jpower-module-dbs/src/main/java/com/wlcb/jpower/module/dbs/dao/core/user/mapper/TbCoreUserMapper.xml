@@ -24,7 +24,8 @@
         create_time,
         update_user,
         update_time,
-        status
+        status,
+        is_deleted
     </sql>
 
     <sql id="Base_Column_List_Alias">
@@ -49,7 +50,8 @@
         u.create_time,
         u.update_user,
         u.update_time,
-        u.status
+        u.status,
+        u.is_deleted
     </sql>
 
     <insert id="insertList">
@@ -70,7 +72,8 @@
         activation_status,
         activation_code,
         create_user,
-        update_user)
+        update_user,
+        is_deleted)
         values
         <foreach collection="list" item="user" separator=",">
             (
@@ -90,14 +93,16 @@
             #{user.activationStatus},
             #{user.activationCode},
             #{user.createUser},
-            #{user.createUser}
+            #{user.createUser},
+            #{user.isDeleted}
             )
         </foreach>
     </insert>
 
     <select id="selectAllById" resultType="com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser">
-        select <include refid="Base_Column_List_Alias"/>,o.name as orgName from tb_core_user u
+        select <include refid="Base_Column_List_Alias"/>,o.name as orgName
+        from tb_core_user u
         left join tb_core_org o on o.id = u.org_id
-        where u.id = #{id,jdbcType=VARCHAR}
+        where u.id = #{id,jdbcType=VARCHAR} and u.is_deleted = 0
     </select>
 </mapper>

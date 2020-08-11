@@ -10,7 +10,8 @@
         create_time,
         update_user,
         update_time,
-        status
+        status,
+        is_deleted
     </sql>
 
     <insert id="insertList">
@@ -37,13 +38,13 @@
         r.code as code
         from tb_core_user_role ur
         left join tb_core_role r on r.id = ur.role_id
-        where ur.user_id = #{userId,jdbcType=VARCHAR}
+        where ur.user_id = #{userId,jdbcType=VARCHAR} and ur.is_deleted = 0
     </select>
 
     <select id="selectRoleIdByUserId" resultType="java.lang.String">
         select
         ur.role_id
         from tb_core_user_role ur
-        where ur.user_id = #{userId,jdbcType=VARCHAR}
+        where ur.user_id = #{userId,jdbcType=VARCHAR} and ur.is_deleted = 0
     </select>
 </mapper>

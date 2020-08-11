@@ -26,8 +26,7 @@ create table tb_core_user(
   update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
   status   tinyint(1) default 1 comment '状态',
   is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
-  PRIMARY KEY (id) USING BTREE,
-  unique key login_id_index(login_id) USING BTREE
+  PRIMARY KEY (id) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统登录用户表';
 
 
@@ -47,8 +46,7 @@ create table tb_core_role(
   update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
   status   tinyint(1) default 1 comment '状态',
   is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
-  PRIMARY KEY (id) USING BTREE,
-  unique key code_index(code) USING BTREE
+  PRIMARY KEY (id) USING BTREE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '角色表';
 
 
@@ -94,8 +92,7 @@ create table tb_core_org(
  update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
  status tinyint(1) default 1 comment '状态',
  is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
- PRIMARY KEY (id) USING BTREE,
- unique key code_index(code) USING BTREE
+ PRIMARY KEY (id) USING BTREE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '部门表';
 
 
@@ -153,8 +150,7 @@ create table tb_core_param(
   update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
   status   tinyint(1) default 1 comment '状态',
   is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
-  PRIMARY KEY (id) USING BTREE,
-  unique key code_index(code) USING BTREE
+  PRIMARY KEY (id) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统参数表';
 
 drop table if exists tb_core_dict_type;
@@ -242,8 +238,7 @@ create table tb_core_client(
   update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
   status   tinyint(1) default 1 comment '状态',
   is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
-  PRIMARY KEY (id) USING BTREE,
-  unique key unique_client_code (client_code) USING BTREE
+  PRIMARY KEY (id) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '客户端系统表';
 
 

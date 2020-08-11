@@ -55,7 +55,7 @@ public class CoreParamServiceImpl extends BaseServiceImpl<TbCoreParamsMapper,TbC
     @Override
     public Boolean delete(String id) {
         TbCoreParam coreParam = paramsDao.getById(id);
-        Boolean c = paramsDao.removeRealById(id);
+        Boolean c = paramsDao.removeById(id);
         if (c){
             redisUtils.remove(CacheNames.PARAMS_REDIS_KEY+coreParam.getCode());
         }
