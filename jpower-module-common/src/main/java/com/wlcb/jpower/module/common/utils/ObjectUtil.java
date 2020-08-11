@@ -12,6 +12,7 @@ import org.springframework.lang.Nullable;
 public class ObjectUtil extends org.springframework.util.ObjectUtils {
 
     /**
+     * @Author 郭丁志
      * 判断元素不为空
      * @param obj object
      * @return boolean

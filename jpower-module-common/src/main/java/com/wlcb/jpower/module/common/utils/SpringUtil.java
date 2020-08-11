@@ -23,6 +23,13 @@ public class SpringUtil implements ApplicationContextAware {
         SpringUtil.context = context;
     }
 
+    /**
+     * @author 郭丁志
+     * @Description //TODO 获取一个实例
+     * @date 0:31 2020/8/12 0012
+     * @param clazz
+     * @return T
+     */
     public static <T> T getBean(Class<T> clazz) {
         if (clazz == null) {
             return null;

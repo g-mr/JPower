@@ -58,6 +58,10 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     @Value("${spring.profiles.active}")
     private String active;
 
+    /** 测试环境是否需要进行权限验证 **/
+    @Value("${test.is-login:false}")
+    private boolean isLogin;
+
     /**
      * @Author 郭丁志
      * @Description //TODO 请求处理前调用,我们只需要在这里写验证登陆状态的业务逻辑，就可以在用户调用指定接口之前验证登陆状态了
@@ -67,7 +71,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
      **/
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (Fc.equals(active,"dev")||Fc.equals(active,"test")){
+        if (Fc.equals(active,"dev") || (Fc.equals(active,"test") && Fc.equals(isLogin,false))){
             //开发环境和测试环境不走鉴权
             return true;
         }

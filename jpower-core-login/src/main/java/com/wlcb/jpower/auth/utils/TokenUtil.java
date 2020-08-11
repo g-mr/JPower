@@ -11,7 +11,7 @@ import com.wlcb.jpower.module.common.utils.SecureUtil;
 import java.util.Map;
 
 /**
- * @ClassName TokenUtil
+ * @ClassName TokenUtil 生成token
  * @Description TODO
  * @Author 郭丁志
  * @Date 2020-07-27 22:01

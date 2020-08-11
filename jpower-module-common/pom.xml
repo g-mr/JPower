@@ -85,6 +85,20 @@
             <version>${guava.version}</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger2 -->
+<!--        <dependency>-->
+<!--            <groupId>io.springfox</groupId>-->
+<!--            <artifactId>springfox-swagger2</artifactId>-->
+<!--            <version>${swagger.version}</version>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-spring-boot-starter</artifactId>
+            <!--在引用时请在maven中央仓库搜索最新版本号-->
+            <version>2.0.4</version>
+        </dependency>
+
+
         <!--微信支付，后期把红包功能移动到支付服务后，移除这块-->
         <dependency>
             <groupId>com.github.wxpay</groupId>

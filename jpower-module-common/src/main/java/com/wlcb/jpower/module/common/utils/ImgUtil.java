@@ -22,6 +22,7 @@ import java.net.URL;
 public class ImgUtil {
 
     /**
+     * @Author 郭丁志
      * 默认输出图片类型
      */
     public static final String DEFAULT_IMG_TYPE = "JPEG";
@@ -31,8 +32,8 @@ public class ImgUtil {
     }
 
     /**
+     * @Author 郭丁志
      * 转换输入流到byte
-     *
      * @param src  源
      * @param type 类型
      * @return byte[]
@@ -45,8 +46,8 @@ public class ImgUtil {
     }
 
     /**
+     * @Author 郭丁志
      * 获取图像内容
-     *
      * @param srcImageFile 文件路径
      * @return BufferedImage
      */
@@ -60,8 +61,8 @@ public class ImgUtil {
     }
 
     /**
+     * @Author 郭丁志
      * 获取图像内容
-     *
      * @param srcImageFile 文件
      * @return BufferedImage
      */
@@ -75,8 +76,8 @@ public class ImgUtil {
     }
 
     /**
+     * @Author 郭丁志
      * 获取图像内容
-     *
      * @param srcInputStream 输入流
      * @return BufferedImage
      */
@@ -90,8 +91,8 @@ public class ImgUtil {
     }
 
     /**
+     * @Author 郭丁志
      * 获取图像内容
-     *
      * @param url URL地址
      * @return BufferedImage
      */
@@ -106,8 +107,8 @@ public class ImgUtil {
 
 
     /**
+     * @Author 郭丁志
      * 缩放图像（按比例缩放）
-     *
      * @param src    源图像
      * @param output 输出流
      * @param type   类型
@@ -145,8 +146,8 @@ public class ImgUtil {
     }
 
     /**
+     * @Author 郭丁志
      * 缩放图像（按高度和宽度缩放）
-     *
      * @param src       源图像
      * @param output    输出流
      * @param type      类型
@@ -193,8 +194,8 @@ public class ImgUtil {
     }
 
     /**
+     * @Author 郭丁志
      * 图像裁剪(按指定起点坐标和宽高切割)
-     *
      * @param src    源图像
      * @param output 切片后的图像地址
      * @param type   类型
@@ -229,8 +230,8 @@ public class ImgUtil {
     }
 
     /**
+     * @Author 郭丁志
      * 图像类型转换：GIF-JPG、GIF-PNG、PNG-JPG、PNG-GIF(X)、BMP-PNG
-     *
      * @param src        源图像地址
      * @param formatName 包含格式非正式名称的 String：如JPG、JPEG、GIF等
      * @param output     目标图像地址
@@ -247,8 +248,8 @@ public class ImgUtil {
     }
 
     /**
+     * @Author 郭丁志
      * 彩色转为黑白
-     *
      * @param src    源图像地址
      * @param output 目标图像地址
      * @param type      类型
@@ -268,8 +269,8 @@ public class ImgUtil {
     }
 
     /**
+     * @Author 郭丁志
      * 给图片添加文字水印
-     *
      * @param src      源图像
      * @param output   输出流
      * @param type      类型
@@ -307,8 +308,8 @@ public class ImgUtil {
     }
 
     /**
+     * @Author 郭丁志
      * 给图片添加图片水印
-     *
      * @param src      源图像
      * @param output   输出流
      * @param type      类型
@@ -345,8 +346,8 @@ public class ImgUtil {
     }
 
     /**
-     * 计算text的长度（一个中文算两个字符）
-     *
+     * @Author 郭丁志
+     * 计算text的长度
      * @param text text
      * @return int
      */
@@ -363,6 +364,7 @@ public class ImgUtil {
     }
 
     /**
+     * @Author 郭丁志
      * 默认字符串
      * @param str 字符串
      * @param defaultStr 默认值

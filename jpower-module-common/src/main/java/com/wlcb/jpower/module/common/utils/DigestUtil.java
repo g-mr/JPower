@@ -16,20 +16,18 @@ import java.security.NoSuchAlgorithmException;
 public class DigestUtil extends org.springframework.util.DigestUtils {
 
     /**
-     * Calculates the MD5 digest and returns the value as a 32 character hex string.
-     *
-     * @param data Data to digest
-     * @return MD5 digest as a hex string
+     * 计算MD5摘要，并以32个字符的十六进制字符串形式返回值。
+     * @param data 数据
+     * @return MD5 作为十六进制字符串
      */
     public static String md5Hex(final String data) {
         return DigestUtil.md5DigestAsHex(data.getBytes(CharsetKit.CHARSET_UTF_8));
     }
 
     /**
-     * Return a hexadecimal string representation of the MD5 digest of the given bytes.
-     *
-     * @param bytes the bytes to calculate the digest over
-     * @return a hexadecimal digest string
+     * 返回给定字节的MD5摘要的十六进制字符串表示形式。
+     * @param bytes 计算的字节
+     * @return 十六进制字符串
      */
     public static String md5Hex(final byte[] bytes) {
         return DigestUtil.md5DigestAsHex(bytes);

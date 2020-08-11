@@ -5,8 +5,8 @@ import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.service.base.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.service.core.city.CoreCityService;
-import com.wlcb.jpower.module.common.utils.CodeUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.RandomUtil;
 import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.dbs.dao.core.city.TbCoreCityDao;
@@ -42,7 +42,7 @@ public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper,TbCore
 
     @Override
     public boolean save(TbCoreCity coreCity) {
-        coreCity.setCode(CodeUtil.createCityCode(coreCity.getPcode(),coreCity.getCode()));
+        coreCity.setCode(RandomUtil.createCityCode(coreCity.getPcode(),coreCity.getCode()));
 
         TbCoreCity city = queryByCode(coreCity.getCode());
 
