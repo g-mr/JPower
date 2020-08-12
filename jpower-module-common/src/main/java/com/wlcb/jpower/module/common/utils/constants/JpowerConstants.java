@@ -23,4 +23,6 @@ public class JpowerConstants {
     public static final Integer DB_NOT_DELETE = 0;
     public static final Integer DB_IS_DELETE = 1;
 
+    /** 框架版本 **/
+    public static final String JPOWER_VESION = "1.0.1";
 }

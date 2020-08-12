@@ -1,14 +1,30 @@
 server:
   port: 80
 
+
+swagger:
+  title: 基础框架接口
+  base-package:
+    - com.wlcb.jpower.web
+
 jpower:
+  docs:
+    resource:
+#      - name: 基础框架
+#        url: localhost
+#        location: /core
+#        version: 1.0.1
+#      - name: 授权模块
+#        url: localhost:81
+#        location: /auth
+#        version: 1.0.1
   #  开发环境
   dev:
     datasource:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/jpower_core?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8
+      url: jdbc:mysql://localhost:3306/jpower?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8
       username: root
-      password: 12345678
+      password: 123456
     redis:
       host: 127.0.0.1
       password:

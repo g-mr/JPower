@@ -29,13 +29,11 @@
         </dependency>
 
 
-        <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcmail-jdk16 -->
         <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcmail-jdk16</artifactId>
-            <version>1.46</version>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-spring-ui</artifactId>
+            <version>${knife4j.version}</version>
         </dependency>
-
     </dependencies>
 
     <build>

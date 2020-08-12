@@ -19,6 +19,7 @@ import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
+import io.swagger.annotations.Api;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,6 +37,7 @@ import java.util.concurrent.TimeUnit;
  * @Date 2020-02-13 14:10
  * @Version 1.0
  */
+@Api(tags = "登陆相关")
 @RestController
 @RequestMapping("/auth")
 public class LoginController extends BaseController {
