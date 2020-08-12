@@ -41,7 +41,7 @@
         <guava.version>25.0-jre</guava.version>
         <poi.version>3.17</poi.version>
         <aliyun.version>4.5.3</aliyun.version>
-        <swagger.version>3.0.0</swagger.version>
+        <knife4j.version>2.0.4</knife4j.version>
     </properties>
 
     <!--profile配置-->

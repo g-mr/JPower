@@ -71,3 +71,6 @@ mybatis-plus:
 logging:
   level:
     root: debug
+
+knife4j:
+  production: true

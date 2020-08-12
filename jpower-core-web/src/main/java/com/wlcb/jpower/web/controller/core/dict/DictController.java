@@ -1,6 +1,7 @@
 package com.wlcb.jpower.web.controller.core.dict;
 
 import com.github.pagehelper.PageInfo;
+import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
@@ -13,6 +14,10 @@ import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.dbs.entity.core.dict.TbCoreDict;
 import com.wlcb.jpower.module.dbs.entity.core.dict.TbCoreDictType;
 import com.wlcb.jpower.module.mp.support.Condition;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,6 +34,8 @@ import java.util.Map;
  * @Date 2020/7/26 0026 17:52
  * @Version 1.0
  */
+@Api(tags = "字典相关")
+@ApiSupport(author = "郭丁志",order = 1)
 @RestController
 @RequestMapping("/core/dict")
 public class DictController {
