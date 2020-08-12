@@ -391,11 +391,11 @@ public class SecureUtil {
         if (!header.startsWith(SecureConstant.BASIC_HEADER_PREFIX)) {
             throw new BusinessException("No client information in request header");
         }
-        byte[] base64Token = header.substring(7).getBytes(CharsetKit.UTF_8);
+        byte[] base64Token = header.substring(6).getBytes(CharsetKit.UTF_8);
 
         byte[] decoded;
         try {
-            decoded = Base64.getDecoder().decode(base64Token);
+            decoded = Base64Util.decode(base64Token);
         } catch (IllegalArgumentException var7) {
             throw new RuntimeException("Failed to decode basic authentication token");
         }

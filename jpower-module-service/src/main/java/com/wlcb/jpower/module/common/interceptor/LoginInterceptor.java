@@ -82,7 +82,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
         UserInfo user = SecureUtil.getUser(request);
 
-        TbCoreClient coreClient = coreClientService.loadClientByClientCode(user.getClientCode());
+        TbCoreClient coreClient = coreClientService.loadClientByClientCode(SecureUtil.getClientCodeFromHeader());
 
         if (user != null && coreClient!=null && Fc.toStrList(clientCode).contains(SecureUtil.getClientCodeFromHeader()) && Fc.toStrList(clientCode).contains(user.getClientCode())) {
 
