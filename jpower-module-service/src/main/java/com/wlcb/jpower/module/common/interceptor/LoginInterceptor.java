@@ -102,6 +102,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                     if (StringUtil.equalsIgnoreCase(coreClient.getRoleIds(),"all") ||
                             coreRolefunctionService.countByRoleIdsAndFunctionId(Fc.toStrList(coreClient.getRoleIds()),function.getId()) > 0){
                         log.warn("{} 白名单授权通过，请求接口：{}",ip,currentPath);
+                        user = new UserInfo();
                         user.setUserName(ip);
                         user.setLoginId(ip);
                         user.setUserType(RoleConstant.ANONYMOUS_UESR_TYPE);
