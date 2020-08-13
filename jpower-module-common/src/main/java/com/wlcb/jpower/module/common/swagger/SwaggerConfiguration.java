@@ -32,7 +32,7 @@ import static com.google.common.collect.Lists.newArrayList;
 @EnableSwagger2
 @EnableKnife4j
 @Profile({"dev", "test"})
-@EnableConfigurationProperties({SwaggerProperties.class,DocsProperties.class})
+@EnableConfigurationProperties({SwaggerProperties.class})
 @Import({BeanValidatorPluginsConfiguration.class})
 public class SwaggerConfiguration {
 
@@ -49,7 +49,7 @@ public class SwaggerConfiguration {
 
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo(properties))
-                .groupName(properties.getGroupName())
+//                .groupName(properties.getGroupName())
                 .select()
                 .apis(SwaggerConfigUtil.basePackage(properties.getBasePackage()))
                 .paths(PathSelectors.any())

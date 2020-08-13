@@ -21,10 +21,9 @@ public class DocsProperties {
     private final List<DocsProperties.DocProperties> resource = new ArrayList<>();
 
     @Data
-    public class DocProperties {
+    public static class DocProperties {
         private String name;
         private String location;
-        private String url;
         private String version = JpowerConstants.JPOWER_VESION;
     }
 }

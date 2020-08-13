@@ -46,6 +46,8 @@ public class LoginConfigurer implements WebMvcConfigurer {
         }
         //拦截器不拦截的url  默认auth接口统一不做拦截
         exculudesUrl.add("/auth/**");
+        exculudesUrl.add("/v2/api-docs-ext/**");
+        exculudesUrl.add("/v2/api-docs/**");
 
         registry.addInterceptor(loginInterceptor).addPathPatterns("/**").excludePathPatterns(exculudesUrl);
     }

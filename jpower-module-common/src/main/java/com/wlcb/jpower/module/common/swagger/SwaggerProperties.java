@@ -4,6 +4,7 @@ import com.wlcb.jpower.module.common.auth.SecureConstant;
 import com.wlcb.jpower.module.common.auth.TokenConstant;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import springfox.documentation.service.AuthorizationScope;
 import springfox.documentation.service.Contact;
 
@@ -37,7 +38,7 @@ public class SwaggerProperties {
     private List<Authorization> authorization = new ArrayList<>(Arrays.asList(new Authorization(SecureConstant.BASIC_HEADER_KEY,"header"),new Authorization(TokenConstant.HEADER,"header")));
 
     @Data
-    class Authorization{
+    static class Authorization{
         private String name;
         private String type;
 

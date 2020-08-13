@@ -1,6 +1,7 @@
 package com.wlcb.jpower.module.common.swagger;
 
 import lombok.AllArgsConstructor;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import springfox.documentation.swagger.web.SwaggerResource;
@@ -19,6 +20,7 @@ import java.util.List;
 @Primary
 @Component
 @AllArgsConstructor
+@EnableConfigurationProperties({DocsProperties.class})
 public class SwaggerGroup implements SwaggerResourcesProvider {
 
     private DocsProperties docsProperties;
@@ -35,8 +37,7 @@ public class SwaggerGroup implements SwaggerResourcesProvider {
     private SwaggerResource swaggerResource(DocsProperties.DocProperties docProperties) {
         SwaggerResource swaggerResource = new SwaggerResource();
         swaggerResource.setName(docProperties.getName());
-        swaggerResource.setLocation(docProperties.getLocation().concat("/v2/api-docs-ext"));
-        swaggerResource.setUrl(docProperties.getUrl());
+        swaggerResource.setUrl(docProperties.getLocation().concat("/v2/api-docs-ext"));
         swaggerResource.setSwaggerVersion(docProperties.getVersion());
         return swaggerResource;
     }
