@@ -1,15 +1,20 @@
 package com.wlcb.jpower.module.common.swagger;
 
+import com.fasterxml.classmate.TypeResolver;
 import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
+import com.wlcb.jpower.module.base.vo.ResponseData;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
+import org.springframework.web.context.request.async.DeferredResult;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.schema.WildcardType;
 import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
@@ -20,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static springfox.documentation.schema.AlternateTypeRules.newRule;
 
 /**
  * @ClassName SwaggerConfiguration
@@ -35,6 +41,9 @@ import static com.google.common.collect.Lists.newArrayList;
 @EnableConfigurationProperties({SwaggerProperties.class})
 @Import({BeanValidatorPluginsConfiguration.class})
 public class SwaggerConfiguration {
+
+    @Autowired
+    private TypeResolver typeResolver;
 
     @Bean
     @ConditionalOnMissingBean
@@ -55,7 +64,9 @@ public class SwaggerConfiguration {
                 .build()
                 .securitySchemes(securitySchemes(getSwaggerProperties()))
                 .securityContexts(securityContexts())
-                .pathMapping("/");
+                .pathMapping("/")
+                //自定义规则，如果遇到DeferredResult，则把泛型类转成json
+                .alternateTypeRules(newRule(typeResolver.resolve(DeferredResult.class,typeResolver.resolve(ResponseData.class, WildcardType.class)),typeResolver.resolve(WildcardType.class)));
     }
 
     private List<? extends SecurityScheme> securitySchemes(SwaggerProperties swaggerProperties) {

@@ -1,6 +1,7 @@
 package com.wlcb.jpower.auth;
 
 import com.wlcb.jpower.module.common.auth.UserInfo;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -14,8 +15,9 @@ import lombok.Data;
 public class AuthInfo {
 
     /** 用户信息 **/
+    @ApiModelProperty("用户信息")
     private UserInfo user;
-    /** 令牌 **/
+    @ApiModelProperty("令牌")
     private String accessToken;
     /** 令牌类型 **/
     private String tokenType;

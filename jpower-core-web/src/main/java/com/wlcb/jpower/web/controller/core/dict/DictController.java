@@ -15,9 +15,6 @@ import com.wlcb.jpower.module.dbs.entity.core.dict.TbCoreDict;
 import com.wlcb.jpower.module.dbs.entity.core.dict.TbCoreDictType;
 import com.wlcb.jpower.module.mp.support.Condition;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -108,7 +105,7 @@ public class DictController {
      * @return com.wlcb.jpower.module.base.vo.ResponseData
      */
     @RequestMapping(value = "/listByType",method = RequestMethod.GET,produces="application/json")
-    public ResponseData listByType(String typeCode ,@RequestParam Map<String,Object> dict){
+    public ResponseData<PageInfo<TbCoreDict>> listByType(String typeCode ,@RequestParam Map<String,Object> dict){
         dict.remove("typeCode");
         JpowerAssert.notEmpty(typeCode, JpowerError.Arg,"字典类型不可为空");
         PaginationContext.startPage();

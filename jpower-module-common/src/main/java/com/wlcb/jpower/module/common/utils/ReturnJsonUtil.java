@@ -17,9 +17,9 @@ import java.io.PrintWriter;
  */
 public class ReturnJsonUtil {
 
-    public static ResponseData printJson(Integer code, String msg, Object data, boolean status){
+    public static <T> ResponseData<T> printJson(Integer code, String msg, T data, boolean status){
 
-        ResponseData r = new ResponseData();
+        ResponseData<T> r = new ResponseData();
         r.setMessage(msg);
         r.setCode(code);
         r.setData(data);
@@ -28,8 +28,8 @@ public class ReturnJsonUtil {
         return r;
     }
 
-    public static ResponseData printJson(Integer code,String msg,boolean status){
-        ResponseData r = new ResponseData();
+    public static <T> ResponseData<T> printJson(Integer code,String msg,boolean status){
+        ResponseData<T> r = new ResponseData();
         r.setMessage(msg);
         r.setCode(code);
         r.setData(null);
@@ -58,7 +58,7 @@ public class ReturnJsonUtil {
      * @date 21:43 2020/7/26 0026
      * @return com.wlcb.jpower.module.base.vo.ResponseData
      */
-    public static ResponseData notFind(String msg){
+    public static <T> ResponseData<T> notFind(String msg){
         return printJson(ConstantsReturn.RECODE_NOTFOUND, msg, false);
     }
 
@@ -69,7 +69,7 @@ public class ReturnJsonUtil {
      * @Param [msg, data]
      * @return ResponseData
      **/
-    public static ResponseData ok(String msg, Object data){
+    public static <T> ResponseData<T> ok(String msg, T data){
         return printJson(ConstantsReturn.RECODE_SUCCESS, msg, data, true);
     }
 
@@ -80,7 +80,7 @@ public class ReturnJsonUtil {
      * @Param [msg, data]
      * @return ResponseData
      **/
-    public static ResponseData ok(String msg){
+    public static <T> ResponseData<T> ok(String msg){
         return ok( msg, null);
     }
 
@@ -91,7 +91,7 @@ public class ReturnJsonUtil {
      * @Param [msg, data]
      * @return ResponseData
      **/
-    public static ResponseData fail(String msg, Object data){
+    public static <T> ResponseData<T> fail(String msg, T data){
         return printJson(ConstantsReturn.RECODE_FAIL, msg, data, false);
     }
 
@@ -102,14 +102,14 @@ public class ReturnJsonUtil {
      * @Param [msg, data]
      * @return ResponseData
      **/
-    public static ResponseData fail(String msg){
+    public static <T> ResponseData<T> fail(String msg){
         return fail( msg, null);
     }
 
     public static void main(String[] args) {
     }
 
-    public static ResponseData status(Boolean is) {
+    public static <T> ResponseData<T> status(Boolean is) {
         if(is){
             return ok("操作成功");
         }else {
@@ -125,7 +125,7 @@ public class ReturnJsonUtil {
      * @Param [该客户端已存在]
      * @return com.wlcb.jpower.module.base.vo.ResponseData
      **/
-    public static ResponseData busFail(String msg) {
+    public static <T> ResponseData<T> busFail(String msg) {
         return printJson(ConstantsReturn.RECODE_BUSINESS,msg,false);
 
     }

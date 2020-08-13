@@ -1,5 +1,10 @@
 package com.wlcb.jpower.module.base.vo;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+import java.io.Serializable;
+
 /**
  * @ClassName ResponseData
  * @Description TODO
@@ -7,12 +12,19 @@ package com.wlcb.jpower.module.base.vo;
  * @Date 2020-01-27 17:26
  * @Version 1.0
  */
-public class ResponseData {
+@ApiModel(description = "返回消息通用包装")
+public class ResponseData<T> implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
+    @ApiModelProperty(required = true,notes = "结果码",example = "200")
     private int code = -1;
+    @ApiModelProperty(required = true,notes = "返回状态",example = "true")
     private boolean status = false;
+    @ApiModelProperty(required = true,notes = "返回信息",example = "请求成功")
     private String message = "请求失败";
-    private Object data;
+    @ApiModelProperty(required = true,notes = "返回数据")
+    private T data;
 
     public int getCode() {
         return code;
@@ -42,7 +54,7 @@ public class ResponseData {
         return data;
     }
 
-    public void setData(Object data) {
+    public void setData(T data) {
         this.data = data;
     }
 }

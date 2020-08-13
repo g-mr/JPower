@@ -19,13 +19,10 @@ import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
-import io.swagger.annotations.Api;
+import io.swagger.annotations.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.concurrent.TimeUnit;
@@ -37,7 +34,7 @@ import java.util.concurrent.TimeUnit;
  * @Date 2020-02-13 14:10
  * @Version 1.0
  */
-@Api(tags = "登陆相关")
+@Api(tags = "授权相关")
 @RestController
 @RequestMapping("/auth")
 public class LoginController extends BaseController {
@@ -49,24 +46,27 @@ public class LoginController extends BaseController {
     @Resource
     private RedisUtils redisUtils;
 
-    /**
-     * @author 郭丁志
-     * @Description //TODO 用户登陆
-     * @date 0:35 2020/6/10 0010
-     * @param loginId 账号
-     * @param passWord 密码
-     * @param grantType 授权类型 (密码、验证码、第三方平台、手机号验证码、刷新token)
-     * @param refreshToken 刷新token
-     * @param phone 手机号 手机号登录需要）
-     * @param phoneCode 手机号验证码 （手机号登录需要）
-     * @param otherCode 第三方码登录 （比如微信登录，通过code获取openid后再请求登录）
-     * @header User-Type(用户类型，所有授权类型都需要传，前端可先死)，框架默认WEB
-     *         Authorization(客户端识别码，由后端统一提供)
-     * ········Captcha-Key：验证码key、Captcha-Code：验证码值 （验证码登录需要）
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     */
-    @RequestMapping(value = "/login",method = RequestMethod.POST,produces="application/json")
-    public ResponseData login(String loginId,String passWord,String grantType,String refreshToken
+    @ApiOperation(value = "用户登录",notes = "Authorization（客户端识别码）：生成以后调用任何接口都需提供，如没有这个识别码，即使token通过，也会提示非法客户端。\r\n" +
+            "token如何使用：tokenType+\" \"+token组成的值要放到header；header头是jpower-auth；具体写法如下；\n" +
+            "        jpower-auth=tokenType+\" \"+token")//,response = AuthInfo.class
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "loginId",required = false,value="账号",paramType = "form"),
+            @ApiImplicitParam(name = "passWord",required = false,value="密码",paramType = "form"),
+            @ApiImplicitParam(name = "grantType",required = false,value="授权类型 (密码登录=password、验证码登录=captcha、第三方平台登录=otherCode、手机号验证码登录=phone、刷新token=refresh_token)",paramType = "form"),
+            @ApiImplicitParam(name = "refreshToken",required = false,value="刷新token   token过期时用刷新token获取新token时必填",paramType = "form"),
+            @ApiImplicitParam(name = "phone",required = false,value="手机号   grantType=phone时必填",paramType = "form"),
+            @ApiImplicitParam(name = "phoneCode",required = false,value="手机号验证码   grantType=phone时必填",paramType = "form"),
+            @ApiImplicitParam(name = "otherCode",required = false,value="第三方平台标识  grantType=otherCode时必填",paramType = "form"),
+            @ApiImplicitParam(name = "User-Type",required = true,value="用户类型   具体值由后端提供",paramType = "header"),
+            @ApiImplicitParam(name = "Authorization",required = true,value="客户端识别码   由clientCode+\":\"+clientSecret组成字符串后用base64编码后获得值，再由Basic +base64编码后的值组成客户端识别码；\n" +
+                    "clientCode和clientSecret的值由后端统一提供，不同的登录客户端值也不一样。\n" +
+                    "组成的客户端识别码以后调用任何接口都需提供；",paramType = "header"),
+            @ApiImplicitParam(name = "Captcha-Key",required = false,value="验证码key  grantType=captcha时必填",paramType = "header"),
+            @ApiImplicitParam(name = "Captcha-Code",required = false,value="验证码值    grantType=captcha时必填",paramType = "header")
+
+    })
+    @PostMapping(value = "/login",produces="application/json")
+    public ResponseData<AuthInfo> login(String loginId,String passWord,String grantType,String refreshToken
             ,String phone,String phoneCode,String otherCode) {
 
         String userType = Fc.toStr(WebUtil.getRequest().getHeader(TokenUtil.USER_TYPE_HEADER_KEY), TokenUtil.DEFAULT_USER_TYPE);
