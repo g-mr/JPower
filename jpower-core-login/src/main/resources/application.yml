@@ -1,11 +1,6 @@
 server:
   port: 81
 
-swagger:
-  group-name: 授权模块
-  base-package:
-    - com.wlcb.jpower.core.login.controller
-
 jpower:
   #  开发环境
   dev:

@@ -1,5 +1,7 @@
 package com.wlcb.jpower.module.common.swagger;
 
+import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Primary;
@@ -34,11 +36,15 @@ public class SwaggerGroup implements SwaggerResourcesProvider {
         return list;
     }
 
-    private SwaggerResource swaggerResource(DocsProperties.DocProperties docProperties) {
+    private SwaggerResource swaggerResource(SwaggerResource resource) {
         SwaggerResource swaggerResource = new SwaggerResource();
-        swaggerResource.setName(docProperties.getName());
-        swaggerResource.setUrl(docProperties.getLocation().concat("/v2/api-docs-ext"));
-        swaggerResource.setSwaggerVersion(docProperties.getVersion());
+        swaggerResource.setName(resource.getName());
+        if (Fc.isNotBlank(resource.getLocation())){
+            swaggerResource.setLocation(resource.getLocation().concat("/v2/api-docs-ext"));
+        }else {
+            swaggerResource.setUrl(resource.getUrl().concat("/v2/api-docs-ext"));
+        }
+        swaggerResource.setSwaggerVersion(Fc.isNotBlank(swaggerResource.getSwaggerVersion())?swaggerResource.getSwaggerVersion():JpowerConstants.JPOWER_VESION);
         return swaggerResource;
     }
 }

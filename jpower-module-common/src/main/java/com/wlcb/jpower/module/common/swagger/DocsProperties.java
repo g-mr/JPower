@@ -1,8 +1,8 @@
 package com.wlcb.jpower.module.common.swagger;
 
-import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import springfox.documentation.swagger.web.SwaggerResource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,12 +18,6 @@ import java.util.List;
 @ConfigurationProperties(prefix = "jpower.docs")
 public class DocsProperties {
 
-    private final List<DocsProperties.DocProperties> resource = new ArrayList<>();
+    private final List<SwaggerResource> resource = new ArrayList<>();
 
-    @Data
-    public static class DocProperties {
-        private String name;
-        private String location;
-        private String version = JpowerConstants.JPOWER_VESION;
-    }
 }

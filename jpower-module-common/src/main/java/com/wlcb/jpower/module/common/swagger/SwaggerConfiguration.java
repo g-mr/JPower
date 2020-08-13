@@ -49,7 +49,6 @@ public class SwaggerConfiguration {
 
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo(properties))
-//                .groupName(properties.getGroupName())
                 .select()
                 .apis(SwaggerConfigUtil.basePackage(properties.getBasePackage()))
                 .paths(PathSelectors.any())
@@ -91,7 +90,7 @@ public class SwaggerConfiguration {
                 .license(properties.getLicense())
                 .licenseUrl(properties.getLicenseUrl())
                 .termsOfServiceUrl(properties.getTermsOfServiceUrl())
-                .contact(properties.getContact())
+                .contact(new Contact(properties.getContact().getName(),properties.getContact().getUrl(),properties.getContact().getEmail()))
                 .version(properties.getVersion())
                 .build();
     }

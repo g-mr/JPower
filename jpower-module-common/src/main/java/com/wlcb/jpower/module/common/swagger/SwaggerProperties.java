@@ -2,11 +2,11 @@ package com.wlcb.jpower.module.common.swagger;
 
 import com.wlcb.jpower.module.common.auth.SecureConstant;
 import com.wlcb.jpower.module.common.auth.TokenConstant;
+import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import springfox.documentation.service.AuthorizationScope;
-import springfox.documentation.service.Contact;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,16 +26,23 @@ public class SwaggerProperties {
 
     private List<String> basePackage = new ArrayList(Collections.singletonList("com.wlcb"));
 
-    private String groupName = "基础框架";
     private String title = "Jpower 接口文档系统";
     private String description = "Jpower 接口文档系统";
     private String license = "Powered By Jpower";
     private String licenseUrl = "http:localhost";
     private String termsOfServiceUrl = "https:localhost";
-    private String version = "1.0.1";
+    private String version = JpowerConstants.JPOWER_VESION;
     private Contact contact = new Contact("GDZ","localhost","");
 
     private List<Authorization> authorization = new ArrayList<>(Arrays.asList(new Authorization(SecureConstant.BASIC_HEADER_KEY,"header"),new Authorization(TokenConstant.HEADER,"header")));
+
+    @Data
+    @AllArgsConstructor
+    static class Contact{
+        private String name;
+        private String url;
+        private String email;
+    }
 
     @Data
     static class Authorization{

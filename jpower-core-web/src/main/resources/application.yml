@@ -6,11 +6,9 @@ jpower:
   docs:
     resource:
       - name: 基础框架
-        location:
-        version: 1.0.1
+        url:
       - name: 授权模块
-        location: :81
-        version: 1.0.1
+        url: http://localhost:81/
   #  开发环境
   dev:
     datasource:
