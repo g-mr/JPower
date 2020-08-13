@@ -48,6 +48,8 @@ public class LoginConfigurer implements WebMvcConfigurer {
         exculudesUrl.add("/auth/**");
         exculudesUrl.add("/v2/api-docs-ext/**");
         exculudesUrl.add("/v2/api-docs/**");
+        exculudesUrl.add("/doc.html");
+        exculudesUrl.add("/swagger-resources");
 
         registry.addInterceptor(loginInterceptor).addPathPatterns("/**").excludePathPatterns(exculudesUrl);
     }
