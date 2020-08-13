@@ -71,10 +71,10 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
      **/
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-//        if (Fc.equals(active,"dev") || (Fc.equals(active,"test") && Fc.equals(isLogin,false))){
-//            //开发环境和测试环境不走鉴权
-//            return true;
-//        }
+        if (Fc.equals(active,"dev") || (Fc.equals(active,"test") && Fc.equals(isLogin,false))){
+            //开发环境和测试环境不走鉴权
+            return true;
+        }
 
         ResponseData responseData = ReturnJsonUtil.printJson(HttpStatus.UNAUTHORIZED.value(),"请求未授权",false);
 
