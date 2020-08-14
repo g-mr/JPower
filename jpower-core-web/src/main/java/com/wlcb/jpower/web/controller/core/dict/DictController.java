@@ -107,6 +107,7 @@ public class DictController {
     @RequestMapping(value = "/listByType",method = RequestMethod.GET,produces="application/json")
     public ResponseData<PageInfo<TbCoreDict>> listByType(String typeCode ,@RequestParam Map<String,Object> dict){
         dict.remove("typeCode");
+        dict.remove("dictTypeCode");
         JpowerAssert.notEmpty(typeCode, JpowerError.Arg,"字典类型不可为空");
         PaginationContext.startPage();
         List<TbCoreDict> list = coreDictService.list(Condition.getQueryWrapper(dict,TbCoreDict.class).lambda().eq(TbCoreDict::getDictTypeCode,typeCode).orderByAsc(TbCoreDict::getSortNum));
@@ -156,7 +157,7 @@ public class DictController {
      */
     @RequestMapping(value = "/getDict",method = RequestMethod.GET,produces="application/json")
     public ResponseData getDict(TbCoreDict dict){
-        return ReturnJsonUtil.ok("查询成功",coreDictService.getOne(Condition.getQueryWrapper(dict),false));
+        return ReturnJsonUtil.ok("查询成功",coreDictService.list(Condition.getQueryWrapper(dict)));
     }
 
 }
