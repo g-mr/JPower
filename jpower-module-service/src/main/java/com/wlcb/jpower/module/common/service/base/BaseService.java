@@ -1,10 +1,7 @@
 package com.wlcb.jpower.module.common.service.base;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.toolkit.Assert;
-import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.wlcb.jpower.module.common.node.Node;
 
 import java.io.Serializable;

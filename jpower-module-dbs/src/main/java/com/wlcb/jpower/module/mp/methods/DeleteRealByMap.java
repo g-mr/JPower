@@ -36,6 +36,6 @@ public class DeleteRealByMap extends AbstractMethod {
         SqlMethod sqlMethod = SqlMethod.DELETE_BY_MAP;
         String sql = String.format(sqlMethod.getSql(), tableInfo.getTableName(), this.sqlWhereByMap(tableInfo));
         SqlSource sqlSource = languageDriver.createSqlSource(configuration, sql, Map.class);
-        return this.addDeleteMappedStatement(mapperClass, getMethod(sqlMethod), sqlSource);
+        return this.addDeleteMappedStatement(mapperClass, "deleteRealByMap", sqlSource);
     }
 }

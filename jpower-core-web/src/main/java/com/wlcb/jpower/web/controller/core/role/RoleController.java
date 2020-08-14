@@ -121,7 +121,7 @@ public class RoleController extends BaseController {
         }
     }
 
-    @ApiOperation("查询角色权限")
+    @ApiOperation("查询角色的权限")
     @RequestMapping(value = "/roleFunction",method = {RequestMethod.GET},produces="application/json")
     public ResponseData<List<Map<String,Object>>> roleFunction(@ApiParam(value = "角色主键",required = true) @RequestParam String roleId){
 
@@ -135,7 +135,7 @@ public class RoleController extends BaseController {
     @Log(title = "重新给角色赋权",isSaveLog = true)
     @RequestMapping(value = "/addFunction",method = {RequestMethod.POST},produces="application/json")
     public ResponseData addFunction(@ApiParam(value = "角色主键",required = true) @RequestParam String roleId,
-                                    @ApiParam(value = "菜单主键 多个逗号分割",required = true) @RequestParam String functionIds){
+                                    @ApiParam(value = "菜单主键 多个逗号分割") @RequestParam(required = false) String functionIds){
 
         JpowerAssert.notEmpty(roleId, JpowerError.Arg,"角色id不可为空");
 

@@ -232,7 +232,7 @@ public class UserController extends BaseController {
     @ApiOperation(value = "给用户重新设置角色")
     @RequestMapping(value = "/addRole",method = {RequestMethod.POST},produces="application/json")
     public ResponseData addRole(@ApiParam(value = "用户主键 多个逗号分割",required = true) @RequestParam String userIds,
-                                @ApiParam(value = "角色主键 多个逗号分割") @RequestParam String roleIds){
+                                @ApiParam(value = "角色主键 多个逗号分割") @RequestParam(required = false) String roleIds){
 
         JpowerAssert.notEmpty(userIds, JpowerError.Arg,"userIds不可为空");
 

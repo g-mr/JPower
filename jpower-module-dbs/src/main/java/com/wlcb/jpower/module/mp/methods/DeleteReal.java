@@ -36,6 +36,6 @@ public class DeleteReal extends AbstractMethod {
             sqlWhereEntityWrapper(true, tableInfo),
             sqlComment());
         SqlSource sqlSource = languageDriver.createSqlSource(configuration, sql, modelClass);
-        return this.addDeleteMappedStatement(mapperClass, getMethod(sqlMethod), sqlSource);
+        return this.addDeleteMappedStatement(mapperClass, "deleteReal", sqlSource);
     }
 }
