@@ -91,7 +91,6 @@
             <version>${knife4j.version}</version>
         </dependency>
 
-
         <!--微信支付，后期把红包功能移动到支付服务后，移除这块-->
         <dependency>
             <groupId>com.github.wxpay</groupId>

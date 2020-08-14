@@ -3,6 +3,7 @@ package com.wlcb.jpower.module.dbs.entity.core.params;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -19,14 +20,19 @@ public class TbCoreParam extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 3631941874174942414L;
 
+    @ApiModelProperty("参数编码")
     private String code;
+    @ApiModelProperty("参数名称")
     private String name;
+    @ApiModelProperty("参数值")
     private String value;
-    /** 是否支持立即生效，0否 1是 **/
+    @ApiModelProperty("是否支持立即生效 字典YN01")
     @Dict(name = "YN01", attributes = "isEffectStr")
     private Integer isEffect;
+    @ApiModelProperty("备注")
     private String note;
 
+    @ApiModelProperty("是否支持立即生效")
     @TableField(exist = false)
     private String isEffectStr;
 }

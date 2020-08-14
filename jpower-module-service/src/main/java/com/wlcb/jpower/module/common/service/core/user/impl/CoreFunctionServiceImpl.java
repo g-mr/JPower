@@ -18,12 +18,12 @@ import com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction;
 import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreRoleFunction;
 import com.wlcb.jpower.module.dbs.vo.FunctionVo;
 import com.wlcb.jpower.module.mp.support.Condition;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -42,36 +42,10 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     private RedisUtils redisUtils;
 
     @Override
-    public List<TbCoreFunction> listByParent(TbCoreFunction coreFunction) {
-        LambdaQueryWrapper<TbCoreFunction> wrapper = new QueryWrapper<TbCoreFunction>().lambda();
+    public List<TbCoreFunction> listByParent(Map<String,Object> coreFunction) {
 
-        if (StringUtils.isNotBlank(coreFunction.getAlias())){
-            wrapper.eq(TbCoreFunction::getAlias,coreFunction.getAlias());
-        }
-
-        if (StringUtils.isNotBlank(coreFunction.getCode())){
-            wrapper.eq(TbCoreFunction::getCode,coreFunction.getCode());
-        }
-
-        if (StringUtils.isNotBlank(coreFunction.getParentCode())){
-            wrapper.eq(TbCoreFunction::getParentCode,coreFunction.getParentCode());
-        }
-
-        if (coreFunction.getIsMenu() != null){
-            wrapper.eq(TbCoreFunction::getIsMenu,coreFunction.getIsMenu());
-        }
-
-        if (StringUtils.isNotBlank(coreFunction.getFunctionName())){
-            wrapper.like(TbCoreFunction::getFunctionName,coreFunction.getFunctionName());
-        }
-
-        if (StringUtils.isNotBlank(coreFunction.getUrl())){
-            wrapper.like(TbCoreFunction::getUrl,coreFunction.getUrl());
-        }
-
-        wrapper.orderByAsc(TbCoreFunction::getSort);
-
-        return coreFunctionDao.list(wrapper);
+        return coreFunctionDao.list(Condition.getQueryWrapper(coreFunction,TbCoreFunction.class).lambda()
+                .orderByAsc(TbCoreFunction::getSort));
     }
 
     @Override

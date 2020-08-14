@@ -1,6 +1,5 @@
 package com.wlcb.jpower.web.controller.core.city;
 
-import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
@@ -16,6 +15,7 @@ import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.dbs.entity.core.city.TbCoreCity;
 import com.wlcb.jpower.module.mp.support.SqlKeyword;
+import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,14 +25,7 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @ClassName CityController
- * @Description TODO 行政区域相关
- * @Author 郭丁志
- * @Date 2020-02-13 14:10
- * @Version 1.0
- *
- */
+@Api(tags = "行政区域管理")
 @RestController
 @RequestMapping("/core/city")
 public class CityController extends BaseController {
@@ -40,42 +33,33 @@ public class CityController extends BaseController {
     @Resource
     private CoreCityService coreCityService;
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 根据父节点查询子节点菜单
-     * @Date 15:13 2020-05-20
-     * @Param [code 默认为-1]
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     **/
+    @ApiOperation("查询下级列表")
+    @ApiResponses({
+            @ApiResponse(code = 200,message = "ResponseData => 'data':[{'code':'string','name':'string'}]")
+    })
     @RequestMapping(value = "/listChild",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData listChild(@RequestParam(defaultValue = JpowerConstants.TOP_CODE) String pcode, String name){
+    public ResponseData<List<Map<String,Object>>> listChild(@ApiParam(value = "父级code",required = true) @RequestParam(defaultValue = JpowerConstants.TOP_CODE) String pcode,
+                                  @ApiParam(value = "名称") @RequestParam String name){
         List<Map<String,Object>> list = coreCityService.listChild(ChainMap.init().set("pcode"+ SqlKeyword.EQUAL,pcode).set("name",name));
-        return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"获取成功", JSON.toJSON(list),true);
+        return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"获取成功", list,true);
     }
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 查询行政区域列表
-     * @Date 11:15 2020-07-23
-     * @Param [coreCity]
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     **/
+    @ApiOperation("分页查询行政区域列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageNum",value = "第几页",defaultValue = "1",paramType = "query",dataType = "int",required = true),
+            @ApiImplicitParam(name = "pageSize",value = "每页长度",defaultValue = "10",paramType = "query",dataType = "int",required = true),
+            @ApiImplicitParam(name = "pcode",value = "父级编码",defaultValue = JpowerConstants.TOP_CODE,required = true,paramType = "query")
+    })
     @RequestMapping(value = "/listPage",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData listPage( TbCoreCity coreCity){
+    public ResponseData<PageInfo<TbCoreCity>> listPage( TbCoreCity coreCity){
         coreCity.setPcode(Fc.isNotBlank(coreCity.getPcode())?coreCity.getPcode():JpowerConstants.TOP_CODE);
 
         PaginationContext.startPage();
         List<TbCoreCity> list = coreCityService.list(coreCity);
-        return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"获取成功", JSON.toJSON(new PageInfo<>(list)),true);
+        return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"获取成功", new PageInfo<>(list),true);
     }
 
-    /**
-     * @author 郭丁志
-     * @Description //TODO 新增或者修改行政区域
-     * @date 17:25 2020/7/25 0025
-     * @param coreCity
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     */
+    @ApiOperation(value = "新增或者修改行政区域",notes = "主键新增时必传，修改的不可传")
     @RequestMapping(value = "/save",method = {RequestMethod.POST},produces="application/json")
     public ResponseData save( TbCoreCity coreCity){
 
@@ -90,27 +74,15 @@ public class CityController extends BaseController {
         return ReturnJsonUtil.status(is);
     }
 
-    /**
-     * @author 郭丁志
-     * @Description //TODO 删除行政区域
-     * @date 22:19 2020/7/25 0025
-     * @param ids
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     */
+    @ApiOperation("删除行政区域")
     @RequestMapping(value = "/delete",method = {RequestMethod.DELETE},produces="application/json")
-    public ResponseData delete( String ids){
+    public ResponseData delete(@ApiParam(value = "主键，多个逗号分割",required = true) @RequestParam String ids){
         return ReturnJsonUtil.status(coreCityService.deleteBatch(Fc.toStrList(ids)));
     }
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 懒加载树形菜单
-     * @Date 22:40 2020-07-25
-     * @Param [ids]
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     **/
+    @ApiOperation("懒加载树形菜单")
     @RequestMapping(value = "/lazyTree",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData lazyTree( String pcode){
+    public ResponseData<List<Node>> lazyTree(@ApiParam(value = "父级编码",required = true) @RequestParam String pcode){
         List<Node> nodeList = coreCityService.lazyTree(pcode);
         return ReturnJsonUtil.ok("查询成功",nodeList);
     }

@@ -50,7 +50,7 @@ public class ResponseData<T> implements Serializable {
         this.message = message;
     }
 
-    public Object getData() {
+    public T getData() {
         return data;
     }
 

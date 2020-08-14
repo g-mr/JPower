@@ -11,19 +11,15 @@ import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.dbs.entity.core.client.TbCoreClient;
 import com.wlcb.jpower.module.mp.support.Condition;
+import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 import java.util.Map;
 
-/**
- * @ClassName ClientController
- * @Description TODO 客户端控制器
- * @Author 郭丁志
- * @Date 2020-07-31 14:27
- * @Version 1.0
- */
+@Api(tags = "客户端管理")
 @RestController
 @RequestMapping("/core/client")
 @AllArgsConstructor
@@ -38,6 +34,7 @@ public class ClientController extends BaseController {
      * @Param [coreClient]
      * @return com.wlcb.jpower.module.base.vo.ResponseData
      **/
+    @ApiOperation("保存或者更新客户端信息")
     @PostMapping("save")
     public ResponseData save(TbCoreClient coreClient){
         if (Fc.isBlank(coreClient.getId())){
@@ -53,28 +50,22 @@ public class ClientController extends BaseController {
         return ReturnJsonUtil.status(coreClientService.saveOrUpdate(coreClient));
     }
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 删除客户端信息
-     * @Date 14:52 2020-07-31
-     * @Param [coreClient]
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     **/
+    @ApiOperation("删除客户端")
     @DeleteMapping("delete")
-    public ResponseData delete(String ids){
+    public ResponseData delete(@ApiParam(value = "主键，多个逗号分割",required = true) @RequestParam String ids){
         JpowerAssert.notEmpty(ids,JpowerError.Arg,"客户端主键不可为空");
         return ReturnJsonUtil.status(coreClientService.removeByIds(Fc.toStrList(ids)));
     }
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 分页查询客户端列表
-     * @Date 14:54 2020-07-31
-     * @Param [coreClient]
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     **/
+    @ApiOperation("分页查询客户端列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageNum",value = "第几页",defaultValue = "1",paramType = "query",dataType = "int",required = true),
+            @ApiImplicitParam(name = "pageSize",value = "每页长度",defaultValue = "10",paramType = "query",dataType = "int",required = true),
+            @ApiImplicitParam(name = "name",value = "客户端名称",paramType = "query"),
+            @ApiImplicitParam(name = "clientCode",value = "客户端编码",paramType = "query")
+    })
     @GetMapping("list")
-    public ResponseData list(@RequestParam Map<String,Object> coreClient){
+    public ResponseData<PageInfo<TbCoreClient>> list(@ApiIgnore @RequestParam Map<String,Object> coreClient){
         PaginationContext.startPage();
         List<TbCoreClient> list = coreClientService.list(Condition.getQueryWrapper(coreClient,TbCoreClient.class).lambda().orderByAsc(TbCoreClient::getSortNum));
         return ReturnJsonUtil.ok("查询成功",new PageInfo<>(list));

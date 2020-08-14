@@ -25,6 +25,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -46,9 +50,11 @@ public class LoginController extends BaseController {
     @Resource
     private RedisUtils redisUtils;
 
-    @ApiOperation(value = "用户登录",notes = "Authorization（客户端识别码）：生成以后调用任何接口都需提供，如没有这个识别码，即使token通过，也会提示非法客户端。\r\n" +
-            "token如何使用：tokenType+\" \"+token组成的值要放到header；header头是jpower-auth；具体写法如下；\n" +
-            "        jpower-auth=tokenType+\" \"+token")//,response = AuthInfo.class
+    @ApiOperation(value = "用户登录",notes = "Authorization（客户端识别码）：由clientCode+\":\"+clientSecret组成字符串后用base64编码后获得值，再由Basic +base64编码后的值组成客户端识别码； <br/>" +
+            "&nbsp;&nbsp;&nbsp;clientCode和clientSecret的值由后端统一提供，不同的登录客户端值也不一样。<br/>" +
+            "&nbsp;&nbsp;&nbsp;<span style=\"color:red;\">生成以后调用任何接口都需提供，如没有这个识别码，即使token通过，也会提示非法客户端。</span>  <br/>" +
+            "token如何使用：tokenType+\" \"+token组成的值要放到header；header头是jpower-auth；具体写法如下；<br/>" +
+            "&nbsp;&nbsp;&nbsp;jpower-auth=tokenType+\" \"+token")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "loginId",required = false,value="账号",paramType = "form"),
             @ApiImplicitParam(name = "passWord",required = false,value="密码",paramType = "form"),
@@ -58,12 +64,9 @@ public class LoginController extends BaseController {
             @ApiImplicitParam(name = "phoneCode",required = false,value="手机号验证码   grantType=phone时必填",paramType = "form"),
             @ApiImplicitParam(name = "otherCode",required = false,value="第三方平台标识  grantType=otherCode时必填",paramType = "form"),
             @ApiImplicitParam(name = "User-Type",required = true,value="用户类型   具体值由后端提供",paramType = "header"),
-            @ApiImplicitParam(name = "Authorization",required = true,value="客户端识别码   由clientCode+\":\"+clientSecret组成字符串后用base64编码后获得值，再由Basic +base64编码后的值组成客户端识别码；\n" +
-                    "clientCode和clientSecret的值由后端统一提供，不同的登录客户端值也不一样。\n" +
-                    "组成的客户端识别码以后调用任何接口都需提供；",paramType = "header"),
+            @ApiImplicitParam(name = "Authorization",required = true,value="客户端识别码",paramType = "header"),
             @ApiImplicitParam(name = "Captcha-Key",required = false,value="验证码key  grantType=captcha时必填",paramType = "header"),
             @ApiImplicitParam(name = "Captcha-Code",required = false,value="验证码值    grantType=captcha时必填",paramType = "header")
-
     })
     @PostMapping(value = "/login",produces="application/json")
     public ResponseData<AuthInfo> login(String loginId,String passWord,String grantType,String refreshToken
@@ -75,7 +78,8 @@ public class LoginController extends BaseController {
                 .set("password", passWord)
                 .set("grantType", grantType)
                 .set("refreshToken", refreshToken)
-                .set("userType", userType)  //扩展参数，各自业务根据需求使用
+                //扩展参数，各自业务根据需求使用
+                .set("userType", userType)
                 .set("phone", phone)
                 .set("phoneCode", phoneCode)
                 .set("otherCode", otherCode);
@@ -94,15 +98,9 @@ public class LoginController extends BaseController {
         return ReturnJsonUtil.ok("登录成功",authInfo);
     }
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 退出登录
-     * @Date 11:05 2020-07-29
-     * @Param []
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     **/
+    @ApiOperation(value = "退出登录")
     @RequestMapping(value = "/loginOut",method = RequestMethod.POST,produces="application/json")
-    public ResponseData loginOut(String userId) {
+    public ResponseData<String> loginOut(@ApiParam(value = "用户ID",required = true)@RequestParam String userId) {
         JpowerAssert.notEmpty(userId, JpowerError.Arg,"用户ID不可为空");
         UserInfo user = SecureUtil.getUser();
         if(Fc.equals(userId,user.getUserId())){
@@ -113,13 +111,9 @@ public class LoginController extends BaseController {
         }
     }
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 获取验证码
-     * @Date 22:51 2020-07-27
-     **/
+    @ApiOperation(value = "获取验证码")
     @GetMapping("/captcha")
-    public ResponseData captcha() {
+    public ResponseData<Map> captcha() {
         SpecCaptcha specCaptcha = new SpecCaptcha(130, 48, 5);
         String verCode = specCaptcha.text().toLowerCase();
         String key = UUIDUtil.getUUID();
@@ -129,15 +123,9 @@ public class LoginController extends BaseController {
         return ReturnJsonUtil.ok("操作成功",ChainMap.init().set("key", key).set("image", specCaptcha.toBase64()));
     }
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 发送登录验证码
-     * @Date 17:10 2020-04-30
-     * @Param [phone]
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     **/
+    @ApiOperation(value = "发送手机登录验证码")
     @RequestMapping(value = "/phoneCaptcha",method = RequestMethod.GET,produces="application/json")
-    public ResponseData loginVercode(String phone) {
+    public ResponseData<String> loginVercode(@ApiParam(value = "手机号",required = true) @RequestParam String phone) {
 
         if (StringUtils.isBlank(phone) || !StrUtil.isPhone(phone)){
             return ReturnJsonUtil.fail("手机号不合法");

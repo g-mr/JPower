@@ -18,10 +18,12 @@ import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
 import com.wlcb.jpower.module.common.utils.constants.ParamsConstants;
 import com.wlcb.jpower.module.common.utils.param.ParamConfig;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
+import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,13 +31,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @ClassName UserController
- * @Description TODO 登录用户相关
- * @Author 郭丁志
- * @Date 2020-02-13 14:10
- * @Version 1.0
- */
+@Api(tags = "用户管理")
 @RestController
 @AllArgsConstructor
 @RequestMapping("/core/user")
@@ -44,42 +40,28 @@ public class UserController extends BaseController {
     private CoreUserService coreUserService;
     private CoreUserRoleService coreUserRoleService;
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 查询用户列表
-     * @Date 09:41 2020-05-19
-     * @Param [coreUser]
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     **/
+    @ApiOperation("查询用户分页列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageNum",value = "第几页",defaultValue = "1",paramType = "query",dataType = "int",required = true),
+            @ApiImplicitParam(name = "pageSize",value = "每页长度",defaultValue = "10",paramType = "query",dataType = "int",required = true)
+    })
     @RequestMapping(value = "/list",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
-    public ResponseData list(TbCoreUser coreUser){
+    public ResponseData<PageInfo<TbCoreUser>> list(TbCoreUser coreUser){
         PaginationContext.startPage();
         List<TbCoreUser> list = coreUserService.list(coreUser);
         return ReturnJsonUtil.ok("获取成功", new PageInfo<>(list));
     }
 
-    /**
-     * @author 郭丁志
-     * @Description //TODO 查询用户详情
-     * @date 23:29 2020/5/26 0026
-     * @param id 用户ID
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     */
+    @ApiOperation("查询用户详情")
     @RequestMapping(value = "/get",method = RequestMethod.GET,produces="application/json")
-    public ResponseData list(String id){
+    public ResponseData<TbCoreUser> list(@ApiParam(value = "主键",required = true) @RequestParam String id){
         JpowerAssert.notEmpty(id, JpowerError.Arg,"id不可为空");
 
         TbCoreUser user = coreUserService.selectUserById(id);
         return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"查询成功", user, true);
     }
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 新增一个用户
-     * @Date 10:14 2020-05-19
-     * @Param [coreUser]
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     **/
+    @ApiOperation(value = "新增",notes = "主键不用传")
     @RequestMapping(value = "/add",method = {RequestMethod.POST},produces="application/json")
     public ResponseData add(TbCoreUser coreUser){
 
@@ -115,16 +97,10 @@ public class UserController extends BaseController {
         }
     }
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 删除登录用户
-     * @Date 11:27 2020-05-19
-     * @Param [coreUser]
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     **/
+    @ApiOperation(value = "删除用户")
     @Log(title = "删除登录用户",businessType = BusinessType.DELETE)
     @RequestMapping(value = "/delete",method = {RequestMethod.DELETE},produces="application/json")
-    public ResponseData delete(String ids){
+    public ResponseData delete(@ApiParam(value = "主键 多个逗号分割",required = true) @RequestParam String ids){
 
         JpowerAssert.notEmpty(ids, JpowerError.Arg,"ids不可为空");
 
@@ -137,13 +113,7 @@ public class UserController extends BaseController {
         }
     }
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 修改登录用户信息
-     * @Date 11:31 2020-05-19
-     * @Param [coreUser]
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     **/
+    @ApiOperation(value = "修改用户信息")
     @Log(title = "修改系统用户信息",businessType = BusinessType.UPDATE)
     @RequestMapping(value = "/update",method = {RequestMethod.PUT},produces="application/json")
     public ResponseData update(TbCoreUser coreUser){
@@ -181,15 +151,9 @@ public class UserController extends BaseController {
         }
     }
 
-    /**
-     * @author 郭丁志
-     * @Description //TODO 重置用户登陆密码
-     * @date 1:12 2020/5/24 0024
-     * @param ids 用户主键ID
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     */
+    @ApiOperation(value = "重置用户登陆密码")
     @RequestMapping(value = "/resetPassword",method = {RequestMethod.PUT},produces="application/json")
-    public ResponseData resetPassword(String ids){
+    public ResponseData resetPassword(@ApiParam(value = "主键 多个逗号分割",required = true) @RequestParam  String ids){
 
         String pass = DigestUtil.encrypt(MD5.parseStrToMd5U32(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD,ConstantsUtils.DEFAULT_USER_PASSWORD)));
 
@@ -204,13 +168,7 @@ public class UserController extends BaseController {
         }
     }
 
-    /**
-     * @author 郭丁志
-     * @Description //TODO 批量导入用户
-     * @date 3:14 2020/5/24 0024
-     * @param file 导入文件
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     */
+    @ApiOperation(value = "批量导入用户")
     @RequestMapping(value = "/importUser",method = {RequestMethod.POST},produces="application/json")
     public ResponseData importUser(MultipartFile file){
 
@@ -262,13 +220,7 @@ public class UserController extends BaseController {
 
     }
 
-    /**
-     * @author 郭丁志
-     * @Description //TODO 导出用户
-     * @date 23:42 2020/5/24 0024
-     * @param coreUser
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     */
+    @ApiOperation(value = "导出用户")
     @RequestMapping(value = "/exportUser",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
     public ResponseData exportUser(TbCoreUser coreUser){
         List<TbCoreUser> list = coreUserService.list(coreUser);
@@ -277,16 +229,10 @@ public class UserController extends BaseController {
         return beanExcelUtil.exportExcel(list,"用户列表");
     }
 
-    /**
-     * @author 郭丁志
-     * @Description //TODO 给用户重新设置角色
-     * @date 0:28 2020/5/25 0025
-     * @param userIds 用户ID 多个用,分割
-     * @param roleIds 角色ID 多个用,分割
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     */
+    @ApiOperation(value = "给用户重新设置角色")
     @RequestMapping(value = "/addRole",method = {RequestMethod.POST},produces="application/json")
-    public ResponseData addRole(String userIds,String roleIds){
+    public ResponseData addRole(@ApiParam(value = "用户主键 多个逗号分割",required = true) @RequestParam String userIds,
+                                @ApiParam(value = "角色主键 多个逗号分割") @RequestParam String roleIds){
 
         JpowerAssert.notEmpty(userIds, JpowerError.Arg,"userIds不可为空");
 
@@ -302,15 +248,9 @@ public class UserController extends BaseController {
         }
     }
 
-    /**
-     * @author 郭丁志
-     * @Description //TODO 查询用户所有角色
-     * @date 22:48 2020/5/26 0026
-     * @param userId 用户ID
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     */
+    @ApiOperation(value = "查询用户所有角色")
     @RequestMapping(value = "/userRole",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData userRole(String userId){
+    public ResponseData<List<Map<String,Object>>> userRole(@ApiParam(value = "用户主键",required = true) @RequestParam String userId){
 
         JpowerAssert.notEmpty(userId, JpowerError.Arg,"用户ID不可为空");
 

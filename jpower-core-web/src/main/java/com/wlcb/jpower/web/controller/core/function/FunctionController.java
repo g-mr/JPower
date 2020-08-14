@@ -1,6 +1,5 @@
 package com.wlcb.jpower.web.controller.core.function;
 
-import com.alibaba.fastjson.JSON;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
@@ -9,59 +8,54 @@ import com.wlcb.jpower.module.common.node.ForestNodeMerger;
 import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.service.core.user.CoreFunctionService;
 import com.wlcb.jpower.module.common.utils.BeanUtil;
+import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
+import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction;
 import com.wlcb.jpower.module.dbs.vo.FunctionVo;
+import io.swagger.annotations.*;
+import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
-import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * @ClassName RoleController
- * @Description TODO 菜单相关
- * @Author 郭丁志
- * @Date 2020-02-13 14:10
- * @Version 1.0
- *
- */
+@Api(tags = "菜单管理")
 @RestController
 @RequestMapping("/core/function")
+@AllArgsConstructor
 public class FunctionController extends BaseController {
 
-    @Resource
     private CoreFunctionService coreFunctionService;
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 根据父节点查询子节点功能
-     * @Date 15:13 2020-05-20
-     * @Param [coreFunction]
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     **/
+    @ApiOperation("根据父节点查询子节点功能")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "parentCode_eq",value = "父级节点",defaultValue = JpowerConstants.TOP_CODE,required = true,paramType = "query"),
+            @ApiImplicitParam(name = "alias",value = "别名",paramType = "query"),
+            @ApiImplicitParam(name = "code_eq",value = "编码",paramType = "query"),
+            @ApiImplicitParam(name = "isMenu_eq",value = "是否菜单 字典YN01",paramType = "query"),
+            @ApiImplicitParam(name = "functionName",value = "功能名称",paramType = "query"),
+            @ApiImplicitParam(name = "url",value = "功能URL",paramType = "query")
+    })
     @RequestMapping(value = "/listByParent",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
-    public ResponseData list(TbCoreFunction coreFunction){
+    public ResponseData<List<TbCoreFunction>> list(@ApiIgnore @RequestParam Map<String,Object> coreFunction){
 
-        if(StringUtils.isBlank(coreFunction.getParentCode())){
-            coreFunction.setParentCode("-1");
+        if(StringUtils.isBlank(Fc.toStr(coreFunction.get("parentCode_eq")))){
+            coreFunction.put("parentCode_eq","-1");
         }
 
         List<TbCoreFunction> list = coreFunctionService.listByParent(coreFunction);
-        return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"获取成功", JSON.toJSON(list),true);
+        return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"获取成功", list,true);
     }
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 新增菜单
-     * @Date 15:31 2020-05-20
-     * @Param [coreFunction]
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     **/
+    @ApiOperation("新增菜单")
     @RequestMapping(value = "/add",method = {RequestMethod.POST},produces="application/json")
     public ResponseData add(TbCoreFunction coreFunction){
 
@@ -90,15 +84,9 @@ public class FunctionController extends BaseController {
         }
     }
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 删除菜单
-     * @Date 15:37 2020-05-20
-     * @Param [ids]
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     **/
+    @ApiOperation("删除菜单")
     @RequestMapping(value = "/delete",method = {RequestMethod.DELETE},produces="application/json")
-    public ResponseData delete(String ids){
+    public ResponseData delete(@ApiParam(value = "主键 多个逗号分割",required = true) @RequestParam String ids){
 
         JpowerAssert.notEmpty(ids, JpowerError.Arg, "ids不可为空");
 
@@ -116,13 +104,7 @@ public class FunctionController extends BaseController {
         }
     }
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 更新菜单
-     * @Date 15:43 2020-05-20
-     * @Param [coreRole]
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     **/
+    @ApiOperation("修改菜单")
     @RequestMapping(value = "/update",method = {RequestMethod.PUT},produces="application/json")
     public ResponseData update(TbCoreFunction coreFunction){
 
@@ -151,72 +133,44 @@ public class FunctionController extends BaseController {
         }
     }
 
-    /**
-     * @author 郭丁志
-     * @Description //TODO 懒加载所有功能树形结构
-     * @date 22:48 2020/7/26 0026
-     * @param parentCode
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     */
+    @ApiOperation("懒加载所有功能树形结构")
     @RequestMapping(value = "/lazyTree",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData lazyTree(String parentCode){
+    public ResponseData<List<Node>> lazyTree(@ApiParam(value = "父级编码",defaultValue = JpowerConstants.TOP_CODE,required = true) @RequestParam String parentCode){
         List<Node> list = coreFunctionService.lazyTree(parentCode);
         return ReturnJsonUtil.ok("查询成功",list);
     }
 
-    /**
-     * @author 郭丁志
-     * @Description //TODO 懒加载角色所有权限功能树形结构
-     * @date 22:55 2020/7/26 0026
-     * @param parentCode
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     */
+    @ApiOperation("懒加载角色所有权限功能树形结构")
     @RequestMapping(value = "/lazyTreeByRole",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData lazyTreeByRole(String parentCode,String roleIds){
+    public ResponseData<List<Node>> lazyTreeByRole(@ApiParam(value = "父级编码",defaultValue = JpowerConstants.TOP_CODE,required = true) @RequestParam String parentCode,
+                                                   @ApiParam(value = "角色ID 多个逗号分割",required = true) @RequestParam String roleIds){
         JpowerAssert.notEmpty(roleIds, JpowerError.Arg, "角色id不可为空");
         List<Node> list = coreFunctionService.lazyTreeByRole(parentCode,roleIds);
         return ReturnJsonUtil.ok("查询成功",list);
     }
 
-    /**
-     * @author 郭丁志
-     * @Description //TODO 根据角色ID查询所有菜单树形结构
-     * @date 22:55 2020/7/26 0026
-     * @param roleIds
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     */
+    @ApiOperation("根据角色ID查询所有菜单树形结构")
     @RequestMapping(value = "/listMenuTree",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData listMenuTree(String roleIds){
+    public ResponseData<List<FunctionVo>> listMenuTree(@ApiParam(value = "角色ID 多个逗号分割",required = true) @RequestParam String roleIds){
         JpowerAssert.notEmpty(roleIds, JpowerError.Arg, "角色id不可为空");
         List<TbCoreFunction> list = coreFunctionService.listMenuByRoleId(roleIds);
         List<FunctionVo> collect = list.stream().map(function -> BeanUtil.copy(function, FunctionVo.class)).collect(Collectors.toList());
         return ReturnJsonUtil.ok("查询成功", ForestNodeMerger.merge(collect));
     }
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 根据权限，查询一个菜单下的所有按钮
-     * @Date 11:36 2020-07-30
-     * @Param [roleIds, id]
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     **/
+    @ApiOperation("根据权限查询一个菜单下的所有按钮")
     @RequestMapping(value = "/listBut",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData listBut(String roleIds,String code){
+    public ResponseData<List<TbCoreFunction>> listBut(@ApiParam(value = "角色ID 多个逗号分割",required = true) @RequestParam String roleIds,
+                                @ApiParam(value = "菜单编码",required = true) @RequestParam String code){
         JpowerAssert.notEmpty(roleIds, JpowerError.Arg, "角色id不可为空");
         JpowerAssert.notEmpty(code, JpowerError.Arg, "菜单code不可为空");
         List<TbCoreFunction> list = coreFunctionService.listBtnByRoleIdAndPcode(roleIds,code);
         return ReturnJsonUtil.ok("查询成功", list);
     }
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 根据角色ID查询所有功能的树形结构
-     * @Date 11:52 2020-07-30
-     * @Param [roleIds]
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     **/
+    @ApiOperation("根据角色ID查询所有功能的树形结构")
     @RequestMapping(value = "/listTree",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData listTree(String roleIds){
+    public ResponseData<List<FunctionVo>> listTree(@ApiParam(value = "角色ID 多个逗号分割",required = true) @RequestParam String roleIds){
         JpowerAssert.notEmpty(roleIds, JpowerError.Arg, "角色id不可为空");
         List<FunctionVo> list = coreFunctionService.listTreeByRoleId(roleIds);
         return ReturnJsonUtil.ok("查询成功", list);

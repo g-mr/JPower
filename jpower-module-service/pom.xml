@@ -12,6 +12,12 @@
     <artifactId>jpower-module-service</artifactId>
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.wlcb</groupId>
             <artifactId>jpower-module-dbs</artifactId>

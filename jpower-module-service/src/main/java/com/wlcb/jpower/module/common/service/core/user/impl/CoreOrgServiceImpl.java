@@ -9,7 +9,6 @@ import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreOrgDao;
 import com.wlcb.jpower.module.dbs.dao.core.user.mapper.TbCoreOrgMapper;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreOrg;
 import com.wlcb.jpower.module.mp.support.Condition;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,44 +30,7 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper,TbCoreOr
 
     @Override
     public List<TbCoreOrg> listByParent(TbCoreOrg coreOrg) {
-
-        QueryWrapper wrapper = new QueryWrapper<TbCoreOrg>();
-
-        if (StringUtils.isNotBlank(coreOrg.getCode())){
-            wrapper.eq("code",coreOrg.getCode());
-        }
-
-        if (StringUtils.isNotBlank(coreOrg.getName())){
-            wrapper.like("name",coreOrg.getName());
-        }
-
-        if (StringUtils.isNotBlank(coreOrg.getParentCode())){
-            wrapper.eq("parent_code",coreOrg.getParentCode());
-        }
-
-        if (StringUtils.isNotBlank(coreOrg.getHeadName())){
-            wrapper.eq("head_name",coreOrg.getHeadName());
-        }
-
-        if (StringUtils.isNotBlank(coreOrg.getHeadPhone())){
-            wrapper.eq("head_phone",coreOrg.getHeadPhone());
-        }
-
-        if (StringUtils.isNotBlank(coreOrg.getContactName())){
-            wrapper.eq("contact_name",coreOrg.getContactName());
-        }
-
-        if (StringUtils.isNotBlank(coreOrg.getContactPhone())){
-            wrapper.eq("contact_phone",coreOrg.getContactPhone());
-        }
-
-        if (coreOrg.getIsVirtual() != null){
-            wrapper.eq("is_virtual",coreOrg.getIsVirtual());
-        }
-
-        wrapper.orderByAsc("sort");
-
-        return coreOrgMapper.selectList(wrapper);
+        return coreOrgMapper.selectList(Condition.getQueryWrapper(coreOrg).lambda().orderByAsc(TbCoreOrg::getSort));
     }
 
     @Override

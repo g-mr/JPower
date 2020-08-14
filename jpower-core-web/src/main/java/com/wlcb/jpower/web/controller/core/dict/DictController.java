@@ -1,7 +1,6 @@
 package com.wlcb.jpower.web.controller.core.dict;
 
 import com.github.pagehelper.PageInfo;
-import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
@@ -14,13 +13,14 @@ import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.dbs.entity.core.dict.TbCoreDict;
 import com.wlcb.jpower.module.dbs.entity.core.dict.TbCoreDictType;
 import com.wlcb.jpower.module.mp.support.Condition;
-import io.swagger.annotations.Api;
+import io.swagger.annotations.*;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
@@ -31,36 +31,23 @@ import java.util.Map;
  * @Date 2020/7/26 0026 17:52
  * @Version 1.0
  */
-@Api(tags = "字典相关")
-@ApiSupport(author = "郭丁志",order = 1)
+@Api(tags = "字典管理")
 @RestController
 @RequestMapping("/core/dict")
+@AllArgsConstructor
 public class DictController {
 
-    @Resource
     private CoreDictService coreDictService;
-    @Resource
     private CoreDictTypeService coreDictTypeService;
 
-    /**
-     * @author 郭丁志
-     * @Description //TODO 查询所有字典类型树形结构
-     * @date 18:03 2020/7/26 0026
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     */
+    @ApiOperation("查询所有字典类型树形结构")
     @RequestMapping(value = "/dictTypeTree",method = RequestMethod.GET,produces="application/json")
-    public ResponseData dictTypeTree(){
+    public ResponseData<List<Node>> dictTypeTree(){
         List<Node> list = coreDictTypeService.tree();
         return ReturnJsonUtil.ok("查询成功",list);
     }
 
-    /**
-     * @author 郭丁志
-     * @Description //TODO 保存字典类型
-     * @date 19:19 2020/7/26 0026
-     * @param dictType
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     */
+    @ApiOperation(value = "保存或者更新字典类型",notes = "新增必须传ID，修改不能传ID")
     @RequestMapping(value = "/saveDictType",method = RequestMethod.POST,produces="application/json")
     public ResponseData saveDictType(TbCoreDictType dictType){
         if (Fc.isBlank(dictType.getId())){
@@ -71,41 +58,30 @@ public class DictController {
         return ReturnJsonUtil.status(coreDictTypeService.saveDictType(dictType));
     }
 
-    /**
-     * @author 郭丁志
-     * @Description //TODO 删除字典类型
-     * @date 19:22 2020/7/26 0026
-     * @param ids
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     */
+    @ApiOperation("删除字典类型")
     @RequestMapping(value = "/deleteDictType",method = RequestMethod.DELETE,produces="application/json")
-    public ResponseData deleteDictType(String ids){
+    public ResponseData deleteDictType(@ApiParam(value = "主键，多个逗号分割",required = true) @RequestParam String ids){
         JpowerAssert.notEmpty(ids, JpowerError.Arg,"主键不可为空");
         return ReturnJsonUtil.status(coreDictTypeService.deleteDictType(Fc.toStrList(ids)));
     }
 
-    /**
-     * @author 郭丁志
-     * @Description //TODO 查询字典详情
-     * @date 20:12 2020/7/26 0026
-     * @param id
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     */
+    @ApiOperation("查询字典类型详情")
     @RequestMapping(value = "/getDictType",method = RequestMethod.GET,produces="application/json")
-    public ResponseData getDictType(String id){
+    public ResponseData<TbCoreDictType> getDictType(@ApiParam(value = "主键",required = true) @RequestParam String id){
         JpowerAssert.notEmpty(id, JpowerError.Arg,"主键不可为空");
         return ReturnJsonUtil.ok("查询成功", coreDictTypeService.getById(id));
     }
 
-    /**
-     * @author 郭丁志
-     * @Description //TODO 通过字典类型查询字典
-     * @date 20:42 2020/7/26 0026
-     * @param dict
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     */
+    @ApiOperation("通过字典类型分页查询字典")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageNum",value = "第几页",defaultValue = "1",paramType = "query",dataType = "int",required = true),
+            @ApiImplicitParam(name = "pageSize",value = "每页长度",defaultValue = "10",paramType = "query",dataType = "int",required = true),
+            @ApiImplicitParam(name = "code",value = "字典编码",paramType = "query"),
+            @ApiImplicitParam(name = "name",value = "字典名称",paramType = "query")
+    })
     @RequestMapping(value = "/listByType",method = RequestMethod.GET,produces="application/json")
-    public ResponseData<PageInfo<TbCoreDict>> listByType(String typeCode ,@RequestParam Map<String,Object> dict){
+    public ResponseData<PageInfo<TbCoreDict>> listByType(@ApiParam(value = "字典类型编码",required = true) @RequestParam String typeCode ,
+                                                         @ApiIgnore @RequestParam Map<String,Object> dict){
         dict.remove("typeCode");
         dict.remove("dictTypeCode");
         JpowerAssert.notEmpty(typeCode, JpowerError.Arg,"字典类型不可为空");
@@ -114,13 +90,7 @@ public class DictController {
         return ReturnJsonUtil.ok("查询成功", new PageInfo<>(list));
     }
 
-    /**
-     * @author 郭丁志
-     * @Description //TODO 保存或者新增字典
-     * @date 20:53 2020/7/26 0026
-     * @param dict
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     */
+    @ApiOperation("保存或者新增字典")
     @RequestMapping(value = "/saveDict",method = RequestMethod.POST,produces="application/json")
     public ResponseData saveDict(TbCoreDict dict){
         if (Fc.isBlank(dict.getId())){
@@ -136,28 +106,25 @@ public class DictController {
         return ReturnJsonUtil.status(coreDictService.saveDict(dict));
     }
 
-    /**
-     * @author 郭丁志
-     * @Description //TODO 删除字典
-     * @date 21:03 2020/7/26 0026
-     * @param ids
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     */
+    @ApiOperation("删除字典")
     @RequestMapping(value = "/deleteDict",method = RequestMethod.DELETE,produces="application/json")
-    public ResponseData deleteDict(String ids){
+    public ResponseData deleteDict(@ApiParam(value = "主键，多个逗号分割",required = true) @RequestParam String ids){
         JpowerAssert.notEmpty(ids, JpowerError.Arg,"字典ID不可为空");
         return ReturnJsonUtil.status(coreDictService.removeRealByIds(Fc.toStrList(ids)));
     }
 
-    /**
-     * @author 郭丁志
-     * @Description //TODO 查询字典详情
-     * @date 21:07 2020/7/26 0026
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     */
+    @ApiOperation("查询字典详情")
     @RequestMapping(value = "/getDict",method = RequestMethod.GET,produces="application/json")
-    public ResponseData getDict(TbCoreDict dict){
-        return ReturnJsonUtil.ok("查询成功",coreDictService.list(Condition.getQueryWrapper(dict)));
+    public ResponseData<TbCoreDict> getDict(TbCoreDict dict){
+        return ReturnJsonUtil.ok("查询成功",coreDictService.getOne(Condition.getQueryWrapper(dict)));
+    }
+
+    @ApiOperation("通过字典类型查询字典列表")
+    @RequestMapping(value = "/getDictListByType",method = RequestMethod.GET,produces="application/json")
+    public ResponseData<List<TbCoreDict>> getDictListByType(@ApiParam(value = "字典类型编码",required = true) @RequestParam String dictType){
+        JpowerAssert.notEmpty(dictType, JpowerError.Arg,"字典类型不可为空");
+        return ReturnJsonUtil.ok("查询成功",coreDictService.list(Condition.<TbCoreDict>getQueryWrapper().lambda()
+                .eq(TbCoreDict::getDictTypeCode,dictType)));
     }
 
 }

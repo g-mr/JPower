@@ -2,7 +2,9 @@ package com.wlcb.jpower.module.common.service.core.user.impl;
 
 import com.wlcb.jpower.module.common.service.base.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.service.core.user.CoreRolefunctionService;
+import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.UUIDUtil;
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreRoleFunctionDao;
 import com.wlcb.jpower.module.dbs.dao.core.user.mapper.TbCoreRoleFunctionMapper;
 import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreRoleFunction;
@@ -32,20 +34,21 @@ public class CoreRolefunctionServiceImpl extends BaseServiceImpl<TbCoreRoleFunct
     @Override
     public Integer addRolefunctions(String roleId, String functionIds) {
 
-        String[] fIds = functionIds.split(",");
+        //先删除角色原有权限
+        Map<String,Object> map = new HashMap<>();
+        map.put("role_id",roleId);
+        coreRoleFunctionDao.removeRealByMap(map);
+
         List<TbCoreRoleFunction> roleFunctions = new ArrayList<>();
-        for (String fId : fIds) {
+        if (Fc.isNotBlank(functionIds)){
+            for (String fId : functionIds.split(StringPool.COMMA)) {
                 TbCoreRoleFunction roleFunction = new TbCoreRoleFunction();
                 roleFunction.setId(UUIDUtil.getUUID());
                 roleFunction.setFunctionId(fId);
                 roleFunction.setRoleId(roleId);
                 roleFunctions.add(roleFunction);
+            }
         }
-
-        //先删除角色原有权限
-        Map<String,Object> map = new HashMap<>();
-        map.put("role_id",roleId);
-        coreRoleFunctionDao.removeRealByMap(map);
 
         if (roleFunctions.size() > 0){
             boolean is = coreRoleFunctionDao.saveBatch(roleFunctions);

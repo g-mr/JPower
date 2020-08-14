@@ -1,6 +1,5 @@
 package com.wlcb.jpower.web.controller.core.user;
 
-import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
@@ -13,60 +12,42 @@ import com.wlcb.jpower.module.common.utils.BeanUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
+import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreOrg;
+import io.swagger.annotations.*;
+import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @ClassName OrgController
- * @Description TODO 组织机构相关
- * @Author 郭丁志
- * @Date 2020-02-13 14:10
- * @Version 1.0
- */
+@Api(tags = "组织机构管理")
 @RestController
+@AllArgsConstructor
 @RequestMapping("/core/org")
 public class OrgController extends BaseController {
 
-    @Resource
     private CoreOrgService coreOrgService;
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 查询组织机构列表
-     * @Date 09:41 2020-05-19
-     * @Param [coreUser]
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     **/
+    @ApiOperation("查询组织机构列表")
     @RequestMapping(value = "/listByParent",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
-    public ResponseData listByParent(TbCoreOrg coreOrg){
+    public ResponseData<PageInfo<TbCoreOrg>> listByParent(TbCoreOrg coreOrg){
 
-        Object json;
         if (StringUtils.isBlank(coreOrg.getParentCode())){
             coreOrg.setParentCode("-1");
-            PaginationContext.startPage();
-            json = JSON.toJSON(new PageInfo<TbCoreOrg>(coreOrgService.listByParent(coreOrg)));
-        }else {
-            json = JSON.toJSON(coreOrgService.listByParent(coreOrg));
         }
 
-        return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"获取成功", json,true);
+        PaginationContext.startPage();
+        PageInfo<TbCoreOrg> pageInfo = new PageInfo<>(coreOrgService.listByParent(coreOrg));
+        return ReturnJsonUtil.ok("获取成功", pageInfo);
     }
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 新增一个组织机构
-     * @Date 10:14 2020-05-19
-     * @Param [coreUser]
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     **/
+    @ApiOperation(value = "新增一个组织机构",notes = "无需传主键")
     @RequestMapping(value = "/add",method = {RequestMethod.POST},produces="application/json")
     public ResponseData add(TbCoreOrg coreOrg){
 
@@ -94,15 +75,9 @@ public class OrgController extends BaseController {
         }
     }
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 删除组织机构
-     * @Date 11:27 2020-05-19
-     * @Param [coreUser]
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     **/
+    @ApiOperation("删除组织机构")
     @RequestMapping(value = "/deleteStatus",method = {RequestMethod.DELETE},produces="application/json")
-    public ResponseData deleteStatus(String ids){
+    public ResponseData deleteStatus(@ApiParam(value = "主键 多个逗号分割",required = true) @RequestParam String ids){
 
         JpowerAssert.notEmpty(ids, JpowerError.Arg,"ids不可为空");
 
@@ -120,13 +95,7 @@ public class OrgController extends BaseController {
         }
     }
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 修改组织机构信息
-     * @Date 11:31 2020-05-19
-     * @Param [coreUser]
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     **/
+    @ApiOperation("修改组织机构信息")
     @RequestMapping(value = "/update",method = {RequestMethod.PUT},produces="application/json")
     public ResponseData update(TbCoreOrg coreOrg){
 
@@ -148,29 +117,43 @@ public class OrgController extends BaseController {
         }
     }
 
-    /**
-     * @author 郭丁志
-     * @Description //TODO 加载部门树形菜单
-     * @date 22:25 2020/7/26 0026
-     * @param coreOrg
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     */
+    @ApiOperation("加载部门树形菜单")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "code",value = "编码",paramType = "query"),
+            @ApiImplicitParam(name = "name",value = "名称",paramType = "query"),
+            @ApiImplicitParam(name = "headName",value = "领导人名字",paramType = "query"),
+            @ApiImplicitParam(name = "headPhone",value = "领导人电话",paramType = "query"),
+            @ApiImplicitParam(name = "headEmail",value = "领导人邮箱",paramType = "query"),
+            @ApiImplicitParam(name = "contactName",value = "联系人名字",paramType = "query"),
+            @ApiImplicitParam(name = "contactPhone",value = "联系人电话",paramType = "query"),
+            @ApiImplicitParam(name = "contactEmail",value = "联系人邮箱",paramType = "query"),
+            @ApiImplicitParam(name = "address",value = "地址",paramType = "query"),
+            @ApiImplicitParam(name = "isVirtual",value = "是否虚拟机构 字典YN01",paramType = "query"),
+
+    })
     @RequestMapping(value = "/tree",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData tree(@RequestParam Map<String,Object> coreOrg){
+    public ResponseData<List<Node>> tree(@ApiIgnore @RequestParam Map<String,Object> coreOrg){
         List<Node> list = coreOrgService.tree(coreOrg);
         return ReturnJsonUtil.ok("查询成功",list);
     }
 
-    /**
-     * @author 郭丁志
-     * @Description //TODO 懒加载部门树形菜单
-     * @date 22:26 2020/7/26 0026
-     * @param parentCode
-     * @param coreOrg
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     */
+    @ApiOperation("懒加载部门树形菜单")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "code",value = "编码",paramType = "query"),
+            @ApiImplicitParam(name = "name",value = "名称",paramType = "query"),
+            @ApiImplicitParam(name = "headName",value = "领导人名字",paramType = "query"),
+            @ApiImplicitParam(name = "headPhone",value = "领导人电话",paramType = "query"),
+            @ApiImplicitParam(name = "headEmail",value = "领导人邮箱",paramType = "query"),
+            @ApiImplicitParam(name = "contactName",value = "联系人名字",paramType = "query"),
+            @ApiImplicitParam(name = "contactPhone",value = "联系人电话",paramType = "query"),
+            @ApiImplicitParam(name = "contactEmail",value = "联系人邮箱",paramType = "query"),
+            @ApiImplicitParam(name = "address",value = "地址",paramType = "query"),
+            @ApiImplicitParam(name = "isVirtual",value = "是否虚拟机构 字典YN01",paramType = "query"),
+
+    })
     @RequestMapping(value = "/lazyTree",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData lazyTree(String parentCode, @RequestParam Map<String,Object> coreOrg){
+    public ResponseData<List<Node>> lazyTree(@ApiParam(value = "父级编码",defaultValue = JpowerConstants.TOP_CODE,required = true) @RequestParam  String parentCode,
+                                 @ApiIgnore @RequestParam Map<String,Object> coreOrg){
         coreOrg.remove("parentCode");
         List<Node> list = coreOrgService.tree(parentCode,coreOrg);
         return ReturnJsonUtil.ok("查询成功",list);

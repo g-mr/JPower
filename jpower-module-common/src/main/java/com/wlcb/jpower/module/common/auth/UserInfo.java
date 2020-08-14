@@ -1,5 +1,6 @@
 package com.wlcb.jpower.module.common.auth;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.List;
@@ -23,58 +24,36 @@ public class UserInfo {
     /** 白名单 **/
     public static final Integer TBALE_USER_TYPE_WHILT = 2;
 
-    /**
-     * 用户基础信息
-     */
+    @ApiModelProperty("用户ID")
     private String userId;
 
-    /**
-     * 客户端id
-     *
-     * 不用管，在获取当前登录用户的时候会自动获取到
-     */
+    @ApiModelProperty("客户端")
     private String clientCode;
 
-    /**
-     * 账号
-     */
+    @ApiModelProperty("账号")
     private String loginId;
 
-    /**
-     * 姓名
-     */
+    @ApiModelProperty("姓名")
     private String userName;
 
-    /**
-     * 昵称
-     */
+    @ApiModelProperty("昵称")
     private String nickName;
 
-    /**
-     * 第三方平台标识
-     */
+    @ApiModelProperty("第三方平台标识")
     private String otherCode;
 
-    /**
-     * 电话
-     **/
+    @ApiModelProperty("电话")
     private String telephone;
 
-    /**
-     * 用户类型
-     **/
+    @ApiModelProperty("用户类型")
     private Integer userType;
 
-    /**
-     * 部门ID
-     **/
+    @ApiModelProperty("部门ID")
     private String orgId;
 
-    /**
-     * 角色集合
-     */
+    @ApiModelProperty("角色集合")
     private List<String> roleIds;
 
-    /** 用来表示是core_user表数据还是其他表映射的数据 0core_user系统表 1业务表 2白名单 **/
+    @ApiModelProperty("用来表示是core_user表数据还是其他表映射的数据 0core_user系统表 1业务表 2白名单")
     private Integer isSysUser = TBALE_USER_TYPE_CORE;
 }

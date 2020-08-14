@@ -15,53 +15,38 @@ import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreRole;
 import com.wlcb.jpower.module.dbs.vo.RoleVo;
 import com.wlcb.jpower.module.mp.support.Condition;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @ClassName RoleController
- * @Description TODO 角色相关
- * @Author 郭丁志
- * @Date 2020-02-13 14:10
- * @Version 1.0
- */
+@Api(tags = "角色管理")
 @RestController
+@AllArgsConstructor
 @RequestMapping("/core/role")
 public class RoleController extends BaseController {
 
-    @Resource
     private CoreRoleService coreRoleService;
-    @Resource
     private CoreRolefunctionService coreRolefunctionService;
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 查询下级角色列表
-     * @Date 09:41 2020-05-19
-     * @Param [coreUser]
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     **/
-    @RequestMapping(value = "/listByParent",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
-    public ResponseData listByParent(TbCoreRole coreRole){
+    @ApiOperation("查询角色树结构")
+    @RequestMapping(value = "/listTree",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
+    public ResponseData<List<RoleVo>> listTree(TbCoreRole coreRole){
         List<RoleVo> list = coreRoleService.listTree(Condition.getQueryWrapper(coreRole)
                 .lambda().orderByAsc(TbCoreRole::getCreateTime)
                 , RoleVo.class);
-        return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"获取成功", list,true);
+        return ReturnJsonUtil.ok("获取成功", list);
     }
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 新增角色
-     * @Date 10:14 2020-05-19
-     * @Param [coreUser]
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     **/
+    @ApiOperation("新增角色")
     @RequestMapping(value = "/add",method = {RequestMethod.POST},produces="application/json")
     public ResponseData add(TbCoreRole coreRole){
 
@@ -94,15 +79,9 @@ public class RoleController extends BaseController {
         }
     }
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 删除角色
-     * @Date 11:27 2020-05-19
-     * @Param [coreUser]
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     **/
+    @ApiOperation("删除角色")
     @RequestMapping(value = "/deleteStatus",method = {RequestMethod.DELETE},produces="application/json")
-    public ResponseData deleteStatus(String ids){
+    public ResponseData deleteStatus(@ApiParam(value = "主键 多个逗号分割",required = true) @RequestParam String ids){
 
         JpowerAssert.notEmpty(ids, JpowerError.Arg,"ids不可为空");
 
@@ -120,13 +99,7 @@ public class RoleController extends BaseController {
         }
     }
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 修改角色信息
-     * @Date 11:31 2020-05-19
-     * @Param [coreUser]
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     **/
+    @ApiOperation(value = "修改角色信息",notes = "主键不用传")
     @RequestMapping(value = "/update",method = {RequestMethod.PUT},produces="application/json")
     public ResponseData update(TbCoreRole coreRole){
 
@@ -148,15 +121,9 @@ public class RoleController extends BaseController {
         }
     }
 
-    /**
-     * @author 郭丁志
-     * @Description //TODO 查询角色权限
-     * @date 23:53 2020/5/26 0026
-     * @param roleId 
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     */
+    @ApiOperation("查询角色权限")
     @RequestMapping(value = "/roleFunction",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData roleFunction(String roleId){
+    public ResponseData<List<Map<String,Object>>> roleFunction(@ApiParam(value = "角色主键",required = true) @RequestParam String roleId){
 
         JpowerAssert.notEmpty(roleId, JpowerError.Arg,"角色id不可为空");
 
@@ -164,16 +131,11 @@ public class RoleController extends BaseController {
         return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"查询成功", roleFunction, true);
     }
 
-    /**
-     * @author 郭丁志
-     * @Description //TODO 重新给角色赋权
-     * @date 0:13 2020/5/27 0027
-     * @param roleId
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     */
+    @ApiOperation("重新给角色赋权")
     @Log(title = "重新给角色赋权",isSaveLog = true)
     @RequestMapping(value = "/addFunction",method = {RequestMethod.POST},produces="application/json")
-    public ResponseData addFunction(String roleId,String functionIds){
+    public ResponseData addFunction(@ApiParam(value = "角色主键",required = true) @RequestParam String roleId,
+                                    @ApiParam(value = "菜单主键 多个逗号分割",required = true) @RequestParam String functionIds){
 
         JpowerAssert.notEmpty(roleId, JpowerError.Arg,"角色id不可为空");
 

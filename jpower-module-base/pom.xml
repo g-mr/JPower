@@ -54,13 +54,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.sun.mail</groupId>
-            <artifactId>javax.mail</artifactId>
-        </dependency>
-        <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-annotations</artifactId>
-            <version>1.5.22</version>
+            <version>${swagger-annotations.version}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

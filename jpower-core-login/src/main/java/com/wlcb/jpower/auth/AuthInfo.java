@@ -14,16 +14,15 @@ import lombok.Data;
 @Data
 public class AuthInfo {
 
-    /** 用户信息 **/
     @ApiModelProperty("用户信息")
     private UserInfo user;
     @ApiModelProperty("令牌")
     private String accessToken;
-    /** 令牌类型 **/
+    @ApiModelProperty("令牌类型")
     private String tokenType;
-    /** 刷新令牌 **/
+    @ApiModelProperty("刷新令牌")
     private String refreshToken;
-    /** 过期时间 **/
+    @ApiModelProperty("过期时间")
     private long expiresIn;
 
 }

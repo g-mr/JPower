@@ -10,10 +10,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.async.DeferredResult;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.ResponseMessageBuilder;
+import springfox.documentation.schema.ModelRef;
 import springfox.documentation.schema.WildcardType;
 import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
@@ -22,6 +25,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -57,6 +61,10 @@ public class SwaggerConfiguration {
         SwaggerProperties properties = getSwaggerProperties();
 
         return new Docket(DocumentationType.SWAGGER_2)
+                .globalResponseMessage(RequestMethod.POST,new ArrayList<>())
+                .globalResponseMessage(RequestMethod.GET,new ArrayList<>())
+                .globalResponseMessage(RequestMethod.PUT,new ArrayList<>())
+                .globalResponseMessage(RequestMethod.DELETE,new ArrayList<>())
                 .apiInfo(apiInfo(properties))
                 .select()
                 .apis(SwaggerConfigUtil.basePackage(properties.getBasePackage()))
@@ -64,9 +72,7 @@ public class SwaggerConfiguration {
                 .build()
                 .securitySchemes(securitySchemes(getSwaggerProperties()))
                 .securityContexts(securityContexts())
-                .pathMapping("/")
-                //自定义规则，如果遇到DeferredResult，则把泛型类转成json
-                .alternateTypeRules(newRule(typeResolver.resolve(DeferredResult.class,typeResolver.resolve(ResponseData.class, WildcardType.class)),typeResolver.resolve(WildcardType.class)));
+                .pathMapping("/");
     }
 
     private List<? extends SecurityScheme> securitySchemes(SwaggerProperties swaggerProperties) {

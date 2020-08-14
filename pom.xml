@@ -42,6 +42,7 @@
         <poi.version>3.17</poi.version>
         <aliyun.version>4.5.3</aliyun.version>
         <knife4j.version>2.0.4</knife4j.version>
+        <swagger-annotations.version>1.5.22</swagger-annotations.version>
     </properties>
 
     <!--profile配置-->

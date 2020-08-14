@@ -21,7 +21,6 @@ import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
 import com.wlcb.jpower.module.mp.support.Condition;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -40,40 +39,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper,TbCore
 
     @Override
     public List<TbCoreUser> list(TbCoreUser coreUser) {
-
-        QueryWrapper wrapper = new QueryWrapper<TbCoreUser>();
-
-        if (StringUtils.isNotBlank(coreUser.getOrgId())){
-            wrapper.eq("org_id",coreUser.getOrgId());
-        }
-
-        if (StringUtils.isNotBlank(coreUser.getLoginId())){
-            wrapper.eq("login_id",coreUser.getLoginId());
-        }
-
-        if (StringUtils.isNotBlank(coreUser.getUserName())){
-            wrapper.eq("user_name",coreUser.getUserName());
-        }
-
-        if (StringUtils.isNotBlank(coreUser.getIdNo())){
-            wrapper.like("id_no",coreUser.getIdNo());
-        }
-
-        if (coreUser.getUserType() != null){
-            wrapper.eq("user_type",coreUser.getUserType());
-        }
-
-        if (StringUtils.isNotBlank(coreUser.getTelephone())){
-            wrapper.like("telephone",coreUser.getTelephone());
-        }
-
-        if (coreUser.getActivationStatus() != null){
-            wrapper.eq("activation_status",coreUser.getActivationStatus());
-        }
-
-        wrapper.orderByDesc("create_time");
-
-        return coreUserDao.list(wrapper);
+        return coreUserDao.list(Condition.getQueryWrapper(coreUser).orderByDesc("create_time"));
     }
 
     @Override
@@ -131,27 +97,30 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper,TbCore
 
     @Override
     public Boolean updateUsersRole(String userIds, String roleIds) {
-        String[] rIds = roleIds.split(StringPool.COMMA);
-        String[] uIds = userIds.split(StringPool.COMMA);
-        List<TbCoreUserRole> userRoles = new ArrayList<>();
-        for (String rId : rIds) {
-            for (String userId : uIds) {
-                TbCoreUserRole userRole = new TbCoreUserRole();
-                userRole.setId(UUIDUtil.getUUID());
-                userRole.setUserId(userId);
-                userRole.setRoleId(rId);
-                userRoles.add(userRole);
-            }
-        }
-
         //先删除用户原有角色
+        String[] uIds = userIds.split(StringPool.COMMA);
+
         QueryWrapper wrapper = new QueryWrapper<TbCoreUserRole>();
         wrapper.in("user_id",uIds);
         coreUserRoleDao.removeReal(wrapper);
 
-        if (userRoles.size() > 0){
-            Boolean is = coreUserRoleDao.saveBatch(userRoles);
-            return is;
+        if (Fc.isNotBlank(roleIds)){
+            String[] rIds = roleIds.split(StringPool.COMMA);
+            List<TbCoreUserRole> userRoles = new ArrayList<>();
+            for (String rId : rIds) {
+                for (String userId : uIds) {
+                    TbCoreUserRole userRole = new TbCoreUserRole();
+                    userRole.setId(UUIDUtil.getUUID());
+                    userRole.setUserId(userId);
+                    userRole.setRoleId(rId);
+                    userRoles.add(userRole);
+                }
+            }
+
+            if (userRoles.size() > 0){
+                Boolean is = coreUserRoleDao.saveBatch(userRoles);
+                return is;
+            }
         }
         return true;
     }

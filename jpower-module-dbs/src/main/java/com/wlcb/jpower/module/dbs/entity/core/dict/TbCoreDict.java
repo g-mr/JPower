@@ -3,6 +3,7 @@ package com.wlcb.jpower.module.dbs.entity.core.dict;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -16,16 +17,25 @@ import lombok.Data;
 public class TbCoreDict extends BaseEntity {
     private static final long serialVersionUID = 2963005021265897302L;
 
+    @ApiModelProperty("字典类型编码")
     private String dictTypeCode;
+    @ApiModelProperty("字典编码")
     private String code;
+    @ApiModelProperty("字典名称")
     private String name;
+    @ApiModelProperty("语言类型 字典YYZL")
     @Dict(name = "YYZL",attributes = "localeStr")
     private String localeId;
+    @ApiModelProperty("备注")
     private String note;
+    @ApiModelProperty("排序")
     private Integer sortNum;
+    @ApiModelProperty("父级编码")
     private String pcode;
+    @ApiModelProperty("级别")
     private Integer dictLevel;
 
+    @ApiModelProperty("语言类型")
     @TableField(exist = false)
     private String localeStr;
 }

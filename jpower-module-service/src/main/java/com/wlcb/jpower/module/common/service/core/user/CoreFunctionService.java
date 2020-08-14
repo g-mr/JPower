@@ -6,6 +6,7 @@ import com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction;
 import com.wlcb.jpower.module.dbs.vo.FunctionVo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author mr.gmac
@@ -19,7 +20,7 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @Param [coreFunction]
      * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction>
      **/
-    List<TbCoreFunction> listByParent(TbCoreFunction coreFunction);
+    List<TbCoreFunction> listByParent(Map<String,Object> coreFunction);
 
     /**
      * @Author 郭丁志
