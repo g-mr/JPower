@@ -13,12 +13,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @SpringBootApplication
 @EnableTransactionManagement
+//@EnableDiscoveryClient
 public class CoreStartApplication {
 
     public static void main(String[] args) {
-//        SpringApplicationBuilder builder = new SpringApplicationBuilder(CoreStartApplication.class);
-//        builder.run(args);
-        JpowerApplication.run("wx,admin",CoreStartApplication.class,args);
+        JpowerApplication.run("system",CoreStartApplication.class,args);
     }
 
 }
