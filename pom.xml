@@ -79,6 +79,7 @@
         <module>jpower-core-web</module>
         <module>jpower-web-file</module>
         <module>jpower-web-sync</module>
+        <module>jpower-module-gataway</module>
     </modules>
 
     <dependencies>
