@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class CoreStartApplication {
 
     public static void main(String[] args) {
-        JpowerApplication.run("system",CoreStartApplication.class,args);
+        JpowerApplication.run("jpower-system",CoreStartApplication.class,args);
     }
 
 }
