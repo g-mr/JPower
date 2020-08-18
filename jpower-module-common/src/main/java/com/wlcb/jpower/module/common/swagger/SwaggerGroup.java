@@ -42,7 +42,7 @@ public class SwaggerGroup implements SwaggerResourcesProvider {
         if (Fc.isNotBlank(resource.getLocation())){
             swaggerResource.setLocation(resource.getLocation().concat("/v2/api-docs-ext"));
         }else {
-            swaggerResource.setUrl(resource.getUrl().concat("/v2/api-docs-ext"));
+            swaggerResource.setUrl(Fc.toStr(resource.getUrl()).concat("/v2/api-docs-ext"));
         }
         swaggerResource.setSwaggerVersion(Fc.isNotBlank(swaggerResource.getSwaggerVersion())?swaggerResource.getSwaggerVersion():JpowerConstants.JPOWER_VESION);
         return swaggerResource;
