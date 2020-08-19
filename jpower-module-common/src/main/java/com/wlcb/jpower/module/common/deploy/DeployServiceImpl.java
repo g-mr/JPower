@@ -1,4 +1,4 @@
-package com.wlcb.jpower.module.common.deploy.service.impl;
+package com.wlcb.jpower.module.common.deploy;
 
 import com.wlcb.jpower.module.common.deploy.service.DeployService;
 import com.wlcb.jpower.module.common.nacos.NacosConstants;

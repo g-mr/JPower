@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
  */
 public class JpowerApplication {
 
-
     /**
      * @Author 郭丁志
      * @Description //TODO 项目启动
@@ -40,7 +39,6 @@ public class JpowerApplication {
 
         // 读取环境变量，使用spring boot的规则
         ConfigurableEnvironment environment = new StandardEnvironment();
-
         // 获取配置的环境变量
         String[] activeProfiles = environment.getActiveProfiles();
 
@@ -68,6 +66,10 @@ public class JpowerApplication {
         props.setProperty("jpower.client-code", appName);
         props.setProperty("logging.config", "classpath:logback-spring.xml");
         props.setProperty("jpower.is-local", String.valueOf(isLocalDev()));
+        props.setProperty("spring.cloud.nacos.discovery.server-addr", "${jpower.".concat(profile).concat(".nacos.server-addr}"));
+        props.setProperty("spring.cloud.nacos.config.server-addr", "${jpower.".concat(profile).concat(".nacos.server-addr}"));
+        props.setProperty("spring.cloud.nacos.discovery.namespace", "${jpower.".concat(profile).concat(".nacos.namespace}"));
+        props.setProperty("spring.cloud.nacos.config.namespace", "${jpower.".concat(profile).concat(".nacos.namespace}"));
 
         List<DeployService> deployServiceList = new ArrayList<>();
         ServiceLoader.load(DeployService.class).forEach(deployServiceList::add);

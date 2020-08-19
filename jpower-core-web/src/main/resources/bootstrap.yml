@@ -1,7 +1,69 @@
-spring:
-  cloud:
+#日志打印级别
+logging:
+  level:
+    root: info
+
+#测试环境是否需要登陆
+test:
+  is-login: false
+
+jpower:
+#  默认为服务名
+  client-code: admin,wx
+  docs:
+    resource:
+      - name: 基础框架
+        url:
+      - name: 授权模块
+        url: http://219.148.186.214:802/
+  #  开发环境
+  dev:
     nacos:
-      discovery:
-        server-addr: 127.0.0.1:8848
-      config:
-        server-addr: 127.0.0.1:8848
+#      配置中心地址，如果配置没有配置注册中心地址，则注册中心默认走这里的地址
+      server-addr: localhost:8848
+#      可以为空但不能删掉这块配置
+      namespace:
+    datasource:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/jpower?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8
+      username: root
+      password: 123456
+    redis:
+      host: 127.0.0.1
+      password:
+      port: 6379
+      database: 0
+  #   测试环境
+  test:
+    nacos:
+      #      配置中心地址，如果配置没有配置注册中心地址，则注册中心默认走这里的地址
+      server-addr: 219.148.186.214:8848
+      #      可以为空但不能删掉这块配置
+      namespace:
+    datasource:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://219.148.186.214:18995/jpower?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8
+      username: root
+      password: Wlcb@20200515
+    redis:
+      host: 192.168.128.104
+      password: Wlcb20200515
+      port: 6379
+      database: 0
+  #  正式环境
+  prod:
+    nacos:
+      #      配置中心地址，如果配置没有配置注册中心地址，则注册中心默认走这里的地址
+      server-addr: 219.148.186.226:8848
+#      可以为空但不能删掉这块配置
+      namespace:
+    datasource:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://119.3.189.156:18992/jpower?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8
+      username: root
+      password: root
+    redis:
+      host: 192.168.128.100
+      password: Wlcb20200515
+      port: 6379
+      database: 0

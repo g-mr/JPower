@@ -1,0 +1,30 @@
+#通用配置
+
+## 开启Swagger的Basic认证功能,默认是false  （目前这块配置暂时没测试是否可用，生产已经写死不可用故这块配置暂无作用）
+knife4j:
+  basic:
+    enable: false
+    ## Basic认证用户名
+    username: guodingzhi
+    ## Basic认证密码
+    password: guodingzhi
+
+####### 以下配置实时生效
+
+#测试环境是否需要登陆
+test:
+  is-login: false
+
+#日志打印级别
+logging:
+  level:
+    root: info
+
+jpower:
+  client-code: wx,admin
+  docs:
+    resource:
+      - name: 基础框架
+        url:
+      - name: 授权模块
+        url: http://219.148.186.214:802/

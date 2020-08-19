@@ -1,0 +1,19 @@
+#通用开发环境配置
+
+jpower:
+  test:
+    nacos:
+      #      注册中心地址
+      server-addr: 219.148.186.214:8848
+      #注册中心命名空间   （可以为空但不能删掉这块配置）
+      namespace:
+    datasource:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://219.148.186.214:18995/jpower?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8
+      username: root
+      password: Wlcb@20200515
+    redis:
+      host: 192.168.128.104
+      password: Wlcb20200515
+      port: 6379
+      database: 0

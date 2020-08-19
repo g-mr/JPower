@@ -5,6 +5,7 @@ import com.wlcb.jpower.module.common.utils.WebUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 
@@ -18,6 +19,7 @@ import java.util.Date;
  * web层通用数据处理
  * @author mr.gmac
  */
+@RefreshScope
 public class BaseController
 {
     protected final Logger logger = LoggerFactory.getLogger(BaseController.class);

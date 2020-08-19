@@ -68,10 +68,3 @@ mybatis-plus:
     map-underscore-to-camel-case: true
     call-setters-on-nulls: true
     cache-enabled: false
-
-logging:
-  level:
-    root: debug
-
-knife4j:
-  production: false

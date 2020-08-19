@@ -108,7 +108,6 @@
     <logger name="java.sql.PreparedStatement" level="info" />
 
     <logger name="com.wlcb.jpower.module.dbs.dao" level="DEBUG" />
-    <logger name="com.wlcb.ylth.wlj.dbs.dao" level="DEBUG" />
 
     <logger name="com.wlcb" level="INFO" additivity="false">
         <appender-ref ref="log" />
