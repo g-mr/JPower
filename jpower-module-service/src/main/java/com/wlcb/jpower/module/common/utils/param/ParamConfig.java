@@ -1,8 +1,8 @@
 package com.wlcb.jpower.module.common.utils.param;
 
 import com.wlcb.jpower.module.common.cache.CacheNames;
+import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.service.core.params.CoreParamService;
-import com.wlcb.jpower.module.common.service.redis.RedisUtils;
 import com.wlcb.jpower.module.common.utils.SpringUtil;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -17,11 +17,11 @@ import org.apache.commons.lang3.StringUtils;
 @AllArgsConstructor
 public class ParamConfig {
 
-    private static RedisUtils redisUtils;
+    private static RedisUtil redisUtil;
     private static CoreParamService paramService;
 
     static {
-        redisUtils = SpringUtil.getBean(RedisUtils.class);
+        redisUtil = SpringUtil.getBean(RedisUtil.class);
         paramService = SpringUtil.getBean(CoreParamService.class);
     }
 
@@ -33,12 +33,12 @@ public class ParamConfig {
      * @Date 15:47 2020-05-06
      **/
     public static String getString(String code){
-        String vlaue = (String) redisUtils.get(prefix+code);
+        String vlaue = (String) redisUtil.get(prefix+code);
         if (StringUtils.isBlank(vlaue)){
             vlaue = paramService.selectByCode(code);
 
             if (StringUtils.isNotBlank(vlaue)){
-                redisUtils.set(prefix+code,vlaue);
+                redisUtil.set(prefix+code,vlaue);
             }
         }
         return vlaue;

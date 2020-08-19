@@ -5,13 +5,3 @@ spring:
         server-addr: 127.0.0.1:8848
       config:
         server-addr: 127.0.0.1:8848
-        file-extension: yaml
-        shared-configs:
-          - data-id: jpower.yaml
-            refresh: true
-          - data-id: jpower-dev.yaml
-            refresh: true
-#          - data-id: system-test.yaml
-#            refresh: true
-#          - data-id: system-prod.yaml
-#            refresh: true

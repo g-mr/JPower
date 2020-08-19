@@ -1,10 +1,8 @@
-package com.wlcb.jpower.module.common.service.redis;
+package com.wlcb.jpower.module.common.redis;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.data.redis.core.*;
-import org.springframework.stereotype.Service;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -16,11 +14,10 @@ import java.util.concurrent.TimeUnit;
  * @Date 2020-03-18 20:44
  * @Version 1.0
  */
-@Service
-public class RedisUtils {
+@AllArgsConstructor
+public class RedisUtil {
 
-    @Autowired
-    private RedisTemplate redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
     /**
      * 写入缓存
      * @param key
@@ -30,7 +27,7 @@ public class RedisUtils {
     public boolean set(final String key, Object value) {
         boolean result = false;
         try {
-            ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
+            ValueOperations<String, Object> operations = redisTemplate.opsForValue();
             operations.set(key, value);
             result = true;
         } catch (Exception e) {
@@ -47,7 +44,7 @@ public class RedisUtils {
     public boolean set(final String key, Object value, Long expireTime , TimeUnit timeUnit) {
         boolean result = false;
         try {
-            ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
+            ValueOperations<String, Object> operations = redisTemplate.opsForValue();
             operations.set(key, value);
             redisTemplate.expire(key, expireTime, timeUnit);
             result = true;
@@ -70,7 +67,7 @@ public class RedisUtils {
      * @param pattern
      */
     public void removePattern(final String pattern) {
-        Set<Serializable> keys = redisTemplate.keys(pattern);
+        Set<String> keys = redisTemplate.keys(pattern);
         if (keys.size() > 0){
             redisTemplate.delete(keys);
         }
@@ -122,7 +119,7 @@ public class RedisUtils {
      */
     public Object get(final String key) {
         Object result = null;
-        ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
+        ValueOperations<String, Object> operations = redisTemplate.opsForValue();
         result = operations.get(key);
         return result;
     }

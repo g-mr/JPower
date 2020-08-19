@@ -4,10 +4,10 @@ import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.auth.RoleConstant;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.cache.CacheNames;
+import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.service.core.client.CoreClientService;
 import com.wlcb.jpower.module.common.service.core.user.CoreFunctionService;
 import com.wlcb.jpower.module.common.service.core.user.CoreRolefunctionService;
-import com.wlcb.jpower.module.common.service.redis.RedisUtils;
 import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.ParamsConstants;
 import com.wlcb.jpower.module.common.utils.param.ParamConfig;
@@ -19,6 +19,7 @@ import com.wlcb.jpower.module.mp.support.Condition;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
@@ -37,13 +38,14 @@ import java.util.List;
  */
 @Slf4j
 @Component
+@RefreshScope
 public class LoginInterceptor extends HandlerInterceptorAdapter {
 
     /** ip白名单 **/
     private final String IP_LIST = ParamsConstants.IP_LIST;
 
     @Autowired
-    private RedisUtils redisUtils;
+    private RedisUtil redisUtil;
     @Autowired
     private CoreFunctionService coreFunctionService;
     @Autowired
@@ -86,7 +88,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
         if (user != null && coreClient!=null && Fc.toStrList(clientCode).contains(SecureUtil.getClientCodeFromHeader()) && Fc.toStrList(clientCode).contains(user.getClientCode())) {
 
-            List<String> listUrl = (List<String>) redisUtils.get(CacheNames.TOKEN_URL_KEY+JwtUtil.getToken(request));
+            List<String> listUrl = (List<String>) redisUtil.get(CacheNames.TOKEN_URL_KEY+JwtUtil.getToken(request));
             if (Fc.contains(listUrl.iterator(),currentPath)){
                 log.warn("{}({}) 用户授权通过，请求接口：{}",user.getUserName(),user.getUserId(),currentPath);
                 LoginUserContext.set(user);

@@ -8,7 +8,6 @@ import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.service.core.city.CoreCityService;
-import com.wlcb.jpower.module.common.service.redis.RedisUtils;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
@@ -17,9 +16,10 @@ import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.dbs.entity.core.city.TbCoreCity;
 import com.wlcb.jpower.module.mp.support.SqlKeyword;
 import io.swagger.annotations.*;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -28,22 +28,10 @@ import java.util.Map;
 @Api(tags = "行政区域管理")
 @RestController
 @RequestMapping("/core/city")
-@RefreshScope
 public class CityController extends BaseController {
 
     @Resource
     private CoreCityService coreCityService;
-    @Resource
-    private RedisUtils redisUtils;
-
-    @Value(value = "${test.value:}")
-    private String testValue;
-
-    @GetMapping(value = "/test",produces="application/json")
-    public ResponseData test(){
-//        return ReturnJsonUtil.ok(testValue);
-        return ReturnJsonUtil.ok(Fc.toStr(redisUtils.get("code:params:email.password")));
-    }
 
     @ApiOperation("查询下级列表")
     @ApiResponses({

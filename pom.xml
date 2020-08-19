@@ -43,32 +43,33 @@
         <aliyun.version>4.5.3</aliyun.version>
         <knife4j.version>2.0.4</knife4j.version>
         <swagger-annotations.version>1.5.22</swagger-annotations.version>
+        <nacos.version>2.2.1.RELEASE</nacos.version>
     </properties>
 
     <!--profile配置-->
-    <profiles>
-        <profile>
-            <id>dev</id>
-            <properties>
-                <profilea.active>dev</profilea.active>
-            </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-        <profile>
-            <id>test</id>
-            <properties>
-                <profilea.active>test</profilea.active>
-            </properties>
-        </profile>
-        <profile>
-            <id>prod</id>
-            <properties>
-                <profilea.active>prod</profilea.active>
-            </properties>
-        </profile>
-    </profiles>
+<!--    <profiles>-->
+<!--        <profile>-->
+<!--            <id>dev</id>-->
+<!--            <properties>-->
+<!--                <profilea.active>dev</profilea.active>-->
+<!--            </properties>-->
+<!--            <activation>-->
+<!--                <activeByDefault>true</activeByDefault>-->
+<!--            </activation>-->
+<!--        </profile>-->
+<!--        <profile>-->
+<!--            <id>test</id>-->
+<!--            <properties>-->
+<!--                <profilea.active>test</profilea.active>-->
+<!--            </properties>-->
+<!--        </profile>-->
+<!--        <profile>-->
+<!--            <id>prod</id>-->
+<!--            <properties>-->
+<!--                <profilea.active>prod</profilea.active>-->
+<!--            </properties>-->
+<!--        </profile>-->
+<!--    </profiles>-->
 
     <modules>
         <module>jpower-module-base</module>

@@ -1,12 +1,16 @@
-package com.wlcb.jpower.module.base;
+package com.wlcb.jpower.module.common.deploy;
 
 import com.wlcb.jpower.module.base.utils.AppConstant;
+import com.wlcb.jpower.module.common.deploy.service.DeployService;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.StandardEnvironment;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import java.util.Properties;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName JpowerApplication
@@ -32,14 +36,43 @@ public class JpowerApplication {
 
     private static SpringApplicationBuilder createSpringApplicationBuilder(String appName, Class source, String[] args) {
         Assert.hasText(appName, "[appName]服务名不能为空");
-
         SpringApplicationBuilder builder = new SpringApplicationBuilder(source);
+
+        // 读取环境变量，使用spring boot的规则
+        ConfigurableEnvironment environment = new StandardEnvironment();
+
+        // 获取配置的环境变量
+        String[] activeProfiles = environment.getActiveProfiles();
+
+        // 判断环境:dev、test、prod
+        List<String> profiles = Arrays.asList(activeProfiles);
+
+        List<String> activeProfileList = new ArrayList<>(profiles);
+        String profile;
+        if (activeProfileList.isEmpty()) {
+            // 默认dev开发
+            profile = AppConstant.DEV_CODE;
+            activeProfileList.add(profile);
+            builder.profiles(profile);
+
+        } else if (activeProfileList.size() == 1) {
+            profile = activeProfileList.get(0);
+        } else {
+            // 同时存在dev、test、prod环境时
+            throw new RuntimeException("同时存在环境变量:[" + StringUtils.arrayToCommaDelimitedString(activeProfiles) + "]");
+        }
 
         Properties props = System.getProperties();
         props.setProperty("spring.application.name", appName);
+        props.setProperty("spring.profiles.active", profile);
         props.setProperty("jpower.client-code", appName);
         props.setProperty("logging.config", "classpath:logback-spring.xml");
         props.setProperty("jpower.is-local", String.valueOf(isLocalDev()));
+
+        List<DeployService> deployServiceList = new ArrayList<>();
+        ServiceLoader.load(DeployService.class).forEach(deployServiceList::add);
+        deployServiceList.stream().sorted(Comparator.comparing(DeployService::getOrder)).collect(Collectors.toList())
+                .forEach(deployService -> deployService.launcher(builder, appName, profile));
 
         return builder;
     }

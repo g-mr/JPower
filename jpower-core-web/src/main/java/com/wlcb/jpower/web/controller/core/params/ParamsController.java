@@ -7,8 +7,8 @@ import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.page.PaginationContext;
+import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.service.core.params.CoreParamService;
-import com.wlcb.jpower.module.common.service.redis.RedisUtils;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
@@ -30,7 +30,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ParamsController extends BaseController {
 
-    private RedisUtils redisUtils;
+    private RedisUtil redisUtil;
     private CoreParamService paramService;
 
     @ApiOperation("系统参数分页列表")
@@ -83,7 +83,7 @@ public class ParamsController extends BaseController {
         JpowerAssert.notTrue(Fc.equals(param.getIsEffect(), ConstantsEnum.YN01.N.getValue()), JpowerError.BUSINESS,"该参数无法立即生效，请重启项目");
 
         if (Fc.isNotEmpty(param) && Fc.isNotBlank(param.getValue())){
-            redisUtils.set(CacheNames.PARAMS_REDIS_KEY+code,param.getValue());
+            redisUtil.set(CacheNames.PARAMS_REDIS_KEY+code,param.getValue());
         }else {
             if (Fc.isNull(param)){
                 return ReturnJsonUtil.fail("该参数不存在");

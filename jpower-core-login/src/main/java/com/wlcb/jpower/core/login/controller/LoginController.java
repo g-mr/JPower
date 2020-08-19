@@ -12,9 +12,9 @@ import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.controller.BaseController;
+import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.service.core.user.CoreFunctionService;
 import com.wlcb.jpower.module.common.service.core.user.CoreUserService;
-import com.wlcb.jpower.module.common.service.redis.RedisUtils;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
@@ -45,7 +45,7 @@ public class LoginController extends BaseController {
     @Resource
     private CoreFunctionService coreFunctionService;
     @Resource
-    private RedisUtils redisUtils;
+    private RedisUtil redisUtil;
 
     @ApiOperation(value = "用户登录",notes = "Authorization（客户端识别码）：由clientCode+\":\"+clientSecret组成字符串后用base64编码后获得值，再由Basic +base64编码后的值组成客户端识别码； <br/>" +
             "&nbsp;&nbsp;&nbsp;clientCode和clientSecret的值由后端统一提供，不同的登录客户端值也不一样。<br/>" +
@@ -101,7 +101,7 @@ public class LoginController extends BaseController {
         JpowerAssert.notEmpty(userId, JpowerError.Arg,"用户ID不可为空");
         UserInfo user = SecureUtil.getUser();
         if(Fc.equals(userId,user.getUserId())){
-            redisUtils.remove(CacheNames.TOKEN_URL_KEY+JwtUtil.getToken(getRequest()));
+            redisUtil.remove(CacheNames.TOKEN_URL_KEY+JwtUtil.getToken(getRequest()));
             return ReturnJsonUtil.ok("退出成功");
         }else{
             return ReturnJsonUtil.fail("该用户暂未登录");
@@ -115,7 +115,7 @@ public class LoginController extends BaseController {
         String verCode = specCaptcha.text().toLowerCase();
         String key = UUIDUtil.getUUID();
         // 存入redis并设置过期时间为30分钟
-        redisUtils.set(CacheNames.CAPTCHA_KEY + key, verCode, 30L, TimeUnit.MINUTES);
+        redisUtil.set(CacheNames.CAPTCHA_KEY + key, verCode, 30L, TimeUnit.MINUTES);
         // 将key和base64返回给前端
         return ReturnJsonUtil.ok("操作成功",ChainMap.init().set("key", key).set("image", specCaptcha.toBase64()));
     }
@@ -128,7 +128,7 @@ public class LoginController extends BaseController {
             return ReturnJsonUtil.fail("手机号不合法");
         }
 
-        if (redisUtils.getExpire(CacheNames.PHONE_KEY+phone,TimeUnit.MINUTES) >= 4){
+        if (redisUtil.getExpire(CacheNames.PHONE_KEY+phone,TimeUnit.MINUTES) >= 4){
             return ReturnJsonUtil.fail("该验证码已经发送，请一分钟后重试");
         }
 
@@ -144,7 +144,7 @@ public class LoginController extends BaseController {
         JSONObject json = SmsAliyun.send(phone,"乌丽吉","code");
 
         if ("OK".equals(json.getString("Code"))){
-            redisUtils.set(CacheNames.PHONE_KEY+phone,code,5L, TimeUnit.MINUTES);
+            redisUtil.set(CacheNames.PHONE_KEY+phone,code,5L, TimeUnit.MINUTES);
             return ReturnJsonUtil.ok(user.getLoginId()+"的验证码发送成功");
         }else {
             return ReturnJsonUtil.fail("验证码发送失败");

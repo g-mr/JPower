@@ -3,9 +3,9 @@ package com.wlcb.jpower.module.common.service.core.params.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wlcb.jpower.module.common.cache.CacheNames;
+import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.service.base.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.service.core.params.CoreParamService;
-import com.wlcb.jpower.module.common.service.redis.RedisUtils;
 import com.wlcb.jpower.module.dbs.dao.core.params.TbCoreParamsDao;
 import com.wlcb.jpower.module.dbs.dao.core.params.mapper.TbCoreParamsMapper;
 import com.wlcb.jpower.module.dbs.entity.core.params.TbCoreParam;
@@ -23,7 +23,7 @@ import java.util.List;
 public class CoreParamServiceImpl extends BaseServiceImpl<TbCoreParamsMapper,TbCoreParam> implements CoreParamService {
 
     private TbCoreParamsDao paramsDao;
-    private RedisUtils redisUtils;
+    private RedisUtil redisUtil;
 
     @Override
     public String selectByCode(String code) {
@@ -57,7 +57,7 @@ public class CoreParamServiceImpl extends BaseServiceImpl<TbCoreParamsMapper,TbC
         TbCoreParam coreParam = paramsDao.getById(id);
         Boolean c = paramsDao.removeById(id);
         if (c){
-            redisUtils.remove(CacheNames.PARAMS_REDIS_KEY+coreParam.getCode());
+            redisUtil.remove(CacheNames.PARAMS_REDIS_KEY+coreParam.getCode());
         }
         return c;
     }
@@ -72,7 +72,7 @@ public class CoreParamServiceImpl extends BaseServiceImpl<TbCoreParamsMapper,TbC
         List<TbCoreParam> params = paramsDao.list();
         for (TbCoreParam param : params) {
             if (StringUtils.isNotBlank(param.getValue())){
-                redisUtils.set(CacheNames.PARAMS_REDIS_KEY+param.getCode(),param.getValue());
+                redisUtil.set(CacheNames.PARAMS_REDIS_KEY+param.getCode(),param.getValue());
             }
         }
     }

@@ -20,7 +20,7 @@ import com.wlcb.jpower.auth.utils.TokenUtil;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.cache.CacheNames;
-import com.wlcb.jpower.module.common.service.redis.RedisUtils;
+import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.StringUtil;
@@ -41,7 +41,7 @@ public class CaptchaTokenGranter implements TokenGranter {
 	public static final String GRANT_TYPE = "captcha";
 
 	@Autowired
-	private RedisUtils redisUtil;
+	private RedisUtil redisUtil;
 	@Autowired
 	private PasswordTokenGranter passwordTokenGranter;
 	@Autowired(required = false)

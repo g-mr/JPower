@@ -4,7 +4,7 @@ import com.wlcb.jpower.auth.utils.TokenUtil;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.cache.CacheNames;
-import com.wlcb.jpower.module.common.service.redis.RedisUtils;
+import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.StringUtil;
@@ -28,7 +28,7 @@ public class PhoneTokenGranter implements TokenGranter {
 
     public static final String GRANT_TYPE = "phone";
 
-    private RedisUtils redisUtils;
+    private RedisUtil redisUtils;
     private TbCoreUserDao coreUserDao;
 
     @Override
