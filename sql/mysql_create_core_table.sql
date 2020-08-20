@@ -10,7 +10,7 @@ create table tb_core_user(
   id_no varchar(40) default null comment '证件编码',
   user_type tinyint(1) default 0 comment '用户类型 0:系统用户 1：普通用户 2：单位用户 3:会员 9：匿名用户',
   birthday datetime default null comment '出生日期',
-  email varchar(10) default null comment '邮箱地址',
+  email varchar(30) default null comment '邮箱地址',
   telephone varchar(11) default null comment '联系电话',
   address varchar(255) default null comment '通讯地址',
   post_code varchar(20) default null comment '邮编',
