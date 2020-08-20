@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.github.pagehelper.PageInfo;
+import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.service.base.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.service.core.user.CoreUserService;
 import com.wlcb.jpower.module.common.utils.Fc;
@@ -13,10 +15,12 @@ import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
 import com.wlcb.jpower.module.common.utils.constants.ParamsConstants;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.common.utils.param.ParamConfig;
+import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreOrgDao;
 import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreUserDao;
 import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreUserRoleDao;
 import com.wlcb.jpower.module.dbs.dao.core.user.mapper.TbCoreUserMapper;
 import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreUserRole;
+import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreOrg;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
 import com.wlcb.jpower.module.mp.support.Condition;
 import lombok.AllArgsConstructor;
@@ -35,11 +39,28 @@ import java.util.List;
 public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper,TbCoreUser> implements CoreUserService {
 
     private TbCoreUserDao coreUserDao;
+    private TbCoreOrgDao coreOrgDao;
     private TbCoreUserRoleDao coreUserRoleDao;
 
     @Override
-    public List<TbCoreUser> list(TbCoreUser coreUser) {
-        return coreUserDao.list(Condition.getQueryWrapper(coreUser).orderByDesc("create_time"));
+    public PageInfo<TbCoreUser> listPage(TbCoreUser coreUser,String orgCode) {
+        List<String> listOrgId = coreOrgDao.listObjs(Condition.<TbCoreOrg>getQueryWrapper().lambda()
+                .select(TbCoreOrg::getId)
+                .likeRight(TbCoreOrg::getCode,orgCode),Fc::toStr);
+
+        PaginationContext.startPage();
+        List<TbCoreUser> list = coreUserDao.getBaseMapper().selectUserList(coreUser,listOrgId);
+        return new PageInfo<>(list);
+    }
+
+    @Override
+    public List<TbCoreUser> list(TbCoreUser coreUser,String orgCode) {
+        List<String> listOrgId = coreOrgDao.listObjs(Condition.<TbCoreOrg>getQueryWrapper().lambda()
+                .select(TbCoreOrg::getId)
+                .likeRight(TbCoreOrg::getCode,orgCode),Fc::toStr);
+
+        List<TbCoreUser> list = coreUserDao.getBaseMapper().selectUserList(coreUser,listOrgId);
+        return list;
     }
 
     @Override
@@ -69,7 +90,12 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper,TbCore
 
     @Override
     public Boolean update(TbCoreUser coreUser) {
-        return coreUserDao.updateById(coreUser);
+        boolean is = coreUserDao.updateById(coreUser);
+        //如果成功并且存在角色则去修改角色
+        if (is && Fc.isNotBlank(coreUser.getRoleIds())){
+            updateUsersRole(coreUser.getId(),coreUser.getRoleIds());
+        }
+        return is;
     }
 
     @Override

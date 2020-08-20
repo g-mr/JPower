@@ -7,7 +7,6 @@ import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
-import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.service.core.user.CoreUserRoleService;
 import com.wlcb.jpower.module.common.service.core.user.CoreUserService;
 import com.wlcb.jpower.module.common.support.BeanExcelUtil;
@@ -26,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.io.File;
 import java.util.List;
@@ -43,13 +43,20 @@ public class UserController extends BaseController {
     @ApiOperation("查询用户分页列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum",value = "第几页",defaultValue = "1",paramType = "query",dataType = "int",required = true),
-            @ApiImplicitParam(name = "pageSize",value = "每页长度",defaultValue = "10",paramType = "query",dataType = "int",required = true)
+            @ApiImplicitParam(name = "pageSize",value = "每页长度",defaultValue = "10",paramType = "query",dataType = "int",required = true),
+            @ApiImplicitParam(name = "orgCode",value = "部门code",paramType = "query",required = false),
+            @ApiImplicitParam(name = "orgId",value = "部门ID",paramType = "query",required = false),
+            @ApiImplicitParam(name = "loginId",value = "登录名",paramType = "query",required = false),
+            @ApiImplicitParam(name = "nickName",value = "昵称",paramType = "query",required = false),
+            @ApiImplicitParam(name = "userName",value = "姓名",paramType = "query",required = false),
+            @ApiImplicitParam(name = "idNo",value = "证件号码",paramType = "query",required = false),
+            @ApiImplicitParam(name = "userType",value = "用户类型 字典USER_TYPE",paramType = "query",required = false),
+            @ApiImplicitParam(name = "telephone",value = "电话",paramType = "query",required = false)
     })
     @RequestMapping(value = "/list",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
-    public ResponseData<PageInfo<TbCoreUser>> list(TbCoreUser coreUser){
-        PaginationContext.startPage();
-        List<TbCoreUser> list = coreUserService.list(coreUser);
-        return ReturnJsonUtil.ok("获取成功", new PageInfo<>(list));
+    public ResponseData<PageInfo<TbCoreUser>> list(@ApiIgnore TbCoreUser coreUser,@ApiIgnore String orgCode){
+        PageInfo<TbCoreUser> list = coreUserService.listPage(coreUser,orgCode);
+        return ReturnJsonUtil.ok("获取成功", list);
     }
 
     @ApiOperation("查询用户详情")
@@ -222,8 +229,8 @@ public class UserController extends BaseController {
 
     @ApiOperation(value = "导出用户")
     @RequestMapping(value = "/exportUser",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
-    public ResponseData exportUser(TbCoreUser coreUser){
-        List<TbCoreUser> list = coreUserService.list(coreUser);
+    public ResponseData exportUser(TbCoreUser coreUser,String orgCode){
+        List<TbCoreUser> list = coreUserService.list(coreUser,orgCode);
 
         BeanExcelUtil<TbCoreUser> beanExcelUtil = new BeanExcelUtil<>(TbCoreUser.class,downloadPath);
         return beanExcelUtil.exportExcel(list,"用户列表");

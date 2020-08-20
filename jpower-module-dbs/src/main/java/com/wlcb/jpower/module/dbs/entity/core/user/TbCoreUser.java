@@ -101,5 +101,8 @@ public class TbCoreUser extends BaseEntity implements Serializable {
     @ApiModelProperty("证件类型")
     @TableField(exist = false)
     private String idTypeStr;
+    @ApiModelProperty("角色ID，多个逗号分割")
+    @TableField(exist = false)
+    private String roleIds;
 
 }

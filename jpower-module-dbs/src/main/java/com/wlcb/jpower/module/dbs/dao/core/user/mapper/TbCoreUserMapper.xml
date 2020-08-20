@@ -100,9 +100,56 @@
     </insert>
 
     <select id="selectAllById" resultType="com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser">
-        select <include refid="Base_Column_List_Alias"/>,o.name as orgName
+        select <include refid="Base_Column_List_Alias"/>,o.name as orgName,
+            (select group_concat(role_id) from tb_core_user_role r where r.user_id = u.id) as roleIds
         from tb_core_user u
         left join tb_core_org o on o.id = u.org_id
         where u.id = #{id,jdbcType=VARCHAR} and u.is_deleted = 0
+    </select>
+
+    <select id="selectUserList" resultType="com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser">
+        select
+            <include refid="Base_Column_List_Alias"/>,
+            o.name as orgName,
+            (select group_concat(role_id) from tb_core_user_role r where r.user_id = u.id) as roleIds
+        from tb_core_user u
+        left join tb_core_org o on o.id = u.org_id
+        where u.is_deleted = 0
+
+        <if test="coreUser != null and coreUser.orgId != null and coreUser.orgId != ''">
+            and u.org_id = #{coreUser.orgId,jdbcType=VARCHAR}
+        </if>
+
+        <if test="coreUser != null and coreUser.loginId != null and coreUser.loginId != ''">
+            and u.login_id = #{coreUser.loginId,jdbcType=VARCHAR}
+        </if>
+
+        <if test="coreUser != null and coreUser.nickName != null and coreUser.nickName != ''">
+            and u.nick_name = CONCAT('%',#{coreUser.nickName,jdbcType=VARCHAR},'%')
+        </if>
+
+        <if test="coreUser != null and coreUser.userName != null and coreUser.userName != ''">
+            and u.user_name = #{coreUser.userName,jdbcType=VARCHAR}
+        </if>
+
+        <if test="coreUser != null and coreUser.idNo != null and coreUser.idNo != ''">
+            and u.id_no = CONCAT('%',#{coreUser.idNo,jdbcType=VARCHAR},'%')
+        </if>
+
+        <if test="coreUser != null and coreUser.userType != null and coreUser.userType != ''">
+            and u.user_type = #{coreUser.userType,jdbcType=VARCHAR}
+        </if>
+
+        <if test="coreUser != null and coreUser.telephone != null and coreUser.telephone != ''">
+            and u.telephone like CONCAT('%',#{coreUser.telephone,jdbcType=VARCHAR},'%')
+        </if>
+
+        <if test="orgIds != null and orgIds.size > 0">
+            and u.org_id in
+            <foreach collection="orgId" item="orgIds" open="(" close=")" separator=",">
+                #{orgId,jdbcType=VARCHAR}
+            </foreach>
+        </if>
+
     </select>
 </mapper>

@@ -1,5 +1,6 @@
 package com.wlcb.jpower.module.common.service.core.user;
 
+import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.module.common.service.base.BaseService;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
 
@@ -17,7 +18,7 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
      * @Param [coreParam]
      * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser>
      **/
-    List<TbCoreUser> list(TbCoreUser coreUser);
+    PageInfo<TbCoreUser> listPage(TbCoreUser coreUser, String orgCode);
 
     /**
      * @Author 郭丁志
@@ -26,6 +27,7 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
      * @Param [coreUser]
      * @return java.lang.Integer
      **/
+    @Override
     boolean save(TbCoreUser coreUser);
 
     /**
@@ -112,4 +114,13 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
     TbCoreUser selectByUserNameAndId(String id, String username);
 
     Boolean updateLoginInfo(TbCoreUser user);
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 查询用户列表
+     * @Date 14:49 2020-08-20
+     * @Param [coreUser, orgCode]
+     * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser>
+     **/
+    List<TbCoreUser> list(TbCoreUser coreUser, String orgCode);
 }

@@ -2,6 +2,7 @@ package com.wlcb.jpower.module.common.deploy;
 
 import com.wlcb.jpower.module.base.utils.AppConstant;
 import com.wlcb.jpower.module.common.deploy.service.DeployService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
  * @Date 2020-08-02 17:04
  * @Version 1.0
  */
+@Slf4j
 public class JpowerApplication {
 
     /**
@@ -76,6 +78,7 @@ public class JpowerApplication {
         deployServiceList.stream().sorted(Comparator.comparing(DeployService::getOrder)).collect(Collectors.toList())
                 .forEach(deployService -> deployService.launcher(builder, appName, profile));
 
+        log.warn("{}项目已启动,运行环境：{}",appName,profile);
         return builder;
     }
 
