@@ -2,6 +2,7 @@ package com.wlcb.jpower.module.common.deploy;
 
 import com.wlcb.jpower.module.base.utils.AppConstant;
 import com.wlcb.jpower.module.common.deploy.service.DeployService;
+import com.wlcb.jpower.module.common.utils.Fc;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -72,6 +73,10 @@ public class JpowerApplication {
         props.setProperty("spring.cloud.nacos.config.server-addr", "${jpower.".concat(profile).concat(".nacos.server-addr}"));
         props.setProperty("spring.cloud.nacos.discovery.namespace", "${jpower.".concat(profile).concat(".nacos.namespace}"));
         props.setProperty("spring.cloud.nacos.config.namespace", "${jpower.".concat(profile).concat(".nacos.namespace}"));
+        if (Fc.equals(profile,AppConstant.DEV_CODE) && isLocalDev()){
+            props.setProperty("spring.cloud.nacos.config.enabled", "false");
+            props.setProperty("spring.cloud.nacos.discovery.enabled", "false");
+        }
 
         List<DeployService> deployServiceList = new ArrayList<>();
         ServiceLoader.load(DeployService.class).forEach(deployServiceList::add);
