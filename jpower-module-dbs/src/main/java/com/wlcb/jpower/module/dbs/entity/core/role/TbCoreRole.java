@@ -24,8 +24,8 @@ public class TbCoreRole extends BaseEntity implements Serializable {
     private String code;
     @ApiModelProperty("角色名称")
     private String name;
-    @ApiModelProperty("角色父级编码")
-    private String parentCode;
+    @ApiModelProperty("角色父级ID")
+    private String parentId;
     @ApiModelProperty("图标")
     private String iconUrl;
     @ApiModelProperty("是否系统角色 字典YN01")

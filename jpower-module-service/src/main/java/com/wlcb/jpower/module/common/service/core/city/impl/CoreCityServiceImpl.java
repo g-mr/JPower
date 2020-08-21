@@ -7,7 +7,6 @@ import com.wlcb.jpower.module.common.service.base.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.service.core.city.CoreCityService;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.RandomUtil;
-import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.dbs.dao.core.city.TbCoreCityDao;
 import com.wlcb.jpower.module.dbs.dao.core.city.mapper.TbCoreCityMapper;
@@ -41,23 +40,18 @@ public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper,TbCore
     }
 
     @Override
-    public boolean save(TbCoreCity coreCity) {
+    public boolean add(TbCoreCity coreCity) {
         coreCity.setCode(RandomUtil.createCityCode(coreCity.getPcode(),coreCity.getCode()));
 
         TbCoreCity city = queryByCode(coreCity.getCode());
 
-        if(Fc.isBlank(coreCity.getId())){
-            coreCity.setFullname(Fc.isNotBlank(coreCity.getFullname())?coreCity.getFullname():coreCity.getName());
-            coreCity.setCountryCode(Fc.isNotBlank(coreCity.getCountryCode())?coreCity.getCountryCode():JpowerConstants.COUNTRY_CODE);
-            coreCity.setPcode(Fc.isNotBlank(coreCity.getPcode())?coreCity.getPcode():JpowerConstants.TOP_CODE);
+        coreCity.setFullname(Fc.isNotBlank(coreCity.getFullname())?coreCity.getFullname():coreCity.getName());
+        coreCity.setCountryCode(Fc.isNotBlank(coreCity.getCountryCode())?coreCity.getCountryCode():JpowerConstants.COUNTRY_CODE);
+        coreCity.setPcode(Fc.isNotBlank(coreCity.getPcode())?coreCity.getPcode():JpowerConstants.TOP_CODE);
 
-            JpowerAssert.notTrue(city != null, JpowerError.BUSINESS,"该编号已存在");
-        }else{
-            JpowerAssert.notTrue(city != null && !StringUtil.equals(coreCity.getId(),city.getId()), JpowerError.BUSINESS,"该编号已存在");
-        }
+        JpowerAssert.notTrue(city != null, JpowerError.BUSINESS,"该编号已存在");
 
-        Boolean is = coreCityDao.saveOrUpdate(coreCity);
-        return is;
+        return coreCityDao.save(coreCity);
     }
 
     @Override

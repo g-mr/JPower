@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.module.base.annotation.Log;
 import com.wlcb.jpower.module.base.enums.BusinessType;
 import com.wlcb.jpower.module.base.enums.JpowerError;
+import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
@@ -11,10 +12,7 @@ import com.wlcb.jpower.module.common.service.core.user.CoreUserRoleService;
 import com.wlcb.jpower.module.common.service.core.user.CoreUserService;
 import com.wlcb.jpower.module.common.support.BeanExcelUtil;
 import com.wlcb.jpower.module.common.utils.*;
-import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
-import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
-import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
-import com.wlcb.jpower.module.common.utils.constants.ParamsConstants;
+import com.wlcb.jpower.module.common.utils.constants.*;
 import com.wlcb.jpower.module.common.utils.param.ParamConfig;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
 import io.swagger.annotations.*;
@@ -27,7 +25,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +45,6 @@ public class UserController extends BaseController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum",value = "第几页",defaultValue = "1",paramType = "query",dataType = "int",required = true),
             @ApiImplicitParam(name = "pageSize",value = "每页长度",defaultValue = "10",paramType = "query",dataType = "int",required = true),
-            @ApiImplicitParam(name = "orgCode",value = "部门code",paramType = "query",required = false),
             @ApiImplicitParam(name = "orgId",value = "部门ID",paramType = "query",required = false),
             @ApiImplicitParam(name = "loginId",value = "登录名",paramType = "query",required = false),
             @ApiImplicitParam(name = "nickName",value = "昵称",paramType = "query",required = false),
@@ -54,8 +54,8 @@ public class UserController extends BaseController {
             @ApiImplicitParam(name = "telephone",value = "电话",paramType = "query",required = false)
     })
     @RequestMapping(value = "/list",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
-    public ResponseData<PageInfo<TbCoreUser>> list(@ApiIgnore TbCoreUser coreUser,@ApiIgnore String orgCode){
-        PageInfo<TbCoreUser> list = coreUserService.listPage(coreUser,orgCode);
+    public ResponseData<PageInfo<TbCoreUser>> list(@ApiIgnore TbCoreUser coreUser){
+        PageInfo<TbCoreUser> list = coreUserService.listPage(coreUser);
         return ReturnJsonUtil.ok("获取成功", list);
     }
 
@@ -181,16 +181,17 @@ public class UserController extends BaseController {
 
         JpowerAssert.notTrue(file == null || file.isEmpty(),JpowerError.Arg,"文件不可为空");
 
-        String path = fileParentPath + File.separator + "import" + File.separator + "user";
-
         try{
-            String savePaths = MultipartFileUtil.saveFile(file,"xls,xlsx",path);
+            String savePaths = MultipartFileUtil.saveFile(file,"xls,xlsx",ImportExportConstants.IMPORT_PATH);
 
-            File saveFile = new File(fileParentPath + File.separator + "import" + File.separator + "user" + savePaths);
+            File saveFile = new File(ImportExportConstants.IMPORT_PATH + savePaths);
 
             if (saveFile.exists()){
                 BeanExcelUtil<TbCoreUser> beanExcelUtil = new BeanExcelUtil<>(TbCoreUser.class);
                 List<TbCoreUser> list = beanExcelUtil.importExcel(saveFile);
+
+                //获取完数据之后删除文件
+                FileUtil.deleteFile(saveFile);
 
                 for (TbCoreUser coreUser : list) {
                     coreUser.setId(UUIDUtil.getUUID());
@@ -228,12 +229,27 @@ public class UserController extends BaseController {
     }
 
     @ApiOperation(value = "导出用户")
-    @RequestMapping(value = "/exportUser",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
-    public ResponseData exportUser(TbCoreUser coreUser,String orgCode){
-        List<TbCoreUser> list = coreUserService.list(coreUser,orgCode);
+    @RequestMapping(value = "/exportUser",method = {RequestMethod.GET,RequestMethod.POST})
+    public void exportUser(TbCoreUser coreUser) throws UnsupportedEncodingException {
+        List<TbCoreUser> list = coreUserService.list(coreUser);
 
-        BeanExcelUtil<TbCoreUser> beanExcelUtil = new BeanExcelUtil<>(TbCoreUser.class,downloadPath);
-        return beanExcelUtil.exportExcel(list,"用户列表");
+        BeanExcelUtil<TbCoreUser> beanExcelUtil = new BeanExcelUtil<>(TbCoreUser.class,ImportExportConstants.EXPORT_PATH);
+        ResponseData responseData = beanExcelUtil.exportExcel(list,"用户列表");
+
+        File file = new File(ImportExportConstants.EXPORT_PATH+responseData.getData());
+        if (file.exists()){
+            HttpServletResponse response = getResponse();
+            try {
+                FileUtil.download(file, response,"导出数据.xlsx");
+            } catch (IOException e) {
+                logger.error("下载文件出错。file={},error={}",file.getAbsolutePath(),e.getMessage());
+                throw new BusinessException("下载文件出错，请联系网站管理员");
+            }
+
+            FileUtil.deleteFile(file);
+        }else {
+            throw new BusinessException(responseData.getData()+"文件生成失败，无法下载");
+        }
     }
 
     @ApiOperation(value = "给用户重新设置角色")

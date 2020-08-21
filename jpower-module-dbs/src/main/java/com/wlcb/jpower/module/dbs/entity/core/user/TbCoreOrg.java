@@ -24,8 +24,10 @@ public class TbCoreOrg extends BaseEntity implements Serializable {
     private String code;
     @ApiModelProperty("名称")
     private String name;
-    @ApiModelProperty("父级编码")
-    private String parentCode;
+    @ApiModelProperty("父级ID")
+    private String parentId;
+    @ApiModelProperty("祖级ID")
+    private String ancestorId;
     @ApiModelProperty("图标")
     private String icon;
     @ApiModelProperty("排序")

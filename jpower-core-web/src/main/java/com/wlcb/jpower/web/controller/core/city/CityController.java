@@ -59,19 +59,30 @@ public class CityController extends BaseController {
         return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"获取成功", new PageInfo<>(list),true);
     }
 
-    @ApiOperation(value = "新增或者修改行政区域",notes = "主键新增时必传，修改的不可传")
-    @RequestMapping(value = "/save",method = {RequestMethod.POST},produces="application/json")
-    public ResponseData save( TbCoreCity coreCity){
+    @ApiOperation(value = "新增行政区域",notes = "主键不可传")
+    @RequestMapping(value = "/add",method = {RequestMethod.POST},produces="application/json")
+    public ResponseData add( TbCoreCity coreCity){
 
-        if (Fc.isBlank(coreCity.getId())){
-            JpowerAssert.notEmpty(coreCity.getCode(),JpowerError.Arg,"编号不可为空");
-            JpowerAssert.notEmpty(coreCity.getName(),JpowerError.Arg,"名称不可为空");
-            JpowerAssert.notTrue(Fc.isEmpty(coreCity.getRankd()),JpowerError.Arg,"城市级别不可为空");
-            JpowerAssert.notEmpty(coreCity.getCityType(),JpowerError.Arg,"城市类型不可为空");
+        JpowerAssert.notEmpty(coreCity.getCode(),JpowerError.Arg,"编号不可为空");
+        JpowerAssert.notEmpty(coreCity.getName(),JpowerError.Arg,"名称不可为空");
+        JpowerAssert.notTrue(Fc.isEmpty(coreCity.getRankd()),JpowerError.Arg,"城市级别不可为空");
+        JpowerAssert.notEmpty(coreCity.getCityType(),JpowerError.Arg,"城市类型不可为空");
+
+        Boolean is = coreCityService.add(coreCity);
+        return ReturnJsonUtil.status(is);
+    }
+
+    @ApiOperation(value = "修改行政区域",notes = "主键必传")
+    @RequestMapping(value = "/update",method = {RequestMethod.PUT},produces="application/json")
+    public ResponseData update( TbCoreCity coreCity){
+        JpowerAssert.notEmpty(coreCity.getId(),JpowerError.Arg,"主键不可为空");
+
+        if (Fc.isNotBlank(coreCity.getCode())){
+            TbCoreCity city = coreCityService.getById(coreCity.getId());
+            JpowerAssert.isTrue(Fc.equals(city.getCode(),coreCity.getCode()),JpowerError.Arg,"编码不可修改");
         }
 
-        Boolean is = coreCityService.save(coreCity);
-        return ReturnJsonUtil.status(is);
+        return ReturnJsonUtil.status(coreCityService.updateById(coreCity));
     }
 
     @ApiOperation("删除行政区域")

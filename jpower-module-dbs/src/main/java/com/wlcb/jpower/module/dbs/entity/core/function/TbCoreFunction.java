@@ -26,8 +26,8 @@ public class TbCoreFunction extends BaseEntity implements Serializable {
     private String alias;
     @ApiModelProperty("编码")
     private String code;
-    @ApiModelProperty("父级编码")
-    private String parentCode;
+    @ApiModelProperty("父级ID")
+    private String parentId;
     @ApiModelProperty("地址")
     private String url;
     @ApiModelProperty("是否菜单 字典YN01")

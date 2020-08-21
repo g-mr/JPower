@@ -24,13 +24,11 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper,TbCoreOr
     private final String sql = "(select code from tb_core_org where id in ({}))";
 
     @Autowired
-    private TbCoreOrgMapper coreOrgMapper;
-    @Autowired
     private TbCoreOrgDao coreOrgDao;
 
     @Override
     public List<TbCoreOrg> listByParent(TbCoreOrg coreOrg) {
-        return coreOrgMapper.selectList(Condition.getQueryWrapper(coreOrg).lambda().orderByAsc(TbCoreOrg::getSort));
+        return coreOrgDao.list(Condition.getQueryWrapper(coreOrg).lambda().orderByAsc(TbCoreOrg::getSort));
     }
 
     @Override
@@ -46,7 +44,7 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper,TbCoreOr
     @Override
     public Integer listOrgByPids(String ids) {
         return coreOrgDao.count(new QueryWrapper<TbCoreOrg>()
-                .lambda().in(TbCoreOrg::getParentCode, Fc.toStrList(ids)));
+                .lambda().in(TbCoreOrg::getParentId, Fc.toStrList(ids)));
     }
 
     @Override
@@ -56,12 +54,12 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper,TbCoreOr
 
     @Override
     public List<Node> tree(Map<String, Object> coreOrg) {
-        return coreOrgDao.tree(Condition.getTreeWrapper(TbCoreOrg::getCode,TbCoreOrg::getParentCode,TbCoreOrg::getName).map(coreOrg).lambda().orderByAsc(TbCoreOrg::getSort));
+        return coreOrgDao.tree(Condition.getTreeWrapper(TbCoreOrg::getId,TbCoreOrg::getParentId,TbCoreOrg::getName).map(coreOrg).lambda().orderByAsc(TbCoreOrg::getSort));
     }
 
     @Override
-    public List<Node> tree(String parentCode, Map<String, Object> coreOrg) {
-        return coreOrgDao.tree(Condition.getTreeWrapper(TbCoreOrg::getCode,TbCoreOrg::getParentCode,TbCoreOrg::getName).lazy(parentCode).map(coreOrg).lambda().orderByAsc(TbCoreOrg::getSort));
+    public List<Node> tree(String parentId, Map<String, Object> coreOrg) {
+        return coreOrgDao.tree(Condition.getTreeWrapper(TbCoreOrg::getId,TbCoreOrg::getParentId,TbCoreOrg::getName).lazy(parentId).map(coreOrg).lambda().orderByAsc(TbCoreOrg::getSort));
     }
 
 }

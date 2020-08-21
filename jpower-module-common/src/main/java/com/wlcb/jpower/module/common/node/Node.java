@@ -15,14 +15,14 @@ public interface Node extends Serializable {
      *
      * @return Integer
      */
-    String getCode();
+    String getId();
 
     /**
      * 父主键
      *
      * @return Integer
      */
-    String getParentCode();
+    String getParentId();
 
     /**
      * 子孙节点

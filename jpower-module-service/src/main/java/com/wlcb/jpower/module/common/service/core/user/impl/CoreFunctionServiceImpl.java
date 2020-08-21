@@ -63,7 +63,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     public Integer listByPids(String ids) {
         return coreFunctionDao.count(Condition.<TbCoreFunction>getQueryWrapper()
                 .lambda()
-                .in(TbCoreFunction::getParentCode,Fc.toStrList(ids)));
+                .in(TbCoreFunction::getParentId,Fc.toStrList(ids)));
     }
 
     @Override
@@ -86,15 +86,15 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     }
 
     @Override
-    public List<Node> lazyTree(String parentCode) {
-        return coreFunctionDao.tree(Condition.getTreeWrapper(TbCoreFunction::getCode,TbCoreFunction::getParentCode,TbCoreFunction::getFunctionName,TbCoreFunction::getUrl).lazy(parentCode).lambda().orderByAsc(TbCoreFunction::getSort));
+    public List<Node> lazyTree(String parentId) {
+        return coreFunctionDao.tree(Condition.getTreeWrapper(TbCoreFunction::getId,TbCoreFunction::getParentId,TbCoreFunction::getFunctionName,TbCoreFunction::getUrl).lazy(parentId).lambda().orderByAsc(TbCoreFunction::getSort));
     }
 
     @Override
-    public List<Node> lazyTreeByRole(String parentCode, String roleIds) {
+    public List<Node> lazyTreeByRole(String parentId, String roleIds) {
         String inSql = "'"+roleIds.replaceAll(",","','")+"'";
-        return coreFunctionDao.tree(Condition.getTreeWrapper(TbCoreFunction::getCode,TbCoreFunction::getParentCode,TbCoreFunction::getFunctionName,TbCoreFunction::getUrl)
-                .lazy(parentCode).lambda()
+        return coreFunctionDao.tree(Condition.getTreeWrapper(TbCoreFunction::getId,TbCoreFunction::getParentId,TbCoreFunction::getFunctionName,TbCoreFunction::getUrl)
+                .lazy(parentId).lambda()
                 .inSql(TbCoreFunction::getId, StringUtil.format(sql,inSql))
                 .orderByAsc(TbCoreFunction::getSort));
     }
@@ -104,6 +104,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
         String inSql = "'"+Fc.join(roleIds).replaceAll(",","','")+"'";
         List<Object> listUrl = coreFunctionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                 .select(TbCoreFunction::getUrl)
+                .isNotNull(TbCoreFunction::getUrl)
                 .inSql(TbCoreFunction::getId,StringUtil.format(sql,inSql)));
         redisUtil.set(CacheNames.TOKEN_URL_KEY+accessToken,listUrl,expiresIn, TimeUnit.SECONDS);
     }
@@ -117,12 +118,12 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     }
 
     @Override
-    public List<TbCoreFunction> listBtnByRoleIdAndPcode(String roleIds, String code) {
+    public List<TbCoreFunction> listBtnByRoleIdAndPcode(String roleIds, String id) {
         String inSql = "'"+roleIds.replaceAll(",","','")+"'";
         return coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                 .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.N.getValue())
-                .and(consumer -> consumer.eq(TbCoreFunction::getParentCode, code).or(c
-                        -> c.eq(TbCoreFunction::getParentCode, JpowerConstants.TOP_CODE)))
+                .and(consumer -> consumer.eq(TbCoreFunction::getParentId, id).or(c
+                        -> c.eq(TbCoreFunction::getParentId, JpowerConstants.TOP_CODE)))
                 .inSql(TbCoreFunction::getId,StringUtil.format(sql,inSql)).orderByAsc(TbCoreFunction::getSort));
     }
 

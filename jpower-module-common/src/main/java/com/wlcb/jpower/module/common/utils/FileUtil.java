@@ -7,7 +7,9 @@ import org.springframework.util.Assert;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -353,5 +355,29 @@ public class FileUtil extends org.apache.commons.io.FileUtils {
         String fileName = new File(file).getName();
         int dotIndex = fileName.lastIndexOf(CharPool.DOT);
         return (dotIndex == -1) ? fileName : fileName.substring(0, dotIndex);
+    }
+
+    /**
+     * 如果已打成jar包，则返回jar包所在目录
+     * 如果未打成jar，则返回resources所在目录
+     * @return
+     */
+    public static String getSysRootPath() {
+        // 项目的编译文件的根目录
+        String path = null;
+        try {
+            path = URLDecoder.decode(FileUtil.class.getClass().getResource("/").getPath(), String.valueOf(StandardCharsets.UTF_8));
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+        if (path.startsWith("file:")) {
+            int i = path.indexOf(".jar!");
+            path = path.substring(0, i);
+            path = path.replaceFirst("file:", "");
+            path = new File(path).getParentFile().getAbsolutePath();
+            path = path + File.separator + "config";
+        }
+        // 项目所在的目录
+        return new File(path).getAbsolutePath();
     }
 }

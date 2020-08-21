@@ -13,6 +13,7 @@ import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreOrg;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
@@ -38,8 +39,8 @@ public class OrgController extends BaseController {
     @RequestMapping(value = "/listByParent",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
     public ResponseData<PageInfo<TbCoreOrg>> listByParent(TbCoreOrg coreOrg){
 
-        if (StringUtils.isBlank(coreOrg.getParentCode())){
-            coreOrg.setParentCode("-1");
+        if (StringUtils.isBlank(coreOrg.getParentId())){
+            coreOrg.setParentId("-1");
         }
 
         PaginationContext.startPage();
@@ -63,8 +64,11 @@ public class OrgController extends BaseController {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该组织机构已存在", false);
         }
 
-        if (StringUtils.isBlank(coreOrg.getParentCode())){
-            coreOrg.setParentCode("-1");
+        if (StringUtils.isBlank(coreOrg.getParentId())){
+            coreOrg.setParentId("-1");
+            coreOrg.setAncestorId("-1");
+        }else {
+            coreOrg.setAncestorId(coreOrg.getParentId().concat(StringPool.COMMA).concat(coreOrgService.getById(coreOrg.getParentId()).getAncestorId()));
         }
         Boolean is = coreOrgService.add(coreOrg);
 
@@ -129,7 +133,6 @@ public class OrgController extends BaseController {
             @ApiImplicitParam(name = "contactEmail",value = "联系人邮箱",paramType = "query"),
             @ApiImplicitParam(name = "address",value = "地址",paramType = "query"),
             @ApiImplicitParam(name = "isVirtual",value = "是否虚拟机构 字典YN01",paramType = "query"),
-
     })
     @RequestMapping(value = "/tree",method = {RequestMethod.GET},produces="application/json")
     public ResponseData<List<Node>> tree(@ApiIgnore @RequestParam Map<String,Object> coreOrg){
@@ -152,10 +155,10 @@ public class OrgController extends BaseController {
 
     })
     @RequestMapping(value = "/lazyTree",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData<List<Node>> lazyTree(@ApiParam(value = "父级编码",defaultValue = JpowerConstants.TOP_CODE,required = true) @RequestParam  String parentCode,
+    public ResponseData<List<Node>> lazyTree(@ApiParam(value = "父级ID",defaultValue = JpowerConstants.TOP_CODE,required = true) @RequestParam(defaultValue = JpowerConstants.TOP_CODE)  String parentId,
                                  @ApiIgnore @RequestParam Map<String,Object> coreOrg){
-        coreOrg.remove("parentCode");
-        List<Node> list = coreOrgService.tree(parentCode,coreOrg);
+        coreOrg.remove("parentId");
+        List<Node> list = coreOrgService.tree(parentId,coreOrg);
         return ReturnJsonUtil.ok("查询成功",list);
     }
 

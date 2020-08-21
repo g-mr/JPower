@@ -39,8 +39,7 @@ public interface CoreCityService extends BaseService<TbCoreCity> {
      * @param coreCity
      * @return java.lang.Boolean
      */
-    @Override
-    boolean save(TbCoreCity coreCity);
+    boolean add(TbCoreCity coreCity);
 
     /**
      * @author 郭丁志

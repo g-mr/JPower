@@ -37,7 +37,7 @@ public class FunctionController extends BaseController {
 
     @ApiOperation("根据父节点查询子节点功能")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "parentCode_eq",value = "父级节点",defaultValue = JpowerConstants.TOP_CODE,required = true,paramType = "query"),
+            @ApiImplicitParam(name = "parentId_eq",value = "父级节点",defaultValue = JpowerConstants.TOP_CODE,required = true,paramType = "query"),
             @ApiImplicitParam(name = "alias",value = "别名",paramType = "query"),
             @ApiImplicitParam(name = "code_eq",value = "编码",paramType = "query"),
             @ApiImplicitParam(name = "isMenu_eq",value = "是否菜单 字典YN01",paramType = "query"),
@@ -47,8 +47,8 @@ public class FunctionController extends BaseController {
     @RequestMapping(value = "/listByParent",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
     public ResponseData<List<TbCoreFunction>> list(@ApiIgnore @RequestParam Map<String,Object> coreFunction){
 
-        if(StringUtils.isBlank(Fc.toStr(coreFunction.get("parentCode_eq")))){
-            coreFunction.put("parentCode_eq","-1");
+        if(StringUtils.isBlank(Fc.toStr(coreFunction.get("parentId_eq")))){
+            coreFunction.put("parentId_eq","-1");
         }
 
         List<TbCoreFunction> list = coreFunctionService.listByParent(coreFunction);
@@ -66,8 +66,8 @@ public class FunctionController extends BaseController {
             return responseData;
         }
 
-        if(StringUtils.isBlank(coreFunction.getParentCode())){
-            coreFunction.setParentCode("-1");
+        if(StringUtils.isBlank(coreFunction.getParentId())){
+            coreFunction.setParentId("-1");
         }
 
         TbCoreFunction function = coreFunctionService.selectFunctionByCode(coreFunction.getCode());
@@ -117,13 +117,6 @@ public class FunctionController extends BaseController {
             }
         }
 
-        if (StringUtils.isNotBlank(coreFunction.getUrl())){
-            TbCoreFunction function = coreFunctionService.selectFunctionByUrl(coreFunction.getUrl());
-            if (function != null && !StringUtils.equals(function.getId(),function.getId())){
-                return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该URL已存在", false);
-            }
-        }
-
         Boolean is = coreFunctionService.update(coreFunction);
 
         if (is){
@@ -135,17 +128,17 @@ public class FunctionController extends BaseController {
 
     @ApiOperation("懒加载所有功能树形结构")
     @RequestMapping(value = "/lazyTree",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData<List<Node>> lazyTree(@ApiParam(value = "父级编码",defaultValue = JpowerConstants.TOP_CODE,required = true) @RequestParam String parentCode){
-        List<Node> list = coreFunctionService.lazyTree(parentCode);
+    public ResponseData<List<Node>> lazyTree(@ApiParam(value = "父级编码",defaultValue = JpowerConstants.TOP_CODE,required = true) @RequestParam String parentId){
+        List<Node> list = coreFunctionService.lazyTree(parentId);
         return ReturnJsonUtil.ok("查询成功",list);
     }
 
     @ApiOperation("懒加载角色所有权限功能树形结构")
     @RequestMapping(value = "/lazyTreeByRole",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData<List<Node>> lazyTreeByRole(@ApiParam(value = "父级编码",defaultValue = JpowerConstants.TOP_CODE,required = true) @RequestParam String parentCode,
+    public ResponseData<List<Node>> lazyTreeByRole(@ApiParam(value = "父级编码",defaultValue = JpowerConstants.TOP_CODE,required = true) @RequestParam String parentId,
                                                    @ApiParam(value = "角色ID 多个逗号分割",required = true) @RequestParam String roleIds){
         JpowerAssert.notEmpty(roleIds, JpowerError.Arg, "角色id不可为空");
-        List<Node> list = coreFunctionService.lazyTreeByRole(parentCode,roleIds);
+        List<Node> list = coreFunctionService.lazyTreeByRole(parentId,roleIds);
         return ReturnJsonUtil.ok("查询成功",list);
     }
 
@@ -161,10 +154,10 @@ public class FunctionController extends BaseController {
     @ApiOperation("根据权限查询一个菜单下的所有按钮")
     @RequestMapping(value = "/listBut",method = {RequestMethod.GET},produces="application/json")
     public ResponseData<List<TbCoreFunction>> listBut(@ApiParam(value = "角色ID 多个逗号分割",required = true) @RequestParam String roleIds,
-                                @ApiParam(value = "菜单编码",required = true) @RequestParam String code){
+                                @ApiParam(value = "菜单Id",required = true) @RequestParam String id){
         JpowerAssert.notEmpty(roleIds, JpowerError.Arg, "角色id不可为空");
-        JpowerAssert.notEmpty(code, JpowerError.Arg, "菜单code不可为空");
-        List<TbCoreFunction> list = coreFunctionService.listBtnByRoleIdAndPcode(roleIds,code);
+        JpowerAssert.notEmpty(id, JpowerError.Arg, "菜单id不可为空");
+        List<TbCoreFunction> list = coreFunctionService.listBtnByRoleIdAndPcode(roleIds,id);
         return ReturnJsonUtil.ok("查询成功", list);
     }
 

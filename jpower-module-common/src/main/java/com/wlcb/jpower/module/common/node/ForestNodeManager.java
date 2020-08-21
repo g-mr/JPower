@@ -31,13 +31,12 @@ public class ForestNodeManager<T extends Node> {
 
     /**
      * 根据节点ID获取一个节点
-     *
      * @param id 节点ID
      * @return 对应的节点对象
      */
     public Node getTreeNodeAT(String id) {
         for (Node forestNode : list) {
-            if (StringUtil.equals(forestNode.getCode(),id)) {
+            if (StringUtil.equals(forestNode.getId(),id)) {
                 return forestNode;
             }
         }
@@ -46,7 +45,6 @@ public class ForestNodeManager<T extends Node> {
 
     /**
      * 增加父节点ID
-     *
      * @param parentId 父节点ID
      */
     public void addParentId(String parentId) {
@@ -55,13 +53,12 @@ public class ForestNodeManager<T extends Node> {
 
     /**
      * 获取树的根节点(一个森林对应多颗树)
-     *
      * @return 树的根节点集合
      */
     public List<T> getRoot() {
         List<T> roots = new ArrayList<>();
         for (T forestNode : list) {
-            if (StringUtil.equals(forestNode.getParentCode(), JpowerConstants.TOP_CODE) || parentIds.contains(forestNode.getCode())) {
+            if (StringUtil.equals(forestNode.getParentId(), JpowerConstants.TOP_CODE) || parentIds.contains(forestNode.getId())) {
                 roots.add(forestNode);
             }
         }

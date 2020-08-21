@@ -18,7 +18,7 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
      * @Param [coreParam]
      * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser>
      **/
-    PageInfo<TbCoreUser> listPage(TbCoreUser coreUser, String orgCode);
+    PageInfo<TbCoreUser> listPage(TbCoreUser coreUser);
 
     /**
      * @Author 郭丁志
@@ -122,5 +122,5 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
      * @Param [coreUser, orgCode]
      * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser>
      **/
-    List<TbCoreUser> list(TbCoreUser coreUser, String orgCode);
+    List<TbCoreUser> list(TbCoreUser coreUser);
 }

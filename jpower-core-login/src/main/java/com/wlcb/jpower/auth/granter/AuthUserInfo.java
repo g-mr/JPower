@@ -71,4 +71,19 @@ public interface AuthUserInfo {
         TbCoreUser result = SpringUtil.getBean(TbCoreUserDao.class).getById(userId);
         return TokenGranterBuilder.toUserInfo(result);
     }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 手机号登录
+     * @Date 08:40 2020-08-21
+     * @Param [tokenParameter]
+     * @return com.wlcb.jpower.module.common.auth.UserInfo
+     **/
+    default UserInfo getPhoneUserInfo(ChainMap tokenParameter){
+        String phone = tokenParameter.getStr("phone");
+        TbCoreUser result = SpringUtil.getBean(TbCoreUserDao.class).getOne(Condition.<TbCoreUser>getQueryWrapper()
+                .lambda().eq(TbCoreUser::getTelephone,phone));
+        return TokenGranterBuilder.toUserInfo(result);
+    }
+
 }

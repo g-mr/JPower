@@ -43,10 +43,13 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper,TbCore
     private TbCoreUserRoleDao coreUserRoleDao;
 
     @Override
-    public PageInfo<TbCoreUser> listPage(TbCoreUser coreUser,String orgCode) {
-        List<String> listOrgId = coreOrgDao.listObjs(Condition.<TbCoreOrg>getQueryWrapper().lambda()
-                .select(TbCoreOrg::getId)
-                .likeRight(TbCoreOrg::getCode,orgCode),Fc::toStr);
+    public PageInfo<TbCoreUser> listPage(TbCoreUser coreUser) {
+        List<String> listOrgId = null;
+        if (Fc.isNotBlank(coreUser.getOrgId())){
+            listOrgId = coreOrgDao.listObjs(Condition.<TbCoreOrg>getQueryWrapper().lambda()
+                    .select(TbCoreOrg::getId)
+                    .like(TbCoreOrg::getAncestorId,coreUser.getId()),Fc::toStr);
+        }
 
         PaginationContext.startPage();
         List<TbCoreUser> list = coreUserDao.getBaseMapper().selectUserList(coreUser,listOrgId);
@@ -54,10 +57,13 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper,TbCore
     }
 
     @Override
-    public List<TbCoreUser> list(TbCoreUser coreUser,String orgCode) {
-        List<String> listOrgId = coreOrgDao.listObjs(Condition.<TbCoreOrg>getQueryWrapper().lambda()
-                .select(TbCoreOrg::getId)
-                .likeRight(TbCoreOrg::getCode,orgCode),Fc::toStr);
+    public List<TbCoreUser> list(TbCoreUser coreUser) {
+        List<String> listOrgId = null;
+        if (Fc.isNotBlank(coreUser.getOrgId())){
+            listOrgId = coreOrgDao.listObjs(Condition.<TbCoreOrg>getQueryWrapper().lambda()
+                    .select(TbCoreOrg::getId)
+                    .like(TbCoreOrg::getAncestorId,coreUser.getId()),Fc::toStr);
+        }
 
         List<TbCoreUser> list = coreUserDao.getBaseMapper().selectUserList(coreUser,listOrgId);
         return list;

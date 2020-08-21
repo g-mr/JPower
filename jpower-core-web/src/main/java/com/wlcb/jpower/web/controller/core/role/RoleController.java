@@ -57,8 +57,8 @@ public class RoleController extends BaseController {
             return responseData;
         }
 
-        if (StringUtils.isBlank(coreRole.getParentCode())){
-            coreRole.setParentCode(JpowerConstants.TOP_CODE);
+        if (StringUtils.isBlank(coreRole.getParentId())){
+            coreRole.setParentId(JpowerConstants.TOP_CODE);
         }
 
         if (coreRole.getIsSysRole() == null){

@@ -12,6 +12,7 @@ import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreUserDao;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
 import com.wlcb.jpower.module.mp.support.Condition;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
@@ -30,6 +31,8 @@ public class PhoneTokenGranter implements TokenGranter {
 
     private RedisUtil redisUtils;
     private TbCoreUserDao coreUserDao;
+    @Autowired(required = false)
+    private AuthUserInfo authUserInfo;
 
     @Override
     public UserInfo grant(ChainMap tokenParameter) {
@@ -44,13 +47,9 @@ public class PhoneTokenGranter implements TokenGranter {
 
         UserInfo userInfo = null;
         if (Fc.isNotBlank(phone)) {
-            // 获取用户类型
-            String userType = tokenParameter.getStr("userType");
-            //不同的用户类型都可以在这里写逻辑，或者重写这个类的方法
-            if (Fc.equals(userType,"web")){
-                TbCoreUser result = coreUserDao.getOne(Condition.<TbCoreUser>getQueryWrapper()
-                        .lambda().eq(TbCoreUser::getTelephone,phone));
-                return TokenGranterBuilder.toUserInfo(result);
+
+            if (!Fc.isNull(authUserInfo)){
+                return authUserInfo.getPhoneUserInfo(tokenParameter);
             }else {
                 TbCoreUser result = coreUserDao.getOne(Condition.<TbCoreUser>getQueryWrapper()
                         .lambda().eq(TbCoreUser::getTelephone,phone));

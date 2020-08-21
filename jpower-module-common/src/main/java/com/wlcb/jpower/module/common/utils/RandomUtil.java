@@ -63,7 +63,7 @@ public class RandomUtil {
     }
 
     public static void main(String[] args) {
-        System.out.println(randomString(6));
+        System.out.println(createCityCode(null,"11"));
     }
 
 }

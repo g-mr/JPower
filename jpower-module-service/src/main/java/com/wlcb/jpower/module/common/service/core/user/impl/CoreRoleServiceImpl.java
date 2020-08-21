@@ -27,7 +27,7 @@ public class CoreRoleServiceImpl extends BaseServiceImpl<TbCoreRoleMapper,TbCore
 
     @Override
     public Integer listByPids(String ids) {
-        return coreRoleDao.count(Condition.<TbCoreRole>getQueryWrapper().lambda().in(TbCoreRole::getParentCode, Fc.toStrList(ids)));
+        return coreRoleDao.count(Condition.<TbCoreRole>getQueryWrapper().lambda().in(TbCoreRole::getParentId, Fc.toStrList(ids)));
     }
 
     @Override

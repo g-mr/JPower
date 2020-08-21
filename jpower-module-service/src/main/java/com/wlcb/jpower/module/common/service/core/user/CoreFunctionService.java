@@ -80,20 +80,20 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @author 郭丁志
      * @Description //TODO 懒加载树形功能
      * @date 22:50 2020/7/26 0026
-     * @param parentCode
+     * @param parentId
      * @return java.util.List<com.wlcb.jpower.module.common.node.Node>
      */
-    List<Node> lazyTree(String parentCode);
+    List<Node> lazyTree(String parentId);
 
     /**
      * @author 郭丁志
      * @Description //TODO 懒加载角色所有功能
      * @date 23:06 2020/7/26 0026
-     * @param parentCode
+     * @param parentId
      * @param roleIds
      * @return java.util.List<com.wlcb.jpower.module.common.node.Node>
      */
-    List<Node> lazyTreeByRole(String parentCode, String roleIds);
+    List<Node> lazyTreeByRole(String parentId, String roleIds);
 
     /**
      * @Author 郭丁志
@@ -120,7 +120,7 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @Param [roleIds, code]
      * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction>
      **/
-    List<TbCoreFunction> listBtnByRoleIdAndPcode(String roleIds, String code);
+    List<TbCoreFunction> listBtnByRoleIdAndPcode(String roleIds, String id);
 
     /**
      * @Author 郭丁志

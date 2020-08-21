@@ -31,7 +31,7 @@ public class TbCoreDict extends BaseEntity {
     @ApiModelProperty("排序")
     private Integer sortNum;
     @ApiModelProperty("父级编码")
-    private String pcode;
+    private String parentId;
     @ApiModelProperty("级别")
     private Integer dictLevel;
 

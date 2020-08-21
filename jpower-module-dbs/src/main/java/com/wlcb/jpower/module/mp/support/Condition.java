@@ -85,6 +85,7 @@ public class Condition<T> {
             TableInfo tableInfo = SqlHelper.table(LambdaUtils.resolve(code).getImplClass());
             setEntity(BeanUtil.newInstance(LambdaUtils.resolve(code).getImplClass()));
             this.tableName = tableInfo.getTableName();
+
             this.id = tableInfo.getKeyColumn() + " AS id";
             this.value = tableInfo.getKeyColumn() + " AS value";
             tableInfo.getFieldList().forEach(field -> {
@@ -154,10 +155,10 @@ public class Condition<T> {
          */
         public static Node createNode(Map<String, Object> map) {
             TreeNode node = new TreeNode();
-            node.setCode(Fc.toStr(map.get("code")));
+            node.setId(Fc.toStr(map.get("code")));
             node.setKey(Fc.toStr(map.get("id")));
             node.setValue(Fc.toStr(map.get("value")));
-            node.setParentCode(Fc.toStr(map.get("pcode")));
+            node.setParentId(Fc.toStr(map.get("pcode")));
             node.setTitle(Fc.toStr(map.get("title")));
             node.setHasChildren(Fc.toBool(map.get("hasChildren")));
             return node;
