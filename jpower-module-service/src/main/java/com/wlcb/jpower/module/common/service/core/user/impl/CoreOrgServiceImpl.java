@@ -8,6 +8,7 @@ import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreOrgDao;
 import com.wlcb.jpower.module.dbs.dao.core.user.mapper.TbCoreOrgMapper;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreOrg;
+import com.wlcb.jpower.module.dbs.vo.OrgVo;
 import com.wlcb.jpower.module.mp.support.Condition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,8 +28,8 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper,TbCoreOr
     private TbCoreOrgDao coreOrgDao;
 
     @Override
-    public List<TbCoreOrg> listByParent(TbCoreOrg coreOrg) {
-        return coreOrgDao.list(Condition.getQueryWrapper(coreOrg).lambda().orderByAsc(TbCoreOrg::getSort));
+    public List<OrgVo> listLazyByParent(TbCoreOrg coreOrg) {
+        return coreOrgDao.getBaseMapper().listLazyByParent(coreOrg);
     }
 
     @Override
@@ -59,7 +60,10 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper,TbCoreOr
 
     @Override
     public List<Node> tree(String parentId, Map<String, Object> coreOrg) {
-        return coreOrgDao.tree(Condition.getTreeWrapper(TbCoreOrg::getId,TbCoreOrg::getParentId,TbCoreOrg::getName).lazy(parentId).map(coreOrg).lambda().orderByAsc(TbCoreOrg::getSort));
+        return coreOrgDao.tree(Condition.getTreeWrapper(TbCoreOrg::getId,TbCoreOrg::getParentId,TbCoreOrg::getName,TbCoreOrg::getCode)
+                .lazy(parentId).map(coreOrg)
+                .lambda()
+                .orderByAsc(TbCoreOrg::getSort));
     }
 
 }

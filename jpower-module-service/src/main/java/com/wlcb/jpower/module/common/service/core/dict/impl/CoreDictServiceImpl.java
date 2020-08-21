@@ -10,9 +10,12 @@ import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.dbs.dao.core.dict.TbCoreDictDao;
 import com.wlcb.jpower.module.dbs.dao.core.dict.mapper.TbCoreDictMapper;
 import com.wlcb.jpower.module.dbs.entity.core.dict.TbCoreDict;
+import com.wlcb.jpower.module.dbs.vo.DictVo;
 import com.wlcb.jpower.module.mp.support.Condition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author mr.gmac
@@ -40,6 +43,11 @@ public class CoreDictServiceImpl extends BaseServiceImpl<TbCoreDictMapper,TbCore
             JpowerAssert.notTrue(coreDictType != null && !StringUtil.equals(dict.getId(),coreDictType.getId()), JpowerError.BUSINESS,"该字典已存在");
         }
         return dictDao.saveOrUpdate(dict);
+    }
+
+    @Override
+    public List<DictVo> listByType(TbCoreDict dict) {
+        return dictDao.getBaseMapper().listByType(dict);
     }
 
 }

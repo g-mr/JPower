@@ -1,9 +1,8 @@
 package com.wlcb.jpower.module.common.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.*;
 import java.util.Date;
@@ -14,6 +13,7 @@ import java.util.Date;
  * @author gdz
  */
 @SuppressWarnings("rawtypes")
+@Slf4j
 public class ReflectUtil
 {
     private static final String SETTER_PREFIX = "set";
@@ -21,8 +21,6 @@ public class ReflectUtil
     private static final String GETTER_PREFIX = "get";
 
     private static final String CGLIB_CLASS_SEPARATOR = "$$";
-
-    private static Logger logger = LoggerFactory.getLogger(ReflectUtil.class);
 
     /**
      * 调用Getter方法.
@@ -72,7 +70,7 @@ public class ReflectUtil
         Field field = getAccessibleField(obj, fieldName);
         if (field == null)
         {
-            logger.debug("在 [" + obj.getClass() + "] 中，没有找到 [" + fieldName + "] 字段 ");
+            log.debug("在 [" + obj.getClass() + "] 中，没有找到 [" + fieldName + "] 字段 ");
             return null;
         }
         E result = null;
@@ -82,7 +80,7 @@ public class ReflectUtil
         }
         catch (IllegalAccessException e)
         {
-            logger.error("不可能抛出的异常{}", e.getMessage());
+            log.error("不可能抛出的异常{}", e.getMessage());
         }
         return result;
     }
@@ -96,7 +94,7 @@ public class ReflectUtil
         if (field == null)
         {
             // throw new IllegalArgumentException("在 [" + obj.getClass() + "] 中，没有找到 [" + fieldName + "] 字段 ");
-            logger.debug("在 [" + obj.getClass() + "] 中，没有找到 [" + fieldName + "] 字段 ");
+            log.debug("在 [" + obj.getClass() + "] 中，没有找到 [" + fieldName + "] 字段 ");
             return;
         }
         try
@@ -105,7 +103,7 @@ public class ReflectUtil
         }
         catch (IllegalAccessException e)
         {
-            logger.error("不可能抛出的异常: {}", e.getMessage());
+            log.error("不可能抛出的异常: {}", e.getMessage());
         }
     }
 
@@ -125,7 +123,7 @@ public class ReflectUtil
         Method method = getAccessibleMethod(obj, methodName, parameterTypes);
         if (method == null)
         {
-            logger.debug("在 [" + obj.getClass() + "] 中，没有找到 [" + methodName + "] 方法 ");
+            log.debug("在 [" + obj.getClass() + "] 中，没有找到 [" + methodName + "] 方法 ");
             return null;
         }
         try
@@ -151,7 +149,7 @@ public class ReflectUtil
         if (method == null)
         {
             // 如果为空不报错，直接返回空。
-            logger.debug("在 [" + obj.getClass() + "] 中，没有找到 [" + methodName + "] 方法 ");
+            log.debug("在 [" + obj.getClass() + "] 中，没有找到 [" + methodName + "] 方法 ");
             return null;
         }
         try
@@ -340,7 +338,7 @@ public class ReflectUtil
 
         if (!(genType instanceof ParameterizedType))
         {
-            logger.debug(clazz.getSimpleName() + "'s superclass not ParameterizedType");
+            log.debug(clazz.getSimpleName() + "'s superclass not ParameterizedType");
             return Object.class;
         }
 
@@ -348,13 +346,13 @@ public class ReflectUtil
 
         if (index >= params.length || index < 0)
         {
-            logger.debug("Index: " + index + ", Size of " + clazz.getSimpleName() + "'s Parameterized Type: "
+            log.debug("Index: " + index + ", Size of " + clazz.getSimpleName() + "'s Parameterized Type: "
                     + params.length);
             return Object.class;
         }
         if (!(params[index] instanceof Class))
         {
-            logger.debug(clazz.getSimpleName() + " not set the actual class on superclass generic parameter");
+            log.debug(clazz.getSimpleName() + " not set the actual class on superclass generic parameter");
             return Object.class;
         }
 

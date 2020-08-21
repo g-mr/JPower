@@ -15,6 +15,7 @@ import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreOrg;
+import com.wlcb.jpower.module.dbs.vo.OrgVo;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -35,16 +36,16 @@ public class OrgController extends BaseController {
 
     private CoreOrgService coreOrgService;
 
-    @ApiOperation("查询组织机构列表")
-    @RequestMapping(value = "/listByParent",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
-    public ResponseData<PageInfo<TbCoreOrg>> listByParent(TbCoreOrg coreOrg){
+    @ApiOperation("分页懒加载组织机构树形列表")
+    @RequestMapping(value = "/listLazyByParent",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
+    public ResponseData<PageInfo<OrgVo>> listLazyByParent(TbCoreOrg coreOrg){
 
         if (StringUtils.isBlank(coreOrg.getParentId())){
             coreOrg.setParentId("-1");
         }
 
         PaginationContext.startPage();
-        PageInfo<TbCoreOrg> pageInfo = new PageInfo<>(coreOrgService.listByParent(coreOrg));
+        PageInfo<OrgVo> pageInfo = new PageInfo<>(coreOrgService.listLazyByParent(coreOrg));
         return ReturnJsonUtil.ok("获取成功", pageInfo);
     }
 

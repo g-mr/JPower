@@ -3,6 +3,9 @@ package com.wlcb.jpower.module.common.service.core.dict;
 
 import com.wlcb.jpower.module.common.service.base.BaseService;
 import com.wlcb.jpower.module.dbs.entity.core.dict.TbCoreDict;
+import com.wlcb.jpower.module.dbs.vo.DictVo;
+
+import java.util.List;
 
 /**
  * @author mr.gmac
@@ -26,4 +29,13 @@ public interface CoreDictService extends BaseService<TbCoreDict> {
      * @return java.lang.Boolean
      */
     Boolean saveDict(TbCoreDict dict);
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 查询字典列表
+     * @date 22:13 2020/8/21 0021
+     * @param dict 
+     * @return java.util.List<com.wlcb.jpower.module.dbs.vo.DictVo>
+     */
+    List<DictVo> listByType(TbCoreDict dict);
 }

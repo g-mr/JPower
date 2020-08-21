@@ -2,9 +2,9 @@ package com.wlcb.jpower.module.mp.support;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
+import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.LambdaUtils;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
-import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.node.TreeNode;
 import com.wlcb.jpower.module.common.support.ChainMap;
@@ -52,11 +52,11 @@ public class Condition<T> {
     }
 
     public static <T> TreeWrapper<T> getTreeWrapper(SFunction<T, ?> code, SFunction<T, ?> parentCode, SFunction<T, ?> title)  {
-        return new TreeWrapper<T>(code,parentCode,title,null).tree();
+        return new TreeWrapper<T>(code,parentCode,title);
     }
 
     public static <T> TreeWrapper<T> getTreeWrapper(SFunction<T, ?> code, SFunction<T, ?> parentCode, SFunction<T, ?> title, SFunction<T, ?> value)  {
-        return new TreeWrapper<T>(code,parentCode,title,value).tree();
+        return new TreeWrapper<T>(code,parentCode,title,value);
     }
 
     public static class TreeWrapper<T> extends QueryWrapper<T> {
@@ -77,31 +77,33 @@ public class Condition<T> {
          * @param title 节点名称
          * @return
          */
-        public TreeWrapper(SFunction<T, ?> code,SFunction<T, ?> parentCode,SFunction<T, ?> title,SFunction<T, ?> value){
-            init(code, parentCode, title, value);
+        public TreeWrapper(SFunction<T, ?> code,SFunction<T, ?> parentCode,SFunction<T, ?> title){
+            this(code, parentCode, title, null);
         }
 
-        public void init(SFunction<T, ?> code,SFunction<T, ?> parentCode,SFunction<T, ?> title,SFunction<T, ?> value){
-            TableInfo tableInfo = SqlHelper.table(LambdaUtils.resolve(code).getImplClass());
-            setEntity(BeanUtil.newInstance(LambdaUtils.resolve(code).getImplClass()));
+        public TreeWrapper(SFunction<T, ?> code,SFunction<T, ?> parentCode,SFunction<T, ?> title,SFunction<T, ?> value){
+            TableInfo tableInfo = TableInfoHelper.getTableInfo(LambdaUtils.resolve(title).getImplClass());
             this.tableName = tableInfo.getTableName();
 
             this.id = tableInfo.getKeyColumn() + " AS id";
             this.value = tableInfo.getKeyColumn() + " AS value";
+            this.code = tableInfo.getKeyColumn() + " AS code";
             tableInfo.getFieldList().forEach(field -> {
                 if (StringUtil.equals(field.getProperty(),columnsToString(code))){
                     this.code = field.getColumn() + " AS code";
                 }
-                if (StringUtil.equals(field.getProperty(),columnsToString(parentCode))){
+                if (StringUtil.equals(field.getProperty(),columnsToString(parentCode)) ){
                     this.parentCode = field.getColumn() + " AS pcode";
                 }
                 if (StringUtil.equals(field.getProperty(),columnsToString(title))){
                     this.title = field.getColumn() + " AS title";
                 }
-                if (value != null && StringUtil.equals(field.getProperty(),columnsToString(value))){
+                if (Fc.isNull(value) && StringUtil.equals(field.getProperty(),columnsToString(value))){
                     this.value = field.getColumn() + " AS value";
                 }
             });
+
+            this.tree();
         }
 
         /**
@@ -111,10 +113,8 @@ public class Condition<T> {
          * @param
          * @return com.wlcb.jpower.module.mp.support.Condition.TreeWrapper<T>
          */
-        private TreeWrapper<T> tree() {
+        private void tree() {
             select(this.code,this.parentCode,this.title,this.value,this.id);
-            return this;
-
         }
 
         /**
@@ -125,7 +125,12 @@ public class Condition<T> {
          * @return com.wlcb.jpower.module.mp.support.Condition.TreeWrapper<T>
          */
         public TreeWrapper<T> lazy(String pcodeVal){
-            select("( SELECT CASE WHEN count( 1 ) > 0 THEN 1 ELSE 0 END FROM "+tableName+" as c WHERE "+StringUtil.splitTrim(this.parentCode,"AS").get(0)+" = "+tableName+"."+StringUtil.splitTrim(this.code,"AS").get(0)+" ) AS hasChildren",this.code,this.parentCode,this.title,this.value,this.id);
+            select("( SELECT CASE WHEN count( 1 ) > 0 THEN 1 ELSE 0 END FROM "+tableName+" as c WHERE "+StringUtil.splitTrim(this.parentCode,"AS").get(0)+" = "+tableName+"."+StringUtil.splitTrim(this.code,"AS").get(0)+" ) AS hasChildren",
+                    this.code,
+                    this.parentCode,
+                    this.title,
+                    this.value,
+                    this.id);
             eq(StringUtil.splitTrim(this.parentCode,"AS").get(0),StringUtil.isBlank(pcodeVal)?JpowerConstants.TOP_CODE:pcodeVal);
             return this;
         }

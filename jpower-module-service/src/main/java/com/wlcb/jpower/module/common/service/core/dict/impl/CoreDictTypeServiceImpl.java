@@ -1,5 +1,6 @@
 package com.wlcb.jpower.module.common.service.core.dict.impl;
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.common.node.Node;
@@ -7,7 +8,6 @@ import com.wlcb.jpower.module.common.service.base.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.service.core.dict.CoreDictService;
 import com.wlcb.jpower.module.common.service.core.dict.CoreDictTypeService;
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.dbs.dao.core.dict.TbCoreDictTypeDao;
@@ -33,8 +33,8 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
 
     @Override
     public List<Node> tree() {
-        return coreDictTypeDao.tree(Condition.getTreeWrapper(TbCoreDictType::getDictTypeCode,
-                TbCoreDictType::getDictTypePcode,
+        return coreDictTypeDao.tree(Condition.getTreeWrapper(TbCoreDictType::getId,
+                TbCoreDictType::getParentId,
                 TbCoreDictType::getDictTypeName)
                 .lambda().orderByAsc(TbCoreDictType::getSortNum));
     }
@@ -45,11 +45,15 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
                 .select(TbCoreDictType::getDictTypeCode)
                 .in(TbCoreDictType::getId,ids)
                 .eq(TbCoreDictType::getDelEnabled, ConstantsEnum.YN.Y.getValue()));
-        if(listCode.size()>0){
-            Integer count = coreDictTypeDao.count(Condition.<TbCoreDictType>getQueryWrapper().lambda().in(TbCoreDictType::getDictTypePcode,listCode));
+        if (listCode.size() > 0){
+            Integer count = coreDictTypeDao.count(Condition.<TbCoreDictType>getQueryWrapper().lambda()
+                    .in(TbCoreDictType::getParentId,ids));
             JpowerAssert.notTrue(count>0, JpowerError.BUSINESS,"请先删除下级字典类型");
         }
-        if (coreDictTypeDao.removeReal(Condition.<TbCoreDictType>getQueryWrapper().lambda().in(TbCoreDictType::getId,ids).eq(TbCoreDictType::getDelEnabled, ConstantsEnum.YN.Y.getValue()))){
+
+        if (coreDictTypeDao.removeReal(Condition.<TbCoreDictType>getQueryWrapper().lambda()
+                .in(TbCoreDictType::getId,ids)
+                .eq(TbCoreDictType::getDelEnabled, ConstantsEnum.YN.Y.getValue()))){
             coreDictService.removeReal(Condition.<TbCoreDict>getQueryWrapper().lambda().in(TbCoreDict::getDictTypeCode,listCode));
             return true;
         }else {
@@ -58,18 +62,28 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
     }
 
     @Override
-    public Boolean saveDictType(TbCoreDictType dictType) {
-        TbCoreDictType coreDictType = coreDictTypeDao.getOne(Condition.<TbCoreDictType>getQueryWrapper().lambda().eq(TbCoreDictType::getDictTypeCode,dictType.getDictTypeCode()));
-        if(Fc.isBlank(dictType.getId())){
-            dictType.setDictTypePcode(Fc.isBlank(dictType.getDictTypePcode())? JpowerConstants.TOP_CODE:dictType.getDictTypePcode());
-            dictType.setDelEnabled(Fc.isBlank(dictType.getDelEnabled())? ConstantsEnum.YN.N.getValue() :dictType.getDelEnabled());
-            dictType.setLocaleCode(Fc.isBlank(dictType.getLocaleCode())? ConstantsEnum.YYZL.CHINA.getValue() :dictType.getLocaleCode());
+    public Boolean addDictType(TbCoreDictType dictType) {
+        dictType.setParentId(Fc.isBlank(dictType.getParentId())? JpowerConstants.TOP_CODE:dictType.getParentId());
+        dictType.setDelEnabled(Fc.isBlank(dictType.getDelEnabled())? ConstantsEnum.YN.N.getValue() :dictType.getDelEnabled());
+        dictType.setLocaleCode(Fc.isBlank(dictType.getLocaleCode())? ConstantsEnum.YYZL.CHINA.getValue() :dictType.getLocaleCode());
 
-            JpowerAssert.notTrue(coreDictType != null, JpowerError.BUSINESS,"该字典类型已存在");
-        }else {
-            JpowerAssert.notTrue(coreDictType != null && !StringUtil.equals(dictType.getId(),coreDictType.getId()), JpowerError.BUSINESS,"该字典类型已存在");
+        JpowerAssert.notTrue(coreDictTypeDao.count(Condition.<TbCoreDictType>getQueryWrapper().lambda().eq(TbCoreDictType::getDictTypeCode,dictType.getDictTypeCode()))>0, JpowerError.BUSINESS,"该字典类型已存在");
+        return coreDictTypeDao.save(dictType);
+    }
+
+    @Override
+    public Boolean updateDictType(TbCoreDictType dictType) {
+        TbCoreDictType coreDictType = coreDictTypeDao.getById(dictType.getId());
+
+        if (coreDictTypeDao.updateById(dictType)){
+            if (Fc.isNotBlank(dictType.getDictTypeCode())){
+                coreDictService.update(new UpdateWrapper<TbCoreDict>().lambda()
+                        .set(TbCoreDict::getDictTypeCode,dictType.getDictTypeCode())
+                        .eq(TbCoreDict::getDictTypeCode,coreDictType.getDictTypeCode()));
+            }
+            return true;
         }
-        return coreDictTypeDao.saveOrUpdate(dictType);
+        return false;
     }
 
 

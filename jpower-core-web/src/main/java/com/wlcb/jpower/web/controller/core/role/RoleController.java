@@ -37,7 +37,7 @@ public class RoleController extends BaseController {
     private CoreRoleService coreRoleService;
     private CoreRolefunctionService coreRolefunctionService;
 
-    @ApiOperation("查询角色树结构")
+    @ApiOperation("查询角色树结构列表")
     @RequestMapping(value = "/listTree",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
     public ResponseData<List<RoleVo>> listTree(TbCoreRole coreRole){
         List<RoleVo> list = coreRoleService.listTree(Condition.getQueryWrapper(coreRole)

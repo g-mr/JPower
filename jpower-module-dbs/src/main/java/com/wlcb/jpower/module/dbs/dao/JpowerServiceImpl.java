@@ -194,13 +194,7 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
      * @return java.util.List<V>
      **/
     public <V extends Node> List<V> listTree(Wrapper<T> queryWrapper,Class<V> clz) {
-        Function<T, V> mapper = new Function<T, V>() {
-            @Override
-            public V apply(T t) {
-                return (V) BeanUtil.copy(t, clz);
-            }
-        };
-        return ForestNodeMerger.merge(listToObjs(queryWrapper,mapper));
+        return ForestNodeMerger.merge(listToObjs(queryWrapper,t -> BeanUtil.copy(t, clz)));
     }
 
     /**

@@ -3,6 +3,7 @@ package com.wlcb.jpower.module.common.service.core.user;
 import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.service.base.BaseService;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreOrg;
+import com.wlcb.jpower.module.dbs.vo.OrgVo;
 
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,7 @@ public interface CoreOrgService extends BaseService<TbCoreOrg> {
      * @Param [coreOrg]
      * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.user.TbCoreOrg>
      **/
-    List<TbCoreOrg> listByParent(TbCoreOrg coreOrg);
+    List<OrgVo> listLazyByParent(TbCoreOrg coreOrg);
 
     /**
      * @Author 郭丁志

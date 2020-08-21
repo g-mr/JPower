@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wlcb.jpower.module.dbs.dao.core.user.mapper.TbCoreOrgMapper">
+
+    <select id="listLazyByParent" resultType="com.wlcb.jpower.module.dbs.vo.OrgVo">
+        SELECT
+        *,
+        ( SELECT CASE WHEN count( 1 ) > 0 THEN 1 ELSE 0 END FROM tb_core_org WHERE parent_id = org.id ) AS "has_children"
+        FROM
+        tb_core_org org
+        <where>
+            org.is_deleted = 0 and org.parent_id = #{org.parentId}
+            <if test="org.code!=null and org.code != ''">
+                and org.code = #{org.code}
+            </if>
+            <if test="org.isVirtual!=null and org.isVirtual!=''">
+                and org.is_virtual = #{org.isVirtual}
+            </if>
+            <if test="org.name!=null and org.name!=''">
+                and org.name like concat(concat('%', #{org.name}),'%')
+            </if>
+            <if test="org.headName!=null and org.headName!=''">
+                and org.head_name like concat(concat('%', #{org.headName}),'%')
+            </if>
+            <if test="org.headPhone!=null and org.headPhone!=''">
+                and org.head_phone like concat(concat('%', #{org.headPhone}),'%')
+            </if>
+            <if test="org.headEmail!=null and org.headEmail!=''">
+                and org.head_email like concat(concat('%', #{org.headEmail}),'%')
+            </if>
+            <if test="org.contactName!=null and org.contactName!=''">
+                and org.contact_name like concat(concat('%', #{org.contactName}),'%')
+            </if>
+            <if test="org.contactPhone!=null and org.contactPhone!=''">
+                and org.contact_phone like concat(concat('%', #{org.contactPhone}),'%')
+            </if>
+            <if test="org.contactEmail!=null and org.contactEmail!=''">
+                and org.contact_email like concat(concat('%', #{org.contactEmail}),'%')
+            </if>
+        </where>
+        order by sort
+    </select>
+</mapper>

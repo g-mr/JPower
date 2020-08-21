@@ -36,5 +36,14 @@ public interface CoreDictTypeService extends BaseService<TbCoreDictType> {
      * @param dictType
      * @return java.lang.Boolean
      */
-    Boolean saveDictType(TbCoreDictType dictType);
+    Boolean addDictType(TbCoreDictType dictType);
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 修改字典类型
+     * @date 22:53 2020/8/21 0021
+     * @param dictType
+     * @return java.lang.Boolean
+     */
+    Boolean updateDictType(TbCoreDictType dictType);
 }

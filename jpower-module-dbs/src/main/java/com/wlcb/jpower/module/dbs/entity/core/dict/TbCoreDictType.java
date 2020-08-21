@@ -32,8 +32,8 @@ public class TbCoreDictType extends BaseEntity {
     private String delEnabled;
     @ApiModelProperty("排序")
     private Integer sortNum;
-    @ApiModelProperty("父级编码")
-    private String dictTypePcode;
+    @ApiModelProperty("父级ID")
+    private String parentId;
 
     @ApiModelProperty("是否允许删除")
     @TableField(exist = false)

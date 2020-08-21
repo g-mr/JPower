@@ -6,8 +6,6 @@ import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.io.Serializable;
-
 /**
  * @ClassName TbCoreUser
  * @Description TODO 组织机构信息
@@ -16,7 +14,7 @@ import java.io.Serializable;
  * @Version 1.0
  */
 @Data
-public class TbCoreOrg extends BaseEntity implements Serializable {
+public class TbCoreOrg extends BaseEntity{
 
     private static final long serialVersionUID = 8829495593714085987L;
 

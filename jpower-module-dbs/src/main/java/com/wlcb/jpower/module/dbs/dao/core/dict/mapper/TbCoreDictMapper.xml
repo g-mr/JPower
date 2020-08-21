@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wlcb.jpower.module.dbs.dao.core.dict.mapper.TbCoreDictMapper">
+
+
+
+    <select id="listByType" resultType="com.wlcb.jpower.module.dbs.vo.DictVo">
+        SELECT
+        *,
+        ( SELECT CASE WHEN count( 1 ) > 0 THEN 1 ELSE 0 END FROM tb_core_dict WHERE parent_id = dict.id ) AS "has_children"
+        FROM
+        tb_core_dict dict
+        <where>
+            dict.is_deleted = 0
+            <if test="dict.dictTypeCode!=null and dict.dictTypeCode != ''">
+                and dict.dict_type_code = #{dict.dictTypeCode}
+            </if>
+            <if test="dict.code!=null and dict.code!=''">
+                and dict.code = #{dict.code}
+            </if>
+            <if test="dict.name!=null and dict.name!=''">
+                and dict.name like concat(concat('%', #{dict.name}),'%')
+            </if>
+            <if test="dict.parentId!=null and dict.parentId!=''">
+                and dict.parent_id = #{dict.parentId}
+            </if>
+        </where>
+    </select>
+</mapper>
