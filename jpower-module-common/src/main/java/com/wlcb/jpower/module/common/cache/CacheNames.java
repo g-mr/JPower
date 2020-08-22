@@ -23,4 +23,11 @@ public interface CacheNames {
     /** 系统参数缓存KEY **/
     String PARAMS_REDIS_KEY = "jpower:params:";
 
+    /** 行政树形区域 **/
+    String CITY_PARENT_REDIS_KEY = "jpower:city:parent";
+    /** 行政列表区域 **/
+    String CITY_PARENT_LIST_REDIS_KEY = "jpower:city:parentList";
+    /** 行政Code区域 **/
+    String CITY_PARENT_CODE_REDIS_KEY = "jpower:city:parentList";
+
 }

@@ -12,17 +12,17 @@
         tb_core_dict dict
         <where>
             dict.is_deleted = 0
-            <if test="dict.dictTypeCode!=null and dict.dictTypeCode != ''">
-                and dict.dict_type_code = #{dict.dictTypeCode}
+            <if test="dictTypeCode!=null and dictTypeCode != ''">
+                and dict.dict_type_code = #{dictTypeCode}
             </if>
-            <if test="dict.code!=null and dict.code!=''">
-                and dict.code = #{dict.code}
+            <if test="code!=null and code!=''">
+                and dict.code = #{code}
             </if>
-            <if test="dict.name!=null and dict.name!=''">
-                and dict.name like concat(concat('%', #{dict.name}),'%')
+            <if test="name!=null and name!=''">
+                and dict.name like concat(concat('%', #{name}),'%')
             </if>
-            <if test="dict.parentId!=null and dict.parentId!=''">
-                and dict.parent_id = #{dict.parentId}
+            <if test="parentId!=null and parentId!=''">
+                and dict.parent_id = #{parentId}
             </if>
         </where>
     </select>

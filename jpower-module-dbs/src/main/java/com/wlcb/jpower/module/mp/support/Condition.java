@@ -98,7 +98,7 @@ public class Condition<T> {
                 if (StringUtil.equals(field.getProperty(),columnsToString(title))){
                     this.title = field.getColumn() + " AS title";
                 }
-                if (Fc.isNull(value) && StringUtil.equals(field.getProperty(),columnsToString(value))){
+                if (!Fc.isNull(value) && StringUtil.equals(field.getProperty(),columnsToString(value))){
                     this.value = field.getColumn() + " AS value";
                 }
             });

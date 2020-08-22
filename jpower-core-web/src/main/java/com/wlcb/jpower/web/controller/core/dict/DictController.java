@@ -10,6 +10,7 @@ import com.wlcb.jpower.module.common.service.core.dict.CoreDictService;
 import com.wlcb.jpower.module.common.service.core.dict.CoreDictTypeService;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
+import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.dbs.entity.core.dict.TbCoreDict;
 import com.wlcb.jpower.module.dbs.entity.core.dict.TbCoreDictType;
 import com.wlcb.jpower.module.dbs.vo.DictVo;
@@ -90,7 +91,7 @@ public class DictController {
             @ApiImplicitParam(name = "name",value = "字典名称",paramType = "query")
     })
     @RequestMapping(value = "/listByType",method = RequestMethod.GET,produces="application/json")
-    public ResponseData<PageInfo<DictVo>> listByType(@ApiIgnore @RequestParam TbCoreDict dict){
+    public ResponseData<PageInfo<DictVo>> listByType(@ApiIgnore TbCoreDict dict){
         JpowerAssert.notEmpty(dict.getDictTypeCode(), JpowerError.Arg,"字典类型不可为空");
 
         PaginationContext.startPage();
@@ -98,13 +99,17 @@ public class DictController {
         return ReturnJsonUtil.ok("查询成功", new PageInfo<>(list));
     }
 
-    @ApiOperation("查询下级字典")
+    @ApiOperation(value = "查询下级字典",notes = "不可传-1")
     @RequestMapping(value = "/listDictChildList",method = RequestMethod.GET,produces="application/json")
-    public ResponseData<PageInfo<DictVo>> listDictChildList(@ApiParam(name = "parentId",value = "父级字典id",required = true) @RequestParam(name = "parentId",defaultValue = "-1") TbCoreDict dict){
-        JpowerAssert.notEmpty(dict.getParentId(), JpowerError.Arg,"父级字典id不可为空");
+    public ResponseData<List<DictVo>> listDictChildList(@ApiParam(value = "父级字典id",required = true) @RequestParam String parentId){
+        JpowerAssert.notEmpty(parentId, JpowerError.Arg,"父级字典id不可为空");
+        JpowerAssert.notTrue(Fc.equals(parentId, JpowerConstants.TOP_CODE), JpowerError.Arg,"父级字典id不可为-1");
+
+        TbCoreDict dict = new TbCoreDict();
+        dict.setParentId(parentId);
 
         List<DictVo> list = coreDictService.listByType(dict);
-        return ReturnJsonUtil.ok("查询成功", new PageInfo<>(list));
+        return ReturnJsonUtil.ok("查询成功", list);
     }
 
     @ApiOperation("保存或者新增字典")

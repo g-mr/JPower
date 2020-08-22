@@ -3,7 +3,6 @@ package com.wlcb.jpower.module.dbs.dao.core.dict.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.wlcb.jpower.module.dbs.entity.core.dict.TbCoreDict;
 import com.wlcb.jpower.module.dbs.vo.DictVo;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -25,5 +24,5 @@ public interface TbCoreDictMapper extends BaseMapper<TbCoreDict> {
      * @param dict
      * @return java.util.List<com.wlcb.jpower.module.dbs.vo.DictVo>
      */
-    List<DictVo> listByType(@Param("dict") TbCoreDict dict);
+    List<DictVo> listByType(TbCoreDict dict);
 }

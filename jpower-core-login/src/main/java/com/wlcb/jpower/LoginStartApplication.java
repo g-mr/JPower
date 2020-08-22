@@ -14,9 +14,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 @EnableTransactionManagement
 public class LoginStartApplication {
-
     public static void main(String[] args) {
-        JpowerApplication.run("admin-login",LoginStartApplication.class,args);
+        JpowerApplication.run("jpower-login",LoginStartApplication.class,args);
     }
-
 }

@@ -112,7 +112,10 @@ public class PaginationContext {
     }
 
     public static String getAsc() {
-        return StringUtil.humpToUnderline(SqlUtil.escapeOrderBySql(asc.get()));
+        if (Fc.isNotBlank(StringUtil.humpToUnderline(SqlUtil.escapeOrderBySql(asc.get())))){
+            return StringUtil.humpToUnderline(SqlUtil.escapeOrderBySql(asc.get()));
+        }
+        return "";
     }
 
     public static void setAsc(String ascValue) {
@@ -120,7 +123,10 @@ public class PaginationContext {
     }
 
     public static String getDesc() {
-        return StringUtil.humpToUnderline(SqlUtil.escapeOrderBySql(desc.get()));
+        if (Fc.isNotBlank(StringUtil.humpToUnderline(SqlUtil.escapeOrderBySql(desc.get())))){
+            return StringUtil.humpToUnderline(SqlUtil.escapeOrderBySql(desc.get()));
+        }
+        return "";
     }
 
     public static void setDesc(String descValue) {

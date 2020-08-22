@@ -11,7 +11,6 @@ import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreUserDao;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
 import com.wlcb.jpower.module.mp.support.Condition;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,12 +23,13 @@ import org.springframework.stereotype.Component;
  * @Version 1.0
  */
 @Component
-@AllArgsConstructor
 public class PhoneTokenGranter implements TokenGranter {
 
     public static final String GRANT_TYPE = "phone";
 
+    @Autowired
     private RedisUtil redisUtils;
+    @Autowired
     private TbCoreUserDao coreUserDao;
     @Autowired(required = false)
     private AuthUserInfo authUserInfo;

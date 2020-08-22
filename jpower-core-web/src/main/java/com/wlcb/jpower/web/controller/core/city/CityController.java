@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
+import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.page.PaginationContext;
@@ -16,6 +17,9 @@ import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.dbs.entity.core.city.TbCoreCity;
 import com.wlcb.jpower.module.mp.support.SqlKeyword;
 import io.swagger.annotations.*;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,6 +41,7 @@ public class CityController extends BaseController {
     @ApiResponses({
             @ApiResponse(code = 200,message = "ResponseData => 'data':[{'code':'string','name':'string'}]")
     })
+    @Cacheable(value = CacheNames.CITY_PARENT_CODE_REDIS_KEY,key = "#pcode.concat(#name==null?'':name)")
     @RequestMapping(value = "/listChild",method = {RequestMethod.GET},produces="application/json")
     public ResponseData<List<Map<String,Object>>> listChild(@ApiParam(value = "父级code",required = true) @RequestParam(defaultValue = JpowerConstants.TOP_CODE) String pcode,
                                                             @ApiParam(value = "名称") @RequestParam(required = false) String name){
@@ -73,9 +78,12 @@ public class CityController extends BaseController {
     }
 
     @ApiOperation(value = "修改行政区域",notes = "主键必传")
+    @Caching(evict = {@CacheEvict(value= CacheNames.CITY_PARENT_REDIS_KEY, key = "#coreCity.pcode"),
+            @CacheEvict(value= {CacheNames.CITY_PARENT_LIST_REDIS_KEY,CacheNames.CITY_PARENT_CODE_REDIS_KEY}, allEntries = true)})
     @RequestMapping(value = "/update",method = {RequestMethod.PUT},produces="application/json")
     public ResponseData update( TbCoreCity coreCity){
         JpowerAssert.notEmpty(coreCity.getId(),JpowerError.Arg,"主键不可为空");
+        JpowerAssert.notEmpty(coreCity.getPcode(),JpowerError.Arg,"父级编码不可为空");
 
         if (Fc.isNotBlank(coreCity.getCode())){
             TbCoreCity city = coreCityService.getById(coreCity.getId());

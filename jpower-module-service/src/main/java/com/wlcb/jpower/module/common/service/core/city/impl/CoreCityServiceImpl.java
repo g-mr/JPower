@@ -2,6 +2,7 @@ package com.wlcb.jpower.module.common.service.core.city.impl;
 
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
+import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.service.base.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.service.core.city.CoreCityService;
@@ -13,6 +14,9 @@ import com.wlcb.jpower.module.dbs.dao.core.city.mapper.TbCoreCityMapper;
 import com.wlcb.jpower.module.dbs.entity.core.city.TbCoreCity;
 import com.wlcb.jpower.module.mp.support.Condition;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,12 +38,19 @@ public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper,TbCore
                 .orderByAsc(TbCoreCity::getSortNum));
     }
 
+    @Cacheable(value = CacheNames.CITY_PARENT_LIST_REDIS_KEY,key = "#coreCity.toString()" +
+            ".concat(T(com.wlcb.jpower.module.common.page.PaginationContext).pageNum)" +
+            ".concat(T(com.wlcb.jpower.module.common.page.PaginationContext).pageSize)" +
+            ".concat(T(com.wlcb.jpower.module.common.page.PaginationContext).asc)" +
+            ".concat(T(com.wlcb.jpower.module.common.page.PaginationContext).desc)")
     @Override
     public List<TbCoreCity> list(TbCoreCity coreCity) {
         return coreCityDao.list(Condition.getQueryWrapper(coreCity).lambda().orderByAsc(TbCoreCity::getSortNum));
     }
 
     @Override
+    @Caching(evict = {@CacheEvict(value= CacheNames.CITY_PARENT_REDIS_KEY, key = "#coreCity.pcode"),
+            @CacheEvict(value= {CacheNames.CITY_PARENT_LIST_REDIS_KEY,CacheNames.CITY_PARENT_CODE_REDIS_KEY}, allEntries = true)})
     public boolean add(TbCoreCity coreCity) {
         coreCity.setCode(RandomUtil.createCityCode(coreCity.getPcode(),coreCity.getCode()));
 
@@ -60,6 +71,7 @@ public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper,TbCore
     }
 
     @Override
+    @CacheEvict(value = {CacheNames.CITY_PARENT_REDIS_KEY,CacheNames.CITY_PARENT_LIST_REDIS_KEY,CacheNames.CITY_PARENT_CODE_REDIS_KEY},allEntries = true)
     public Boolean deleteBatch(List<String> ids) {
 
         List<Object> listCode = coreCityDao.listObjs(Condition.<TbCoreCity>getQueryWrapper().lambda().select(TbCoreCity::getCode).in(TbCoreCity::getId,ids));
@@ -72,6 +84,7 @@ public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper,TbCore
     }
 
     @Override
+    @Cacheable(value = CacheNames.CITY_PARENT_REDIS_KEY,key = "#pcode")
     public List<Node> lazyTree(String pcode) {
         return coreCityDao.tree(Condition.getTreeWrapper(TbCoreCity::getCode,TbCoreCity::getPcode,TbCoreCity::getName)
                 .lazy(pcode).lambda()

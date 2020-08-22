@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
  * @Date 2020-01-27 17:24
  * @Version 1.0
  */
-
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -55,7 +54,6 @@ public class GlobalExceptionHandler {
             r.setCode(500);
 //            logger.error("message={},！！！{}", e.getMessage() , e);
         }
-//        r.setData(null);
         r.setStatus(false);
         return r;
     }
