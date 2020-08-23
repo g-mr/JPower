@@ -11,5 +11,23 @@
 
     <artifactId>jpower-module-gataway</artifactId>
 
+    <dependencies>
+
+<!--        <dependency>-->
+<!--            <groupId>com.wlcb</groupId>-->
+<!--            <artifactId>jpower-module-common</artifactId>-->
+<!--        </dependency>-->
+
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+            <version>${nacos.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-gateway</artifactId>
+            <version>2.2.4.RELEASE</version>
+        </dependency>
+    </dependencies>
 
 </project>

@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: jpower-getway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 219.148.186.214:8847
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: nacos-getway-provider
+          uri: lb://jpower-system
+          predicates:
+          - Path=/core/**
+        - id: nacos-getway-consumer
+          uri: lb://nacos-consumer
+          predicates:
+          - Path=/**
