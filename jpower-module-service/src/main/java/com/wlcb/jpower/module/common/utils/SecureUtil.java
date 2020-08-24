@@ -19,10 +19,10 @@ import java.security.Key;
 import java.util.*;
 
 /**
- * Secure工具类
- *
- * @author Chill
- */
+ * @Author 郭丁志
+ * @Description //TODO 安全工具类
+ * @Date 17:00 2020-08-24
+ **/
 public class SecureUtil {
     private static final String JPOWER_USER_REQUEST_ATTR = "_JPOWER_USER_REQUEST_ATTR_";
 

@@ -3,14 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>jpower</artifactId>
+        <artifactId>jpower-module-common</artifactId>
         <groupId>com.wlcb</groupId>
         <version>1.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <name>jpower-module-dbs</name>
-    <artifactId>jpower-module-dbs</artifactId>
+    <artifactId>common-nacos</artifactId>
 
     <packaging>jar</packaging>
 
@@ -18,10 +17,9 @@
 
         <dependency>
             <groupId>com.wlcb</groupId>
-            <artifactId>common-tool</artifactId>
+            <artifactId>common-utils</artifactId>
             <version>${com.jpower.version}</version>
+            <scope>compile</scope>
         </dependency>
-
     </dependencies>
-
 </project>

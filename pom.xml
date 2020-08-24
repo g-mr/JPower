@@ -79,7 +79,6 @@
         <module>jpower-core-login</module>
         <module>jpower-core-web</module>
         <module>jpower-web-file</module>
-        <module>jpower-web-sync</module>
         <module>jpower-module-gataway</module>
     </modules>
 
@@ -191,22 +190,6 @@
                 <artifactId>commons-lang3</artifactId>
                 <version>3.9</version>
             </dependency>
-            <dependency>
-                <groupId>com.github.whvcse</groupId>
-                <artifactId>easy-captcha</artifactId>
-                <version>${easy-captcha.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.pagehelper</groupId>
-                <artifactId>pagehelper-spring-boot-starter</artifactId>
-                <version>${pagehelper-spring.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.mybatis</groupId>
-                        <artifactId>mybatis</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
 
             <dependency>
                 <groupId>com.sun.mail</groupId>
@@ -226,11 +209,6 @@
             </dependency>
             <dependency>
                 <groupId>com.wlcb</groupId>
-                <artifactId>jpower-module-common</artifactId>
-                <version>${com.jpower.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.wlcb</groupId>
                 <artifactId>jpower-module-service</artifactId>
                 <version>${com.jpower.version}</version>
             </dependency>
@@ -242,11 +220,6 @@
             <dependency>
                 <groupId>com.wlcb</groupId>
                 <artifactId>jpower-core-web</artifactId>
-                <version>${com.jpower.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.wlcb</groupId>
-                <artifactId>jpower-web-sync</artifactId>
                 <version>${com.jpower.version}</version>
             </dependency>
 
