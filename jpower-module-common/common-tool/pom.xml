@@ -14,29 +14,6 @@
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
-            <groupId>com.github.pagehelper</groupId>
-            <artifactId>pagehelper-spring-boot-starter</artifactId>
-            <exclusions>
-                <exclusion>
-                    <artifactId>mybatis-spring</artifactId>
-                    <groupId>org.mybatis</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-generator</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.wlcb</groupId>
-            <artifactId>common-utils</artifactId>
-            <version>${com.jpower.version}</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
             <groupId>com.wlcb</groupId>
             <artifactId>common-auth</artifactId>
             <version>${com.jpower.version}</version>
@@ -62,16 +39,20 @@
 
         <dependency>
             <groupId>com.wlcb</groupId>
-            <artifactId>common-swagger</artifactId>
+            <artifactId>common-dbs</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.wlcb</groupId>
-            <artifactId>common-dbs</artifactId>
+            <artifactId>common-transaction</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

@@ -2,9 +2,9 @@ package com.wlcb.jpower.module.common.auth;
 
 
 /**
- * 系统默认角色
- *
- * @author Chill
+ * @author 郭丁志
+ * @Description //TODO 系统默认角色
+ * @date 21:32 2020/8/24 0024
  */
 public class RoleConstant {
 

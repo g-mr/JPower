@@ -1,6 +1,6 @@
 package com.wlcb.jpower.module.common.utils;
 
-import com.wlcb.jpower.module.base.enums.RandomType;
+import com.wlcb.jpower.module.common.enums.RandomType;
 import com.wlcb.jpower.module.common.support.StrFormatter;
 import com.wlcb.jpower.module.common.support.StrSpliter;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;

@@ -1,6 +1,6 @@
 package com.wlcb.jpower.module.common.nacos;
 
-import com.wlcb.jpower.module.base.utils.AppConstant;
+import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 
 /**

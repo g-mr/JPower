@@ -1,7 +1,5 @@
 package com.wlcb.jpower.module.common.swagger;
 
-import com.wlcb.jpower.module.common.auth.SecureConstant;
-import com.wlcb.jpower.module.common.auth.TokenConstant;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,6 +22,9 @@ import java.util.List;
 @ConfigurationProperties(prefix = "swagger")
 public class SwaggerProperties {
 
+    private static final String BASIC_HEADER_KEY = "Authorization";
+    private static final String HEADER = "jpower-auth";
+
     private List<String> basePackage = new ArrayList(Collections.singletonList("com.wlcb"));
 
     private String title = "Jpower 接口文档系统";
@@ -34,7 +35,7 @@ public class SwaggerProperties {
     private String version = JpowerConstants.JPOWER_VESION;
     private Contact contact = new Contact("GDZ","localhost","");
 
-    private List<Authorization> authorization = new ArrayList<>(Arrays.asList(new Authorization(SecureConstant.BASIC_HEADER_KEY,"header"),new Authorization(TokenConstant.HEADER,"header")));
+    private List<Authorization> authorization = new ArrayList<>(Arrays.asList(new Authorization(BASIC_HEADER_KEY,"header"),new Authorization(HEADER,"header")));
 
     @Data
     @AllArgsConstructor

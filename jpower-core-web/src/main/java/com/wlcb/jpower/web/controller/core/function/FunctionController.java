@@ -59,12 +59,8 @@ public class FunctionController extends BaseController {
     @RequestMapping(value = "/add",method = {RequestMethod.POST},produces="application/json")
     public ResponseData add(TbCoreFunction coreFunction){
 
-        ResponseData responseData = BeanUtil.allFieldIsNULL(coreFunction,
+        BeanUtil.allFieldIsNULL(coreFunction,
                 "functionName","code", "url", "isMenu");
-
-        if (responseData.getCode() == ConstantsReturn.RECODE_NULL){
-            return responseData;
-        }
 
         if(StringUtils.isBlank(coreFunction.getParentId())){
             coreFunction.setParentId("-1");

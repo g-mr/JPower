@@ -1,10 +1,10 @@
 spring:
-  application:
-    name: jpower-getway
+#  application:
+#    name: jpower-getway
   cloud:
-    nacos:
-      discovery:
-        server-addr: 219.148.186.214:8847
+#    nacos:
+#      discovery:
+#        server-addr: 219.148.186.214:8847
     gateway:
       discovery:
         locator:
@@ -19,3 +19,24 @@ spring:
           uri: lb://nacos-consumer
           predicates:
           - Path=/**
+
+jpower:
+  #  开发环境
+  dev:
+    nacos:
+      #      配置中心地址，如果配置没有配置注册中心地址，则注册中心默认走这里的地址
+      server-addr: 219.148.186.214:8847
+      #      可以为空但不能删掉这块配置
+      namespace:
+  test:
+    nacos:
+      #      配置中心地址，如果配置没有配置注册中心地址，则注册中心默认走这里的地址
+      server-addr: 219.148.186.214:8848
+      #      可以为空但不能删掉这块配置
+      namespace:
+  prod:
+    nacos:
+      #      配置中心地址，如果配置没有配置注册中心地址，则注册中心默认走这里的地址
+      server-addr: 219.148.186.226:8848
+      #      可以为空但不能删掉这块配置
+      namespace:

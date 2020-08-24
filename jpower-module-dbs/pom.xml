@@ -21,7 +21,6 @@
             <artifactId>common-tool</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
-
     </dependencies>
 
 </project>

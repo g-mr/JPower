@@ -20,14 +20,15 @@
         </dependency>
 
         <dependency>
-            <groupId>com.wlcb</groupId>
-            <artifactId>common-utils</artifactId>
-            <version>${com.jpower.version}</version>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>${swagger-annotations.version}</version>
             <scope>compile</scope>
         </dependency>
+
         <dependency>
             <groupId>com.wlcb</groupId>
-            <artifactId>common-auth</artifactId>
+            <artifactId>common-utils</artifactId>
             <version>${com.jpower.version}</version>
             <scope>compile</scope>
         </dependency>

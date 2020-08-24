@@ -9,8 +9,10 @@
         <module>common-redis</module>
         <module>common-swagger</module>
         <module>common-utils</module>
-        <module>common-tool</module>
         <module>common-dbs</module>
+        <module>common-transaction</module>
+        <module>common-exception</module>
+        <module>common-tool</module>
     </modules>
     <parent>
         <groupId>com.wlcb</groupId>
@@ -23,6 +25,11 @@
     <packaging>pom</packaging>
 
         <dependencies>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+            </dependency>
 
             <dependency>
                 <groupId>com.wlcb</groupId>
@@ -112,6 +119,10 @@
                     <exclusions>
                         <exclusion>
                             <artifactId>mybatis-spring</artifactId>
+                            <groupId>org.mybatis</groupId>
+                        </exclusion>
+                        <exclusion>
+                            <artifactId>mybatis</artifactId>
                             <groupId>org.mybatis</groupId>
                         </exclusion>
                     </exclusions>

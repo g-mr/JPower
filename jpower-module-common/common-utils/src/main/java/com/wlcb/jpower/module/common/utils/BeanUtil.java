@@ -1,9 +1,9 @@
 package com.wlcb.jpower.module.common.utils;
 
-import com.wlcb.jpower.module.base.vo.ResponseData;
+import com.wlcb.jpower.module.base.enums.JpowerError;
+import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.common.support.BaseBeanCopier;
 import com.wlcb.jpower.module.common.support.BeanProperty;
-import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -183,7 +183,7 @@ public class BeanUtil  extends org.springframework.beans.BeanUtils {
      * @Param [o]
      * @return ResponseData
      **/
-    public static ResponseData allFieldIsNULL(Object o){
+    public static void allFieldIsNULL(Object o){
         try {
             for (Field field : getFieldList(o.getClass())) {
                 field.setAccessible(true);
@@ -191,24 +191,12 @@ public class BeanUtil  extends org.springframework.beans.BeanUtils {
                 Object object = field.get(o);
                 String name = field.getName();
                 if(!fieldNullList.contains(name)){
-                    if (object instanceof CharSequence) {
-                        if (org.springframework.util.ObjectUtils.isEmpty(object)) {
-                            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,name+"不可为空",false);
-                        }
-                    } else {
-                        if (null == object) {
-                            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,name+"不可为空",false);
-                        }
-                    }
+                    JpowerAssert.notTrue(Fc.isEmpty(object), JpowerError.Arg,name+"不可为空");
                 }
             }
-        } catch (Exception e) {
-            logger.error("判断对象属性为空异常", e);
-
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
-        ResponseData responseData=new ResponseData();
-        responseData.setCode(0);
-        return responseData;
     }
 
     /**
@@ -218,7 +206,7 @@ public class BeanUtil  extends org.springframework.beans.BeanUtils {
      * @Param [o, fields]
      * @return ResponseData
      **/
-    public static ResponseData allFieldIsNULL(Object o,String... fields){
+    public static void allFieldIsNULL(Object o,String... fields){
         try {
             for (Field field : getFieldList(o.getClass())) {
                 field.setAccessible(true);
@@ -227,24 +215,12 @@ public class BeanUtil  extends org.springframework.beans.BeanUtils {
                 String name = field.getName();
                 Arrays.sort(fields);
                 if(Arrays.binarySearch(fields, name) >= 0){
-                    if (object instanceof CharSequence) {
-                        if (org.springframework.util.ObjectUtils.isEmpty(object)) {
-                            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,name+"不可为空",false);
-                        }
-                    } else {
-                        if (null == object) {
-                            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NULL,name+"不可为空",false);
-                        }
-                    }
+                    JpowerAssert.notTrue(Fc.isEmpty(object), JpowerError.Arg,name+"不可为空");
                 }
             }
-        } catch (Exception e) {
-            logger.error("判断对象属性为空异常", e);
-
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
-        ResponseData responseData=new ResponseData();
-        responseData.setCode(0);
-        return responseData;
     }
 
     /**

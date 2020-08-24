@@ -8,6 +8,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.2.5.RELEASE</version>
+<!--        <version>2.3.0.RELEASE</version>-->
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -80,6 +81,8 @@
         <module>jpower-core-web</module>
         <module>jpower-web-file</module>
         <module>jpower-module-gataway</module>
+        <module>jpower-module-common/common-base</module>
+
     </modules>
 
     <dependencies>

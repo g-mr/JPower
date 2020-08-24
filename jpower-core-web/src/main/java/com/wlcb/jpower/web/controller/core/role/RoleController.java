@@ -50,12 +50,8 @@ public class RoleController extends BaseController {
     @RequestMapping(value = "/add",method = {RequestMethod.POST},produces="application/json")
     public ResponseData add(TbCoreRole coreRole){
 
-        ResponseData responseData = BeanUtil.allFieldIsNULL(coreRole,
+        BeanUtil.allFieldIsNULL(coreRole,
                 "code","name");
-
-        if (responseData.getCode() == ConstantsReturn.RECODE_NULL){
-            return responseData;
-        }
 
         if (StringUtils.isBlank(coreRole.getParentId())){
             coreRole.setParentId(JpowerConstants.TOP_CODE);

@@ -64,39 +64,6 @@
         </encoder>
     </appender>
 
-    <!--异步记录日志，目前报错先记录不启用-->
-    <!--<appender name="log_async" class="reactor.logback.AsyncAppender">
-        <discardingThreshold>0</discardingThreshold>&lt;!&ndash; 不丢弃日志，默认80%时会丢弃TRACE,DEBUG,debug级别日志 &ndash;&gt;
-        <queueSize>10240000</queueSize>&lt;!&ndash; 队列深度，默认256 &ndash;&gt;
-        <includeCallerData>false</includeCallerData>&lt;!&ndash; 是否包含调用者数据 &ndash;&gt;
-        <appender-ref ref="log" />
-    </appender>
-
-    <appender name="error_async" class="reactor.logback.AsyncAppender">
-        <discardingThreshold>0</discardingThreshold>
-        <queueSize>102400</queueSize>
-        <includeCallerData>false</includeCallerData>
-        <appender-ref ref="error" />
-    </appender>-->
-
-    <!--文件日志， 按照每天生成日志文件 -->
-    <!--<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            &lt;!&ndash;日志文件输出的文件名&ndash;&gt;
-            <FileNamePattern>${log.base}/matterDays.log.%d{yyyy-MM-dd}.log</FileNamePattern>
-            &lt;!&ndash;日志文件保留天数&ndash;&gt;
-            <MaxHistory>30</MaxHistory>
-        </rollingPolicy>
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            &lt;!&ndash;格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符&ndash;&gt;
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
-        </encoder>
-        &lt;!&ndash;日志文件最大的大小&ndash;&gt;
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <MaxFileSize>10MB</MaxFileSize>
-        </triggeringPolicy>
-    </appender>-->
-
     <!--myibatis log configure-->
     <logger name="com.apache.ibatis" level="info"/>
     <logger name="com.ibatis" level="info" />

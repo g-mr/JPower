@@ -53,12 +53,8 @@ public class OrgController extends BaseController {
     @RequestMapping(value = "/add",method = {RequestMethod.POST},produces="application/json")
     public ResponseData add(TbCoreOrg coreOrg){
 
-        ResponseData responseData = BeanUtil.allFieldIsNULL(coreOrg,
+        BeanUtil.allFieldIsNULL(coreOrg,
                 "name","code");
-
-        if (responseData.getCode() == ConstantsReturn.RECODE_NULL){
-            return responseData;
-        }
 
         TbCoreOrg org = coreOrgService.selectOrgByCode(coreOrg.getCode());
         if (org != null){
