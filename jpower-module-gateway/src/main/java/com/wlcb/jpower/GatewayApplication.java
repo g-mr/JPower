@@ -12,9 +12,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 //@SpringCloudApplication
 @SpringBootApplication
-public class GetwayApplication {
+public class GatewayApplication {
     public static void main(String[] args) {
-        JpowerApplication.run("jpower-getway",GetwayApplication.class, args);
+        JpowerApplication.run("jpower-gateway",GatewayApplication.class, args);
 //        SpringApplication.run(GetwayApplication.class, args);
     }
 }
