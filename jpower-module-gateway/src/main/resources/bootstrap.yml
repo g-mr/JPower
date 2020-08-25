@@ -9,16 +9,11 @@ spring:
       discovery:
         locator:
           enabled: true
-          lower-case-service-id: true
-      routes:
-        - id: nacos-getway-provider
-          uri: lb://jpower-system
-          predicates:
-          - Path=/core/**
-        - id: nacos-getway-consumer
-          uri: lb://nacos-consumer
-          predicates:
-          - Path=/**
+#      routes:
+#        - id: jpower-system
+#          uri: lb://jpower-system
+#          predicates:
+#          - Path=/jpower-system/**
 
 jpower:
   #  开发环境

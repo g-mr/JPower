@@ -1,0 +1,28 @@
+[
+  {
+    "id": "jpower-system",
+    "order": 0,
+    "predicates": [
+      {
+        "name": "Path",
+        "args": {
+          "pattern": "/jpower-system/**"
+        }
+      }
+    ],
+    "filters": [],
+    "uri": "lb://jpower-system"
+  },
+  {
+    "id": "jpower-login",
+    "order": 0,
+    "predicates": [{
+      "name": "Path",
+      "args": {
+        "pattern": "/jpower-login/**"
+      }
+    }],
+    "filters": [],
+    "uri": "lb://jpower-login"
+  }
+]

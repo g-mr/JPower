@@ -23,4 +23,20 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <resources>
+            <!-- 编译 src/main/java 目录下的 mapper 文件 -->
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <!-- ......用于扫描 dao 文件下的mapper 文件................. end -->
+        </resources>
+    </build>
 </project>

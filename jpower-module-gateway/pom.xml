@@ -12,7 +12,6 @@
     <artifactId>jpower-module-gateway</artifactId>
 
     <dependencies>
-
         <dependency>
             <groupId>com.wlcb</groupId>
             <artifactId>common-deploy</artifactId>
@@ -27,6 +26,12 @@
                     <artifactId>spring-boot-starter-web</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wlcb</groupId>
+            <artifactId>common-base</artifactId>
+            <version>${com.jpower.version}</version>
         </dependency>
 
         <dependency>

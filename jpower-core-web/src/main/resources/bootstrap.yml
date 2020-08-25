@@ -1,7 +1,3 @@
-#日志打印级别
-logging:
-  level:
-    root: debug
 
 #测试环境是否需要登陆
 test:

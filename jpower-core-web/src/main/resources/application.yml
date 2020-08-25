@@ -1,2 +1,7 @@
 server:
   port: 81
+
+#日志打印级别
+logging:
+  level:
+    root: info

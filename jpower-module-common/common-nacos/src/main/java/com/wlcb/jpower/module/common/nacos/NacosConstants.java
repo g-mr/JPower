@@ -34,12 +34,12 @@ public interface NacosConstants {
     String CONFIG_GROUP = "DEFAULT_GROUP";
 
     /**
-     * 动态获取nacos地址
+     * 动态获取公共nacos地址
      *
      * @param profile 环境变量
      * @return addr
      */
-    static String nacosDataId(String profile) {
+    static String nacosPublicDataId(String profile) {
         switch (profile) {
             case (AppConstant.PROD_CODE):
                 return DATA_ID_PROD;

@@ -15,14 +15,6 @@
 
         <dependency>
             <groupId>com.wlcb</groupId>
-            <artifactId>jpower-module-base</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.wlcb</groupId>
-            <artifactId>jpower-module-dbs</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.wlcb</groupId>
             <artifactId>jpower-module-service</artifactId>
         </dependency>
 
