@@ -1,6 +1,5 @@
 package com.wlcb.jpower.module.common.utils;
 
-import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.common.support.FileType;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -42,7 +41,7 @@ public class MultipartFileUtil{
         String suffixName=file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1);
 
         if (StringUtils.isNotBlank(fileSuffixName) && !StringUtils.containsIgnoreCase(fileSuffixName,suffixName) && !StringUtils.containsIgnoreCase(fileSuffixName, FileType.getFileType(file.getInputStream()))){
-            throw new BusinessException("不支持的后缀类型");
+            throw new IllegalStateException("不支持的后缀类型");
         }
 
         String imgPath = DateUtil.getDate(new Date(), DateUtil.PATTERN_DATE) + File.separator + fileName + "." + suffixName;

@@ -45,6 +45,7 @@
         <knife4j.version>2.0.4</knife4j.version>
         <swagger-annotations.version>1.5.22</swagger-annotations.version>
         <nacos.version>2.2.1.RELEASE</nacos.version>
+        <swagger.version>2.9.2</swagger.version>
     </properties>
 
     <!--profile配置-->
@@ -80,9 +81,7 @@
         <module>jpower-core-login</module>
         <module>jpower-core-web</module>
         <module>jpower-web-file</module>
-        <module>jpower-module-gataway</module>
-        <module>jpower-module-common/common-base</module>
-
+        <module>jpower-module-gateway</module>
     </modules>
 
     <dependencies>

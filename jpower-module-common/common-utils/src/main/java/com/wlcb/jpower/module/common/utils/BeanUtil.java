@@ -1,7 +1,5 @@
 package com.wlcb.jpower.module.common.utils;
 
-import com.wlcb.jpower.module.base.enums.JpowerError;
-import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.common.support.BaseBeanCopier;
 import com.wlcb.jpower.module.common.support.BeanProperty;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -191,7 +189,7 @@ public class BeanUtil  extends org.springframework.beans.BeanUtils {
                 Object object = field.get(o);
                 String name = field.getName();
                 if(!fieldNullList.contains(name)){
-                    JpowerAssert.notTrue(Fc.isEmpty(object), JpowerError.Arg,name+"不可为空");
+                    Assert.notNull(object,name+"不可为空");
                 }
             }
         } catch (IllegalAccessException e) {
@@ -215,7 +213,7 @@ public class BeanUtil  extends org.springframework.beans.BeanUtils {
                 String name = field.getName();
                 Arrays.sort(fields);
                 if(Arrays.binarySearch(fields, name) >= 0){
-                    JpowerAssert.notTrue(Fc.isEmpty(object), JpowerError.Arg,name+"不可为空");
+                    Assert.notNull(object,name+"不可为空");
                 }
             }
         } catch (IllegalAccessException e) {
