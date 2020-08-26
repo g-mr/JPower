@@ -74,7 +74,6 @@
 <!--    </profiles>-->
 
     <modules>
-        <module>jpower-module-base</module>
         <module>jpower-module-common</module>
         <module>jpower-module-dbs</module>
         <module>jpower-module-service</module>
@@ -197,12 +196,6 @@
                 <groupId>com.sun.mail</groupId>
                 <artifactId>javax.mail</artifactId>
                 <version>${javax.mail.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.wlcb</groupId>
-                <artifactId>jpower-module-base</artifactId>
-                <version>${com.jpower.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.wlcb</groupId>

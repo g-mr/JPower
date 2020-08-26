@@ -11,5 +11,7 @@
 
     <artifactId>common-base</artifactId>
 
+    <dependencies>
 
+    </dependencies>
 </project>

@@ -1,4 +1,4 @@
-package com.wlcb.jpower.module.dbs.config;
+package com.wlcb.jpower.module.config;
 
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.core.injector.ISqlInjector;

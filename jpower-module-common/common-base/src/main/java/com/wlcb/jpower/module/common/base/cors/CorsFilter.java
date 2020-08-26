@@ -15,7 +15,7 @@ import java.io.IOException;
  * @Version 1.0
  */
 @Component
-public class CORSFilter implements Filter {
+public class CorsFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)

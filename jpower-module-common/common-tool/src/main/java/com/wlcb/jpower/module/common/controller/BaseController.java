@@ -2,6 +2,7 @@ package com.wlcb.jpower.module.common.controller;
 
 import com.wlcb.jpower.module.common.utils.DateUtil;
 import com.wlcb.jpower.module.common.utils.WebUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,15 +20,11 @@ import java.util.Date;
  * web层通用数据处理
  * @author mr.gmac
  */
+@Slf4j
 @RefreshScope
 public class BaseController
 {
     protected final Logger logger = LoggerFactory.getLogger(BaseController.class);
-
-    @Value("${fileParentPath:}")
-    protected String fileParentPath;
-    @Value("${downloadPath:}")
-    protected String downloadPath;
 
     @Value("${server.port}")
     private Integer port;

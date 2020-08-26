@@ -18,20 +18,10 @@
             <version>${com.jpower.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>com.wlcb</groupId>
-                    <artifactId>jpower-module-base</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-web</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>com.wlcb</groupId>
-            <artifactId>common-base</artifactId>
-            <version>${com.jpower.version}</version>
         </dependency>
 
         <dependency>

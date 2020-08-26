@@ -2,6 +2,7 @@ package com.wlcb.jpower.module.common.swagger;
 
 import com.fasterxml.classmate.TypeResolver;
 import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
+import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -34,7 +35,7 @@ import static com.google.common.collect.Lists.newArrayList;
 @Configuration
 @EnableSwagger2
 @EnableKnife4j
-@Profile({"dev", "test"})
+@Profile({AppConstant.DEV_CODE, AppConstant.TEST_CODE})
 @EnableConfigurationProperties({SwaggerProperties.class})
 @Import({BeanValidatorPluginsConfiguration.class})
 public class SwaggerConfiguration {

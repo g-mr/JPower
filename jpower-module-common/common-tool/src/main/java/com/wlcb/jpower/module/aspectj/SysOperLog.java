@@ -1,4 +1,4 @@
-package com.wlcb.jpower.module.dbs.entity.log;
+package com.wlcb.jpower.module.aspectj;
 
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import lombok.Data;

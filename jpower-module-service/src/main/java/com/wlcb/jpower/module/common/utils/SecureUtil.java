@@ -44,7 +44,6 @@ public class SecureUtil {
 
     private static String BASE64_SECURITY = Base64.getEncoder().encodeToString(TokenConstant.SIGN_KEY.getBytes(CharsetKit.CHARSET_UTF_8));
 
-    // TODO: 2020-07-27 先放在这里不报错，后期要实现系统表替换成系统的service
     private static CoreClientService coreClientService;
 
     static {

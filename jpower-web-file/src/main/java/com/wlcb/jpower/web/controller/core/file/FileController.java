@@ -11,6 +11,7 @@ import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
 import com.wlcb.jpower.module.dbs.entity.core.file.TbCoreFile;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,6 +34,11 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/core/file")
 public class FileController extends BaseController {
+
+    @Value("${fileParentPath:}")
+    protected String fileParentPath;
+    @Value("${downloadPath:}")
+    protected String downloadPath;
 
     @Resource
     private CoreFileService coreFileService;
