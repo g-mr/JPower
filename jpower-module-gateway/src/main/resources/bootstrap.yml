@@ -4,12 +4,12 @@ spring:
       discovery:
         locator:
           enabled: true
-      default-filters:
-        - name: Hystrix
-          args:
-            name: fallbackcmd
-            fallbackUri: forward:/defaultfallback
-hystrix.command.fallbackcmd.execution.isolation.thread.timeoutInMilliseconds: 10000
+#      default-filters:
+#        - name: Hystrix
+#          args:
+#            name: fallbackcmd
+#            fallbackUri: forward:/defaultfallback
+#hystrix.command.fallbackcmd.execution.isolation.thread.timeoutInMilliseconds: 10000
 
 
 

@@ -1,5 +1,6 @@
 package com.wlcb.jpower.gateway.handler;
 
+import com.wlcb.jpower.module.common.support.ChainMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.support.ServerWebExchangeUtils;
 import org.springframework.http.HttpStatus;
@@ -11,7 +12,6 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -30,13 +30,12 @@ public class HystrixFallbackHandler implements HandlerFunction<ServerResponse> {
         serverRequest.attribute(ServerWebExchangeUtils.GATEWAY_ORIGINAL_REQUEST_URL_ATTR)
                 .ifPresent(originalUrls -> log.error("网关执行请求:{}失败,hystrix服务降级处理", originalUrls));
 
-        Map resp = new HashMap();
-        resp.put("code", HttpStatus.INTERNAL_SERVER_ERROR.value());
-        resp.put("message", "服务暂不可用，请稍后重试");
-        resp.put("status", false);
+        Map<String,Object> map = ChainMap.init().set("code", HttpStatus.SERVICE_UNAVAILABLE.value())
+                .set("message", "服务暂不可用，请稍后重试")
+                .set("status", false);
         return ServerResponse
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .body(BodyInserters.fromValue(resp));
+                .body(BodyInserters.fromValue(map));
     }
 }
