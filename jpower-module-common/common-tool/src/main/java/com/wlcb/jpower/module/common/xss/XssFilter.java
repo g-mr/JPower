@@ -1,4 +1,4 @@
-package com.wlcb.jpower.module.common.base.xss;
+package com.wlcb.jpower.module.common.xss;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;

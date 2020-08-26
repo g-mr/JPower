@@ -6,12 +6,6 @@ test:
 jpower:
 #  默认为服务名
   client-code: admin,wx
-  docs:
-    resource:
-      - name: 基础框架
-        url:
-      - name: 授权模块
-        url: http://219.148.186.214:802/
   #  开发环境
   dev:
     nacos:

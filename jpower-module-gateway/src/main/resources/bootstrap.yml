@@ -1,19 +1,17 @@
 spring:
-#  application:
-#    name: jpower-getway
   cloud:
-#    nacos:
-#      discovery:
-#        server-addr: 219.148.186.214:8847
     gateway:
       discovery:
         locator:
           enabled: true
-#      routes:
-#        - id: jpower-system
-#          uri: lb://jpower-system
-#          predicates:
-#          - Path=/jpower-system/**
+      default-filters:
+        - name: Hystrix
+          args:
+            name: fallbackcmd
+            fallbackUri: forward:/defaultfallback
+hystrix.command.fallbackcmd.execution.isolation.thread.timeoutInMilliseconds: 10000
+
+
 
 jpower:
   #  开发环境

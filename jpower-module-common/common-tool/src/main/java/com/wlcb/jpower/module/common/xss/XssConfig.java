@@ -1,4 +1,4 @@
-package com.wlcb.jpower.module.common.base.xss;
+package com.wlcb.jpower.module.common.xss;
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;

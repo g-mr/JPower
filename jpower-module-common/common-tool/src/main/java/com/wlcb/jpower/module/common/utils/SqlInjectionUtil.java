@@ -1,4 +1,4 @@
-package com.wlcb.jpower.module.common.base.xss.utils;
+package com.wlcb.jpower.module.common.utils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
