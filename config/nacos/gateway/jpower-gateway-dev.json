@@ -1,6 +1,7 @@
 [
   {
     "id": "jpower-system",
+    "name": "系统管理",
     "order": 0,
     "predicates": [
       {
@@ -15,6 +16,7 @@
   },
   {
     "id": "jpower-login",
+    "name": "授权模块",
     "order": 0,
     "predicates": [{
       "name": "Path",

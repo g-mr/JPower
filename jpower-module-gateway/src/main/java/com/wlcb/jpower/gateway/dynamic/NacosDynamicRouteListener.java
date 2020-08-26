@@ -6,7 +6,7 @@ import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.config.listener.Listener;
-import com.alibaba.nacos.api.exception.NacosException;
+import com.wlcb.jpower.gateway.utils.NacosUtils;
 import com.wlcb.jpower.module.common.utils.ExceptionsUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import lombok.extern.slf4j.Slf4j;
@@ -39,11 +39,6 @@ public class NacosDynamicRouteListener {
         addListener();
     }
 
-    private String dataId() {
-        Properties props = System.getProperties();
-        return new StringBuffer(props.getProperty("spring.application.name")).append("-").append(props.getProperty("spring.profiles.active")).append(".json").toString();
-    }
-
     /**
      * 添加Nacos监听
      */
@@ -53,7 +48,7 @@ public class NacosDynamicRouteListener {
             properties.setProperty(PropertyKeyConst.SERVER_ADDR,nacosConfigProperties.getServerAddr());
             properties.setProperty(PropertyKeyConst.NAMESPACE,nacosConfigProperties.getNamespace());
             ConfigService configService= NacosFactory.createConfigService(properties);
-            configService.addListener(dataId(), nacosConfigProperties.getGroup(), new Listener() {
+            configService.addListener(NacosUtils.getRouteDataId(), nacosConfigProperties.getGroup(), new Listener() {
                 @Override
                 public Executor getExecutor() {
                     return null;
@@ -66,13 +61,13 @@ public class NacosDynamicRouteListener {
                 }
             });
 
-            String configInfo = configService.getConfig(dataId(),nacosConfigProperties.getGroup(),5000);
+            String configInfo = configService.getConfig(NacosUtils.getRouteDataId(),nacosConfigProperties.getGroup(),5000);
             if (Fc.isNotBlank(configInfo)){
                 List<RouteDefinition> list = JSON.parseArray(configInfo,RouteDefinition.class);
                 dynamicRouteService.updateList(list);
             }
 
-        } catch (NacosException e) {
+        } catch (Exception e) {
             log.error("nacos-addListener-error", ExceptionsUtil.getStackTraceAsString(e));
         }
     }
