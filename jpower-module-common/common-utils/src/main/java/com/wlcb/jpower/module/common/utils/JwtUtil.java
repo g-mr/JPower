@@ -33,7 +33,7 @@ public class JwtUtil {
         Cookie[] cookies = request.getCookies();
         if (cookies!=null && cookies.length>0){
             for (Cookie cookie : cookies) {
-                if (StringUtils.equals(cookie.getName(),"Authorization")){
+                if (StringUtils.equals(cookie.getName(),HEADER)){
                     return cookie.getValue();
                 }
             }

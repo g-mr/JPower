@@ -1,6 +1,5 @@
 package com.wlcb.jpower.gateway.config;
 
-import com.wlcb.jpower.gateway.handler.HystrixFallbackHandler;
 import com.wlcb.jpower.gateway.handler.SwaggerResourceHandler;
 import com.wlcb.jpower.gateway.handler.SwaggerSecurityHandler;
 import com.wlcb.jpower.gateway.handler.SwaggerUiHandler;
@@ -28,7 +27,6 @@ public class RouterFunctionConfiguration {
     private final SwaggerResourceHandler swaggerResourceHandler;
     private final SwaggerSecurityHandler swaggerSecurityHandler;
     private final SwaggerUiHandler swaggerUiHandler;
-    private final HystrixFallbackHandler hystrixFallbackHandler;
 
     @Bean
     public RouterFunction routerFunction() {
@@ -37,9 +35,7 @@ public class RouterFunctionConfiguration {
                 .andRoute(RequestPredicates.GET("/swagger-resources/configuration/ui")
                         .and(RequestPredicates.accept(MediaType.ALL)), swaggerUiHandler)
                 .andRoute(RequestPredicates.GET("/swagger-resources/configuration/security")
-                        .and(RequestPredicates.accept(MediaType.ALL)), swaggerSecurityHandler)
-                .andRoute(RequestPredicates.GET("/defaultfallback")
-                        .and(RequestPredicates.accept(MediaType.TEXT_PLAIN)), hystrixFallbackHandler);
+                        .and(RequestPredicates.accept(MediaType.ALL)), swaggerSecurityHandler);
     }
 
 }
