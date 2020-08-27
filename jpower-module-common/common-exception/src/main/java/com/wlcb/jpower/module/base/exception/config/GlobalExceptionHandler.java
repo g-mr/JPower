@@ -3,6 +3,7 @@ package com.wlcb.jpower.module.base.exception.config;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.base.exception.JpowerException;
 import com.wlcb.jpower.module.base.vo.ErrorReturnJson;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -33,26 +34,22 @@ public class GlobalExceptionHandler {
 
         ErrorReturnJson r = new ErrorReturnJson();
         r.setMessage(e.getMessage());
-//        r.setMessage("系统异常，请联系管理员");
         if (e instanceof org.springframework.web.servlet.NoHandlerFoundException) {
 
             if("/".equals(currentPath)){
-                r.setCode(0);
+                r.setCode(HttpStatus.OK.value());
                 r.setStatus(true);
-                r.setMessage("ok");
+                r.setMessage(HttpStatus.OK.name());
                 return r;
             }
 
-            r.setCode(404);
+            r.setCode(HttpStatus.NOT_FOUND.value());
         }else if (e instanceof BusinessException) {
-            r.setCode(501);
-//            logger.error("{}", e);
+            r.setCode(HttpStatus.NOT_IMPLEMENTED.value());
         }else if (e instanceof JpowerException) {
             r.setCode(((JpowerException) e).getCode());
-//            logger.error("{}", e);
         } else {
-            r.setCode(500);
-//            logger.error("message={},！！！{}", e.getMessage() , e);
+            r.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
         r.setStatus(false);
         return r;

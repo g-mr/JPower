@@ -3,14 +3,45 @@ spring:
     gateway:
       discovery:
         locator:
+          #启用自动根据服务ID建立路由
           enabled: true
-#      default-filters:
-#        - name: Hystrix
-#          args:
-#            name: fallbackcmd
-#            fallbackUri: forward:/defaultfallback
-#hystrix.command.fallbackcmd.execution.isolation.thread.timeoutInMilliseconds: 10000
+    discovery:
+      reactive:
+        #关闭反应式创建路由(目前发现只有spring5.2生效)
+        enabled: false
+    loadbalancer:
+      #开启重试机制
+        retry:
+          enabled: true
 
+hystrix:
+  threadpool:
+    default:
+      #并发执行的最大线程数，默认10
+      coreSize: 500
+      #BlockingQueue的最大队列数，默认值-1
+      maxQueueSize: 1200
+      #即使maxQueueSize没有达到，达到queueSizeRejectionThreshold该值后，请求也会被拒绝，默认值5
+      queueSizeRejectionThreshold: 1000
+  command:
+    default:
+      execution:
+        timeout:
+          #如果enabled设置为false，则请求超时交给ribbon控制
+          enabled: false
+
+#ribbon重试配置
+ribbon:
+  #对当前实例的重试次数
+  MaxAutoRetries: 1
+  #切换实例的重试次数
+  MaxAutoRetriesNextServer: 2
+  #请求处理的超时时间
+  ReadTimeout: 10000
+  #请求连接的超时时间
+  ConnectTimeout: 10000
+  #对所有操作请求都进行重试
+  OkToRetryOnAllOperations: true
 
 
 jpower:
