@@ -9,6 +9,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -201,6 +202,77 @@ public class HttpClient {
         try {
             // httpClient对象执行post请求,并返回响应参数对象
             httpResponse = httpClient.execute(httpPost);
+            // 从响应对象中获取响应内容
+            HttpEntity entity = httpResponse.getEntity();
+            result = EntityUtils.toString(entity);
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+            logger.error("post请求失败：{}",e.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.error("post请求失败：{}",e.getMessage());
+        } finally {
+            // 关闭资源
+            Fc.closeQuietly(httpResponse);
+            Fc.closeQuietly(httpClient);
+        }
+        return result;
+    }
+
+
+    public static String doPut(String url) {
+        return doPut(url,null);
+    }
+
+    public static String doPut(String url,Map<String, Object> params) {
+        return doPut(url,null,params);
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO PUT请求
+     * @Date 22:15 2020-08-28
+     * @Param [url, headers, paramMap]
+     * @return java.lang.String
+     **/
+    public static String doPut(String url, Map<String, String> headers, Map<String, Object> paramMap) {
+        CloseableHttpClient httpClient = null;
+        CloseableHttpResponse httpResponse = null;
+        String result = "";
+        // 创建httpClient实例
+        httpClient = HttpClients.createDefault();
+        // 创建httpPost远程连接实例
+        HttpPut httpPut = new HttpPut(url);
+        // 配置请求参数实例
+        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(35000)// 设置连接主机服务超时时间
+                .setConnectionRequestTimeout(35000)// 设置连接请求超时时间
+                .setSocketTimeout(60000)// 设置读取数据连接超时时间
+                .build();
+        // 为httpPost实例设置配置
+        httpPut.setConfig(requestConfig);
+        // 设置请求头
+        httpPut.addHeader("Content-Type", "application/x-www-form-urlencoded");
+        if (Fc.isNotEmpty(headers)){
+            headers.forEach(httpPut::addHeader);
+        }
+        // 封装post请求参数
+        if (null != paramMap && paramMap.size() > 0) {
+            List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+
+            paramMap.forEach((k,v) -> {
+                nvps.add(new BasicNameValuePair(k, Fc.toStr(v)));
+            });
+
+            // 为httpPost设置封装好的请求参数
+            try {
+                httpPut.setEntity(new UrlEncodedFormEntity(nvps, "UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                logger.error(e.getMessage());
+            }
+        }
+        try {
+            // httpClient对象执行post请求,并返回响应参数对象
+            httpResponse = httpClient.execute(httpPut);
             // 从响应对象中获取响应内容
             HttpEntity entity = httpResponse.getEntity();
             result = EntityUtils.toString(entity);

@@ -22,6 +22,11 @@ public enum BusinessType {
     DELETE,
 
     /**
+     * 审核
+     */
+    REVIEW,
+
+    /**
      * 授权
      */
     GRANT,

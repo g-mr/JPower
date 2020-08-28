@@ -52,7 +52,7 @@ spring:
         min-idle: 0 # 连接池中的最小空闲连接
 
 mybatis-plus:
-  type-aliases-package: com.wlcb.*.*.dbs.entity.**
+  type-aliases-package: com.wlcb..*.dbs.entity.**
   global-config:
     db-config:
       id-type: UUID
