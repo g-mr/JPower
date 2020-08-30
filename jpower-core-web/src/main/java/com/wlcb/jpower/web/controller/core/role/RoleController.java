@@ -4,7 +4,9 @@ import com.wlcb.jpower.module.base.annotation.Log;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
+import com.wlcb.jpower.module.common.auth.RoleConstant;
 import com.wlcb.jpower.module.common.controller.BaseController;
+import com.wlcb.jpower.module.common.service.core.user.CoreFunctionService;
 import com.wlcb.jpower.module.common.service.core.user.CoreRoleService;
 import com.wlcb.jpower.module.common.service.core.user.CoreRolefunctionService;
 import com.wlcb.jpower.module.common.utils.BeanUtil;
@@ -12,7 +14,9 @@ import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
+import com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction;
 import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreRole;
+import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreRoleFunction;
 import com.wlcb.jpower.module.dbs.vo.RoleVo;
 import com.wlcb.jpower.module.mp.support.Condition;
 import io.swagger.annotations.Api;
@@ -20,10 +24,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,20 @@ public class RoleController extends BaseController {
 
     private CoreRoleService coreRoleService;
     private CoreRolefunctionService coreRolefunctionService;
+    private CoreFunctionService coreFunctionService;
+
+    @ApiOperation(value = "查询匿名用户是否拥有URL的权限", hidden = true)
+    @GetMapping("/queryRoleByUrl")
+    public ResponseData<Boolean> queryRoleByUrl(String url){
+        TbCoreFunction function = coreFunctionService.selectFunctionByUrl(url);
+        if (!Fc.isNull(function)){
+            Integer roleCount = coreRolefunctionService.count(Condition.<TbCoreRoleFunction>getQueryWrapper().lambda()
+                    .eq(TbCoreRoleFunction::getRoleId, RoleConstant.ANONYMOUS_ID)
+                    .eq(TbCoreRoleFunction::getFunctionId,function.getId()));
+            return ReturnJsonUtil.ok("查询成功",roleCount>0?Boolean.TRUE:Boolean.FALSE);
+        }
+        return ReturnJsonUtil.ok("查询成功",Boolean.FALSE);
+    }
 
     @ApiOperation("查询角色树结构列表")
     @RequestMapping(value = "/listTree",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")

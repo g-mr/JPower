@@ -19,5 +19,9 @@
             <artifactId>common-swagger</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
     </dependencies>
 </project>

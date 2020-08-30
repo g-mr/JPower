@@ -5,13 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 
-/**
- * @ClassName ResponseData
- * @Description TODO
- * @Author 郭丁志
- * @Date 2020-01-27 17:26
- * @Version 1.0
- */
 @ApiModel(description = "返回消息通用包装")
 public class ResponseData<T> implements Serializable {
 

@@ -1,4 +1,4 @@
-package com.wlcb.jpower.module.common.auth;
+package com.wlcb.jpower.module.common.utils.constants;
 
 /**
  * @ClassName TokenConstant
@@ -25,4 +25,6 @@ public interface TokenConstant {
     String ROLE_IDS = "roleIds";
     String IS_SYS_USER = "isSysUser";
     Integer AUTH_LENGTH = 7;
+    /** 匿名用户和白名单的HEADER **/
+    String PASS_HEADER_NAME = "jpower-auth-pass";
 }

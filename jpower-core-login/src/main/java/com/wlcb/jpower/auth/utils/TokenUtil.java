@@ -1,18 +1,18 @@
 package com.wlcb.jpower.auth.utils;
 
 import com.wlcb.jpower.auth.AuthInfo;
-import com.wlcb.jpower.module.common.auth.TokenConstant;
 import com.wlcb.jpower.module.common.auth.TokenInfo;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SecureUtil;
+import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
 
 import java.util.Map;
 
 /**
- * @ClassName TokenUtil 生成token
- * @Description TODO
+ * @ClassName TokenUtil
+ * @Description TODO 生成token
  * @Author 郭丁志
  * @Date 2020-07-27 22:01
  * @Version 1.0

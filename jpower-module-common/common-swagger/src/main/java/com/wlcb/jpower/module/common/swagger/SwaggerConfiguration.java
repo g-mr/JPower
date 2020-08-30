@@ -1,9 +1,7 @@
 package com.wlcb.jpower.module.common.swagger;
 
-import com.fasterxml.classmate.TypeResolver;
 import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import com.wlcb.jpower.module.common.utils.constants.AppConstant;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -13,8 +11,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.RequestMethod;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.service.*;
 import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
@@ -39,9 +37,6 @@ import static com.google.common.collect.Lists.newArrayList;
 @EnableConfigurationProperties({SwaggerProperties.class})
 @Import({BeanValidatorPluginsConfiguration.class})
 public class SwaggerConfiguration {
-
-    @Autowired
-    private TypeResolver typeResolver;
 
     @Bean
     @ConditionalOnMissingBean
@@ -74,6 +69,7 @@ public class SwaggerConfiguration {
         swaggerProperties.getAuthorization().forEach(authorization -> {
             list.add(new ApiKey(authorization.getName(),authorization.getName(),authorization.getType()));
         });
+
         return list;
     }
 

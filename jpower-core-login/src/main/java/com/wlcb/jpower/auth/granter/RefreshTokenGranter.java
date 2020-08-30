@@ -3,11 +3,11 @@ package com.wlcb.jpower.auth.granter;
 import com.wlcb.jpower.auth.utils.TokenUtil;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
-import com.wlcb.jpower.module.common.auth.TokenConstant;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.SecureUtil;
+import com.wlcb.jpower.module.common.utils.JwtUtil;
+import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
 import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreUserDao;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
 import io.jsonwebtoken.Claims;
@@ -38,7 +38,7 @@ public class RefreshTokenGranter implements TokenGranter {
 		//业务扩展字段
 		String userType = tokenParameter.getStr("userType");
 		if (Fc.isNoneBlank(grantType, refreshToken) && grantType.equals(TokenConstant.REFRESH_TOKEN)) {
-			Claims claims = SecureUtil.parseJWT(refreshToken);
+			Claims claims = JwtUtil.parseJWT(refreshToken);
 			JpowerAssert.notTrue(Fc.isNull(claims), JpowerError.BUSINESS, TokenUtil.TOKEN_EXPIRED);
 			String tokenType = Fc.toStr(claims.get(TokenConstant.TOKEN_TYPE));
 			if (tokenType.equals(TokenConstant.REFRESH_TOKEN)) {

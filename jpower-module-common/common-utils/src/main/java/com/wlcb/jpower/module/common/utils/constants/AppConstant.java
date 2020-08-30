@@ -27,4 +27,6 @@ public interface AppConstant {
      */
     String OS_NAME_LINUX = "LINUX";
 
+    String JPOWER_SYSTEM = "jpower-system";
+
 }

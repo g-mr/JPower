@@ -1,22 +1,48 @@
 package com.wlcb.jpower.module.common.utils;
 
+import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
+import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Base64;
 
 /**
  * @author mr.gmac
  */
 public class JwtUtil {
 
-    public static String BEARER = "jpower";
-    public static Integer AUTH_LENGTH = 7;
-    public static String HEADER = "jpower-auth";
+    public static String JPOWER = TokenConstant.JPOWER;
+    public static Integer AUTH_LENGTH = TokenConstant.AUTH_LENGTH;
+    public static String HEADER = JPOWER+"-auth";
+    public static String SIGN_KEY = TokenConstant.SIGN_KEY;
+
+    private static String BASE64_SECURITY = Base64.getEncoder().encodeToString(SIGN_KEY.getBytes(CharsetKit.CHARSET_UTF_8));
+
+    /**
+     * 解析jsonWebToken
+     * @param jsonWebToken jsonWebToken
+     * @return Claims
+     */
+    public static Claims parseJWT(String jsonWebToken) {
+        if (Fc.isBlank(jsonWebToken)){
+            return null;
+        }
+
+        try {
+            return Jwts.parser()
+                    .setSigningKey(Base64.getDecoder().decode(BASE64_SECURITY))
+                    .parseClaimsJws(jsonWebToken).getBody();
+        } catch (Exception ex) {
+            return null;
+        }
+    }
 
     /**
      * 获取token串
-     *
      * @param request
      * @return String
      */
@@ -24,7 +50,7 @@ public class JwtUtil {
         String auth = request.getHeader(HEADER);
         if (StringUtil.isNotBlank(auth) && auth.length() > AUTH_LENGTH) {
             String headStr = auth.substring(0, 6).toLowerCase();
-            if (headStr.compareTo(BEARER) == 0) {
+            if (headStr.compareTo(JPOWER) == 0) {
                 auth = auth.substring(AUTH_LENGTH);
                 return auth;
             }
@@ -33,17 +59,22 @@ public class JwtUtil {
         Cookie[] cookies = request.getCookies();
         if (cookies!=null && cookies.length>0){
             for (Cookie cookie : cookies) {
-                if (StringUtils.equals(cookie.getName(),HEADER)){
-                    return cookie.getValue();
+                if (StringUtils.equals(cookie.getName(),HEADER) && cookie.getValue().length() > AUTH_LENGTH ){
+                    if (cookie.getValue().compareTo(JPOWER) == 0) {
+                        auth = cookie.getValue().substring(AUTH_LENGTH);
+                        return auth;
+                    }
                 }
             }
         }
 
         String parameter = request.getParameter(HEADER);
-        if (StringUtil.isNotBlank(parameter)) {
-            return parameter;
+        if (StringUtil.isNotBlank(parameter)&& parameter.length() > AUTH_LENGTH) {
+            if (parameter.compareTo(JPOWER) == 0) {
+                auth = parameter.substring(AUTH_LENGTH);
+                return auth;
+            }
         }
         return null;
     }
-
 }

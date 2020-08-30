@@ -49,6 +49,8 @@
         <common-io.version>2.6</common-io.version>
         <commons-lang3.version>3.9</commons-lang3.version>
         <hystrix.version>1.4.7.RELEASE</hystrix.version>
+        <gateway.version>2.2.4.RELEASE</gateway.version>
+        <openfeign.version>2.2.4.RELEASE</openfeign.version>
     </properties>
 
     <!--profile配置-->
@@ -200,6 +202,17 @@
 <!--                <artifactId>spring-cloud-starter-hystrix</artifactId>-->
 <!--                <version>${hystrix.version}</version>-->
 <!--            </dependency>-->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-openfeign</artifactId>
+                <version>${openfeign.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.google.guava</groupId>
+                        <artifactId>guava</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
 
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>

@@ -1,15 +1,21 @@
 package com.wlcb.jpower.gateway.config;
 
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.cors.reactive.CorsUtils;
 import org.springframework.web.server.WebFilter;
 import reactor.core.publisher.Mono;
+
+import java.util.stream.Collectors;
 
 /**
  * @ClassName CorsConfig
@@ -22,16 +28,6 @@ import reactor.core.publisher.Mono;
 public class CorsConfig {
     private static final String ALL = "*";
     private static final String MAX_AGE = "18000L";
-
-//    @Bean
-//    public RouteDefinitionLocator discoveryClientRouteDefinitionLocator(ReactiveDiscoveryClient discoveryClient, DiscoveryLocatorProperties properties) {
-//        return new DiscoveryClientRouteDefinitionLocator(discoveryClient, properties);
-//    }
-
-//    @Bean
-//    public ServerCodecConfigurer serverCodecConfigurer() {
-//        return new DefaultServerCodecConfigurer();
-//    }
 
     /**
      * @Author 郭丁志
@@ -67,14 +63,14 @@ public class CorsConfig {
     }
 
     /**
-     * feign报错解决
-     * @return
+     * @author 郭丁志
+     * @Description // 手动注入feign得转换器
+     * @date 18:54 2020/8/30 0030
      */
-//    @Bean
-//    public Decoder feignFormDecoder() {
-//        List<HttpMessageConverter<?>> converters = new RestTemplate().getMessageConverters();
-//        ObjectFactory<HttpMessageConverters> factory = () -> new HttpMessageConverters(converters);
-//        return new ResponseEntityDecoder(new SpringDecoder(factory));
-//    }
+    @Bean
+    @ConditionalOnMissingBean
+    public HttpMessageConverters messageConverters(ObjectProvider<HttpMessageConverter<?>> converters) {
+        return new HttpMessageConverters(converters.orderedStream().collect(Collectors.toList()));
+    }
 
 }

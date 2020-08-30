@@ -49,8 +49,7 @@ public class BaseController
     /**
      * 获取request
      */
-    public HttpServletRequest getRequest()
-    {
+    public HttpServletRequest getRequest(){
         return WebUtil.getRequest();
     }
 

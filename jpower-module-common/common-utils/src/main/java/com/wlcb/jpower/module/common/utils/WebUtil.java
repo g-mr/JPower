@@ -198,7 +198,6 @@ public class WebUtil extends org.springframework.web.util.WebUtils {
         return StringUtil.isBlank(ip) ? null : ip.split(",")[0];
     }
 
-
     /***
      * 获取 request 中 json 字符串的内容
      *

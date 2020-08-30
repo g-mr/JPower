@@ -1,12 +1,10 @@
 package com.wlcb.jpower.module.common.utils;
 
 
-import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.common.auth.*;
-import com.wlcb.jpower.module.common.service.core.client.CoreClientService;
 import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
-import com.wlcb.jpower.module.dbs.entity.core.client.TbCoreClient;
+import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -40,15 +38,7 @@ public class SecureUtil {
     private final static String ROLE_IDS = TokenConstant.ROLE_IDS;
     private final static String IS_SYS_USER = TokenConstant.IS_SYS_USER;
 
-    private final static Integer AUTH_LENGTH = TokenConstant.AUTH_LENGTH;
-
     private static String BASE64_SECURITY = Base64.getEncoder().encodeToString(TokenConstant.SIGN_KEY.getBytes(CharsetKit.CHARSET_UTF_8));
-
-    private static CoreClientService coreClientService;
-
-    static {
-        coreClientService = SpringUtil.getBean(CoreClientService.class);
-    }
 
     /**
      * 获取用户信息
@@ -70,18 +60,6 @@ public class SecureUtil {
             }
         }
         return (UserInfo) coreuser;
-    }
-
-    /**
-     * 获取用户信息
-     *
-     * @param request request
-     * @return BladeUser
-     */
-    public static UserInfo getUser(HttpServletRequest request) {
-        Claims claims = getClaims(request);
-
-        return getUser(claims);
     }
 
     public static UserInfo getUser(Claims claims ) {
@@ -112,6 +90,18 @@ public class SecureUtil {
         coreUser.setOrgId(orgId);
         coreUser.setIsSysUser(isSysUser);
         return coreUser;
+    }
+
+    /**
+     * 获取用户信息
+     *
+     * @param request request
+     * @return BladeUser
+     */
+    public static UserInfo getUser(HttpServletRequest request) {
+        Claims claims = getClaims(request);
+
+        return getUser(claims);
     }
 
     /**
@@ -256,7 +246,7 @@ public class SecureUtil {
      * @return Claims
      */
     public static Claims getClaims(HttpServletRequest request) {
-        return SecureUtil.parseJWT(JwtUtil.getToken(request));
+        return JwtUtil.parseJWT(JwtUtil.getToken(request));
     }
 
     /**
@@ -279,26 +269,6 @@ public class SecureUtil {
     }
 
     /**
-     * 解析jsonWebToken
-     *
-     * @param jsonWebToken jsonWebToken
-     * @return Claims
-     */
-    public static Claims parseJWT(String jsonWebToken) {
-        if (Fc.isBlank(jsonWebToken)){
-            return null;
-        }
-
-        try {
-            return Jwts.parser()
-                    .setSigningKey(Base64.getDecoder().decode(BASE64_SECURITY))
-                    .parseClaimsJws(jsonWebToken).getBody();
-        } catch (Exception ex) {
-            return null;
-        }
-    }
-
-    /**
      * 创建令牌
      *
      * @param user      user
@@ -315,11 +285,11 @@ public class SecureUtil {
         String clientSecret = tokens[1];
 
         // 获取客户端信息
-        TbCoreClient clientDetails = clientDetails(clientCode);
+        ClientDetails clientDetails = clientDetails(clientCode);
 
         // 校验客户端信息
         if (!validateClient(clientDetails, clientCode, clientSecret)) {
-            throw new BusinessException("客户端认证失败!");
+            throw new RuntimeException("客户端认证失败!");
         }
 
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
@@ -388,7 +358,7 @@ public class SecureUtil {
         String header = Objects.requireNonNull(WebUtil.getRequest()).getHeader(SecureConstant.BASIC_HEADER_KEY);
         header = Fc.toStr(header).replace(SecureConstant.BASIC_HEADER_PREFIX_EXT, SecureConstant.BASIC_HEADER_PREFIX);
         if (!header.startsWith(SecureConstant.BASIC_HEADER_PREFIX)) {
-            throw new BusinessException("No client information in request header");
+            throw new RuntimeException("No client information in request header");
         }
         byte[] base64Token = header.substring(6).getBytes(CharsetKit.UTF_8);
 
@@ -423,18 +393,17 @@ public class SecureUtil {
      * @param clientCode 客户端code
      * @return clientDetails
      */
-    private static TbCoreClient clientDetails(String clientCode) {
-        return coreClientService.loadClientByClientCode(clientCode);
+    private static ClientDetails clientDetails(String clientCode) {
+        return QueryJdbcUtil.loadClientByClientCode(clientCode);
     }
 
     /**
      * 校验Client
-     *
      * @param clientCode     客户端code
      * @param clientSecret 客户端密钥
      * @return boolean
      */
-    private static boolean validateClient(TbCoreClient clientDetails, String clientCode, String clientSecret) {
+    private static boolean validateClient(ClientDetails clientDetails, String clientCode, String clientSecret) {
         if (clientDetails != null) {
             return StringUtil.equals(clientCode, clientDetails.getClientCode()) && StringUtil.equals(clientSecret, clientDetails.getClientSecret());
         }

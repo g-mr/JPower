@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * @ClassName WebAppConfigurer
- * @Description TODO 不用走鉴权的接口去除
+ * @Description TODO 拦截器配置
  * @Author 郭丁志
  * @Date 2020-01-31 14:56
  * @Version 1.0
@@ -48,8 +48,8 @@ public class LoginConfigurer implements WebMvcConfigurer {
         exculudesUrl.add("/auth/**");
         exculudesUrl.add("/v2/api-docs-ext/**");
         exculudesUrl.add("/v2/api-docs/**");
-        exculudesUrl.add("/doc.html");
         exculudesUrl.add("/swagger-resources/**");
+        exculudesUrl.add("/doc.html");
         exculudesUrl.add("/webjars/**");
 
         registry.addInterceptor(loginInterceptor).addPathPatterns("/**").excludePathPatterns(exculudesUrl);

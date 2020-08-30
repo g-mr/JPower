@@ -1,7 +1,9 @@
 package com.wlcb.jpower;
 
 import com.wlcb.jpower.module.common.deploy.JpowerApplication;
+import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
@@ -14,10 +16,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 @EnableTransactionManagement
 //@EnableDiscoveryClient
+@EnableFeignClients
 public class CoreStartApplication {
 
     public static void main(String[] args) {
-        JpowerApplication.run("jpower-system",CoreStartApplication.class,args);
+        JpowerApplication.run(AppConstant.JPOWER_SYSTEM,CoreStartApplication.class,args);
     }
 
 }

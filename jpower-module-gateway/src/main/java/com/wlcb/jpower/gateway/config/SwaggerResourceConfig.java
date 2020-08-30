@@ -10,8 +10,8 @@ import com.wlcb.jpower.gateway.utils.NacosUtils;
 import com.wlcb.jpower.module.common.utils.ExceptionsUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
@@ -32,12 +32,11 @@ import java.util.Properties;
 @Component
 @Primary
 @Slf4j
+@AllArgsConstructor
 public class SwaggerResourceConfig implements SwaggerResourcesProvider {
 
-    @Autowired
     private NacosConfigProperties nacosConfigProperties;
-    @Autowired
-    RouteLocator routeLocator;
+    private RouteLocator routeLocator;
 
     @Override
     public List<SwaggerResource> get() {

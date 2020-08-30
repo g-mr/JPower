@@ -1,4 +1,4 @@
-package com.wlcb.jpower.module.common.xss;
+package com.wlcb.jpower.module.configurer.xss;
 
 import com.wlcb.jpower.module.common.utils.SqlInjectionUtil;
 import org.apache.commons.lang3.StringUtils;
