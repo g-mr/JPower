@@ -130,4 +130,6 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @return java.util.List<com.wlcb.jpower.module.dbs.vo.FunctionVo>
      **/
     List<FunctionVo> listTreeByRoleId(String roleIds);
+
+    Integer queryRoleByUrl(String url);
 }

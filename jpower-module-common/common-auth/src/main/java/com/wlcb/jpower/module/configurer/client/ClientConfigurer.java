@@ -1,12 +1,9 @@
 package com.wlcb.jpower.module.configurer.client;
 
-import com.wlcb.jpower.module.common.utils.CollectionUtil;
-import com.wlcb.jpower.module.properties.AuthDefExculdesUrl;
 import com.wlcb.jpower.module.properties.AuthProperties;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -27,15 +24,7 @@ public class ClientConfigurer implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         authProperties.getClient().forEach(client -> {
-            InterceptorRegistration registration = registry.addInterceptor(new ClientInterceptor(client.getCode()));
-            if (CollectionUtil.isNotEmpty(client.getPath())){
-                registration.addPathPatterns(client.getPath());
-            }else {
-                registration.addPathPatterns("/**");
-            }
-
-            client.getExcludePath().addAll(AuthDefExculdesUrl.getExculudesUrl());
-            registration.excludePathPatterns(client.getExcludePath());
+            registry.addInterceptor(new ClientInterceptor(client.getCode())).addPathPatterns(client.getPath());
         });
     }
 

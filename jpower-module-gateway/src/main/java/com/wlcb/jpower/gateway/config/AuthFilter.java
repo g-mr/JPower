@@ -67,15 +67,15 @@ public class AuthFilter implements GlobalFilter, Ordered {
     @Value("${spring.profiles.active}")
     private String active;
 
-    /** 测试环境是否需要进行权限验证 **/
-    @Value("${jpower.test.is-login:false}")
-    private boolean isLogin;
+//    /** 测试环境是否需要进行权限验证 **/
+//    @Value("${jpower.test.is-login:false}")
+//    private boolean isLogin;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        if (Fc.equals(active,"dev") || (Fc.equals(active,"test") && Fc.equals(isLogin,false))){
+//        if (Fc.equals(active,"dev") || (Fc.equals(active,"test") && Fc.equals(isLogin,false))){
 //            return chain.filter(exchange);
-        }
+//        }
 
         Route route = (Route) exchange.getAttributes().get(ServerWebExchangeUtils.GATEWAY_ROUTE_ATTR);
         String currentPath = exchange.getRequest().getURI().getPath();
@@ -97,26 +97,27 @@ public class AuthFilter implements GlobalFilter, Ordered {
                 return unAuth(exchange.getResponse(), "请求未授权");
             }
 
-            exchange.getRequest().getHeaders().remove(TokenConstant.PASS_HEADER_NAME);
-            return chain.filter(exchange);
+            return chain.filter(addHeader(exchange,""));
         }else {
             //白名单
             String ip = IpUtil.getIP(exchange.getRequest());
             if (Fc.contains(whileIpProperties.getWhileIp().iterator(),ip)){
-                ServerHttpRequest host = exchange.getRequest().mutate().header(TokenConstant.PASS_HEADER_NAME,ip).build();
-                //将现在的request 变成 change对象
-                ServerWebExchange build = exchange.mutate().request(host).build();
-                return chain.filter(build);
+                return chain.filter(addHeader(exchange,ip));
             }
 
             //匿名用户
             ResponseData<Boolean> responseData = systemClient.queryRoleByUrl(currentPath);
             if (responseData.getCode() == HttpStatus.OK.value() && responseData.getData() != null && responseData.getData()){
-                exchange.getRequest().getHeaders().add(TokenConstant.PASS_HEADER_NAME,"anonymous");
-                return chain.filter(exchange);
+                return chain.filter(addHeader(exchange,"anonymous"));
             }
             return unAuth(exchange.getResponse(), "缺失令牌，鉴权失败");
         }
+    }
+
+    private ServerWebExchange addHeader(ServerWebExchange exchange,String value) {
+        ServerHttpRequest host = exchange.getRequest().mutate().header(TokenConstant.PASS_HEADER_NAME,value).build();
+        //将现在的request 变成 change对象
+        return exchange.mutate().request(host).build();
     }
 
     private Mono<Void> unAuth(ServerHttpResponse resp, String msg) {

@@ -9,9 +9,9 @@ import com.wlcb.jpower.module.common.service.core.client.CoreClientService;
 import com.wlcb.jpower.module.common.service.core.user.CoreFunctionService;
 import com.wlcb.jpower.module.common.service.core.user.CoreRolefunctionService;
 import com.wlcb.jpower.module.common.utils.*;
+import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import com.wlcb.jpower.module.common.utils.constants.ParamsConstants;
 import com.wlcb.jpower.module.common.utils.param.ParamConfig;
-import com.wlcb.jpower.module.dbs.config.LoginUserContext;
 import com.wlcb.jpower.module.dbs.entity.core.client.TbCoreClient;
 import com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction;
 import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreRoleFunction;
@@ -73,7 +73,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
      **/
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (Fc.equals(active,"dev") || (Fc.equals(active,"test") && Fc.equals(isLogin,false))){
+        if (Fc.equals(active, AppConstant.DEV_CODE) || (Fc.equals(active,AppConstant.TEST_CODE) && Fc.equals(isLogin,false))){
             //开发环境和测试环境不走鉴权
             return true;
         }
@@ -91,7 +91,6 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
             List<String> listUrl = (List<String>) redisUtil.get(CacheNames.TOKEN_URL_KEY+JwtUtil.getToken(request));
             if (Fc.contains(listUrl.iterator(),currentPath)){
                 log.warn("{}({}) 用户授权通过，请求接口：{}",user.getUserName(),user.getUserId(),currentPath);
-                LoginUserContext.set(user);
                 return true;
             }
 
@@ -104,13 +103,6 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                     if (StringUtil.equalsIgnoreCase(coreClient.getRoleIds(),"all") ||
                             coreRolefunctionService.countByRoleIdsAndFunctionId(Fc.toStrList(coreClient.getRoleIds()),function.getId()) > 0){
                         log.warn("{} 白名单授权通过，请求接口：{}",ip,currentPath);
-                        user = new UserInfo();
-                        user.setUserName(ip);
-                        user.setLoginId(ip);
-                        user.setUserType(RoleConstant.ANONYMOUS_UESR_TYPE);
-                        user.setIsSysUser(UserInfo.TBALE_USER_TYPE_WHILT);
-                        user.setUserId(ip);
-                        LoginUserContext.set(user);
                         return true;
                     }
 
@@ -121,12 +113,6 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                             .eq(TbCoreRoleFunction::getFunctionId,function.getId()));
                     if(roleCount>0){
                         log.warn("{} 授权通过，请求接口：{}", RoleConstant.ANONYMOUS_NAME,currentPath);
-                        user = new UserInfo();
-                        user.setLoginId(RoleConstant.ANONYMOUS);
-                        user.setUserId(RoleConstant.ANONYMOUS_ID);
-                        user.setUserName(RoleConstant.ANONYMOUS_NAME);
-                        user.setUserType(RoleConstant.ANONYMOUS_UESR_TYPE);
-                        LoginUserContext.set(user);
                         return true;
                     }
                 }
@@ -158,8 +144,6 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
      **/
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        //接口请求完成后删除掉存储的用户信息
-        LoginUserContext.remove();
     }
 
 }

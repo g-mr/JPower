@@ -2,6 +2,7 @@ package com.wlcb.jpower.module.common.service.core.user.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.wlcb.jpower.module.common.auth.RoleConstant;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.redis.RedisUtil;
@@ -132,6 +133,18 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
         String inSql = "'"+roleIds.replaceAll(",","','")+"'";
         return coreFunctionDao.listTree(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                 .inSql(TbCoreFunction::getId, StringUtil.format(sql, inSql)).orderByAsc(TbCoreFunction::getSort),FunctionVo.class);
+    }
+
+    @Override
+    public Integer queryRoleByUrl(String url) {
+        TbCoreFunction function = selectFunctionByUrl(url);
+        if (!Fc.isNull(function)){
+            Integer roleCount = coreRoleFunctionDao.count(Condition.<TbCoreRoleFunction>getQueryWrapper().lambda()
+                    .eq(TbCoreRoleFunction::getRoleId, RoleConstant.ANONYMOUS_ID)
+                    .eq(TbCoreRoleFunction::getFunctionId,function.getId()));
+            return roleCount;
+        }
+        return 0;
     }
 
 }

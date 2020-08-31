@@ -1,17 +1,22 @@
 package com.wlcb.jpower.module.dbs.config;
 
+import com.wlcb.jpower.module.common.auth.RoleConstant;
 import com.wlcb.jpower.module.common.auth.UserInfo;
+import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.SecureUtil;
+import com.wlcb.jpower.module.common.utils.WebUtil;
+import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @ClassName LoginUserContext
- * @Description TODO 存储当前登录用户
+ * @Description TODO 获取当前用户
  * @Author 郭丁志
  * @Date 2020-07-09 17:09
  * @Version 1.0
  */
+@Slf4j
 public class LoginUserContext {
-
-    private static ThreadLocal<UserInfo> coreUser = new ThreadLocal<UserInfo>();
 
     /**
      * @Author 郭丁志
@@ -51,17 +56,28 @@ public class LoginUserContext {
      * @return com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser
      **/
     public static UserInfo get() {
-        UserInfo user = coreUser.get();
+        UserInfo user = SecureUtil.getUser();
+
+        if (Fc.isNull(user)){
+            String header = WebUtil.getRequest().getHeader(TokenConstant.PASS_HEADER_NAME);
+            if (!Fc.isNull(header)){
+                user = new UserInfo();
+
+                try { user.setClientCode(SecureUtil.getClientCodeFromHeader()); }catch (Exception e){}
+                user.setLoginId(header);
+                user.setNickName(header);
+                if (Fc.equals(header, RoleConstant.ANONYMOUS)){
+                    user.setUserId(RoleConstant.ANONYMOUS_ID);
+                    user.setIsSysUser(UserInfo.TBALE_USER_TYPE_CORE);
+                    user.setUserName(RoleConstant.ANONYMOUS_NAME);
+                }else {
+                    user.setUserId(header);
+                    user.setIsSysUser(UserInfo.TBALE_USER_TYPE_WHILT);
+                    user.setUserName(header);
+                }
+            }
+        }
 
         return user;
     }
-
-    public static void set(UserInfo user) {
-        coreUser.set(user);
-    }
-
-    public static void remove() {
-        coreUser.remove();
-    }
-
 }

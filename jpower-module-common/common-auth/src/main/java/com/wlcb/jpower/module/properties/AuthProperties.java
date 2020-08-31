@@ -24,6 +24,5 @@ public class AuthProperties {
     public static class Client{
         private String code;
         private List<String> path = new ArrayList<>();
-        private List<String> excludePath = new ArrayList<>();
     }
 }
