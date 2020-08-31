@@ -38,7 +38,6 @@ public class XssFilter implements Filter {
 
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
-        System.out.println(req.getServletPath());
         if (handleExcludeURL(req, resp)) {
             filterChain.doFilter(request, response);
             return;
