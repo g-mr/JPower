@@ -23,11 +23,11 @@ public class ParamsLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        log.info("系统参数初始化...");
+        log.warn("系统参数初始化...");
 
         paramService.effectAll();
 
-        log.info("系统参数加载完成...");
+        log.warn("系统参数加载完成...");
     }
 
 }

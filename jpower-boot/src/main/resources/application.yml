@@ -1,14 +1,34 @@
+server:
+  port: 80
+
+spring:
+  profiles:
+    active: dev
+
+#日志打印级别
+logging:
+  level:
+    root: info
 
 jpower:
-#  默认为服务名
-  client-code: admin,wx
-  #  开发环境
+  xss:
+    #是否开启富文本过滤(如果开启，content参数名和以WithHtml结尾得参数名将不进行XSS过滤，默认位关闭)
+    isIncludeRichText: false
+    #XSS不过滤得接口路径，支持通配符模式
+    excludes:
+      - /core/**
+  auth:
+    client:
+    #开启需要校验的客户端，值写数据库的clientCode即可
+      - code: admin
+    #需要客户端校验的URL
+        path:
+          - /core/user/**
+    #鉴权需要过滤的白名单地址
+    whileIp:
+      - 192.168.1.2
+#      - 0:0:0:0:0:0:0:1
   dev:
-    nacos:
-#      配置中心地址，如果配置没有配置注册中心地址，则注册中心默认走这里的地址
-      server-addr: 219.148.186.214:8847
-#      可以为空但不能删掉这块配置
-      namespace:
     datasource:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://localhost:3306/jpower?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8
@@ -21,11 +41,8 @@ jpower:
       database: 0
   #   测试环境
   test:
-    nacos:
-      #      配置中心地址，如果配置没有配置注册中心地址，则注册中心默认走这里的地址
-      server-addr: 219.148.186.214:8848
-      #      可以为空但不能删掉这块配置
-      namespace:
+    #测试环境是否需要登陆（只有Boot项目会生效）
+    is-login: true
     datasource:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://219.148.186.214:18995/jpower?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8
@@ -38,11 +55,6 @@ jpower:
       database: 0
   #  正式环境
   prod:
-    nacos:
-      #      配置中心地址，如果配置没有配置注册中心地址，则注册中心默认走这里的地址
-      server-addr: 219.148.186.226:8848
-#      可以为空但不能删掉这块配置
-      namespace:
     datasource:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://119.3.189.156:18992/jpower?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8

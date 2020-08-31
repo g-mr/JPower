@@ -65,17 +65,12 @@ public class JpowerApplication {
         Properties props = System.getProperties();
         props.setProperty("spring.application.name", appName);
         props.setProperty("spring.profiles.active", profile);
-        props.setProperty("jpower.client-code", appName);
         props.setProperty("logging.config", "classpath:logback-spring.xml");
         props.setProperty("jpower.is-local", String.valueOf(isLocalDev()));
         props.setProperty("spring.cloud.nacos.discovery.server-addr", "${jpower.".concat(profile).concat(".nacos.server-addr}"));
         props.setProperty("spring.cloud.nacos.config.server-addr", "${jpower.".concat(profile).concat(".nacos.server-addr}"));
         props.setProperty("spring.cloud.nacos.discovery.namespace", "${jpower.".concat(profile).concat(".nacos.namespace}"));
         props.setProperty("spring.cloud.nacos.config.namespace", "${jpower.".concat(profile).concat(".nacos.namespace}"));
-        if (AppConstant.DEV_CODE.equals(profile) && isLocalDev()){
-//            props.setProperty("spring.cloud.nacos.config.enabled", "false");
-//            props.setProperty("spring.cloud.nacos.discovery.enabled", "false");
-        }
 
         List<DeployService> deployServiceList = new ArrayList<>();
         ServiceLoader.load(DeployService.class).forEach(deployServiceList::add);

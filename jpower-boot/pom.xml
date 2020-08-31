@@ -12,19 +12,77 @@
     <groupId>wlcb.jpower.boot</groupId>
     <artifactId>jpower-boot</artifactId>
     <version>${com.jpower.version}</version>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.wlcb</groupId>
+                <artifactId>jpower-web-file</artifactId>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework.cloud</groupId>
+                        <artifactId>spring-cloud-starter-openfeign</artifactId>
+                    </exclusion>
+<!--                    <exclusion>-->
+<!--                        <groupId>com.alibaba.cloud</groupId>-->
+<!--                        <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>-->
+<!--                    </exclusion>-->
+                    <exclusion>
+                        <groupId>com.wlcb</groupId>
+                        <artifactId>common-nacos</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.wlcb</groupId>
+                        <artifactId>common-deploy</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
             <groupId>com.wlcb</groupId>
-            <artifactId>common-tool</artifactId>
-            <version>${com.jpower.version}</version>
+            <artifactId>jpower-core-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-starter-openfeign</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.wlcb</groupId>
+                    <artifactId>common-nacos</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.wlcb</groupId>
+                    <artifactId>common-deploy</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.wlcb</groupId>
+            <artifactId>jpower-core-login</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-starter-openfeign</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.wlcb</groupId>
+                    <artifactId>common-nacos</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.wlcb</groupId>
+                    <artifactId>common-deploy</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
-            <groupId>com.wlcb</groupId>
-            <artifactId>jpower-module-service</artifactId>
-            <version>${com.jpower.version}</version>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-spring-ui</artifactId>
+            <version>${knife4j.version}</version>
         </dependency>
     </dependencies>
 

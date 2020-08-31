@@ -31,7 +31,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
      */
     @Override
     public String getParameter(String name) {
-        if(("content".equals(name) || name.endsWith("WithHtml")) && !isIncludeRichText){
+        if(("content".equals(name) || name.endsWith("WithHtml")) && isIncludeRichText){
             return super.getParameter(name);
         }
         name = SqlInjectionUtil.filter(name);//;JsoupUtils.clean(name);

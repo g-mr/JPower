@@ -1,4 +1,4 @@
-package com.wlcb.jpower.module.common.base.cors;
+package com.wlcb.jpower.config.filter;
 
 import org.springframework.stereotype.Component;
 
@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * @ClassName CORSFilter
- * @Description TODO
+ * @ClassName CorsFilter
+ * @Description TODO BOOT项目跨域
  * @Author 郭丁志
  * @Date 2020-03-02 09:29
  * @Version 1.0

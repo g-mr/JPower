@@ -254,6 +254,12 @@
                 <version>${com.jpower.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.wlcb</groupId>
+                <artifactId>jpower-web-file</artifactId>
+                <version>${com.jpower.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 

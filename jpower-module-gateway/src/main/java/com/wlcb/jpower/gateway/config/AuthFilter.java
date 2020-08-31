@@ -13,11 +13,11 @@ import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.JwtUtil;
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -63,19 +63,8 @@ public class AuthFilter implements GlobalFilter, Ordered {
     @Resource
     private WhileIpProperties whileIpProperties;
 
-    /** 环境 **/
-    @Value("${spring.profiles.active}")
-    private String active;
-
-//    /** 测试环境是否需要进行权限验证 **/
-//    @Value("${jpower.test.is-login:false}")
-//    private boolean isLogin;
-
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-//        if (Fc.equals(active,"dev") || (Fc.equals(active,"test") && Fc.equals(isLogin,false))){
-//            return chain.filter(exchange);
-//        }
 
         Route route = (Route) exchange.getAttributes().get(ServerWebExchangeUtils.GATEWAY_ROUTE_ATTR);
         String currentPath = exchange.getRequest().getURI().getPath();
@@ -97,7 +86,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
                 return unAuth(exchange.getResponse(), "请求未授权");
             }
 
-            return chain.filter(addHeader(exchange,""));
+            return chain.filter(addHeader(exchange, StringPool.EMPTY));
         }else {
             //白名单
             String ip = IpUtil.getIP(exchange.getRequest());
