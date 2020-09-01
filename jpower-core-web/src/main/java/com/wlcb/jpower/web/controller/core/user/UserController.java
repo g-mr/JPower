@@ -1,6 +1,7 @@
 package com.wlcb.jpower.web.controller.core.user;
 
 import com.github.pagehelper.PageInfo;
+import com.wlcb.jpower.config.param.ParamConfig;
 import com.wlcb.jpower.module.base.annotation.Log;
 import com.wlcb.jpower.module.base.enums.BusinessType;
 import com.wlcb.jpower.module.base.enums.JpowerError;
@@ -13,7 +14,6 @@ import com.wlcb.jpower.module.common.service.core.user.CoreUserService;
 import com.wlcb.jpower.module.common.support.BeanExcelUtil;
 import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.*;
-import com.wlcb.jpower.module.common.utils.param.ParamConfig;
 import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;

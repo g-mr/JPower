@@ -11,14 +11,8 @@
 
     <artifactId>jpower-core-login</artifactId>
 
-    <name>login</name>
-
     <dependencies>
 
-        <dependency>
-            <groupId>com.wlcb</groupId>
-            <artifactId>jpower-module-dbs</artifactId>
-        </dependency>
         <dependency>
             <groupId>com.wlcb</groupId>
             <artifactId>jpower-module-service</artifactId>
@@ -27,6 +21,7 @@
     </dependencies>
 
     <build>
+        <finalName>login</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -34,7 +29,7 @@
                 <configuration>
                     <classifier>exec</classifier>
                     <!--生成可执行jar的名称-->
-                    <finalName>${name}</finalName>
+                    <finalName>${build.finalName}</finalName>
                 </configuration>
             </plugin>
             <plugin>
@@ -53,7 +48,7 @@
                 <version>3.0.0</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
-                    <warName>${name}</warName>
+                    <warName>${build.finalName}</warName>
                 </configuration>
             </plugin>
         </plugins>

@@ -39,11 +39,10 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
 
     /**
      * @author 郭丁志
-     * @Description //TODO 为结果查询字典
+     * @Description // 为结果查询字典
      * @date 23:49 2020/8/9 0009
      * @param result 查询结果
      * @param queryWrapper 查询条件
-     * @return void
      */
     private void queryDict(Object result, Wrapper<T> queryWrapper){
         if (Fc.isNull(result) || (result instanceof List && ((List) result).size() <= 0) ){

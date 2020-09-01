@@ -6,6 +6,7 @@ import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.service.base.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.service.core.params.CoreParamService;
+import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.dbs.dao.core.params.TbCoreParamsDao;
 import com.wlcb.jpower.module.dbs.dao.core.params.mapper.TbCoreParamsMapper;
 import com.wlcb.jpower.module.dbs.entity.core.params.TbCoreParam;
@@ -57,7 +58,7 @@ public class CoreParamServiceImpl extends BaseServiceImpl<TbCoreParamsMapper,TbC
         TbCoreParam coreParam = paramsDao.getById(id);
         Boolean c = paramsDao.removeById(id);
         if (c){
-            redisUtil.remove(CacheNames.PARAMS_REDIS_KEY+coreParam.getCode());
+            CacheUtil.evict(CacheNames.PARAMS_REDIS_CACHE,CacheNames.PARAMS_REDIS_CODE_KEY,coreParam.getCode());
         }
         return c;
     }
@@ -72,7 +73,7 @@ public class CoreParamServiceImpl extends BaseServiceImpl<TbCoreParamsMapper,TbC
         List<TbCoreParam> params = paramsDao.list();
         for (TbCoreParam param : params) {
             if (StringUtils.isNotBlank(param.getValue())){
-                redisUtil.set(CacheNames.PARAMS_REDIS_KEY+param.getCode(),param.getValue());
+                CacheUtil.put(CacheNames.PARAMS_REDIS_CACHE,CacheNames.PARAMS_REDIS_CODE_KEY,param.getCode(),param.getValue());
             }
         }
     }

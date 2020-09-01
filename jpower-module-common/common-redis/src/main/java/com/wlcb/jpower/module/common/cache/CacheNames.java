@@ -20,14 +20,17 @@ public interface CacheNames {
     /** 登陆用户权限缓存KEY **/
     String TOKEN_URL_KEY = "jpower:auth::token:";
 
-    /** 系统参数缓存KEY **/
-    String PARAMS_REDIS_KEY = "jpower:params:";
-
     /** 行政树形区域 **/
-    String CITY_PARENT_REDIS_KEY = "jpower:city:parent";
+    String CITY_PARENT_REDIS_KEY = "jpower:city::list:pcodeTree";
     /** 行政列表区域 **/
-    String CITY_PARENT_LIST_REDIS_KEY = "jpower:city:parentList";
+    String CITY_PARENT_LIST_REDIS_KEY = "jpower:city::list:select";
     /** 行政Code区域 **/
-    String CITY_PARENT_CODE_REDIS_KEY = "jpower:city:parentList";
+    String CITY_PARENT_CODE_REDIS_KEY = "jpower:city::list:parentCode";
 
+    /** 系统参数key（code） **/
+    String PARAMS_REDIS_CODE_KEY = "param:code:";
+
+
+    /** 系统参数缓存 **/
+    String PARAMS_REDIS_CACHE = "jpower:params";
 }

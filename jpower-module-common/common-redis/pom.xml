@@ -23,5 +23,11 @@
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.wlcb</groupId>
+            <artifactId>common-utils</artifactId>
+            <version>${com.jpower.version}</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>

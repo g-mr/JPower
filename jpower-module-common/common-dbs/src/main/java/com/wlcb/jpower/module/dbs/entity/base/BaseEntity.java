@@ -52,7 +52,6 @@ public class BaseEntity implements Serializable {
     private Date updateTime;
 
     @ApiModelProperty(hidden = true)
-    @Excel(name = "状态",readConverterExp="1=正常")
     @TableField(fill = FieldFill.INSERT)
     private Integer status;
 

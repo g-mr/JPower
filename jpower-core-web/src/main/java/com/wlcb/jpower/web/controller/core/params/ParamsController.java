@@ -9,6 +9,7 @@ import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.service.core.params.CoreParamService;
+import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
@@ -74,6 +75,20 @@ public class ParamsController extends BaseController {
         return ReturnJsonUtil.status(paramService.save(coreParam));
     }
 
+    @ApiOperation(value = "通过Code获取参数值",hidden = true)
+    @RequestMapping(value = "/queryByCode",method = RequestMethod.GET,produces="application/json")
+    public ResponseData<String> queryByCode(String code){
+        JpowerAssert.notEmpty(code, JpowerError.Arg,"编号值不可为空");
+        return ReturnJsonUtil.ok("查询成功",paramService.selectByCode(code));
+    }
+
+    @ApiOperation(value = "通过Id获取参数详情")
+    @RequestMapping(value = "/queryById",method = RequestMethod.GET,produces="application/json")
+    public ResponseData<TbCoreParam> queryById(@ApiParam("主键ID") @RequestParam String id){
+        JpowerAssert.notEmpty(id, JpowerError.Arg,"ID不可为空");
+        return ReturnJsonUtil.ok("查询成功",paramService.getById(id));
+    }
+
     @ApiOperation(value = "立即生效一个参数")
     @RequestMapping(value = "/takeEffect",method = RequestMethod.GET,produces="application/json")
     public ResponseData<String> takeEffect(@ApiParam(value = "编码",required = true) @RequestParam String code){
@@ -83,7 +98,7 @@ public class ParamsController extends BaseController {
         JpowerAssert.notTrue(Fc.equals(param.getIsEffect(), ConstantsEnum.YN01.N.getValue()), JpowerError.BUSINESS,"该参数无法立即生效，请重启项目");
 
         if (Fc.isNotEmpty(param) && Fc.isNotBlank(param.getValue())){
-            redisUtil.set(CacheNames.PARAMS_REDIS_KEY+code,param.getValue());
+            CacheUtil.put(CacheNames.PARAMS_REDIS_CACHE,CacheNames.PARAMS_REDIS_CODE_KEY,param.getCode(),param.getValue());
         }else {
             if (Fc.isNull(param)){
                 return ReturnJsonUtil.fail("该参数不存在");

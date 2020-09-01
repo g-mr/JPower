@@ -87,6 +87,7 @@
         <module>jpower-web-file</module>
         <module>jpower-module-gateway</module>
         <module>jpower-boot</module>
+        <module>jpower-core-server</module>
     </modules>
 
     <dependencies>

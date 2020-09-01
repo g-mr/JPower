@@ -1,10 +1,11 @@
-package com.wlcb.jpower.module.common.utils.param;
+package com.wlcb.jpower.config.param;
 
+import com.wlcb.jpower.feign.ParamsClient;
+import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.cache.CacheNames;
-import com.wlcb.jpower.module.common.redis.RedisUtil;
-import com.wlcb.jpower.module.common.service.core.params.CoreParamService;
+import com.wlcb.jpower.module.common.utils.CacheUtil;
+import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SpringUtil;
-import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -14,18 +15,15 @@ import org.apache.commons.lang3.StringUtils;
  * @Date 2020-05-06 14:55
  * @Version 1.0
  */
-@AllArgsConstructor
 public class ParamConfig {
 
-    private static RedisUtil redisUtil;
-    private static CoreParamService paramService;
+    private static ParamsClient paramsClient;
 
     static {
-        redisUtil = SpringUtil.getBean(RedisUtil.class);
-        paramService = SpringUtil.getBean(CoreParamService.class);
+        paramsClient = SpringUtil.getBean(ParamsClient.class);
     }
 
-    private static final String prefix = CacheNames.PARAMS_REDIS_KEY;
+    private static final String PREFIX = CacheNames.PARAMS_REDIS_CODE_KEY;
 
     /**
      * @Author 郭丁志
@@ -33,15 +31,13 @@ public class ParamConfig {
      * @Date 15:47 2020-05-06
      **/
     public static String getString(String code){
-        String vlaue = (String) redisUtil.get(prefix+code);
-        if (StringUtils.isBlank(vlaue)){
-            vlaue = paramService.selectByCode(code);
-
-            if (StringUtils.isNotBlank(vlaue)){
-                redisUtil.set(prefix+code,vlaue);
+        return CacheUtil.get(CacheNames.PARAMS_REDIS_CACHE,PREFIX,code,() -> {
+            ResponseData<String> responseData = paramsClient.queryByCode(code);
+            if (!Fc.isNull(responseData)){
+                return responseData.getData();
             }
-        }
-        return vlaue;
+            return null;
+        });
     }
 
     /**
