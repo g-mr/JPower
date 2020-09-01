@@ -15,9 +15,8 @@ import com.wlcb.jpower.module.common.node.ForestNodeMerger;
 import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.utils.BeanUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.dbs.entity.core.dict.TbCoreDict;
-import com.wlcb.jpower.module.dbs.support.DictSupport;
 import com.wlcb.jpower.module.mp.support.Condition;
+import com.wlcb.jpower.module.support.DictSupport;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -51,8 +50,8 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
 
         List<Field> fields = DictSupport.getDictFiled(queryWrapper.getSqlSelect(),this.getClass());
         if(fields.size() > 0){
-            List<TbCoreDict> dicts = DictSupport.listDict(DictSupport.listDictName(fields));
-            Map<String,List<TbCoreDict>> dictMap =  DictSupport.listDictMap(dicts);
+            List<Map<String,Object>> dicts = DictSupport.listDict(DictSupport.listDictName(fields));
+            Map<String,List<Map<String,Object>>> dictMap =  DictSupport.listDictMap(dicts);
 
             if (dictMap.size() > 0){
                 if (result instanceof List){

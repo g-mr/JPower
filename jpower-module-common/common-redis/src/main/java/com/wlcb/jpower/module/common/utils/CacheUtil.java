@@ -36,6 +36,10 @@ public class CacheUtil {
         return getCacheManager().getCache(cacheName);
     }
 
+    public static <T> T get(String cacheName, String keyPrefix, Object key) {
+        return get(cacheName, keyPrefix, key,null);
+    }
+
     /**
      * @Author 郭丁志
      * @Description //TODO 获取缓存值
@@ -48,7 +52,7 @@ public class CacheUtil {
         try {
             Cache.ValueWrapper valueWrapper = getCache(cacheName).get(keyPrefix.concat(String.valueOf(key)));
             Object value = null;
-            if (valueWrapper == null) {
+            if (Fc.isNull(valueWrapper) && !Fc.isNull(valueLoader)) {
                 T call = valueLoader.call();
                 if (Fc.isNotEmpty(call)) {
                     Field field = ReflectUtil.getAccessibleField(call.getClass(), "id");
@@ -60,7 +64,7 @@ public class CacheUtil {
                     value = call;
                 }
             } else {
-                value = valueWrapper.get();
+                value = Fc.isNull(valueWrapper)?null:valueWrapper.get();
             }
 
             return (T) value;

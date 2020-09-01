@@ -1,6 +1,11 @@
 server:
   port: 81
 
+spring:
+  main:
+    ## @FeignClient(value = "服务名r") 设置可以有多个类存在相同的FeignClient 中的value值
+    allow-bean-definition-overriding: true
+
 #日志打印级别
 logging:
   level:

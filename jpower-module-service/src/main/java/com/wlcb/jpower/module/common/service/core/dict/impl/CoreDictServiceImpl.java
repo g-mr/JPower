@@ -2,8 +2,10 @@ package com.wlcb.jpower.module.common.service.core.dict.impl;
 
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
+import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.service.base.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.service.core.dict.CoreDictService;
+import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author mr.gmac
@@ -42,12 +45,22 @@ public class CoreDictServiceImpl extends BaseServiceImpl<TbCoreDictMapper,TbCore
         }else {
             JpowerAssert.notTrue(coreDictType != null && !StringUtil.equals(dict.getId(),coreDictType.getId()), JpowerError.BUSINESS,"该字典已存在");
         }
+
+        CacheUtil.evict(CacheNames.DICT_REDIS_CACHE,CacheNames.DICT_REDIS_TYPE_MAP_KEY,dict.getDictTypeCode());
         return dictDao.saveOrUpdate(dict);
     }
 
     @Override
     public List<DictVo> listByType(TbCoreDict dict) {
         return dictDao.getBaseMapper().listByType(dict);
+    }
+
+    @Override
+    public List<Map<String, Object>> dictListByTypes(List<String> list) {
+        List<Map<String,Object>> listDict = dictDao.listMaps(Condition.<TbCoreDict>getQueryWrapper().lambda()
+                .select(TbCoreDict::getCode,TbCoreDict::getName,TbCoreDict::getDictTypeCode)
+                .in(TbCoreDict::getDictTypeCode,list));
+        return listDict;
     }
 
 }

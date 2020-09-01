@@ -6,6 +6,7 @@ import com.wlcb.jpower.module.dbs.entity.core.dict.TbCoreDict;
 import com.wlcb.jpower.module.dbs.vo.DictVo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author mr.gmac
@@ -38,4 +39,13 @@ public interface CoreDictService extends BaseService<TbCoreDict> {
      * @return java.util.List<com.wlcb.jpower.module.dbs.vo.DictVo>
      */
     List<DictVo> listByType(TbCoreDict dict);
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 通过多个字典类型查询字典
+     * @date 0:56 2020/9/2 0002
+     * @param list
+     * @return java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
+     */
+    List<Map<String,Object>> dictListByTypes(List<String> list);
 }

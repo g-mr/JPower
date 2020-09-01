@@ -8,6 +8,7 @@ import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.service.core.user.CoreFunctionService;
 import com.wlcb.jpower.module.common.utils.*;
+import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
 import com.wlcb.jpower.module.properties.AuthDefExculdesUrl;
@@ -60,11 +61,11 @@ public class AuthFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest)request;
 
-        //开发环境不走鉴权，测试环境判断是否开启了鉴权
-//        if (Fc.equals(active, AppConstant.DEV_CODE) || (Fc.equals(active,AppConstant.TEST_CODE) && Fc.equals(isLogin,false))){
-//            chain.doFilter(request, response);
-//            return;
-//        }
+//        开发环境不走鉴权，测试环境判断是否开启了鉴权
+        if (Fc.equals(active, AppConstant.DEV_CODE) || (Fc.equals(active,AppConstant.TEST_CODE) && Fc.equals(isLogin,false))){
+            chain.doFilter(request, response);
+            return;
+        }
 
         String currentPath = httpRequest.getServletPath();
 

@@ -4,10 +4,12 @@ import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
+import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.service.core.dict.CoreDictService;
 import com.wlcb.jpower.module.common.service.core.dict.CoreDictTypeService;
+import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
@@ -136,10 +138,16 @@ public class DictController {
         if(coreDictService.count(Condition.<TbCoreDict>getQueryWrapper()
                 .lambda()
                 .in(TbCoreDict::getParentId,Fc.toStrList(ids))) > 0){
-            return ReturnJsonUtil.notFind("请先删除字典");
+            return ReturnJsonUtil.notFind("请先删除下级字典");
         }
 
-        return ReturnJsonUtil.status(coreDictService.removeRealByIds(Fc.toStrList(ids)));
+        List<String> list = Fc.toStrList(ids);
+        List<TbCoreDict> dicts = coreDictService.listByIds(list);
+        if (!Fc.isNull(dicts) && dicts.size() > 0){
+            dicts.forEach(ls -> CacheUtil.evict(CacheNames.DICT_REDIS_CACHE,CacheNames.DICT_REDIS_TYPE_MAP_KEY,ls.getDictTypeCode()));
+        }
+
+        return ReturnJsonUtil.status(coreDictService.removeRealByIds(list));
     }
 
     @ApiOperation("查询字典详情")

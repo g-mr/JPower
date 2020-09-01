@@ -44,6 +44,10 @@ public class SpringUtil implements ApplicationContextAware {
         return (T) context.getBean(beanId);
     }
 
+    public static boolean contains(String beanId) {
+        return context.containsBean(beanId);
+    }
+
     public static <T> T getBean(String beanName, Class<T> clazz) {
         if (null == beanName || "".equals(beanName.trim())) {
             return null;

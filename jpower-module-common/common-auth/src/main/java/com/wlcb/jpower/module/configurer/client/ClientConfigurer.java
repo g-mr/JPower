@@ -24,7 +24,9 @@ public class ClientConfigurer implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         authProperties.getClient().forEach(client -> {
-            registry.addInterceptor(new ClientInterceptor(client.getCode())).addPathPatterns(client.getPath());
+            if (client.getPath().size()>0){
+                registry.addInterceptor(new ClientInterceptor(client.getCode())).addPathPatterns(client.getPath());
+            }
         });
     }
 

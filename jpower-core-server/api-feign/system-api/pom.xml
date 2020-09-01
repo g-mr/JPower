@@ -19,5 +19,11 @@
             <artifactId>common-redis</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.wlcb</groupId>
+            <artifactId>common-dbs</artifactId>
+            <version>${com.jpower.version}</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>
