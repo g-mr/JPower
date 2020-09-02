@@ -50,14 +50,14 @@
                     <groupId>org.springframework.cloud</groupId>
                     <artifactId>spring-cloud-starter-openfeign</artifactId>
                 </exclusion>
-                <exclusion>
-                    <groupId>com.wlcb</groupId>
-                    <artifactId>common-nacos</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.wlcb</groupId>
-                    <artifactId>common-deploy</artifactId>
-                </exclusion>
+<!--                <exclusion>-->
+<!--                    <groupId>com.wlcb</groupId>-->
+<!--                    <artifactId>common-nacos</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>com.wlcb</groupId>-->
+<!--                    <artifactId>common-deploy</artifactId>-->
+<!--                </exclusion>-->
             </exclusions>
         </dependency>
         <dependency>
@@ -68,14 +68,14 @@
                     <groupId>org.springframework.cloud</groupId>
                     <artifactId>spring-cloud-starter-openfeign</artifactId>
                 </exclusion>
-                <exclusion>
-                    <groupId>com.wlcb</groupId>
-                    <artifactId>common-nacos</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.wlcb</groupId>
-                    <artifactId>common-deploy</artifactId>
-                </exclusion>
+<!--                <exclusion>-->
+<!--                    <groupId>com.wlcb</groupId>-->
+<!--                    <artifactId>common-nacos</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>com.wlcb</groupId>-->
+<!--                    <artifactId>common-deploy</artifactId>-->
+<!--                </exclusion>-->
             </exclusions>
         </dependency>
 
