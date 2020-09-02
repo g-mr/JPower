@@ -1,12 +1,11 @@
 package com.wlcb.jpower.auth.granter;
 
+import com.wlcb.jpower.entity.UserDto;
+import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.DigestUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreUserDao;
-import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
-import com.wlcb.jpower.module.mp.support.Condition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +21,7 @@ public class PasswordTokenGranter implements TokenGranter {
 	public static final String GRANT_TYPE = "password";
 
 	@Autowired
-	private TbCoreUserDao coreUserDao;
+	private UserClient client;
 	@Autowired(required = false)
 	private AuthUserInfo authUserInfo;
 
@@ -34,9 +33,10 @@ public class PasswordTokenGranter implements TokenGranter {
 			if (!Fc.isNull(authUserInfo)){
 				return authUserInfo.getPasswordUserInfo(tokenParameter);
 			}else {
-				TbCoreUser result = coreUserDao.getOne(Condition.<TbCoreUser>getQueryWrapper()
-						.lambda().eq(TbCoreUser::getLoginId,account).eq(TbCoreUser::getPassword, DigestUtil.encrypt(password)));
-				return TokenGranterBuilder.toUserInfo(result);
+//				TbCoreUser result = coreUserDao.getOne(Condition.<TbCoreUser>getQueryWrapper()
+//						.lambda().eq(TbCoreUser::getLoginId,account).eq(TbCoreUser::getPassword, DigestUtil.encrypt(password)));
+				UserDto userDto = client.queryUserByLoginIdPwd(account,DigestUtil.encrypt(password)).getData();
+				return TokenGranterBuilder.toUserInfo(userDto);
 			}
 		}
 		return null;

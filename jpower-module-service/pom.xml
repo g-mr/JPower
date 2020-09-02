@@ -23,12 +23,6 @@
             <artifactId>jpower-module-dbs</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.wlcb</groupId>
-            <artifactId>system-api</artifactId>
-            <version>${com.jpower.version}</version>
-        </dependency>
-
     </dependencies>
 
 </project>

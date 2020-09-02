@@ -14,45 +14,6 @@ spring:
         retry:
           enabled: true
 
-#feign配置
-feign:
-  hystrix:
-    enabled: true
-  okhttp:
-    enabled: true
-  httpclient:
-    enabled: false
-
-hystrix:
-  threadpool:
-    default:
-      #并发执行的最大线程数，默认10
-      coreSize: 500
-      #BlockingQueue的最大队列数，默认值-1
-      maxQueueSize: 1200
-      #即使maxQueueSize没有达到，达到queueSizeRejectionThreshold该值后，请求也会被拒绝，默认值5
-      queueSizeRejectionThreshold: 1000
-  command:
-    default:
-      execution:
-        timeout:
-          #enabled设置为false，则请求超时交给ribbon控制
-          enabled: false
-
-#ribbon重试配置
-ribbon:
-  #对当前实例的重试次数
-  MaxAutoRetries: 1
-  #切换实例的重试次数
-  MaxAutoRetriesNextServer: 2
-  #请求处理的超时时间
-  ReadTimeout: 60000
-  #请求连接的超时时间
-  ConnectTimeout: 60000
-  #对所有操作请求都进行重试
-  OkToRetryOnAllOperations: true
-
-
 jpower:
   #  开发环境
   dev:

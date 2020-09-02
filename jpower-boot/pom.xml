@@ -28,14 +28,14 @@
 <!--                        <groupId>com.alibaba.cloud</groupId>-->
 <!--                        <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>-->
 <!--                    </exclusion>-->
-                    <exclusion>
-                        <groupId>com.wlcb</groupId>
-                        <artifactId>common-nacos</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.wlcb</groupId>
-                        <artifactId>common-deploy</artifactId>
-                    </exclusion>
+<!--                    <exclusion>-->
+<!--                        <groupId>com.wlcb</groupId>-->
+<!--                        <artifactId>common-nacos</artifactId>-->
+<!--                    </exclusion>-->
+<!--                    <exclusion>-->
+<!--                        <groupId>com.wlcb</groupId>-->
+<!--                        <artifactId>common-deploy</artifactId>-->
+<!--                    </exclusion>-->
                 </exclusions>
             </dependency>
         </dependencies>
@@ -44,11 +44,35 @@
     <dependencies>
         <dependency>
             <groupId>com.wlcb</groupId>
-            <artifactId>jpower-core-web</artifactId>
+            <artifactId>server-system</artifactId>
+            <version>${com.jpower.version}</version>
             <exclusions>
+<!--                <exclusion>-->
+<!--                    <groupId>org.springframework.cloud</groupId>-->
+<!--                    <artifactId>spring-cloud-starter-openfeign</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>com.wlcb</groupId>-->
+<!--                    <artifactId>common-nacos</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>com.wlcb</groupId>-->
+<!--                    <artifactId>common-deploy</artifactId>-->
+<!--                </exclusion>-->
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.wlcb</groupId>
+            <artifactId>server-user</artifactId>
+            <version>${com.jpower.version}</version>
+            <exclusions>
+<!--                <exclusion>-->
+<!--                    <groupId>org.springframework.cloud</groupId>-->
+<!--                    <artifactId>spring-cloud-starter-openfeign</artifactId>-->
+<!--                </exclusion>-->
                 <exclusion>
-                    <groupId>org.springframework.cloud</groupId>
-                    <artifactId>spring-cloud-starter-openfeign</artifactId>
+                    <groupId>com.wlcb</groupId>
+                    <artifactId>system-api</artifactId>
                 </exclusion>
 <!--                <exclusion>-->
 <!--                    <groupId>com.wlcb</groupId>-->
@@ -64,9 +88,17 @@
             <groupId>com.wlcb</groupId>
             <artifactId>jpower-core-login</artifactId>
             <exclusions>
+<!--                <exclusion>-->
+<!--                    <groupId>org.springframework.cloud</groupId>-->
+<!--                    <artifactId>spring-cloud-starter-openfeign</artifactId>-->
+<!--                </exclusion>-->
                 <exclusion>
-                    <groupId>org.springframework.cloud</groupId>
-                    <artifactId>spring-cloud-starter-openfeign</artifactId>
+                    <groupId>com.wlcb</groupId>
+                    <artifactId>user-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.wlcb</groupId>
+                    <artifactId>system-api</artifactId>
                 </exclusion>
 <!--                <exclusion>-->
 <!--                    <groupId>com.wlcb</groupId>-->

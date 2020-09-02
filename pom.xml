@@ -83,11 +83,11 @@
         <module>jpower-module-dbs</module>
         <module>jpower-module-service</module>
         <module>jpower-core-login</module>
-        <module>jpower-core-web</module>
         <module>jpower-web-file</module>
         <module>jpower-module-gateway</module>
         <module>jpower-boot</module>
         <module>jpower-core-server</module>
+        <module>jpower-core-server/api-feign/user-api</module>
     </modules>
 
     <dependencies>
@@ -247,11 +247,6 @@
             <dependency>
                 <groupId>com.wlcb</groupId>
                 <artifactId>jpower-core-login</artifactId>
-                <version>${com.jpower.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.wlcb</groupId>
-                <artifactId>jpower-core-web</artifactId>
                 <version>${com.jpower.version}</version>
             </dependency>
 

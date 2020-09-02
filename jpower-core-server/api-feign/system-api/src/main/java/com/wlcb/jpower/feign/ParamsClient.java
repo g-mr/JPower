@@ -1,5 +1,6 @@
 package com.wlcb.jpower.feign;
 
+import com.wlcb.jpower.entity.ParamDto;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -29,7 +30,7 @@ public interface ParamsClient {
      * @param id
      * @return com.wlcb.jpower.module.base.vo.ResponseData<java.lang.Boolean>
      */
-//    @GetMapping("/queryById")
-//    ResponseData<TbCoreParam> queryById(@RequestParam String id);
+    @GetMapping("/queryById")
+    ResponseData<ParamDto> queryById(@RequestParam String id);
 
 }

@@ -1,16 +1,13 @@
 package com.wlcb.jpower.auth.granter;
 
 import com.wlcb.jpower.auth.utils.TokenUtil;
+import com.wlcb.jpower.entity.UserDto;
+import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SpringUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
-import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreUserDao;
-import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreUserRoleDao;
-import com.wlcb.jpower.module.dbs.entity.core.role.TbCoreUserRole;
-import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
-import com.wlcb.jpower.module.mp.support.Condition;
 import lombok.AllArgsConstructor;
 
 import java.util.Date;
@@ -33,12 +30,10 @@ public class TokenGranterBuilder {
      */
     private static Map<String, TokenGranter> granterPool = new ConcurrentHashMap<>();
 
-    private static TbCoreUserRoleDao coreUserRoleDao;
-    private static TbCoreUserDao coreUserDao;
+    private static UserClient userClient;
 
     static {
-        coreUserRoleDao = SpringUtil.getBean(TbCoreUserRoleDao.class);
-        coreUserDao = SpringUtil.getBean(TbCoreUserDao.class);
+        userClient = SpringUtil.getBean(UserClient.class);
 
 
         granterPool.put(PasswordTokenGranter.GRANT_TYPE, SpringUtil.getBean(PasswordTokenGranter.class));
@@ -64,7 +59,7 @@ public class TokenGranterBuilder {
     }
 
 
-    public static UserInfo toUserInfo(TbCoreUser result) {
+    public static UserInfo toUserInfo(UserDto result) {
         UserInfo userInfo = null;
         if(result != null){
 
@@ -72,8 +67,9 @@ public class TokenGranterBuilder {
                 throw new BusinessException(TokenUtil.USER_NOT_ACTIVATION);
             }
 
-            List list  = coreUserRoleDao.listObjs(Condition.<TbCoreUserRole>getQueryWrapper()
-                    .lambda().select(TbCoreUserRole::getRoleId).eq(TbCoreUserRole::getUserId,result.getId()));
+//            List<String> list  = coreUserRoleDao.listObjs(Condition.<TbCoreUserRole>getQueryWrapper()
+//                    .lambda().select(TbCoreUserRole::getRoleId).eq(TbCoreUserRole::getUserId,result.getId()));
+            List<String> list  = userClient.getRoleIds(result.getId()).getData();
             userInfo = new UserInfo();
             userInfo.setUserId(result.getId());
             userInfo.setIsSysUser(0);
@@ -89,7 +85,8 @@ public class TokenGranterBuilder {
             // TODO: 2020-07-28 登录成功要刷新用户登录数据
             result.setLastLoginTime(new Date());
             result.setLoginCount((result.getLoginCount()==null?0:result.getLoginCount())+1);
-            coreUserDao.updateById(result);
+//            coreUserDao.updateById(result);
+            userClient.updateUserLoginInfo(result);
         }
         return userInfo;
     }

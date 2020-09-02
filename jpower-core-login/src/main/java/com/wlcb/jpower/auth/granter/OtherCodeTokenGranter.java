@@ -1,11 +1,10 @@
 package com.wlcb.jpower.auth.granter;
 
+import com.wlcb.jpower.entity.UserDto;
+import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreUserDao;
-import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
-import com.wlcb.jpower.module.mp.support.Condition;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,7 +21,8 @@ public class OtherCodeTokenGranter implements TokenGranter {
     public static final String GRANT_TYPE = "otherCode";
 
     @Autowired
-    protected TbCoreUserDao coreUserDao;
+    protected UserClient userClient;
+//    protected TbCoreUserDao coreUserDao;
     @Autowired(required = false)
     private AuthUserInfo authUserInfo;
 
@@ -34,8 +34,9 @@ public class OtherCodeTokenGranter implements TokenGranter {
             if (!Fc.isNull(authUserInfo)){
                 return authUserInfo.getOtherCodeUserInfo(tokenParameter);
             }else {
-                TbCoreUser result = coreUserDao.getOne(Condition.<TbCoreUser>getQueryWrapper()
-                        .lambda().eq(TbCoreUser::getOtherCode,otherCode));
+//                TbCoreUser result = coreUserDao.getOne(Condition.<TbCoreUser>getQueryWrapper()
+//                        .lambda().eq(TbCoreUser::getOtherCode,otherCode));
+                UserDto result = userClient.queryUserByCode(otherCode).getData();
                 return TokenGranterBuilder.toUserInfo(result);
             }
 

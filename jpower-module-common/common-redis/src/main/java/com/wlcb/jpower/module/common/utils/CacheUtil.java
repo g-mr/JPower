@@ -36,8 +36,8 @@ public class CacheUtil {
         return getCacheManager().getCache(cacheName);
     }
 
-    public static <T> T get(String cacheName, String keyPrefix, Object key) {
-        return get(cacheName, keyPrefix, key,null);
+    public static <T> T get(String cacheName, String keyPrefix, Object key,Class<T> clz) {
+        return getCache(cacheName).get(keyPrefix.concat(Fc.toStr(key)), clz);
     }
 
     /**

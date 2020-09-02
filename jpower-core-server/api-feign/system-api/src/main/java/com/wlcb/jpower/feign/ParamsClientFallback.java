@@ -1,5 +1,6 @@
 package com.wlcb.jpower.feign;
 
+import com.wlcb.jpower.entity.ParamDto;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,11 @@ public class ParamsClientFallback implements ParamsClient {
 
     @Override
     public ResponseData<String> queryByCode(String code) {
+        return ReturnJsonUtil.fail("查询失败");
+    }
+
+    @Override
+    public ResponseData<ParamDto> queryById(String id) {
         return ReturnJsonUtil.fail("查询失败");
     }
 }

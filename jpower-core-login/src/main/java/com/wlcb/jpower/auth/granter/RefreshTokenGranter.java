@@ -1,6 +1,8 @@
 package com.wlcb.jpower.auth.granter;
 
 import com.wlcb.jpower.auth.utils.TokenUtil;
+import com.wlcb.jpower.entity.UserDto;
+import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.common.auth.UserInfo;
@@ -8,8 +10,6 @@ import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.JwtUtil;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
-import com.wlcb.jpower.module.dbs.dao.core.user.TbCoreUserDao;
-import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,7 +27,8 @@ public class RefreshTokenGranter implements TokenGranter {
 	public static final String GRANT_TYPE = "refresh_token";
 
 	@Autowired
-	private TbCoreUserDao coreUserDao;
+	private UserClient userClient;
+//	private TbCoreUserDao coreUserDao;
 	@Autowired(required = false)
 	private AuthUserInfo authUserInfo;
 
@@ -47,7 +48,8 @@ public class RefreshTokenGranter implements TokenGranter {
 				if (!Fc.isNull(authUserInfo)){
 					return authUserInfo.getRefreshUserInfo(userType,userId);
 				}else {
-					TbCoreUser result = coreUserDao.getById(userId);
+//					TbCoreUser result = coreUserDao.getById(userId);
+					UserDto result = userClient.get(userId).getData();
 					return TokenGranterBuilder.toUserInfo(result);
 				}
 			}

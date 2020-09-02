@@ -16,6 +16,8 @@
     <modules>
         <module>server-system</module>
         <module>api-feign</module>
+        <module>server-user</module>
+        <module>server-file</module>
     </modules>
 
     <dependencyManagement>
@@ -24,7 +26,6 @@
                 <groupId>com.wlcb</groupId>
                 <artifactId>common-tool</artifactId>
                 <version>${com.jpower.version}</version>
-                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
