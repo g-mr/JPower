@@ -87,7 +87,6 @@
         <module>jpower-module-gateway</module>
         <module>jpower-boot</module>
         <module>jpower-core-server</module>
-        <module>jpower-core-server/api-feign/user-api</module>
     </modules>
 
     <dependencies>

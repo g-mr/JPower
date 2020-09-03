@@ -14,6 +14,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>system-api</module>
+        <module>user-api</module>
     </modules>
 
     <dependencyManagement>
