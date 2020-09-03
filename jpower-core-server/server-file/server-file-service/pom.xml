@@ -3,31 +3,20 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>jpower-module-common</artifactId>
+        <artifactId>server-file</artifactId>
         <groupId>com.wlcb</groupId>
         <version>1.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>common-auth</artifactId>
+    <artifactId>server-file-service</artifactId>
 
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
             <groupId>com.wlcb</groupId>
-            <artifactId>common-swagger</artifactId>
-            <version>${com.jpower.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jdbc</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt</artifactId>
-            <scope>provided</scope>
+            <artifactId>common-tool</artifactId>
         </dependency>
     </dependencies>
 </project>

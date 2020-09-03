@@ -11,12 +11,11 @@
 
     <artifactId>server-file</artifactId>
 
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
+    <modules>
+        <module>server-file-controller</module>
+        <module>server-file-service</module>
+        <module>server-file-feign</module>
+    </modules>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.wlcb</groupId>
-            <artifactId>common-tool</artifactId>
-        </dependency>
-    </dependencies>
 </project>
