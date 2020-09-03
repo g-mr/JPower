@@ -59,8 +59,8 @@ public class JwtUtil {
         Cookie[] cookies = request.getCookies();
         if (cookies!=null && cookies.length>0){
             for (Cookie cookie : cookies) {
-                if (StringUtils.equals(cookie.getName(),HEADER) && cookie.getValue().length() > AUTH_LENGTH ){
-                    if (cookie.getValue().compareTo(JPOWER) == 0) {
+                if (StringUtils.equals(cookie.getName(),HEADER)){
+                    if (Fc.isNotBlank(cookie.getValue())) {
                         auth = cookie.getValue().substring(AUTH_LENGTH);
                         return auth;
                     }
@@ -69,11 +69,9 @@ public class JwtUtil {
         }
 
         String parameter = request.getParameter(HEADER);
-        if (StringUtil.isNotBlank(parameter)&& parameter.length() > AUTH_LENGTH) {
-            if (parameter.compareTo(JPOWER) == 0) {
-                auth = parameter.substring(AUTH_LENGTH);
-                return auth;
-            }
+        if (StringUtil.isNotBlank(parameter)) {
+            auth = parameter.substring(AUTH_LENGTH);
+            return auth;
         }
         return null;
     }
