@@ -12,6 +12,7 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 
 /**
@@ -48,13 +49,13 @@ public class XssFilter implements Filter {
     }
 
     private boolean handleExcludeURL(HttpServletRequest request, HttpServletResponse response) {
-
-        if (xssProperties.getExcludes() == null || xssProperties.getExcludes().isEmpty()) {
+        List<String> list = xssProperties.getExcludes();
+        if (list == null || list.isEmpty()) {
             return false;
         }
 
         String url = request.getServletPath();
-        for (String pattern : xssProperties.getExcludes()) {
+        for (String pattern : list) {
             if (StringUtil.wildcardEquals(pattern,url)){
                 return true;
             }
