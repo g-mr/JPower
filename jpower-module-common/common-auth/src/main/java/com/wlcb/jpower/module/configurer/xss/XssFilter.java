@@ -1,6 +1,5 @@
 package com.wlcb.jpower.module.configurer.xss;
 
-import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.properties.XssProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -12,7 +11,6 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
 
 /**
@@ -49,19 +47,22 @@ public class XssFilter implements Filter {
     }
 
     private boolean handleExcludeURL(HttpServletRequest request, HttpServletResponse response) {
-        List<String> list = xssProperties.getExcludes();
-        if (list == null || list.isEmpty()) {
-            return false;
-        }
-
-        String url = request.getServletPath();
-        for (String pattern : list) {
-            if (StringUtil.wildcardEquals(pattern,url)){
-                return true;
-            }
-        }
-
-        return false;
+//        List<String> list = xssProperties.getExcludes();
+//        if (list == null || list.isEmpty()) {
+//            return false;
+//        }
+//
+//        String url = request.getServletPath();
+//        for (String pattern : list) {
+//            if (Fc.isNotBlank(pattern) && Fc.isNotBlank(url) && !Fc.equals(url,"/")){
+//                if (StringUtil.wildcardEquals(pattern,url)){
+//                    return true;
+//                }
+//            }
+//        }
+//
+//        return false;
+        return true;
     }
 
 }
