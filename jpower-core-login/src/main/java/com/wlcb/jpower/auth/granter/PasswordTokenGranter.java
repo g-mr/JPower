@@ -1,6 +1,6 @@
 package com.wlcb.jpower.auth.granter;
 
-import com.wlcb.jpower.entity.UserDto;
+import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.support.ChainMap;
@@ -35,8 +35,8 @@ public class PasswordTokenGranter implements TokenGranter {
 			}else {
 //				TbCoreUser result = coreUserDao.getOne(Condition.<TbCoreUser>getQueryWrapper()
 //						.lambda().eq(TbCoreUser::getLoginId,account).eq(TbCoreUser::getPassword, DigestUtil.encrypt(password)));
-				UserDto userDto = client.queryUserByLoginIdPwd(account,DigestUtil.encrypt(password)).getData();
-				return TokenGranterBuilder.toUserInfo(userDto);
+				TbCoreUser result = client.queryUserByLoginIdPwd(account,DigestUtil.encrypt(password)).getData();
+				return TokenGranterBuilder.toUserInfo(result);
 			}
 		}
 		return null;

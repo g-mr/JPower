@@ -18,25 +18,7 @@
         <dependencies>
             <dependency>
                 <groupId>com.wlcb</groupId>
-                <artifactId>jpower-web-file</artifactId>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework.cloud</groupId>
-                        <artifactId>spring-cloud-starter-openfeign</artifactId>
-                    </exclusion>
-<!--                    <exclusion>-->
-<!--                        <groupId>com.alibaba.cloud</groupId>-->
-<!--                        <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>-->
-<!--                    </exclusion>-->
-<!--                    <exclusion>-->
-<!--                        <groupId>com.wlcb</groupId>-->
-<!--                        <artifactId>common-nacos</artifactId>-->
-<!--                    </exclusion>-->
-<!--                    <exclusion>-->
-<!--                        <groupId>com.wlcb</groupId>-->
-<!--                        <artifactId>common-deploy</artifactId>-->
-<!--                    </exclusion>-->
-                </exclusions>
+                <artifactId>server-file-controller</artifactId>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -44,70 +26,30 @@
     <dependencies>
         <dependency>
             <groupId>com.wlcb</groupId>
-            <artifactId>server-system</artifactId>
+            <artifactId>server-system-controller</artifactId>
             <version>${com.jpower.version}</version>
             <exclusions>
-<!--                <exclusion>-->
-<!--                    <groupId>org.springframework.cloud</groupId>-->
-<!--                    <artifactId>spring-cloud-starter-openfeign</artifactId>-->
-<!--                </exclusion>-->
-<!--                <exclusion>-->
-<!--                    <groupId>com.wlcb</groupId>-->
-<!--                    <artifactId>common-nacos</artifactId>-->
-<!--                </exclusion>-->
-<!--                <exclusion>-->
-<!--                    <groupId>com.wlcb</groupId>-->
-<!--                    <artifactId>common-deploy</artifactId>-->
-<!--                </exclusion>-->
             </exclusions>
         </dependency>
         <dependency>
             <groupId>com.wlcb</groupId>
-            <artifactId>server-user</artifactId>
+            <artifactId>server-user-controller</artifactId>
             <version>${com.jpower.version}</version>
             <exclusions>
-<!--                <exclusion>-->
-<!--                    <groupId>org.springframework.cloud</groupId>-->
-<!--                    <artifactId>spring-cloud-starter-openfeign</artifactId>-->
-<!--                </exclusion>-->
-                <exclusion>
-                    <groupId>com.wlcb</groupId>
-                    <artifactId>system-api</artifactId>
-                </exclusion>
-<!--                <exclusion>-->
-<!--                    <groupId>com.wlcb</groupId>-->
-<!--                    <artifactId>common-nacos</artifactId>-->
-<!--                </exclusion>-->
-<!--                <exclusion>-->
-<!--                    <groupId>com.wlcb</groupId>-->
-<!--                    <artifactId>common-deploy</artifactId>-->
-<!--                </exclusion>-->
             </exclusions>
         </dependency>
         <dependency>
             <groupId>com.wlcb</groupId>
             <artifactId>jpower-core-login</artifactId>
             <exclusions>
-<!--                <exclusion>-->
-<!--                    <groupId>org.springframework.cloud</groupId>-->
-<!--                    <artifactId>spring-cloud-starter-openfeign</artifactId>-->
-<!--                </exclusion>-->
                 <exclusion>
                     <groupId>com.wlcb</groupId>
-                    <artifactId>user-api</artifactId>
+                    <artifactId>common-nacos</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>com.wlcb</groupId>
-                    <artifactId>system-api</artifactId>
+                    <artifactId>common-deploy</artifactId>
                 </exclusion>
-<!--                <exclusion>-->
-<!--                    <groupId>com.wlcb</groupId>-->
-<!--                    <artifactId>common-nacos</artifactId>-->
-<!--                </exclusion>-->
-<!--                <exclusion>-->
-<!--                    <groupId>com.wlcb</groupId>-->
-<!--                    <artifactId>common-deploy</artifactId>-->
-<!--                </exclusion>-->
             </exclusions>
         </dependency>
 
@@ -118,20 +60,4 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <resources>
-            <!-- 编译 src/main/java 目录下的 mapper 文件 -->
-            <resource>
-                <directory>src/main/java</directory>
-                <includes>
-                    <include>**/*.xml</include>
-                </includes>
-                <filtering>false</filtering>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-            <!-- ......用于扫描 dao 文件下的mapper 文件................. end -->
-        </resources>
-    </build>
 </project>

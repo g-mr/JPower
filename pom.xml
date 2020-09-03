@@ -80,10 +80,7 @@
 
     <modules>
         <module>jpower-module-common</module>
-        <module>jpower-module-dbs</module>
-        <module>jpower-module-service</module>
         <module>jpower-core-login</module>
-        <module>jpower-web-file</module>
         <module>jpower-module-gateway</module>
         <module>jpower-boot</module>
         <module>jpower-core-server</module>
@@ -93,6 +90,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
+            <scope>provided</scope>
         </dependency>
 
 <!--        <dependency>-->
@@ -111,6 +109,7 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
             <version>${spring.context.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -235,23 +234,7 @@
             </dependency>
             <dependency>
                 <groupId>com.wlcb</groupId>
-                <artifactId>jpower-module-dbs</artifactId>
-                <version>${com.jpower.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.wlcb</groupId>
-                <artifactId>jpower-module-service</artifactId>
-                <version>${com.jpower.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.wlcb</groupId>
                 <artifactId>jpower-core-login</artifactId>
-                <version>${com.jpower.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.wlcb</groupId>
-                <artifactId>jpower-web-file</artifactId>
                 <version>${com.jpower.version}</version>
             </dependency>
 
@@ -290,6 +273,20 @@
                 </configuration>
             </plugin>
         </plugins>
+        <resources>
+            <!-- 编译 src/main/java 目录下的 mapper 文件 -->
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <!-- ......用于扫描 dao 文件下的mapper 文件................. end -->
+        </resources>
         <testResources>
             <testResource>
                 <directory>src/test/resources</directory>

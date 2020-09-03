@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class BootStartApplication {
 
     public static void main(String[] args) {
-//        JpowerApplication.run(AppConstant.JPOWER, BootStartApplication.class,args);
         SpringApplication.run(BootStartApplication.class,args);
     }
 

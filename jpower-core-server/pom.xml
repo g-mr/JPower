@@ -15,20 +15,18 @@
 
     <modules>
         <module>server-system</module>
-        <module>api-feign</module>
         <module>server-user</module>
         <module>server-file</module>
     </modules>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.wlcb</groupId>
-                <artifactId>common-tool</artifactId>
-                <version>${com.jpower.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>com.wlcb</groupId>
+            <artifactId>common-tool</artifactId>
+            <version>${com.jpower.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
     <build>
         <resources>

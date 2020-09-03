@@ -24,6 +24,12 @@
             <groupId>com.wlcb</groupId>
             <artifactId>server-file-feign</artifactId>
             <version>${com.jpower.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.wlcb</groupId>
+                    <artifactId>server-file-service</artifactId>
+                </exclusion></exclusions>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

@@ -1,6 +1,6 @@
 package com.wlcb.jpower.auth.granter;
 
-import com.wlcb.jpower.entity.UserDto;
+import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.support.ChainMap;
@@ -36,7 +36,7 @@ public class OtherCodeTokenGranter implements TokenGranter {
             }else {
 //                TbCoreUser result = coreUserDao.getOne(Condition.<TbCoreUser>getQueryWrapper()
 //                        .lambda().eq(TbCoreUser::getOtherCode,otherCode));
-                UserDto result = userClient.queryUserByCode(otherCode).getData();
+                TbCoreUser result = userClient.queryUserByCode(otherCode).getData();
                 return TokenGranterBuilder.toUserInfo(result);
             }
 

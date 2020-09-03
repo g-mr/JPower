@@ -13,10 +13,4 @@
 
     <packaging>jar</packaging>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.wlcb</groupId>
-            <artifactId>common-tool</artifactId>
-        </dependency>
-    </dependencies>
 </project>

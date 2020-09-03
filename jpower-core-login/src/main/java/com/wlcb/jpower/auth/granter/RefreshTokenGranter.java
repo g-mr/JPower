@@ -1,7 +1,7 @@
 package com.wlcb.jpower.auth.granter;
 
 import com.wlcb.jpower.auth.utils.TokenUtil;
-import com.wlcb.jpower.entity.UserDto;
+import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
@@ -49,7 +49,7 @@ public class RefreshTokenGranter implements TokenGranter {
 					return authUserInfo.getRefreshUserInfo(userType,userId);
 				}else {
 //					TbCoreUser result = coreUserDao.getById(userId);
-					UserDto result = userClient.get(userId).getData();
+					TbCoreUser result = userClient.get(userId).getData();
 					return TokenGranterBuilder.toUserInfo(result);
 				}
 			}

@@ -1,7 +1,7 @@
 package com.wlcb.jpower.auth.granter;
 
 import com.wlcb.jpower.auth.utils.TokenUtil;
-import com.wlcb.jpower.entity.UserDto;
+import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.common.auth.UserInfo;
@@ -59,7 +59,7 @@ public class TokenGranterBuilder {
     }
 
 
-    public static UserInfo toUserInfo(UserDto result) {
+    public static UserInfo toUserInfo(TbCoreUser result) {
         UserInfo userInfo = null;
         if(result != null){
 

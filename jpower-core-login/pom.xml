@@ -15,14 +15,16 @@
 
         <dependency>
             <groupId>com.wlcb</groupId>
-            <artifactId>user-api</artifactId>
+            <artifactId>server-user-feign</artifactId>
             <version>${com.jpower.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>com.wlcb</groupId>
-            <artifactId>system-api</artifactId>
+            <artifactId>server-system-feign</artifactId>
             <version>${com.jpower.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

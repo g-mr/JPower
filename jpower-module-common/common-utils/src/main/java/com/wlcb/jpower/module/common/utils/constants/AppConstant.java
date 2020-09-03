@@ -39,4 +39,7 @@ public interface AppConstant {
     /** 用户模块 **/
     String JPOWER_USER = "jpower-user";
 
+    /** 文件模块名称 **/
+    String JPOWER_FILE = "jpower-file";
+
 }

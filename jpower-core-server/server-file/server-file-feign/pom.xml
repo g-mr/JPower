@@ -18,7 +18,11 @@
             <groupId>com.wlcb</groupId>
             <artifactId>server-file-service</artifactId>
             <version>${com.jpower.version}</version>
-            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
     </dependencies>
 </project>

@@ -1,7 +1,7 @@
 package com.wlcb.jpower.auth.granter;
 
 import com.wlcb.jpower.auth.utils.TokenUtil;
-import com.wlcb.jpower.entity.UserDto;
+import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.common.auth.UserInfo;
@@ -53,7 +53,7 @@ public class PhoneTokenGranter implements TokenGranter {
             }else {
 //                TbCoreUser result = coreUserDao.getOne(Condition.<TbCoreUser>getQueryWrapper()
 //                        .lambda().eq(TbCoreUser::getTelephone,phone));
-                UserDto result = userClient.queryUserByPhone(phone).getData();
+                TbCoreUser result = userClient.queryUserByPhone(phone).getData();
                 return TokenGranterBuilder.toUserInfo(result);
             }
         }

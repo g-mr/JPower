@@ -11,22 +11,11 @@
 
     <artifactId>server-system</artifactId>
 
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.wlcb</groupId>
-            <artifactId>common-tool</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
-        </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.wlcb</groupId>-->
-<!--            <artifactId>system-api</artifactId>-->
-<!--            <version>${com.jpower.version}</version>-->
-<!--        </dependency>-->
-    </dependencies>
-
+    <modules>
+        <module>server-system-controller</module>
+        <module>server-system-service</module>
+        <module>server-system-feign</module>
+    </modules>
 </project>

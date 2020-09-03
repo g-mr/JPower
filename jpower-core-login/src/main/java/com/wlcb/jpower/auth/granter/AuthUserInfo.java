@@ -1,6 +1,6 @@
 package com.wlcb.jpower.auth.granter;
 
-import com.wlcb.jpower.entity.UserDto;
+import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.support.ChainMap;
@@ -28,7 +28,7 @@ public interface AuthUserInfo {
 
 //        TbCoreUser result = SpringUtil.getBean(TbCoreUserDao.class).getOne(Condition.<TbCoreUser>getQueryWrapper()
 //                .lambda().eq(TbCoreUser::getLoginId,account).eq(TbCoreUser::getPassword, DigestUtil.encrypt(password)));
-        UserDto result = SpringUtil.getBean(UserClient.class).queryUserByLoginIdPwd(account, DigestUtil.encrypt(password)).getData();
+        TbCoreUser result = SpringUtil.getBean(UserClient.class).queryUserByLoginIdPwd(account, DigestUtil.encrypt(password)).getData();
         return TokenGranterBuilder.toUserInfo(result);
     }
 
@@ -54,7 +54,7 @@ public interface AuthUserInfo {
     default UserInfo getOtherCodeUserInfo(ChainMap tokenParameter){
         String otherCode = tokenParameter.getStr("otherCode");
 
-        UserDto result = SpringUtil.getBean(UserClient.class).queryUserByCode(otherCode).getData();
+        TbCoreUser result = SpringUtil.getBean(UserClient.class).queryUserByCode(otherCode).getData();
 //        TbCoreUser result = SpringUtil.getBean(TbCoreUserDao.class).getOne(Condition.<TbCoreUser>getQueryWrapper()
 //                .lambda().eq(TbCoreUser::getOtherCode,otherCode));
         return TokenGranterBuilder.toUserInfo(result);
@@ -70,7 +70,7 @@ public interface AuthUserInfo {
      */
     default UserInfo getRefreshUserInfo(String userType,String userId){
 //        TbCoreUser result = SpringUtil.getBean(TbCoreUserDao.class).getById(userId);
-        UserDto result = SpringUtil.getBean(UserClient.class).get(userId).getData();
+        TbCoreUser result = SpringUtil.getBean(UserClient.class).get(userId).getData();
         return TokenGranterBuilder.toUserInfo(result);
     }
 
@@ -85,7 +85,7 @@ public interface AuthUserInfo {
         String phone = tokenParameter.getStr("phone");
 //        TbCoreUser result = SpringUtil.getBean(TbCoreUserDao.class).getOne(Condition.<TbCoreUser>getQueryWrapper()
 //                .lambda().eq(TbCoreUser::getTelephone,phone));
-        UserDto result = SpringUtil.getBean(UserClient.class).queryUserByPhone(phone).getData();
+        TbCoreUser result = SpringUtil.getBean(UserClient.class).queryUserByPhone(phone).getData();
         return TokenGranterBuilder.toUserInfo(result);
     }
 

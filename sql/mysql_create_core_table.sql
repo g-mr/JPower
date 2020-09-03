@@ -226,7 +226,6 @@ drop table if exists tb_core_client;
 create table tb_core_client(
   id varchar(32) comment '主键',
   name varchar(128) comment '客户端名称',
-  role_ids varchar(512) comment '角色ID，多个用逗号分割；all代表有全部权限',
   client_code varchar(31) not null comment '客户端CODE，唯一约束',
   client_secret varchar(31) not null comment '客户端密钥',
   access_token_validity int(10) default 0 not null comment 'token过期时间，单位秒',
