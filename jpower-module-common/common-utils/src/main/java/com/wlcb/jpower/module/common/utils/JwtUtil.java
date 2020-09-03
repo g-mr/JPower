@@ -61,7 +61,7 @@ public class JwtUtil {
             for (Cookie cookie : cookies) {
                 if (StringUtils.equals(cookie.getName(),HEADER)){
                     if (Fc.isNotBlank(cookie.getValue())) {
-                        auth = cookie.getValue().substring(AUTH_LENGTH);
+                        auth = cookie.getValue();
                         return auth;
                     }
                 }
@@ -70,7 +70,7 @@ public class JwtUtil {
 
         String parameter = request.getParameter(HEADER);
         if (StringUtil.isNotBlank(parameter)) {
-            auth = parameter.substring(AUTH_LENGTH);
+            auth = parameter;
             return auth;
         }
         return null;
