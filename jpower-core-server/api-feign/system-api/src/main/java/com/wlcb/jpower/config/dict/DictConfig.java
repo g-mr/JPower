@@ -35,7 +35,7 @@ public class DictConfig implements DictResult {
 
         list.forEach(type -> {
 
-            List<Map<String, Object>> ls = CacheUtil.get(CacheNames.DICT_REDIS_CACHE,CacheNames.DICT_REDIS_TYPE_MAP_KEY,type);
+            List<Map<String, Object>> ls = CacheUtil.get(CacheNames.DICT_REDIS_CACHE,CacheNames.DICT_REDIS_TYPE_MAP_KEY,type,List.class);
             if (Fc.isNull(ls)){
                 listType.add(type);
             }else {

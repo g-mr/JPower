@@ -15,7 +15,20 @@
 
         <dependency>
             <groupId>com.wlcb</groupId>
-            <artifactId>jpower-module-service</artifactId>
+            <artifactId>user-api</artifactId>
+            <version>${com.jpower.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wlcb</groupId>
+            <artifactId>system-api</artifactId>
+            <version>${com.jpower.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wlcb</groupId>
+            <artifactId>common-tool</artifactId>
+            <version>${com.jpower.version}</version>
         </dependency>
 
     </dependencies>

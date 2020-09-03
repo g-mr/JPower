@@ -1,5 +1,20 @@
 #通用开发环境配置
 
+#redis配置
+spring:
+  redis:
+    #redis 单机环境配置
+    host: 192.168.128.104
+    port: 6379
+    password: Wlcb20200515
+    database: 99
+    timeout: 5000
+    ssl: false
+    #redis 集群环境配置
+    #cluster:
+    #  nodes: 127.0.0.1:7001,127.0.0.1:7002,127.0.0.1:7003
+    #  commandTimeout: 5000
+
 jpower:
   test:
     nacos:

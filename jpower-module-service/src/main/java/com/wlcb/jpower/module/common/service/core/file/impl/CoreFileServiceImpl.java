@@ -1,7 +1,7 @@
 package com.wlcb.jpower.module.common.service.core.file.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.wlcb.jpower.module.common.service.base.impl.BaseServiceImpl;
+import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.service.core.file.CoreFileService;
 import com.wlcb.jpower.module.dbs.dao.core.file.TbCoreFileDao;
 import com.wlcb.jpower.module.dbs.dao.core.file.mapper.TbCoreFileMapper;

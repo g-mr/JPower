@@ -1,10 +1,10 @@
 package com.wlcb.jpower.config.dict;
 
 import com.wlcb.jpower.module.common.cache.CacheNames;
-import com.wlcb.jpower.module.common.service.core.dict.CoreDictService;
 import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.support.DictResult;
+import com.wlcb.jpower.service.dict.CoreDictService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -34,7 +34,7 @@ public class DictConfig implements DictResult {
         
         list.forEach(type -> {
 
-            List<Map<String, Object>> ls = CacheUtil.get(CacheNames.DICT_REDIS_CACHE,CacheNames.DICT_REDIS_TYPE_MAP_KEY,type);
+            List<Map<String, Object>> ls = CacheUtil.get(CacheNames.DICT_REDIS_CACHE,CacheNames.DICT_REDIS_TYPE_MAP_KEY,type,List.class);
             if (Fc.isNull(ls)){
                 listType.add(type);
             }else {

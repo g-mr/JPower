@@ -1,9 +1,9 @@
 package com.wlcb.jpower.config.param;
 
 import com.wlcb.jpower.module.common.cache.CacheNames;
-import com.wlcb.jpower.module.common.service.core.params.CoreParamService;
 import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.SpringUtil;
+import com.wlcb.jpower.service.params.CoreParamService;
 import org.apache.commons.lang3.StringUtils;
 
 /**

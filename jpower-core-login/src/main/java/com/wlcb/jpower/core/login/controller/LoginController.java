@@ -6,6 +6,9 @@ import com.wlcb.jpower.auth.AuthInfo;
 import com.wlcb.jpower.auth.granter.TokenGranter;
 import com.wlcb.jpower.auth.granter.TokenGranterBuilder;
 import com.wlcb.jpower.auth.utils.TokenUtil;
+import com.wlcb.jpower.entity.UserDto;
+import com.wlcb.jpower.feign.SystemClient;
+import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
@@ -13,12 +16,10 @@ import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.redis.RedisUtil;
-import com.wlcb.jpower.module.common.service.core.user.CoreFunctionService;
-import com.wlcb.jpower.module.common.service.core.user.CoreUserService;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
-import com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser;
+import com.wlcb.jpower.utils.SmsAliyun;
 import io.swagger.annotations.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -41,9 +42,11 @@ import java.util.concurrent.TimeUnit;
 public class LoginController extends BaseController {
 
     @Resource
-    private CoreUserService coreUserService;
+//    private CoreUserService coreUserService;
+    private UserClient userClient;
     @Resource
-    private CoreFunctionService coreFunctionService;
+//    private CoreFunctionService coreFunctionService;
+    private SystemClient systemClient;
     @Resource
     private RedisUtil redisUtil;
 
@@ -90,9 +93,11 @@ public class LoginController extends BaseController {
 
         AuthInfo authInfo = TokenUtil.createAuthInfo(userInfo);
 
-        coreFunctionService.putRedisAllFunctionByRoles(userInfo.getRoleIds(),authInfo.getExpiresIn(),authInfo.getAccessToken());
-
-        return ReturnJsonUtil.ok("登录成功",authInfo);
+//        coreFunctionService.putRedisAllFunctionByRoles(userInfo.getRoleIds(),authInfo.getExpiresIn(),authInfo.getAccessToken());
+        if (systemClient.putRedisAllFunctionByRoles(userInfo.getRoleIds(),authInfo.getExpiresIn(),authInfo.getAccessToken())){
+            return ReturnJsonUtil.ok("登录成功",authInfo);
+        }
+        return ReturnJsonUtil.fail("登录失败");
     }
 
     @ApiOperation(value = "退出登录")
@@ -132,7 +137,8 @@ public class LoginController extends BaseController {
             return ReturnJsonUtil.fail("该验证码已经发送，请一分钟后重试");
         }
 
-        TbCoreUser user = coreUserService.selectByPhone(phone);
+//        TbCoreUser user = coreUserService.selectByPhone(phone);
+        UserDto user = userClient.queryUserByPhone(phone).getData();
 
         if (user == null){
             //用户名空则返回

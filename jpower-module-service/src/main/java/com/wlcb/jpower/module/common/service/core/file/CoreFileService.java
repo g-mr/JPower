@@ -1,7 +1,7 @@
 package com.wlcb.jpower.module.common.service.core.file;
 
 
-import com.wlcb.jpower.module.common.service.base.BaseService;
+import com.wlcb.jpower.module.common.service.BaseService;
 import com.wlcb.jpower.module.dbs.entity.core.file.TbCoreFile;
 
 /**
