@@ -12,6 +12,7 @@ import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ import springfox.documentation.swagger.web.SwaggerResource;
 import springfox.documentation.swagger.web.SwaggerResourcesProvider;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
 
@@ -38,6 +40,9 @@ public class SwaggerResourceConfig implements SwaggerResourcesProvider {
     private NacosConfigProperties nacosConfigProperties;
     private RouteLocator routeLocator;
 
+    private final String DOC_ROUTE_EXT = "/v2/api-docs";
+    private final String DOC_URI_PREFIX = "lb://";
+
     @Override
     public List<SwaggerResource> get() {
         List<SwaggerResource> resources = new ArrayList<>();
@@ -54,9 +59,10 @@ public class SwaggerResourceConfig implements SwaggerResourcesProvider {
             if (Fc.isNotBlank(configInfo)){
                 List<DynamicRouteDefinition> list = JSON.parseArray(configInfo,DynamicRouteDefinition.class);
 
-                list.stream().filter(routeDefinition -> routes.contains(routeDefinition.getId()) && routeDefinition.getUri().toString().startsWith("lb://"))
+                list.stream().filter(routeDefinition -> routes.contains(routeDefinition.getId()) && routeDefinition.getUri().toString().startsWith(DOC_URI_PREFIX))
+                        .sorted(Comparator.comparingInt(RouteDefinition::getOrder))
                         .forEach(routeDefinition -> resources.add(swaggerResource(Fc.isNotBlank(routeDefinition.getName())?routeDefinition.getName():routeDefinition.getId(),
-                                routeDefinition.getUri().getHost().concat("/v2/api-docs"))));
+                                routeDefinition.getUri().getHost().concat(DOC_ROUTE_EXT))));
             }
         }catch (Exception e){
             log.error("文档生成失败={}", ExceptionsUtil.getStackTraceAsString(e));

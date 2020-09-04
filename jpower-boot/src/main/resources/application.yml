@@ -4,6 +4,9 @@ server:
 spring:
   profiles:
     active: dev
+  #出现错误时, 直接抛出异常(便于异常统一处理，否则捕获不到404)
+  mvc:
+    throw-exception-if-no-handler-found: true
 
 #日志打印级别
 logging:

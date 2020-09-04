@@ -24,7 +24,6 @@ import java.util.List;
 public class DynamicRouteService implements ApplicationEventPublisherAware {
 
     private final RouteDefinitionWriter routeDefinitionWriter;
-
     private ApplicationEventPublisher publisher;
 
     public DynamicRouteService(RouteDefinitionWriter routeDefinitionWriter) {
@@ -36,17 +35,25 @@ public class DynamicRouteService implements ApplicationEventPublisherAware {
         this.publisher = applicationEventPublisher;
     }
 
-    public void update(RouteDefinition definition){
+    public void publish(RouteDefinition definition){
         try{
-            this.routeDefinitionWriter.delete(Mono.just(definition.getId()));
-            this.routeDefinitionWriter.save(Mono.just(definition)).subscribe();
-            this.publisher.publishEvent(new RefreshRoutesEvent(this));
+            this.update(definition);
+            this.publishEvent();
         }catch (Exception e){
             log.error("更新路由失败={}", ExceptionsUtil.getStackTraceAsString(e));
         }
     }
 
-    public void updateList(List<RouteDefinition> definitions){
-        definitions.forEach(this::update);
+    public void publishEvent(){
+        this.publisher.publishEvent(new RefreshRoutesEvent(this));
+    }
+
+    public void update(RouteDefinition definition){
+        this.routeDefinitionWriter.delete(Mono.just(definition.getId()));
+        this.routeDefinitionWriter.save(Mono.just(definition)).subscribe();
+    }
+
+    public void publishList(List<RouteDefinition> definitions){
+        definitions.forEach(this::publish);
     }
 }

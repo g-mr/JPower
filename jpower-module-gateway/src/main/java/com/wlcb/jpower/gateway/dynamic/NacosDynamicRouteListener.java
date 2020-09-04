@@ -57,14 +57,14 @@ public class NacosDynamicRouteListener {
                 @Override
                 public void receiveConfigInfo(String configInfo) {
                     List<RouteDefinition> list = JSON.parseArray(configInfo,RouteDefinition.class);
-                    dynamicRouteService.updateList(list);
+                    dynamicRouteService.publishList(list);
                 }
             });
 
             String configInfo = configService.getConfig(NacosUtils.getRouteDataId(),nacosConfigProperties.getGroup(),5000);
             if (Fc.isNotBlank(configInfo)){
                 List<RouteDefinition> list = JSON.parseArray(configInfo,RouteDefinition.class);
-                dynamicRouteService.updateList(list);
+                list.forEach(dynamicRouteService::update);
             }
 
         } catch (Exception e) {
