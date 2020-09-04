@@ -24,6 +24,7 @@ public class AuthDefExculdesUrl {
         exculudesUrl.add("/swagger-resources/**");
         exculudesUrl.add("/doc.html");
         exculudesUrl.add("/webjars/**");
+        exculudesUrl.add("/druid/**");
     }
 
     /**

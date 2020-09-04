@@ -1,6 +1,7 @@
 package com.wlcb.jpower.module.common.utils;
 
 
+import com.alibaba.fastjson.JSON;
 import com.wlcb.jpower.module.common.auth.*;
 import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
@@ -10,6 +11,7 @@ import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +23,7 @@ import java.util.*;
  * @Description //TODO 安全工具类
  * @Date 17:00 2020-08-24
  **/
+@Slf4j
 public class SecureUtil {
     private static final String JPOWER_USER_REQUEST_ATTR = "_JPOWER_USER_REQUEST_ATTR_";
 
@@ -285,7 +288,9 @@ public class SecureUtil {
         String clientSecret = tokens[1];
 
         // 获取客户端信息
+        log.error("开始去获取客户端：{}=======================",clientCode);
         ClientDetails clientDetails = clientDetails(clientCode);
+        log.error("客户端获取成功：{}=======================", JSON.toJSONString(clientDetails));
 
         // 校验客户端信息
         if (!validateClient(clientDetails, clientCode, clientSecret)) {
