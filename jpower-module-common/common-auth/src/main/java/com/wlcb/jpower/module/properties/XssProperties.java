@@ -23,12 +23,14 @@ public class XssProperties {
     private List<String> excludes = new ArrayList<>();
 
     public List<String> getExcludes(){
+
         excludes.add("/v2/api-docs-ext/**");
         excludes.add("/v2/api-docs/**");
         excludes.add("/swagger-resources/**");
         excludes.add("/doc.html");
         excludes.add("/webjars/**");
         excludes.add("/favicon.ico");
+
         return excludes;
     }
 }

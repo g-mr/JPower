@@ -1,6 +1,7 @@
 package com.wlcb.jpower;
 
 import com.wlcb.jpower.module.common.deploy.JpowerApplication;
+import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
@@ -16,7 +17,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableFeignClients
 public class GatewayApplication {
     public static void main(String[] args) {
-        JpowerApplication.run("jpower-gateway",GatewayApplication.class, args);
+        JpowerApplication.run(AppConstant.JPOWER_GATEWAY,GatewayApplication.class, args);
 //        SpringApplication.run(GetwayApplication.class, args);
     }
 }

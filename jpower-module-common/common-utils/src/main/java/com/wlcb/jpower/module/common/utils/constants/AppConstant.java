@@ -27,8 +27,11 @@ public interface AppConstant {
      */
     String OS_NAME_LINUX = "LINUX";
 
-    /** BOOT项目名称 **/
+    /** 项目名称 **/
     String JPOWER = "jpower";
+
+    /** 网关模块名称 **/
+    String JPOWER_GATEWAY = "jpower-gateway";
 
     /** 系统模块名称 **/
     String JPOWER_SYSTEM = "jpower-system";
