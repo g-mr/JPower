@@ -68,6 +68,8 @@ public class LoginController extends BaseController {
     public ResponseData<AuthInfo> login(String loginId,String passWord,String grantType,String refreshToken
             ,String phone,String phoneCode,String otherCode) {
 
+        logger.error("登录请求已经进来=======================");
+
         String userType = Fc.toStr(WebUtil.getRequest().getHeader(TokenUtil.USER_TYPE_HEADER_KEY), TokenUtil.DEFAULT_USER_TYPE);
 
         ChainMap tokenParameter = ChainMap.init().set("account", loginId)
@@ -81,13 +83,18 @@ public class LoginController extends BaseController {
                 .set("otherCode", otherCode);
 
         TokenGranter granter = TokenGranterBuilder.getGranter(grantType);
+        logger.error("开始去找用户=======================");
         UserInfo userInfo = granter.grant(tokenParameter);
+        logger.error("找到用户=======================");
+
 
         if (userInfo == null || userInfo.getUserId() == null) {
             return ReturnJsonUtil.fail(TokenUtil.USER_NOT_FOUND);
         }
 
+        logger.error("开始创建token=======================");
         AuthInfo authInfo = TokenUtil.createAuthInfo(userInfo);
+        logger.error("token成功=======================");
 
         coreFunctionService.putRedisAllFunctionByRoles(userInfo.getRoleIds(),authInfo.getExpiresIn(),authInfo.getAccessToken());
         return ReturnJsonUtil.ok("登录成功",authInfo);

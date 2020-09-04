@@ -1,8 +1,11 @@
 package com.wlcb.jpower.module.config;
 
+import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
+import com.google.common.collect.Lists;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
@@ -27,14 +30,14 @@ public class DruidConfig {
                 //表示进行druid监控的配置处理操作
                 new StatViewServlet(), "/druid/*");
         //白名单
-        servletRegistrationBean.addInitParameter("allow", "127.0.0.1");
+//        servletRegistrationBean.addInitParameter("allow", "127.0.0.1");
         //servletRegistrationBean.addInitParameter("deny", "192.168.202.234");//黑名单
         //用户名
         servletRegistrationBean.addInitParameter("loginUsername", "root");
         //密码
-        servletRegistrationBean.addInitParameter("loginPassword", "root");
+        servletRegistrationBean.addInitParameter("loginPassword", "1qaz@WSX");
         //是否可以重置数据源
-        servletRegistrationBean.addInitParameter("resetEnable", "false");
+        servletRegistrationBean.addInitParameter("resetEnable", "true");
         return servletRegistrationBean;
 
     }
@@ -57,9 +60,21 @@ public class DruidConfig {
         return filterRegistrationBean;
     }
 
+
+    public com.alibaba.druid.filter.Filter statFilter(){
+        StatFilter statFilter=new StatFilter();
+        statFilter.setSlowSqlMillis(5000);// 执行超过此时间的为慢sql，毫秒
+        statFilter.setLogSlowSql(true);// 是否打印慢日志
+        statFilter.setMergeSql(true);// 是否将日志合并起来
+        return statFilter;
+    }
+
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource")
     public DataSource druidDataSource() {
-        return new DruidDataSource();
+//        return new DruidDataSource();
+        DruidDataSource druidDataSource = DruidDataSourceBuilder.create().build();
+        druidDataSource.setProxyFilters(Lists.newArrayList(statFilter()));
+        return druidDataSource;
     }
 }
