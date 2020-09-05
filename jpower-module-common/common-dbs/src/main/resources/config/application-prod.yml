@@ -9,7 +9,7 @@ spring:
     druid:
       initialSize: 10   #初始化连接个数
       minIdle: 10       #最小空闲连接个数
-      maxActive: 1000    #最大连接个数
+      maxActive: 200    #最大连接个数
       maxWait: 60000    #获取连接时最大等待时间，单位毫秒。
       timeBetweenEvictionRunsMillis: 60000  #配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
       minEvictableIdleTimeMillis: 30000     #配置一个连接在池中最小生存的时间，单位是毫秒
@@ -21,7 +21,7 @@ spring:
       maxPoolPreparedStatementPerConnectionSize: -1 #要启用PSCache，必须配置大于0，当大于0时，poolPreparedStatements自动触发修改为true。在Druid中，不会存在Oracle下PSCache占用内存过多的问题，可以把这个数值配置大一些，比如说100
       filters: stat,wall,slf4j #通过别名的方式配置扩展插件，常用的插件有：监控统计用的filter:stat，日志用的filter:log4j，防御sql注入的filter:wall
       connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000 # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
-        useGlobalDataSourceStat: false # 合并多个DruidDataSource的监控数据
+      useGlobalDataSourceStat: true # 合并多个DruidDataSource的监控数据
 
 mybatis-plus:
   type-aliases-package: com.wlcb..*.dbs.entity.**
