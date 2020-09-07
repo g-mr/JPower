@@ -12,7 +12,6 @@ import javax.annotation.Resource;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -39,7 +38,7 @@ public class XssFilter implements Filter {
         }
 
         HttpServletRequest req = (HttpServletRequest) request;
-        if (handleExcludeURL(req)) {
+        if (handleExcludeURL(req) && handleDefaultExcludeURL(req)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -49,7 +48,16 @@ public class XssFilter implements Filter {
     }
 
     private boolean handleExcludeURL(HttpServletRequest request) {
-        List<String> list = new ArrayList<>(xssProperties.getExcludes());
+        List<String> list = xssProperties.getExcludes();
+        return excludeURL(list,request);
+    }
+
+    private boolean handleDefaultExcludeURL(HttpServletRequest request) {
+        List<String> list = XssProperties.getDefaultExcludes();
+        return excludeURL(list,request);
+    }
+
+    private boolean excludeURL(List<String> list,HttpServletRequest request) {
         if (Fc.isEmpty(list)) {
             return false;
         }
@@ -65,6 +73,5 @@ public class XssFilter implements Filter {
 
         return false;
     }
-
 }
 

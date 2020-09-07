@@ -145,7 +145,7 @@ public class LoginController extends BaseController {
 
         String code = RandomStringUtils.randomNumeric(6);
 
-        JSONObject json = SmsAliyun.send(phone,"乌丽吉","code");
+        JSONObject json = SmsAliyun.send(phone,"乌丽吉",code);
 
         if ("OK".equals(json.getString("Code"))){
             redisUtil.set(CacheNames.PHONE_KEY+phone,code,5L, TimeUnit.MINUTES);

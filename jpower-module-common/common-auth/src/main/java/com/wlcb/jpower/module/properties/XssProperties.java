@@ -1,6 +1,7 @@
 package com.wlcb.jpower.module.properties;
 
 import lombok.Data;
+import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.ArrayList;
@@ -23,14 +24,14 @@ public class XssProperties {
     private List<String> excludes = new ArrayList<>();
 
     public List<String> getExcludes(){
-
-        excludes.add("/v2/api-docs-ext/**");
-        excludes.add("/v2/api-docs/**");
-        excludes.add("/swagger-resources/**");
-        excludes.add("/doc.html");
-        excludes.add("/webjars/**");
-        excludes.add("/favicon.ico");
-
         return excludes;
+    }
+
+    @Getter
+    private static List<String> defaultExcludes = new ArrayList<>();
+
+    static {
+        defaultExcludes.addAll(AuthDefExculdesUrl.getExculudesUrl());
+        defaultExcludes.removeIf(i -> i.startsWith("/auth"));
     }
 }

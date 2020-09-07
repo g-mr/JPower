@@ -16,8 +16,6 @@ public class TbCoreClient extends BaseEntity {
 
     @ApiModelProperty("客户端名称")
     private String name;
-    @ApiModelProperty("拥有角色集合")
-    private String roleIds;
     @ApiModelProperty("客户端编码")
     private String clientCode;
     @ApiModelProperty("客户端密钥")
