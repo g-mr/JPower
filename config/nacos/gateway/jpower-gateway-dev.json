@@ -15,17 +15,17 @@
     "uri": "lb://jpower-system"
   },
   {
-    "id": "jpower-login",
+    "id": "jpower-auth",
     "name": "授权模块",
     "order": 0,
     "predicates": [{
       "name": "Path",
       "args": {
-        "pattern": "/jpower-login/**"
+        "pattern": "/jpower-auth/**"
       }
     }],
     "filters": [],
-    "uri": "lb://jpower-login"
+    "uri": "lb://jpower-auth"
   }
 ,
   {

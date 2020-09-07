@@ -1,5 +1,14 @@
 #通用配置
 
+## 开启Swagger的Basic认证功能,默认是false  （目前这块配置暂时没测试是否可用，生产已经写死不可用）
+knife4j:
+  basic:
+    enable: false
+    ## Basic认证用户名
+    username: guodingzhi
+    ## Basic认证密码
+    password: guodingzhi
+
 
 servlet:
   multipart:
@@ -17,22 +26,6 @@ servlet:
     buffer-size: 1024
     # 是否分配的直接内存
     direct-buffers: true
-
-## 开启Swagger的Basic认证功能,默认是false  （目前这块配置暂时没测试是否可用，生产已经写死不可用）
-knife4j:
-  basic:
-    enable: false
-    ## Basic认证用户名
-    username: guodingzhi
-    ## Basic认证密码
-    password: guodingzhi
-
-####### 以下配置实时生效
-
-#日志打印级别
-logging:
-  level:
-    root: info
 
 #feign配置
 feign:
@@ -72,6 +65,16 @@ ribbon:
   #对所有操作请求都进行重试
   OkToRetryOnAllOperations: true
 
+####### 以下配置实时生效
+
+#日志打印级别
+logging:
+  level:
+    root: info
+
+swagger:
+  termsOfServiceUrl: http://219.148.186.214:800
+
 jpower:
 #  xss:
 #    #是否开启富文本过滤(如果开启，content参数名和以WithHtml结尾得参数名将不进行XSS过滤，默认位关闭)
@@ -81,12 +84,12 @@ jpower:
 #      - /html/**
 #  auth:
 #    client:
-      #开启需要校验的客户端，值写数据库的clientCode即可
+#开启需要校验的客户端，值写数据库的clientCode即可
 #      - code: admin
-          #需要客户端校验的URL
+#需要客户端校验的URL
 #        path:
 #          - /core/user/**
-    #鉴权需要过滤的白名单地址
+#鉴权需要过滤的白名单地址
 #    whileIp:
 #      - 192.168.1.2
 #      - 0:0:0:0:0:0:0:1
