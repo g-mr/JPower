@@ -3,6 +3,7 @@ package com.wlcb.jpower;
 import com.wlcb.jpower.module.common.deploy.JpowerApplication;
 import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @SpringBootApplication
 @EnableTransactionManagement
+@EnableFeignClients
 public class LoginStartApplication {
     public static void main(String[] args) {
         JpowerApplication.run(AppConstant.JPOWER_LOGIN,LoginStartApplication.class,args);

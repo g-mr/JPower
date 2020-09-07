@@ -162,7 +162,7 @@ public class FunctionController extends BaseController {
         return ReturnJsonUtil.ok("查询成功", list);
     }
 
-    @PostMapping("/function/putRedisAllFunctionByRoles")
+    @PostMapping("/putRedisAllFunctionByRoles")
     public boolean putRedisAllFunctionByRoles(@RequestParam List<String> roleIds, @RequestParam Long expiresIn, @RequestParam String accessToken){
         coreFunctionService.putRedisAllFunctionByRoles(roleIds,expiresIn,accessToken);
         return true;

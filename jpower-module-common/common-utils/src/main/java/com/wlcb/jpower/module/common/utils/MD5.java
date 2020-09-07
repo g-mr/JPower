@@ -37,7 +37,7 @@ public class MD5 {
 
         String keyBeforeMd5 = "123456";
 //        String keyBeforeMd5 = "123456";
-        System.out.println(parseStrToMd5L32(keyBeforeMd5));
+        System.out.println(parseStrToMd5U32(keyBeforeMd5));
         System.out.println(Fc.md5Hex(keyBeforeMd5));
 	}
     
