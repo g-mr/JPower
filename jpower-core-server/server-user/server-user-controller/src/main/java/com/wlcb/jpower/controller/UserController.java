@@ -3,7 +3,6 @@ package com.wlcb.jpower.controller;
 import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.config.param.ParamConfig;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
-import com.wlcb.jpower.dbs.entity.TbCoreUserRole;
 import com.wlcb.jpower.module.base.annotation.Log;
 import com.wlcb.jpower.module.base.enums.BusinessType;
 import com.wlcb.jpower.module.base.enums.JpowerError;
@@ -14,7 +13,6 @@ import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.support.BeanExcelUtil;
 import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.*;
-import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.CoreUserRoleService;
 import com.wlcb.jpower.service.CoreUserService;
 import io.swagger.annotations.*;
@@ -58,8 +56,8 @@ public class UserController extends BaseController {
     }
 
     @ApiOperation("查询用户详情")
-    @RequestMapping(value = "/get",method = RequestMethod.GET,produces="application/json")
-    public ResponseData<TbCoreUser> get(@ApiParam(value = "主键",required = true) @RequestParam String id){
+    @RequestMapping(value = "/getById",method = RequestMethod.GET,produces="application/json")
+    public ResponseData<TbCoreUser> getById(@ApiParam(value = "主键",required = true) @RequestParam String id){
         JpowerAssert.notEmpty(id, JpowerError.Arg,"id不可为空");
 
         TbCoreUser user = coreUserService.selectUserById(id);
@@ -247,7 +245,7 @@ public class UserController extends BaseController {
         if (file.exists()){
             HttpServletResponse response = getResponse();
             try {
-                FileUtil.download(file, response,"导出数据.xlsx");
+                FileUtil.download(file, response,"用户数据.xlsx");
             } catch (IOException e) {
                 logger.error("下载文件出错。file={},error={}",file.getAbsolutePath(),e.getMessage());
                 throw new BusinessException("下载文件出错，请联系网站管理员");
@@ -288,41 +286,29 @@ public class UserController extends BaseController {
         return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"查询成功",userRoleList, true);
     }
 
-    @ApiOperation(value = "通过账号密码查询用户",hidden = true)
-    @GetMapping("/queryUserByLoginIdPwd")
-    ResponseData<TbCoreUser> queryUserByLoginIdPwd(@RequestParam String loginId, @RequestParam String password){
-        return ReturnJsonUtil.ok("查询成功",coreUserService.getOne(Condition.<TbCoreUser>getQueryWrapper()
-                .lambda().eq(TbCoreUser::getLoginId,loginId).eq(TbCoreUser::getPassword, DigestUtil.encrypt(password))));
-    }
+    @ApiOperation(value = "用户上传模板下载")
+    @GetMapping(value = "/downloadTemplate")
+    public void downloadTemplate(){
+        BeanExcelUtil<TbCoreUser> beanExcelUtil = new BeanExcelUtil<>(TbCoreUser.class,ImportExportConstants.EXPORT_TEMPLATE_PATH);
+        String fileName = beanExcelUtil.template("用户模板");
 
-    @ApiOperation(value = "通过用户ID查询所有角色ID",hidden = true)
-    @GetMapping("/getRoleIdsByUserId")
-    ResponseData<List<String>> getRoleIds(@RequestParam String userId){
-        List<String> list = coreUserRoleService.listObjs(Condition.<TbCoreUserRole>getQueryWrapper()
-                .lambda().select(TbCoreUserRole::getRoleId).eq(TbCoreUserRole::getUserId,userId),Fc::toStr);
-        return ReturnJsonUtil.ok("查询成功",list);
-    }
+        if (Fc.isBlank(fileName)){
+            throw new BusinessException(fileName+"生成失败");
+        }
 
-    @ApiOperation(value = "更新用户登陆信息",hidden = true)
-    @PutMapping("/updateUserLoginInfo")
-    ResponseData updateUserLoginInfo(@RequestParam TbCoreUser user){
-        return ReturnJsonUtil.status(coreUserService.updateById(user));
-    }
+        File file = new File(beanExcelUtil.getAbsoluteFile(fileName));
+        if (file.exists()){
+            try {
+                FileUtil.download(file, getResponse(),"用户导入模板.xlsx");
+            } catch (IOException e) {
+                logger.error("下载文件出错。file={},error={}",file.getAbsolutePath(),e.getMessage());
+                throw new BusinessException("下载文件出错，请联系网站管理员");
+            }
 
-    @ApiOperation(value = "通过第三方CODE查询",hidden = true)
-    @GetMapping("/queryUserByCode")
-    ResponseData<TbCoreUser> queryUserByCode(@RequestParam String otherCode){
-        TbCoreUser user = coreUserService.getOne(Condition.<TbCoreUser>getQueryWrapper()
-                .lambda().eq(TbCoreUser::getOtherCode,otherCode));
-        return ReturnJsonUtil.ok("查询成功",user);
-    }
-
-    @ApiOperation(value = "通过手机号查询用户",hidden = true)
-    @GetMapping("/queryUserByPhone")
-    ResponseData<TbCoreUser> queryUserByPhone(@RequestParam String phone){
-        TbCoreUser user = coreUserService.getOne(Condition.<TbCoreUser>getQueryWrapper()
-                .lambda().eq(TbCoreUser::getTelephone,phone));
-        return ReturnJsonUtil.ok("查询成功",user);
+            FileUtil.deleteFile(file);
+        }else {
+            throw new BusinessException(fileName+"生成失败，无法下载");
+        }
     }
 
 }

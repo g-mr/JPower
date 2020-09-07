@@ -156,11 +156,4 @@ public class OrgController extends BaseController {
         return ReturnJsonUtil.ok("查询成功",list);
     }
 
-    @ApiOperation(value = "加载下级所有部门ID",hidden = true)
-    @GetMapping("/queryChildById")
-    public ResponseData<List<String>> queryChildById(@RequestParam String id){
-        List<String> list = coreOrgService.queryChildById(id);
-        return ReturnJsonUtil.ok("查询成功",list);
-    }
-
 }

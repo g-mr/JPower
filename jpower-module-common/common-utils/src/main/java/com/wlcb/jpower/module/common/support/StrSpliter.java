@@ -187,8 +187,6 @@ public class StrSpliter {
         return toArray(split(str, separator, limit, isTrim, ignoreEmpty));
     }
 
-    //---------------------------------------------------------------------------------------------- Split by String
-
     /**
      * 切分字符串，不忽略大小写
      *
@@ -337,8 +335,6 @@ public class StrSpliter {
         return toArray(split(str, separator, limit, isTrim, ignoreEmpty));
     }
 
-    //---------------------------------------------------------------------------------------------- Split by Whitespace
-
     /**
      * 使用空白符切分字符串<br>
      * 切分后的字符串两边不包含空白符，空串或空白符串并不做为元素之一
@@ -382,8 +378,6 @@ public class StrSpliter {
     public static String[] splitToArray(String str, int limit) {
         return toArray(split(str, limit));
     }
-
-    //---------------------------------------------------------------------------------------------- Split by regex
 
     /**
      * 通过正则切分字符串
@@ -437,8 +431,6 @@ public class StrSpliter {
     public static String[] splitToArray(String str, Pattern separatorPattern, int limit, boolean isTrim, boolean ignoreEmpty) {
         return toArray(split(str, separatorPattern, limit, isTrim, ignoreEmpty));
     }
-
-    //---------------------------------------------------------------------------------------------- Split by length
 
     /**
      * 根据给定长度，将给定字符串截取为多个部分

@@ -36,7 +36,7 @@
     </dependencies>
 
     <build>
-        <finalName>login</finalName>
+        <finalName>jpower-auth</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -45,15 +45,6 @@
                     <classifier>exec</classifier>
                     <!--生成可执行jar的名称-->
                     <finalName>${build.finalName}</finalName>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                    <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
             <!-- war包解析 -->
@@ -67,12 +58,5 @@
                 </configuration>
             </plugin>
         </plugins>
-        <testResources>
-            <testResource>
-                <directory>src/test/resources</directory>
-                <filtering>true</filtering>
-            </testResource>
-        </testResources>
-
     </build>
 </project>

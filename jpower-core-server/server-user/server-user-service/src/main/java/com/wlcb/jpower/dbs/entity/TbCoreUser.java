@@ -26,13 +26,12 @@ public class TbCoreUser extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 8829495593714085987L;
 
     @ApiModelProperty("部门主键")
-    @Excel(name = "部门ID",isExport = false)
+    @Excel(name = "部门ID",type = Excel.Type.IMPORT)
     private String orgId;
     @ApiModelProperty("登录用户名")
     @Excel(name = "登录用户名")
     private String loginId;
-    @ApiModelProperty(hidden = true)
-    @Excel(name = "密码",isExport = false)
+    @ApiModelProperty(name = "密码",hidden = true)
     private String password;
     @ApiModelProperty("昵称")
     @Excel(name = "昵称")
@@ -69,7 +68,6 @@ public class TbCoreUser extends BaseEntity implements Serializable {
     @Excel(name ="邮编")
     private String postCode;
     @ApiModelProperty("第三方平台标识")
-    @Excel(name ="第三方平台标识")
     private String otherCode;
     @ApiModelProperty("最后登录日期")
     @Excel(name ="最后登录日期",dateFormat = "yyyy-MM-dd HH:mm:ss",type = Excel.Type.EXPORT)
@@ -84,12 +82,11 @@ public class TbCoreUser extends BaseEntity implements Serializable {
     @Dict(name = "YN01",attributes = "activationStatusStr")
     private Integer activationStatus;
     @ApiModelProperty("激活码")
-    @Excel(name ="激活码",isExport = false)
     private String activationCode;
 
     @ApiModelProperty("部门名称")
     @TableField(exist = false)
-    @Excel(name = "部门名称")
+    @Excel(name = "部门名称",type = Excel.Type.EXPORT)
     private String orgName;
 
     @ApiModelProperty("是否激活")

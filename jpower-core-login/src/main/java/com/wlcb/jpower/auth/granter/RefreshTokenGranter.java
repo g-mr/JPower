@@ -14,6 +14,8 @@ import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+
 /**
  * @Author 郭丁志
  * @Description //TODO 刷新token默认实现类
@@ -26,9 +28,8 @@ public class RefreshTokenGranter implements TokenGranter {
 
 	public static final String GRANT_TYPE = "refresh_token";
 
-	@Autowired
+	@Resource
 	private UserClient userClient;
-//	private TbCoreUserDao coreUserDao;
 	@Autowired(required = false)
 	private AuthUserInfo authUserInfo;
 
@@ -48,7 +49,6 @@ public class RefreshTokenGranter implements TokenGranter {
 				if (!Fc.isNull(authUserInfo)){
 					return authUserInfo.getRefreshUserInfo(userType,userId);
 				}else {
-//					TbCoreUser result = coreUserDao.getById(userId);
 					TbCoreUser result = userClient.get(userId).getData();
 					return TokenGranterBuilder.toUserInfo(result);
 				}

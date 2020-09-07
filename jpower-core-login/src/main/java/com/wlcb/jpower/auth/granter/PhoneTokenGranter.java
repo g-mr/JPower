@@ -13,6 +13,8 @@ import com.wlcb.jpower.module.common.utils.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+
 
 /**
  * @ClassName PhoneTokenGranter
@@ -28,9 +30,8 @@ public class PhoneTokenGranter implements TokenGranter {
 
     @Autowired
     private RedisUtil redisUtils;
-    @Autowired
+    @Resource
     private UserClient userClient;
-//    private TbCoreUserDao coreUserDao;
     @Autowired(required = false)
     private AuthUserInfo authUserInfo;
 
@@ -51,8 +52,6 @@ public class PhoneTokenGranter implements TokenGranter {
             if (!Fc.isNull(authUserInfo)){
                 return authUserInfo.getPhoneUserInfo(tokenParameter);
             }else {
-//                TbCoreUser result = coreUserDao.getOne(Condition.<TbCoreUser>getQueryWrapper()
-//                        .lambda().eq(TbCoreUser::getTelephone,phone));
                 TbCoreUser result = userClient.queryUserByPhone(phone).getData();
                 return TokenGranterBuilder.toUserInfo(result);
             }

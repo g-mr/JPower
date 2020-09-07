@@ -1,7 +1,6 @@
 #通用配置
 
 
-
 servlet:
   multipart:
     enabled: true
@@ -74,23 +73,20 @@ ribbon:
   OkToRetryOnAllOperations: true
 
 jpower:
-  #测试环境是否需要登陆（只有Boot项目会生效）
-#  test:
-#    is-login: true
-  xss:
-    #是否开启富文本过滤(如果开启，content参数名和以WithHtml结尾得参数名将不进行XSS过滤，默认位关闭)
-    isIncludeRichText: false
-    #XSS不过滤得接口路径，支持通配符模式
-    excludes:
-      - /html/**
-  auth:
-    client:
+#  xss:
+#    #是否开启富文本过滤(如果开启，content参数名和以WithHtml结尾得参数名将不进行XSS过滤，默认位关闭)
+#    isIncludeRichText: false
+#    #XSS不过滤得接口路径，支持通配符模式
+#    excludes:
+#      - /html/**
+#  auth:
+#    client:
       #开启需要校验的客户端，值写数据库的clientCode即可
 #      - code: admin
           #需要客户端校验的URL
 #        path:
 #          - /core/user/**
     #鉴权需要过滤的白名单地址
-    whileIp:
-      - 192.168.1.2
-      - 0:0:0:0:0:0:0:1
+#    whileIp:
+#      - 192.168.1.2
+#      - 0:0:0:0:0:0:0:1

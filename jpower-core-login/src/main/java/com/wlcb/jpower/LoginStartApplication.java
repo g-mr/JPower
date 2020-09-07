@@ -18,6 +18,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableFeignClients
 public class LoginStartApplication {
     public static void main(String[] args) {
-        JpowerApplication.run(AppConstant.JPOWER_LOGIN,LoginStartApplication.class,args);
+        JpowerApplication.run(AppConstant.JPOWER_AUTH,LoginStartApplication.class,args);
     }
 }

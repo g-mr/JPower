@@ -42,9 +42,7 @@ import java.util.concurrent.TimeUnit;
 @AllArgsConstructor
 public class LoginController extends BaseController {
 
-//    private CoreUserService coreUserService;
     private UserClient userClient;
-//    private CoreFunctionService coreFunctionService;
     private SystemClient systemClient;
     private RedisUtil redisUtil;
 
@@ -91,7 +89,6 @@ public class LoginController extends BaseController {
 
         AuthInfo authInfo = TokenUtil.createAuthInfo(userInfo);
 
-//        coreFunctionService.putRedisAllFunctionByRoles(userInfo.getRoleIds(),authInfo.getExpiresIn(),authInfo.getAccessToken());
         if (systemClient.putRedisAllFunctionByRoles(userInfo.getRoleIds(),authInfo.getExpiresIn(),authInfo.getAccessToken())){
             return ReturnJsonUtil.ok("登录成功",authInfo);
         }

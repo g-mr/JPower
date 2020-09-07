@@ -37,7 +37,7 @@ public interface AppConstant {
     String JPOWER_SYSTEM = "jpower-system";
 
     /** 鉴权模块 **/
-    String JPOWER_LOGIN = "jpower-login";
+    String JPOWER_AUTH = "jpower-auth";
 
     /** 用户模块 **/
     String JPOWER_USER = "jpower-user";

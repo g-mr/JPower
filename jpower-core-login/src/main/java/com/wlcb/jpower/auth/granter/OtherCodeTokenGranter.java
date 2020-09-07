@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+
 
 /**
  * @Author 郭丁志
@@ -20,9 +22,8 @@ import org.springframework.stereotype.Component;
 public class OtherCodeTokenGranter implements TokenGranter {
     public static final String GRANT_TYPE = "otherCode";
 
-    @Autowired
+    @Resource
     protected UserClient userClient;
-//    protected TbCoreUserDao coreUserDao;
     @Autowired(required = false)
     private AuthUserInfo authUserInfo;
 
@@ -34,8 +35,6 @@ public class OtherCodeTokenGranter implements TokenGranter {
             if (!Fc.isNull(authUserInfo)){
                 return authUserInfo.getOtherCodeUserInfo(tokenParameter);
             }else {
-//                TbCoreUser result = coreUserDao.getOne(Condition.<TbCoreUser>getQueryWrapper()
-//                        .lambda().eq(TbCoreUser::getOtherCode,otherCode));
                 TbCoreUser result = userClient.queryUserByCode(otherCode).getData();
                 return TokenGranterBuilder.toUserInfo(result);
             }

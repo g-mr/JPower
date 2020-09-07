@@ -67,8 +67,6 @@ public class TokenGranterBuilder {
                 throw new BusinessException(TokenUtil.USER_NOT_ACTIVATION);
             }
 
-//            List<String> list  = coreUserRoleDao.listObjs(Condition.<TbCoreUserRole>getQueryWrapper()
-//                    .lambda().select(TbCoreUserRole::getRoleId).eq(TbCoreUserRole::getUserId,result.getId()));
             List<String> list  = userClient.getRoleIds(result.getId()).getData();
             userInfo = new UserInfo();
             userInfo.setUserId(result.getId());
@@ -85,7 +83,6 @@ public class TokenGranterBuilder {
             // TODO: 2020-07-28 登录成功要刷新用户登录数据
             result.setLastLoginTime(new Date());
             result.setLoginCount((result.getLoginCount()==null?0:result.getLoginCount())+1);
-//            coreUserDao.updateById(result);
             userClient.updateUserLoginInfo(result);
         }
         return userInfo;

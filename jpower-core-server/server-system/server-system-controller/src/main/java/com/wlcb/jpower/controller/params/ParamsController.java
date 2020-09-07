@@ -73,13 +73,6 @@ public class ParamsController extends BaseController {
         return ReturnJsonUtil.status(paramService.save(coreParam));
     }
 
-    @ApiOperation(value = "通过Code获取参数值",hidden = true)
-    @RequestMapping(value = "/queryByCode",method = RequestMethod.GET,produces="application/json")
-    public ResponseData<String> queryByCode(String code){
-        JpowerAssert.notEmpty(code, JpowerError.Arg,"编号值不可为空");
-        return ReturnJsonUtil.ok("查询成功",paramService.selectByCode(code));
-    }
-
     @ApiOperation(value = "通过Id获取参数详情")
     @RequestMapping(value = "/queryById",method = RequestMethod.GET,produces="application/json")
     public ResponseData<TbCoreParam> queryById(@ApiParam("主键ID") @RequestParam String id){

@@ -30,7 +30,7 @@ public class BaseEntity implements Serializable {
     private String id;
 
     @ApiModelProperty(value = "创建人",hidden=true)
-    @Excel(name = "创建人")
+    @Excel(name = "创建人", type = Excel.Type.EXPORT)
     @TableField(value = "create_user", fill = FieldFill.INSERT)
     private String createUser;
 

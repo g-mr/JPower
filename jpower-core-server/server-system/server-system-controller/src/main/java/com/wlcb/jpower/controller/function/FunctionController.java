@@ -162,11 +162,4 @@ public class FunctionController extends BaseController {
         return ReturnJsonUtil.ok("查询成功", list);
     }
 
-    @ApiOperation(value = "把当前用户的权限设置到redis", hidden = true)
-    @PostMapping("/putRedisAllFunctionByRoles")
-    public boolean putRedisAllFunctionByRoles(@RequestParam List<String> roleIds, @RequestParam Long expiresIn, @RequestParam String accessToken){
-        coreFunctionService.putRedisAllFunctionByRoles(roleIds,expiresIn,accessToken);
-        return true;
-    }
-
 }

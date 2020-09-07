@@ -34,8 +34,6 @@ public class PasswordTokenGranter implements TokenGranter {
 			if (!Fc.isNull(authUserInfo)){
 				return authUserInfo.getPasswordUserInfo(tokenParameter);
 			}else {
-//				TbCoreUser result = coreUserDao.getOne(Condition.<TbCoreUser>getQueryWrapper()
-//						.lambda().eq(TbCoreUser::getLoginId,account).eq(TbCoreUser::getPassword, DigestUtil.encrypt(password)));
 				TbCoreUser result = client.queryUserByLoginIdPwd(account,password).getData();
 				return TokenGranterBuilder.toUserInfo(result);
 			}

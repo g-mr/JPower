@@ -7,7 +7,7 @@ spring:
     host: 127.0.0.1
     port: 6379
     password:
-    database: 0
+    database: 99
     timeout: 5000
     ssl: false
     ##redis 集群环境配置

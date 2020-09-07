@@ -15,8 +15,6 @@ import java.math.BigInteger;
  */
 public class NumberUtil extends org.springframework.util.NumberUtils {
 
-    //-----------------------------------------------------------------------
-
     /**
      * <p>Convert a <code>String</code> to an <code>int</code>, returning
      * <code>zero</code> if the conversion fails.</p>

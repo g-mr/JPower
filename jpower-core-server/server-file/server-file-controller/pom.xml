@@ -32,4 +32,29 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <finalName>jpower-file</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <classifier>exec</classifier>
+                    <!--生成可执行jar的名称-->
+                    <finalName>${build.finalName}</finalName>
+                </configuration>
+            </plugin>
+            <!-- war包解析 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <warName>${build.finalName}</warName>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

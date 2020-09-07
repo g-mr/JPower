@@ -1,7 +1,6 @@
 package com.wlcb.jpower.module.common.utils;
 
 
-import com.alibaba.fastjson.JSON;
 import com.wlcb.jpower.module.common.auth.*;
 import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
@@ -288,9 +287,7 @@ public class SecureUtil {
         String clientSecret = tokens[1];
 
         // 获取客户端信息
-        log.error("开始去获取客户端：{}=======================",clientCode);
         ClientDetails clientDetails = clientDetails(clientCode);
-        log.error("客户端获取成功：{}=======================", JSON.toJSONString(clientDetails));
 
         // 校验客户端信息
         if (!validateClient(clientDetails, clientCode, clientSecret)) {

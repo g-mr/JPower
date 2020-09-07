@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * @author mr.gmac
  */
-@FeignClient(name = AppConstant.JPOWER_SYSTEM, fallback = ParamsClientFallback.class, path = "/core/param")
+@FeignClient(name = AppConstant.JPOWER_SYSTEM, fallback = ParamsClientFallback.class, path = "/core/param/feign")
 public interface ParamsClient {
 
     /**
@@ -25,12 +25,12 @@ public interface ParamsClient {
 
     /**
      * @author 郭丁志
-     * @Description //TODO 查询系统参数
+     * @Description //TODO 查询系统参数详情
      * @date 16:42 2020/8/30 0030
      * @param id
      * @return com.wlcb.jpower.module.base.vo.ResponseData<java.lang.Boolean>
      */
     @GetMapping("/queryById")
-    ResponseData<TbCoreParam> queryById(@RequestParam String id);
+    TbCoreParam queryById(@RequestParam String id);
 
 }

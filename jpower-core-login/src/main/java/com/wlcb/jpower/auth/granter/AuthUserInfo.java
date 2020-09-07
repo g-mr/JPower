@@ -26,8 +26,6 @@ public interface AuthUserInfo {
         String account = tokenParameter.getStr("account");
         String password = tokenParameter.getStr("password");
 
-//        TbCoreUser result = SpringUtil.getBean(TbCoreUserDao.class).getOne(Condition.<TbCoreUser>getQueryWrapper()
-//                .lambda().eq(TbCoreUser::getLoginId,account).eq(TbCoreUser::getPassword, DigestUtil.encrypt(password)));
         TbCoreUser result = SpringUtil.getBean(UserClient.class).queryUserByLoginIdPwd(account, DigestUtil.encrypt(password)).getData();
         return TokenGranterBuilder.toUserInfo(result);
     }
@@ -55,8 +53,6 @@ public interface AuthUserInfo {
         String otherCode = tokenParameter.getStr("otherCode");
 
         TbCoreUser result = SpringUtil.getBean(UserClient.class).queryUserByCode(otherCode).getData();
-//        TbCoreUser result = SpringUtil.getBean(TbCoreUserDao.class).getOne(Condition.<TbCoreUser>getQueryWrapper()
-//                .lambda().eq(TbCoreUser::getOtherCode,otherCode));
         return TokenGranterBuilder.toUserInfo(result);
     }
 
@@ -69,7 +65,6 @@ public interface AuthUserInfo {
      * @return UserInfo 只需要实现获取UserInfo即可，token的刷新不用去管
      */
     default UserInfo getRefreshUserInfo(String userType,String userId){
-//        TbCoreUser result = SpringUtil.getBean(TbCoreUserDao.class).getById(userId);
         TbCoreUser result = SpringUtil.getBean(UserClient.class).get(userId).getData();
         return TokenGranterBuilder.toUserInfo(result);
     }
@@ -83,8 +78,6 @@ public interface AuthUserInfo {
      **/
     default UserInfo getPhoneUserInfo(ChainMap tokenParameter){
         String phone = tokenParameter.getStr("phone");
-//        TbCoreUser result = SpringUtil.getBean(TbCoreUserDao.class).getOne(Condition.<TbCoreUser>getQueryWrapper()
-//                .lambda().eq(TbCoreUser::getTelephone,phone));
         TbCoreUser result = SpringUtil.getBean(UserClient.class).queryUserByPhone(phone).getData();
         return TokenGranterBuilder.toUserInfo(result);
     }

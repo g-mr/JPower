@@ -2,7 +2,7 @@
   {
     "id": "jpower-system",
     "name": "系统管理",
-    "order": 0,
+    "order": 2,
     "predicates": [
       {
         "name": "Path",
@@ -26,5 +26,32 @@
     }],
     "filters": [],
     "uri": "lb://jpower-login"
+  }
+,
+  {
+    "id": "jpower-user",
+    "name": "用户模块",
+    "order": 1,
+    "predicates": [{
+      "name": "Path",
+      "args": {
+        "pattern": "/jpower-user/**"
+      }
+    }],
+    "filters": [],
+    "uri": "lb://jpower-user"
+  },
+  {
+    "id": "jpower-file",
+    "name": "文件模块",
+    "order": 4,
+    "predicates": [{
+      "name": "Path",
+      "args": {
+        "pattern": "/jpower-file/**"
+      }
+    }],
+    "filters": [],
+    "uri": "lb://jpower-file"
   }
 ]

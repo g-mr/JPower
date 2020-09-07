@@ -19,11 +19,13 @@ import com.wlcb.jpower.service.dict.CoreDictTypeService;
 import com.wlcb.jpower.vo.DictVo;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @ClassName DictController
@@ -161,15 +163,6 @@ public class DictController {
         JpowerAssert.notEmpty(dictType, JpowerError.Arg,"字典类型不可为空");
         return ReturnJsonUtil.ok("查询成功",coreDictService.list(Condition.<TbCoreDict>getQueryWrapper().lambda()
                 .eq(TbCoreDict::getDictTypeCode,dictType)));
-    }
-
-    @ApiOperation(value = "通过多个code查询字典",hidden = true)
-    @GetMapping("dictListByType")
-    public ResponseData<List<Map<String, Object>>> dictListByType(List<String> list) {
-        if (!Fc.isNull(list) && list.size() > 0){
-            return ReturnJsonUtil.ok("查询完成",coreDictService.dictListByTypes(list));
-        }
-        return ReturnJsonUtil.ok("查询完成");
     }
 
 }

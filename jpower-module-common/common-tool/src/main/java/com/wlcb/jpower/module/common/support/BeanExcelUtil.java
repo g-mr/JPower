@@ -48,17 +48,17 @@ public class BeanExcelUtil<T> {
     /**
      * 导出类型（EXPORT:导出数据；IMPORT：导入模板）
      */
-    private Excel.Type type;
+    private Excel.Type type = Excel.Type.EXPORT;
 
     /**
      * 工作表名称
      */
-    private String sheetName;
+    private String sheetName = "模板";
 
     /**
      * 导入导出数据列表
      */
-    private List<T> list;
+    private List<T> list = new ArrayList<>();
 
     /**
      * 注解列表
@@ -169,7 +169,7 @@ public class BeanExcelUtil<T> {
      *
      * @return 结果
      */
-    public ResponseData exportExcel(){
+    public ResponseData<String> exportExcel(){
         OutputStream out = null;
         try
         {
@@ -182,57 +182,8 @@ public class BeanExcelUtil<T> {
 
                 // 产生一行
                 Row row = sheet.createRow(0);
-                // 写入各个字段的列头名称
-                for (int i = 0; i < fields.size(); i++)
-                {
-                    Field field = fields.get(i);
-                    Excel attr = field.getAnnotation(Excel.class);
-                    // 创建列
-                    cell = row.createCell(i);
-                    // 设置列中写入内容为String类型
-                    cell.setCellType(CellType.STRING);
-                    CellStyle cellStyle = wb.createCellStyle();
-                    cellStyle.setAlignment(HorizontalAlignment.CENTER);
-                    cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-                    if (attr.name().indexOf("注：") >= 0)
-                    {
-                        Font font = wb.createFont();
-                        font.setColor(HSSFFont.COLOR_RED);
-                        cellStyle.setFont(font);
-                        cellStyle.setFillForegroundColor(HSSFColor.HSSFColorPredefined.YELLOW.getIndex());
-                        sheet.setColumnWidth(i, 6000);
-                    }
-                    else
-                    {
-                        Font font = wb.createFont();
-                        // 粗体显示
-                        font.setBold(true);
-                        // 选择需要用到的字体格式
-                        cellStyle.setFont(font);
-                        cellStyle.setFillForegroundColor(HSSFColor.HSSFColorPredefined.LIGHT_YELLOW.getIndex());
-                        // 设置列宽
-                        sheet.setColumnWidth(i, (int) ((attr.width() + 0.72) * 256));
-                        row.setHeight((short) (attr.height() * 20));
-                    }
-                    cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-                    cellStyle.setWrapText(true);
-                    cell.setCellStyle(cellStyle);
+                createHeader(cell,row);
 
-                    // 写入列名
-                    cell.setCellValue(attr.name());
-                    // 如果设置了提示信息则鼠标放上去提示.
-                    if (StringUtils.isNotEmpty(attr.prompt()))
-                    {
-                        // 这里默认设了2-101列提示.
-                        setXSSFPrompt(sheet, "", attr.prompt(), 1, 100, i, i);
-                    }
-                    // 如果设置了combo属性则本列只能选择不能输入
-                    if (attr.combo().length > 0)
-                    {
-                        // 这里默认设了2-101列只能选择不能输入.
-                        setXSSFValidation(sheet, attr.combo(), 1, 100, i, i);
-                    }
-                }
                 if (Excel.Type.EXPORT.equals(type))
                 {
                     fillExcelData(index, row, cell);
@@ -254,6 +205,108 @@ public class BeanExcelUtil<T> {
         {
             Fc.closeQuietly(wb);
             Fc.closeQuietly(out);
+        }
+    }
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 导出模板
+     * @date 0:15 2020/9/8 0008
+     * @param sheetName
+     * @return java.lang.String
+     */
+    public String template(String sheetName){
+        this.sheetName = sheetName;
+        this.type = Excel.Type.IMPORT;
+        createExcelField();
+        createWorkbook();
+
+
+        OutputStream out = null;
+        try
+        {
+            // 取出一共有多少个sheet.
+            createSheet(0, 0);
+            createHeader(null,sheet.createRow(0));
+
+            String filename = encodingFilename(sheetName);
+            String path = getAbsoluteFile(filename);
+            log.info("文件生成路径={}",path);
+            out = new FileOutputStream(path);
+            wb.write(out);
+            return filename;
+        }
+        catch (Exception e)
+        {
+            log.error("导出Excel异常{}", e.getMessage());
+            throw new BusinessException("导出Excel失败，请联系网站管理员！");
+        }
+        finally
+        {
+            Fc.closeQuietly(wb);
+            Fc.closeQuietly(out);
+        }
+    }
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 生成表头
+     * @date 0:14 2020/9/8 0008
+     * @param cell
+     * @param row
+     * @return void
+     */
+    public void createHeader(Cell cell,Row row){
+        // 写入各个字段的列头名称
+        for (int i = 0; i < fields.size(); i++)
+        {
+            Field field = fields.get(i);
+            Excel attr = field.getAnnotation(Excel.class);
+            // 创建列
+            cell = row.createCell(i);
+            // 设置列中写入内容为String类型
+            cell.setCellType(CellType.STRING);
+            CellStyle cellStyle = wb.createCellStyle();
+            cellStyle.setAlignment(HorizontalAlignment.CENTER);
+            cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            if (attr.name().indexOf("注：") >= 0)
+            {
+                Font font = wb.createFont();
+                font.setColor(HSSFFont.COLOR_RED);
+                cellStyle.setFont(font);
+                cellStyle.setFillForegroundColor(HSSFColor.HSSFColorPredefined.YELLOW.getIndex());
+                sheet.setColumnWidth(i, 6000);
+            }
+            else
+            {
+                Font font = wb.createFont();
+                // 粗体显示
+                font.setBold(true);
+                // 选择需要用到的字体格式
+                cellStyle.setFont(font);
+                cellStyle.setFillForegroundColor(HSSFColor.HSSFColorPredefined.LIGHT_YELLOW.getIndex());
+                // 设置列宽
+                sheet.setColumnWidth(i, (int) ((attr.width() + 0.72) * 256));
+                row.setHeight((short) (attr.height() * 20));
+            }
+            cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            cellStyle.setWrapText(true);
+            cell.setCellStyle(cellStyle);
+
+            // 写入列名
+            cell.setCellValue(attr.name());
+            // 如果设置了提示信息则鼠标放上去提示.
+            if (StringUtils.isNotEmpty(attr.prompt()))
+            {
+                // 这里默认设了2-101列提示.
+                setXSSFPrompt(sheet, "", attr.prompt(), 1, 100, i, i);
+            }
+            // 如果设置了combo属性则本列只能选择不能输入
+            if (attr.combo().length > 0)
+            {
+                // 这里默认设了2-101列只能选择不能输入.
+                setXSSFValidation(sheet, attr.combo(), 1, 100, i, i);
+            }
         }
     }
 
