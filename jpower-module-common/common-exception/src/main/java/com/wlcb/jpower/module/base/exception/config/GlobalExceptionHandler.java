@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
-    public ErrorReturnJson defaultErrorHandler(HttpServletRequest request, Exception e) throws Exception {
+    public ErrorReturnJson defaultErrorHandler(HttpServletRequest request, Exception e) {
         String currentPath = request.getServletPath();
 
         ErrorReturnJson r = new ErrorReturnJson();

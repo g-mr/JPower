@@ -51,6 +51,7 @@
         <hystrix.version>1.4.7.RELEASE</hystrix.version>
         <gateway.version>2.2.4.RELEASE</gateway.version>
         <openfeign.version>2.2.4.RELEASE</openfeign.version>
+        <zipkin.version>2.2.5.RELEASE</zipkin.version>
     </properties>
 
     <!--profile配置-->
@@ -235,6 +236,19 @@
                 <groupId>com.wlcb</groupId>
                 <artifactId>jpower-core-login</artifactId>
                 <version>${com.jpower.version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-sleuth -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-sleuth</artifactId>
+                <version>${zipkin.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-zipkin -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-zipkin</artifactId>
+                <version>${zipkin.version}</version>
             </dependency>
 
         </dependencies>

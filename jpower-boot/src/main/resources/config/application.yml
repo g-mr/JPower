@@ -7,6 +7,8 @@ spring:
   #出现错误时, 直接抛出异常(便于异常统一处理，否则捕获不到404)
   mvc:
     throw-exception-if-no-handler-found: true
+  resources:
+    add-mappings: false
 
 #日志打印级别
 logging:
@@ -15,7 +17,7 @@ logging:
 
 jpower:
   xss:
-    #是否开启富文本过滤(如果开启，content参数名和以WithHtml结尾得参数名将不进行XSS过滤，默认位关闭)
+    #是否开启富文本过滤(如果开启，content参数名和以WithHtml结尾得参数名将不进行XSS过滤，默认关闭)
     isIncludeRichText: false
     #XSS不过滤得接口路径，支持通配符模式
     excludes:
