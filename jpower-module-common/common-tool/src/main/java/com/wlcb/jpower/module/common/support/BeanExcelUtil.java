@@ -115,7 +115,7 @@ public class BeanExcelUtil<T> {
      * @param sheetName 工作表的名称
      * @return 结果
      */
-    public ResponseData exportExcel(List<T> list, String sheetName)
+    public ResponseData<String> exportExcel(List<T> list, String sheetName)
     {
         this.init(list, sheetName, Excel.Type.EXPORT);
         return exportExcel();
