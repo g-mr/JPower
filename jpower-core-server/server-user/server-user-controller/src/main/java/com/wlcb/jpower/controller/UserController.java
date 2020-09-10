@@ -9,6 +9,7 @@ import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
+import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.support.BeanExcelUtil;
 import com.wlcb.jpower.module.common.utils.*;
@@ -309,6 +310,17 @@ public class UserController extends BaseController {
         }else {
             throw new BusinessException(fileName+"生成失败，无法下载");
         }
+    }
+
+    @ApiOperation(value = "修改密码")
+    @GetMapping(value = "/updatePassword")
+    public ResponseData<String> updatePassword(@ApiParam(value = "旧密码",required = true) @RequestParam String oldPw,@ApiParam(value = "新密码",required = true) @RequestParam String newPw){
+        UserInfo userInfo = SecureUtil.getUser();
+        TbCoreUser user = coreUserService.getById(userInfo.getUserId());
+        if (Fc.isNull(user) || !Fc.equals(user.getPassword(),DigestUtil.encrypt(oldPw))){
+            ReturnJsonUtil.fail("原密码错误");
+        }
+        return ReturnJsonUtil.status(coreUserService.updateUserPassword(user.getId(),DigestUtil.encrypt(newPw)));
     }
 
 }
