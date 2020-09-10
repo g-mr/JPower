@@ -70,6 +70,12 @@
             <version>${gateway.version}</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.apache.skywalking/apm-toolkit-logback-1.x -->
+        <dependency>
+            <groupId>org.apache.skywalking</groupId>
+            <artifactId>apm-toolkit-logback-1.x</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

@@ -52,6 +52,7 @@
         <gateway.version>2.2.4.RELEASE</gateway.version>
         <openfeign.version>2.2.4.RELEASE</openfeign.version>
         <zipkin.version>2.2.5.RELEASE</zipkin.version>
+        <skywalking.version>8.1.0</skywalking.version>
     </properties>
 
     <!--profile配置-->
@@ -238,17 +239,33 @@
                 <version>${com.jpower.version}</version>
             </dependency>
 
-            <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-sleuth -->
+<!--            &lt;!&ndash; https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-sleuth &ndash;&gt;-->
+<!--            <dependency>-->
+<!--                <groupId>org.springframework.cloud</groupId>-->
+<!--                <artifactId>spring-cloud-starter-sleuth</artifactId>-->
+<!--                <version>${zipkin.version}</version>-->
+<!--            </dependency>-->
+<!--            &lt;!&ndash; https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-zipkin &ndash;&gt;-->
+<!--            <dependency>-->
+<!--                <groupId>org.springframework.cloud</groupId>-->
+<!--                <artifactId>spring-cloud-starter-zipkin</artifactId>-->
+<!--                <version>${zipkin.version}</version>-->
+<!--            </dependency>-->
+
+
+            <!-- https://mvnrepository.com/artifact/org.apache.skywalking/apm-toolkit-trace -->
+<!--            <dependency>-->
+<!--                <groupId>org.apache.skywalking</groupId>-->
+<!--                <artifactId>apm-toolkit-trace</artifactId>-->
+<!--                <version>${skywalking.version}</version>-->
+<!--                <scope>provided</scope>-->
+<!--            </dependency>-->
+
+            <!-- https://mvnrepository.com/artifact/org.apache.skywalking/apm-toolkit-logback-1.x -->
             <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-sleuth</artifactId>
-                <version>${zipkin.version}</version>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-zipkin -->
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-zipkin</artifactId>
-                <version>${zipkin.version}</version>
+                <groupId>org.apache.skywalking</groupId>
+                <artifactId>apm-toolkit-logback-1.x</artifactId>
+                <version>${skywalking.version}</version>
             </dependency>
 
         </dependencies>
