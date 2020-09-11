@@ -318,9 +318,9 @@ public class BeanUtil  extends org.springframework.beans.BeanUtils {
      * @Param [bean]
      * @return java.util.Map<java.lang.String,java.lang.String>
      **/
-    public static Map<String, String> getFieldValueMap(Object bean) {
+    public static Map<String, Object> getFieldValueMap(Object bean) {
         Class<?> cls = bean.getClass();
-        Map<String, String> valueMap = new HashMap<String, String>();
+        Map<String, Object> valueMap = new HashMap<String, Object>();
         // 取出bean里的所有方法
         Method[] methods = cls.getMethods();
         List<Field> fields = getFieldList(cls);

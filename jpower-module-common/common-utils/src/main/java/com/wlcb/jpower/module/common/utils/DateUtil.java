@@ -93,6 +93,22 @@ public class DateUtil extends org.apache.commons.lang3.time.DateUtils {
         }
     }
 
+
+    /**
+     * 获取周
+     * 启始周是周一
+     */
+    public static Integer getWeek(Date date){
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        int weekday = c.get(Calendar.DAY_OF_WEEK);
+        weekday--;
+        if (weekday <= 0){
+            weekday = 7;
+        }
+        return weekday;
+    }
+
     public static Date parseDateFormat(String date, String format) {
         SimpleDateFormat sf = new SimpleDateFormat(format);
 
