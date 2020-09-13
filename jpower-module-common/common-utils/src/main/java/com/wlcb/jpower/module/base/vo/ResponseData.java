@@ -2,9 +2,15 @@ package com.wlcb.jpower.module.base.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @ApiModel(description = "返回消息通用包装")
 public class ResponseData<T> implements Serializable {
 

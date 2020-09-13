@@ -1,8 +1,11 @@
 package com.wlcb.jpower.feign;
 
+import com.alibaba.fastjson.JSON;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
+import feign.hystrix.FallbackFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,34 +18,74 @@ import java.util.List;
  * @Version 1.0
  */
 @Component
-public class UserClientFallback implements UserClient {
-    @Override
-    public ResponseData<TbCoreUser> queryUserByLoginIdPwd(String loginId, String password) {
-        return ReturnJsonUtil.fail("查询失败");
-    }
+@Slf4j
+public class UserClientFallback implements FallbackFactory<UserClient> {
+
+//    @Override
+//    public ResponseData<TbCoreUser> queryUserByLoginIdPwd(String loginId, String password) {
+//        log.error("调用queryUserByLoginIdPwd失败，参数：loginId={}，password={},e={}",loginId,password);
+//        return ReturnJsonUtil.fail("查询失败");
+//    }
+//
+//    @Override
+//    public ResponseData<List<String>> getRoleIds(String userId) {
+//        return ReturnJsonUtil.fail("查询失败");
+//    }
+//
+//    @Override
+//    public ResponseData updateUserLoginInfo(TbCoreUser user) {
+//        return ReturnJsonUtil.fail("更新失败");
+//    }
+//
+//    @Override
+//    public ResponseData<TbCoreUser> queryUserByCode(String otherCode) {
+//        return ReturnJsonUtil.fail("查询失败");
+//    }
+//
+//    @Override
+//    public ResponseData<TbCoreUser> get(String id) {
+//        return ReturnJsonUtil.fail("查询失败");
+//    }
+//
+//    @Override
+//    public ResponseData<TbCoreUser> queryUserByPhone(String phone) {
+//        return ReturnJsonUtil.fail("查询失败");
+//    }
 
     @Override
-    public ResponseData<List<String>> getRoleIds(String userId) {
-        return ReturnJsonUtil.fail("查询失败");
-    }
+    public UserClient create(Throwable cause) {
+        return new UserClient() {
+            @Override
+            public ResponseData<TbCoreUser> queryUserByLoginIdPwd(String loginId, String password) {
+                log.error("调用queryUserByLoginIdPwd失败，参数：loginId={}，password={},e={}",loginId,password,cause);
+                return ReturnJsonUtil.fail("查询失败");
+            }
 
-    @Override
-    public ResponseData updateUserLoginInfo(TbCoreUser user) {
-        return ReturnJsonUtil.fail("更新失败");
-    }
+            @Override
+            public ResponseData<List<String>> getRoleIds(String userId) {
+                return ReturnJsonUtil.fail("查询失败");
+            }
 
-    @Override
-    public ResponseData<TbCoreUser> queryUserByCode(String otherCode) {
-        return ReturnJsonUtil.fail("查询失败");
-    }
+            @Override
+            public ResponseData updateUserLoginInfo(TbCoreUser user) {
+                log.error("调用queryUserByLoginIdPwd失败，参数：{}，e={}", JSON.toJSONString(user),cause);
+                return ReturnJsonUtil.fail("更新失败");
+            }
 
-    @Override
-    public ResponseData<TbCoreUser> get(String id) {
-        return ReturnJsonUtil.fail("查询失败");
-    }
+            @Override
+            public ResponseData<TbCoreUser> queryUserByCode(String otherCode) {
+                return ReturnJsonUtil.fail("查询失败");
+            }
 
-    @Override
-    public ResponseData<TbCoreUser> queryUserByPhone(String phone) {
-        return ReturnJsonUtil.fail("查询失败");
+            @Override
+            public ResponseData<TbCoreUser> get(String id) {
+                return ReturnJsonUtil.fail("查询失败");
+            }
+
+            @Override
+            public ResponseData<TbCoreUser> queryUserByPhone(String phone) {
+                return ReturnJsonUtil.fail("查询失败");
+            }
+        };
     }
 }

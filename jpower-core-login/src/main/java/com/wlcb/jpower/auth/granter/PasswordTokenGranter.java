@@ -42,3 +42,4 @@ public class PasswordTokenGranter implements TokenGranter {
 	}
 
 }
+

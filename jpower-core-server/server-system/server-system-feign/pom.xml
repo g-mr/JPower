@@ -19,8 +19,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <groupId>com.wlcb</groupId>
+            <artifactId>common-feign</artifactId>
+            <version>${com.jpower.version}</version>
         </dependency>
     </dependencies>
 </project>

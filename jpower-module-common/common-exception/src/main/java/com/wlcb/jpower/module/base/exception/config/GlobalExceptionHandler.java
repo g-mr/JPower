@@ -52,6 +52,8 @@ public class GlobalExceptionHandler {
             r.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
         r.setStatus(false);
+
+        e.printStackTrace();
         return r;
     }
 

@@ -53,6 +53,9 @@
         <openfeign.version>2.2.4.RELEASE</openfeign.version>
         <zipkin.version>2.2.5.RELEASE</zipkin.version>
         <skywalking.version>8.1.0</skywalking.version>
+        <sentinel.version>2.2.1.RELEASE</sentinel.version>
+        <actuator.version>2.3.3.RELEASE</actuator.version>
+        <alibaba.csp.version>1.8.0</alibaba.csp.version>
     </properties>
 
     <!--profile配置-->
@@ -266,6 +269,19 @@
                 <groupId>org.apache.skywalking</groupId>
                 <artifactId>apm-toolkit-logback-1.x</artifactId>
                 <version>${skywalking.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+                <version>${sentinel.version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-actuator</artifactId>
+                <version>${actuator.version}</version>
             </dependency>
 
         </dependencies>
