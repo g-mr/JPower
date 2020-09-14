@@ -30,6 +30,8 @@ spring:
   cloud:
     sentinel:
       eager: true
+      log:
+        dir: ./logs/sentinel
 
 #feign配置
 feign:
