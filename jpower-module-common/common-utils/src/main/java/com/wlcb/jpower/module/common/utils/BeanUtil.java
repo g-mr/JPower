@@ -327,7 +327,6 @@ public class BeanUtil  extends org.springframework.beans.BeanUtils {
 
         for (Field field : fields) {
             try {
-                String fieldType = field.getType().getSimpleName();
                 String fieldGetName = parGetName(field.getName());
                 if (!checkGetMet(methods, fieldGetName)) {
                     continue;
@@ -335,15 +334,7 @@ public class BeanUtil  extends org.springframework.beans.BeanUtils {
                 Method fieldGetMet = cls
                         .getMethod(fieldGetName, new Class[] {});
                 Object fieldVal = fieldGetMet.invoke(bean, new Object[] {});
-                String result = null;
-                if ("Date".equals(fieldType)) {
-                    result = Fc.formatDateTime((Date) fieldVal);
-                } else {
-                    if (null != fieldVal) {
-                        result = Fc.toStr(fieldVal);
-                    }
-                }
-                valueMap.put(field.getName(), result);
+                valueMap.put(field.getName(), fieldVal);
             } catch (Exception e) {
                 continue;
             }
