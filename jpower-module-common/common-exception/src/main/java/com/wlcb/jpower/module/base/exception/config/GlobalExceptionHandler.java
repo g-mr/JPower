@@ -53,7 +53,6 @@ public class GlobalExceptionHandler {
         }
         r.setStatus(false);
 
-        e.printStackTrace();
         return r;
     }
 

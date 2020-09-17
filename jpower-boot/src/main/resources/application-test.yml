@@ -1,0 +1,13 @@
+spring:
+  #redis配置
+  redis:
+    ##redis 单机环境配置
+    host: ${jpower.test.redis.host:}
+    port: ${jpower.test.redis.port:}
+    password: ${jpower.test.redis.password:}
+    database: ${jpower.test.redis.database:}
+    ssl: false
+    ##redis 集群环境配置
+    #cluster:
+    #  nodes: 127.0.0.1:6379,127.0.0.1:6378,127.0.0.1:6377
+    #  commandTimeout: 5000

@@ -19,6 +19,7 @@
             <dependency>
                 <groupId>com.wlcb</groupId>
                 <artifactId>server-file-controller</artifactId>
+                <version>${com.jpower.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

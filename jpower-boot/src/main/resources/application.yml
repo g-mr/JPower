@@ -16,29 +16,29 @@ logging:
     root: info
 
 jpower:
-  xss:
-    #是否开启富文本过滤(如果开启，content参数名和以WithHtml结尾得参数名将不进行XSS过滤，默认关闭)
-    isIncludeRichText: false
-    #XSS不过滤得接口路径，支持通配符模式
-    excludes:
-      - /core/**
-  auth:
-    client:
-    #开启需要校验的客户端，值写数据库的clientCode即可
-      - code: admin
-    #需要客户端校验的URL
-        path:
-          - /core/user/**
-    #鉴权需要过滤的白名单地址
-    whileIp:
-      - 192.168.1.2
-#      - 0:0:0:0:0:0:0:1
+#  xss:
+#    #是否开启富文本过滤(如果开启，content参数名和以WithHtml结尾得参数名将不进行XSS过滤，默认关闭)
+#    isIncludeRichText: false
+#    #XSS不过滤得接口路径，支持通配符模式
+#    excludes:
+#      - /core/**
+#  auth:
+#    client:
+#    #开启需要校验的客户端，值写数据库的clientCode即可
+#      - code: admin
+#    #需要客户端校验的URL
+#        path:
+#          - /core/user/**
+#    #鉴权需要过滤的白名单地址
+#    whileIp:
+#      - 192.168.1.2
+##      - 0:0:0:0:0:0:0:1
   dev:
     datasource:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/jpower?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8
+      url: jdbc:mysql://localhost:3306/jpower_core?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8
       username: root
-      password: 123456
+      password: 12345678
     redis:
       host: 127.0.0.1
       password:
@@ -57,7 +57,7 @@ jpower:
       host: 192.168.128.104
       password: Wlcb20200515
       port: 6379
-      database: 0
+      database: 99
   #  正式环境
   prod:
     datasource:
@@ -69,4 +69,4 @@ jpower:
       host: 192.168.128.100
       password: Wlcb20200515
       port: 6379
-      database: 0
+      database: 99
