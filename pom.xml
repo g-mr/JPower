@@ -58,7 +58,8 @@
         <alibaba.csp.version>1.8.0</alibaba.csp.version>
 
         <dockerfile-maven-plugin.version>1.4.13</dockerfile-maven-plugin.version>
-        <docker.image.prefix>jpower</docker.image.prefix>
+        <docker.image.prefix>jpowerplus</docker.image.prefix>
+        <docker.registry>hub.docker.com</docker.registry>
     </properties>
 
     <!--profile配置-->
@@ -325,6 +326,9 @@
                     <artifactId>dockerfile-maven-plugin</artifactId>
                     <version>${dockerfile-maven-plugin.version}</version>
                     <configuration>
+                        <username>jpowerplus</username>
+                        <password>1226@ding</password>
+                        <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
                         <repository>${docker.image.prefix}/${project.build.finalName}</repository>
                         <tag>${com.jpower.version}</tag>
                         <buildArgs>
