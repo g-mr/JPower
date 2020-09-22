@@ -5,8 +5,7 @@ import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.StandardEnvironment;
+import org.springframework.core.env.*;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -39,16 +38,23 @@ public class JpowerApplication {
         Assert.hasText(appName, "[appName]服务名不能为空");
         SpringApplicationBuilder builder = new SpringApplicationBuilder(source);
 
-        // 读取环境变量，使用spring boot的规则
+        //读取环境变量配置
         ConfigurableEnvironment environment = new StandardEnvironment();
+        MutablePropertySources propertySources = environment.getPropertySources();
+        propertySources.addFirst(new SimpleCommandLinePropertySource(args));
+        propertySources.addLast(new MapPropertySource("systemProperties", environment.getSystemProperties()));
+        propertySources.addLast(new SystemEnvironmentPropertySource("systemEnvironment", environment.getSystemEnvironment()));
         // 获取配置的环境变量
         String[] activeProfiles = environment.getActiveProfiles();
 
         // 判断环境:dev、test、prod
         List<String> profiles = Arrays.asList(activeProfiles);
-
-        List<String> activeProfileList = new ArrayList<>(profiles);
+        List<String> presetProfiles = new ArrayList(Arrays.asList("dev", "test", "prod"));
+        presetProfiles.retainAll(profiles);
+        List<String> activeProfileList = new ArrayList<>(presetProfiles);
         String profile;
+        log.info("获取环境变量完成：{}",activeProfileList.size());
+        activeProfileList.forEach(log::info);
         if (activeProfileList.isEmpty()) {
             // 默认dev开发
             profile = AppConstant.DEV_CODE;
@@ -94,5 +100,4 @@ public class JpowerApplication {
         String osName = System.getProperty("os.name");
         return StringUtils.hasText(osName) && !(AppConstant.OS_NAME_LINUX.equals(osName.toUpperCase()));
     }
-
 }

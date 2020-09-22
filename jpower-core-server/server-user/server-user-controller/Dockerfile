@@ -8,7 +8,7 @@ RUN mkdir -p /jpower/user \
 
 WORKDIR /jpower/user
 
-EXPOSE 801
+EXPOSE 83
 
 ADD ./target/jpower-user.jar ./app.jar
 
