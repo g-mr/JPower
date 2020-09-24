@@ -299,6 +299,7 @@
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
                     <configuration>
+                        <classifier>exec</classifier>
                         <fork>true</fork>
                         <!--生成可执行jar的名称-->
                         <finalName>${build.finalName}</finalName>

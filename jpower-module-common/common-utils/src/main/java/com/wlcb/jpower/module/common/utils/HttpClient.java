@@ -372,6 +372,43 @@ public class HttpClient {
             // 关闭资源
         }
         return result;
+    }
+
+    public static String doPostJson(String url, Map<String, String> headers, String param) {
+        String result = "";
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        HttpPost post = new HttpPost(url);
+
+        //配置超时时间
+        RequestConfig requestConfig = RequestConfig.custom().
+                setConnectTimeout(30000).setConnectionRequestTimeout(30000)
+                .setSocketTimeout(30000).setRedirectsEnabled(true).build();
+
+        post.setConfig(requestConfig);
+
+        HttpEntity entity = EntityBuilder.create().setText(param).setContentType(ContentType.APPLICATION_JSON).build();
+        post.setEntity(entity);
+        post.setHeader("Content-Type", "application/json");
+        if (Fc.isNotEmpty(headers)) {
+            headers.forEach(post::addHeader);
+        }
+        CloseableHttpResponse execute = null;
+        try {
+            // httpClient对象执行post请求,并返回响应参数对象
+            execute = httpClient.execute(post);
+            // 从响应对象中获取响应内容
+            entity = execute.getEntity();
+            result = EntityUtils.toString(entity);
+        } catch (ClientProtocolException e) {
+            logger.error("{}接口调用失败", e.getMessage());
+        } catch (IOException e) {
+            logger.error("{}接口调用失败", e.getMessage());
+        } finally {
+            Fc.closeQuietly(execute);
+            Fc.closeQuietly(httpClient);
+            // 关闭资源
+        }
+        return result;
 
 
     }
