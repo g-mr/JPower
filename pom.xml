@@ -321,6 +321,7 @@
                         <warName>${build.finalName}</warName>
                     </configuration>
                 </plugin>
+                <!-- dockerfile -->
                 <plugin>
                     <groupId>com.spotify</groupId>
                     <artifactId>dockerfile-maven-plugin</artifactId>
