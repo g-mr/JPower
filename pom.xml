@@ -58,8 +58,8 @@
         <alibaba.csp.version>1.8.0</alibaba.csp.version>
 
         <dockerfile-maven-plugin.version>1.4.13</dockerfile-maven-plugin.version>
-        <docker.image.prefix>jpowerplus</docker.image.prefix>
-        <docker.registry>hub.docker.com</docker.registry>
+        <docker.image.prefix>jpower</docker.image.prefix>
+        <docker.registry>219.148.186.235:8861</docker.registry>
     </properties>
 
     <!--profile配置-->
@@ -322,18 +322,19 @@
                         <warName>${build.finalName}</warName>
                     </configuration>
                 </plugin>
+                <!-- dockerfile -->
                 <plugin>
                     <groupId>com.spotify</groupId>
                     <artifactId>dockerfile-maven-plugin</artifactId>
                     <version>${dockerfile-maven-plugin.version}</version>
                     <configuration>
-                        <username>jpowerplus</username>
-                        <password>1226@ding</password>
+                        <username>admin</username>
+                        <password>Harbor12345</password>
                         <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
-                        <repository>${docker.image.prefix}/${project.build.finalName}</repository>
+                        <repository>${docker.registry}/${docker.image.prefix}/${project.build.finalName}</repository>
                         <tag>${project.version}</tag>
                         <buildArgs>
-                            <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
+                            <JAR_FILE>target/${project.build.finalName}-exec.jar</JAR_FILE>
                         </buildArgs>
                     </configuration>
                 </plugin>
