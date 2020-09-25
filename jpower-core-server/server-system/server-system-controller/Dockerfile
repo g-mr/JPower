@@ -10,7 +10,7 @@ WORKDIR /jpower/system
 
 EXPOSE 81
 
-ADD ./target/jpower-system.jar ./app.jar
+ADD ./target/jpower-system-exec.jar ./app.jar
 
 ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
 
