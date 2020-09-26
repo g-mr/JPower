@@ -10,7 +10,7 @@ WORKDIR /jpower/gateway
 
 EXPOSE 80
 
-ADD ./target/jpower-gateway.jar ./app.jar
+ADD ./target/jpower-gateway-exec.jar ./app.jar
 
 ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
 

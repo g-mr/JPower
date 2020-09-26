@@ -10,7 +10,7 @@ WORKDIR /jpower/auth
 
 EXPOSE 82
 
-ADD ./target/jpower-auth.jar ./app.jar
+ADD ./target/jpower-auth-exec.jar ./app.jar
 
 ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
 
