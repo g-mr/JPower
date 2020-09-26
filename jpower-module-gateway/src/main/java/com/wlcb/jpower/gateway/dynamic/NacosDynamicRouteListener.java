@@ -65,6 +65,7 @@ public class NacosDynamicRouteListener {
             if (Fc.isNotBlank(configInfo)){
                 List<RouteDefinition> list = JSON.parseArray(configInfo,RouteDefinition.class);
                 list.forEach(dynamicRouteService::update);
+                dynamicRouteService.publishEvent();
             }
 
         } catch (Exception e) {

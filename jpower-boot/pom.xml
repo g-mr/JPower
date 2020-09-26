@@ -14,25 +14,20 @@
     <version>${com.jpower.version}</version>
     <packaging>jar</packaging>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.wlcb</groupId>
-                <artifactId>server-file-controller</artifactId>
-                <version>${com.jpower.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
         <dependency>
             <groupId>com.wlcb</groupId>
-            <artifactId>server-system-controller</artifactId>
+            <artifactId>system-server</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
         <dependency>
             <groupId>com.wlcb</groupId>
-            <artifactId>server-user-controller</artifactId>
+            <artifactId>user-server</artifactId>
+            <version>${com.jpower.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.wlcb</groupId>
+            <artifactId>file-server</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
         <dependency>

@@ -14,9 +14,9 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>server-system</module>
-        <module>server-user</module>
-        <module>server-file</module>
+        <module>jpower-system</module>
+        <module>jpower-user</module>
+        <module>jpower-file</module>
     </modules>
 
     <dependencies>

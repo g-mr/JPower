@@ -53,8 +53,6 @@ public class JpowerApplication {
         presetProfiles.retainAll(profiles);
         List<String> activeProfileList = new ArrayList<>(presetProfiles);
         String profile;
-        log.info("获取环境变量完成：{}",activeProfileList.size());
-        activeProfileList.forEach(log::info);
         if (activeProfileList.isEmpty()) {
             // 默认dev开发
             profile = AppConstant.DEV_CODE;

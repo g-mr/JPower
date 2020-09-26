@@ -1,0 +1,44 @@
+version: '3'
+services:
+  jpower-gateway:
+    image: "219.148.186.235:8861/jpower/gateway-server:1.0.1-SNAPSHOT"
+    privileged: true
+    ports:
+      - 800:800
+    restart: always
+    networks:
+      jpower_net:
+        ipv4_address: 172.16.238.25
+  jpower-auth:
+    image: "219.148.186.235:8861/jpower/auth-server:1.0.1-SNAPSHOT"
+    privileged: true
+    restart: always
+    networks:
+      - jpower_net
+  jpower-user:
+    image: "219.148.186.235:8861/jpower/user-server:1.0.1-SNAPSHOT"
+    privileged: true
+    restart: always
+    networks:
+      - jpower_net
+  jpower-system:
+    image: "219.148.186.235:8861/jpower/system-server:1.0.1-SNAPSHOT"
+    privileged: true
+    restart: always
+    networks:
+      - jpower_net
+  jpower-file:
+    image: "219.148.186.235:8861/jpower/file-server:1.0.1-SNAPSHOT"
+    volumes:
+      - /root/file/:/root/file
+    privileged: true
+    restart: always
+    networks:
+      - jpower_net
+
+networks:
+  jpower_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.238.0/24

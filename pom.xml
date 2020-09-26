@@ -62,31 +62,6 @@
         <docker.registry>219.148.186.235:8861</docker.registry>
     </properties>
 
-    <!--profile配置-->
-<!--    <profiles>-->
-<!--        <profile>-->
-<!--            <id>dev</id>-->
-<!--            <properties>-->
-<!--                <profilea.active>dev</profilea.active>-->
-<!--            </properties>-->
-<!--            <activation>-->
-<!--                <activeByDefault>true</activeByDefault>-->
-<!--            </activation>-->
-<!--        </profile>-->
-<!--        <profile>-->
-<!--            <id>test</id>-->
-<!--            <properties>-->
-<!--                <profilea.active>test</profilea.active>-->
-<!--            </properties>-->
-<!--        </profile>-->
-<!--        <profile>-->
-<!--            <id>prod</id>-->
-<!--            <properties>-->
-<!--                <profilea.active>prod</profilea.active>-->
-<!--            </properties>-->
-<!--        </profile>-->
-<!--    </profiles>-->
-
     <modules>
         <module>jpower-module-common</module>
         <module>jpower-core-login</module>

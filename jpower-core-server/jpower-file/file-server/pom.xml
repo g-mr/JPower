@@ -3,52 +3,33 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>jpower</artifactId>
+        <artifactId>server-file</artifactId>
         <groupId>com.wlcb</groupId>
         <version>1.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>jpower-core-login</artifactId>
+    <artifactId>file-server</artifactId>
+
+    <packaging>jar</packaging>
 
     <dependencies>
+        <dependency>
+            <groupId>com.wlcb</groupId>
+            <artifactId>file-biz</artifactId>
+            <version>${com.jpower.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>com.wlcb</groupId>
-            <artifactId>user-api</artifactId>
+            <artifactId>file-api-biz</artifactId>
             <version>${com.jpower.version}</version>
             <scope>provided</scope>
         </dependency>
-
-        <dependency>
-            <groupId>com.wlcb</groupId>
-            <artifactId>system-api</artifactId>
-            <version>${com.jpower.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.wlcb</groupId>
-            <artifactId>common-tool</artifactId>
-            <version>${com.jpower.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.skywalking</groupId>
-            <artifactId>apm-toolkit-logback-1.x</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.wlcb</groupId>
-            <artifactId>common-sentinel</artifactId>
-            <version>${com.jpower.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
     </dependencies>
 
     <build>
-        <finalName>jpower-auth</finalName>
+        <finalName>jpower-file</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -57,9 +38,6 @@
             <plugin>
                 <groupId>com.spotify</groupId>
                 <artifactId>dockerfile-maven-plugin</artifactId>
-                <configuration>
-                    <repository>${docker.registry}/${docker.image.prefix}/auth-server</repository>
-                </configuration>
             </plugin>
         </plugins>
     </build>
