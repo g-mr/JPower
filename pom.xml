@@ -328,8 +328,6 @@
                     <artifactId>dockerfile-maven-plugin</artifactId>
                     <version>${dockerfile-maven-plugin.version}</version>
                     <configuration>
-<!--                        <username>jpower</username>-->
-<!--                        <password>1qaz@WSX</password>-->
                         <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
                         <repository>${docker.registry}/${docker.image.prefix}/${project.artifactId}</repository>
                         <tag>${project.version}</tag>
