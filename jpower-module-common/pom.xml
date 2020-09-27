@@ -146,41 +146,41 @@
             </dependencies>
         </dependencyManagement>
 
-    <build>
+<!--    <build>-->
 
-        <plugins>
+<!--        <plugins>-->
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <id>utils</id>
-                        <goals><goal>jar</goal></goals>
-                        <phase>package</phase>
-                        <configuration>
-                            <archive>
-                                <manifest>
-                                    <!-- 是否添加依赖的jar路径配置 -->
-                                    <addClasspath>true</addClasspath>
-                                    <!-- 依赖的jar包存放位置，和生成的jar放在同一级目录下 -->
-                                    <classpathPrefix>lib/</classpathPrefix>
-                                </manifest>
-                            </archive>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-jar-plugin</artifactId>-->
+<!--                <version>3.1.0</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>utils</id>-->
+<!--                        <goals><goal>jar</goal></goals>-->
+<!--                        <phase>package</phase>-->
+<!--                        <configuration>-->
+<!--                            <archive>-->
+<!--                                <manifest>-->
+<!--                                    &lt;!&ndash; 是否添加依赖的jar路径配置 &ndash;&gt;-->
+<!--                                    <addClasspath>true</addClasspath>-->
+<!--                                    &lt;!&ndash; 依赖的jar包存放位置，和生成的jar放在同一级目录下 &ndash;&gt;-->
+<!--                                    <classpathPrefix>lib/</classpathPrefix>-->
+<!--                                </manifest>-->
+<!--                            </archive>-->
 
-                            <classifier>utils</classifier>
-                            <includes>
-                                <include>**/utils/**</include>
-                            </includes>
-                        </configuration>
-                    </execution>
-                </executions>
+<!--                            <classifier>utils</classifier>-->
+<!--                            <includes>-->
+<!--                                <include>**/utils/**</include>-->
+<!--                            </includes>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
 
-            </plugin>
+<!--            </plugin>-->
 
-        </plugins>
+<!--        </plugins>-->
 
-    </build>
+<!--    </build>-->
 
 </project>

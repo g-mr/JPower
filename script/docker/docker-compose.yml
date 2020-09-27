@@ -3,8 +3,13 @@ services:
   jpower-gateway:
     image: "219.148.186.235:8861/jpower/gateway-server:1.0.1-SNAPSHOT"
     privileged: true
+    volumes:
+#      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
+      - /root/config/skywalking/skywalking-apm/agent/:/root/config/skywalking/skywalking-apm/agent/
+    environment:
+      - JAVA_TOOL_OPTIONS=-javaagent:/root/config/skywalking/skywalking-apm/agent/skywalking-agent.jar
     ports:
-      - 800:800
+      - 800:80
     restart: always
     networks:
       jpower_net:
@@ -12,25 +17,44 @@ services:
   jpower-auth:
     image: "219.148.186.235:8861/jpower/auth-server:1.0.1-SNAPSHOT"
     privileged: true
+    volumes:
+      #      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
+      - /root/config/skywalking/skywalking-apm/agent/:/root/config/skywalking/skywalking-apm/agent/
+    environment:
+      - JAVA_TOOL_OPTIONS=-javaagent:/root/config/skywalking/skywalking-apm/agent/skywalking-agent.jar
     restart: always
     networks:
       - jpower_net
   jpower-user:
     image: "219.148.186.235:8861/jpower/user-server:1.0.1-SNAPSHOT"
     privileged: true
+    volumes:
+      #      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
+      - /root/config/skywalking/skywalking-apm/agent/:/root/config/skywalking/skywalking-apm/agent/
+    environment:
+      - JAVA_TOOL_OPTIONS=-javaagent:/root/config/skywalking/skywalking-apm/agent/skywalking-agent.jar
     restart: always
     networks:
       - jpower_net
   jpower-system:
     image: "219.148.186.235:8861/jpower/system-server:1.0.1-SNAPSHOT"
     privileged: true
+    volumes:
+      #      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
+      - /root/config/skywalking/skywalking-apm/agent/:/root/config/skywalking/skywalking-apm/agent/
+    environment:
+      - JAVA_TOOL_OPTIONS=-javaagent:/root/config/skywalking/skywalking-apm/agent/skywalking-agent.jar
     restart: always
     networks:
       - jpower_net
   jpower-file:
     image: "219.148.186.235:8861/jpower/file-server:1.0.1-SNAPSHOT"
     volumes:
+      #      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
+      - /root/config/skywalking/skywalking-apm/agent/:/root/config/skywalking/skywalking-apm/agent/
       - /root/file/:/root/file
+    environment:
+      - JAVA_TOOL_OPTIONS=-javaagent:/root/config/skywalking/skywalking-apm/agent/skywalking-agent.jar
     privileged: true
     restart: always
     networks:

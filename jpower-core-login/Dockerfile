@@ -8,10 +8,18 @@ RUN mkdir -p /jpower/auth \
 
 WORKDIR /jpower/auth
 
+ENV SW_AGENT_COLLECTOR_BACKEND_SERVICES=219.148.186.214:11800 \
+    SW_AGENT_NAME=jpower-auth
+
 EXPOSE 82
 
 ADD ./target/jpower-auth-exec.jar ./app.jar
 
+
 ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
 
 CMD ["--spring.profiles.active=test"]
+
+#ENTRYPOINT java -javaagent:"$SW_JAVA_AGENT" -Djava.security.egd=file:/dev/./urandom -jar app.jar
+#
+#CMD -spring.profiles.active=test

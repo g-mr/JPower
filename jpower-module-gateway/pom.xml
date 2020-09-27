@@ -84,6 +84,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
             </plugin>
 
             <plugin>
@@ -91,6 +94,7 @@
                 <artifactId>dockerfile-maven-plugin</artifactId>
                 <configuration>
                     <repository>${docker.registry}/${docker.image.prefix}/gateway-server</repository>
+                    <skip>false</skip>
                 </configuration>
             </plugin>
 

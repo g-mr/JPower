@@ -10,7 +10,7 @@
     4）修改storage.mysql.properties.dataSource.password: ${SW_DATA_SOURCE_USER:【数据库密码】}
     5）修改configuration.nacos.serverAddr: ${SW_CONFIG_NACOS_SERVER_ADDR:【nacos地址】}
     6）修改configuration.nacos.port: ${SW_CONFIG_NACOS_SERVER_PORT:【nacos端口】}
-2、用self.yaml替换config/用self.yml文件
+2、用self.yaml替换config/self.yml文件
 3、将apm-trace-ignore-plugin.config文件添加到/agent/config/下
 4、将mysql驱动JAR拷贝到oap-libs/下
 5、拷贝/agent/optional-plugins/apm-trace-ignore-plugin-8.1.0.jar文件到/agent/plugins/
