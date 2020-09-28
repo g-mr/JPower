@@ -1,5 +1,22 @@
 version: '3'
 services:
+  nacos:
+    image: "nacos/nacos-server:1.3.2"
+    hostname: "nacos-standalone"
+    privileged: true
+    environment:
+      - MODE=standalone
+      - TZ=Asia/Shanghai
+    volumes:
+      - /docker/nacos/standalone-logs/:/home/nacos/logs
+      - /docker/nacos/init.d/custom.properties:/home/nacos/init.d/custom.properties
+    ports:
+      - 8848:8848
+    restart: always
+    networks:
+      jpower_net:
+        ipv4_address: 172.16.238.50
+
   jpower-gateway:
     image: "219.148.186.235:8861/jpower/gateway-server:1.0.1-SNAPSHOT"
     privileged: true
@@ -8,12 +25,14 @@ services:
       - /root/config/skywalking/skywalking-apm/agent/:/root/config/skywalking/skywalking-apm/agent/
     environment:
       - JAVA_TOOL_OPTIONS=-javaagent:/root/config/skywalking/skywalking-apm/agent/skywalking-agent.jar
+      - SW_AGENT_COLLECTOR_BACKEND_SERVICES=219.148.186.214:11800
     ports:
       - 800:80
     restart: always
     networks:
       jpower_net:
         ipv4_address: 172.16.238.25
+
   jpower-auth:
     image: "219.148.186.235:8861/jpower/auth-server:1.0.1-SNAPSHOT"
     privileged: true
@@ -22,9 +41,11 @@ services:
       - /root/config/skywalking/skywalking-apm/agent/:/root/config/skywalking/skywalking-apm/agent/
     environment:
       - JAVA_TOOL_OPTIONS=-javaagent:/root/config/skywalking/skywalking-apm/agent/skywalking-agent.jar
+      - SW_AGENT_COLLECTOR_BACKEND_SERVICES=219.148.186.214:11800
     restart: always
     networks:
       - jpower_net
+
   jpower-user:
     image: "219.148.186.235:8861/jpower/user-server:1.0.1-SNAPSHOT"
     privileged: true
@@ -33,9 +54,11 @@ services:
       - /root/config/skywalking/skywalking-apm/agent/:/root/config/skywalking/skywalking-apm/agent/
     environment:
       - JAVA_TOOL_OPTIONS=-javaagent:/root/config/skywalking/skywalking-apm/agent/skywalking-agent.jar
+      - SW_AGENT_COLLECTOR_BACKEND_SERVICES=219.148.186.214:11800
     restart: always
     networks:
       - jpower_net
+
   jpower-system:
     image: "219.148.186.235:8861/jpower/system-server:1.0.1-SNAPSHOT"
     privileged: true
@@ -44,9 +67,11 @@ services:
       - /root/config/skywalking/skywalking-apm/agent/:/root/config/skywalking/skywalking-apm/agent/
     environment:
       - JAVA_TOOL_OPTIONS=-javaagent:/root/config/skywalking/skywalking-apm/agent/skywalking-agent.jar
+      - SW_AGENT_COLLECTOR_BACKEND_SERVICES=219.148.186.214:11800
     restart: always
     networks:
       - jpower_net
+
   jpower-file:
     image: "219.148.186.235:8861/jpower/file-server:1.0.1-SNAPSHOT"
     volumes:
@@ -55,6 +80,7 @@ services:
       - /root/file/:/root/file
     environment:
       - JAVA_TOOL_OPTIONS=-javaagent:/root/config/skywalking/skywalking-apm/agent/skywalking-agent.jar
+      - SW_AGENT_COLLECTOR_BACKEND_SERVICES=219.148.186.214:11800
     privileged: true
     restart: always
     networks:

@@ -8,6 +8,9 @@ RUN mkdir -p /jpower/gateway \
 
 WORKDIR /jpower/gateway
 
+ENV SW_AGENT_COLLECTOR_BACKEND_SERVICES=127.0.0.1:11800 \
+    SW_AGENT_NAME=jpower-gateway
+
 EXPOSE 80
 
 ADD ./target/jpower-gateway-exec.jar ./app.jar

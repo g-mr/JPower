@@ -8,6 +8,9 @@ RUN mkdir -p /jpower/file \
 
 WORKDIR /jpower/file
 
+ENV SW_AGENT_COLLECTOR_BACKEND_SERVICES=127.0.0.1:11800 \
+    SW_AGENT_NAME=jpower-file
+
 EXPOSE 84
 
 ADD ./target/jpower-file-exec.jar ./app.jar
