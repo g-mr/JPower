@@ -7,6 +7,13 @@ services:
     environment:
       - MODE=standalone
       - TZ=Asia/Shanghai
+#      如不需要数据库做数据持久化配置删掉下面得环境变量即可
+      - SPRING_DATASOURCE_PLATFORM=mysql
+      - MYSQL_SERVICE_HOST=192.168.128.97
+      - MYSQL_SERVICE_PORT=3306
+      - MYSQL_SERVICE_DB_NAME=nacos
+      - MYSQL_SERVICE_USER=root
+      - MYSQL_SERVICE_PASSWORD=Wlcb@20200515
     volumes:
       - /docker/nacos/standalone-logs/:/home/nacos/logs
       - /docker/nacos/init.d/custom.properties:/home/nacos/init.d/custom.properties
@@ -77,7 +84,7 @@ services:
     volumes:
       #      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
       - /root/config/skywalking/skywalking-apm/agent/:/root/config/skywalking/skywalking-apm/agent/
-      - /root/file/:/root/file
+      - /docker/file/:/root/file
     environment:
       - JAVA_TOOL_OPTIONS=-javaagent:/root/config/skywalking/skywalking-apm/agent/skywalking-agent.jar
       - SW_AGENT_COLLECTOR_BACKEND_SERVICES=219.148.186.214:11800
