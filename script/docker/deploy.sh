@@ -6,7 +6,7 @@ usage() {
 
 #启动基础支撑模块
 base(){
-  docker-compose up -d nacos
+  docker-compose up -d nacos sentinel
 }
 
 #启动核心程序模块

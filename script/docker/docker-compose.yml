@@ -24,6 +24,19 @@ services:
       jpower_net:
         ipv4_address: 172.16.238.50
 
+  sentinel:
+    image: "jpowerplus/sentinel-dashboard:1.8.0"
+    hostname: "sentinel-standalone"
+    privileged: true
+    volumes:
+      - /docker/sentinel/logs/:/root/logs/csp/
+    ports:
+      - 8858:8858
+    restart: always
+    networks:
+      jpower_net:
+        ipv4_address: 172.16.238.51
+
   jpower-gateway:
     image: "219.148.186.235:8861/jpower/gateway-server:1.0.1-SNAPSHOT"
     privileged: true
