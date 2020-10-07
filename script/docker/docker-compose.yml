@@ -1,5 +1,20 @@
 version: '3'
 services:
+  nginx:
+    image: nginx:stable-alpine-perl
+    hostname: "jpower-nginx"
+    environment:
+      - TZ=Asia/Shanghai
+    ports:
+      - 81:80
+    volumes:
+      - /docker/nginx/jpower/nginx.conf:/etc/nginx/nginx.conf
+    privileged: true
+    restart: always
+    networks:
+      jpower_net:
+        ipv4_address: 172.16.238.90
+
   elasticsearch:
     image: elasticsearch:7.5.0
     privileged: true
@@ -44,6 +59,8 @@ services:
     environment:
       SW_STORAGE: elasticsearch7
       SW_STORAGE_ES_CLUSTER_NODES: elasticsearch:9200
+      SW_TELEMETRY: prometheus
+      SW_PROMETHEUS_FETCHER_ACTIVE: "true"
       TZ: Asia/Shanghai
     networks:
       jpower_net:
