@@ -27,6 +27,16 @@ public class DeployServiceImpl implements DeployService {
         props.setProperty("spring.cloud.nacos.config.shared-configs[1].data-id", NacosConstants.nacosPublicDataId(profile));
         props.setProperty("spring.cloud.nacos.config.shared-configs[1].refresh", NacosConstants.CONFIG_REFRESH);
         props.setProperty("spring.cloud.nacos.config.shared-configs[1].group", NacosConstants.CONFIG_GROUP);
+
+        //seata注册nacos模式配置
+//        props.setProperty("seata.registry.type", "nacos");
+//        props.setProperty("seata.registry.nacos.server-addr", "${jpower.".concat(profile).concat(".nacos.server-addr:}"));
+//        props.setProperty("seata.registry.nacos.namespace", "${jpower.".concat(profile).concat(".nacos.namespace:}"));
+//        props.setProperty("seata.registry.nacos.group", NacosConstants.CONFIG_GROUP);
+//        props.setProperty("seata.config.type", "nacos");
+//        props.setProperty("seata.config.nacos.server-addr", "${jpower.".concat(profile).concat(".nacos.server-addr:}"));
+//        props.setProperty("seata.config.nacos.namespace", "${jpower.".concat(profile).concat(".nacos.namespace:}"));
+//        props.setProperty("seata.config.nacos.group", NacosConstants.CONFIG_GROUP);
     }
 
     @Override

@@ -5,7 +5,7 @@ spring:
     host: 127.0.0.1
     port: 6379
     password:
-    database: 99
+    database: 0
     ssl: false
     ##redis 集群环境配置
     #cluster:
@@ -21,6 +21,8 @@ jpower:
     sentinel:
 #      sentinel流控组件地址
       dashboard: 219.148.186.214:8857
+    seata:
+      grouplist: 219.148.186.214:85
     datasource:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://localhost:3306/jpower?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8

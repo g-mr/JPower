@@ -21,16 +21,18 @@ jpower:
     sentinel:
       #      sentinel流控组件地址
       dashboard: 219.148.186.214:8857
+    seata:
+      grouplist: 219.148.186.214:85
     datasource:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/jpower_core?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8
+      url: jdbc:mysql://localhost:3306/jpower?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8
       username: root
-      password: 12345678
+      password: 123456
   #   测试环境
   test:
     nacos:
       #      配置中心地址，如果nacos配置没有配置注册中心地址，则注册中心默认走这里的地址
-      server-addr: 172.16.238.50:8848
+      server-addr: 172.16.238.50:82
     sentinel:
       #      sentinel流控组件地址
       dashboard: 192.168.0.8:84

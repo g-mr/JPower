@@ -21,6 +21,12 @@
             <version>${com.jpower.version}</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.wlcb</groupId>
+            <artifactId>common-transaction</artifactId>
+            <version>${com.jpower.version}</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 </project>

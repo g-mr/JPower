@@ -1,6 +1,7 @@
 package com.wlcb.jpower.module.common.deploy;
 
 import com.wlcb.jpower.module.common.deploy.service.DeployService;
+import com.wlcb.jpower.module.common.seata.SeataConstants;
 import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -62,7 +63,7 @@ public class JpowerApplication {
         } else if (activeProfileList.size() == 1) {
             profile = activeProfileList.get(0);
         } else {
-            // 同时存在dev、test、prod环境时
+            // 同时存在dev、test、prod环境抛出错误
             throw new RuntimeException("同时存在环境变量:[" + StringUtils.arrayToCommaDelimitedString(activeProfiles) + "]");
         }
 
@@ -71,6 +72,7 @@ public class JpowerApplication {
         props.setProperty("spring.profiles.active", profile);
         props.setProperty("logging.config", "classpath:logback-spring.xml");
         props.setProperty("jpower.is-local", String.valueOf(isLocalDev()));
+        props.setProperty("spring.main.allow-bean-definition-overriding", "true");
         //nacos配置
         props.setProperty("spring.cloud.nacos.discovery.server-addr", "${jpower.".concat(profile).concat(".nacos.server-addr:}"));
         props.setProperty("spring.cloud.nacos.config.server-addr", "${jpower.".concat(profile).concat(".nacos.server-addr:}"));
@@ -78,6 +80,11 @@ public class JpowerApplication {
         props.setProperty("spring.cloud.nacos.config.namespace", "${jpower.".concat(profile).concat(".nacos.namespace:}"));
         //sentinel配置
         props.setProperty("spring.cloud.sentinel.transport.dashboard", "${jpower.".concat(profile).concat(".sentinel.dashboard:}"));
+        //seata配置
+        props.setProperty("spring.cloud.alibaba.seata.tx-service-group", appName.concat(SeataConstants.SUFFIX_SEATA_GROUP));
+        props.setProperty("seata.tx-service-group", appName.concat(SeataConstants.SUFFIX_SEATA_GROUP));
+        props.setProperty("seata.service.grouplist.default", "${jpower.".concat(profile).concat(".seata.grouplist:}"));
+        props.setProperty("seata.service.vgroup-mapping.".concat(appName.concat(SeataConstants.SUFFIX_SEATA_GROUP)), SeataConstants.DEFAULT);
 
         List<DeployService> deployServiceList = new ArrayList<>();
         ServiceLoader.load(DeployService.class).forEach(deployServiceList::add);

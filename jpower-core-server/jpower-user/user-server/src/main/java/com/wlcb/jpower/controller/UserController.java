@@ -3,6 +3,7 @@ package com.wlcb.jpower.controller;
 import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.config.param.ParamConfig;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
+import com.wlcb.jpower.feign.TestClient;
 import com.wlcb.jpower.module.base.annotation.Log;
 import com.wlcb.jpower.module.base.enums.BusinessType;
 import com.wlcb.jpower.module.base.enums.JpowerError;
@@ -16,6 +17,7 @@ import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.*;
 import com.wlcb.jpower.service.CoreUserRoleService;
 import com.wlcb.jpower.service.CoreUserService;
+import io.seata.spring.annotation.GlobalTransactional;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -322,6 +324,23 @@ public class UserController extends BaseController {
             ReturnJsonUtil.fail("原密码错误");
         }
         return ReturnJsonUtil.status(coreUserService.updateUserPassword(user.getId(),DigestUtil.encrypt(newPw)));
+    }
+
+    private TestClient testClient;
+
+    @GetMapping(value = "/test")
+    @GlobalTransactional
+    public ResponseData<String> test(Integer t){
+
+        TbCoreUser coreUser = new TbCoreUser();
+        coreUser.setLoginId("seatstest");
+        coreUser.setPassword("123456");
+        coreUserService.save(coreUser);
+
+        return testClient.test(t);
+
+//        return ReturnJsonUtil.ok("成功");
+
     }
 
 }
