@@ -1,7 +1,7 @@
 package com.wlcb.jpower.module.common.deploy;
 
 import com.wlcb.jpower.module.common.deploy.service.DeployService;
-import com.wlcb.jpower.module.common.seata.SeataConstants;
+import com.wlcb.jpower.module.common.seata.constants.SeataConstants;
 import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.builder.SpringApplicationBuilder;

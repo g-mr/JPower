@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * @author mr.gmac
  */
-@FeignClient(value = AppConstant.JPOWER_SYSTEM, path = "/core/dict")
+@FeignClient(value = AppConstant.JPOWER_SYSTEM, fallback = TestClientFallback.class, path = "/core/dict")
 public interface TestClient {
 
     @GetMapping("/test")

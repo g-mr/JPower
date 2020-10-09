@@ -86,5 +86,17 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
         return false;
     }
 
+    @Override
+    public void test(Integer t) {
+        TbCoreDictType dict = new TbCoreDictType();
+        dict.setDictTypeName("测试");
+        dict.setDictTypeCode("ttt");
+        coreDictTypeDao.save(dict);
+
+        if (t > 10){
+            throw new RuntimeException("抛个异常");
+        }
+    }
+
 
 }

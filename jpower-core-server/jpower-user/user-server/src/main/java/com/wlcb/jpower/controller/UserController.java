@@ -3,7 +3,6 @@ package com.wlcb.jpower.controller;
 import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.config.param.ParamConfig;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
-import com.wlcb.jpower.feign.TestClient;
 import com.wlcb.jpower.module.base.annotation.Log;
 import com.wlcb.jpower.module.base.enums.BusinessType;
 import com.wlcb.jpower.module.base.enums.JpowerError;
@@ -326,20 +325,12 @@ public class UserController extends BaseController {
         return ReturnJsonUtil.status(coreUserService.updateUserPassword(user.getId(),DigestUtil.encrypt(newPw)));
     }
 
-    private TestClient testClient;
-
     @GetMapping(value = "/test")
-    @GlobalTransactional
     public ResponseData<String> test(Integer t){
 
-        TbCoreUser coreUser = new TbCoreUser();
-        coreUser.setLoginId("seatstest");
-        coreUser.setPassword("123456");
-        coreUserService.save(coreUser);
+        coreUserService.savetest(t);
 
-        return testClient.test(t);
-
-//        return ReturnJsonUtil.ok("成功");
+        return ReturnJsonUtil.ok("成功");
 
     }
 

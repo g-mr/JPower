@@ -49,10 +49,12 @@ public class DictController {
         dict.setDictTypeName("测试");
         dict.setDictTypeCode("ttt");
         coreDictTypeService.save(dict);
-        
+
         if (t > 10){
             throw new RuntimeException("抛个异常");
         }
+
+//        coreDictTypeService.test(t);
 
         return ReturnJsonUtil.ok("查询成功");
     }

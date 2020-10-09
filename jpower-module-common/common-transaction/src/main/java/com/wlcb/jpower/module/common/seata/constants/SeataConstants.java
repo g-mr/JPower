@@ -1,4 +1,4 @@
-package com.wlcb.jpower.module.common.seata;
+package com.wlcb.jpower.module.common.seata.constants;
 
 /**
  * @ClassName NacosConstants
