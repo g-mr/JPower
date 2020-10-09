@@ -13,6 +13,7 @@ import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.dbs.entity.TbCoreUserRole;
 import com.wlcb.jpower.feign.SystemClient;
 import com.wlcb.jpower.feign.TestClient;
+import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.Fc;
@@ -81,7 +82,11 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
 //        if (t > 10){
 //            throw new RuntimeException("抛个异常");
 //        }
-        testClient.test(t);
+        ResponseData<String> r = testClient.test(t);
+//        if (Fc.equals(r.getMessage(),"请求失败")){
+//            throw new RuntimeException("服务调用错误");
+//        }
+        System.out.println("====================================================");
     }
 
     @Override

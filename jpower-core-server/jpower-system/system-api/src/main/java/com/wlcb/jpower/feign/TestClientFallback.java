@@ -18,7 +18,9 @@ public class TestClientFallback implements TestClient {
 //        if (!StringUtils.isBlank(RootContext.getXID())) {
 //            try {
 //                GlobalTransactionContext.reload(RootContext.getXID()).rollback();
+////                GlobalTransactionContext.reload(RootContext.getXID()).commit();
 //            } catch (TransactionException e) {
+//                System.out.println("报错了");
 //                e.printStackTrace();
 //            }
 //        }

@@ -17,7 +17,6 @@ import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.dict.CoreDictService;
 import com.wlcb.jpower.service.dict.CoreDictTypeService;
 import com.wlcb.jpower.vo.DictVo;
-import io.seata.spring.annotation.GlobalTransactional;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +41,6 @@ public class DictController {
     private CoreDictTypeService coreDictTypeService;
 
     @GetMapping("/test")
-    @GlobalTransactional
     public ResponseData<String> test(@RequestParam Integer t) throws InterruptedException {
 
         TbCoreDictType dict = new TbCoreDictType();
