@@ -123,8 +123,29 @@ services:
       jpower_net:
         ipv4_address: 172.16.238.51
 
+  seata:
+    image: seataio/seata-server:1.3.0
+    privileged: true
+    hostname: seata-server
+    volumes:
+      - /docker/seata/logs/:/root/logs/seata/
+# 使用自定义配置文件放开
+#      - /docker/seata/config/:/root/seata-config
+    ports:
+      - 85:8091
+    environment:
+      - SEATA_PORT=8091
+# 使用自定义配置文件放开，并编写好配置放到下面的目录中
+#      - SEATA_CONFIG_NAME=file:/root/seata-config/registry
+    expose:
+      - 8091
+    restart: always
+    networks:
+      jpower_net:
+        ipv4_address: 172.16.238.54
+
   jpower-gateway:
-    image: "219.148.186.235:8861/jpower/gateway-server:1.0.1-SNAPSHOT"
+    image: "219.148.186.235:99/jpower/gateway-server:1.0.1-SNAPSHOT"
     privileged: true
     volumes:
 #      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
@@ -140,7 +161,7 @@ services:
         ipv4_address: 172.16.238.25
 
   jpower-auth:
-    image: "219.148.186.235:8861/jpower/auth-server:1.0.1-SNAPSHOT"
+    image: "219.148.186.235:99/jpower/auth-server:1.0.1-SNAPSHOT"
     privileged: true
     volumes:
       #      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
@@ -153,7 +174,7 @@ services:
       - jpower_net
 
   jpower-user:
-    image: "219.148.186.235:8861/jpower/user-server:1.0.1-SNAPSHOT"
+    image: "219.148.186.235:99/jpower/user-server:1.0.1-SNAPSHOT"
     privileged: true
     volumes:
       #      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
@@ -166,7 +187,7 @@ services:
       - jpower_net
 
   jpower-system:
-    image: "219.148.186.235:8861/jpower/system-server:1.0.1-SNAPSHOT"
+    image: "219.148.186.235:99/jpower/system-server:1.0.1-SNAPSHOT"
     privileged: true
     volumes:
       #      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
@@ -179,7 +200,7 @@ services:
       - jpower_net
 
   jpower-file:
-    image: "219.148.186.235:8861/jpower/file-server:1.0.1-SNAPSHOT"
+    image: "219.148.186.235:99/jpower/file-server:1.0.1-SNAPSHOT"
     volumes:
       #      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
       - /root/config/skywalking/skywalking-apm/agent/:/root/config/skywalking/skywalking-apm/agent/

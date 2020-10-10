@@ -21,6 +21,8 @@ jpower:
     sentinel:
       #      sentinel流控组件地址
       dashboard: 219.148.186.214:8857
+    seata:
+      grouplist: 219.148.186.214:85
     datasource:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://localhost:3306/jpower?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8
@@ -34,6 +36,8 @@ jpower:
     sentinel:
       #      sentinel流控组件地址
       dashboard: 192.168.0.8:84
+    seata:
+      grouplist: 172.16.238.54:85
     datasource:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://219.148.186.214:18995/jpower?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8
@@ -47,6 +51,8 @@ jpower:
     sentinel:
       #      sentinel流控组件地址
       dashboard: 219.148.186.226:8858
+    seata:
+      grouplist: 219.148.186.226:85
     datasource:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://119.3.189.156:18992/jpower?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8

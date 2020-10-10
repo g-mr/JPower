@@ -33,7 +33,7 @@ public class WorkAspect {
         Method method = signature.getMethod();
         log.info("{}方法已被降级", method.getName());
         if (!StringUtils.isBlank(RootContext.getXID())) {
-            //需要县吧
+            //需要先把本地事务回滚，不然seata会报找不到全局事务的错误
             try {
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             }catch (NoTransactionException e){
