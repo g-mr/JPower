@@ -124,5 +124,4 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
      **/
     List<TbCoreUser> list(TbCoreUser coreUser);
 
-    void savetest(Integer t);
 }

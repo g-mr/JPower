@@ -10,6 +10,8 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.NoTransactionException;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.lang.reflect.Method;
 
@@ -25,23 +27,18 @@ import java.lang.reflect.Method;
 @Slf4j
 public class WorkAspect {
 
-/*    @Before("execution(* com.wlcb..*.service..*.*(..))")
-    public void before(JoinPoint joinPoint) throws TransactionException {
-        MethodSignature signature = (MethodSignature)joinPoint.getSignature();
-        Method method = signature.getMethod();
-        log.info("拦截到需要分布式事务的方法:{}",method.getName());
-        GlobalTransaction tx = GlobalTransactionContext.getCurrentOrCreate();
-        tx.begin(300000, "test-client");
-        log.info("创建分布式事务完毕:{}", tx.getXid());
-    }
-*/
-//    @AfterThrowing(throwing = "e", pointcut = "execution(* com.wlcb..*.service..*.*(..))")
     @AfterReturning("execution(* com.wlcb..*.feign..*Fallback.*(..))")
     public void doRecoveryActions(JoinPoint joinPoint) throws TransactionException {
         MethodSignature signature = (MethodSignature)joinPoint.getSignature();
         Method method = signature.getMethod();
         log.info("{}方法已被降级", method.getName());
         if (!StringUtils.isBlank(RootContext.getXID())) {
+            //需要县吧
+            try {
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            }catch (NoTransactionException e){
+                log.warn("没有本地事务，无需回滚本地事务");
+            }
             GlobalTransactionContext.reload(RootContext.getXID()).rollback();
         }
     }

@@ -40,23 +40,6 @@ public class DictController {
     private CoreDictService coreDictService;
     private CoreDictTypeService coreDictTypeService;
 
-    @GetMapping("/test")
-    public ResponseData<String> test(@RequestParam Integer t) throws InterruptedException {
-
-        TbCoreDictType dict = new TbCoreDictType();
-        dict.setDictTypeName("测试");
-        dict.setDictTypeCode("ttt");
-        coreDictTypeService.save(dict);
-
-        if (t > 10){
-            throw new RuntimeException("抛个异常");
-        }
-
-//        coreDictTypeService.test(t);
-
-        return ReturnJsonUtil.ok("查询成功");
-    }
-
     @ApiOperation("查询所有字典类型树形结构")
     @RequestMapping(value = "/dictTypeTree",method = RequestMethod.GET,produces="application/json")
     public ResponseData<List<Node>> dictTypeTree(){

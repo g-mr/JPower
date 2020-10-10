@@ -16,7 +16,6 @@ import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.*;
 import com.wlcb.jpower.service.CoreUserRoleService;
 import com.wlcb.jpower.service.CoreUserService;
-import io.seata.spring.annotation.GlobalTransactional;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -323,15 +322,6 @@ public class UserController extends BaseController {
             ReturnJsonUtil.fail("原密码错误");
         }
         return ReturnJsonUtil.status(coreUserService.updateUserPassword(user.getId(),DigestUtil.encrypt(newPw)));
-    }
-
-    @GetMapping(value = "/test")
-    public ResponseData<String> test(Integer t){
-
-        coreUserService.savetest(t);
-
-        return ReturnJsonUtil.ok("成功");
-
     }
 
 }
