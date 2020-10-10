@@ -139,6 +139,12 @@
                 </dependency>
 
                 <dependency>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpmime</artifactId>
+                    <version>${httpclient.version}</version>
+                </dependency>
+
+                <dependency>
                     <groupId>com.github.whvcse</groupId>
                     <artifactId>easy-captcha</artifactId>
                     <version>${easy-captcha.version}</version>

@@ -1,7 +1,9 @@
 package com.wlcb.jpower.module.common.utils;
 
+import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
+import org.apache.http.ProtocolException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.EntityBuilder;
@@ -12,6 +14,10 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
@@ -25,13 +31,13 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.security.KeyStore;
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @ClassName HttpClient
@@ -45,21 +51,21 @@ public class HttpClient {
     private static final Logger logger = LoggerFactory.getLogger(HttpClient.class);
 
     /**
+     * @return java.lang.String
      * @Author 郭丁志
      * @Description //TODO get请求
      * @Date 11:34 2020-07-24
      * @Param [url]
-     * @return java.lang.String
      **/
     public static String doGet(String url) {
-        return doGet(url,null);
+        return doGet(url, null);
     }
 
-    public static String doGet(String url,Map<String, Object> params) {
-        return doGet(url,null,params);
+    public static String doGet(String url, Map<String, Object> params) {
+        return doGet(url, null, params);
     }
 
-    public static String doGet(String url,Map<String, String> headers,Map<String, Object> params) {
+    public static String doGet(String url, Map<String, String> headers, Map<String, Object> params) {
 
         CloseableHttpClient httpClient = null;
         CloseableHttpResponse response = null;
@@ -78,7 +84,7 @@ public class HttpClient {
             // 创建httpGet远程连接实例
             HttpGet httpGet = new HttpGet(builder.build());
             // 设置请求头信息，鉴权
-            if (Fc.isNotEmpty(headers)){
+            if (Fc.isNotEmpty(headers)) {
                 headers.forEach(httpGet::addHeader);
             }
             // 设置配置请求参数
@@ -112,13 +118,13 @@ public class HttpClient {
     }
 
     /**
+     * @return java.lang.String
      * @Author 郭丁志
      * @Description //TODO 下载文件
      * @Date 01:37 2020-04-30
-     * @Param [requestUrl,path]
-     * @return java.lang.String
+     * @Param [requestUrl, path]
      **/
-    public static void doGetDowload(String requestUrl,String path) {
+    public static void doGetDowload(String requestUrl, String path) {
         InputStream is = null;
         BufferedOutputStream bos = null;
         FileOutputStream fos = null;
@@ -144,7 +150,7 @@ public class HttpClient {
             }
 
         } catch (IOException e) {
-            logger.error("文件下载失败：{}",e.getMessage());
+            logger.error("文件下载失败：{}", e.getMessage());
             e.printStackTrace();
         } finally {
             Fc.closeQuietly(is);
@@ -154,14 +160,14 @@ public class HttpClient {
     }
 
     /**
+     * @return java.lang.String
      * @Author 郭丁志
      * @Description //TODO post请求
      * @Date 11:37 2020-07-24
      * @Param [url, paramMap]
-     * @return java.lang.String
      **/
     public static String doPost(String url, Map<String, Object> paramMap) {
-        return doPost(url,null,paramMap);
+        return doPost(url, null, paramMap);
     }
 
     public static String doPost(String url, Map<String, String> headers, Map<String, Object> paramMap) {
@@ -181,14 +187,14 @@ public class HttpClient {
         httpPost.setConfig(requestConfig);
         // 设置请求头
         httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
-        if (Fc.isNotEmpty(headers)){
+        if (Fc.isNotEmpty(headers)) {
             headers.forEach(httpPost::addHeader);
         }
         // 封装post请求参数
         if (null != paramMap && paramMap.size() > 0) {
             List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 
-            paramMap.forEach((k,v) -> {
+            paramMap.forEach((k, v) -> {
                 nvps.add(new BasicNameValuePair(k, Fc.toStr(v)));
             });
 
@@ -207,10 +213,10 @@ public class HttpClient {
             result = EntityUtils.toString(entity);
         } catch (ClientProtocolException e) {
             e.printStackTrace();
-            logger.error("post请求失败：{}",e.getMessage());
+            logger.error("post请求失败：{}", e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
-            logger.error("post请求失败：{}",e.getMessage());
+            logger.error("post请求失败：{}", e.getMessage());
         } finally {
             // 关闭资源
             Fc.closeQuietly(httpResponse);
@@ -221,19 +227,19 @@ public class HttpClient {
 
 
     public static String doPut(String url) {
-        return doPut(url,null);
+        return doPut(url, null);
     }
 
-    public static String doPut(String url,Map<String, Object> params) {
-        return doPut(url,null,params);
+    public static String doPut(String url, Map<String, Object> params) {
+        return doPut(url, null, params);
     }
 
     /**
+     * @return java.lang.String
      * @Author 郭丁志
      * @Description //TODO PUT请求
      * @Date 22:15 2020-08-28
      * @Param [url, headers, paramMap]
-     * @return java.lang.String
      **/
     public static String doPut(String url, Map<String, String> headers, Map<String, Object> paramMap) {
         CloseableHttpClient httpClient = null;
@@ -252,14 +258,14 @@ public class HttpClient {
         httpPut.setConfig(requestConfig);
         // 设置请求头
         httpPut.addHeader("Content-Type", "application/x-www-form-urlencoded");
-        if (Fc.isNotEmpty(headers)){
+        if (Fc.isNotEmpty(headers)) {
             headers.forEach(httpPut::addHeader);
         }
         // 封装post请求参数
         if (null != paramMap && paramMap.size() > 0) {
             List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 
-            paramMap.forEach((k,v) -> {
+            paramMap.forEach((k, v) -> {
                 nvps.add(new BasicNameValuePair(k, Fc.toStr(v)));
             });
 
@@ -278,10 +284,10 @@ public class HttpClient {
             result = EntityUtils.toString(entity);
         } catch (ClientProtocolException e) {
             e.printStackTrace();
-            logger.error("post请求失败：{}",e.getMessage());
+            logger.error("post请求失败：{}", e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
-            logger.error("post请求失败：{}",e.getMessage());
+            logger.error("post请求失败：{}", e.getMessage());
         } finally {
             // 关闭资源
             Fc.closeQuietly(httpResponse);
@@ -307,9 +313,9 @@ public class HttpClient {
             KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
             kmf.init(ks, password);
             SSLContext sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(kmf.getKeyManagers(), (TrustManager[])null, new SecureRandom());
+            sslContext.init(kmf.getKeyManagers(), (TrustManager[]) null, new SecureRandom());
             HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
-            HttpURLConnection httpURLConnection = (HttpURLConnection)httpUrl.openConnection();
+            HttpURLConnection httpURLConnection = (HttpURLConnection) httpUrl.openConnection();
             httpURLConnection.setDoOutput(true);
             httpURLConnection.setRequestMethod("POST");
             httpURLConnection.setConnectTimeout(3000);
@@ -321,14 +327,14 @@ public class HttpClient {
             bufferedReader = new BufferedReader(new InputStreamReader(inputStream, UTF8));
             String line = null;
 
-            while((line = bufferedReader.readLine()) != null) {
+            while ((line = bufferedReader.readLine()) != null) {
                 stringBuffer.append(line);
             }
 
             resp = stringBuffer.toString();
-        }catch (Exception e){
-            logger.info("请求接口{}失败，error={}",strUrl,e.getMessage());
-        }finally {
+        } catch (Exception e) {
+            logger.info("请求接口{}失败，error={}", strUrl, e.getMessage());
+        } finally {
             Fc.closeQuietly(bufferedReader);
             Fc.closeQuietly(inputStream);
             Fc.closeQuietly(outputStream);
@@ -363,9 +369,9 @@ public class HttpClient {
             entity = execute.getEntity();
             result = EntityUtils.toString(entity);
         } catch (ClientProtocolException e) {
-            logger.error("{}接口调用失败",e.getMessage());
+            logger.error("{}接口调用失败", e.getMessage());
         } catch (IOException e) {
-            logger.error("{}接口调用失败",e.getMessage());
+            logger.error("{}接口调用失败", e.getMessage());
         } finally {
             Fc.closeQuietly(execute);
             Fc.closeQuietly(httpClient);
@@ -378,7 +384,6 @@ public class HttpClient {
         String result = "";
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost post = new HttpPost(url);
-
         //配置超时时间
         RequestConfig requestConfig = RequestConfig.custom().
                 setConnectTimeout(30000).setConnectionRequestTimeout(30000)
@@ -409,7 +414,65 @@ public class HttpClient {
             // 关闭资源
         }
         return result;
+    }
 
+    /**
+     * 单文件上传
+     * @param file 文件
+     * @param url 路径
+     * @param fileName 文件字段名
+     * @param paramMap 参数
+     * @return
+     */
+    public static String uploadFile(File file, String url, String fileName, Map<String, String> paramMap) {
+        String result = "";
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        try {
+            HttpPost httpPost = new HttpPost(url);
+            //把文件转换成流对象FileBody
+            FileBody fundFileBin = new FileBody(file);
+            //设置传输参数
+            MultipartEntityBuilder multipartEntity = MultipartEntityBuilder.create();
+            multipartEntity.addPart(fileName, fundFileBin);
+            //设计文件以外的参数
+            Set<String> keySet = paramMap.keySet();
+            for (String key : keySet) {
+                multipartEntity.addPart(key, new StringBody(paramMap.get(key), ContentType.create("multipart/form-data", Consts.UTF_8)));
+            }
 
+            HttpEntity reqEntity = multipartEntity.build();
+            httpPost.setEntity(reqEntity);
+
+            //发起请求   并返回请求的响应
+            CloseableHttpResponse response = httpClient.execute(httpPost);
+            try {
+                // httpClient对象执行post请求,并返回响应参数对象
+                response = httpClient.execute(httpPost);
+                // 从响应对象中获取响应内容
+                HttpEntity entity = response.getEntity();
+                result = EntityUtils.toString(entity);
+            } catch (Exception e) {
+                logger.error("{}接口调用失败", e.getMessage());
+            } finally {
+                response.close();
+                // 关闭资源
+            }
+        } catch (ClientProtocolException e) {
+            logger.error("{}接口调用失败", e.getMessage());
+        } catch (IOException e) {
+            logger.error("{}接口调用失败", e.getMessage());
+        } finally {
+            Fc.closeQuietly(httpClient);
+            // 关闭资源
+        }
+        return result;
+    }
+
+    public static void main(String[] args) {
+        File file = new File("C:\\Users\\Administrator\\Pictures\\Saved Pictures\\1.png");
+        Map<String, String> map = new HashMap<>();
+        map.put("act", "upload_files");
+        String s = uploadFile(file,  "http://47.104.96.84:8001/api/web.php","file[]", map);
+        System.out.println(s);
     }
 }
