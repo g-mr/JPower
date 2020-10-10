@@ -123,4 +123,6 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
      * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser>
      **/
     List<TbCoreUser> list(TbCoreUser coreUser);
+
+    void savetest(Integer t);
 }

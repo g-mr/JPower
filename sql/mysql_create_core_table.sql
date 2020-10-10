@@ -75,7 +75,7 @@ create table tb_core_org(
  code varchar(50) comment '组织机构编码',
  name varchar(100) not null comment '组织机构名称',
  parent_id varchar(32) default '-1' comment '父级ID',
- ancestor_id text default '-1' comment '祖级ID',
+ ancestor_id text default null comment '祖级ID',
  icon varchar(100) comment '图标',
  sort int(6) default 0 comment '排序',
  head_name varchar(30) comment '负责人姓名',

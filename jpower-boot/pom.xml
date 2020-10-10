@@ -11,7 +11,7 @@
 
     <groupId>wlcb.jpower.boot</groupId>
     <artifactId>jpower-boot</artifactId>
-    <version>${com.jpower.version}</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <dependencies>

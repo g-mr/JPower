@@ -46,4 +46,6 @@ public interface CoreDictTypeService extends BaseService<TbCoreDictType> {
      * @return java.lang.Boolean
      */
     Boolean updateDictType(TbCoreDictType dictType);
+
+    void test(Integer t);
 }

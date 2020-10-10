@@ -21,6 +21,10 @@
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-web</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.wlcb</groupId>
+                    <artifactId>common-transaction</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 

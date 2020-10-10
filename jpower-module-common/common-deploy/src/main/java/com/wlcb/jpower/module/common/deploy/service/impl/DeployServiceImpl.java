@@ -27,6 +27,7 @@ public class DeployServiceImpl implements DeployService {
         props.setProperty("spring.cloud.nacos.config.shared-configs[1].data-id", NacosConstants.nacosPublicDataId(profile));
         props.setProperty("spring.cloud.nacos.config.shared-configs[1].refresh", NacosConstants.CONFIG_REFRESH);
         props.setProperty("spring.cloud.nacos.config.shared-configs[1].group", NacosConstants.CONFIG_GROUP);
+
     }
 
     @Override

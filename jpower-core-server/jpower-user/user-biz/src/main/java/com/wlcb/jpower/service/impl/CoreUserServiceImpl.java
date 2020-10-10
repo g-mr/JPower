@@ -12,6 +12,8 @@ import com.wlcb.jpower.dbs.dao.mapper.TbCoreUserMapper;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.dbs.entity.TbCoreUserRole;
 import com.wlcb.jpower.feign.SystemClient;
+import com.wlcb.jpower.feign.TestClient;
+import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.Fc;
@@ -22,9 +24,11 @@ import com.wlcb.jpower.module.common.utils.constants.ParamsConstants;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.CoreUserService;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +66,27 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
 
         List<TbCoreUser> list = coreUserDao.getBaseMapper().selectUserList(coreUser,listOrgId);
         return list;
+    }
+
+    private TestClient testClient;
+
+    @Override
+    @GlobalTransactional
+    @Transactional(rollbackFor = Exception.class)
+    public void savetest(Integer t) {
+
+        TbCoreUser coreUser = new TbCoreUser();
+        coreUser.setLoginId("seatstest");
+        coreUser.setPassword("123456");
+        coreUserDao.save(coreUser);
+//        if (t > 10){
+//            throw new RuntimeException("抛个异常");
+//        }
+        ResponseData<String> r = testClient.test(t);
+//        if (Fc.equals(r.getMessage(),"请求失败")){
+//            throw new RuntimeException("服务调用错误");
+//        }
+        System.out.println("====================================================");
     }
 
     @Override

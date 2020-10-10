@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @ClassName GlobalExceptionHandler
@@ -29,7 +30,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
-    public ErrorReturnJson defaultErrorHandler(HttpServletRequest request, Exception e) {
+    public ErrorReturnJson defaultErrorHandler(HttpServletRequest request, HttpServletResponse response, Exception e) throws Exception{
         String currentPath = request.getServletPath();
 
         ErrorReturnJson r = new ErrorReturnJson();
@@ -44,15 +45,22 @@ public class GlobalExceptionHandler {
             }
 
             r.setCode(HttpStatus.NOT_FOUND.value());
+            //标记返回为404错误
+            response.setStatus(HttpStatus.NOT_FOUND.value());
         }else if (e instanceof BusinessException) {
             r.setCode(HttpStatus.NOT_IMPLEMENTED.value());
+            //标记返回为500错误
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         }else if (e instanceof JpowerException) {
             r.setCode(((JpowerException) e).getCode());
+            //标记返回为500错误
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         } else {
             r.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            //标记返回为500错误
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
         r.setStatus(false);
-
         return r;
     }
 

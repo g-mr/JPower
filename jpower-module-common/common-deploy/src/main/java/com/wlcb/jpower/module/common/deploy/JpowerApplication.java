@@ -62,7 +62,7 @@ public class JpowerApplication {
         } else if (activeProfileList.size() == 1) {
             profile = activeProfileList.get(0);
         } else {
-            // 同时存在dev、test、prod环境时
+            // 同时存在dev、test、prod环境抛出错误
             throw new RuntimeException("同时存在环境变量:[" + StringUtils.arrayToCommaDelimitedString(activeProfiles) + "]");
         }
 
@@ -71,6 +71,7 @@ public class JpowerApplication {
         props.setProperty("spring.profiles.active", profile);
         props.setProperty("logging.config", "classpath:logback-spring.xml");
         props.setProperty("jpower.is-local", String.valueOf(isLocalDev()));
+        props.setProperty("spring.main.allow-bean-definition-overriding", "true");
         //nacos配置
         props.setProperty("spring.cloud.nacos.discovery.server-addr", "${jpower.".concat(profile).concat(".nacos.server-addr:}"));
         props.setProperty("spring.cloud.nacos.config.server-addr", "${jpower.".concat(profile).concat(".nacos.server-addr:}"));
