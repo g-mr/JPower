@@ -43,11 +43,6 @@ public class FileController extends BaseController {
     @Resource
     private CoreFileService coreFileService;
 
-    @GetMapping("test")
-    public ResponseData test(){
-        return ReturnJsonUtil.ok("测试");
-    }
-
     /**
      * @Author 郭丁志
      * @Description //TODO 上传文件
