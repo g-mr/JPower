@@ -23,7 +23,7 @@ jpower:
       server-addr: localhost:8847
     sentinel:
       #      sentinel流控组件地址
-      dashboard: 219.148.186.214:8857
+      dashboard: localhost:8857
     seata:
       grouplist: localhost:85
     datasource:

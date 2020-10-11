@@ -19,7 +19,7 @@ jpower:
   prod:
     nacos:
       #      注册中心地址
-      server-addr: 219.148.186.226:8848
+      server-addr: 219.148.186.226:82
     sentinel:
       #      sentinel流控组件地址
       dashboard: 219.148.186.226:84
