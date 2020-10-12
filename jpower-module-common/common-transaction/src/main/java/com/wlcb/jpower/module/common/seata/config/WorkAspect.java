@@ -1,19 +1,8 @@
 package com.wlcb.jpower.module.common.seata.config;
 
-import io.seata.common.util.StringUtils;
-import io.seata.core.context.RootContext;
-import io.seata.core.exception.TransactionException;
-import io.seata.tm.api.GlobalTransactionContext;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.NoTransactionException;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
-
-import java.lang.reflect.Method;
 
 /**
  * @ClassName WorkAspect
@@ -27,20 +16,20 @@ import java.lang.reflect.Method;
 @Slf4j
 public class WorkAspect {
 
-    @AfterReturning("execution(* com.wlcb..*.feign..*Fallback.*(..))")
-    public void doRecoveryActions(JoinPoint joinPoint) throws TransactionException {
-        MethodSignature signature = (MethodSignature)joinPoint.getSignature();
-        Method method = signature.getMethod();
-        log.info("{}方法已被降级", method.getName());
-        if (!StringUtils.isBlank(RootContext.getXID())) {
-            //需要先把本地事务回滚，不然seata会报找不到全局事务的错误
-            try {
-                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            }catch (NoTransactionException e){
-                log.warn("没有本地事务，无需回滚本地事务");
-            }
-            GlobalTransactionContext.reload(RootContext.getXID()).rollback();
-        }
-    }
+//    @AfterReturning("execution(* com.wlcb..*.feign..*Fallback.*(..))")
+//    public void doRecoveryActions(JoinPoint joinPoint) throws TransactionException {
+//        MethodSignature signature = (MethodSignature)joinPoint.getSignature();
+//        Method method = signature.getMethod();
+//        log.info("{}方法已被降级", method.getName());
+//        if (!StringUtils.isBlank(RootContext.getXID())) {
+//            //需要先把本地事务回滚，不然seata会报找不到全局事务的错误
+//            try {
+//                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+//            }catch (NoTransactionException e){
+//                log.warn("没有本地事务，无需回滚本地事务");
+//            }
+//            GlobalTransactionContext.reload(RootContext.getXID()).rollback();
+//        }
+//    }
 
 }
