@@ -59,21 +59,23 @@ public class LoginUserContext {
         UserInfo user = SecureUtil.getUser();
 
         if (Fc.isNull(user)){
-            String header = WebUtil.getRequest().getHeader(TokenConstant.PASS_HEADER_NAME);
-            if (!Fc.isNull(header)){
-                user = new UserInfo();
+            if (!Fc.isNull(WebUtil.getRequest())){
+                String header = WebUtil.getRequest().getHeader(TokenConstant.PASS_HEADER_NAME);
+                if (!Fc.isNull(header)){
+                    user = new UserInfo();
 
-                try { user.setClientCode(SecureUtil.getClientCodeFromHeader()); }catch (Exception e){}
-                user.setLoginId(header);
-                user.setNickName(header);
-                if (Fc.equals(header, RoleConstant.ANONYMOUS)){
-                    user.setUserId(RoleConstant.ANONYMOUS_ID);
-                    user.setIsSysUser(UserInfo.TBALE_USER_TYPE_CORE);
-                    user.setUserName(RoleConstant.ANONYMOUS_NAME);
-                }else {
-                    user.setUserId(header);
-                    user.setIsSysUser(UserInfo.TBALE_USER_TYPE_WHILT);
-                    user.setUserName(header);
+                    try { user.setClientCode(SecureUtil.getClientCodeFromHeader()); }catch (Exception e){}
+                    user.setLoginId(header);
+                    user.setNickName(header);
+                    if (Fc.equals(header, RoleConstant.ANONYMOUS)){
+                        user.setUserId(RoleConstant.ANONYMOUS_ID);
+                        user.setIsSysUser(UserInfo.TBALE_USER_TYPE_CORE);
+                        user.setUserName(RoleConstant.ANONYMOUS_NAME);
+                    }else {
+                        user.setUserId(header);
+                        user.setIsSysUser(UserInfo.TBALE_USER_TYPE_WHILT);
+                        user.setUserName(header);
+                    }
                 }
             }
         }
