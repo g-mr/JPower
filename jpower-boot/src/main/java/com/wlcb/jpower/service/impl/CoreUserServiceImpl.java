@@ -118,7 +118,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     }
 
     @Override
-    public Boolean insterBatch(List<TbCoreUser> list) {
+    public Boolean insertBatch(List<TbCoreUser> list) {
         return coreUserDao.saveBatch(list);
     }
 

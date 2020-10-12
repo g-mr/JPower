@@ -33,6 +33,7 @@
                     <artifactId>common-nacos</artifactId>
                 </exclusion>
             </exclusions>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

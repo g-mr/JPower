@@ -15,6 +15,7 @@ logging:
   level:
     root: info
 
+
 jpower:
 #  xss:
 #    #是否开启富文本过滤(如果开启，content参数名和以WithHtml结尾得参数名将不进行XSS过滤，默认关闭)
@@ -38,7 +39,7 @@ jpower:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://localhost:3306/jpower?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8
       username: root
-      password: 123456
+      password: 12345678
     redis:
       host: 127.0.0.1
       password:

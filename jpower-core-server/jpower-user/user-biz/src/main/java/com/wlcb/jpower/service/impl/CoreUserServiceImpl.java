@@ -12,14 +12,14 @@ import com.wlcb.jpower.dbs.dao.mapper.TbCoreUserMapper;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.dbs.entity.TbCoreUserRole;
 import com.wlcb.jpower.feign.SystemClient;
+import com.wlcb.jpower.module.base.enums.JpowerError;
+import com.wlcb.jpower.module.base.exception.JpowerAssert;
+import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.UUIDUtil;
-import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
-import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
-import com.wlcb.jpower.module.common.utils.constants.ParamsConstants;
-import com.wlcb.jpower.module.common.utils.constants.StringPool;
+import com.wlcb.jpower.module.common.utils.constants.*;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.CoreUserService;
 import lombok.AllArgsConstructor;
@@ -45,7 +45,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     public PageInfo<TbCoreUser> listPage(TbCoreUser coreUser) {
         List<String> listOrgId = null;
         if (Fc.isNotBlank(coreUser.getOrgId())){
-            listOrgId = systemClient.queryChildById(coreUser.getOrgId()).getData();
+            listOrgId = queruOrgId(coreUser.getOrgId());
         }
 
         PaginationContext.startPage();
@@ -57,11 +57,17 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     public List<TbCoreUser> list(TbCoreUser coreUser) {
         List<String> listOrgId = null;
         if (Fc.isNotBlank(coreUser.getOrgId())){
-            listOrgId = systemClient.queryChildById(coreUser.getOrgId()).getData();
+            listOrgId = queruOrgId(coreUser.getOrgId());
         }
 
         List<TbCoreUser> list = coreUserDao.getBaseMapper().selectUserList(coreUser,listOrgId);
         return list;
+    }
+
+    private List<String> queruOrgId(String orgId){
+        ResponseData<List<String>> data = systemClient.queryChildById(orgId);
+        JpowerAssert.isTrue(Fc.equals(data.getCode(), ConstantsReturn.RECODE_SUCCESS), JpowerError.Api,data.getCode(),data.getMessage());
+        return data.getData();
     }
 
     @Override
@@ -118,7 +124,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     }
 
     @Override
-    public Boolean insterBatch(List<TbCoreUser> list) {
+    public Boolean insertBatch(List<TbCoreUser> list) {
         return coreUserDao.saveBatch(list);
     }
 

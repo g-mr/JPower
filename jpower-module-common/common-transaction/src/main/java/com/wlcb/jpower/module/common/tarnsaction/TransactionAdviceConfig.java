@@ -45,7 +45,7 @@ public class TransactionAdviceConfig {
         source.addTransactionalMethod("update*", txAttr_REQUIRED);
         source.addTransactionalMethod("exec*", txAttr_REQUIRED);
         source.addTransactionalMethod("set*", txAttr_REQUIRED);
-        source.addTransactionalMethod("inster*", txAttr_REQUIRED);
+        source.addTransactionalMethod("insert*", txAttr_REQUIRED);
         source.addTransactionalMethod("import*", txAttr_REQUIRED);
         source.addTransactionalMethod("get*", txAttr_REQUIRED_READONLY);
         source.addTransactionalMethod("query*", txAttr_REQUIRED_READONLY);

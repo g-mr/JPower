@@ -209,7 +209,7 @@ public class UserController extends BaseController {
 
                 }
 
-                Boolean is = coreUserService.insterBatch(list);
+                Boolean is = coreUserService.insertBatch(list);
                 if (is){
                     return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"成功导入"+list.size()+"条", true);
                 }else {
