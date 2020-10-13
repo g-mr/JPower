@@ -19,7 +19,10 @@ import com.wlcb.jpower.service.dict.CoreDictTypeService;
 import com.wlcb.jpower.vo.DictVo;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
@@ -118,10 +121,17 @@ public class DictController {
             JpowerAssert.notEmpty(dict.getDictTypeCode(), JpowerError.Arg,"字典类型编号不可为空");
             JpowerAssert.notEmpty(dict.getCode(), JpowerError.Arg,"字典编号不可为空");
             JpowerAssert.notEmpty(dict.getName(), JpowerError.Arg,"字典名称不可为空");
+        }else {
+            //防止用户A在更新时，用户B做了删除操作
+            if (Fc.isNull(coreDictService.getById(dict.getId()))){
+                return ReturnJsonUtil.fail("该数据不存在");
+            }
         }
 
-        if(coreDictTypeService.count(Condition.<TbCoreDictType>getQueryWrapper().lambda().eq(TbCoreDictType::getDictTypeCode,dict.getDictTypeCode())) <= 0){
-            return ReturnJsonUtil.notFind("字典类型不存在");
+        if (Fc.isNotBlank(dict.getDictTypeCode())){
+            if(coreDictTypeService.count(Condition.<TbCoreDictType>getQueryWrapper().lambda().eq(TbCoreDictType::getDictTypeCode,dict.getDictTypeCode())) <= 0){
+                return ReturnJsonUtil.notFind("字典类型不存在");
+            }
         }
 
         return ReturnJsonUtil.status(coreDictService.saveDict(dict));

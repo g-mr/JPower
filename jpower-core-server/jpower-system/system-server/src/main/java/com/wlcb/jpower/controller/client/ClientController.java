@@ -37,14 +37,28 @@ public class ClientController extends BaseController {
     @ApiOperation("保存或者更新客户端信息")
     @PostMapping("save")
     public ResponseData save(TbCoreClient coreClient){
+
         if (Fc.isBlank(coreClient.getId())){
             JpowerAssert.notEmpty(coreClient.getClientCode(), JpowerError.Arg,"客户端Code不可为空");
             JpowerAssert.notEmpty(coreClient.getName(), JpowerError.Arg,"客户端名称不可为空");
-        }
 
-        Integer c = coreClientService.count(Condition.<TbCoreClient>getQueryWrapper().lambda().eq(TbCoreClient::getClientCode,coreClient.getClientCode()));
-        if (c > 0){
-            return ReturnJsonUtil.busFail("该客户端已存在");
+            if (coreClientService.count(Condition.<TbCoreClient>getQueryWrapper().lambda().eq(TbCoreClient::getClientCode,coreClient.getClientCode())) > 0){
+                return ReturnJsonUtil.busFail("该客户端已存在");
+            }
+        }else {
+            //防止用户A在更新时，用户B做了删除操作
+            TbCoreClient client =coreClientService.getById(coreClient.getId());
+            if (Fc.isNull(client)){
+                return ReturnJsonUtil.fail("该数据不存在");
+            }
+
+            if (Fc.isNotBlank(coreClient.getId())){
+                TbCoreClient tbCoreClient = coreClientService.getOne(Condition.<TbCoreClient>getQueryWrapper().lambda().eq(TbCoreClient::getClientCode,coreClient.getClientCode()));
+                if (!Fc.isNull(tbCoreClient) && !Fc.equals(tbCoreClient.getId(),client.getId())){
+                    return ReturnJsonUtil.busFail("该客户端已存在");
+                }
+            }
+
         }
 
         return ReturnJsonUtil.status(coreClientService.saveOrUpdate(coreClient));
