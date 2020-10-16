@@ -91,6 +91,14 @@ swagger:
   termsOfServiceUrl: http://219.148.186.214:800
 
 jpower:
+  tenant:
+#    是否启用多租户模式
+#    enable: true
+#   多租户字段
+#    column: tenant_code
+#   不进行多租户过滤的表
+#    excludeTables:
+#      - tb_core_table
 #  xss:
 #    #是否开启富文本过滤(如果开启，content参数名和以WithHtml结尾得参数名将不进行XSS过滤，默认位关闭)
 #    isIncludeRichText: false

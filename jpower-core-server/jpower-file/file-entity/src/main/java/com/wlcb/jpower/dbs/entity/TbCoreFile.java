@@ -2,6 +2,7 @@ package com.wlcb.jpower.dbs.entity;
 
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @ClassName TbCoreFile
@@ -10,6 +11,7 @@ import lombok.Data;
  * @Date 2020-07-13 17:20
  * @Version 1.0
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class TbCoreFile extends BaseEntity {
 

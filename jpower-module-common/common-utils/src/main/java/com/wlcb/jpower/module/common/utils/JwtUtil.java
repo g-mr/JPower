@@ -47,6 +47,10 @@ public class JwtUtil {
      * @return String
      */
     public static String getToken(HttpServletRequest request) {
+        if (Fc.isNull(request)){
+            return null;
+        }
+
         String auth = request.getHeader(HEADER);
         if (StringUtil.isNotBlank(auth) && auth.length() > AUTH_LENGTH) {
             String headStr = auth.substring(0, 6).toLowerCase();

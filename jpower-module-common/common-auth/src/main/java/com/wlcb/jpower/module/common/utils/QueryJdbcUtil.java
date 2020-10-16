@@ -15,6 +15,8 @@ public class QueryJdbcUtil {
 
     private final static String SELECT_CLIENT_SQL = "select client_code,client_secret,access_token_validity,refresh_token_validity from tb_core_client where client_code = ?";
 
+    private final static String SELECT_TENANT_CODE_SQL = "select tenant_code from tb_core_tenant where domain = ?";
+
     private final static JdbcTemplate jdbcTemplate;
     static {
         jdbcTemplate = SpringUtil.getBean(JdbcTemplate.class);
@@ -24,6 +26,14 @@ public class QueryJdbcUtil {
     public static ClientDetails loadClientByClientCode(String clientCode) {
         try {
             return jdbcTemplate.queryForObject(SELECT_CLIENT_SQL, new String[]{clientCode}, new BeanPropertyRowMapper<>(ClientDetails.class));
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    public static String loadTenantCodeByDomain(String domain) {
+        try {
+            return jdbcTemplate.queryForObject(SELECT_TENANT_CODE_SQL, new String[]{domain}, new BeanPropertyRowMapper<>(String.class));
         } catch (Exception ex) {
             return null;
         }

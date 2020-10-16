@@ -16,6 +16,7 @@ import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.*;
 import com.wlcb.jpower.service.CoreUserRoleService;
 import com.wlcb.jpower.service.CoreUserService;
+import com.wlcb.jpower.vo.UserVo;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -52,8 +53,8 @@ public class UserController extends BaseController {
             @ApiImplicitParam(name = "telephone",value = "电话",paramType = "query",required = false)
     })
     @RequestMapping(value = "/list",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
-    public ResponseData<PageInfo<TbCoreUser>> list(@ApiIgnore TbCoreUser coreUser){
-        PageInfo<TbCoreUser> list = coreUserService.listPage(coreUser);
+    public ResponseData<PageInfo<UserVo>> list(@ApiIgnore TbCoreUser coreUser){
+        PageInfo<UserVo> list = coreUserService.listPage(coreUser);
         return ReturnJsonUtil.ok("获取成功", list);
     }
 

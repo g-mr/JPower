@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 import java.sql.Statement;
 
 /**
- * @ClassName CachedRowSetIntercept
- * @Description TODO
+ * @ClassName DictIntercept
+ * @Description TODO 自动补全字典拦截器 （暂未实现）
  * @Author 郭丁志
  * @Date 2020/9/1 0001 21:20
  * @Version 1.0

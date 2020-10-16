@@ -22,6 +22,8 @@ import com.wlcb.jpower.module.common.utils.UUIDUtil;
 import com.wlcb.jpower.module.common.utils.constants.*;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.CoreUserService;
+import com.wlcb.jpower.vo.UserVo;
+import com.wlcb.jpower.wrapper.UserWrapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -42,7 +44,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     private TbCoreUserRoleDao coreUserRoleDao;
 
     @Override
-    public PageInfo<TbCoreUser> listPage(TbCoreUser coreUser) {
+    public PageInfo<UserVo> listPage(TbCoreUser coreUser) {
         List<String> listOrgId = null;
         if (Fc.isNotBlank(coreUser.getOrgId())){
             listOrgId = queruOrgId(coreUser.getOrgId());
@@ -50,7 +52,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
 
         PaginationContext.startPage();
         List<TbCoreUser> list = coreUserDao.getBaseMapper().selectUserList(coreUser,listOrgId);
-        return new PageInfo<>(list);
+        return new PageInfo<>(UserWrapper.builder().build().listVO(list));
     }
 
     @Override
@@ -66,7 +68,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
 
     private List<String> queruOrgId(String orgId){
         ResponseData<List<String>> data = systemClient.queryChildById(orgId);
-        JpowerAssert.isTrue(Fc.equals(data.getCode(), ConstantsReturn.RECODE_SUCCESS), JpowerError.Api,data.getCode(),data.getMessage());
+        JpowerAssert.isTrue(data.isSuccess(), JpowerError.Api,data.getCode(),data.getMessage());
         return data.getData();
     }
 
@@ -133,8 +135,8 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
         //先删除用户原有角色
         String[] uIds = userIds.split(StringPool.COMMA);
 
-        QueryWrapper wrapper = new QueryWrapper<TbCoreUserRole>();
-        wrapper.in("user_id",uIds);
+        //多租户情况下，需要拿到当前租户原有的所有角色ID再去删除
+        QueryWrapper wrapper = new QueryWrapper<TbCoreUserRole>().in("user_id",uIds);
         coreUserRoleDao.removeReal(wrapper);
 
         if (Fc.isNotBlank(roleIds)){

@@ -115,7 +115,7 @@ public class OrgController extends BaseController {
         }
     }
 
-    @ApiOperation("加载部门树形菜单")
+    @ApiOperation("加载组织机构树形菜单")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "code",value = "编码",paramType = "query"),
             @ApiImplicitParam(name = "name",value = "名称",paramType = "query"),
@@ -134,7 +134,7 @@ public class OrgController extends BaseController {
         return ReturnJsonUtil.ok("查询成功",list);
     }
 
-    @ApiOperation("懒加载部门树形菜单")
+    @ApiOperation("懒加载组织机构树形菜单")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "code",value = "编码",paramType = "query"),
             @ApiImplicitParam(name = "name",value = "名称",paramType = "query"),

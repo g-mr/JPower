@@ -37,6 +37,10 @@ public class ResponseData<T> implements Serializable {
         return status;
     }
 
+    public boolean isSuccess() {
+        return status;
+    }
+
     public void setStatus(boolean status) {
         this.status = status;
     }

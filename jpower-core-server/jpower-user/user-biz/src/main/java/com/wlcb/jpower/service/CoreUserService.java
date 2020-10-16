@@ -3,6 +3,7 @@ package com.wlcb.jpower.service;
 import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.module.common.service.BaseService;
+import com.wlcb.jpower.vo.UserVo;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
      * @Param [coreParam]
      * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser>
      **/
-    PageInfo<TbCoreUser> listPage(TbCoreUser coreUser);
+    PageInfo<UserVo> listPage(TbCoreUser coreUser);
 
     /**
      * @Author 郭丁志

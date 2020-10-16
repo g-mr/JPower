@@ -32,7 +32,7 @@ public class SecureUtil {
     private final static String ACCOUNT = TokenConstant.ACCOUNT;
     private final static String USER_ID = TokenConstant.USER_ID;
     private final static String USER_NAME = TokenConstant.USER_NAME;
-//    private final static String TENANT_ID = TokenConstant.TENANT_ID;
+    private final static String TENANT_CODE = TokenConstant.TENANT_CODE;
     private final static String CLIENT_CODE = TokenConstant.CLIENT_CODE;
     private final static String TELE_PHONE = TokenConstant.TELE_PHONE;
     private final static String USER_TYPE = TokenConstant.USER_TYPE;
@@ -71,7 +71,7 @@ public class SecureUtil {
 
         String clientCode = Fc.toStr(claims.get(SecureUtil.CLIENT_CODE));
         String userId = Fc.toStr(claims.get(SecureUtil.USER_ID));
-//        String tenantId = Fc.toStr(claims.get(SecureUtil.TENANT_ID));
+        String tenantCode = Fc.toStr(claims.get(SecureUtil.TENANT_CODE));
         List<String> roleIds = (List<String>) claims.get(SecureUtil.ROLE_IDS);
         String account = Fc.toStr(claims.get(SecureUtil.ACCOUNT));
         String userName = Fc.toStr(claims.get(SecureUtil.USER_NAME));
@@ -83,7 +83,7 @@ public class SecureUtil {
         UserInfo coreUser = new UserInfo();
         coreUser.setClientCode(clientCode);
         coreUser.setUserId(userId);
-//        coreUser.setTenantId(tenantId);
+        coreUser.setTenantCode(tenantCode);
         coreUser.setLoginId(account);
         coreUser.setRoleIds(roleIds);
         coreUser.setUserName(userName);
@@ -111,7 +111,7 @@ public class SecureUtil {
      *
      * @return boolean
      */
-    public static boolean isAdministrator() {
+    public static boolean isRoot() {
         return Fc.contains(getUserRole().iterator(), RoleConstant.ADMIN_ID);
     }
 
@@ -204,21 +204,29 @@ public class SecureUtil {
      *
      * @return tenantId
      */
-//    public static String getTenantId() {
-//        JpowerUser user = getUser();
-//        return (null == user) ? StringPool.EMPTY : user.getTenantId();
-//    }
-//
-//    /**
-//     * 获取租户ID
-//     *
-//     * @param request request
-//     * @return tenantId
-//     */
-//    public static String getTenantId(HttpServletRequest request) {
-//        JpowerUser user = getUser(request);
-//        return (null == user) ? StringPool.EMPTY : user.getTenantId();
-//    }
+    public static String getTenantCode() {
+        return getTenantCode(WebUtil.getRequest());
+    }
+
+    /**
+     * 获取租户ID
+     *
+     * @param request request
+     * @return tenantId
+     */
+    public static String getTenantCode(HttpServletRequest request) {
+        UserInfo user = getUser(request);
+        if (Fc.isNull(user)){
+            if (!Fc.isNull(request)){
+                String tenantCode = QueryJdbcUtil.loadTenantCodeByDomain(request.getServerName());
+                return Fc.isBlank(tenantCode)?request.getHeader(TENANT_CODE):StringPool.EMPTY;
+            }
+            return StringPool.EMPTY;
+        }else {
+            return user.getTenantCode();
+        }
+
+    }
 
     /**
      * 获取客户端id
