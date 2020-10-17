@@ -1,5 +1,6 @@
 package com.wlcb.jpower.wrapper;
 
+import com.wlcb.jpower.config.system.SystemCache;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.module.common.utils.BeanUtil;
 import com.wlcb.jpower.module.mp.support.BaseEntityWrapper;
@@ -20,9 +21,7 @@ public class UserWrapper extends BaseEntityWrapper<TbCoreUser, UserVo> {
     @Override
     public UserVo entityVO(TbCoreUser user) {
         UserVo userVo = Objects.requireNonNull(BeanUtil.copy(user, UserVo.class));
-
-
-
-        return null;
+        userVo.setOrgName(SystemCache.getOrgName(userVo.getOrgId()));
+        return userVo;
     }
 }

@@ -17,5 +17,5 @@ public interface TbCoreUserMapper extends BaseMapper<TbCoreUser> {
 
     TbCoreUser selectAllById(String id);
 
-    List<TbCoreUser> selectUserList(@Param("coreUser") TbCoreUser coreUser, @Param("orgIds") List<String> orgIds, @Param("tenantCode") String tenantCode);
+    List<TbCoreUser> selectUserList(@Param("coreUser") TbCoreUser coreUser, @Param("orgIds") List<String> orgIds);
 }

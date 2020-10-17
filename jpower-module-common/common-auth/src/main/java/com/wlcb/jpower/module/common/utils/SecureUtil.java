@@ -2,6 +2,7 @@ package com.wlcb.jpower.module.common.utils;
 
 
 import com.wlcb.jpower.module.common.auth.*;
+import com.wlcb.jpower.module.common.support.EnvBeanUtil;
 import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
@@ -41,6 +42,7 @@ public class SecureUtil {
     private final static String IS_SYS_USER = TokenConstant.IS_SYS_USER;
 
     private static String BASE64_SECURITY = Base64.getEncoder().encodeToString(TokenConstant.SIGN_KEY.getBytes(CharsetKit.CHARSET_UTF_8));
+    private static boolean TENANT_MODE = EnvBeanUtil.get("jpower.tenant.enable",Boolean.class,true);
 
     /**
      * 获取用户信息
@@ -215,6 +217,10 @@ public class SecureUtil {
      * @return tenantId
      */
     public static String getTenantCode(HttpServletRequest request) {
+        if (!TENANT_MODE){
+            return StringPool.EMPTY;
+        }
+
         UserInfo user = getUser(request);
         if (Fc.isNull(user)){
             if (!Fc.isNull(request)){

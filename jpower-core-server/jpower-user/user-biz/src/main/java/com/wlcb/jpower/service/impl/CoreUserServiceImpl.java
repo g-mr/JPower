@@ -6,20 +6,20 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.config.param.ParamConfig;
+import com.wlcb.jpower.config.system.SystemCache;
 import com.wlcb.jpower.dbs.dao.TbCoreUserDao;
 import com.wlcb.jpower.dbs.dao.TbCoreUserRoleDao;
 import com.wlcb.jpower.dbs.dao.mapper.TbCoreUserMapper;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.dbs.entity.TbCoreUserRole;
-import com.wlcb.jpower.feign.SystemClient;
-import com.wlcb.jpower.module.base.enums.JpowerError;
-import com.wlcb.jpower.module.base.exception.JpowerAssert;
-import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.UUIDUtil;
-import com.wlcb.jpower.module.common.utils.constants.*;
+import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
+import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
+import com.wlcb.jpower.module.common.utils.constants.ParamsConstants;
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.CoreUserService;
 import com.wlcb.jpower.vo.UserVo;
@@ -40,15 +40,11 @@ import java.util.List;
 public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCoreUser> implements CoreUserService {
 
     private TbCoreUserDao coreUserDao;
-    private SystemClient systemClient;
     private TbCoreUserRoleDao coreUserRoleDao;
 
     @Override
     public PageInfo<UserVo> listPage(TbCoreUser coreUser) {
-        List<String> listOrgId = null;
-        if (Fc.isNotBlank(coreUser.getOrgId())){
-            listOrgId = queruOrgId(coreUser.getOrgId());
-        }
+        List<String> listOrgId = Fc.isNotBlank(coreUser.getOrgId())?SystemCache.getChildIdOrgById(coreUser.getOrgId()):null;
 
         PaginationContext.startPage();
         List<TbCoreUser> list = coreUserDao.getBaseMapper().selectUserList(coreUser,listOrgId);
@@ -56,21 +52,13 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     }
 
     @Override
-    public List<TbCoreUser> list(TbCoreUser coreUser) {
-        List<String> listOrgId = null;
-        if (Fc.isNotBlank(coreUser.getOrgId())){
-            listOrgId = queruOrgId(coreUser.getOrgId());
-        }
+    public List<UserVo> list(TbCoreUser coreUser) {
+        List<String> listOrgId = Fc.isNotBlank(coreUser.getOrgId())?SystemCache.getChildIdOrgById(coreUser.getOrgId()):null;
 
         List<TbCoreUser> list = coreUserDao.getBaseMapper().selectUserList(coreUser,listOrgId);
-        return list;
+        return UserWrapper.builder().build().listVO(list);
     }
 
-    private List<String> queruOrgId(String orgId){
-        ResponseData<List<String>> data = systemClient.queryChildById(orgId);
-        JpowerAssert.isTrue(data.isSuccess(), JpowerError.Api,data.getCode(),data.getMessage());
-        return data.getData();
-    }
 
     @Override
     public boolean save(TbCoreUser coreUser) {
@@ -113,8 +101,8 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     }
 
     @Override
-    public TbCoreUser selectUserById(String id) {
-        return baseMapper.selectAllById(id);
+    public UserVo selectUserById(String id) {
+        return UserWrapper.builder().build().entityVO(baseMapper.selectAllById(id));
     }
 
     @Override

@@ -4,6 +4,7 @@
 
     <sql id="Base_Column_List">
         id,
+        org_id,
         login_id,
         password,
         user_name,
@@ -29,6 +30,7 @@
 
     <sql id="Base_Column_List_Alias">
         u.id,
+        u.org_id,
         u.login_id,
         u.password,
         u.user_name,
@@ -55,6 +57,7 @@
     <insert id="insertList">
         insert into tb_core_user
         (id,
+        org_id,
         login_id,
         password,
         user_name,
@@ -75,6 +78,7 @@
         <foreach collection="list" item="user" separator=",">
             (
             #{user.id},
+            (SELECT id FROM tb_core_org WHERE name = #{user.orgName} limit 1),
             #{user.loginId},
             #{user.password},
             #{user.userName},
@@ -96,24 +100,22 @@
     </insert>
 
     <select id="selectAllById" resultType="com.wlcb.jpower.dbs.entity.TbCoreUser">
-        select <include refid="Base_Column_List_Alias"/>,o.name as orgName,
-            (select group_concat(role_id) from tb_core_user_role r where r.user_id = u.id) as roleIds
+        select <include refid="Base_Column_List_Alias"/>,
+        (select group_concat(role_id) from tb_core_user_role r where r.user_id = u.id) as roleIds
         from tb_core_user u
-        left join tb_core_org o on o.id = u.org_id
         where u.id = #{id,jdbcType=VARCHAR} and u.is_deleted = 0
     </select>
 
     <select id="selectUserList" resultType="com.wlcb.jpower.dbs.entity.TbCoreUser">
         select
-            <include refid="Base_Column_List_Alias"/>,
-            (select group_concat(org_id) from tb_core_user_org o where o.user_id = u.id
-                <if test="tenantCode != null">
-                    and tenant_code = #{tenantCode}
-                </if>
-            ) as orgId,
-            (select group_concat(role_id) from tb_core_user_role r where r.user_id = u.id  and tenant_code = #{tenantCode}) as roleIds
+        <include refid="Base_Column_List_Alias"/>,
+        (select group_concat(role_id) from tb_core_user_role r where r.user_id = u.id) as roleIds
         from tb_core_user u
         where u.is_deleted = 0
+
+        <if test="coreUser != null and coreUser.orgId != null and coreUser.orgId != ''">
+            and u.org_id = #{coreUser.orgId,jdbcType=VARCHAR}
+        </if>
 
         <if test="coreUser != null and coreUser.loginId != null and coreUser.loginId != ''">
             and u.login_id = #{coreUser.loginId,jdbcType=VARCHAR}

@@ -60,11 +60,11 @@ public class UserController extends BaseController {
 
     @ApiOperation("查询用户详情")
     @RequestMapping(value = "/getById",method = RequestMethod.GET,produces="application/json")
-    public ResponseData<TbCoreUser> getById(@ApiParam(value = "主键",required = true) @RequestParam @NotBlank(message = "主键不可为空") String id){
+    public ResponseData<UserVo> getById(@ApiParam(value = "主键",required = true) @RequestParam @NotBlank(message = "主键不可为空") String id){
         JpowerAssert.notEmpty(id, JpowerError.Arg,"id不可为空");
 
-        TbCoreUser user = coreUserService.selectUserById(id);
-        return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"查询成功", user, true);
+        UserVo user = coreUserService.selectUserById(id);
+        return ReturnJsonUtil.ok("查询成功", user);
     }
 
     @ApiOperation(value = "新增",notes = "主键不用传")
@@ -239,9 +239,9 @@ public class UserController extends BaseController {
     })
     @RequestMapping(value = "/exportUser",method = {RequestMethod.GET,RequestMethod.POST})
     public void exportUser(TbCoreUser coreUser) {
-        List<TbCoreUser> list = coreUserService.list(coreUser);
+        List<UserVo> list = coreUserService.list(coreUser);
 
-        BeanExcelUtil<TbCoreUser> beanExcelUtil = new BeanExcelUtil<>(TbCoreUser.class,ImportExportConstants.EXPORT_PATH);
+        BeanExcelUtil<UserVo> beanExcelUtil = new BeanExcelUtil<>(UserVo.class,ImportExportConstants.EXPORT_PATH);
         ResponseData responseData = beanExcelUtil.exportExcel(list,"用户列表");
 
         File file = new File(ImportExportConstants.EXPORT_PATH+responseData.getData());

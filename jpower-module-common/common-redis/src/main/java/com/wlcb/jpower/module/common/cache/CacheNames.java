@@ -19,7 +19,8 @@ public interface CacheNames {
     String PARAMS_REDIS_CACHE = "jpower:params";
     /** 字典缓存 **/
     String DICT_REDIS_CACHE = "jpower:dicts";
-
+    /** 系统缓存 **/
+    String SYSTEM_REDIS_CACHE = "jpower:system";
 
 
     /** 登陆验证码缓存KEY **/
@@ -38,5 +39,9 @@ public interface CacheNames {
 
     /** 系统参数key（code） **/
     String PARAMS_REDIS_CODE_KEY = "param:code:";
+    /** 部门key（code） **/
+    String SYSTEM_ORG_ID_KEY = "org:id:";
+    /** 部门下级所有ID key（code） **/
+    String SYSTEM_ORG_PARENT_KEY = "org:parent:";
 
 }

@@ -123,10 +123,6 @@
                             <artifactId>mybatis</artifactId>
                             <groupId>org.mybatis</groupId>
                         </exclusion>
-                        <exclusion>
-                            <groupId>com.github.jsqlparser</groupId>
-                            <artifactId>jsqlparser</artifactId>
-                        </exclusion>
                     </exclusions>
                 </dependency>
 

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.base.annotation.Excel;
 import com.wlcb.jpower.module.common.utils.DateUtil;
-import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
+import com.wlcb.jpower.module.tenant.entity.TenantEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -21,7 +21,7 @@ import java.util.Date;
  * @Version 1.0
  */
 @Data
-public class TbCoreUser extends BaseEntity implements Serializable {
+public class TbCoreUser extends TenantEntity implements Serializable {
 
     private static final long serialVersionUID = 8829495593714085987L;
 
@@ -80,10 +80,7 @@ public class TbCoreUser extends BaseEntity implements Serializable {
     private Integer activationStatus;
     @ApiModelProperty("激活码")
     private String activationCode;
-
-
     @ApiModelProperty("部门主键")
-    @TableField(exist = false)
     @Excel(name = "部门ID",type = Excel.Type.IMPORT)
     private String orgId;
 

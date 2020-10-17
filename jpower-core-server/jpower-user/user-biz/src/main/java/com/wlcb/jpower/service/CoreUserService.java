@@ -65,7 +65,7 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
      * @param id 用户id
      * @return com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser
      */
-    TbCoreUser selectUserById(String id);
+    UserVo selectUserById(String id);
 
     /**
      * @author 郭丁志
@@ -123,6 +123,6 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
      * @Param [coreUser, orgCode]
      * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser>
      **/
-    List<TbCoreUser> list(TbCoreUser coreUser);
+    List<UserVo> list(TbCoreUser coreUser);
 
 }

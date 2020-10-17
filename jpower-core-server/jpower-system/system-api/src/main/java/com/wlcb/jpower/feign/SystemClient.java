@@ -1,5 +1,6 @@
 package com.wlcb.jpower.feign;
 
+import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -23,9 +24,11 @@ public interface SystemClient {
      * @return com.wlcb.jpower.module.base.vo.ResponseData<java.lang.String>
      */
     @GetMapping("/org/queryChildById")
-    ResponseData<List<String>> queryChildById(@RequestParam String id);
+    ResponseData<List<String>> queryChildOrgById(@RequestParam String id);
 
     @PostMapping("/function/putRedisAllFunctionByRoles")
     boolean putRedisAllFunctionByRoles(@RequestParam List<String> roleIds, @RequestParam Long expiresIn, @RequestParam String accessToken);
 
+    @GetMapping("/org/queryOrgById")
+    ResponseData<TbCoreOrg> queryOrgById(@RequestParam String orgId);
 }

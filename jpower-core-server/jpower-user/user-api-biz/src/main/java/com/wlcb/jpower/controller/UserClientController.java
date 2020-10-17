@@ -10,6 +10,7 @@ import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.CoreUserRoleService;
 import com.wlcb.jpower.service.CoreUserService;
+import com.wlcb.jpower.vo.UserVo;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -69,8 +70,8 @@ public class UserClientController implements UserClient {
     @ApiOperation("查询用户详情")
     @Override
     @GetMapping(value = "/get")
-    public ResponseData<TbCoreUser> get(@RequestParam String id){
-        TbCoreUser user = coreUserService.selectUserById(id);
+    public ResponseData<UserVo> get(@RequestParam String id){
+        UserVo user = coreUserService.selectUserById(id);
         return ReturnJsonUtil.ok("查询成功", user);
     }
 
