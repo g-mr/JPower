@@ -33,8 +33,8 @@ public class CacheUtil {
      * @Date 11:32 2020-09-01
      **/
     public static Cache getCache(String cacheName) {
-        String tenantId = SecureUtil.getTenantCode();
-        if (Fc.isNotBlank(tenantId)){
+        String tenantCode = SecureUtil.getTenantCode();
+        if (Fc.isNotBlank(tenantCode)){
             return getCacheManager().getCache(SecureUtil.getTenantCode().concat(StringPool.COLON).concat(cacheName));
         }
         return getCacheManager().getCache(cacheName);

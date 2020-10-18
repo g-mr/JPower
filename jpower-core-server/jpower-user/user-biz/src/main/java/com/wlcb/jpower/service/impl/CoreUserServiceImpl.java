@@ -15,12 +15,13 @@ import com.wlcb.jpower.dbs.entity.TbCoreUserRole;
 import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.SecureUtil;
 import com.wlcb.jpower.module.common.utils.UUIDUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
 import com.wlcb.jpower.module.common.utils.constants.ParamsConstants;
-import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.mp.support.Condition;
+import com.wlcb.jpower.module.tenant.TenantConstant;
 import com.wlcb.jpower.service.CoreUserService;
 import com.wlcb.jpower.vo.UserVo;
 import com.wlcb.jpower.wrapper.UserWrapper;
@@ -96,8 +97,13 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     }
 
     @Override
-    public TbCoreUser selectUserLoginId(String loginId) {
-        return coreUserDao.getOne(Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getLoginId,loginId));
+    public TbCoreUser selectUserLoginId(String loginId,String tenantCode) {
+        LambdaQueryWrapper<TbCoreUser> queryWrapper = Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getLoginId,loginId);
+        if (SecureUtil.isRoot() && Fc.isBlank(tenantCode)){
+            tenantCode = TenantConstant.DEFAULT_TENANT_CODE;
+            queryWrapper.eq(TbCoreUser::getTenantCode,tenantCode);
+        }
+        return coreUserDao.getOne(queryWrapper);
     }
 
     @Override
@@ -107,10 +113,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
 
     @Override
     public Boolean updateUserPassword(String ids, String pass) {
-        UpdateWrapper wrapper = new UpdateWrapper<TbCoreUser>();
-        wrapper.in("id",ids);
-        wrapper.set("password",pass);
-        return coreUserDao.update(new TbCoreUser(),wrapper);
+        return coreUserDao.update(new UpdateWrapper<TbCoreUser>().lambda().set(TbCoreUser::getPassword,pass).in(TbCoreUser::getId,Fc.toStrList(ids)));
     }
 
     @Override
@@ -121,19 +124,17 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     @Override
     public Boolean updateUsersRole(String userIds, String roleIds) {
         //先删除用户原有角色
-        String[] uIds = userIds.split(StringPool.COMMA);
+        List<String> uIds = Fc.toStrList(userIds);
 
-        //多租户情况下，需要拿到当前租户原有的所有角色ID再去删除
-        QueryWrapper wrapper = new QueryWrapper<TbCoreUserRole>().in("user_id",uIds);
+        LambdaQueryWrapper wrapper = new QueryWrapper<TbCoreUserRole>().lambda().in(TbCoreUserRole::getUserId,uIds);
         coreUserRoleDao.removeReal(wrapper);
 
         if (Fc.isNotBlank(roleIds)){
-            String[] rIds = roleIds.split(StringPool.COMMA);
+            List<String> rIds = Fc.toStrList(roleIds);
             List<TbCoreUserRole> userRoles = new ArrayList<>();
             for (String rId : rIds) {
                 for (String userId : uIds) {
                     TbCoreUserRole userRole = new TbCoreUserRole();
-                    userRole.setId(UUIDUtil.getUUID());
                     userRole.setUserId(userId);
                     userRole.setRoleId(rId);
                     userRoles.add(userRole);

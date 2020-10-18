@@ -51,7 +51,7 @@ public class UpdateRelatedFieldsMetaHandler implements MetaObjectHandler {
      * @Date 17:49 2020-07-09
      **/
     private String getUserName(){
-        return Fc.isBlank(LoginUserContext.getLoginId())?"匿名用户":LoginUserContext.getLoginId();
+        return Fc.isBlank(LoginUserContext.getUserId())?"匿名用户":LoginUserContext.getUserId();
     }
 
 }

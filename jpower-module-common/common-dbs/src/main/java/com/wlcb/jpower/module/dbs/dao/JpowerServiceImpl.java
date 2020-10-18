@@ -6,24 +6,20 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Assert;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
-import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.wlcb.jpower.module.common.node.ForestNodeMerger;
 import com.wlcb.jpower.module.common.node.Node;
-import com.wlcb.jpower.module.common.utils.BeanUtil;
-import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.*;
+import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
+import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.module.support.DictSupport;
+import com.wlcb.jpower.module.tenant.TenantConstant;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -34,7 +30,83 @@ import java.util.stream.Collectors;
  * @Date 2020-07-03 14:02
  * @Version 1.0
  */
-public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M, T> {
+public class JpowerServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> extends ServiceImpl<M, T> {
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 设置实体值
+     * @date 2:47 2020/10/18 0018
+     */
+    private void resolveEntity(T entity){
+        // todo start 这里获取实际登陆人，如果是匿名用户或者其他登陆端，交给mp来赋值（可应用于未登录状态，根据具体业务前端可控制这些字段来保存更加符合的值）
+        String userId = SecureUtil.getUserId();
+        userId = Fc.isBlank(userId)?null:userId;
+        Date now = new Date();
+        if (Fc.isBlank(entity.getId())){
+            entity.setCreateTime(now);
+            entity.setCreateUser(userId);
+            entity.setIsDeleted(JpowerConstants.DB_NOT_DELETE);
+        }
+
+        entity.setUpdateUser(userId);
+        entity.setUpdateTime(now);
+        // todo end
+
+        if (SecureUtil.isRoot()){
+            Field field = ReflectUtil.getField(entity.getClass(), TenantConstant.TENANT_CODE);
+            if (ObjectUtil.isNotEmpty(field)){
+                String tenantCode = ReflectUtil.invokeGetter(entity,TenantConstant.TENANT_CODE);
+                if (Fc.isBlank(tenantCode)){
+                    ReflectUtil.invokeSetter(entity,TenantConstant.TENANT_CODE,TenantConstant.DEFAULT_TENANT_CODE);
+                }
+            }
+        }
+    }
+
+    @Override
+    public boolean save(T entity) {
+        resolveEntity(entity);
+        return super.save(entity);
+    }
+
+    @Override
+    public boolean saveBatch(Collection<T> entityList, int batchSize) {
+        entityList.forEach(this::resolveEntity);
+        return super.saveBatch(entityList,batchSize);
+    }
+
+    @Override
+    public boolean saveOrUpdate(T entity) {
+        resolveEntity(entity);
+        return super.saveOrUpdate(entity);
+    }
+
+    @Override
+    public boolean saveOrUpdateBatch(Collection<T> entityList, int batchSize) {
+        entityList.forEach(this::resolveEntity);
+        return super.saveOrUpdateBatch(entityList,batchSize);
+    }
+
+    @Override
+    public boolean updateBatchById(Collection<T> entityList) {
+        entityList.forEach(this::resolveEntity);
+        return super.updateBatchById(entityList);
+    }
+
+    @Override
+    public boolean updateById(T entity) {
+        resolveEntity(entity);
+        return super.updateById(entity);
+    }
+
+    @Override
+    public boolean update(T entity, Wrapper<T> updateWrapper) {
+        if (Fc.isNull(entity)){
+            entity = BeanUtil.newInstance(ReflectUtil.getClassGenricType(this.getClass(),1));
+        }
+        resolveEntity(entity);
+        return super.update(entity,updateWrapper);
+    }
 
     /**
      * @author 郭丁志
@@ -233,31 +305,6 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T> extends ServiceImpl<M
     public boolean removeRealByMap(Map<String, Object> columnMap) {
         Assert.notEmpty(columnMap, "error: columnMap must not be empty");
         return SqlHelper.retBool(getBaseMapper().deleteRealByMap(columnMap));
-    }
-
-    /**
-     * 链式查询 普通
-     *
-     * @return QueryWrapper 的包装类
-     *
-     * 链式查询暂未支持查询字典
-     */
-    @Override
-    public QueryChainWrapper<T> query() {
-        return ChainWrappers.queryChain(getBaseMapper());
-    }
-
-    /**
-     * 链式查询 lambda 式
-     * <p>注意：不支持 Kotlin </p>
-     *
-     * @return LambdaQueryWrapper 的包装类
-     *
-     * 链式查询暂未支持查询字典
-     */
-    @Override
-    public LambdaQueryChainWrapper<T> lambdaQuery() {
-        return ChainWrappers.lambdaQueryChain(getBaseMapper());
     }
 
 }

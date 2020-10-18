@@ -8,9 +8,6 @@ import com.wlcb.jpower.service.CoreUserRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-
 /**
  * @author 郭丁志
  * @Description //TODO 用户角色
@@ -22,8 +19,4 @@ public class CoreUserRoleServiceImpl extends BaseServiceImpl<TbCoreUserRoleMappe
     @Autowired
     public TbCoreUserRoleDao coreUserRoleDao;
 
-    @Override
-    public List<Map<String,Object>> selectUserRoleByUserId(String userId) {
-        return coreUserRoleDao.getBaseMapper().selectUserRoleByUserId(userId);
-    }
 }

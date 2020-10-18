@@ -77,7 +77,7 @@ public class SecureUtil {
         List<String> roleIds = (List<String>) claims.get(SecureUtil.ROLE_IDS);
         String account = Fc.toStr(claims.get(SecureUtil.ACCOUNT));
         String userName = Fc.toStr(claims.get(SecureUtil.USER_NAME));
-        String telePhone = Fc.toStr(claims.get(SecureUtil.TELE_PHONE));
+        String telephone = Fc.toStr(claims.get(SecureUtil.TELE_PHONE));
         Integer userType = Fc.toInt(claims.get(SecureUtil.USER_TYPE));
         String orgId = Fc.toStr(claims.get(SecureUtil.ORG_ID));
         Integer isSysUser = Fc.toInt(claims.get(SecureUtil.IS_SYS_USER));
@@ -89,7 +89,7 @@ public class SecureUtil {
         coreUser.setLoginId(account);
         coreUser.setRoleIds(roleIds);
         coreUser.setUserName(userName);
-        coreUser.setTelephone(telePhone);
+        coreUser.setTelephone(telephone);
         coreUser.setUserType(userType);
         coreUser.setOrgId(orgId);
         coreUser.setIsSysUser(isSysUser);
@@ -114,7 +114,7 @@ public class SecureUtil {
      * @return boolean
      */
     public static boolean isRoot() {
-        return Fc.contains(getUserRole().iterator(), RoleConstant.ADMIN_ID);
+        return Fc.contains(getUserRole().iterator(), RoleConstant.ROOT_ID);
     }
 
     /**
@@ -220,18 +220,16 @@ public class SecureUtil {
         if (!TENANT_MODE){
             return StringPool.EMPTY;
         }
-
         UserInfo user = getUser(request);
-        if (Fc.isNull(user)){
-            if (!Fc.isNull(request)){
-                String tenantCode = QueryJdbcUtil.loadTenantCodeByDomain(request.getServerName());
-                return Fc.isBlank(tenantCode)?request.getHeader(TENANT_CODE):StringPool.EMPTY;
-            }
-            return StringPool.EMPTY;
-        }else {
-            return user.getTenantCode();
+
+        String tenantCode = StringPool.EMPTY;
+        if (Fc.notNull(request)){
+            String code = request.getParameter(TokenConstant.TENANT_CODE);
+            tenantCode = Fc.isBlank(code)?request.getHeader(TokenConstant.HEADER_TENANT):code;
         }
 
+        //先从当前登陆用户中获取租户编码，如果当前用户没有登陆则去参数里获取租户编码如果还没有则去header里去取
+        return Fc.isNull(user)?Fc.isNull(request)?StringPool.EMPTY:tenantCode:user.getTenantCode();
     }
 
     /**
@@ -293,20 +291,7 @@ public class SecureUtil {
      * @param tokenType tokenType
      * @return jwt
      */
-    public static TokenInfo createJWT(Map<String, Object> user, String audience, String issuer, String tokenType) {
-
-        String[] tokens = extractAndDecodeHeader();
-        assert tokens.length == 2;
-        String clientCode = tokens[0];
-        String clientSecret = tokens[1];
-
-        // 获取客户端信息
-        ClientDetails clientDetails = clientDetails(clientCode);
-
-        // 校验客户端信息
-        if (!validateClient(clientDetails, clientCode, clientSecret)) {
-            throw new RuntimeException("客户端认证失败!");
-        }
+    public static TokenInfo createJWT(Map<String, Object> user, String audience, String issuer, String tokenType,ClientDetails clientDetails) {
 
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
@@ -318,7 +303,7 @@ public class SecureUtil {
         Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
 
         //添加构成JWT的类
-        JwtBuilder builder = Jwts.builder().setHeaderParam("typ", "JsonWebToken")
+        JwtBuilder builder = Jwts.builder().setHeaderParam("type", "JsonWebToken")
                 .setIssuer(issuer)
                 .setAudience(audience)
                 .signWith(signatureAlgorithm, signingKey);
@@ -326,8 +311,8 @@ public class SecureUtil {
         //设置JWT参数
         user.forEach(builder::claim);
 
-        //设置应用id
-        builder.claim(CLIENT_CODE, clientCode);
+        //设置应用Code
+        builder.claim(CLIENT_CODE, clientDetails.getClientCode());
 
         //添加Token过期时间
         long expireMillis;
@@ -404,22 +389,12 @@ public class SecureUtil {
     }
 
     /**
-     * 获取客户端信息
-     *
-     * @param clientCode 客户端code
-     * @return clientDetails
-     */
-    private static ClientDetails clientDetails(String clientCode) {
-        return QueryJdbcUtil.loadClientByClientCode(clientCode);
-    }
-
-    /**
      * 校验Client
-     * @param clientCode     客户端code
+     * @param clientCode 客户端code
      * @param clientSecret 客户端密钥
      * @return boolean
      */
-    private static boolean validateClient(ClientDetails clientDetails, String clientCode, String clientSecret) {
+    public static boolean validateClient(ClientDetails clientDetails, String clientCode, String clientSecret) {
         if (clientDetails != null) {
             return StringUtil.equals(clientCode, clientDetails.getClientCode()) && StringUtil.equals(clientSecret, clientDetails.getClientSecret());
         }

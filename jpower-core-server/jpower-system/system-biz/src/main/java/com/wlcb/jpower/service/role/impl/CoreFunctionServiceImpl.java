@@ -8,7 +8,6 @@ import com.wlcb.jpower.dbs.dao.role.mapper.TbCoreFunctionMapper;
 import com.wlcb.jpower.dbs.entity.function.TbCoreFunction;
 import com.wlcb.jpower.dbs.entity.role.TbCoreRoleFunction;
 import com.wlcb.jpower.module.common.auth.RoleConstant;
-import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
@@ -25,7 +24,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author mr.gmac
@@ -101,13 +99,12 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     }
 
     @Override
-    public void putRedisAllFunctionByRoles(List<String> roleIds, Long expiresIn, String accessToken) {
-        String inSql = "'"+Fc.join(roleIds).replaceAll(",","','")+"'";
-        List<Object> listUrl = coreFunctionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
+    public List<Object> getUrlsByRoleIds(String roleIds) {
+        String inSql = "'"+roleIds.replaceAll(",","','")+"'";
+        return coreFunctionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                 .select(TbCoreFunction::getUrl)
                 .isNotNull(TbCoreFunction::getUrl)
                 .inSql(TbCoreFunction::getId,StringUtil.format(sql,inSql)));
-        redisUtil.set(CacheNames.TOKEN_URL_KEY+accessToken,listUrl,expiresIn, TimeUnit.SECONDS);
     }
 
     @Override

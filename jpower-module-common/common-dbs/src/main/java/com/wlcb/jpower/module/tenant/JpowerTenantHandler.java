@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.extension.plugins.tenant.TenantHandler;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SecureUtil;
+import com.wlcb.jpower.module.common.utils.WebUtil;
 import lombok.AllArgsConstructor;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.StringValue;
@@ -29,7 +30,7 @@ public class JpowerTenantHandler implements TenantHandler, SmartInitializingSing
 
     @Override
     public Expression getTenantId(boolean select) {
-        return new StringValue(Fc.isBlank(SecureUtil.getTenantCode())?TenantConstant.DEFAULT_TENANT_ID:SecureUtil.getTenantCode());
+        return new StringValue(Fc.isBlank(SecureUtil.getTenantCode())?TenantConstant.DEFAULT_TENANT_CODE:SecureUtil.getTenantCode());
     }
 
     @Override
@@ -39,7 +40,8 @@ public class JpowerTenantHandler implements TenantHandler, SmartInitializingSing
 
     @Override
     public boolean doTableFilter(String tableName) {
-        return !tenantTableList.contains(tableName) || SecureUtil.isRoot();
+        // 在表中不存在tenant_code字段的、超级用户登陆的、获取不到request的（例如：多线程、定时任务等）情况下不做多租户过滤
+        return !tenantTableList.contains(tableName) || Fc.isNull(WebUtil.getRequest()) || SecureUtil.isRoot();
     }
 
     @Override

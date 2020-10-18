@@ -29,18 +29,6 @@
         </foreach>
     </insert>
 
-    <select id="selectUserRoleByUserId"
-            resultType="java.util.Map">
-        select
-        ur.user_id as userId,
-        ur.role_id as roleId,
-        r.name as roleName,
-        r.code as code
-        from tb_core_user_role ur
-        left join tb_core_role r on r.id = ur.role_id
-        where ur.user_id = #{userId,jdbcType=VARCHAR} and ur.is_deleted = 0
-    </select>
-
     <select id="selectRoleIdByUserId" resultType="java.lang.String">
         select
         ur.role_id

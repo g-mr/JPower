@@ -28,9 +28,6 @@ public class UserInfo {
     private String tenantCode;
 
     @ApiModelProperty("用户ID")
-    private String userCode;
-
-    @ApiModelProperty("用户ID")
     private String userId;
 
     @ApiModelProperty("客户端")

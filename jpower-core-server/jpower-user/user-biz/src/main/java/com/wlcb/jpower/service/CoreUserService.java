@@ -56,7 +56,7 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
      * @Param [loginId]
      * @return com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser
      **/
-    TbCoreUser selectUserLoginId(String loginId);
+    TbCoreUser selectUserLoginId(String loginId,String tenantCode);
 
     /**
      * @author 郭丁志

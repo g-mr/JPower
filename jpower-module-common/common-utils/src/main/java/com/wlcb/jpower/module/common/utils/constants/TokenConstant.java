@@ -10,6 +10,7 @@ package com.wlcb.jpower.module.common.utils.constants;
 public interface TokenConstant {
     String SIGN_KEY = "Jpower";
     String HEADER = "jpower-auth";
+    String HEADER_TENANT = "Tenant-Code";
     String JPOWER = "jpower";
     String TOKEN_TYPE = "token_type";
     String ACCESS_TOKEN = "access_token";

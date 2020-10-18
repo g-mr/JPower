@@ -1,5 +1,6 @@
 package com.wlcb.jpower.config.system;
 
+import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
 import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
 import com.wlcb.jpower.feign.SystemClient;
 import com.wlcb.jpower.module.base.vo.ResponseData;
@@ -39,6 +40,11 @@ public class SystemCache {
         return org.getName();
     }
 
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 获取部门
+     * @Date 15:47 2020-05-06
+     **/
     public static TbCoreOrg getOrg(String orgId){
         return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_ORG_ID_KEY,orgId,() -> {
             ResponseData<TbCoreOrg> responseData = systemClient.queryOrgById(orgId);
@@ -46,10 +52,41 @@ public class SystemCache {
         });
     }
 
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 根据部门ID获取下级所有ID
+     * @Date 15:47 2020-05-06
+     **/
     public static List<String> getChildIdOrgById(String orgId) {
         return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_ORG_PARENT_KEY,orgId,() -> {
             ResponseData<List<String>> responseData = systemClient.queryChildOrgById(orgId);
             return responseData.getData();
+        });
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 获取客户端信息
+     * @Date 15:47 2020-05-06
+     **/
+    public static TbCoreClient getClientByClientCode(String clientCode) {
+        return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_CLIENT_KEY,clientCode,() -> {
+            ResponseData<TbCoreClient> responseData = systemClient.getClientByClientCode(clientCode);
+            return responseData.getData();
+        });
+    }
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO
+     * @date 23:51 2020/10/17 0017
+     * @param roleIds 角色ID
+     */
+    public static ResponseData<List<Object>> getUrlsByRoleIds(List<String> roleIds) {
+        String roles = Fc.join(roleIds);
+        return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_URL_ROLES_KEY,roles,() -> {
+            ResponseData<List<Object>> responseData = systemClient.getUrlsByRoleIds(roles);
+            return responseData;
         });
     }
 }

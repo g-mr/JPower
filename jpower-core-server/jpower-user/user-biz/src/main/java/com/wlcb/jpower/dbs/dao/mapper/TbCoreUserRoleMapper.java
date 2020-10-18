@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author mr.gmac
@@ -22,15 +21,6 @@ public interface TbCoreUserRoleMapper extends BaseMapper<TbCoreUserRole> {
      * @return java.lang.Integer
      */
     Integer insertList(@Param("userRoles") List<TbCoreUserRole> userRoles);
-
-    /**
-     * @author 郭丁志
-     * @Description //TODO 查询用户所有角色
-     * @date 22:50 2020/5/26 0026
-     * @param userId 用户ID
-     * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.role.TbCoreUserRole>
-     */
-    List<Map<String,Object>> selectUserRoleByUserId(String userId);
 
     /**
      * @author 郭丁志

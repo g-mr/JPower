@@ -97,15 +97,6 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
 
     /**
      * @Author 郭丁志
-     * @Description //TODO 根据橘色获取所有的权限放到redis中
-     * @Date 20:20 2020-07-28
-     * @Param [roleIds]
-     * @return void
-     **/
-    void putRedisAllFunctionByRoles(List<String> roleIds, Long expiresIn, String accessToken);
-
-    /**
-     * @Author 郭丁志
      * @Description //TODO 根据角色ID查询所有菜单
      * @Date 11:23 2020-07-30
      * @Param [roleIds]
@@ -132,4 +123,6 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
     List<FunctionVo> listTreeByRoleId(String roleIds);
 
     Integer queryRoleByUrl(String url);
+
+    List<Object> getUrlsByRoleIds(String roleIds);
 }

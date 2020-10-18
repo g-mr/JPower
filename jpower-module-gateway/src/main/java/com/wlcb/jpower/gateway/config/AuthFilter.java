@@ -3,7 +3,6 @@ package com.wlcb.jpower.gateway.config;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wlcb.jpower.gateway.feign.SystemClient;
-import com.wlcb.jpower.gateway.properties.WhileIpProperties;
 import com.wlcb.jpower.gateway.utils.ExculdesUrl;
 import com.wlcb.jpower.gateway.utils.IpUtil;
 import com.wlcb.jpower.gateway.utils.TokenUtil;
@@ -15,6 +14,7 @@ import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.JwtUtil;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
+import com.wlcb.jpower.module.properties.AuthProperties;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +50,7 @@ import java.util.Map;
 @Component
 @Slf4j
 @RefreshScope
-@EnableConfigurationProperties({WhileIpProperties.class})
+@EnableConfigurationProperties({AuthProperties.class})
 public class AuthFilter implements GlobalFilter, Ordered {
 
     @Autowired
@@ -61,7 +61,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
     private SystemClient systemClient;
 
     @Resource
-    private WhileIpProperties whileIpProperties;
+    private AuthProperties authProperties;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -90,7 +90,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
         }else {
             //白名单
             String ip = IpUtil.getIP(exchange.getRequest());
-            if (Fc.contains(whileIpProperties.getWhileIp().iterator(),ip)){
+            if (Fc.contains(authProperties.getWhileIp().iterator(),ip)){
                 return chain.filter(addHeader(exchange,ip));
             }
 

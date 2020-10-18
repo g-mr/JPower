@@ -6,8 +6,8 @@ import com.wlcb.jpower.auth.AuthInfo;
 import com.wlcb.jpower.auth.granter.TokenGranter;
 import com.wlcb.jpower.auth.granter.TokenGranterBuilder;
 import com.wlcb.jpower.auth.utils.TokenUtil;
+import com.wlcb.jpower.config.system.SystemCache;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
-import com.wlcb.jpower.feign.SystemClient;
 import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
@@ -26,6 +26,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -43,7 +44,6 @@ import java.util.concurrent.TimeUnit;
 public class LoginController extends BaseController {
 
     private UserClient userClient;
-    private SystemClient systemClient;
     private RedisUtil redisUtil;
 
     @ApiOperation(value = "用户登录",notes = "Authorization（客户端识别码）：由clientCode+\":\"+clientSecret组成字符串后用base64编码后获得值，再由Basic +base64编码后的值组成客户端识别码； <br/>" +
@@ -89,10 +89,13 @@ public class LoginController extends BaseController {
 
         AuthInfo authInfo = TokenUtil.createAuthInfo(userInfo);
 
-        if (systemClient.putRedisAllFunctionByRoles(userInfo.getRoleIds(),authInfo.getExpiresIn(),authInfo.getAccessToken())){
+        ResponseData<List<Object>> r = SystemCache.getUrlsByRoleIds(userInfo.getRoleIds());
+        if (r.isSuccess()){
+            redisUtil.set(CacheNames.TOKEN_URL_KEY+authInfo.getAccessToken(),r.getData(), authInfo.getExpiresIn(), TimeUnit.SECONDS);
             return ReturnJsonUtil.ok("登录成功",authInfo);
         }
-        return ReturnJsonUtil.fail("登录失败");
+
+        return ReturnJsonUtil.fail(String.format("登录失败[retcode:%s,retmsg:%s]", r.getCode(),r.getMessage()));
     }
 
     @ApiOperation(value = "退出登录")
@@ -132,7 +135,6 @@ public class LoginController extends BaseController {
             return ReturnJsonUtil.fail("该验证码已经发送，请一分钟后重试");
         }
 
-//        TbCoreUser user = coreUserService.selectByPhone(phone);
         TbCoreUser user = userClient.queryUserByPhone(phone).getData();
 
         if (user == null){

@@ -26,6 +26,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -90,7 +91,8 @@ public class LoginController extends BaseController {
 
         AuthInfo authInfo = TokenUtil.createAuthInfo(userInfo);
 
-        coreFunctionService.putRedisAllFunctionByRoles(userInfo.getRoleIds(),authInfo.getExpiresIn(),authInfo.getAccessToken());
+        List<Object> list = coreFunctionService.getUrlsByRoleIds(Fc.join(userInfo.getRoleIds()));
+        redisUtil.set(CacheNames.TOKEN_URL_KEY+authInfo.getAccessToken(),list, authInfo.getExpiresIn(), TimeUnit.SECONDS);
         return ReturnJsonUtil.ok("登录成功",authInfo);
     }
 

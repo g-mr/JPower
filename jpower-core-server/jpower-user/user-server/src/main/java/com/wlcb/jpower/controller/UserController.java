@@ -3,6 +3,7 @@ package com.wlcb.jpower.controller;
 import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.config.param.ParamConfig;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
+import com.wlcb.jpower.dbs.entity.TbCoreUserRole;
 import com.wlcb.jpower.module.base.annotation.Log;
 import com.wlcb.jpower.module.base.enums.BusinessType;
 import com.wlcb.jpower.module.base.enums.JpowerError;
@@ -14,6 +15,7 @@ import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.support.BeanExcelUtil;
 import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.*;
+import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.CoreUserRoleService;
 import com.wlcb.jpower.service.CoreUserService;
 import com.wlcb.jpower.vo.UserVo;
@@ -24,12 +26,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotBlank;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 @Api(tags = "用户管理")
 @RestController
@@ -87,20 +87,14 @@ public class UserController extends BaseController {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"邮箱不合法", false);
         }
 
-        TbCoreUser user = coreUserService.selectUserLoginId(coreUser.getLoginId());
-        if (user != null){
+        TbCoreUser user = coreUserService.selectUserLoginId(coreUser.getLoginId(),coreUser.getTenantCode());
+        if (!Fc.isNull(user)){
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该登录用户名已存在", false);
         }
 
         coreUser.setPassword(DigestUtil.encrypt(MD5.parseStrToMd5U32(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD, ConstantsUtils.DEFAULT_USER_PASSWORD))));
         coreUser.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_SYSTEM.getValue());
-        Boolean is = coreUserService.save(coreUser);
-
-        if (is){
-            return ReturnJsonUtil.ok("新增成功");
-        }else {
-            return ReturnJsonUtil.fail("新增失败");
-        }
+        return ReturnJsonUtil.status(coreUserService.save(coreUser));
     }
 
     @ApiOperation(value = "删除用户")
@@ -141,24 +135,18 @@ public class UserController extends BaseController {
         }
 
         if (StringUtils.isNotBlank(coreUser.getLoginId())){
-            TbCoreUser user = coreUserService.selectUserLoginId(coreUser.getLoginId());
+            TbCoreUser user = coreUserService.selectUserLoginId(coreUser.getLoginId(),coreUser.getTenantCode());
             if (user != null && !StringUtils.equals(user.getId(),coreUser.getId())){
                 return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该登录用户名已存在", false);
             }
         }
 
         coreUser.setPassword(null);
-        Boolean is = coreUserService.update(coreUser);
-
-        if (is){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"修改成功", true);
-        }else {
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"修改失败", false);
-        }
+        return ReturnJsonUtil.status(coreUserService.update(coreUser));
     }
 
     @ApiOperation(value = "重置用户登陆密码")
-    @RequestMapping(value = "/resetPassword",method = {RequestMethod.PUT},produces="application/json")
+    @PutMapping(value = "/resetPassword",produces="application/json")
     public ResponseData resetPassword(@ApiParam(value = "主键 多个逗号分割",required = true) @RequestParam  String ids){
 
         String pass = DigestUtil.encrypt(MD5.parseStrToMd5U32(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD,ConstantsUtils.DEFAULT_USER_PASSWORD)));
@@ -168,14 +156,14 @@ public class UserController extends BaseController {
         Boolean is = coreUserService.updateUserPassword(ids,pass);
 
         if (is){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,ids.split(",").length+"位用户密码重置成功", true);
+            return ReturnJsonUtil.ok(ids.split(",").length+"位用户密码重置成功");
         }else {
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"重置失败", false);
+            return ReturnJsonUtil.fail("重置失败");
         }
     }
 
     @ApiOperation(value = "批量导入用户")
-    @RequestMapping(value = "/importUser",method = {RequestMethod.POST},produces="application/json")
+    @PostMapping(value = "/importUser",produces="application/json")
     public ResponseData importUser(MultipartFile file){
 
         JpowerAssert.notTrue(file == null || file.isEmpty(),JpowerError.Arg,"文件不可为空");
@@ -212,16 +200,16 @@ public class UserController extends BaseController {
 
                 Boolean is = coreUserService.insertBatch(list);
                 if (is){
-                    return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"成功导入"+list.size()+"条", true);
+                    return ReturnJsonUtil.ok("成功导入"+list.size()+"条");
                 }else {
-                    return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"导入失败", false);
+                    return ReturnJsonUtil.fail("导入失败");
                 }
             }
 
             logger.error("文件上传出错，文件不存在,{}",saveFile.getAbsolutePath());
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"上传出错，请稍后重试", false);
+            return ReturnJsonUtil.fail("上传出错，请稍后重试");
         }catch (Exception e){
-            logger.error("文件上传出错，error={}",e.getMessage());
+            logger.error("文件上传出错，error={}",ExceptionsUtil.getStackTraceAsString(e));
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_ERROR,"上传出错，请稍后重试", false);
         }
 
@@ -246,9 +234,8 @@ public class UserController extends BaseController {
 
         File file = new File(ImportExportConstants.EXPORT_PATH+responseData.getData());
         if (file.exists()){
-            HttpServletResponse response = getResponse();
             try {
-                FileUtil.download(file, response,"用户数据.xlsx");
+                FileUtil.download(file, getResponse(),"用户数据.xlsx");
             } catch (IOException e) {
                 logger.error("下载文件出错。file={},error={}",file.getAbsolutePath(),e.getMessage());
                 throw new BusinessException("下载文件出错，请联系网站管理员");
@@ -266,27 +253,19 @@ public class UserController extends BaseController {
                                 @ApiParam(value = "角色主键 多个逗号分割") @RequestParam(required = false) String roleIds){
 
         JpowerAssert.notEmpty(userIds, JpowerError.Arg,"userIds不可为空");
+        JpowerAssert.notTrue(Fc.toStrArray(userIds).length <= 0, JpowerError.Arg,"userIds不可为空");
 
-        String[] userIdss = userIds.split(",");
-        JpowerAssert.notTrue(userIdss.length <= 0, JpowerError.Arg,"userIds不可为空");
-
-        Boolean is = coreUserService.updateUsersRole(userIds,roleIds);
-
-        if (is){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"设置成功", true);
-        }else {
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"设置失败", false);
-        }
+        return ReturnJsonUtil.status(coreUserService.updateUsersRole(userIds,roleIds));
     }
 
-    @ApiOperation(value = "查询用户所有角色")
-    @RequestMapping(value = "/userRole",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData<List<Map<String,Object>>> userRole(@ApiParam(value = "用户主键",required = true) @RequestParam String userId){
+    @ApiOperation(value = "查询用户所有角色ID")
+    @GetMapping(value = "/userRole", produces="application/json")
+    public ResponseData<List<String>> userRole(@ApiParam(value = "用户主键",required = true) @RequestParam String userId){
 
         JpowerAssert.notEmpty(userId, JpowerError.Arg,"用户ID不可为空");
 
-        List<Map<String,Object>> userRoleList = coreUserRoleService.selectUserRoleByUserId(userId);
-        return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"查询成功",userRoleList, true);
+        List<String> userRoleList = coreUserRoleService.listObjs(Condition.<TbCoreUserRole>getQueryWrapper().lambda().select(TbCoreUserRole::getRoleId).eq(TbCoreUserRole::getUserId,userId),Fc::toStr);
+        return ReturnJsonUtil.ok("查询成功",userRoleList);
     }
 
     @ApiOperation(value = "用户上传模板下载")
@@ -318,9 +297,11 @@ public class UserController extends BaseController {
     @GetMapping(value = "/updatePassword")
     public ResponseData<String> updatePassword(@ApiParam(value = "旧密码",required = true) @RequestParam String oldPw,@ApiParam(value = "新密码",required = true) @RequestParam String newPw){
         UserInfo userInfo = SecureUtil.getUser();
+        JpowerAssert.notNull(userInfo,JpowerError.BUSINESS,"用户未登录");
+
         TbCoreUser user = coreUserService.getById(userInfo.getUserId());
         if (Fc.isNull(user) || !Fc.equals(user.getPassword(),DigestUtil.encrypt(oldPw))){
-            ReturnJsonUtil.fail("原密码错误");
+            return ReturnJsonUtil.fail("原密码错误");
         }
         return ReturnJsonUtil.status(coreUserService.updateUserPassword(user.getId(),DigestUtil.encrypt(newPw)));
     }
