@@ -48,7 +48,7 @@ public class TokenUtil {
 
         // 获取客户端信息
         TbCoreClient client = SystemCache.getClientByClientCode(clientCode);
-        ClientDetails clientDetails = BeanUtil.copy(client,ClientDetails.class);
+        ClientDetails clientDetails = Fc.notNull(client)?BeanUtil.copy(client,ClientDetails.class):null;
 
         // 校验客户端信息
         if (!SecureUtil.validateClient(clientDetails, clientCode, clientSecret)) {

@@ -6,6 +6,7 @@ import com.wlcb.jpower.auth.AuthInfo;
 import com.wlcb.jpower.auth.granter.TokenGranter;
 import com.wlcb.jpower.auth.granter.TokenGranterBuilder;
 import com.wlcb.jpower.auth.utils.TokenUtil;
+import com.wlcb.jpower.config.system.SystemCache;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
@@ -16,9 +17,7 @@ import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.*;
-import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.service.CoreUserService;
-import com.wlcb.jpower.service.role.CoreFunctionService;
 import com.wlcb.jpower.utils.SmsAliyun;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
@@ -44,7 +43,6 @@ import java.util.concurrent.TimeUnit;
 public class LoginController extends BaseController {
 
     private CoreUserService coreUserService;
-    private CoreFunctionService coreFunctionService;
     private RedisUtil redisUtil;
 
     @ApiOperation(value = "用户登录",notes = "Authorization（客户端识别码）：由clientCode+\":\"+clientSecret组成字符串后用base64编码后获得值，再由Basic +base64编码后的值组成客户端识别码； <br/>" +
@@ -53,6 +51,7 @@ public class LoginController extends BaseController {
             "token如何使用：tokenType+\" \"+token组成的值要放到header；header头是jpower-auth；具体写法如下；<br/>" +
             "&nbsp;&nbsp;&nbsp;jpower-auth=tokenType+\" \"+token")
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "tenantCode",required = true,value="租户编码",paramType = "form"),
             @ApiImplicitParam(name = "loginId",required = false,value="账号",paramType = "form"),
             @ApiImplicitParam(name = "passWord",required = false,value="密码",paramType = "form"),
             @ApiImplicitParam(name = "grantType",required = false,value="授权类型 (密码登录=password、验证码登录=captcha、第三方平台登录=otherCode、手机号验证码登录=phone、刷新token=refresh_token)",paramType = "form"),
@@ -66,12 +65,15 @@ public class LoginController extends BaseController {
             @ApiImplicitParam(name = "Captcha-Code",required = false,value="验证码值    grantType=captcha时必填",paramType = "header")
     })
     @PostMapping(value = "/login",produces="application/json")
-    public ResponseData<AuthInfo> login(String loginId,String passWord,String grantType,String refreshToken
-            ,String phone,String phoneCode,String otherCode) {
+    public ResponseData<AuthInfo> login(String tenantCode, String loginId, String passWord, String grantType, String refreshToken
+            , String phone, String phoneCode, String otherCode) {
+
+        JpowerAssert.notNull(tenantCode,JpowerError.Arg,"租户编码不可为空");
 
         String userType = Fc.toStr(WebUtil.getRequest().getHeader(TokenUtil.USER_TYPE_HEADER_KEY), TokenUtil.DEFAULT_USER_TYPE);
 
-        ChainMap tokenParameter = ChainMap.init().set("account", loginId)
+        ChainMap tokenParameter = ChainMap.init().set("tenantCode", tenantCode)
+                .set("account", loginId)
                 .set("password", passWord)
                 .set("grantType", grantType)
                 .set("refreshToken", refreshToken)
@@ -84,14 +86,13 @@ public class LoginController extends BaseController {
         TokenGranter granter = TokenGranterBuilder.getGranter(grantType);
         UserInfo userInfo = granter.grant(tokenParameter);
 
-
         if (userInfo == null || userInfo.getUserId() == null) {
             return ReturnJsonUtil.fail(TokenUtil.USER_NOT_FOUND);
         }
 
         AuthInfo authInfo = TokenUtil.createAuthInfo(userInfo);
 
-        List<Object> list = coreFunctionService.getUrlsByRoleIds(Fc.join(userInfo.getRoleIds()));
+        List<Object> list = SystemCache.getUrlsByRoleIds(userInfo.getRoleIds());
         redisUtil.set(CacheNames.TOKEN_URL_KEY+authInfo.getAccessToken(),list, authInfo.getExpiresIn(), TimeUnit.SECONDS);
         return ReturnJsonUtil.ok("登录成功",authInfo);
     }
@@ -101,7 +102,7 @@ public class LoginController extends BaseController {
     public ResponseData<String> loginOut(@ApiParam(value = "用户ID",required = true)@RequestParam String userId) {
         JpowerAssert.notEmpty(userId, JpowerError.Arg,"用户ID不可为空");
         UserInfo user = SecureUtil.getUser();
-        if(Fc.equals(userId,user.getUserId())){
+        if(Fc.notNull(user) && Fc.equals(userId,user.getUserId())){
             redisUtil.remove(CacheNames.TOKEN_URL_KEY+JwtUtil.getToken(getRequest()));
             return ReturnJsonUtil.ok("退出成功");
         }else{
@@ -112,7 +113,7 @@ public class LoginController extends BaseController {
     @ApiOperation(value = "获取验证码")
     @GetMapping("/captcha")
     public ResponseData<Map> captcha() {
-        SpecCaptcha specCaptcha = new SpecCaptcha(130, 48, 5);
+        SpecCaptcha specCaptcha = new SpecCaptcha(130, 48, 4);
         String verCode = specCaptcha.text().toLowerCase();
         String key = UUIDUtil.getUUID();
         // 存入redis并设置过期时间为30分钟
@@ -123,8 +124,9 @@ public class LoginController extends BaseController {
 
     @ApiOperation(value = "发送手机登录验证码")
     @RequestMapping(value = "/phoneCaptcha",method = RequestMethod.GET,produces="application/json")
-    public ResponseData<String> loginVercode(@ApiParam(value = "手机号",required = true) @RequestParam String phone) {
+    public ResponseData<String> loginVercode(@ApiParam(value = "租户编号",required = true) @RequestParam String tenantCode, @ApiParam(value = "手机号",required = true) @RequestParam String phone) {
 
+        JpowerAssert.notNull(tenantCode,JpowerError.Arg,"租户编码不可为空");
         if (StringUtils.isBlank(phone) || !StrUtil.isPhone(phone)){
             return ReturnJsonUtil.fail("手机号不合法");
         }
@@ -133,16 +135,16 @@ public class LoginController extends BaseController {
             return ReturnJsonUtil.fail("该验证码已经发送，请一分钟后重试");
         }
 
-        TbCoreUser user = coreUserService.selectByPhone(phone);
+        TbCoreUser user = coreUserService.selectByPhone(phone,tenantCode);
 
-        if (user == null){
-            //用户名空则返回
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NOTFOUND,"手机号不存在",false);
+        if (Fc.isNull(user)){
+            //用户空则返回
+            return ReturnJsonUtil.notFind("手机号不存在");
         }
 
         String code = RandomStringUtils.randomNumeric(6);
 
-        JSONObject json = SmsAliyun.send(phone,"乌丽吉","code");
+        JSONObject json = SmsAliyun.send(phone,"乌丽吉",code);
 
         if ("OK".equals(json.getString("Code"))){
             redisUtil.set(CacheNames.PHONE_KEY+phone,code,5L, TimeUnit.MINUTES);

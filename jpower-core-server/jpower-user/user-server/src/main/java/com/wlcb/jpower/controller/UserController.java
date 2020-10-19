@@ -75,22 +75,22 @@ public class UserController extends BaseController {
 
         if (coreUser.getIdType() != null && ConstantsEnum.ID_TYPE.ID_CARD.getValue().equals(coreUser.getIdType())){
             if (!StrUtil.cardCodeVerifySimple(coreUser.getIdNo())){
-                return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"身份证不合法", false);
+                return ReturnJsonUtil.busFail("身份证不合法");
             }
         }
 
-        if (StringUtils.isNotBlank(coreUser.getTelephone()) && !StrUtil.isPhone(coreUser.getTelephone()) ){
+        if (StringUtils.isNotBlank(coreUser.getTelephone())){
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"手机号不合法", false);
         }
 
         if (StringUtils.isNotBlank(coreUser.getEmail()) && !StrUtil.isEmail(coreUser.getEmail()) ){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"邮箱不合法", false);
+            return ReturnJsonUtil.busFail("邮箱不合法");
         }
 
-        TbCoreUser user = coreUserService.selectUserLoginId(coreUser.getLoginId(),coreUser.getTenantCode());
-        if (!Fc.isNull(user)){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该登录用户名已存在", false);
+        if (StringUtils.isNotBlank(coreUser.getTelephone())){
+            JpowerAssert.isNull(coreUserService.selectByPhone(coreUser.getTelephone(),coreUser.getTenantCode()),JpowerError.BUSINESS,"手机号已存在");
         }
+        JpowerAssert.isNull(coreUserService.selectUserLoginId(coreUser.getLoginId(),coreUser.getTenantCode()),JpowerError.BUSINESS,"当前登陆名已存在");
 
         coreUser.setPassword(DigestUtil.encrypt(MD5.parseStrToMd5U32(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD, ConstantsUtils.DEFAULT_USER_PASSWORD))));
         coreUser.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_SYSTEM.getValue());
@@ -122,22 +122,29 @@ public class UserController extends BaseController {
 
         if (coreUser.getIdType() != null && ConstantsEnum.ID_TYPE.ID_CARD.getValue().equals(coreUser.getIdType())){
             if (!StrUtil.cardCodeVerifySimple(coreUser.getIdNo())){
-                return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"身份证不合法", false);
+                return ReturnJsonUtil.busFail("身份证不合法");
             }
         }
 
         if (StringUtils.isNotBlank(coreUser.getTelephone()) && !StrUtil.isPhone(coreUser.getTelephone()) ){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"手机号不合法", false);
+            return ReturnJsonUtil.busFail("手机号不合法");
         }
 
         if (StringUtils.isNotBlank(coreUser.getEmail()) && !StrUtil.isEmail(coreUser.getEmail()) ){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"邮箱不合法", false);
+            return ReturnJsonUtil.busFail("邮箱不合法");
         }
 
         if (StringUtils.isNotBlank(coreUser.getLoginId())){
             TbCoreUser user = coreUserService.selectUserLoginId(coreUser.getLoginId(),coreUser.getTenantCode());
             if (user != null && !StringUtils.equals(user.getId(),coreUser.getId())){
-                return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该登录用户名已存在", false);
+                return ReturnJsonUtil.busFail("该登录用户名已存在");
+            }
+        }
+
+        if (StringUtils.isNotBlank(coreUser.getTelephone())){
+            TbCoreUser user = coreUserService.selectByPhone(coreUser.getTelephone(),coreUser.getTenantCode());
+            if (user != null && !StringUtils.equals(user.getId(),coreUser.getId())){
+                return ReturnJsonUtil.busFail("该手机号已存在");
             }
         }
 
@@ -176,34 +183,10 @@ public class UserController extends BaseController {
             if (saveFile.exists()){
                 BeanExcelUtil<TbCoreUser> beanExcelUtil = new BeanExcelUtil<>(TbCoreUser.class);
                 List<TbCoreUser> list = beanExcelUtil.importExcel(saveFile);
-
                 //获取完数据之后删除文件
                 FileUtil.deleteFile(saveFile);
 
-                for (TbCoreUser coreUser : list) {
-                    coreUser.setId(UUIDUtil.getUUID());
-                    coreUser.setPassword(DigestUtil.encrypt(MD5.parseStrToMd5U32(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD,ConstantsUtils.DEFAULT_USER_PASSWORD))));
-                    coreUser.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_SYSTEM.getValue());
-
-                    //判断用户是否指定激活，如果没有指定就去读取默认配置
-                    if (coreUser.getActivationStatus() == null){
-                        Integer isActivation = ParamConfig.getInt(ParamsConstants.IS_ACTIVATION,ConstantsUtils.DEFAULT_USER_ACTIVATION);
-                        coreUser.setActivationStatus(isActivation);
-                    }
-                    // 如果不是激活状态则去生成激活码
-                    if (!ConstantsEnum.ACTIVATION_STATUS.ACTIVATION_YES.getValue().equals(coreUser.getActivationStatus())){
-                        coreUser.setActivationCode(UUIDUtil.create10UUidNum());
-                        coreUser.setActivationStatus(ConstantsEnum.ACTIVATION_STATUS.ACTIVATION_NO.getValue());
-                    }
-
-                }
-
-                Boolean is = coreUserService.insertBatch(list);
-                if (is){
-                    return ReturnJsonUtil.ok("成功导入"+list.size()+"条");
-                }else {
-                    return ReturnJsonUtil.fail("导入失败");
-                }
+                return ReturnJsonUtil.ok("成功导入"+coreUserService.insertBatch(list)+"条");
             }
 
             logger.error("文件上传出错，文件不存在,{}",saveFile.getAbsolutePath());

@@ -2,13 +2,17 @@ package com.wlcb.jpower.config.system;
 
 import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
 import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
-import com.wlcb.jpower.feign.SystemClient;
-import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SpringUtil;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
+import com.wlcb.jpower.service.client.CoreClientService;
+import com.wlcb.jpower.service.client.impl.CoreClientServiceImpl;
+import com.wlcb.jpower.service.org.CoreOrgService;
+import com.wlcb.jpower.service.org.impl.CoreOrgServiceImpl;
+import com.wlcb.jpower.service.role.CoreFunctionService;
+import com.wlcb.jpower.service.role.impl.CoreFunctionServiceImpl;
 
 import java.util.List;
 
@@ -21,10 +25,14 @@ import java.util.List;
  */
 public class SystemCache {
 
-    private static SystemClient systemClient;
+    private static CoreOrgService coreOrgService;
+    private static CoreClientService coreClientService;
+    private static CoreFunctionService coreFunctionService;
 
     static {
-        systemClient = SpringUtil.getBean(SystemClient.class);
+        coreOrgService = SpringUtil.getBean(CoreOrgServiceImpl.class);
+        coreClientService = SpringUtil.getBean(CoreClientServiceImpl.class);
+        coreFunctionService = SpringUtil.getBean(CoreFunctionServiceImpl.class);
     }
 
     /**
@@ -47,8 +55,8 @@ public class SystemCache {
      **/
     public static TbCoreOrg getOrg(String orgId){
         return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_ORG_ID_KEY,orgId,() -> {
-            ResponseData<TbCoreOrg> responseData = systemClient.queryOrgById(orgId);
-            return responseData.getData();
+            TbCoreOrg org = coreOrgService.getById(orgId);
+            return org;
         });
     }
 
@@ -59,8 +67,8 @@ public class SystemCache {
      **/
     public static List<String> getChildIdOrgById(String orgId) {
         return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_ORG_PARENT_KEY,orgId,() -> {
-            ResponseData<List<String>> responseData = systemClient.queryChildOrgById(orgId);
-            return responseData.getData();
+            List<String> responseData = coreOrgService.queryChildById(orgId);
+            return responseData;
         });
     }
 
@@ -71,8 +79,8 @@ public class SystemCache {
      **/
     public static TbCoreClient getClientByClientCode(String clientCode) {
         return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_CLIENT_KEY,clientCode,() -> {
-            ResponseData<TbCoreClient> responseData = systemClient.getClientByClientCode(clientCode);
-            return responseData.getData();
+            TbCoreClient responseData = coreClientService.loadClientByClientCode(clientCode);
+            return responseData;
         });
     }
 
@@ -85,8 +93,8 @@ public class SystemCache {
     public static List<Object> getUrlsByRoleIds(List<String> roleIds) {
         String roles = Fc.join(roleIds);
         return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_URL_ROLES_KEY,roles,() -> {
-            ResponseData<List<Object>> responseData = systemClient.getUrlsByRoleIds(roles);
-            return responseData.getData();
+            List<Object> responseData = coreFunctionService.getUrlsByRoleIds(roles);
+            return responseData;
         });
     }
 }

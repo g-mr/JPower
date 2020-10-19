@@ -33,5 +33,5 @@ public interface SystemClient {
     ResponseData<TbCoreClient> getClientByClientCode(@RequestParam String clientCode);
 
     @GetMapping("/function/getUrlsByRoleIds")
-    ResponseData<List<Object>> getUrlsByRoleIds(String roleIds);
+    ResponseData<List<Object>> getUrlsByRoleIds(@RequestParam String roleIds);
 }

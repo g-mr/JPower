@@ -7,6 +7,7 @@ import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.DigestUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SpringUtil;
+import com.wlcb.jpower.module.tenant.TenantConstant;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -78,7 +79,8 @@ public interface AuthUserInfo {
      **/
     default UserInfo getPhoneUserInfo(ChainMap tokenParameter){
         String phone = tokenParameter.getStr("phone");
-        TbCoreUser result = SpringUtil.getBean(UserClient.class).queryUserByPhone(phone).getData();
+        String tenantCode = tokenParameter.getStr(TenantConstant.TENANT_CODE);
+        TbCoreUser result = SpringUtil.getBean(UserClient.class).queryUserByPhone(phone,tenantCode).getData();
         return TokenGranterBuilder.toUserInfo(result);
     }
 

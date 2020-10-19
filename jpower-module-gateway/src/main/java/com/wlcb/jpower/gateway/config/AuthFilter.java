@@ -37,6 +37,7 @@ import reactor.core.publisher.Mono;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -81,7 +82,8 @@ public class AuthFilter implements GlobalFilter, Ordered {
         if (Fc.isNotBlank(token)) {
 
             Claims claims = JwtUtil.parseJWT(token);
-            List<String> listUrl = (List<String>) redisUtil.get(CacheNames.TOKEN_URL_KEY + token);
+            Object o = redisUtil.get(CacheNames.TOKEN_URL_KEY + token);
+            List<String> listUrl = Fc.isNull(o)?new ArrayList<>():(List<String>) o;
             if (Fc.isNull(claims) || !Fc.contains(listUrl.iterator(), currentPath)) {
                 return unAuth(exchange.getResponse(), "请求未授权");
             }

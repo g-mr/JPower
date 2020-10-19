@@ -10,6 +10,7 @@ import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.StringUtil;
+import com.wlcb.jpower.module.tenant.TenantConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -39,6 +40,7 @@ public class PhoneTokenGranter implements TokenGranter {
     public UserInfo grant(ChainMap tokenParameter) {
         String phone = tokenParameter.getStr("phone");
         String phoneCode = tokenParameter.getStr("phoneCode");
+        String tenantCode = tokenParameter.getStr(TenantConstant.TENANT_CODE);
         // 获取验证码
         String redisCode = String.valueOf(redisUtils.get(CacheNames.PHONE_KEY + phone));
         // 判断验证码
@@ -52,7 +54,7 @@ public class PhoneTokenGranter implements TokenGranter {
             if (!Fc.isNull(authUserInfo)){
                 return authUserInfo.getPhoneUserInfo(tokenParameter);
             }else {
-                TbCoreUser result = userClient.queryUserByPhone(phone).getData();
+                TbCoreUser result = userClient.queryUserByPhone(phone,tenantCode).getData();
                 return TokenGranterBuilder.toUserInfo(result);
             }
         }

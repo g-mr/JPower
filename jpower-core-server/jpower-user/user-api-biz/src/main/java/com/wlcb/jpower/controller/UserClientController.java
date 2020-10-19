@@ -55,7 +55,7 @@ public class UserClientController implements UserClient {
     @Override
     @PutMapping("/updateUserLoginInfo")
     public ResponseData updateUserLoginInfo(@RequestBody TbCoreUser user){
-        return ReturnJsonUtil.status(coreUserService.updateById(user));
+        return ReturnJsonUtil.status(coreUserService.updateLoginInfo(user));
     }
 
     @ApiOperation(value = "通过第三方CODE查询")
@@ -78,9 +78,8 @@ public class UserClientController implements UserClient {
     @ApiOperation(value = "通过手机号查询用户")
     @Override
     @GetMapping("/queryUserByPhone")
-    public ResponseData<TbCoreUser> queryUserByPhone(@RequestParam String phone){
-        TbCoreUser user = coreUserService.getOne(Condition.<TbCoreUser>getQueryWrapper()
-                .lambda().eq(TbCoreUser::getTelephone,phone));
+    public ResponseData<TbCoreUser> queryUserByPhone(@RequestParam String phone,@RequestParam String tenantCode){
+        TbCoreUser user = coreUserService.selectByPhone(phone,tenantCode);
         return ReturnJsonUtil.ok("查询成功",user);
     }
 }

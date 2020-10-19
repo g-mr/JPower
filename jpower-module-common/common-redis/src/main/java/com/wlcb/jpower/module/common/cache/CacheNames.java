@@ -45,7 +45,7 @@ public interface CacheNames {
     String SYSTEM_ORG_PARENT_KEY = "org:parent:";
     /** 客户端信息 key（code） **/
     String SYSTEM_CLIENT_KEY = "client:code:";
-    /** 客户端信息 key（code） **/
+    /** 角色的权限URL key（code） **/
     String SYSTEM_URL_ROLES_KEY = "url:roles:";
 
 }

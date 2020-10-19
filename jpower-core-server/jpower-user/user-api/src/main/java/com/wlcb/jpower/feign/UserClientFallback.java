@@ -52,7 +52,7 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
             }
 
             @Override
-            public ResponseData<TbCoreUser> queryUserByPhone(String phone) {
+            public ResponseData<TbCoreUser> queryUserByPhone(String phone, String tenantCode) {
                 return ReturnJsonUtil.fail("查询失败");
             }
         };

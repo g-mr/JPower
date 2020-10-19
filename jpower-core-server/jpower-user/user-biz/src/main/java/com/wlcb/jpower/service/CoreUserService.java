@@ -84,7 +84,7 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
      * @param list
      * @return java.lang.Integer
      */
-    Boolean insertBatch(List<TbCoreUser> list);
+    Integer insertBatch(List<TbCoreUser> list);
 
     /**
      * @author 郭丁志
@@ -103,7 +103,7 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
      * @Param [phone]
      * @return com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser
      **/
-    TbCoreUser selectByPhone(String phone);
+    TbCoreUser selectByPhone(String phone,String tenantCode);
 
     /**
      * @Author 郭丁志

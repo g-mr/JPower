@@ -6,8 +6,8 @@ import io.seata.core.exception.TransactionException;
 import io.seata.tm.api.GlobalTransactionContext;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -31,8 +31,8 @@ public class WorkAspect {
     @Value("${seata.enabled:true}")
     Boolean seataEnabled;
 
-    @AfterReturning("execution(* com.wlcb..*.feign..*Fallback.*(..))")
-    public void doRecoveryActions(JoinPoint joinPoint) throws TransactionException {
+    @Before("execution(* com.wlcb..*.feign..*Fallback.*(..))")
+    public void before(JoinPoint joinPoint) throws TransactionException {
         if (seataEnabled){
             MethodSignature signature = (MethodSignature)joinPoint.getSignature();
             Method method = signature.getMethod();

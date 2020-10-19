@@ -38,5 +38,5 @@ public interface UserClient {
     ResponseData<UserVo> get(@RequestParam String id);
 
     @GetMapping("/queryUserByPhone")
-    ResponseData<TbCoreUser> queryUserByPhone(@RequestParam String phone);
+    ResponseData<TbCoreUser> queryUserByPhone(@RequestParam String phone,@RequestParam String tenantCode);
 }
