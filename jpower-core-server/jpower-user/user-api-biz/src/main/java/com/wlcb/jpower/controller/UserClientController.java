@@ -1,13 +1,15 @@
 package com.wlcb.jpower.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.dbs.entity.TbCoreUserRole;
 import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.base.vo.ResponseData;
-import com.wlcb.jpower.module.common.utils.DigestUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
+import com.wlcb.jpower.module.common.utils.SecureUtil;
 import com.wlcb.jpower.module.mp.support.Condition;
+import com.wlcb.jpower.module.tenant.TenantConstant;
 import com.wlcb.jpower.service.CoreUserRoleService;
 import com.wlcb.jpower.service.CoreUserService;
 import com.wlcb.jpower.vo.UserVo;
@@ -36,10 +38,14 @@ public class UserClientController implements UserClient {
 
     @ApiOperation(value = "通过账号密码查询用户")
     @Override
-    @GetMapping("/queryUserByLoginIdPwd")
-    public ResponseData<TbCoreUser> queryUserByLoginIdPwd(@RequestParam String loginId, @RequestParam String password){
-        return ReturnJsonUtil.ok("查询成功",coreUserService.getOne(Condition.<TbCoreUser>getQueryWrapper()
-                .lambda().eq(TbCoreUser::getLoginId,loginId).eq(TbCoreUser::getPassword, DigestUtil.encrypt(password))));
+    @GetMapping("/queryUserByLoginId")
+    public ResponseData<TbCoreUser> queryUserByLoginId(@RequestParam String loginId, @RequestParam String tenantCode){
+        LambdaQueryWrapper<TbCoreUser> queryWrapper = Condition.<TbCoreUser>getQueryWrapper()
+                .lambda().eq(TbCoreUser::getLoginId,loginId);
+        if (SecureUtil.isRoot()){
+            queryWrapper.eq(TbCoreUser::getTenantCode,Fc.isBlank(tenantCode)? TenantConstant.DEFAULT_TENANT_CODE :tenantCode);
+        }
+        return ReturnJsonUtil.ok("查询成功",coreUserService.getOne(queryWrapper));
     }
 
     @ApiOperation(value = "通过用户ID查询所有角色ID")
@@ -61,10 +67,13 @@ public class UserClientController implements UserClient {
     @ApiOperation(value = "通过第三方CODE查询")
     @Override
     @GetMapping("/queryUserByCode")
-    public ResponseData<TbCoreUser> queryUserByCode(@RequestParam String otherCode){
-        TbCoreUser user = coreUserService.getOne(Condition.<TbCoreUser>getQueryWrapper()
-                .lambda().eq(TbCoreUser::getOtherCode,otherCode));
-        return ReturnJsonUtil.ok("查询成功",user);
+    public ResponseData<TbCoreUser> queryUserByCode(@RequestParam String otherCode, @RequestParam String tenantCode){
+        LambdaQueryWrapper<TbCoreUser> queryWrapper = Condition.<TbCoreUser>getQueryWrapper()
+                .lambda().eq(TbCoreUser::getOtherCode,otherCode);
+        if (SecureUtil.isRoot()){
+            queryWrapper.eq(TbCoreUser::getTenantCode,Fc.isBlank(tenantCode)? TenantConstant.DEFAULT_TENANT_CODE :tenantCode);
+        }
+        return ReturnJsonUtil.ok("查询成功",coreUserService.getOne(queryWrapper));
     }
 
     @ApiOperation("查询用户详情")

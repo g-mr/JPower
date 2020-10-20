@@ -30,12 +30,13 @@ public class OtherCodeTokenGranter implements TokenGranter {
     @Override
     public UserInfo grant(ChainMap tokenParameter) {
         String otherCode = tokenParameter.getStr("otherCode");
+        String tenantCode = tokenParameter.getStr("tenantCode");
         if (Fc.isNotBlank(otherCode)) {
 
             if (!Fc.isNull(authUserInfo)){
                 return authUserInfo.getOtherCodeUserInfo(tokenParameter);
             }else {
-                TbCoreUser result = userClient.queryUserByCode(otherCode).getData();
+                TbCoreUser result = userClient.queryUserByCode(otherCode,tenantCode).getData();
                 return TokenGranterBuilder.toUserInfo(result);
             }
 

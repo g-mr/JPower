@@ -25,8 +25,8 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
     public UserClient create(Throwable cause) {
         return new UserClient() {
             @Override
-            public ResponseData<TbCoreUser> queryUserByLoginIdPwd(String loginId, String password) {
-                log.error("调用queryUserByLoginIdPwd失败，参数：loginId={}，password={},e={}",loginId,password,cause);
+            public ResponseData<TbCoreUser> queryUserByLoginId(String loginId, String tenantCode) {
+                log.error("调用queryUserByLoginIdPwd失败，参数：loginId={}，e={}",loginId,cause);
                 return ReturnJsonUtil.fail("查询失败");
             }
 
@@ -42,7 +42,7 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
             }
 
             @Override
-            public ResponseData<TbCoreUser> queryUserByCode(String otherCode) {
+            public ResponseData<TbCoreUser> queryUserByCode(String otherCode, String tenantCode) {
                 return ReturnJsonUtil.fail("查询失败");
             }
 

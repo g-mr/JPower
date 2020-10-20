@@ -21,6 +21,8 @@ public interface CacheNames {
     String DICT_REDIS_CACHE = "jpower:dicts";
     /** 系统缓存 **/
     String SYSTEM_REDIS_CACHE = "jpower:system";
+    /** 系统缓存 **/
+    String USER_REDIS_CACHE = "jpower:user";
 
 
     /** 登陆验证码缓存KEY **/
@@ -39,13 +41,18 @@ public interface CacheNames {
 
     /** 系统参数key（code） **/
     String PARAMS_REDIS_CODE_KEY = "param:code:";
-    /** 部门key（code） **/
+    /** 部门key **/
     String SYSTEM_ORG_ID_KEY = "org:id:";
-    /** 部门下级所有ID key（code） **/
+    /** 部门下级所有ID key **/
     String SYSTEM_ORG_PARENT_KEY = "org:parent:";
-    /** 客户端信息 key（code） **/
+    /** 客户端信息 key **/
     String SYSTEM_CLIENT_KEY = "client:code:";
-    /** 角色的权限URL key（code） **/
+    /** 角色的权限URL key **/
     String SYSTEM_URL_ROLES_KEY = "url:roles:";
+    /** 用户信息 key（手机号） **/
+    String USER_PHPNE_KEY = "user:phone:";
+    /** 用户信息 key（loginId） **/
+    String USER_LOGINID_KEY = "user:loginId:";
+
 
 }

@@ -1,5 +1,6 @@
 package com.wlcb.jpower.auth.granter;
 
+import com.wlcb.jpower.cache.UserCache;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.common.auth.UserInfo;
@@ -30,11 +31,12 @@ public class PasswordTokenGranter implements TokenGranter {
 	public UserInfo grant(ChainMap tokenParameter) {
 		String account = tokenParameter.getStr("account");
 		String password = tokenParameter.getStr("password");
+		String tenantCode = tokenParameter.getStr("tenantCode");
 		if (Fc.isNoneBlank(account, password)) {
 			if (!Fc.isNull(authUserInfo)){
 				return authUserInfo.getPasswordUserInfo(tokenParameter);
 			}else {
-				TbCoreUser result = client.queryUserByLoginIdPwd(account,password).getData();
+				TbCoreUser result = UserCache.queryUserByLoginIdPwd(account,password,tenantCode);
 				return TokenGranterBuilder.toUserInfo(result);
 			}
 		}

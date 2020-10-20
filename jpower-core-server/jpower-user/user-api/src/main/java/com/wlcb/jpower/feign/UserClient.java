@@ -22,8 +22,8 @@ import java.util.List;
 @FeignClient(value = AppConstant.JPOWER_USER, fallbackFactory = UserClientFallback.class, path = "/core/user")
 public interface UserClient {
 
-    @GetMapping("/queryUserByLoginIdPwd")
-    ResponseData<TbCoreUser> queryUserByLoginIdPwd(@RequestParam String loginId, @RequestParam String password);
+    @GetMapping("/queryUserByLoginId")
+    ResponseData<TbCoreUser> queryUserByLoginId(@RequestParam String loginId, @RequestParam String tenantCode);
 
     @GetMapping("/getRoleIdsByUserId")
     ResponseData<List<String>> getRoleIds(@RequestParam String userId);
@@ -32,7 +32,7 @@ public interface UserClient {
     ResponseData updateUserLoginInfo(@RequestBody TbCoreUser user);
 
     @GetMapping("/queryUserByCode")
-    ResponseData<TbCoreUser> queryUserByCode(@RequestParam String otherCode);
+    ResponseData<TbCoreUser> queryUserByCode(@RequestParam String otherCode, @RequestParam String tenantCode);
 
     @GetMapping("/get")
     ResponseData<UserVo> get(@RequestParam String id);

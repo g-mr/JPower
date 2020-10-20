@@ -1,10 +1,10 @@
 package com.wlcb.jpower.auth.granter;
 
+import com.wlcb.jpower.cache.UserCache;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.support.ChainMap;
-import com.wlcb.jpower.module.common.utils.DigestUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SpringUtil;
 import com.wlcb.jpower.module.tenant.TenantConstant;
@@ -26,8 +26,9 @@ public interface AuthUserInfo {
     default UserInfo getPasswordUserInfo(ChainMap tokenParameter){
         String account = tokenParameter.getStr("account");
         String password = tokenParameter.getStr("password");
+        String tenantCode = tokenParameter.getStr("tenantCode");
 
-        TbCoreUser result = SpringUtil.getBean(UserClient.class).queryUserByLoginIdPwd(account, DigestUtil.encrypt(password)).getData();
+        TbCoreUser result = UserCache.queryUserByLoginIdPwd(account,password,tenantCode);
         return TokenGranterBuilder.toUserInfo(result);
     }
 
@@ -52,8 +53,9 @@ public interface AuthUserInfo {
      */
     default UserInfo getOtherCodeUserInfo(ChainMap tokenParameter){
         String otherCode = tokenParameter.getStr("otherCode");
+        String tenantCode = tokenParameter.getStr("tenantCode");
 
-        TbCoreUser result = SpringUtil.getBean(UserClient.class).queryUserByCode(otherCode).getData();
+        TbCoreUser result = SpringUtil.getBean(UserClient.class).queryUserByCode(otherCode,tenantCode).getData();
         return TokenGranterBuilder.toUserInfo(result);
     }
 

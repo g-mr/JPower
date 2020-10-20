@@ -11,6 +11,7 @@ import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.auth.UserInfo;
+import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.support.BeanExcelUtil;
 import com.wlcb.jpower.module.common.utils.*;
@@ -171,7 +172,7 @@ public class UserController extends BaseController {
 
     @ApiOperation(value = "批量导入用户")
     @PostMapping(value = "/importUser",produces="application/json")
-    public ResponseData importUser(MultipartFile file){
+    public ResponseData importUser(MultipartFile file,Integer isCover){
 
         JpowerAssert.notTrue(file == null || file.isEmpty(),JpowerError.Arg,"文件不可为空");
 
@@ -185,8 +186,12 @@ public class UserController extends BaseController {
                 List<TbCoreUser> list = beanExcelUtil.importExcel(saveFile);
                 //获取完数据之后删除文件
                 FileUtil.deleteFile(saveFile);
-
-                return ReturnJsonUtil.ok("成功导入"+coreUserService.insertBatch(list)+"条");
+                if (coreUserService.insertBatch(list,isCover==1)){
+                    CacheUtil.clear(CacheNames.USER_REDIS_CACHE);
+                    return ReturnJsonUtil.ok("新增成功");
+                }else {
+                    return ReturnJsonUtil.fail("新增失败");
+                }
             }
 
             logger.error("文件上传出错，文件不存在,{}",saveFile.getAbsolutePath());

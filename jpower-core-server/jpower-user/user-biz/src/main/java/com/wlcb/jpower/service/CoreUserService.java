@@ -84,7 +84,7 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
      * @param list
      * @return java.lang.Integer
      */
-    Integer insertBatch(List<TbCoreUser> list);
+    boolean insertBatch(List<TbCoreUser> list,boolean isCover);
 
     /**
      * @author 郭丁志
