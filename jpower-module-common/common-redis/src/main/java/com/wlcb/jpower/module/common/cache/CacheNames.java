@@ -53,6 +53,9 @@ public interface CacheNames {
     String USER_PHPNE_KEY = "user:phone:";
     /** 用户信息 key（loginId） **/
     String USER_LOGINID_KEY = "user:loginId:";
-
+    /** 用户角色列表Id key（userid） **/
+    String USER_ROLEID_USERID_KEY = "user:roleid:";
+    /** 用户信息Id key（otherCode） **/
+    String USER_OTHERCODE_KEY = "user:otherCode:";
 
 }

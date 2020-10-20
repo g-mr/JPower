@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+/**
+ * @author Administrator
+ */
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -34,10 +37,6 @@ public class ResponseData<T> implements Serializable {
     }
 
     public boolean isStatus() {
-        return status;
-    }
-
-    public boolean isSuccess() {
         return status;
     }
 

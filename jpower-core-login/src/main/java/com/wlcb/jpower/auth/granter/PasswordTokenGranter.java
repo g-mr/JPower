@@ -2,14 +2,11 @@ package com.wlcb.jpower.auth.granter;
 
 import com.wlcb.jpower.cache.UserCache;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
-import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.Fc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
 
 
 /**
@@ -22,8 +19,6 @@ public class PasswordTokenGranter implements TokenGranter {
 
 	public static final String GRANT_TYPE = "password";
 
-	@Resource
-	private UserClient client;
 	@Autowired(required = false)
 	private AuthUserInfo authUserInfo;
 

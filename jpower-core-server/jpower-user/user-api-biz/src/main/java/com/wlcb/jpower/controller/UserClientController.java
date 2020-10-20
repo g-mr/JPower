@@ -1,18 +1,11 @@
 package com.wlcb.jpower.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
-import com.wlcb.jpower.dbs.entity.TbCoreUserRole;
 import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.base.vo.ResponseData;
-import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
-import com.wlcb.jpower.module.common.utils.SecureUtil;
-import com.wlcb.jpower.module.mp.support.Condition;
-import com.wlcb.jpower.module.tenant.TenantConstant;
 import com.wlcb.jpower.service.CoreUserRoleService;
 import com.wlcb.jpower.service.CoreUserService;
-import com.wlcb.jpower.vo.UserVo;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -36,25 +29,18 @@ public class UserClientController implements UserClient {
     private CoreUserService coreUserService;
     private CoreUserRoleService coreUserRoleService;
 
-    @ApiOperation(value = "通过账号密码查询用户")
+    @ApiOperation(value = "通过账号查询用户")
     @Override
     @GetMapping("/queryUserByLoginId")
     public ResponseData<TbCoreUser> queryUserByLoginId(@RequestParam String loginId, @RequestParam String tenantCode){
-        LambdaQueryWrapper<TbCoreUser> queryWrapper = Condition.<TbCoreUser>getQueryWrapper()
-                .lambda().eq(TbCoreUser::getLoginId,loginId);
-        if (SecureUtil.isRoot()){
-            queryWrapper.eq(TbCoreUser::getTenantCode,Fc.isBlank(tenantCode)? TenantConstant.DEFAULT_TENANT_CODE :tenantCode);
-        }
-        return ReturnJsonUtil.ok("查询成功",coreUserService.getOne(queryWrapper));
+        return ReturnJsonUtil.ok("查询成功",coreUserService.selectUserLoginId(loginId,tenantCode));
     }
 
     @ApiOperation(value = "通过用户ID查询所有角色ID")
     @Override
     @GetMapping("/getRoleIdsByUserId")
     public ResponseData<List<String>> getRoleIds(@RequestParam String userId){
-        List<String> list = coreUserRoleService.listObjs(Condition.<TbCoreUserRole>getQueryWrapper()
-                .lambda().select(TbCoreUserRole::getRoleId).eq(TbCoreUserRole::getUserId,userId), Fc::toStr);
-        return ReturnJsonUtil.ok("查询成功",list);
+        return ReturnJsonUtil.ok("查询成功",coreUserRoleService.queryRoleIds(userId));
     }
 
     @ApiOperation(value = "更新用户登陆信息")
@@ -68,19 +54,14 @@ public class UserClientController implements UserClient {
     @Override
     @GetMapping("/queryUserByCode")
     public ResponseData<TbCoreUser> queryUserByCode(@RequestParam String otherCode, @RequestParam String tenantCode){
-        LambdaQueryWrapper<TbCoreUser> queryWrapper = Condition.<TbCoreUser>getQueryWrapper()
-                .lambda().eq(TbCoreUser::getOtherCode,otherCode);
-        if (SecureUtil.isRoot()){
-            queryWrapper.eq(TbCoreUser::getTenantCode,Fc.isBlank(tenantCode)? TenantConstant.DEFAULT_TENANT_CODE :tenantCode);
-        }
-        return ReturnJsonUtil.ok("查询成功",coreUserService.getOne(queryWrapper));
+        return ReturnJsonUtil.ok("查询成功",coreUserService.selectUserByOtherCode(otherCode,tenantCode));
     }
 
     @ApiOperation("查询用户详情")
     @Override
     @GetMapping(value = "/get")
-    public ResponseData<UserVo> get(@RequestParam String id){
-        UserVo user = coreUserService.selectUserById(id);
+    public ResponseData<TbCoreUser> get(@RequestParam String id){
+        TbCoreUser user = coreUserService.selectUserById(id);
         return ReturnJsonUtil.ok("查询成功", user);
     }
 

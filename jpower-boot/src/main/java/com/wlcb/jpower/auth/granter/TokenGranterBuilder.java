@@ -1,16 +1,14 @@
 package com.wlcb.jpower.auth.granter;
 
 import com.wlcb.jpower.auth.utils.TokenUtil;
+import com.wlcb.jpower.cache.UserCache;
 import com.wlcb.jpower.dbs.dao.TbCoreUserDao;
-import com.wlcb.jpower.dbs.dao.TbCoreUserRoleDao;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
-import com.wlcb.jpower.dbs.entity.TbCoreUserRole;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SpringUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
-import com.wlcb.jpower.module.mp.support.Condition;
 import lombok.AllArgsConstructor;
 
 import java.util.Date;
@@ -34,12 +32,9 @@ public class TokenGranterBuilder {
     private static Map<String, TokenGranter> granterPool = new ConcurrentHashMap<>();
 
     private static TbCoreUserDao coreUserDao;
-    private static TbCoreUserRoleDao coreUserRoleDao;
 
     static {
         coreUserDao = SpringUtil.getBean(TbCoreUserDao.class);
-        coreUserRoleDao = SpringUtil.getBean(TbCoreUserRoleDao.class);
-
 
         granterPool.put(PasswordTokenGranter.GRANT_TYPE, SpringUtil.getBean(PasswordTokenGranter.class));
         granterPool.put(CaptchaTokenGranter.GRANT_TYPE, SpringUtil.getBean(CaptchaTokenGranter.class));
@@ -72,8 +67,7 @@ public class TokenGranterBuilder {
                 throw new BusinessException(TokenUtil.USER_NOT_ACTIVATION);
             }
 
-            List<String> list  = coreUserRoleDao.listObjs(Condition.<TbCoreUserRole>getQueryWrapper()
-                    .lambda().select(TbCoreUserRole::getRoleId).eq(TbCoreUserRole::getUserId,result.getId()),Fc::toStr);
+            List<String> list  = UserCache.getRoleIds(result.getId());
             userInfo = new UserInfo();
             userInfo.setUserId(result.getId());
             userInfo.setIsSysUser(0);

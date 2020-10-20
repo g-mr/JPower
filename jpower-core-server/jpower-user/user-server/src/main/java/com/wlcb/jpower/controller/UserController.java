@@ -20,6 +20,7 @@ import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.CoreUserRoleService;
 import com.wlcb.jpower.service.CoreUserService;
 import com.wlcb.jpower.vo.UserVo;
+import com.wlcb.jpower.wrapper.UserWrapper;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -64,8 +65,8 @@ public class UserController extends BaseController {
     public ResponseData<UserVo> getById(@ApiParam(value = "主键",required = true) @RequestParam @NotBlank(message = "主键不可为空") String id){
         JpowerAssert.notEmpty(id, JpowerError.Arg,"id不可为空");
 
-        UserVo user = coreUserService.selectUserById(id);
-        return ReturnJsonUtil.ok("查询成功", user);
+        TbCoreUser user = coreUserService.selectUserById(id);
+        return ReturnJsonUtil.ok("查询成功", UserWrapper.builder().build().entityVO(user));
     }
 
     @ApiOperation(value = "新增",notes = "主键不用传")
@@ -95,6 +96,7 @@ public class UserController extends BaseController {
 
         coreUser.setPassword(DigestUtil.encrypt(MD5.parseStrToMd5U32(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD, ConstantsUtils.DEFAULT_USER_PASSWORD))));
         coreUser.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_SYSTEM.getValue());
+        CacheUtil.clear(CacheNames.USER_REDIS_CACHE);
         return ReturnJsonUtil.status(coreUserService.save(coreUser));
     }
 
@@ -108,9 +110,10 @@ public class UserController extends BaseController {
         Boolean is = coreUserService.delete(ids);
 
         if (is){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"删除成功", true);
+            CacheUtil.clear(CacheNames.USER_REDIS_CACHE);
+            return ReturnJsonUtil.ok("删除成功");
         }else {
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"删除失败", false);
+            return ReturnJsonUtil.fail("删除失败");
         }
     }
 
@@ -150,6 +153,7 @@ public class UserController extends BaseController {
         }
 
         coreUser.setPassword(null);
+        CacheUtil.clear(CacheNames.USER_REDIS_CACHE);
         return ReturnJsonUtil.status(coreUserService.update(coreUser));
     }
 
@@ -164,6 +168,7 @@ public class UserController extends BaseController {
         Boolean is = coreUserService.updateUserPassword(ids,pass);
 
         if (is){
+            CacheUtil.clear(CacheNames.USER_REDIS_CACHE);
             return ReturnJsonUtil.ok(ids.split(",").length+"位用户密码重置成功");
         }else {
             return ReturnJsonUtil.fail("重置失败");
@@ -172,7 +177,8 @@ public class UserController extends BaseController {
 
     @ApiOperation(value = "批量导入用户")
     @PostMapping(value = "/importUser",produces="application/json")
-    public ResponseData importUser(MultipartFile file,Integer isCover){
+    public ResponseData importUser(@ApiParam(value = "Excel文件",required = true) MultipartFile file,
+                                   @ApiParam(value = "是否覆盖数据 1是 0否",required = false) @RequestParam(required = false,defaultValue = "0") Integer isCover){
 
         JpowerAssert.notTrue(file == null || file.isEmpty(),JpowerError.Arg,"文件不可为空");
 
@@ -190,7 +196,7 @@ public class UserController extends BaseController {
                     CacheUtil.clear(CacheNames.USER_REDIS_CACHE);
                     return ReturnJsonUtil.ok("新增成功");
                 }else {
-                    return ReturnJsonUtil.fail("新增失败");
+                    return ReturnJsonUtil.fail("新增失败,请检查文件数据");
                 }
             }
 
@@ -252,6 +258,8 @@ public class UserController extends BaseController {
 
         JpowerAssert.notEmpty(userId, JpowerError.Arg,"用户ID不可为空");
 
+        CacheUtil.clear(CacheNames.USER_REDIS_CACHE);
+
         List<String> userRoleList = coreUserRoleService.listObjs(Condition.<TbCoreUserRole>getQueryWrapper().lambda().select(TbCoreUserRole::getRoleId).eq(TbCoreUserRole::getUserId,userId),Fc::toStr);
         return ReturnJsonUtil.ok("查询成功",userRoleList);
     }
@@ -291,6 +299,7 @@ public class UserController extends BaseController {
         if (Fc.isNull(user) || !Fc.equals(user.getPassword(),DigestUtil.encrypt(oldPw))){
             return ReturnJsonUtil.fail("原密码错误");
         }
+        CacheUtil.clear(CacheNames.USER_REDIS_CACHE);
         return ReturnJsonUtil.status(coreUserService.updateUserPassword(user.getId(),DigestUtil.encrypt(newPw)));
     }
 

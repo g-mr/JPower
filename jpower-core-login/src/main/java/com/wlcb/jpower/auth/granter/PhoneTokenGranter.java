@@ -1,8 +1,8 @@
 package com.wlcb.jpower.auth.granter;
 
 import com.wlcb.jpower.auth.utils.TokenUtil;
+import com.wlcb.jpower.cache.UserCache;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
-import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.cache.CacheNames;
@@ -13,8 +13,6 @@ import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.tenant.TenantConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
 
 
 /**
@@ -31,8 +29,6 @@ public class PhoneTokenGranter implements TokenGranter {
 
     @Autowired
     private RedisUtil redisUtils;
-    @Resource
-    private UserClient userClient;
     @Autowired(required = false)
     private AuthUserInfo authUserInfo;
 
@@ -54,7 +50,7 @@ public class PhoneTokenGranter implements TokenGranter {
             if (!Fc.isNull(authUserInfo)){
                 return authUserInfo.getPhoneUserInfo(tokenParameter);
             }else {
-                TbCoreUser result = userClient.queryUserByPhone(phone,tenantCode).getData();
+                TbCoreUser result = UserCache.getUserByPhone(phone,tenantCode);
                 return TokenGranterBuilder.toUserInfo(result);
             }
         }

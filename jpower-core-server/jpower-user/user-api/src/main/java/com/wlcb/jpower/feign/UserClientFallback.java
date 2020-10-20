@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
-import com.wlcb.jpower.vo.UserVo;
 import feign.hystrix.FallbackFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -47,7 +46,7 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
             }
 
             @Override
-            public ResponseData<UserVo> get(String id) {
+            public ResponseData<TbCoreUser> get(String id) {
                 return ReturnJsonUtil.fail("查询失败");
             }
 

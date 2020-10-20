@@ -6,9 +6,9 @@ import com.wlcb.jpower.auth.AuthInfo;
 import com.wlcb.jpower.auth.granter.TokenGranter;
 import com.wlcb.jpower.auth.granter.TokenGranterBuilder;
 import com.wlcb.jpower.auth.utils.TokenUtil;
+import com.wlcb.jpower.cache.UserCache;
 import com.wlcb.jpower.config.system.SystemCache;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
-import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
@@ -42,7 +42,6 @@ import java.util.concurrent.TimeUnit;
 @AllArgsConstructor
 public class LoginController extends BaseController {
 
-    private UserClient userClient;
     private RedisUtil redisUtil;
 
     @ApiOperation(value = "用户登录",notes = "Authorization（客户端识别码）：由clientCode+\":\"+clientSecret组成字符串后用base64编码后获得值，再由Basic +base64编码后的值组成客户端识别码； <br/>" +
@@ -135,7 +134,7 @@ public class LoginController extends BaseController {
             return ReturnJsonUtil.fail("该验证码已经发送，请一分钟后重试");
         }
 
-        TbCoreUser user = userClient.queryUserByPhone(phone,tenantCode).getData();
+        TbCoreUser user = UserCache.getUserByPhone(phone,tenantCode);
 
         if (Fc.isNull(user)){
             //用户空则返回

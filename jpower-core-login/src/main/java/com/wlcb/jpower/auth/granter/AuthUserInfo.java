@@ -2,11 +2,9 @@ package com.wlcb.jpower.auth.granter;
 
 import com.wlcb.jpower.cache.UserCache;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
-import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.SpringUtil;
 import com.wlcb.jpower.module.tenant.TenantConstant;
 import org.springframework.context.annotation.Configuration;
 
@@ -55,7 +53,7 @@ public interface AuthUserInfo {
         String otherCode = tokenParameter.getStr("otherCode");
         String tenantCode = tokenParameter.getStr("tenantCode");
 
-        TbCoreUser result = SpringUtil.getBean(UserClient.class).queryUserByCode(otherCode,tenantCode).getData();
+        TbCoreUser result = UserCache.getUserByCode(otherCode,tenantCode);
         return TokenGranterBuilder.toUserInfo(result);
     }
 
@@ -68,7 +66,7 @@ public interface AuthUserInfo {
      * @return UserInfo 只需要实现获取UserInfo即可，token的刷新不用去管
      */
     default UserInfo getRefreshUserInfo(String userType,String userId){
-        TbCoreUser result = SpringUtil.getBean(UserClient.class).get(userId).getData();
+        TbCoreUser result = UserCache.getById(userId);
         return TokenGranterBuilder.toUserInfo(result);
     }
 
@@ -82,7 +80,7 @@ public interface AuthUserInfo {
     default UserInfo getPhoneUserInfo(ChainMap tokenParameter){
         String phone = tokenParameter.getStr("phone");
         String tenantCode = tokenParameter.getStr(TenantConstant.TENANT_CODE);
-        TbCoreUser result = SpringUtil.getBean(UserClient.class).queryUserByPhone(phone,tenantCode).getData();
+        TbCoreUser result = UserCache.getUserByPhone(phone,tenantCode);
         return TokenGranterBuilder.toUserInfo(result);
     }
 

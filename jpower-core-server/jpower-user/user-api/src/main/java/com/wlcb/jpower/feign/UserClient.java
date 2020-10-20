@@ -3,7 +3,6 @@ package com.wlcb.jpower.feign;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.utils.constants.AppConstant;
-import com.wlcb.jpower.vo.UserVo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -35,7 +34,7 @@ public interface UserClient {
     ResponseData<TbCoreUser> queryUserByCode(@RequestParam String otherCode, @RequestParam String tenantCode);
 
     @GetMapping("/get")
-    ResponseData<UserVo> get(@RequestParam String id);
+    ResponseData<TbCoreUser> get(@RequestParam String id);
 
     @GetMapping("/queryUserByPhone")
     ResponseData<TbCoreUser> queryUserByPhone(@RequestParam String phone,@RequestParam String tenantCode);

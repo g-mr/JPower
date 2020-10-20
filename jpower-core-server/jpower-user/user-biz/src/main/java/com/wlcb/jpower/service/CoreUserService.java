@@ -65,7 +65,7 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
      * @param id 用户id
      * @return com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser
      */
-    UserVo selectUserById(String id);
+    TbCoreUser selectUserById(String id);
 
     /**
      * @author 郭丁志
@@ -106,14 +106,11 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
     TbCoreUser selectByPhone(String phone,String tenantCode);
 
     /**
-     * @Author 郭丁志
-     * @Description //TODO 通过用户名和ID查询用户信息
-     * @Date 10:53 2020-07-03
-     * @Param [id, username]
-     * @return com.wlcb.jpower.module.dbs.entity.user.TblUser
-     **/
-    TbCoreUser selectByUserNameAndId(String id, String username);
-
+     * @author 郭丁志
+     * @Description //TODO 更新用户登陆信息
+     * @date 0:02 2020/10/21 0021
+     * @param user
+     */
     Boolean updateLoginInfo(TbCoreUser user);
 
     /**
@@ -121,8 +118,15 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
      * @Description //TODO 查询用户列表
      * @Date 14:49 2020-08-20
      * @Param [coreUser, orgCode]
-     * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser>
      **/
     List<UserVo> list(TbCoreUser coreUser);
 
+    /**
+     * @author 郭丁志
+     * @Description //TODO 通过第三方验证码查询用户
+     * @date 0:08 2020/10/21 0021
+     * @param otherCode
+     * @param tenantCode
+     */
+    TbCoreUser selectUserByOtherCode(String otherCode, String tenantCode);
 }

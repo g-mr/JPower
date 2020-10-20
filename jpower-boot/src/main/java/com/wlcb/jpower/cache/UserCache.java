@@ -1,13 +1,15 @@
 package com.wlcb.jpower.cache;
 
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
-import com.wlcb.jpower.feign.UserClient;
-import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.DigestUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SpringUtil;
+import com.wlcb.jpower.service.CoreUserRoleService;
+import com.wlcb.jpower.service.CoreUserService;
+import com.wlcb.jpower.service.impl.CoreUserRoleServiceImpl;
+import com.wlcb.jpower.service.impl.CoreUserServiceImpl;
 
 import java.util.List;
 
@@ -19,23 +21,25 @@ import java.util.List;
  */
 public class UserCache {
 
-    private static UserClient userClient;
+    private static CoreUserService userService;
+    private static CoreUserRoleService userRoleService;
 
     static {
-        userClient = SpringUtil.getBean(UserClient.class);
+        userService = SpringUtil.getBean(CoreUserServiceImpl.class);
+        userRoleService = SpringUtil.getBean(CoreUserRoleServiceImpl.class);
     }
 
     public static TbCoreUser getUserByPhone(String telephone, String tenantCode) {
         return CacheUtil.get(CacheNames.USER_REDIS_CACHE,CacheNames.USER_PHPNE_KEY,telephone,() -> {
-            ResponseData<TbCoreUser> responseData = userClient.queryUserByPhone(telephone,tenantCode);
-            return responseData.getData();
+            TbCoreUser user = userService.selectByPhone(telephone,tenantCode);
+            return user;
         });
     }
 
     public static TbCoreUser getUserByLoginId(String loginId, String tenantCode) {
         return CacheUtil.get(CacheNames.USER_REDIS_CACHE,CacheNames.USER_LOGINID_KEY,loginId,() -> {
-            ResponseData<TbCoreUser> responseData = userClient.queryUserByLoginId(loginId,tenantCode);
-            return responseData.getData();
+            TbCoreUser user = userService.selectUserLoginId(loginId,tenantCode);
+            return user;
         });
     }
 
@@ -49,22 +53,22 @@ public class UserCache {
 
     public static List<String> getRoleIds(String userId) {
         return CacheUtil.get(CacheNames.USER_REDIS_CACHE,CacheNames.USER_ROLEID_USERID_KEY,userId,() -> {
-            ResponseData<List<String>> responseData = userClient.getRoleIds(userId);
-            return responseData.getData();
+            List<String> list = userRoleService.queryRoleIds(userId);
+            return list;
         });
     }
 
     public static TbCoreUser getUserByCode(String otherCode, String tenantCode) {
         return CacheUtil.get(CacheNames.USER_REDIS_CACHE,CacheNames.USER_OTHERCODE_KEY,otherCode,() -> {
-            ResponseData<TbCoreUser> responseData = userClient.queryUserByCode(otherCode,tenantCode);
-            return responseData.getData();
+            TbCoreUser user = userService.selectUserByOtherCode(otherCode,tenantCode);
+            return user;
         });
     }
 
     public static TbCoreUser getById(String userId) {
         return CacheUtil.get(CacheNames.USER_REDIS_CACHE,CacheNames.USER_OTHERCODE_KEY,userId,() -> {
-            ResponseData<TbCoreUser> responseData = userClient.get(userId);
-            return responseData.getData();
+            TbCoreUser user = userService.selectUserById(userId);
+            return user;
         });
     }
 }

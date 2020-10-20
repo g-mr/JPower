@@ -1,6 +1,7 @@
 package com.wlcb.jpower.auth.granter;
 
 import com.wlcb.jpower.auth.utils.TokenUtil;
+import com.wlcb.jpower.cache.UserCache;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.base.exception.BusinessException;
@@ -67,7 +68,7 @@ public class TokenGranterBuilder {
                 throw new BusinessException(TokenUtil.USER_NOT_ACTIVATION);
             }
 
-            List<String> list  = userClient.getRoleIds(result.getId()).getData();
+            List<String> list  = UserCache.getRoleIds(result.getId());
             userInfo = new UserInfo();
             userInfo.setUserId(result.getId());
             userInfo.setIsSysUser(0);

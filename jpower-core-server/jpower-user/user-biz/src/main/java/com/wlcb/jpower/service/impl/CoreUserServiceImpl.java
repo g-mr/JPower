@@ -64,7 +64,6 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
         return UserWrapper.builder().build().listVO(list);
     }
 
-
     @Override
     public boolean save(TbCoreUser coreUser) {
         setActivationStatus(coreUser);
@@ -115,8 +114,18 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     }
 
     @Override
-    public UserVo selectUserById(String id) {
-        return UserWrapper.builder().build().entityVO(baseMapper.selectAllById(id));
+    public TbCoreUser selectUserById(String id) {
+        return coreUserDao.getBaseMapper().selectAllById(id);
+    }
+
+    @Override
+    public TbCoreUser selectUserByOtherCode(String otherCode, String tenantCode) {
+        LambdaQueryWrapper<TbCoreUser> queryWrapper = Condition.<TbCoreUser>getQueryWrapper()
+                .lambda().eq(TbCoreUser::getOtherCode,otherCode);
+        if (SecureUtil.isRoot()){
+            queryWrapper.eq(TbCoreUser::getTenantCode,Fc.isBlank(tenantCode)? TenantConstant.DEFAULT_TENANT_CODE :tenantCode);
+        }
+        return coreUserDao.getOne(queryWrapper);
     }
 
     @Override
@@ -126,37 +135,16 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
 
     /**
      * @author 郭丁志
-     * @Description //TODO 去除重复以及正确验证，这段写的真恶心
+     * @Description //TODO 去除重复以及正确验证
      * @date 1:46 2020/10/20 0020
      */
     private <T> Predicate<T> filterUser(Function<? super T, TbCoreUser> keyExtractor) {
         Map<Object, Boolean> loginIdMap = new ConcurrentHashMap();
         Map<Object, Boolean> phoneMap = new ConcurrentHashMap();
 
-        return (object) ->{
-
-            String loginId = keyExtractor.apply(object).getLoginId();
-            String phone = keyExtractor.apply(object).getTelephone();
-            String email = keyExtractor.apply(object).getEmail();
-            Integer idType = keyExtractor.apply(object).getIdType();
-            String idNo = keyExtractor.apply(object).getIdNo();
-
-            if (Fc.isBlank(loginId)){
-                return Boolean.FALSE;
-            }
-            if (Fc.isNotBlank(phone) && !StrUtil.isPhone(phone)){
-                return Boolean.FALSE;
-            }
-            if (Fc.isNotBlank(email) && !StrUtil.isEmail(email)){
-                return Boolean.FALSE;
-            }
-            if (Fc.isNotBlank(idNo) && ConstantsEnum.ID_TYPE.ID_CARD.getValue().equals(idType) && !StrUtil.cardCodeVerifySimple(idNo)){
-                return Boolean.FALSE;
-            }
-
-            return Fc.isNull(loginIdMap.putIfAbsent(loginId, Boolean.TRUE))&&
-                    Fc.isNotBlank(phone) ? Fc.isNull(phoneMap.putIfAbsent(phone, Boolean.TRUE)) : Boolean.TRUE;
-        };
+        return object ->
+            Fc.isNull(loginIdMap.putIfAbsent(keyExtractor.apply(object).getLoginId(), Boolean.TRUE))&&
+                    Fc.isNotBlank(keyExtractor.apply(object).getTelephone()) ? Fc.isNull(phoneMap.putIfAbsent(keyExtractor.apply(object).getTelephone(), Boolean.TRUE)) : Boolean.TRUE;
     }
 
     @Override
@@ -167,7 +155,6 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
         String password = DigestUtil.encrypt(MD5.parseStrToMd5U32(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD,ConstantsUtils.DEFAULT_USER_PASSWORD)));
 
         for (TbCoreUser coreUser : list) {
-
             if (Fc.isBlank(coreUser.getLoginId())){
                 continue;
             }
@@ -259,14 +246,6 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
             queryWrapper.eq(TbCoreUser::getTenantCode,tenantCode);
         }
         return coreUserDao.getOne(queryWrapper);
-    }
-
-    @Override
-    public TbCoreUser selectByUserNameAndId(String id, String username) {
-        LambdaQueryWrapper<TbCoreUser> wrapper = new QueryWrapper<TbCoreUser>().lambda();
-        wrapper.eq(TbCoreUser::getLoginId,username);
-        wrapper.eq(TbCoreUser::getId,id);
-        return coreUserDao.getOne(wrapper);
     }
 
     @Override
