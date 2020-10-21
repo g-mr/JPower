@@ -1,4 +1,4 @@
-package com.wlcb.jpower.config.system;
+package com.wlcb.jpower.cache;
 
 import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
 import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
@@ -78,7 +78,7 @@ public class SystemCache {
 
     /**
      * @author 郭丁志
-     * @Description //TODO
+     * @Description //TODO 通过角色ID获取URL
      * @date 23:51 2020/10/17 0017
      * @param roleIds 角色ID
      */

@@ -50,6 +50,7 @@ public interface StringPool {
     String RIGHT_CHEV		= ">";
     String SEMICOLON		= ";";
     String SINGLE_QUOTE		= "'";
+    String SINGLE_QUOTE_CONCAT		= "','";
     String BACKTICK			= "`";
     String SPACE			= " ";
     String TILDA			= "~";

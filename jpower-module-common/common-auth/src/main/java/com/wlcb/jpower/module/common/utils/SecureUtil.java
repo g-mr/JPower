@@ -186,8 +186,7 @@ public class SecureUtil {
      * @return userName
      */
     public static List<String> getUserRole() {
-        UserInfo user = getUser();
-        return (null == user) ? new ArrayList<>() : user.getRoleIds();
+        return getUserRole(WebUtil.getRequest());
     }
 
     /**
@@ -198,7 +197,12 @@ public class SecureUtil {
      */
     public static List<String> getUserRole(HttpServletRequest request) {
         UserInfo user = getUser(request);
-        return (null == user) ? new ArrayList<>() : user.getRoleIds();
+        if (Fc.isNull(user)){
+            List<String> list = new ArrayList<>();
+            list.add(RoleConstant.ANONYMOUS_ID);
+            return list;
+        }
+        return user.getRoleIds();
     }
 
     /**

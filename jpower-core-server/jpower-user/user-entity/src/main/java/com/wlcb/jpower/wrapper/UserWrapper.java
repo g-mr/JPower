@@ -1,6 +1,6 @@
 package com.wlcb.jpower.wrapper;
 
-import com.wlcb.jpower.config.system.SystemCache;
+import com.wlcb.jpower.cache.SystemCache;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.module.common.utils.BeanUtil;
 import com.wlcb.jpower.module.mp.support.BaseEntityWrapper;

@@ -2,7 +2,7 @@ package com.wlcb.jpower.dbs.entity.org;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.wlcb.jpower.module.base.annotation.Dict;
-import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
+import com.wlcb.jpower.module.tenant.entity.TenantEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -14,7 +14,7 @@ import lombok.Data;
  * @Version 1.0
  */
 @Data
-public class TbCoreOrg extends BaseEntity{
+public class TbCoreOrg extends TenantEntity {
 
     private static final long serialVersionUID = 8829495593714085987L;
 

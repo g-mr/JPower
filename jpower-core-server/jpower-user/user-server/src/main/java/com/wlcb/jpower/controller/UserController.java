@@ -1,7 +1,7 @@
 package com.wlcb.jpower.controller;
 
 import com.github.pagehelper.PageInfo;
-import com.wlcb.jpower.config.param.ParamConfig;
+import com.wlcb.jpower.cache.param.ParamConfig;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.dbs.entity.TbCoreUserRole;
 import com.wlcb.jpower.module.base.annotation.Log;

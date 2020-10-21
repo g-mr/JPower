@@ -1,4 +1,4 @@
-package com.wlcb.jpower.config.param;
+package com.wlcb.jpower.cache.param;
 
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.utils.CacheUtil;

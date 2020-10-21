@@ -1,7 +1,7 @@
 package com.wlcb.jpower.auth.utils;
 
 import com.wlcb.jpower.auth.AuthInfo;
-import com.wlcb.jpower.config.system.SystemCache;
+import com.wlcb.jpower.cache.SystemCache;
 import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
 import com.wlcb.jpower.module.common.auth.ClientDetails;
 import com.wlcb.jpower.module.common.auth.TokenInfo;

@@ -4,12 +4,11 @@ import com.wlcb.jpower.dbs.entity.function.TbCoreFunction;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
+import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.node.ForestNodeMerger;
 import com.wlcb.jpower.module.common.node.Node;
-import com.wlcb.jpower.module.common.utils.BeanUtil;
-import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
+import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.service.role.CoreFunctionService;
@@ -17,7 +16,10 @@ import com.wlcb.jpower.vo.FunctionVo;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
@@ -71,9 +73,10 @@ public class FunctionController extends BaseController {
         Boolean is = coreFunctionService.add(coreFunction);
 
         if (is){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"新增成功", true);
+            CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE);
+            return ReturnJsonUtil.ok("新增成功");
         }else {
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"新增失败", false);
+            return ReturnJsonUtil.fail("新增失败");
         }
     }
 
@@ -91,9 +94,10 @@ public class FunctionController extends BaseController {
         Boolean is = coreFunctionService.delete(ids);
 
         if (is){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"删除成功", true);
+            CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE);
+            return ReturnJsonUtil.ok("删除成功");
         }else {
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"删除失败", false);
+            return ReturnJsonUtil.fail("删除失败");
         }
     }
 
@@ -113,52 +117,49 @@ public class FunctionController extends BaseController {
         Boolean is = coreFunctionService.update(coreFunction);
 
         if (is){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"修改成功", true);
+            CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE);
+            return ReturnJsonUtil.ok("修改成功");
         }else {
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"修改失败", false);
+            return ReturnJsonUtil.fail("修改失败");
         }
     }
 
-    @ApiOperation("懒加载所有功能树形结构")
-    @RequestMapping(value = "/lazyTree",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData<List<Node>> lazyTree(@ApiParam(value = "父级编码",defaultValue = JpowerConstants.TOP_CODE,required = true) @RequestParam String parentId){
-        List<Node> list = coreFunctionService.lazyTree(parentId);
+    @ApiOperation("根据角色ID查询所有的权限ID")
+    @RequestMapping(value = "/queryUrlIdByRole",method = {RequestMethod.GET},produces="application/json")
+    public ResponseData<List<String>> queryUrlIdByRole(@ApiParam(value = "角色ID 多个逗号分割",required = true) @RequestParam String roleIds){
+        List<String> list = coreFunctionService.queryUrlIdByRole(roleIds);
         return ReturnJsonUtil.ok("查询成功",list);
     }
 
-    @ApiOperation("懒加载角色所有权限功能树形结构")
-    @RequestMapping(value = "/lazyTreeByRole",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData<List<Node>> lazyTreeByRole(@ApiParam(value = "父级编码",defaultValue = JpowerConstants.TOP_CODE,required = true) @RequestParam String parentId,
-                                                   @ApiParam(value = "角色ID 多个逗号分割",required = true) @RequestParam String roleIds){
-        JpowerAssert.notEmpty(roleIds, JpowerError.Arg, "角色id不可为空");
+    @ApiOperation("懒加载登录用户所有功能树形结构")
+    @RequestMapping(value = "/lazyTree",method = {RequestMethod.GET},produces="application/json")
+    public ResponseData<List<Node>> lazyTree(@ApiParam(value = "父级编码",defaultValue = JpowerConstants.TOP_CODE,required = true) @RequestParam(defaultValue = JpowerConstants.TOP_CODE) String parentId){
+        List<String> roleIds = SecureUtil.getUserRole();
         List<Node> list = coreFunctionService.lazyTreeByRole(parentId,roleIds);
         return ReturnJsonUtil.ok("查询成功",list);
     }
 
-    @ApiOperation("根据角色ID查询所有菜单树形结构")
+    @ApiOperation("查询登录用户所有菜单树形结构")
     @RequestMapping(value = "/listMenuTree",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData<List<FunctionVo>> listMenuTree(@ApiParam(value = "角色ID 多个逗号分割",required = true) @RequestParam String roleIds){
-        JpowerAssert.notEmpty(roleIds, JpowerError.Arg, "角色id不可为空");
+    public ResponseData<List<FunctionVo>> listMenuTree(){
+        List<String> roleIds = SecureUtil.getUserRole();
         List<TbCoreFunction> list = coreFunctionService.listMenuByRoleId(roleIds);
         List<FunctionVo> collect = list.stream().map(function -> BeanUtil.copy(function, FunctionVo.class)).collect(Collectors.toList());
         return ReturnJsonUtil.ok("查询成功", ForestNodeMerger.merge(collect));
     }
 
-    @ApiOperation("根据权限查询一个菜单下的所有按钮")
+    @ApiOperation("根据当前登录用户查询一个菜单下的所有按钮")
     @RequestMapping(value = "/listBut",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData<List<TbCoreFunction>> listBut(@ApiParam(value = "角色ID 多个逗号分割",required = true) @RequestParam String roleIds,
-                                @ApiParam(value = "菜单Id",required = true) @RequestParam String id){
-        JpowerAssert.notEmpty(roleIds, JpowerError.Arg, "角色id不可为空");
+    public ResponseData<List<TbCoreFunction>> listBut(@ApiParam(value = "菜单Id",required = true) @RequestParam String id){
         JpowerAssert.notEmpty(id, JpowerError.Arg, "菜单id不可为空");
-        List<TbCoreFunction> list = coreFunctionService.listBtnByRoleIdAndPcode(roleIds,id);
+        List<TbCoreFunction> list = coreFunctionService.listBtnByRoleIdAndPcode(SecureUtil.getUserRole(),id);
         return ReturnJsonUtil.ok("查询成功", list);
     }
 
-    @ApiOperation("根据角色ID查询所有功能的树形结构")
+    @ApiOperation("查询登录用户所有功能的树形列表")
     @RequestMapping(value = "/listTree",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData<List<FunctionVo>> listTree(@ApiParam(value = "角色ID 多个逗号分割",required = true) @RequestParam String roleIds){
-        JpowerAssert.notEmpty(roleIds, JpowerError.Arg, "角色id不可为空");
-        List<FunctionVo> list = coreFunctionService.listTreeByRoleId(roleIds);
+    public ResponseData<List<FunctionVo>> listTree(){
+        List<FunctionVo> list = coreFunctionService.listTreeByRoleId(SecureUtil.getUserRole());
         return ReturnJsonUtil.ok("查询成功", list);
     }
 

@@ -7,7 +7,7 @@ import com.wlcb.jpower.auth.granter.TokenGranter;
 import com.wlcb.jpower.auth.granter.TokenGranterBuilder;
 import com.wlcb.jpower.auth.utils.TokenUtil;
 import com.wlcb.jpower.cache.UserCache;
-import com.wlcb.jpower.config.system.SystemCache;
+import com.wlcb.jpower.cache.SystemCache;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;

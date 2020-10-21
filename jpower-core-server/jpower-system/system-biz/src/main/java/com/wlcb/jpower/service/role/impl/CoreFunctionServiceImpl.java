@@ -15,6 +15,7 @@ import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.role.CoreFunctionService;
 import com.wlcb.jpower.vo.FunctionVo;
@@ -85,13 +86,16 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     }
 
     @Override
-    public List<Node> lazyTree(String parentId) {
-        return coreFunctionDao.tree(Condition.getTreeWrapper(TbCoreFunction::getId,TbCoreFunction::getParentId,TbCoreFunction::getFunctionName,TbCoreFunction::getUrl).lazy(parentId).lambda().orderByAsc(TbCoreFunction::getSort));
+    public List<String> queryUrlIdByRole(String roleIds) {
+        return coreRoleFunctionDao.listObjs(Condition.<TbCoreRoleFunction>getQueryWrapper()
+                .lambda()
+                .select(TbCoreRoleFunction::getFunctionId)
+                .in(TbCoreRoleFunction::getRoleId,Fc.toStrList(roleIds)),Fc::toStr);
     }
 
     @Override
-    public List<Node> lazyTreeByRole(String parentId, String roleIds) {
-        String inSql = "'"+roleIds.replaceAll(",","','")+"'";
+    public List<Node> lazyTreeByRole(String parentId, List<String> roleIds) {
+        String inSql = StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE);
         return coreFunctionDao.tree(Condition.getTreeWrapper(TbCoreFunction::getId,TbCoreFunction::getParentId,TbCoreFunction::getFunctionName,TbCoreFunction::getUrl)
                 .lazy(parentId).lambda()
                 .inSql(TbCoreFunction::getId, StringUtil.format(sql,inSql))
@@ -108,16 +112,16 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     }
 
     @Override
-    public List<TbCoreFunction> listMenuByRoleId(String roleIds) {
-        String inSql = "'"+roleIds.replaceAll(",","','")+"'";
+    public List<TbCoreFunction> listMenuByRoleId(List<String> roleIds) {
+        String inSql = StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE);
         return coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                 .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.Y.getValue())
                 .inSql(TbCoreFunction::getId,StringUtil.format(sql,inSql)).orderByAsc(TbCoreFunction::getSort));
     }
 
     @Override
-    public List<TbCoreFunction> listBtnByRoleIdAndPcode(String roleIds, String id) {
-        String inSql = "'"+roleIds.replaceAll(",","','")+"'";
+    public List<TbCoreFunction> listBtnByRoleIdAndPcode(List<String> roleIds, String id) {
+        String inSql = StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE);
         return coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                 .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.N.getValue())
                 .and(consumer -> consumer.eq(TbCoreFunction::getParentId, id).or(c
@@ -126,8 +130,8 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     }
 
     @Override
-    public List<FunctionVo> listTreeByRoleId(String roleIds) {
-        String inSql = "'"+roleIds.replaceAll(",","','")+"'";
+    public List<FunctionVo> listTreeByRoleId(List<String> roleIds) {
+        String inSql = StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE);
         return coreFunctionDao.listTree(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                 .inSql(TbCoreFunction::getId, StringUtil.format(sql, inSql)).orderByAsc(TbCoreFunction::getSort),FunctionVo.class);
     }

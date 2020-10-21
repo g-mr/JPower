@@ -1,4 +1,4 @@
-package com.wlcb.jpower.config.dict;
+package com.wlcb.jpower.cache.dict;
 
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.utils.CacheUtil;

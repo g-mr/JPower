@@ -5,8 +5,10 @@ import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
+import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.page.PaginationContext;
+import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.mp.support.Condition;
@@ -61,6 +63,7 @@ public class ClientController extends BaseController {
 
         }
 
+        CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE);
         return ReturnJsonUtil.status(coreClientService.saveOrUpdate(coreClient));
     }
 
@@ -68,6 +71,7 @@ public class ClientController extends BaseController {
     @DeleteMapping("delete")
     public ResponseData delete(@ApiParam(value = "主键，多个逗号分割",required = true) @RequestParam String ids){
         JpowerAssert.notEmpty(ids,JpowerError.Arg,"客户端主键不可为空");
+        CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE);
         return ReturnJsonUtil.status(coreClientService.removeByIds(Fc.toStrList(ids)));
     }
 

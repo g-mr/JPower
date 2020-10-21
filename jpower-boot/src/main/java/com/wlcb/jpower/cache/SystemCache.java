@@ -1,4 +1,4 @@
-package com.wlcb.jpower.config.system;
+package com.wlcb.jpower.cache;
 
 import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
 import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;

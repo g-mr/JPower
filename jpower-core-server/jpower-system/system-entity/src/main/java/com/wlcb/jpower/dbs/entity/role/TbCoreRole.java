@@ -2,7 +2,7 @@ package com.wlcb.jpower.dbs.entity.role;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.wlcb.jpower.module.base.annotation.Dict;
-import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
+import com.wlcb.jpower.module.tenant.entity.TenantEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -16,7 +16,7 @@ import java.io.Serializable;
  * @Version 1.0
  */
 @Data
-public class TbCoreRole extends BaseEntity implements Serializable {
+public class TbCoreRole extends TenantEntity implements Serializable {
 
     private static final long serialVersionUID = 7093626905745914312L;
 

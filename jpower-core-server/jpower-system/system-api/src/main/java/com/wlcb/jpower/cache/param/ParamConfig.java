@@ -1,4 +1,4 @@
-package com.wlcb.jpower.config.param;
+package com.wlcb.jpower.cache.param;
 
 import com.wlcb.jpower.feign.ParamsClient;
 import com.wlcb.jpower.module.base.vo.ResponseData;

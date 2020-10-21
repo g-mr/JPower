@@ -9,6 +9,7 @@ import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.utils.BeanUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
+import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.mp.support.Condition;
@@ -62,22 +63,16 @@ public class RoleController extends BaseController {
             coreRole.setParentId(JpowerConstants.TOP_CODE);
         }
 
-        if (coreRole.getIsSysRole() == null){
-            coreRole.setIsSysRole(1);
+        if (Fc.isNull(coreRole.getIsSysRole())){
+            coreRole.setIsSysRole(ConstantsEnum.YN01.N.getValue());
         }
 
         TbCoreRole role = coreRoleService.selectRoleByCode(coreRole.getCode());
         if (role != null){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该角色已存在", false);
+            return ReturnJsonUtil.busFail("该角色已存在");
         }
 
-        Boolean is = coreRoleService.add(coreRole);
-
-        if (is){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"新增成功", true);
-        }else {
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"新增失败", false);
-        }
+        return ReturnJsonUtil.status(coreRoleService.add(coreRole));
     }
 
     @ApiOperation("删除角色")
@@ -88,16 +83,12 @@ public class RoleController extends BaseController {
 
         Integer c = coreRoleService.listByPids(ids);
         if (c > 0){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该角色存在下级角色，请先删除下级角色", false);
+            return ReturnJsonUtil.busFail("该角色存在下级角色，请先删除下级角色");
         }
 
-        Boolean is = coreRoleService.removeByIds(Fc.toStrList(ids));
-
-        if (is){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"删除成功", true);
-        }else {
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"删除失败", false);
-        }
+        return ReturnJsonUtil.status(coreRoleService.removeReal(Condition.<TbCoreRole>getQueryWrapper().lambda()
+                .in(TbCoreRole::getId,Fc.toStrList(ids))
+                .eq(TbCoreRole::getIsSysRole,ConstantsEnum.YN01.N.getValue())));
     }
 
     @ApiOperation(value = "修改角色信息",notes = "主键不用传")
@@ -113,13 +104,7 @@ public class RoleController extends BaseController {
             }
         }
 
-        Boolean is = coreRoleService.update(coreRole);
-
-        if (is){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"修改成功", true);
-        }else {
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"修改失败", false);
-        }
+        return ReturnJsonUtil.status(coreRoleService.update(coreRole));
     }
 
     @ApiOperation("查询角色的权限")
@@ -129,7 +114,7 @@ public class RoleController extends BaseController {
         JpowerAssert.notEmpty(roleId, JpowerError.Arg,"角色id不可为空");
 
         List<Map<String,Object>> roleFunction = coreRolefunctionService.selectRoleFunctionByRoleId(roleId);
-        return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"查询成功", roleFunction, true);
+        return ReturnJsonUtil.ok("查询成功", roleFunction);
     }
 
     @ApiOperation("重新给角色赋权")
@@ -139,13 +124,14 @@ public class RoleController extends BaseController {
                                     @ApiParam(value = "菜单主键 多个逗号分割") @RequestParam(required = false) String functionIds){
 
         JpowerAssert.notEmpty(roleId, JpowerError.Arg,"角色id不可为空");
+        JpowerAssert.notNull(coreRoleService.getById(roleId),JpowerError.BUSINESS,"该角色不存在");
 
         Integer count = coreRolefunctionService.addRolefunctions(roleId,functionIds);
 
         if (count > 0){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"设置成功", true);
+            return ReturnJsonUtil.ok("设置成功");
         }else {
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"设置失败", false);
+            return ReturnJsonUtil.fail("设置失败");
         }
     }
 }

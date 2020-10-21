@@ -1,4 +1,4 @@
-package com.wlcb.jpower.config.dict;
+package com.wlcb.jpower.cache.dict;
 
 import com.wlcb.jpower.feign.DictClient;
 import com.wlcb.jpower.module.base.vo.ResponseData;
