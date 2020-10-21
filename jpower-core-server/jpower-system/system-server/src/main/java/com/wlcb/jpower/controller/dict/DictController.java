@@ -19,10 +19,7 @@ import com.wlcb.jpower.service.dict.CoreDictTypeService;
 import com.wlcb.jpower.vo.DictVo;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
@@ -46,8 +43,7 @@ public class DictController {
     @ApiOperation("查询所有字典类型树形结构")
     @RequestMapping(value = "/dictTypeTree",method = RequestMethod.GET,produces="application/json")
     public ResponseData<List<Node>> dictTypeTree(){
-        List<Node> list = coreDictTypeService.tree();
-        return ReturnJsonUtil.ok("查询成功",list);
+        return ReturnJsonUtil.ok("查询成功",coreDictTypeService.tree());
     }
 
     @ApiOperation(value = "新增字典类型")
@@ -62,16 +58,11 @@ public class DictController {
     @ApiOperation(value = "更新字典类型")
     @RequestMapping(value = "/update",method = RequestMethod.POST,produces="application/json")
     public ResponseData update(TbCoreDictType dictType){
-        if (Fc.isBlank(dictType.getId())){
-            JpowerAssert.notEmpty(dictType.getDictTypeCode(), JpowerError.Arg,"字典类型编号不可为空");
-            JpowerAssert.notEmpty(dictType.getDictTypeName(), JpowerError.Arg,"字典类型名称不可为空");
-        }
-
         return ReturnJsonUtil.status(coreDictTypeService.updateDictType(dictType));
     }
 
     @ApiOperation("删除字典类型")
-    @RequestMapping(value = "/deleteDictType",method = RequestMethod.DELETE,produces="application/json")
+    @DeleteMapping(value = "/deleteDictType",produces="application/json")
     public ResponseData deleteDictType(@ApiParam(value = "主键，多个逗号分割",required = true) @RequestParam String ids){
         JpowerAssert.notEmpty(ids, JpowerError.Arg,"主键不可为空");
         return ReturnJsonUtil.status(coreDictTypeService.deleteDictType(Fc.toStrList(ids)));

@@ -2,7 +2,7 @@ package com.wlcb.jpower.dbs.entity.dict;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.wlcb.jpower.module.base.annotation.Dict;
-import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
+import com.wlcb.jpower.module.tenant.entity.TenantEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -14,7 +14,7 @@ import lombok.Data;
  * @Version 1.0
  */
 @Data
-public class TbCoreDictType extends BaseEntity {
+public class TbCoreDictType extends TenantEntity {
 
     private static final long serialVersionUID = 2104502370643051282L;
 
@@ -34,6 +34,9 @@ public class TbCoreDictType extends BaseEntity {
     private Integer sortNum;
     @ApiModelProperty("父级ID")
     private String parentId;
+    @ApiModelProperty("是否树形结构 字典YN01")
+    @Dict(name = "YN01")
+    private String isTree;
 
     @ApiModelProperty("是否允许删除")
     @TableField(exist = false)

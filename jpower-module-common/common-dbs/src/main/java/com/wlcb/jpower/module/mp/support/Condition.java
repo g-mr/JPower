@@ -59,6 +59,10 @@ public class Condition<T> {
         return new TreeWrapper<T>(code,parentCode,title,value);
     }
 
+    public static <T> TreeWrapper<T> getTreeWrapper(SFunction<T, ?> code, SFunction<T, ?> parentCode, SFunction<T, ?> title, SFunction<T, ?> key , SFunction<T, ?> value)  {
+        return new TreeWrapper<T>(code,parentCode,title,key,value);
+    }
+
     public static class TreeWrapper<T> extends QueryWrapper<T> {
 
         private String code;
@@ -81,7 +85,11 @@ public class Condition<T> {
             this(code, parentCode, title, null);
         }
 
-        public TreeWrapper(SFunction<T, ?> code,SFunction<T, ?> parentCode,SFunction<T, ?> title,SFunction<T, ?> value){
+        public TreeWrapper(SFunction<T, ?> code,SFunction<T, ?> parentCode,SFunction<T, ?> title, SFunction<T, ?> value){
+            this(code, parentCode, title, null, value);
+        }
+
+        public TreeWrapper(SFunction<T, ?> code,SFunction<T, ?> parentCode,SFunction<T, ?> title,SFunction<T, ?> key,SFunction<T, ?> value){
             TableInfo tableInfo = TableInfoHelper.getTableInfo(LambdaUtils.resolve(title).getImplClass());
             this.tableName = tableInfo.getTableName();
 
@@ -100,6 +108,9 @@ public class Condition<T> {
                 }
                 if (!Fc.isNull(value) && StringUtil.equals(field.getProperty(),columnsToString(value))){
                     this.value = field.getColumn() + " AS value";
+                }
+                if (!Fc.isNull(key) && StringUtil.equals(field.getProperty(),columnsToString(key))){
+                    this.id = field.getColumn() + " AS id";
                 }
             });
 

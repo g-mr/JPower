@@ -1,5 +1,6 @@
 package com.wlcb.jpower.service.dict.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.wlcb.jpower.dbs.dao.dict.TbCoreDictTypeDao;
 import com.wlcb.jpower.dbs.dao.dict.mapper.TbCoreDictTypeMapper;
@@ -15,7 +16,7 @@ import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.dict.CoreDictService;
 import com.wlcb.jpower.service.dict.CoreDictTypeService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,20 +24,22 @@ import java.util.List;
 /**
  * @author mr.gmac
  */
+@AllArgsConstructor
 @Service("tbCoreDictTypeService")
 public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMapper, TbCoreDictType> implements CoreDictTypeService {
 
-    @Autowired
     private TbCoreDictTypeDao coreDictTypeDao;
-    @Autowired
     private CoreDictService coreDictService;
 
     @Override
     public List<Node> tree() {
-        return coreDictTypeDao.tree(Condition.getTreeWrapper(TbCoreDictType::getId,
+        LambdaQueryWrapper<TbCoreDictType> queryWrapper = Condition.getTreeWrapper(TbCoreDictType::getId,
                 TbCoreDictType::getParentId,
-                TbCoreDictType::getDictTypeName)
-                .lambda().orderByAsc(TbCoreDictType::getSortNum));
+                TbCoreDictType::getDictTypeName,
+                TbCoreDictType::getDictTypeCode,
+                TbCoreDictType::getIsTree)
+                .lambda();
+        return coreDictTypeDao.tree(queryWrapper.orderByAsc(TbCoreDictType::getSortNum));
     }
 
     @Override

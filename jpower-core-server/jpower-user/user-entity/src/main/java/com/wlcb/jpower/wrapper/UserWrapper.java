@@ -19,7 +19,7 @@ import java.util.Objects;
 @Builder
 public class UserWrapper extends BaseEntityWrapper<TbCoreUser, UserVo> {
     @Override
-    public UserVo entityVO(TbCoreUser user) {
+    protected UserVo conver(TbCoreUser user) {
         UserVo userVo = Objects.requireNonNull(BeanUtil.copy(user, UserVo.class));
         userVo.setOrgName(SystemCache.getOrgName(userVo.getOrgId()));
         return userVo;

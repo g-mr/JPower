@@ -20,7 +20,6 @@ public interface DictClient {
      * @Description //TODO 查询dictType
      * @date 16:42 2020/8/30 0030
      * @param list
-     * @return com.wlcb.jpower.module.base.vo.ResponseData<java.lang.Boolean>
      */
     @GetMapping("/dictListByType")
     ResponseData<List<Map<String,Object>>> dictListByType(@RequestParam List<String> list);

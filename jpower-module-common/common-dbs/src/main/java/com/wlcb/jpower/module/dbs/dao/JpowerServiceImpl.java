@@ -251,8 +251,8 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> ex
      * @Param [queryWrapper, mapper]
      * @return java.util.List<V>
      **/
-    public  <V> List<V> listToObjs(Wrapper<T> queryWrapper, Function<T, V> mapper) {
-        return list(queryWrapper).stream().filter(Objects::nonNull).map(mapper).collect(Collectors.toList());
+    public <V> List<V> listConver(Wrapper<T> queryWrapper, Function<T, V> function) {
+        return list(queryWrapper).stream().filter(Objects::nonNull).map(function).collect(Collectors.toList());
     }
 
     /**
@@ -264,7 +264,7 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> ex
      * @return java.util.List<V>
      **/
     public <V extends Node> List<V> listTree(Wrapper<T> queryWrapper,Class<V> clz) {
-        return ForestNodeMerger.merge(listToObjs(queryWrapper,t -> BeanUtil.copy(t, clz)));
+        return ForestNodeMerger.merge(listConver(queryWrapper,t -> BeanUtil.copy(t, clz)));
     }
 
     /**
