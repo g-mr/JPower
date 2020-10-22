@@ -7,8 +7,11 @@ import com.wlcb.jpower.dbs.dao.dict.mapper.TbCoreDictTypeMapper;
 import com.wlcb.jpower.dbs.entity.dict.TbCoreDict;
 import com.wlcb.jpower.dbs.entity.dict.TbCoreDictType;
 import com.wlcb.jpower.module.base.enums.JpowerError;
+import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
+import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.node.Node;
+import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
@@ -30,6 +33,7 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
 
     private TbCoreDictTypeDao coreDictTypeDao;
     private CoreDictService coreDictService;
+    private RedisUtil redisUtil;
 
     @Override
     public List<Node> tree() {
@@ -57,6 +61,7 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
         if (coreDictTypeDao.removeReal(Condition.<TbCoreDictType>getQueryWrapper().lambda()
                 .in(TbCoreDictType::getId,ids)
                 .eq(TbCoreDictType::getDelEnabled, ConstantsEnum.YN.Y.getValue()))){
+            redisUtil.removeMembers(CacheNames.DICT_REDIS_CODE_LIST,listCode.toArray());
             coreDictService.removeReal(Condition.<TbCoreDict>getQueryWrapper().lambda().in(TbCoreDict::getDictTypeCode,listCode));
             return true;
         }else {
@@ -70,8 +75,16 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
         dictType.setDelEnabled(Fc.isBlank(dictType.getDelEnabled())? ConstantsEnum.YN.N.getValue() :dictType.getDelEnabled());
         dictType.setLocaleCode(Fc.isBlank(dictType.getLocaleCode())? ConstantsEnum.YYZL.CHINA.getValue() :dictType.getLocaleCode());
 
-        JpowerAssert.notTrue(coreDictTypeDao.count(Condition.<TbCoreDictType>getQueryWrapper().lambda().eq(TbCoreDictType::getDictTypeCode,dictType.getDictTypeCode()))>0, JpowerError.BUSINESS,"该字典类型已存在");
-        return coreDictTypeDao.save(dictType);
+        if (redisUtil.isMember(CacheNames.DICT_REDIS_CODE_LIST,dictType.getDictTypeCode())){
+            throw new BusinessException("该字典类型已存在");
+        }
+
+        if (coreDictTypeDao.save(dictType)){
+            redisUtil.add(CacheNames.DICT_REDIS_CODE_LIST,dictType.getDictTypeCode());
+            return true;
+        }else {
+            return false;
+        }
     }
 
     @Override
@@ -84,6 +97,9 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
                         .set(TbCoreDict::getDictTypeCode,dictType.getDictTypeCode())
                         .eq(TbCoreDict::getDictTypeCode,coreDictType.getDictTypeCode()));
             }
+
+            redisUtil.removeMembers(CacheNames.DICT_REDIS_CODE_LIST,coreDictType.getDictTypeCode());
+            redisUtil.add(CacheNames.DICT_REDIS_CODE_LIST,dictType.getDictTypeCode());
             return true;
         }
         return false;

@@ -56,11 +56,9 @@ public class CoreDictServiceImpl extends BaseServiceImpl<TbCoreDictMapper, TbCor
     }
 
     @Override
-    public List<Map<String, Object>> dictListByTypes(List<String> list) {
-        List<Map<String,Object>> listDict = dictDao.listMaps(Condition.<TbCoreDict>getQueryWrapper().lambda()
-                .select(TbCoreDict::getCode,TbCoreDict::getName,TbCoreDict::getDictTypeCode)
-                .in(TbCoreDict::getDictTypeCode,list));
-        return listDict;
+    public List<TbCoreDict> listByTypeCode(String dictTypeCode) {
+        return dictDao.list(Condition.<TbCoreDict>getQueryWrapper().lambda()
+                .eq(TbCoreDict::getDictTypeCode,dictTypeCode));
     }
 
 }

@@ -1,62 +1,58 @@
 package com.wlcb.jpower.cache.dict;
 
+import com.wlcb.jpower.dbs.entity.dict.TbCoreDict;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.support.DictResult;
+import com.wlcb.jpower.module.common.utils.SpringUtil;
 import com.wlcb.jpower.service.dict.CoreDictService;
-import org.springframework.stereotype.Component;
+import com.wlcb.jpower.service.dict.impl.CoreDictServiceImpl;
 
-import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * @ClassName ParamConfig
- * @Description TODO 获取配置文件参数
+ * @ClassName DictConfig
+ * @Description TODO 获取字典
  * @Author 郭丁志
  * @Date 2020-05-06 14:55
  * @Version 1.0
  */
-@Component("dictResult")
-public class DictConfig implements DictResult {
+public class DictConfig {
 
-    @Resource
-    private CoreDictService dictService;
+    private static CoreDictService dictClient;
 
-    @Override
-    public List<Map<String, Object>> queryDictList(List<String> list) {
+    static {
+        dictClient = SpringUtil.getBean(CoreDictServiceImpl.class);
+    }
 
-        List<Map<String, Object>> mapList = new ArrayList<>();
-        List<String> listType = new ArrayList<>();
-        
-        list.forEach(type -> {
-
-            List<Map<String, Object>> ls = CacheUtil.get(CacheNames.DICT_REDIS_CACHE,CacheNames.DICT_REDIS_TYPE_MAP_KEY,type,List.class);
-            if (Fc.isNull(ls)){
-                listType.add(type);
-            }else {
-                mapList.addAll(ls);
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 通过字典类型和编码直接返回值
+     * @Date 17:28 2020-10-22
+     * @Param [dictTypeCode, code]
+     **/
+    public static String getDictByTypeAndCode(String dictTypeCode, String code) {
+        List<TbCoreDict> list = getDictByType(dictTypeCode);
+        String value = list.stream().map(t -> {
+            if (Fc.equals(t.getCode(),code)){
+                return t.getName();
             }
-            
+            return null;
+        }).collect(Collectors.joining());
+        return value;
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 通过字典类型查询字典列表
+     * @Date 17:29 2020-10-22
+     * @Param [dictTypeCode]
+     **/
+    public static List<TbCoreDict> getDictByType(String dictTypeCode) {
+        return CacheUtil.get(CacheNames.DICT_REDIS_CACHE,CacheNames.DICT_TYPE_KEY,dictTypeCode,() -> {
+            List<TbCoreDict> responseData = dictClient.listByTypeCode(dictTypeCode);
+            return responseData;
         });
-
-        if (listType.size() > 0){
-            List<Map<String,Object>> data = dictService.dictListByTypes(listType);
-            if (!Fc.isNull(data) && data.size() > 0){
-                mapList.addAll(data);
-
-                listType.forEach(lt -> CacheUtil.put(CacheNames.DICT_REDIS_CACHE,
-                        CacheNames.DICT_REDIS_TYPE_MAP_KEY,
-                        lt,
-                        data.stream().filter(d -> Fc.equals(lt,(d.get("dict_type_code")))).collect(Collectors.toList()))
-                );
-
-            }
-        }
-
-        return mapList;
     }
 }

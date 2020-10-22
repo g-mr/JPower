@@ -3,7 +3,6 @@ package com.wlcb.jpower.wrapper;
 import com.wlcb.jpower.cache.SystemCache;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.module.common.utils.BeanUtil;
-import com.wlcb.jpower.module.mp.support.BaseEntityWrapper;
 import com.wlcb.jpower.vo.UserVo;
 import lombok.Builder;
 
@@ -17,7 +16,7 @@ import java.util.Objects;
  * @Version 1.0
  */
 @Builder
-public class UserWrapper extends BaseEntityWrapper<TbCoreUser, UserVo> {
+public class UserWrapper extends DictWrapper<TbCoreUser, UserVo> {
     @Override
     protected UserVo conver(TbCoreUser user) {
         UserVo userVo = Objects.requireNonNull(BeanUtil.copy(user, UserVo.class));

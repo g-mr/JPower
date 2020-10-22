@@ -9,9 +9,16 @@ package com.wlcb.jpower.module.common.cache;
  */
 public interface CacheNames {
 
+    /** 登陆验证码缓存KEY **/
+    String CAPTCHA_KEY = "jpower:auth::captcha:";
+    /** 手机号验证码缓存KEY **/
+    String PHONE_KEY = "jpower:auth::phone:";
+    /** 登陆用户权限缓存KEY **/
+    String TOKEN_URL_KEY = "jpower:auth::token:";
+
+    String DICT_REDIS_CODE_LIST = "dict:code:typeList";
 
     String DICT_REDIS_TYPE_MAP_KEY = "dict:typeMap:";
-    String DICT_REDIS_CODE_KEY = "dict:code:";
 
     /** 行政区域缓存 **/
     String CITY_REDIS_CACHE = "jpower:citys";
@@ -21,16 +28,9 @@ public interface CacheNames {
     String DICT_REDIS_CACHE = "jpower:dicts";
     /** 系统缓存 **/
     String SYSTEM_REDIS_CACHE = "jpower:system";
-    /** 系统缓存 **/
+    /** 用户缓存 **/
     String USER_REDIS_CACHE = "jpower:user";
 
-
-    /** 登陆验证码缓存KEY **/
-    String CAPTCHA_KEY = "jpower:auth::captcha:";
-    /** 手机号验证码缓存KEY **/
-    String PHONE_KEY = "jpower:auth::phone:";
-    /** 登陆用户权限缓存KEY **/
-    String TOKEN_URL_KEY = "jpower:auth::token:";
 
     /** 行政树形区域 **/
     String CITY_PARENT_REDIS_KEY = CITY_REDIS_CACHE+"::list:pcodeTree";
@@ -57,5 +57,7 @@ public interface CacheNames {
     String USER_ROLEID_USERID_KEY = "user:roleid:";
     /** 用户信息Id key（otherCode） **/
     String USER_OTHERCODE_KEY = "user:otherCode:";
+    /**  **/
+    String DICT_TYPE_KEY = "dict:type:";
 
 }
