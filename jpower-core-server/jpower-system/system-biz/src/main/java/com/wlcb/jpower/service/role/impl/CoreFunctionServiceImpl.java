@@ -19,6 +19,7 @@ import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.role.CoreFunctionService;
 import com.wlcb.jpower.vo.FunctionVo;
+import com.wlcb.jpower.wrapper.DictWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +44,6 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
 
     @Override
     public List<TbCoreFunction> listByParent(Map<String,Object> coreFunction) {
-
         return coreFunctionDao.list(Condition.getQueryWrapper(coreFunction,TbCoreFunction.class).lambda()
                 .orderByAsc(TbCoreFunction::getSort));
     }
@@ -132,8 +132,9 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     @Override
     public List<FunctionVo> listTreeByRoleId(List<String> roleIds) {
         String inSql = StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE);
-        return coreFunctionDao.listTree(Condition.<TbCoreFunction>getQueryWrapper().lambda()
+        List<FunctionVo> list = coreFunctionDao.listTree(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                 .inSql(TbCoreFunction::getId, StringUtil.format(sql, inSql)).orderByAsc(TbCoreFunction::getSort),FunctionVo.class);
+        return DictWrapper.dict(list,FunctionVo.class);
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.org.CoreOrgService;
 import com.wlcb.jpower.vo.OrgVo;
+import com.wlcb.jpower.wrapper.DictWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +30,7 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper, TbCoreO
 
     @Override
     public List<OrgVo> listLazyByParent(TbCoreOrg coreOrg) {
-        return coreOrgDao.getBaseMapper().listLazyByParent(coreOrg);
+        return DictWrapper.dict(coreOrgDao.getBaseMapper().listLazyByParent(coreOrg),OrgVo.class);
     }
 
     @Override

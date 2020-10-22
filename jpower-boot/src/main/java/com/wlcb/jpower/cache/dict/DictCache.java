@@ -1,12 +1,12 @@
 package com.wlcb.jpower.cache.dict;
 
 import com.wlcb.jpower.dbs.entity.dict.TbCoreDict;
-import com.wlcb.jpower.feign.DictClient;
-import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SpringUtil;
+import com.wlcb.jpower.service.dict.CoreDictService;
+import com.wlcb.jpower.service.dict.impl.CoreDictServiceImpl;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,12 +18,12 @@ import java.util.stream.Collectors;
  * @Date 2020-05-06 14:55
  * @Version 1.0
  */
-public class DictConfig {
+public class DictCache {
 
-    private static DictClient dictClient;
+    private static CoreDictService dictClient;
 
     static {
-        dictClient = SpringUtil.getBean(DictClient.class);
+        dictClient = SpringUtil.getBean(CoreDictServiceImpl.class);
     }
 
     /**
@@ -51,8 +51,8 @@ public class DictConfig {
      **/
     public static List<TbCoreDict> getDictByType(String dictTypeCode) {
         return CacheUtil.get(CacheNames.DICT_REDIS_CACHE,CacheNames.DICT_TYPE_KEY,dictTypeCode,() -> {
-            ResponseData<List<TbCoreDict>> responseData = dictClient.queryDictByType(dictTypeCode);
-            return responseData.getData();
+            List<TbCoreDict> responseData = dictClient.listByTypeCode(dictTypeCode);
+            return responseData;
         });
     }
 }

@@ -1,6 +1,8 @@
 package com.wlcb.jpower.module.base.annotation;
 
 
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
+
 import java.lang.annotation.*;
 
 
@@ -17,11 +19,11 @@ public @interface Dict {
     /**
      * 字典名称
      */
-    public String name();
+    String name();
 
     /**
      * 赋值的属性名称
      */
-    public String attributes() default "";
+    String attributes() default StringPool.EMPTY;;
 
 }

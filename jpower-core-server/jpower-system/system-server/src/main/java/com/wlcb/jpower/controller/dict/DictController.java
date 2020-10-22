@@ -17,6 +17,7 @@ import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.dict.CoreDictService;
 import com.wlcb.jpower.service.dict.CoreDictTypeService;
 import com.wlcb.jpower.vo.DictVo;
+import com.wlcb.jpower.wrapper.DictWrapper;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -72,7 +73,7 @@ public class DictController {
     @RequestMapping(value = "/getDictType",method = RequestMethod.GET,produces="application/json")
     public ResponseData<TbCoreDictType> getDictType(@ApiParam(value = "主键",required = true) @RequestParam String id){
         JpowerAssert.notEmpty(id, JpowerError.Arg,"主键不可为空");
-        return ReturnJsonUtil.ok("查询成功", coreDictTypeService.getById(id));
+        return ReturnJsonUtil.ok("查询成功", DictWrapper.dict(coreDictTypeService.getById(id),TbCoreDictType.class));
     }
 
     @ApiOperation("通过字典类型分页查询字典")
@@ -94,12 +95,9 @@ public class DictController {
 
     @ApiOperation(value = "查询下级字典",notes = "不可传-1")
     @RequestMapping(value = "/listDictChildList",method = RequestMethod.GET,produces="application/json")
-    public ResponseData<List<DictVo>> listDictChildList(@ApiParam(value = "父级字典id",required = true) @RequestParam String parentId){
-        JpowerAssert.notEmpty(parentId, JpowerError.Arg,"父级字典id不可为空");
-        JpowerAssert.notTrue(Fc.equals(parentId, JpowerConstants.TOP_CODE), JpowerError.Arg,"父级字典id不可为-1");
-
-        TbCoreDict dict = new TbCoreDict();
-        dict.setParentId(parentId);
+    public ResponseData<List<DictVo>> listDictChildList(@RequestParam TbCoreDict dict){
+        JpowerAssert.notEmpty(dict.getParentId(), JpowerError.Arg,"父级字典id不可为空");
+        JpowerAssert.notTrue(Fc.equals(dict.getParentId(), JpowerConstants.TOP_CODE), JpowerError.Arg,"父级字典id不可为-1");
 
         List<DictVo> list = coreDictService.listByType(dict);
         return ReturnJsonUtil.ok("查询成功", list);
@@ -152,15 +150,16 @@ public class DictController {
     @RequestMapping(value = "/getDict",method = RequestMethod.GET,produces="application/json")
     public ResponseData<TbCoreDict> getDict(@ApiParam(value = "字典ID",required = true) @RequestParam(required = true) String id){
         JpowerAssert.notEmpty(id, JpowerError.Arg,"字典ID不可为空");
-        return ReturnJsonUtil.ok("查询成功",coreDictService.getById(id));
+        return ReturnJsonUtil.ok("查询成功",DictWrapper.dict(coreDictService.getById(id),TbCoreDict.class));
     }
 
     @ApiOperation("通过字典类型查询字典列表")
     @RequestMapping(value = "/getDictListByType",method = RequestMethod.GET,produces="application/json")
-    public ResponseData<List<TbCoreDict>> getDictListByType(@ApiParam(value = "字典类型编码",required = true) @RequestParam String dictType){
-        JpowerAssert.notEmpty(dictType, JpowerError.Arg,"字典类型不可为空");
-        return ReturnJsonUtil.ok("查询成功",coreDictService.list(Condition.<TbCoreDict>getQueryWrapper().lambda()
-                .eq(TbCoreDict::getDictTypeCode,dictType)));
+    public ResponseData<List<DictVo>> getDictListByType(@RequestParam TbCoreDict dict){
+        JpowerAssert.notEmpty(dict.getDictTypeCode(), JpowerError.Arg,"字典类型不可为空");
+        dict.setParentId(JpowerConstants.TOP_CODE);
+
+        return ReturnJsonUtil.ok("查询成功", coreDictService.listByType(dict));
     }
 
 }

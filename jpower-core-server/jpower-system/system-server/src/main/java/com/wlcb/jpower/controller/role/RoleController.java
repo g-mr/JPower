@@ -17,6 +17,7 @@ import com.wlcb.jpower.service.role.CoreFunctionService;
 import com.wlcb.jpower.service.role.CoreRoleService;
 import com.wlcb.jpower.service.role.CoreRolefunctionService;
 import com.wlcb.jpower.vo.RoleVo;
+import com.wlcb.jpower.wrapper.DictWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -49,7 +50,7 @@ public class RoleController extends BaseController {
         List<RoleVo> list = coreRoleService.listTree(Condition.getQueryWrapper(coreRole)
                 .lambda().orderByAsc(TbCoreRole::getCreateTime)
                 , RoleVo.class);
-        return ReturnJsonUtil.ok("获取成功", list);
+        return ReturnJsonUtil.ok("获取成功", DictWrapper.dict(list,RoleVo.class));
     }
 
     @ApiOperation("新增角色")

@@ -5,6 +5,7 @@ import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -20,5 +21,5 @@ public interface DictClient {
      * @date 16:42 2020/8/30 0030
      */
     @GetMapping("/queryDictByType")
-    ResponseData<List<TbCoreDict>> queryDictByType(String dictTypeCode);
+    ResponseData<List<TbCoreDict>> queryDictByType(@RequestParam String dictTypeCode);
 }

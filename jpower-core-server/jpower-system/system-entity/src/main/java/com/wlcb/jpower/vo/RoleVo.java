@@ -1,8 +1,10 @@
 package com.wlcb.jpower.vo;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.wlcb.jpower.dbs.entity.role.TbCoreRole;
 import com.wlcb.jpower.module.common.node.Node;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -17,6 +19,9 @@ import java.util.List;
  */
 @Data
 public class RoleVo extends TbCoreRole implements Node {
+
+    @ApiModelProperty("是否系统角色")
+    private String isSysRoleStr;
 
     /**
      * 子孙节点

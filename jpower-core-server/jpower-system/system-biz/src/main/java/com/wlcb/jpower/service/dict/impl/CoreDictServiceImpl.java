@@ -14,11 +14,11 @@ import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.dict.CoreDictService;
 import com.wlcb.jpower.vo.DictVo;
+import com.wlcb.jpower.wrapper.DictWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author mr.gmac
@@ -52,7 +52,7 @@ public class CoreDictServiceImpl extends BaseServiceImpl<TbCoreDictMapper, TbCor
 
     @Override
     public List<DictVo> listByType(TbCoreDict dict) {
-        return dictDao.getBaseMapper().listByType(dict);
+        return DictWrapper.dict(dictDao.getBaseMapper().listByType(dict),DictVo.class);
     }
 
     @Override

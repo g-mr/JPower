@@ -43,7 +43,7 @@ public class OrgController extends BaseController {
     public ResponseData<PageInfo<OrgVo>> listLazyByParent(TbCoreOrg coreOrg){
 
         if (StringUtils.isBlank(coreOrg.getParentId())){
-            coreOrg.setParentId("-1");
+            coreOrg.setParentId(JpowerConstants.TOP_CODE);
         }
 
         PaginationContext.startPage();
@@ -64,8 +64,8 @@ public class OrgController extends BaseController {
         }
 
         if (StringUtils.isBlank(coreOrg.getParentId())){
-            coreOrg.setParentId("-1");
-            coreOrg.setAncestorId("-1");
+            coreOrg.setParentId(JpowerConstants.TOP_CODE);
+            coreOrg.setAncestorId(JpowerConstants.TOP_CODE);
         }else {
             coreOrg.setAncestorId(coreOrg.getParentId().concat(StringPool.COMMA).concat(coreOrgService.getById(coreOrg.getParentId()).getAncestorId()));
         }

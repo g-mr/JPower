@@ -12,10 +12,10 @@ import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
-import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.mp.support.SqlKeyword;
 import com.wlcb.jpower.service.city.CoreCityService;
+import com.wlcb.jpower.wrapper.DictWrapper;
 import io.swagger.annotations.*;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -46,7 +46,7 @@ public class CityController extends BaseController {
     public ResponseData<List<Map<String,Object>>> listChild(@ApiParam(value = "父级code",required = true) @RequestParam(defaultValue = JpowerConstants.TOP_CODE) String pcode,
                                                             @ApiParam(value = "名称") @RequestParam(required = false) String name){
         List<Map<String,Object>> list = coreCityService.listChild(ChainMap.init().set("pcode"+ SqlKeyword.EQUAL,pcode).set("name",name));
-        return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"获取成功", list,true);
+        return ReturnJsonUtil.ok("获取成功", list);
     }
 
     @ApiOperation("分页查询行政区域列表")
@@ -61,7 +61,8 @@ public class CityController extends BaseController {
 
         PaginationContext.startPage();
         List<TbCoreCity> list = coreCityService.list(coreCity);
-        return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"获取成功", new PageInfo<>(list),true);
+
+        return ReturnJsonUtil.ok("获取成功", new PageInfo<>(DictWrapper.dict(list,TbCoreCity.class)));
     }
 
     @ApiOperation(value = "新增行政区域",notes = "主键不可传")

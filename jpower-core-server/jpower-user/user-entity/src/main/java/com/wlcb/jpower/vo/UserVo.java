@@ -18,6 +18,13 @@ import lombok.EqualsAndHashCode;
 public class UserVo extends TbCoreUser {
     private static final long serialVersionUID = -7254193410221595563L;
 
+    @ApiModelProperty("是否激活")
+    private String activationStatusStr;
+    @ApiModelProperty("用户类型")
+    private String userTypeStr;
+    @ApiModelProperty("证件类型")
+    private String idTypeStr;
+
     @ApiModelProperty("部门名称")
     @Excel(name = "部门名称",type = Excel.Type.EXPORT)
     private String orgName;

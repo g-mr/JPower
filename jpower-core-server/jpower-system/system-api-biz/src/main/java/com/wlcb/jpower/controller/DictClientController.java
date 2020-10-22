@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -28,7 +29,7 @@ public class DictClientController implements DictClient {
     @ApiOperation(value = "通过code查询字典列表",hidden = true)
     @Override
     @GetMapping("queryDictByType")
-    public ResponseData<List<TbCoreDict>> queryDictByType(String dictTypeCode) {
+    public ResponseData<List<TbCoreDict>> queryDictByType(@RequestParam String dictTypeCode) {
         return ReturnJsonUtil.ok("查询完成",coreDictService.listByTypeCode(dictTypeCode));
     }
 

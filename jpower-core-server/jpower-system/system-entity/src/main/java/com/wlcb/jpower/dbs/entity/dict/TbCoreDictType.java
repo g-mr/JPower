@@ -1,6 +1,5 @@
 package com.wlcb.jpower.dbs.entity.dict;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.tenant.entity.TenantEntity;
 import io.swagger.annotations.ApiModelProperty;
@@ -23,12 +22,12 @@ public class TbCoreDictType extends TenantEntity {
     @ApiModelProperty("字典类型名称")
     private String dictTypeName;
     @ApiModelProperty("语言类型 字典YYZL")
-    @Dict(name = "YYZL",attributes = "localeCodeStr")
+    @Dict(name = "YYZL")
     private String localeCode;
     @ApiModelProperty("备注")
     private String note;
     @ApiModelProperty("是否允许删除 字典YN")
-    @Dict(name = "YN",attributes = "delEnabledStr")
+    @Dict(name = "YN")
     private String delEnabled;
     @ApiModelProperty("排序")
     private Integer sortNum;
@@ -37,11 +36,4 @@ public class TbCoreDictType extends TenantEntity {
     @ApiModelProperty("是否树形结构 字典YN01")
     @Dict(name = "YN01")
     private String isTree;
-
-    @ApiModelProperty("是否允许删除")
-    @TableField(exist = false)
-    private String delEnabledStr;
-    @ApiModelProperty("语言类型")
-    @TableField(exist = false)
-    private String localeCodeStr;
 }

@@ -1,6 +1,5 @@
 package com.wlcb.jpower.dbs.entity.dict;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
@@ -30,12 +29,8 @@ public class TbCoreDict extends BaseEntity {
     private String note;
     @ApiModelProperty("排序")
     private Integer sortNum;
-    @ApiModelProperty("父级编码")
+    @ApiModelProperty("父级ID")
     private String parentId;
     @ApiModelProperty("级别")
     private Integer dictLevel;
-
-    @ApiModelProperty("语言类型")
-    @TableField(exist = false)
-    private String localeStr;
 }

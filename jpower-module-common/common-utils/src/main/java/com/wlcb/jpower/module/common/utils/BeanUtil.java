@@ -224,7 +224,7 @@ public class BeanUtil  extends org.springframework.beans.BeanUtils {
 
     /**
      * @Author 郭丁志
-     * @Description //TODO 获取属性列表 去除继承的属性
+     * @Description //TODO 获取属性列表
      * @Date 18:50 2020-03-03
      * @Param [clazz]
      * @return java.util.List<java.lang.reflect.Field>

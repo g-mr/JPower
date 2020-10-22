@@ -1,6 +1,5 @@
 package com.wlcb.jpower.dbs.entity.params;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
@@ -27,12 +26,8 @@ public class TbCoreParam extends BaseEntity implements Serializable {
     @ApiModelProperty("参数值")
     private String value;
     @ApiModelProperty("是否支持立即生效 字典YN01")
-    @Dict(name = "YN01", attributes = "isEffectStr")
+    @Dict(name = "YN01")
     private Integer isEffect;
     @ApiModelProperty("备注")
     private String note;
-
-    @ApiModelProperty("是否支持立即生效")
-    @TableField(exist = false)
-    private String isEffectStr;
 }

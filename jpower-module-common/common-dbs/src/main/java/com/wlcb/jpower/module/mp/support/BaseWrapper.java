@@ -5,12 +5,12 @@ import java.util.stream.Collectors;
 
 /**
  * @ClassName BaseEntityWrapper
- * @Description TODO entity转换基础实现（包含实现通过注解实现查字典）
+ * @Description TODO entity转换基础实现
  * @Author 郭丁志
  * @Date 2020-10-16 15:37
  * @Version 1.0
  */
-public abstract class BaseEntityWrapper <T, V> {
+public abstract class BaseWrapper <T, V> {
 
     protected abstract V conver(T entity);
 

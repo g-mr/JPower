@@ -84,17 +84,6 @@ public class TbCoreUser extends TenantEntity implements Serializable {
     @Excel(name = "部门ID",type = Excel.Type.IMPORT)
     private String orgId;
 
-
-    @ApiModelProperty("是否激活")
-    @TableField(exist = false)
-    private String activationStatusStr;
-    @ApiModelProperty("用户类型")
-    @TableField(exist = false)
-    private String userTypeStr;
-    @ApiModelProperty("证件类型")
-    @TableField(exist = false)
-    private String idTypeStr;
-
     @ApiModelProperty("角色ID，多个逗号分割")
     @TableField(exist = false)
     private String roleIds;

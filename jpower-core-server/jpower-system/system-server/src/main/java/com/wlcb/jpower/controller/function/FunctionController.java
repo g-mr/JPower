@@ -13,6 +13,7 @@ import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.service.role.CoreFunctionService;
 import com.wlcb.jpower.vo.FunctionVo;
+import com.wlcb.jpower.wrapper.DictWrapper;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +25,6 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Api(tags = "菜单管理")
 @RestController
@@ -44,14 +44,14 @@ public class FunctionController extends BaseController {
             @ApiImplicitParam(name = "url",value = "功能URL",paramType = "query")
     })
     @RequestMapping(value = "/listByParent",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
-    public ResponseData<List<TbCoreFunction>> list(@ApiIgnore @RequestParam Map<String,Object> coreFunction){
+    public ResponseData<List<FunctionVo>> list(@ApiIgnore @RequestParam Map<String,Object> coreFunction){
 
         if(StringUtils.isBlank(Fc.toStr(coreFunction.get("parentId_eq")))){
-            coreFunction.put("parentId_eq","-1");
+            coreFunction.put("parentId_eq",JpowerConstants.TOP_CODE);
         }
 
         List<TbCoreFunction> list = coreFunctionService.listByParent(coreFunction);
-        return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"获取成功", list,true);
+        return ReturnJsonUtil.ok("获取成功", DictWrapper.dict(list,FunctionVo.class));
     }
 
     @ApiOperation("新增菜单")
@@ -144,8 +144,7 @@ public class FunctionController extends BaseController {
     public ResponseData<List<FunctionVo>> listMenuTree(){
         List<String> roleIds = SecureUtil.getUserRole();
         List<TbCoreFunction> list = coreFunctionService.listMenuByRoleId(roleIds);
-        List<FunctionVo> collect = list.stream().map(function -> BeanUtil.copy(function, FunctionVo.class)).collect(Collectors.toList());
-        return ReturnJsonUtil.ok("查询成功", ForestNodeMerger.merge(collect));
+        return ReturnJsonUtil.ok("查询成功", ForestNodeMerger.merge(DictWrapper.dict(list,FunctionVo.class)));
     }
 
     @ApiOperation("根据当前登录用户查询一个菜单下的所有按钮")
