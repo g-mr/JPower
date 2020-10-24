@@ -123,6 +123,7 @@ public class DictController {
             }
         }
 
+        CacheUtil.clear(CacheNames.DICT_REDIS_CACHE);
         return ReturnJsonUtil.status(coreDictService.saveDict(dict));
     }
 
@@ -143,6 +144,7 @@ public class DictController {
             dicts.forEach(ls -> CacheUtil.evict(CacheNames.DICT_REDIS_CACHE,CacheNames.DICT_REDIS_TYPE_MAP_KEY,ls.getDictTypeCode()));
         }
 
+        CacheUtil.clear(CacheNames.DICT_REDIS_CACHE);
         return ReturnJsonUtil.status(coreDictService.removeRealByIds(list));
     }
 

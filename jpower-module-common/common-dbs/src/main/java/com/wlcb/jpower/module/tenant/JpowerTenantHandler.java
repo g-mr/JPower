@@ -27,6 +27,8 @@ public class JpowerTenantHandler implements TenantHandler, SmartInitializingSing
 
     private final JpowerTenantProperties properties;
     private final List<String> tenantTableList = new ArrayList<>();
+    /** 租户表 **/
+    private final String TENANT_TABLE = "tb_core_tenant";
 
     @Override
     public Expression getTenantId(boolean select) {
@@ -46,6 +48,8 @@ public class JpowerTenantHandler implements TenantHandler, SmartInitializingSing
 
     @Override
     public void afterSingletonsInstantiated() {
+        properties.getExcludeTables().add(TENANT_TABLE);
+
         List<TableInfo> tableInfos = TableInfoHelper.getTableInfos();
         tableInfos.forEach(tableInfo -> {
             if (!properties.getExcludeTables().contains(tableInfo.getTableName())){
