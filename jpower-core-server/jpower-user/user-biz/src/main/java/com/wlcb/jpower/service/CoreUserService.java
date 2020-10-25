@@ -129,4 +129,13 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
      * @param tenantCode
      */
     TbCoreUser selectUserByOtherCode(String otherCode, String tenantCode);
+
+    /**
+     * @author 郭丁志
+     * @Description // 创建管理员用户
+     * @date 0:09 2020/10/25 0025
+     * @param user 用户信息
+     * @param roleId 角色ID
+     */
+    boolean saveAdmin(TbCoreUser user, String roleId);
 }

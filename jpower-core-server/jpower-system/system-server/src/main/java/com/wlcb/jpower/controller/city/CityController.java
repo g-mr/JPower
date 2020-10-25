@@ -15,7 +15,7 @@ import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.mp.support.SqlKeyword;
 import com.wlcb.jpower.service.city.CoreCityService;
-import com.wlcb.jpower.wrapper.DictWrapper;
+import com.wlcb.jpower.wrapper.BaseDictWrapper;
 import io.swagger.annotations.*;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -62,7 +62,7 @@ public class CityController extends BaseController {
         PaginationContext.startPage();
         List<TbCoreCity> list = coreCityService.list(coreCity);
 
-        return ReturnJsonUtil.ok("获取成功", new PageInfo<>(DictWrapper.dict(list,TbCoreCity.class)));
+        return ReturnJsonUtil.ok("获取成功", new PageInfo<>(BaseDictWrapper.dict(list,TbCoreCity.class)));
     }
 
     @ApiOperation(value = "新增行政区域",notes = "主键不可传")

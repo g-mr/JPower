@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * @Version 1.0
  */
 @Slf4j
-public abstract class DictWrapper<T, V> extends BaseWrapper<T, V> {
+public abstract class BaseDictWrapper<T, V> extends BaseWrapper<T, V> {
 
     private static final String DICT_ATTRIBUTES_SUFFIX = "Str";
 

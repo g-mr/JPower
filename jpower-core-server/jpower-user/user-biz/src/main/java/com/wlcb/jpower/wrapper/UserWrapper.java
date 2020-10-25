@@ -16,7 +16,7 @@ import java.util.Objects;
  * @Version 1.0
  */
 @Builder
-public class UserWrapper extends DictWrapper<TbCoreUser, UserVo> {
+public class UserWrapper extends BaseDictWrapper<TbCoreUser, UserVo> {
     @Override
     protected UserVo conver(TbCoreUser user) {
         UserVo userVo = Objects.requireNonNull(BeanUtil.copy(user, UserVo.class));

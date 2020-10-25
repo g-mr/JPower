@@ -12,6 +12,9 @@ spring:
     #  nodes: 127.0.0.1:6379,127.0.0.1:6378,127.0.0.1:6377
     #  commandTimeout: 5000
 
+seata:
+  enabled: false
+
 jpower:
   #  开发环境
   dev:

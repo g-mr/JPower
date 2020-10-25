@@ -9,6 +9,7 @@ import com.wlcb.jpower.auth.utils.TokenUtil;
 import com.wlcb.jpower.cache.UserCache;
 import com.wlcb.jpower.cache.SystemCache;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
+import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
@@ -25,6 +26,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -81,6 +83,11 @@ public class LoginController extends BaseController {
                 .set("phone", phone)
                 .set("phoneCode", phoneCode)
                 .set("otherCode", otherCode);
+
+        TbCoreTenant tenant = SystemCache.getTenantByCode(tenantCode);
+        if (Fc.notNull(tenant.getExpireTime()) && new Date().before(tenant.getExpireTime())){
+            return ReturnJsonUtil.fail("租户已过期");
+        }
 
         TokenGranter granter = TokenGranterBuilder.getGranter(grantType);
         UserInfo userInfo = granter.grant(tokenParameter);

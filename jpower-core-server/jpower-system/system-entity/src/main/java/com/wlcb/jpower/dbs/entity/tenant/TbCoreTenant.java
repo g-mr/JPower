@@ -22,7 +22,7 @@ public class TbCoreTenant extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "租户Code")
+    @ApiModelProperty(value = "租户Code",hidden = true)
     private String tenantCode;
     @ApiModelProperty(value = "租户名称")
     private String tenantName;
@@ -31,9 +31,9 @@ public class TbCoreTenant extends BaseEntity {
     @ApiModelProperty(value = "系统背景")
     private String backgroundUrl;
     @ApiModelProperty(value = "联系人")
-    private String contactPerson;
+    private String contactName;
     @ApiModelProperty(value = "联系电话")
-    private String contactNumber;
+    private String contactPhone;
     @ApiModelProperty(value = "联系地址")
     private String address;
     @ApiModelProperty(value = "账号额度")

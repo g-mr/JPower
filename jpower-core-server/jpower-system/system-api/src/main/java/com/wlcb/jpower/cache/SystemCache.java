@@ -2,6 +2,7 @@ package com.wlcb.jpower.cache;
 
 import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
 import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
+import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
 import com.wlcb.jpower.feign.SystemClient;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.cache.CacheNames;
@@ -86,6 +87,20 @@ public class SystemCache {
         String roles = Fc.join(roleIds);
         return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_URL_ROLES_KEY,roles,() -> {
             ResponseData<List<Object>> responseData = systemClient.getUrlsByRoleIds(roles);
+            return responseData.getData();
+        });
+    }
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 获取租户信息
+     * @date 17:38 2020/10/25 0025
+     * @param tenantCode 租户编码
+     * @return com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant
+     */
+    public static TbCoreTenant getTenantByCode(String tenantCode) {
+        return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_TENANT_CODE_KEY,tenantCode,() -> {
+            ResponseData<TbCoreTenant> responseData = systemClient.getTenantByCode(tenantCode);
             return responseData.getData();
         });
     }

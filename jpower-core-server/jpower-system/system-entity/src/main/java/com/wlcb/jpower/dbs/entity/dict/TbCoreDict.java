@@ -1,7 +1,10 @@
 package com.wlcb.jpower.dbs.entity.dict;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wlcb.jpower.module.base.annotation.Dict;
-import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
+import com.wlcb.jpower.module.tenant.entity.TenantEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -13,7 +16,7 @@ import lombok.Data;
  * @Version 1.0
  */
 @Data
-public class TbCoreDict extends BaseEntity {
+public class TbCoreDict extends TenantEntity {
     private static final long serialVersionUID = 2963005021265897302L;
 
     @ApiModelProperty("字典类型编码")
@@ -33,4 +36,15 @@ public class TbCoreDict extends BaseEntity {
     private String parentId;
     @ApiModelProperty("级别")
     private Integer dictLevel;
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 旧ID，新增租户字典的时候需要用来存一下，无其他作用
+     * @date 16:41 2020/10/25 0025
+     */
+    @ApiModelProperty(hidden = true)
+    @JSONField(serialize = false)
+    @TableField(exist = false)
+    @JsonIgnore
+    private String oldId;
 }

@@ -35,7 +35,7 @@ public class CacheUtil {
     public static Cache getCache(String cacheName) {
         String tenantCode = SecureUtil.getTenantCode();
         if (Fc.isNotBlank(tenantCode)){
-            return getCacheManager().getCache(SecureUtil.getTenantCode().concat(StringPool.COLON).concat(cacheName));
+            return getCacheManager().getCache(tenantCode.concat(StringPool.COLON).concat(cacheName));
         }
         return getCacheManager().getCache(cacheName);
     }

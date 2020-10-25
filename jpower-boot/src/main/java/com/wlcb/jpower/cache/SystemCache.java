@@ -2,17 +2,21 @@ package com.wlcb.jpower.cache;
 
 import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
 import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
+import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SpringUtil;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
+import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.client.CoreClientService;
 import com.wlcb.jpower.service.client.impl.CoreClientServiceImpl;
 import com.wlcb.jpower.service.org.CoreOrgService;
 import com.wlcb.jpower.service.org.impl.CoreOrgServiceImpl;
 import com.wlcb.jpower.service.role.CoreFunctionService;
 import com.wlcb.jpower.service.role.impl.CoreFunctionServiceImpl;
+import com.wlcb.jpower.service.tenant.TenantService;
+import com.wlcb.jpower.service.tenant.impl.TenantServiceImpl;
 
 import java.util.List;
 
@@ -28,11 +32,13 @@ public class SystemCache {
     private static CoreOrgService coreOrgService;
     private static CoreClientService coreClientService;
     private static CoreFunctionService coreFunctionService;
+    private static TenantService tenantService;
 
     static {
         coreOrgService = SpringUtil.getBean(CoreOrgServiceImpl.class);
         coreClientService = SpringUtil.getBean(CoreClientServiceImpl.class);
         coreFunctionService = SpringUtil.getBean(CoreFunctionServiceImpl.class);
+        tenantService = SpringUtil.getBean(TenantServiceImpl.class);
     }
 
     /**
@@ -94,6 +100,20 @@ public class SystemCache {
         String roles = Fc.join(roleIds);
         return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_URL_ROLES_KEY,roles,() -> {
             List<Object> responseData = coreFunctionService.getUrlsByRoleIds(roles);
+            return responseData;
+        });
+    }
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 获取租户信息
+     * @date 17:38 2020/10/25 0025
+     * @param tenantCode 租户编码
+     * @return com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant
+     */
+    public static TbCoreTenant getTenantByCode(String tenantCode) {
+        return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_TENANT_CODE_KEY,tenantCode,() -> {
+            TbCoreTenant responseData = tenantService.getOne(Condition.<TbCoreTenant>getQueryWrapper().lambda().eq(TbCoreTenant::getTenantCode,tenantCode));
             return responseData;
         });
     }

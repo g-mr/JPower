@@ -24,6 +24,9 @@
             <if test="parentId!=null and parentId!=''">
                 and dict.parent_id = #{parentId}
             </if>
+            <if test="tenantCode!=null and tenantCode!=''">
+                and dict.tenant_code = #{tenantCode}
+            </if>
         </where>
     </select>
 </mapper>

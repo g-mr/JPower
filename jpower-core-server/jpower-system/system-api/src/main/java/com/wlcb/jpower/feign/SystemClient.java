@@ -2,6 +2,7 @@ package com.wlcb.jpower.feign;
 
 import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
 import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
+import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -34,4 +35,8 @@ public interface SystemClient {
 
     @GetMapping("/function/getUrlsByRoleIds")
     ResponseData<List<Object>> getUrlsByRoleIds(@RequestParam String roleIds);
+
+    @GetMapping("/tenant/getTenantByCode")
+    ResponseData<TbCoreTenant> getTenantByCode(@RequestParam String tenantCode);
+
 }

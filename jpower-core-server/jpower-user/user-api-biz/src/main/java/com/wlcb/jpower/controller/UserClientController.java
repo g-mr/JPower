@@ -72,4 +72,10 @@ public class UserClientController implements UserClient {
         TbCoreUser user = coreUserService.selectByPhone(phone,tenantCode);
         return ReturnJsonUtil.ok("查询成功",user);
     }
+
+    @Override
+    @PostMapping("/saveAdmin")
+    public ResponseData saveAdmin(@RequestParam TbCoreUser user,@RequestParam String roleId) {
+        return ReturnJsonUtil.status(coreUserService.saveAdmin(user,roleId));
+    }
 }

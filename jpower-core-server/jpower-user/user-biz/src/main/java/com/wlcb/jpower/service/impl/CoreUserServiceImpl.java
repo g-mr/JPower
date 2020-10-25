@@ -13,6 +13,8 @@ import com.wlcb.jpower.dbs.dao.TbCoreUserRoleDao;
 import com.wlcb.jpower.dbs.dao.mapper.TbCoreUserMapper;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.dbs.entity.TbCoreUserRole;
+import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
+import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.*;
@@ -20,7 +22,6 @@ import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
 import com.wlcb.jpower.module.common.utils.constants.ParamsConstants;
 import com.wlcb.jpower.module.mp.support.Condition;
-import com.wlcb.jpower.module.tenant.TenantConstant;
 import com.wlcb.jpower.service.CoreUserService;
 import com.wlcb.jpower.vo.UserVo;
 import com.wlcb.jpower.wrapper.UserWrapper;
@@ -35,6 +36,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static com.wlcb.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
+import static com.wlcb.jpower.module.tenant.TenantConstant.TENANT_ACCOUNT_NUMBER;
 
 /**
  * @author mr.gmac
@@ -107,9 +111,9 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     public TbCoreUser selectUserLoginId(String loginId,String tenantCode) {
         LambdaQueryWrapper<TbCoreUser> queryWrapper = Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getLoginId,loginId);
         if (SecureUtil.isRoot()){
-            tenantCode = Fc.isBlank(tenantCode)?TenantConstant.DEFAULT_TENANT_CODE:tenantCode;
-            queryWrapper.eq(TbCoreUser::getTenantCode,tenantCode);
+            tenantCode = Fc.isBlank(tenantCode)?DEFAULT_TENANT_CODE:tenantCode;
         }
+        queryWrapper.eq(TbCoreUser::getTenantCode,tenantCode);
         return coreUserDao.getOne(queryWrapper);
     }
 
@@ -123,9 +127,20 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
         LambdaQueryWrapper<TbCoreUser> queryWrapper = Condition.<TbCoreUser>getQueryWrapper()
                 .lambda().eq(TbCoreUser::getOtherCode,otherCode);
         if (SecureUtil.isRoot()){
-            queryWrapper.eq(TbCoreUser::getTenantCode,Fc.isBlank(tenantCode)? TenantConstant.DEFAULT_TENANT_CODE :tenantCode);
+            queryWrapper.eq(TbCoreUser::getTenantCode,Fc.isBlank(tenantCode)? DEFAULT_TENANT_CODE :tenantCode);
         }
         return coreUserDao.getOne(queryWrapper);
+    }
+
+    @Override
+    public boolean saveAdmin(TbCoreUser user, String roleId) {
+        if (coreUserDao.save(user)){
+            TbCoreUserRole userRole = new TbCoreUserRole();
+            userRole.setUserId(user.getId());
+            userRole.setRoleId(roleId);
+            return coreUserRoleDao.save(userRole);
+        }
+        return false;
     }
 
     @Override
@@ -202,6 +217,14 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
                     }
                 }
             }
+
+            TbCoreTenant tenant = SystemCache.getTenantByCode(coreUser.getTenantCode());
+            if (!Fc.equals(tenant.getAccountNumber(), TENANT_ACCOUNT_NUMBER)){
+                Integer count = coreUserDao.count(Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getTenantCode,coreUser.getTenantCode()));
+                if (count >= tenant.getAccountNumber()){
+                    throw new BusinessException(tenant.getTenantName()+"租户账号额度已不足");
+                }
+            }
             userList.add(coreUser);
         }
 
@@ -242,7 +265,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     public TbCoreUser selectByPhone(String phone,String tenantCode) {
         LambdaQueryWrapper<TbCoreUser> queryWrapper = Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getTelephone,phone);
         if (SecureUtil.isRoot()){
-            tenantCode = Fc.isBlank(tenantCode)?TenantConstant.DEFAULT_TENANT_CODE:tenantCode;
+            tenantCode = Fc.isBlank(tenantCode)? DEFAULT_TENANT_CODE:tenantCode;
             queryWrapper.eq(TbCoreUser::getTenantCode,tenantCode);
         }
         return coreUserDao.getOne(queryWrapper);

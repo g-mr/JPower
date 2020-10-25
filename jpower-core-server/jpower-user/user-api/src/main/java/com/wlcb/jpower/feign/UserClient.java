@@ -4,10 +4,7 @@ import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -38,4 +35,7 @@ public interface UserClient {
 
     @GetMapping("/queryUserByPhone")
     ResponseData<TbCoreUser> queryUserByPhone(@RequestParam String phone,@RequestParam String tenantCode);
+
+    @PostMapping("/saveAdmin")
+    ResponseData saveAdmin(@RequestParam TbCoreUser user,@RequestParam String roleId);
 }

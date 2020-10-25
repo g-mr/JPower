@@ -54,6 +54,11 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
             public ResponseData<TbCoreUser> queryUserByPhone(String phone, String tenantCode) {
                 return ReturnJsonUtil.fail("查询失败");
             }
+
+            @Override
+            public ResponseData saveAdmin(TbCoreUser user,String roleId) {
+                return ReturnJsonUtil.fail("保存失败");
+            }
         };
     }
 }

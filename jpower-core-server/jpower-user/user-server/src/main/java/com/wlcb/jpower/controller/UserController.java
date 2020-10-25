@@ -1,9 +1,11 @@
 package com.wlcb.jpower.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.wlcb.jpower.cache.SystemCache;
 import com.wlcb.jpower.cache.param.ParamConfig;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.dbs.entity.TbCoreUserRole;
+import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
 import com.wlcb.jpower.module.base.annotation.Log;
 import com.wlcb.jpower.module.base.enums.BusinessType;
 import com.wlcb.jpower.module.base.enums.JpowerError;
@@ -32,6 +34,9 @@ import javax.validation.constraints.NotBlank;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+
+import static com.wlcb.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
+import static com.wlcb.jpower.module.tenant.TenantConstant.TENANT_ACCOUNT_NUMBER;
 
 @Api(tags = "用户管理")
 @RestController
@@ -87,6 +92,18 @@ public class UserController extends BaseController {
 
         if (StringUtils.isNotBlank(coreUser.getEmail()) && !StrUtil.isEmail(coreUser.getEmail()) ){
             return ReturnJsonUtil.busFail("邮箱不合法");
+        }
+
+        String tenantCode = SecureUtil.getTenantCode();
+        if (SecureUtil.isRoot()){
+            tenantCode = Fc.isBlank(coreUser.getTenantCode())?DEFAULT_TENANT_CODE:coreUser.getTenantCode();
+        }
+        TbCoreTenant tenant = SystemCache.getTenantByCode(tenantCode);
+        if (!Fc.equals(tenant.getAccountNumber(), TENANT_ACCOUNT_NUMBER)){
+            Integer count = coreUserService.count(Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getTenantCode,tenantCode));
+            if (count >= tenant.getAccountNumber()){
+                return ReturnJsonUtil.busFail("账号额度已不足");
+            }
         }
 
         if (StringUtils.isNotBlank(coreUser.getTelephone())){

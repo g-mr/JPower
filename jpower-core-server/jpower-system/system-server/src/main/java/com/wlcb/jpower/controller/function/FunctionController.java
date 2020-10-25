@@ -13,7 +13,7 @@ import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.service.role.CoreFunctionService;
 import com.wlcb.jpower.vo.FunctionVo;
-import com.wlcb.jpower.wrapper.DictWrapper;
+import com.wlcb.jpower.wrapper.BaseDictWrapper;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -51,7 +51,7 @@ public class FunctionController extends BaseController {
         }
 
         List<TbCoreFunction> list = coreFunctionService.listByParent(coreFunction);
-        return ReturnJsonUtil.ok("获取成功", DictWrapper.dict(list,FunctionVo.class));
+        return ReturnJsonUtil.ok("获取成功", BaseDictWrapper.dict(list,FunctionVo.class));
     }
 
     @ApiOperation("新增菜单")
@@ -144,10 +144,10 @@ public class FunctionController extends BaseController {
     public ResponseData<List<FunctionVo>> listMenuTree(){
         List<String> roleIds = SecureUtil.getUserRole();
         List<TbCoreFunction> list = coreFunctionService.listMenuByRoleId(roleIds);
-        return ReturnJsonUtil.ok("查询成功", ForestNodeMerger.merge(DictWrapper.dict(list,FunctionVo.class)));
+        return ReturnJsonUtil.ok("查询成功", ForestNodeMerger.merge(BaseDictWrapper.dict(list,FunctionVo.class)));
     }
 
-    @ApiOperation("根据当前登录用户查询一个菜单下的所有按钮")
+    @ApiOperation("查询登录用户一个菜单下的所有按钮")
     @RequestMapping(value = "/listBut",method = {RequestMethod.GET},produces="application/json")
     public ResponseData<List<TbCoreFunction>> listBut(@ApiParam(value = "菜单Id",required = true) @RequestParam String id){
         JpowerAssert.notEmpty(id, JpowerError.Arg, "菜单id不可为空");

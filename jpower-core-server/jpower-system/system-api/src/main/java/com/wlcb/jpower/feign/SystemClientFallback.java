@@ -2,6 +2,7 @@ package com.wlcb.jpower.feign;
 
 import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
 import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
+import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import org.springframework.stereotype.Component;
@@ -35,6 +36,11 @@ public class SystemClientFallback implements SystemClient {
 
     @Override
     public ResponseData<List<Object>> getUrlsByRoleIds(String roleIds) {
+        return ReturnJsonUtil.fail("查询失败");
+    }
+
+    @Override
+    public ResponseData<TbCoreTenant> getTenantByCode(String tenantCode) {
         return ReturnJsonUtil.fail("查询失败");
     }
 }
