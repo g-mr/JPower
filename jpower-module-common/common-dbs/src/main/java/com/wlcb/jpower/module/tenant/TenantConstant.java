@@ -25,7 +25,7 @@ public interface TenantConstant {
      * @date 22:18 2020/10/24 0024
      */
     static String tenantCode(){
-        return Fc.random(6);
+        return Fc.random(6).toUpperCase();
     }
 
     /**

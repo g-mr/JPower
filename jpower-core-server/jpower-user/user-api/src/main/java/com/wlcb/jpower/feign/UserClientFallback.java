@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
+import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import feign.hystrix.FallbackFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -57,7 +58,8 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
 
             @Override
             public ResponseData saveAdmin(TbCoreUser user,String roleId) {
-                return ReturnJsonUtil.fail("保存失败");
+                log.error("调用saveAdmin失败，参数：user={}，roleId={} ，e={}",user,roleId,cause);
+                return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_ERROR, cause.getMessage(),false);
             }
         };
     }

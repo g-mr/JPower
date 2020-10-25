@@ -37,5 +37,5 @@ public interface UserClient {
     ResponseData<TbCoreUser> queryUserByPhone(@RequestParam String phone,@RequestParam String tenantCode);
 
     @PostMapping("/saveAdmin")
-    ResponseData saveAdmin(@RequestParam TbCoreUser user,@RequestParam String roleId);
+    ResponseData saveAdmin(@RequestBody TbCoreUser user,@RequestParam String roleId);
 }

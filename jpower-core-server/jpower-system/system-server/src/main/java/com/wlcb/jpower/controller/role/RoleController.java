@@ -7,6 +7,7 @@ import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.utils.BeanUtil;
+import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
@@ -27,6 +28,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+
+import static com.wlcb.jpower.module.common.cache.CacheNames.SYSTEM_REDIS_CACHE;
 
 @Api(tags = "角色管理")
 @RestController
@@ -130,6 +133,7 @@ public class RoleController extends BaseController {
         Integer count = coreRolefunctionService.addRolefunctions(roleId,functionIds);
 
         if (count > 0){
+            CacheUtil.clear(SYSTEM_REDIS_CACHE);
             return ReturnJsonUtil.ok("设置成功");
         }else {
             return ReturnJsonUtil.fail("设置失败");

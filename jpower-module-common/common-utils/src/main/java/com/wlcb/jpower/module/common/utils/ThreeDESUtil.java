@@ -71,7 +71,7 @@ public class ThreeDESUtil {
 
 
     public static void main(String[] args) {
-        String txt = 5000+";"+Fc.formatDateTime(null);
+        String txt = -1+";"+null;
 //        byte[] bytes = encryptMode(txt.getBytes(StandardCharsets.UTF_8));
 //        System.out.println(DigestUtil.toHex(bytes));
 //

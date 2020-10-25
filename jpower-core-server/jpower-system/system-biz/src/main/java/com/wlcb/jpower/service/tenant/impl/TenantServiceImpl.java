@@ -110,7 +110,7 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
             roleDao.save(role);
             //创建租户权限
             LambdaQueryWrapper<TbCoreFunction> queryWrapper = Condition.<TbCoreFunction>getQueryWrapper().lambda().select(TbCoreFunction::getId);
-            if (functionCodes.size()>0){
+            if (Fc.notNull(functionCodes) && functionCodes.size()>0){
                 queryWrapper.in(TbCoreFunction::getCode,functionCodes);
             }
             queryWrapper.or(c -> c.eq(TbCoreFunction::getParentId,TOP_CODE).eq(TbCoreFunction::getIsMenu,ConstantsEnum.YN01.N.getValue()));
@@ -148,7 +148,7 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
             dictType.setIsTree(ConstantsEnum.YN01.N.getValue());
             dictTypeDao.save(dictType);
 
-            if (dictTypeCodes.size()>0){
+            if (Fc.notNull(dictTypeCodes) && dictTypeCodes.size()>0){
                 dictTypeDao.listObjs(Condition.<TbCoreDictType>getQueryWrapper().lambda()
                         .select(TbCoreDictType::getId)
                         .in(TbCoreDictType::getDictTypeCode,dictTypeCodes)

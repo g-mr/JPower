@@ -37,8 +37,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static com.wlcb.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
-import static com.wlcb.jpower.module.tenant.TenantConstant.TENANT_ACCOUNT_NUMBER;
+import static com.wlcb.jpower.module.tenant.TenantConstant.*;
 
 /**
  * @author mr.gmac
@@ -219,9 +218,10 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
             }
 
             TbCoreTenant tenant = SystemCache.getTenantByCode(coreUser.getTenantCode());
-            if (!Fc.equals(tenant.getAccountNumber(), TENANT_ACCOUNT_NUMBER)){
+            Integer accountNumber = getAccountNumber(tenant.getLicenseKey());
+            if (!Fc.equals(accountNumber, TENANT_ACCOUNT_NUMBER)){
                 Integer count = coreUserDao.count(Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getTenantCode,coreUser.getTenantCode()));
-                if (count >= tenant.getAccountNumber()){
+                if (count >= accountNumber){
                     throw new BusinessException(tenant.getTenantName()+"租户账号额度已不足");
                 }
             }

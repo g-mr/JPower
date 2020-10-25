@@ -114,8 +114,8 @@ public class SecureUtil {
      * @return boolean
      */
     public static boolean isRoot() {
-        return true;
-//        return Fc.contains(getUserRole().iterator(), RoleConstant.ROOT_ID);
+//        return true;
+        return Fc.contains(getUserRole().iterator(), RoleConstant.ROOT_ID);
     }
 
     /**

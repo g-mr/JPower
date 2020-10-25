@@ -35,8 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import static com.wlcb.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
-import static com.wlcb.jpower.module.tenant.TenantConstant.TENANT_ACCOUNT_NUMBER;
+import static com.wlcb.jpower.module.tenant.TenantConstant.*;
 
 @Api(tags = "用户管理")
 @RestController
@@ -99,9 +98,10 @@ public class UserController extends BaseController {
             tenantCode = Fc.isBlank(coreUser.getTenantCode())?DEFAULT_TENANT_CODE:coreUser.getTenantCode();
         }
         TbCoreTenant tenant = SystemCache.getTenantByCode(tenantCode);
-        if (!Fc.equals(tenant.getAccountNumber(), TENANT_ACCOUNT_NUMBER)){
+        Integer accountNumber = getAccountNumber(tenant.getLicenseKey());
+        if (!Fc.equals(accountNumber, TENANT_ACCOUNT_NUMBER)){
             Integer count = coreUserService.count(Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getTenantCode,tenantCode));
-            if (count >= tenant.getAccountNumber()){
+            if (count >= accountNumber){
                 return ReturnJsonUtil.busFail("账号额度已不足");
             }
         }

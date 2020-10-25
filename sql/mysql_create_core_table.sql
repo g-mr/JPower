@@ -26,6 +26,7 @@ create table tb_core_user(
   update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
   status   tinyint(1) default 1 comment '状态',
   is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
+  tenant_code varchar(6) not null default '000000' comment '租户编码',
   PRIMARY KEY (id) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统登录用户表';
 
@@ -49,7 +50,27 @@ create table tb_core_role(
   PRIMARY KEY (id) USING BTREE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '角色表';
 
-
+drop table if exists tb_core_tenant;
+create table tb_core_tenant(
+  id varchar(32) not null comment '主建',
+  tenant_code varchar(6) not null comment '租户编码',
+  tenant_name varchar(50) not null comment '租户名称',
+  domain varchar(40) comment '域名',
+  background_url varchar(100) comment '系统背景',
+  contact_name varchar(20) comment '联系人',
+  contact_phone varchar(11) comment '联系人电话',
+  address varchar(256) comment '地址',
+  account_number int(8) default -1 comment '账号额度',
+  expire_time datetime default null comment '过期时间',
+  license_key varchar(512) comment '授权码',
+  create_user varchar(32) default 'root' not null comment '创建人',
+  create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
+  update_user varchar(32) default 'root' not null comment '更新人',
+  update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
+  status   tinyint(1) default 1 comment '状态',
+  is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
+  PRIMARY KEY (id) USING BTREE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '租户表';
 
 
 drop table if exists tb_core_user_role;
@@ -93,6 +114,7 @@ create table tb_core_org(
  update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
  status tinyint(1) default 1 comment '状态',
  is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
+ tenant_code varchar(6) not null default '000000' comment '租户编码',
  PRIMARY KEY (id) USING BTREE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '部门表';
 
@@ -170,8 +192,9 @@ create table tb_core_dict_type(
   update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
   status   tinyint(1) default 1 comment '状态',
   is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
+  tenant_code varchar(6) not null default '000000' comment '租户编码',
   PRIMARY KEY (id) USING BTREE,
-  unique key core_dict_type(dict_type_code, locale_code) USING BTREE
+  unique key core_dict_type(dict_type_code, tenant_code, locale_code) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '字典类型表';
 
 
@@ -194,6 +217,7 @@ create table tb_core_dict
   update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
   status   tinyint(1) default 1 comment '状态',
   is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
+  tenant_code varchar(6) not null default '000000' comment '租户编码',
   PRIMARY KEY (id) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '字典表';
 

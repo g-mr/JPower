@@ -6,8 +6,8 @@ import com.wlcb.jpower.auth.AuthInfo;
 import com.wlcb.jpower.auth.granter.TokenGranter;
 import com.wlcb.jpower.auth.granter.TokenGranterBuilder;
 import com.wlcb.jpower.auth.utils.TokenUtil;
-import com.wlcb.jpower.cache.UserCache;
 import com.wlcb.jpower.cache.SystemCache;
+import com.wlcb.jpower.cache.UserCache;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
 import com.wlcb.jpower.module.base.enums.JpowerError;
@@ -30,6 +30,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import static com.wlcb.jpower.module.tenant.TenantConstant.getExpireTime;
 
 /**
  * @ClassName LoginController
@@ -85,7 +87,10 @@ public class LoginController extends BaseController {
                 .set("otherCode", otherCode);
 
         TbCoreTenant tenant = SystemCache.getTenantByCode(tenantCode);
-        if (Fc.notNull(tenant.getExpireTime()) && new Date().before(tenant.getExpireTime())){
+        if (Fc.isNull(tenant)){
+            return ReturnJsonUtil.fail("租户不存在");
+        }
+        if (Fc.notNull(tenant.getExpireTime()) && new Date().before(getExpireTime(tenant.getLicenseKey()))){
             return ReturnJsonUtil.fail("租户已过期");
         }
 
