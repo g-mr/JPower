@@ -16,10 +16,6 @@ public interface CacheNames {
     /** 登陆用户权限缓存KEY **/
     String TOKEN_URL_KEY = "jpower:auth::token:";
 
-    String DICT_REDIS_CODE_LIST = "dict:code:typeList";
-
-    String DICT_REDIS_TYPE_MAP_KEY = "dict:typeMap:";
-
     /** 行政区域缓存 **/
     String CITY_REDIS_CACHE = "jpower:citys";
     /** 系统参数缓存 **/

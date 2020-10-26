@@ -57,7 +57,7 @@ public class TenantController extends BaseController {
     @ApiOperation("修改租户信息")
     @PutMapping("/update")
     public ResponseData update(TbCoreTenant tenant){
-        JpowerAssert.isTrue(SecureUtil.isRoot(), JpowerError.Unknown,"只可超级管理员删除租户");
+        JpowerAssert.isTrue(SecureUtil.isRoot(), JpowerError.Auth,"只可超级管理员删除租户");
         JpowerAssert.notEmpty(tenant.getId(), JpowerError.Arg,"主键不可为空");
 
         if (Fc.isNotBlank(tenant.getDomain())){
@@ -73,7 +73,7 @@ public class TenantController extends BaseController {
     @ApiOperation("删除租户信息")
     @DeleteMapping("/delete")
     public ResponseData delete(@ApiParam("租户主键，多个逗号分隔") @RequestParam String ids){
-        JpowerAssert.isTrue(SecureUtil.isRoot(), JpowerError.Unknown,"只可超级管理员删除租户");
+        JpowerAssert.isTrue(SecureUtil.isRoot(), JpowerError.Auth,"只可超级管理员删除租户");
         JpowerAssert.notEmpty(ids, JpowerError.Arg,"主键不可为空");
         return ReturnJsonUtil.status(tenantService.removeByIds(Fc.toStrList(ids)));
     }
@@ -84,7 +84,7 @@ public class TenantController extends BaseController {
                             @ApiParam("功能CODE 多个逗号分隔") @RequestParam(required = false) List<String> functionCodes,
                             @ApiParam("字典类型CODE 多个逗号分隔") @RequestParam(required = false) List<String> dictTypeCodes){
         tenant.setId(null);
-        JpowerAssert.isTrue(SecureUtil.isRoot(), JpowerError.Unknown,"只可超级管理员增加租户");
+        JpowerAssert.isTrue(SecureUtil.isRoot(), JpowerError.Auth,"只可超级管理员增加租户");
         JpowerAssert.notEmpty(tenant.getTenantName(), JpowerError.Arg,"租户名称不可为空");
         if (Fc.isNotBlank(tenant.getContactPhone()) && !StrUtil.isPhone(tenant.getContactPhone())){
             return ReturnJsonUtil.fail("手机号不合法");
@@ -104,7 +104,7 @@ public class TenantController extends BaseController {
     public ResponseData setting(@ApiParam(value = "租户ID 多个逗号分隔",required = true) @RequestParam List<String> ids,
                                 @ApiParam(value = "租户额度") @RequestParam(required = false) Integer accountNumber,
                                 @ApiParam(value = "租户过期时间") @RequestParam(required = false) Date expireTime){
-        JpowerAssert.isTrue(SecureUtil.isRoot(), JpowerError.Unknown,"只可超级管理员配置租户");
+        JpowerAssert.isTrue(SecureUtil.isRoot(), JpowerError.Auth,"只可超级管理员配置租户");
         return ReturnJsonUtil.status(tenantService.setting(ids,accountNumber,expireTime));
     }
 

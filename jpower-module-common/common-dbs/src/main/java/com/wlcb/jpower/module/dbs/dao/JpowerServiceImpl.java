@@ -20,6 +20,8 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.wlcb.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
+
 /**
  * @ClassName JpowerServiceImpl
  * @Description TODO
@@ -52,7 +54,9 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> ex
         Field field = ReflectUtil.getField(entity.getClass(), TenantConstant.TENANT_CODE);
         if (ObjectUtil.isNotEmpty(field)){
             String tenantCode = ReflectUtil.invokeGetter(entity,TenantConstant.TENANT_CODE);
-            if (Fc.isEmpty(tenantCode)){
+            if (SecureUtil.isRoot() && Fc.isBlank(entity.getId())){
+                ReflectUtil.invokeSetter(entity,TenantConstant.TENANT_CODE,Fc.isBlank(tenantCode)?DEFAULT_TENANT_CODE:tenantCode);
+            }else {
                 ReflectUtil.invokeSetter(entity,TenantConstant.TENANT_CODE,null);
             }
         }

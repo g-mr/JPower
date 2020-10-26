@@ -34,7 +34,7 @@ create table tb_core_user(
 drop table if exists tb_core_role;
 create table tb_core_role(
   id varchar(32) not null comment '主建',
-  code varchar(50) not null comment '角色代码',
+  alias varchar(20) comment '角色别名',
   name varchar(50) not null comment '角色名称',
   parent_id varchar(32) comment '上级ID',
   icon_url varchar(100) comment '图标地址',
@@ -182,7 +182,6 @@ create table tb_core_dict_type(
   id varchar(32) not null comment '主键',
   dict_type_code varchar(50) not null comment '字典类型代码',
   dict_type_name varchar(100) not null comment '字典类型名称',
-  locale_code varchar(20) default 'zh_cn' not null comment '语言  zh_cn en_us',
   note varchar(100) comment '描述',
   del_enabled char(1) default 'N' not null comment '是否允许删除 N:不允许 Y允许',
   sort_num int(6) default 0 comment '排序',
@@ -195,7 +194,7 @@ create table tb_core_dict_type(
   is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
   tenant_code varchar(6) not null default '000000' comment '租户编码',
   PRIMARY KEY (id) USING BTREE,
-  unique key core_dict_type(dict_type_code, tenant_code, locale_code) USING BTREE
+  unique key core_dict_type(dict_type_code, tenant_code) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '字典类型表';
 
 

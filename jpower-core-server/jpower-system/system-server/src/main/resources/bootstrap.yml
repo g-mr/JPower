@@ -13,12 +13,6 @@ spring:
     #  commandTimeout: 5000
 
 jpower:
-  seata:
-    #   是否启用分布式事务（默认不开启）
-    enabled: true
-  hystrix:
-    #   feign降级时是否自动进行事务回滚
-    transaction: true
   #  开发环境
   dev:
     nacos:

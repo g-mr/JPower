@@ -124,9 +124,7 @@ public class UserController extends BaseController {
 
         JpowerAssert.notEmpty(ids, JpowerError.Arg,"ids不可为空");
 
-        Boolean is = coreUserService.delete(ids);
-
-        if (is){
+        if (coreUserService.delete(ids)){
             CacheUtil.clear(CacheNames.USER_REDIS_CACHE);
             return ReturnJsonUtil.ok("删除成功");
         }else {
@@ -182,9 +180,7 @@ public class UserController extends BaseController {
 
         JpowerAssert.notEmpty(ids, JpowerError.Arg,"用户ids不可为空");
 
-        Boolean is = coreUserService.updateUserPassword(ids,pass);
-
-        if (is){
+        if (coreUserService.updateUserPassword(ids,pass)){
             CacheUtil.clear(CacheNames.USER_REDIS_CACHE);
             return ReturnJsonUtil.ok(ids.split(",").length+"位用户密码重置成功");
         }else {

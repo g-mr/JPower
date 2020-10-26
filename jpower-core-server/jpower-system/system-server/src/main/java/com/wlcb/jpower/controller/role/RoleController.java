@@ -11,7 +11,6 @@ import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
-import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.role.CoreFunctionService;
@@ -61,7 +60,7 @@ public class RoleController extends BaseController {
     public ResponseData add(TbCoreRole coreRole){
 
         BeanUtil.allFieldIsNULL(coreRole,
-                "code","name");
+                "name");
 
         if (StringUtils.isBlank(coreRole.getParentId())){
             coreRole.setParentId(JpowerConstants.TOP_CODE);
@@ -69,11 +68,6 @@ public class RoleController extends BaseController {
 
         if (Fc.isNull(coreRole.getIsSysRole())){
             coreRole.setIsSysRole(ConstantsEnum.YN01.N.getValue());
-        }
-
-        TbCoreRole role = coreRoleService.selectRoleByCode(coreRole.getCode());
-        if (role != null){
-            return ReturnJsonUtil.busFail("该角色已存在");
         }
 
         return ReturnJsonUtil.status(coreRoleService.add(coreRole));
@@ -100,13 +94,6 @@ public class RoleController extends BaseController {
     public ResponseData update(TbCoreRole coreRole){
 
         JpowerAssert.notEmpty(coreRole.getId(), JpowerError.Arg,"id不可为空");
-
-        if (StringUtils.isNotBlank(coreRole.getCode())){
-            TbCoreRole role = coreRoleService.selectRoleByCode(coreRole.getCode());
-            if (role != null && !StringUtils.equals(role.getId(),coreRole.getId())){
-                return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该角色已存在", false);
-            }
-        }
 
         return ReturnJsonUtil.status(coreRoleService.update(coreRole));
     }

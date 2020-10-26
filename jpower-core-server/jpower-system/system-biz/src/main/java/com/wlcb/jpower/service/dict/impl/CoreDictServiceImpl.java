@@ -6,9 +6,7 @@ import com.wlcb.jpower.dbs.dao.dict.mapper.TbCoreDictMapper;
 import com.wlcb.jpower.dbs.entity.dict.TbCoreDict;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
-import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
-import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SecureUtil;
 import com.wlcb.jpower.module.common.utils.StringUtil;
@@ -50,7 +48,6 @@ public class CoreDictServiceImpl extends BaseServiceImpl<TbCoreDictMapper, TbCor
             JpowerAssert.notTrue(coreDictType != null && !StringUtil.equals(dict.getId(),coreDictType.getId()), JpowerError.BUSINESS,"该字典已存在");
         }
 
-        CacheUtil.evict(CacheNames.DICT_REDIS_CACHE,CacheNames.DICT_REDIS_TYPE_MAP_KEY,dict.getDictTypeCode());
         return dictDao.saveOrUpdate(dict);
     }
 

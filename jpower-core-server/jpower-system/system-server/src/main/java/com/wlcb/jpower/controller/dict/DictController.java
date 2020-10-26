@@ -24,11 +24,9 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import static com.wlcb.jpower.module.common.cache.CacheNames.DICT_REDIS_CACHE;
-import static com.wlcb.jpower.module.common.cache.CacheNames.DICT_REDIS_TYPE_MAP_KEY;
 import static com.wlcb.jpower.module.common.utils.constants.JpowerConstants.TOP_CODE;
 import static com.wlcb.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
 
@@ -66,6 +64,7 @@ public class DictController {
     @ApiOperation(value = "更新字典类型")
     @RequestMapping(value = "/update",method = RequestMethod.POST,produces="application/json")
     public ResponseData update(TbCoreDictType dictType){
+        JpowerAssert.notEmpty(dictType.getId(), JpowerError.Arg,"字典类型主键不可为空");
         return ReturnJsonUtil.status(coreDictTypeService.updateDictType(dictType));
     }
 
@@ -87,6 +86,7 @@ public class DictController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum",value = "第几页",defaultValue = "1",paramType = "query",dataType = "int",required = true),
             @ApiImplicitParam(name = "pageSize",value = "每页长度",defaultValue = "10",paramType = "query",dataType = "int",required = true),
+            @ApiImplicitParam(name = "tenantCode",value = "租户编码，超级用户必传",paramType = "query"),
             @ApiImplicitParam(name = "dictTypeCode",value = "字典类型编码",paramType = "query",required = true),
             @ApiImplicitParam(name = "code",value = "字典编码",paramType = "query"),
             @ApiImplicitParam(name = "name",value = "字典名称",paramType = "query")
@@ -101,8 +101,13 @@ public class DictController {
     }
 
     @ApiOperation(value = "查询下级字典",notes = "不可传-1")
-    @RequestMapping(value = "/listDictChildList",method = RequestMethod.GET,produces="application/json")
-    public ResponseData<List<DictVo>> listDictChildList(@RequestParam TbCoreDict dict){
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "parentId",value = "父级字典",paramType = "query",required = true),
+            @ApiImplicitParam(name = "code",value = "字典编码",paramType = "query"),
+            @ApiImplicitParam(name = "name",value = "字典名称",paramType = "query")
+    })
+    @GetMapping(value = "/listDictChildList",produces="application/json")
+    public ResponseData<List<DictVo>> listDictChildList(@ApiIgnore TbCoreDict dict){
         JpowerAssert.notEmpty(dict.getParentId(), JpowerError.Arg,"父级字典id不可为空");
         JpowerAssert.notTrue(Fc.equals(dict.getParentId(), TOP_CODE), JpowerError.Arg,"父级字典id不可为-1");
 
@@ -138,17 +143,12 @@ public class DictController {
     @RequestMapping(value = "/deleteDict",method = RequestMethod.DELETE,produces="application/json")
     public ResponseData deleteDict(@ApiParam(value = "主键，多个逗号分割",required = true) @RequestParam String ids){
         JpowerAssert.notEmpty(ids, JpowerError.Arg,"字典ID不可为空");
+        List<String> list = Fc.toStrList(ids);
 
         if(coreDictService.count(Condition.<TbCoreDict>getQueryWrapper()
                 .lambda()
-                .in(TbCoreDict::getParentId,Fc.toStrList(ids))) > 0){
+                .in(TbCoreDict::getParentId,list)) > 0){
             return ReturnJsonUtil.notFind("请先删除下级字典");
-        }
-
-        List<String> list = Fc.toStrList(ids);
-        List<TbCoreDict> dicts = coreDictService.listByIds(list);
-        if (!Fc.isNull(dicts) && dicts.size() > 0){
-            dicts.forEach(ls -> CacheUtil.evict(DICT_REDIS_CACHE,DICT_REDIS_TYPE_MAP_KEY,ls.getDictTypeCode()));
         }
 
         CacheUtil.clear(DICT_REDIS_CACHE);
@@ -164,25 +164,26 @@ public class DictController {
 
     @ApiOperation("通过字典类型查询字典列表")
     @GetMapping("/getDictListByType")
-    public ResponseData<List<DictVo>> getDictListByType(@RequestParam(required = false) TbCoreDict dict){
+    public ResponseData<List<DictVo>> getDictListByType(TbCoreDict dict){
         JpowerAssert.notEmpty(dict.getDictTypeCode(), JpowerError.Arg,"字典类型不可为空");
-        dict.setParentId(TOP_CODE);
+        if (Fc.isBlank(dict.getParentId())){
+            dict.setParentId(TOP_CODE);
+        }
 
         return ReturnJsonUtil.ok("查询成功", coreDictService.listByType(dict));
     }
 
     @ApiOperation("查询顶级字典类型")
     @GetMapping("/getTopDictType")
-    public ResponseData<List<HashMap<String,String>>> getTopDictType(){
-        JpowerAssert.isTrue(SecureUtil.isRoot(), JpowerError.Unknown,"只可超级管理员查询");
+    public ResponseData<List<ChainMap>> getTopDictType(){
+        JpowerAssert.isTrue(SecureUtil.isRoot(), JpowerError.Auth,"只可超级管理员查询");
 
-        List<HashMap<String,String>> list = new ArrayList<>();
+        List<ChainMap> list = new ArrayList<>();
         coreDictTypeService.list(Condition.<TbCoreDictType>getQueryWrapper().lambda().eq(TbCoreDictType::getParentId,TOP_CODE).eq(TbCoreDictType::getTenantCode, DEFAULT_TENANT_CODE)).forEach(type -> {
-            HashMap<String,String> map = ChainMap.newMap();
-            map.put("id",type.getId());
-            map.put("code",type.getDictTypeCode());
-            map.put("name",type.getDictTypeName());
-            list.add(map);
+            list.add(ChainMap.init().
+                    set("id",type.getId()).
+                    set("code",type.getDictTypeCode()).
+                    set("name",type.getDictTypeName()));
         });
         return ReturnJsonUtil.ok("查询成功", list);
     }

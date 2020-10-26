@@ -24,9 +24,6 @@ public class TbCoreDictType extends TenantEntity {
     private String dictTypeCode;
     @ApiModelProperty("字典类型名称")
     private String dictTypeName;
-    @ApiModelProperty("语言类型 字典YYZL")
-    @Dict(name = "YYZL")
-    private String localeCode;
     @ApiModelProperty("备注")
     private String note;
     @ApiModelProperty("是否允许删除 字典YN")

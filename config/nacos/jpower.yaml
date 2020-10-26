@@ -94,9 +94,6 @@ jpower:
 #  seata:
 #   是否启用分布式事务（默认不开启）
 #    enabled: false
-#  hystrix:
-#   feign降级时是否自动进行事务回滚（默认为false）
-#    transaction: false
 #  tenant:
 #    是否启用多租户模式
 #    enable: true

@@ -13,15 +13,16 @@ import com.wlcb.jpower.module.common.utils.BeanUtil;
 import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
-import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
-import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.service.org.CoreOrgService;
 import com.wlcb.jpower.vo.OrgVo;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
@@ -55,17 +56,6 @@ public class OrgController extends BaseController {
         BeanUtil.allFieldIsNULL(coreOrg,
                 "name","code");
 
-        TbCoreOrg org = coreOrgService.selectOrgByCode(coreOrg.getCode());
-        if (org != null){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该组织机构已存在", false);
-        }
-
-        if (StringUtils.isBlank(coreOrg.getParentId())){
-            coreOrg.setParentId(JpowerConstants.TOP_CODE);
-            coreOrg.setAncestorId(JpowerConstants.TOP_CODE);
-        }else {
-            coreOrg.setAncestorId(coreOrg.getParentId().concat(StringPool.COMMA).concat(coreOrgService.getById(coreOrg.getParentId()).getAncestorId()));
-        }
         Boolean is = coreOrgService.add(coreOrg);
 
         if (is){
@@ -97,18 +87,10 @@ public class OrgController extends BaseController {
         }
     }
 
-    @ApiOperation("修改组织机构信息")
+    @ApiOperation(value = "修改组织机构信息")
     @RequestMapping(value = "/update",method = {RequestMethod.PUT},produces="application/json")
     public ResponseData update(TbCoreOrg coreOrg){
-
         JpowerAssert.notEmpty(coreOrg.getId(), JpowerError.Arg,"id不可为空");
-
-        if (StringUtils.isNotBlank(coreOrg.getCode())){
-            TbCoreOrg org = coreOrgService.selectOrgByCode(coreOrg.getCode());
-            if (org != null && !StringUtils.equals(org.getId(),coreOrg.getId())){
-                return ReturnJsonUtil.busFail("该组织机构编码已存在");
-            }
-        }
 
         Boolean is = coreOrgService.update(coreOrg);
 
@@ -159,12 +141,6 @@ public class OrgController extends BaseController {
         coreOrg.remove("parentId");
         List<Node> list = coreOrgService.tree(parentId,coreOrg);
         return ReturnJsonUtil.ok("查询成功",list);
-    }
-
-    @GetMapping(value = "/test")
-    public ResponseData test() {
-        coreOrgService.updateTest();
-        return ReturnJsonUtil.ok("查询成功");
     }
 
 }

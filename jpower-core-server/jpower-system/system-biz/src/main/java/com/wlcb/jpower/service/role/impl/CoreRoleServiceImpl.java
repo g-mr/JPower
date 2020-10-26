@@ -1,6 +1,5 @@
 package com.wlcb.jpower.service.role.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wlcb.jpower.dbs.dao.role.TbCoreRoleDao;
 import com.wlcb.jpower.dbs.dao.role.mapper.TbCoreRoleMapper;
 import com.wlcb.jpower.dbs.entity.role.TbCoreRole;
@@ -28,11 +27,6 @@ public class CoreRoleServiceImpl extends BaseServiceImpl<TbCoreRoleMapper, TbCor
     @Override
     public Integer listByPids(String ids) {
         return coreRoleDao.count(Condition.<TbCoreRole>getQueryWrapper().lambda().in(TbCoreRole::getParentId, Fc.toStrList(ids)));
-    }
-
-    @Override
-    public TbCoreRole selectRoleByCode(String code) {
-        return coreRoleDao.getOne(new QueryWrapper<TbCoreRole>().lambda().eq(TbCoreRole::getCode,code));
     }
 
     @Override

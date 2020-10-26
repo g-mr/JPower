@@ -1,25 +1,34 @@
 package com.wlcb.jpower.service.org.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.wlcb.jpower.cache.UserCache;
 import com.wlcb.jpower.dbs.dao.org.TbCoreOrgDao;
 import com.wlcb.jpower.dbs.dao.org.mapper.TbCoreOrgMapper;
 import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
 import com.wlcb.jpower.feign.UserClient;
+import com.wlcb.jpower.module.base.enums.JpowerError;
+import com.wlcb.jpower.module.base.exception.BusinessException;
+import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.SecureUtil;
+import com.wlcb.jpower.module.common.utils.StringUtil;
+import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.org.CoreOrgService;
 import com.wlcb.jpower.vo.OrgVo;
 import com.wlcb.jpower.wrapper.BaseDictWrapper;
-import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+
+import static com.wlcb.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
 
 /**
  * @author mr.gmac
@@ -41,12 +50,20 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper, TbCoreO
     }
 
     @Override
-    public TbCoreOrg selectOrgByCode(String code) {
-        return coreOrgDao.getOne(new QueryWrapper<TbCoreOrg>().lambda().eq(TbCoreOrg::getCode,code));
-    }
-
-    @Override
     public Boolean add(TbCoreOrg coreOrg) {
+
+        LambdaQueryWrapper<TbCoreOrg> queryWrapper = Condition.<TbCoreOrg>getQueryWrapper().lambda().eq(TbCoreOrg::getCode,coreOrg.getCode());
+        if (SecureUtil.isRoot()){
+            queryWrapper.eq(TbCoreOrg::getTenantCode,Fc.isNotBlank(coreOrg.getTenantCode())?coreOrg.getTenantCode():DEFAULT_TENANT_CODE);
+        }
+        JpowerAssert.geZero(coreOrgDao.count(queryWrapper), JpowerError.BUSINESS,"该编码已存在");
+
+        if (StringUtils.isBlank(coreOrg.getParentId())){
+            coreOrg.setParentId(JpowerConstants.TOP_CODE);
+            coreOrg.setAncestorId(JpowerConstants.TOP_CODE);
+        }else {
+            coreOrg.setAncestorId(coreOrg.getParentId().concat(StringPool.COMMA).concat(coreOrgDao.getById(coreOrg.getParentId()).getAncestorId()));
+        }
         return coreOrgDao.save(coreOrg);
     }
 
@@ -57,8 +74,25 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper, TbCoreO
     }
 
     @Override
-    public Boolean update(TbCoreOrg coreUser) {
-        return coreOrgDao.updateById(coreUser);
+    public Boolean update(TbCoreOrg coreOrg) {
+        TbCoreOrg org = coreOrgDao.getById(coreOrg.getId());
+
+        if (StringUtils.isNotBlank(coreOrg.getCode())){
+            LambdaQueryWrapper<TbCoreOrg> queryWrapper = Condition.<TbCoreOrg>getQueryWrapper().lambda().eq(TbCoreOrg::getCode,coreOrg.getCode());
+            if (SecureUtil.isRoot()){
+                queryWrapper.eq(TbCoreOrg::getTenantCode,org.getTenantCode());
+            }
+            TbCoreOrg tbCoreOrg = coreOrgDao.getOne(queryWrapper);
+            if (tbCoreOrg != null && !StringUtils.equals(tbCoreOrg.getId(),coreOrg.getId())){
+                throw new BusinessException("该编码已存在");
+            }
+        }
+
+        if (StringUtils.isNotBlank(coreOrg.getParentId())){
+            coreOrg.setAncestorId(StringUtil.replace(org.getAncestorId(),org.getParentId(),coreOrg.getParentId()));
+        }
+
+        return coreOrgDao.updateById(coreOrg);
     }
 
     @Override
@@ -79,19 +113,6 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper, TbCoreO
         return coreOrgDao.listObjs(Condition.<TbCoreOrg>getQueryWrapper().lambda()
                 .select(TbCoreOrg::getId)
                 .like(TbCoreOrg::getAncestorId,id),Fc::toStr);
-    }
-
-    @GlobalTransactional
-    @Override
-    public void updateTest() {
-        log.info("开始测试");
-        TbCoreOrg org = new TbCoreOrg();
-        org.setId("dac7807f179cc08d8c7f57c71840dae7");
-        org.setIcon("测试一下1232");
-        coreOrgDao.updateById(org);
-//        Integer a = Integer.parseInt("测试");
-        UserCache.getById("dasdqwdqwdqw");
-//        userClient.get("dslfkeowpsfkw");
     }
 
 }

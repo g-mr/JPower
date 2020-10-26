@@ -185,7 +185,9 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
             coreUser.setPassword(password);
             coreUser.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_SYSTEM.getValue());
 
-            if (!SecureUtil.isRoot() || Fc.isBlank(coreUser.getTenantCode())){
+            if (SecureUtil.isRoot()){
+                coreUser.setTenantCode(Fc.isBlank(coreUser.getTenantCode())?SecureUtil.getTenantCode():coreUser.getTenantCode());
+            }else {
                 coreUser.setTenantCode(SecureUtil.getTenantCode());
             }
 
@@ -217,19 +219,26 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
                 }
             }
 
-            TbCoreTenant tenant = SystemCache.getTenantByCode(coreUser.getTenantCode());
-            Integer accountNumber = getAccountNumber(tenant.getLicenseKey());
-            if (!Fc.equals(accountNumber, TENANT_ACCOUNT_NUMBER)){
-                Integer count = coreUserDao.count(Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getTenantCode,coreUser.getTenantCode()));
-                if (count >= accountNumber){
-                    throw new BusinessException(tenant.getTenantName()+"租户账号额度已不足");
-                }
-            }
             userList.add(coreUser);
         }
 
         //list去重
         userList = userList.stream().filter(filterUser(o -> o)).collect(Collectors.toList());
+
+        List<String> tenantCodes = userList.stream().map(TbCoreUser::getTenantCode).distinct().collect(Collectors.toList());
+        tenantCodes.forEach(tenantCode -> {
+
+            TbCoreTenant tenant = SystemCache.getTenantByCode(tenantCode);
+            Integer accountNumber = getAccountNumber(tenant.getLicenseKey());
+            if (!Fc.equals(accountNumber, TENANT_ACCOUNT_NUMBER)){
+                Integer count = coreUserDao.count(Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getTenantCode,tenantCode));
+                if (count >= accountNumber){
+                    throw new BusinessException(tenant.getTenantName()+"租户账号额度不足");
+                }
+            }
+
+        });
+
         return coreUserDao.saveOrUpdateBatch(userList);
     }
 

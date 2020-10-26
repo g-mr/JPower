@@ -19,8 +19,8 @@ public class TbCoreRole extends TenantEntity implements Serializable {
 
     private static final long serialVersionUID = 7093626905745914312L;
 
-    @ApiModelProperty("角色编码")
-    private String code;
+    @ApiModelProperty("角色别名")
+    private String alias;
     @ApiModelProperty("角色名称")
     private String name;
     @ApiModelProperty("角色父级ID")
