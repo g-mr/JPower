@@ -78,6 +78,7 @@ public class TokenGranterBuilder {
             userInfo.setUserName(result.getUserName());
             userInfo.setNickName(result.getNickName());
             userInfo.setOtherCode(result.getOtherCode());
+            userInfo.setTenantCode(result.getTenantCode());
             userInfo.setRoleIds(list);
 
             // TODO: 2020-07-28 登录成功要刷新用户登录数据

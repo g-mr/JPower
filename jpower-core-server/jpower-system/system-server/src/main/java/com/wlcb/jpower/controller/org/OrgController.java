@@ -21,10 +21,7 @@ import com.wlcb.jpower.vo.OrgVo;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
@@ -162,6 +159,12 @@ public class OrgController extends BaseController {
         coreOrg.remove("parentId");
         List<Node> list = coreOrgService.tree(parentId,coreOrg);
         return ReturnJsonUtil.ok("查询成功",list);
+    }
+
+    @GetMapping(value = "/test")
+    public ResponseData test() {
+        coreOrgService.updateTest();
+        return ReturnJsonUtil.ok("查询成功");
     }
 
 }

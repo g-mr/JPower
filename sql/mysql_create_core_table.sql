@@ -47,6 +47,7 @@ create table tb_core_role(
   update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
   status   tinyint(1) default 1 comment '状态',
   is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
+  tenant_code varchar(6) not null default '000000' comment '租户编码',
   PRIMARY KEY (id) USING BTREE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '角色表';
 

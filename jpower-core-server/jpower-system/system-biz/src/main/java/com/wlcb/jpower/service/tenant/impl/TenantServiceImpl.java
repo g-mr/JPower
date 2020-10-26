@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static com.wlcb.jpower.module.common.utils.constants.JpowerConstants.*;
+import static com.wlcb.jpower.module.common.utils.constants.JpowerConstants.TOP_CODE;
 import static com.wlcb.jpower.module.tenant.TenantConstant.*;
 
 /**
@@ -78,7 +78,11 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
 
     @Override
     public boolean save(TbCoreTenant tenant, List<String> functionCodes, List<String> dictTypeCodes){
-        tenant.setTenantCode(tenantCode());
+        if (Fc.isBlank(tenant.getTenantCode())){
+            List<String> tenantCodeList = tenantDao.listObjs(Condition.<TbCoreTenant>getQueryWrapper().lambda()
+                    .select(TbCoreTenant::getTenantCode),Fc::toStr);
+            tenant.setTenantCode(tenantCode(tenantCodeList));
+        }
         if (Fc.isNull(tenant.getAccountNumber())){
             tenant.setAccountNumber(TENANT_ACCOUNT_NUMBER);
         }
@@ -123,21 +127,6 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
                 roleFunctionList.add(roleFunction);
             });
             roleFunctionDao.saveBatch(roleFunctionList);
-            //创建租户默认用户
-            TbCoreUser user = new TbCoreUser();
-            user.setLoginId("admin");
-            user.setPassword(DigestUtil.encrypt(MD5.parseStrToMd5U32(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD, ConstantsUtils.DEFAULT_USER_PASSWORD))));
-            user.setNickName("管理员");
-            user.setUserName("管理员");
-            user.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_SYSTEM.getValue());
-            user.setBirthday(new Date());
-            user.setActivationStatus(ConstantsEnum.YN01.Y.getValue());
-            user.setOrgId(org.getId());
-            if (SecureUtil.isRoot()){
-                user.setTenantCode(tenant.getTenantCode());
-            }
-            ResponseData data = userClient.saveAdmin(user,role.getId());
-            JpowerAssert.isTrue(data.isStatus(), JpowerError.Api, data.getCode(), data.getMessage());
             //创建租户默认字典
             TbCoreDictType dictType = new TbCoreDictType();
             dictType.setDictTypeCode(tenant.getTenantCode());
@@ -159,6 +148,21 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
                 saveDictType(TOP_CODE,dictType.getId(),tenant.getTenantCode());
             }
 
+            //创建租户默认用户 (必须放到最后，因为没有启动分布式事务)
+            TbCoreUser user = new TbCoreUser();
+            user.setLoginId("admin");
+            user.setPassword(DigestUtil.encrypt(MD5.parseStrToMd5U32(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD, ConstantsUtils.DEFAULT_USER_PASSWORD))));
+            user.setNickName("管理员");
+            user.setUserName("管理员");
+            user.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_SYSTEM.getValue());
+            user.setBirthday(new Date());
+            user.setActivationStatus(ConstantsEnum.YN01.Y.getValue());
+            user.setOrgId(org.getId());
+            if (SecureUtil.isRoot()){
+                user.setTenantCode(tenant.getTenantCode());
+            }
+            ResponseData data = userClient.saveAdmin(user,role.getId());
+            JpowerAssert.isTrue(data.isStatus(), JpowerError.Api, data.getCode(), data.getMessage());
             return true;
         }
         return false;

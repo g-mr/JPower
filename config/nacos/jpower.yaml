@@ -88,10 +88,16 @@ logging:
     root: info
 
 swagger:
-  termsOfServiceUrl: http://219.148.186.214:800
+  termsOfServiceUrl: http://localhost:81
 
 jpower:
-  tenant:
+#  seata:
+#   是否启用分布式事务（默认不开启）
+#    enabled: false
+#  hystrix:
+#   feign降级时是否自动进行事务回滚（默认为false）
+#    transaction: false
+#  tenant:
 #    是否启用多租户模式
 #    enable: true
 #   多租户字段

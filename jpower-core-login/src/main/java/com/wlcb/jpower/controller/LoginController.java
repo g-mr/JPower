@@ -90,7 +90,8 @@ public class LoginController extends BaseController {
         if (Fc.isNull(tenant)){
             return ReturnJsonUtil.fail("租户不存在");
         }
-        if (Fc.notNull(tenant.getExpireTime()) && new Date().before(getExpireTime(tenant.getLicenseKey()))){
+        Date expireTime = getExpireTime(tenant.getLicenseKey());
+        if (Fc.notNull(tenant.getExpireTime()) && Fc.notNull(expireTime) && new Date().before(expireTime)){
             return ReturnJsonUtil.fail("租户已过期");
         }
 

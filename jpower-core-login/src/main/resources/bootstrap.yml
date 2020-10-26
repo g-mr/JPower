@@ -27,7 +27,7 @@ jpower:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://localhost:3306/jpower?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8
       username: root
-      password: 123456
+      password: 12345678
   #   测试环境
   test:
     nacos:

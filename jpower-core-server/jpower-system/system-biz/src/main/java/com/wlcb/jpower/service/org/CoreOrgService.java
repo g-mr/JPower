@@ -85,4 +85,7 @@ public interface CoreOrgService extends BaseService<TbCoreOrg> {
      * @return java.util.List<java.lang.String>
      */
     List<String> queryChildById(String id);
+
+    void updateTest();
+
 }

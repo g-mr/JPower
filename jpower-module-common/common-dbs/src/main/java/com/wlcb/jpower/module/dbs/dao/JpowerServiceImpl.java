@@ -49,13 +49,11 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> ex
         entity.setUpdateTime(now);
         // todo end
 
-        if (SecureUtil.isRoot()){
-            Field field = ReflectUtil.getField(entity.getClass(), TenantConstant.TENANT_CODE);
-            if (ObjectUtil.isNotEmpty(field)){
-                String tenantCode = ReflectUtil.invokeGetter(entity,TenantConstant.TENANT_CODE);
-                if (Fc.isBlank(tenantCode)){
-                    ReflectUtil.invokeSetter(entity,TenantConstant.TENANT_CODE,TenantConstant.DEFAULT_TENANT_CODE);
-                }
+        Field field = ReflectUtil.getField(entity.getClass(), TenantConstant.TENANT_CODE);
+        if (ObjectUtil.isNotEmpty(field)){
+            String tenantCode = ReflectUtil.invokeGetter(entity,TenantConstant.TENANT_CODE);
+            if (Fc.isEmpty(tenantCode)){
+                ReflectUtil.invokeSetter(entity,TenantConstant.TENANT_CODE,null);
             }
         }
     }

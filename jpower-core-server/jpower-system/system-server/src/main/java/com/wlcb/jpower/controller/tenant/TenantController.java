@@ -1,5 +1,6 @@
 package com.wlcb.jpower.controller.tenant;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
 import com.wlcb.jpower.module.base.enums.JpowerError;
@@ -46,13 +47,26 @@ public class TenantController extends BaseController {
     })
     @GetMapping("/list")
     public ResponseData<Page<TbCoreTenant>> list(@ApiIgnore @RequestParam Map<String, Object> map){
-        return ReturnJsonUtil.ok("查询成功",tenantService.page(PaginationContext.getMpPage(), Condition.getQueryWrapper(map,TbCoreTenant.class)));
+        LambdaQueryWrapper<TbCoreTenant> queryWrapper = Condition.getQueryWrapper(map,TbCoreTenant.class).lambda();
+        if (!SecureUtil.isRoot()){
+            queryWrapper.eq(TbCoreTenant::getTenantCode,SecureUtil.getTenantCode());
+        }
+        return ReturnJsonUtil.ok("查询成功",tenantService.page(PaginationContext.getMpPage(), queryWrapper));
     }
 
     @ApiOperation("修改租户信息")
     @PutMapping("/update")
-    public ResponseData update(@RequestParam TbCoreTenant tenant){
+    public ResponseData update(TbCoreTenant tenant){
+        JpowerAssert.isTrue(SecureUtil.isRoot(), JpowerError.Unknown,"只可超级管理员删除租户");
         JpowerAssert.notEmpty(tenant.getId(), JpowerError.Arg,"主键不可为空");
+
+        if (Fc.isNotBlank(tenant.getDomain())){
+            TbCoreTenant coreTenant = tenantService.getOne(Condition.<TbCoreTenant>getQueryWrapper().lambda().eq(TbCoreTenant::getDomain,tenant.getDomain()));
+            if (Fc.notNull(coreTenant) && !Fc.equals(coreTenant.getId(),tenant.getId())){
+                return ReturnJsonUtil.fail("该域名已存在");
+            }
+        }
+
         return ReturnJsonUtil.status(tenantService.updateById(tenant));
     }
 
@@ -75,6 +89,10 @@ public class TenantController extends BaseController {
         if (Fc.isNotBlank(tenant.getContactPhone()) && !StrUtil.isPhone(tenant.getContactPhone())){
             return ReturnJsonUtil.fail("手机号不合法");
         }
+        if (Fc.isNotBlank(tenant.getTenantCode())){
+            JpowerAssert.geZero(tenantService.count(Condition.<TbCoreTenant>getQueryWrapper().lambda().eq(TbCoreTenant::getTenantCode,tenant.getTenantCode()))
+                    ,JpowerError.BUSINESS,"该租户已存在");
+        }
         JpowerAssert.geZero(tenantService.count(Condition.<TbCoreTenant>getQueryWrapper().lambda().eq(TbCoreTenant::getDomain,tenant.getDomain()))
                 ,JpowerError.BUSINESS,"该域名已存在");
 
@@ -95,8 +113,12 @@ public class TenantController extends BaseController {
     public ResponseData<ChainMap> queryByDomain(@ApiParam(value = "域名",required = true) @RequestParam String domain){
         JpowerAssert.notEmpty(domain, JpowerError.Arg,"域名不可为空");
         TbCoreTenant tenant = tenantService.getOne(Condition.<TbCoreTenant>getQueryWrapper().lambda().eq(TbCoreTenant::getDomain,domain));
-        return ReturnJsonUtil.ok("查询成功",ChainMap.init().set("tenantCode",tenant.getTenantCode())
-                .set("domain",tenant.getDomain())
-                .set("backgroundUrl",tenant.getBackgroundUrl()));
+        ChainMap map = ChainMap.init();
+        if (Fc.notNull(tenant)){
+            map.set("tenantCode",tenant.getTenantCode())
+                    .set("domain",tenant.getDomain())
+                    .set("backgroundUrl",tenant.getBackgroundUrl());
+        }
+        return ReturnJsonUtil.ok("查询成功",map);
     }
 }

@@ -77,7 +77,11 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
 
     @Override
     public boolean save(TbCoreTenant tenant, List<String> functionCodes, List<String> dictTypeCodes){
-        tenant.setTenantCode(tenantCode());
+        if (Fc.isBlank(tenant.getTenantCode())){
+            List<String> tenantCodeList = tenantDao.listObjs(Condition.<TbCoreTenant>getQueryWrapper().lambda()
+                    .select(TbCoreTenant::getTenantCode),Fc::toStr);
+            tenant.setTenantCode(tenantCode(tenantCodeList));
+        }
         if (Fc.isNull(tenant.getAccountNumber())){
             tenant.setAccountNumber(TENANT_ACCOUNT_NUMBER);
         }

@@ -26,25 +26,32 @@ import java.lang.reflect.Method;
 @Aspect
 @Component
 @Slf4j
-public class WorkAspect {
+public class FallbackDegrade {
 
     @Value("${seata.enabled:true}")
     Boolean seataEnabled;
+    @Value("${jpower.hystrix.transaction:false}")
+    Boolean hystrixHransactionEnabled;
 
+//    @AfterReturning("execution(* com.wlcb..*.feign..*Fallback.*(..))")
+//    public void doRecoveryActions(JoinPoint joinPoint) throws TransactionException {
     @Before("execution(* com.wlcb..*.feign..*Fallback.*(..))")
     public void before(JoinPoint joinPoint) throws TransactionException {
-        if (seataEnabled){
+        if (hystrixHransactionEnabled){
             MethodSignature signature = (MethodSignature)joinPoint.getSignature();
             Method method = signature.getMethod();
             log.info("{}方法已被降级", method.getName());
+            //需要先把本地事务回滚，不然seata会报找不到全局事务的错误
+            try {
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            }catch (NoTransactionException e){
+                e.printStackTrace();
+                log.warn("没有本地事务，无需回滚本地事务");
+            }
             if (!StringUtils.isBlank(RootContext.getXID())) {
-                //需要先把本地事务回滚，不然seata会报找不到全局事务的错误
-                try {
-                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-                }catch (NoTransactionException e){
-                    log.warn("没有本地事务，无需回滚本地事务");
+                if (seataEnabled){
+                    GlobalTransactionContext.reload(RootContext.getXID()).rollback();
                 }
-                GlobalTransactionContext.reload(RootContext.getXID()).rollback();
             }
         }
     }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wlcb.jpower.dbs.dao.org.TbCoreOrgDao;
 import com.wlcb.jpower.dbs.dao.org.mapper.TbCoreOrgMapper;
 import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
+import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.Fc;
@@ -11,8 +12,11 @@ import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.org.CoreOrgService;
 import com.wlcb.jpower.vo.OrgVo;
 import com.wlcb.jpower.wrapper.BaseDictWrapper;
+import io.seata.spring.annotation.GlobalTransactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -21,12 +25,15 @@ import java.util.Map;
  * @author mr.gmac
  */
 @Service("coreOrgService")
+@Slf4j
 public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper, TbCoreOrg> implements CoreOrgService {
 
     private final String sql = "(select code from tb_core_org where id in ({}))";
 
     @Autowired
     private TbCoreOrgDao coreOrgDao;
+    @Autowired
+    private UserClient userClient;
 
     @Override
     public List<OrgVo> listLazyByParent(TbCoreOrg coreOrg) {
@@ -72,6 +79,20 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper, TbCoreO
         return coreOrgDao.listObjs(Condition.<TbCoreOrg>getQueryWrapper().lambda()
                 .select(TbCoreOrg::getId)
                 .like(TbCoreOrg::getAncestorId,id),Fc::toStr);
+    }
+
+    @GlobalTransactional
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void updateTest() {
+        log.info("开始测试");
+        TbCoreOrg org = new TbCoreOrg();
+        org.setId("20a7382888ea466d0d27c037a55f57a4");
+        org.setIcon("测试一下1232");
+        coreOrgDao.updateById(org);
+//        Integer a = Integer.parseInt("测试");
+//        UserCache.getById("dasdqwdqwdqw");
+        userClient.get("dslfkeowpsfkw");
     }
 
 }

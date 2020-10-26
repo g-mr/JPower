@@ -7,6 +7,7 @@ import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author mr.gmac
@@ -24,8 +25,12 @@ public interface TenantConstant {
      * @Description // 创建一个租户Code
      * @date 22:18 2020/10/24 0024
      */
-    static String tenantCode(){
-        return Fc.random(6).toUpperCase();
+    static String tenantCode(List<String> list){
+        String tenantCode = Fc.random(6).toUpperCase();
+        if (list.contains(tenantCode)){
+            return tenantCode(list);
+        }
+        return tenantCode;
     }
 
     /**
