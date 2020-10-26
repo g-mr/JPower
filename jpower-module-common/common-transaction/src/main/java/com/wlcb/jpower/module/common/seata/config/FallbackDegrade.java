@@ -6,8 +6,8 @@ import io.seata.core.exception.TransactionException;
 import io.seata.tm.api.GlobalTransactionContext;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -33,10 +33,10 @@ public class FallbackDegrade {
     @Value("${jpower.hystrix.transaction:false}")
     Boolean hystrixHransactionEnabled;
 
-//    @AfterReturning("execution(* com.wlcb..*.feign..*Fallback.*(..))")
-//    public void doRecoveryActions(JoinPoint joinPoint) throws TransactionException {
-    @Before("execution(* com.wlcb..*.feign..*Fallback.*(..))")
-    public void before(JoinPoint joinPoint) throws TransactionException {
+    @AfterReturning("execution(* com.wlcb..*.feign..*Fallback.*(..))")
+    public void doRecoveryActions(JoinPoint joinPoint) throws TransactionException {
+//    @Before("execution(* com.wlcb..*.feign..*Fallback.*(..))")
+//    public void before(JoinPoint joinPoint) throws TransactionException {
         if (hystrixHransactionEnabled){
             MethodSignature signature = (MethodSignature)joinPoint.getSignature();
             Method method = signature.getMethod();
@@ -45,7 +45,7 @@ public class FallbackDegrade {
             try {
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             }catch (NoTransactionException e){
-                e.printStackTrace();
+//                e.printStackTrace();
                 log.warn("没有本地事务，无需回滚本地事务");
             }
             if (!StringUtils.isBlank(RootContext.getXID())) {

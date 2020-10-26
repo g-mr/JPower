@@ -1,6 +1,7 @@
 package com.wlcb.jpower.service.org.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.wlcb.jpower.cache.UserCache;
 import com.wlcb.jpower.dbs.dao.org.TbCoreOrgDao;
 import com.wlcb.jpower.dbs.dao.org.mapper.TbCoreOrgMapper;
 import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
@@ -16,7 +17,6 @@ import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -82,17 +82,16 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper, TbCoreO
     }
 
     @GlobalTransactional
-    @Transactional(rollbackFor = Exception.class)
     @Override
     public void updateTest() {
         log.info("开始测试");
         TbCoreOrg org = new TbCoreOrg();
-        org.setId("20a7382888ea466d0d27c037a55f57a4");
+        org.setId("dac7807f179cc08d8c7f57c71840dae7");
         org.setIcon("测试一下1232");
         coreOrgDao.updateById(org);
 //        Integer a = Integer.parseInt("测试");
-//        UserCache.getById("dasdqwdqwdqw");
-        userClient.get("dslfkeowpsfkw");
+        UserCache.getById("dasdqwdqwdqw");
+//        userClient.get("dslfkeowpsfkw");
     }
 
 }

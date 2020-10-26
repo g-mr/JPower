@@ -7,6 +7,6 @@ package com.wlcb.jpower.module.common.seata.config;
  * @Date 2020-10-09 15:34
  * @Version 1.0
  */
-public class WorkAspect {
+public class FallbackDegrade {
 
 }
