@@ -9,6 +9,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @author mr.gmac
+ */
 public class SqlInjectionUtil {
     private static final Logger logger = LoggerFactory.getLogger(SqlInjectionUtil.class);
 
@@ -22,11 +25,6 @@ public class SqlInjectionUtil {
      * 过滤入口
      */
     public static String filter(String str) {
-        return filter2(str);
-    }
-
-
-    public static String filter2(String str) {
         String str0 = str;
         if (StringUtils.isBlank(str)) {
             return "";
@@ -54,7 +52,7 @@ public class SqlInjectionUtil {
         }
 
         if( !str0.equals(str) ){
-            logger.warn("检测到非法字符并已过滤。\n原字符：{} \n新字符：{}",str0,str);
+            logger.warn("检测到非法字符并已过滤。\n请求地址：{}\n原字符：{} \n新字符：{}",WebUtil.getRequest().getServletPath(),str0,str);
         }
         return str;
     }

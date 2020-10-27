@@ -19,6 +19,7 @@ import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.*;
+import com.wlcb.jpower.module.tenant.JpowerTenantProperties;
 import com.wlcb.jpower.utils.SmsAliyun;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
@@ -47,6 +48,7 @@ import static com.wlcb.jpower.module.tenant.TenantConstant.getExpireTime;
 public class LoginController extends BaseController {
 
     private RedisUtil redisUtil;
+    private JpowerTenantProperties tenantProperties;
 
     @ApiOperation(value = "用户登录",notes = "Authorization（客户端识别码）：由clientCode+\":\"+clientSecret组成字符串后用base64编码后获得值，再由Basic +base64编码后的值组成客户端识别码； <br/>" +
             "&nbsp;&nbsp;&nbsp;clientCode和clientSecret的值由后端统一提供，不同的登录客户端值也不一样。<br/>" +
@@ -71,7 +73,17 @@ public class LoginController extends BaseController {
     public ResponseData<AuthInfo> login(String tenantCode, String loginId, String passWord, String grantType, String refreshToken
             , String phone, String phoneCode, String otherCode) {
 
-        JpowerAssert.notNull(tenantCode,JpowerError.Arg,"租户编码不可为空");
+        if (tenantProperties.getEnable()){
+            JpowerAssert.notNull(tenantCode,JpowerError.Arg,"租户编码不可为空");
+            TbCoreTenant tenant = SystemCache.getTenantByCode(tenantCode);
+            if (Fc.isNull(tenant)){
+                return ReturnJsonUtil.fail("租户不存在");
+            }
+            Date expireTime = getExpireTime(tenant.getLicenseKey());
+            if (Fc.notNull(tenant.getExpireTime()) && Fc.notNull(expireTime) && new Date().before(expireTime)){
+                return ReturnJsonUtil.fail("租户已过期");
+            }
+        }
 
         String userType = Fc.toStr(WebUtil.getRequest().getHeader(TokenUtil.USER_TYPE_HEADER_KEY), TokenUtil.DEFAULT_USER_TYPE);
 
@@ -85,15 +97,6 @@ public class LoginController extends BaseController {
                 .set("phone", phone)
                 .set("phoneCode", phoneCode)
                 .set("otherCode", otherCode);
-
-        TbCoreTenant tenant = SystemCache.getTenantByCode(tenantCode);
-        if (Fc.isNull(tenant)){
-            return ReturnJsonUtil.fail("租户不存在");
-        }
-        Date expireTime = getExpireTime(tenant.getLicenseKey());
-        if (Fc.notNull(tenant.getExpireTime()) && Fc.notNull(expireTime) && new Date().before(expireTime)){
-            return ReturnJsonUtil.fail("租户已过期");
-        }
 
         TokenGranter granter = TokenGranterBuilder.getGranter(grantType);
         UserInfo userInfo = granter.grant(tokenParameter);

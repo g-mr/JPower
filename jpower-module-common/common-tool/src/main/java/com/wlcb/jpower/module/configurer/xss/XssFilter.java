@@ -38,7 +38,7 @@ public class XssFilter implements Filter {
         }
 
         HttpServletRequest req = (HttpServletRequest) request;
-        if (handleExcludeURL(req) && handleDefaultExcludeURL(req)) {
+        if (handleExcludeURL(req) || handleDefaultExcludeURL(req)) {
             filterChain.doFilter(request, response);
             return;
         }

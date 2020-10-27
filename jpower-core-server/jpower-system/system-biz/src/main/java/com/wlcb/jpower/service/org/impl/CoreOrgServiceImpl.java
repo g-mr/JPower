@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wlcb.jpower.dbs.dao.org.TbCoreOrgDao;
 import com.wlcb.jpower.dbs.dao.org.mapper.TbCoreOrgMapper;
 import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
-import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
@@ -37,12 +36,8 @@ import static com.wlcb.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
 @Slf4j
 public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper, TbCoreOrg> implements CoreOrgService {
 
-    private final String sql = "(select code from tb_core_org where id in ({}))";
-
     @Autowired
     private TbCoreOrgDao coreOrgDao;
-    @Autowired
-    private UserClient userClient;
 
     @Override
     public List<OrgVo> listLazyByParent(TbCoreOrg coreOrg) {

@@ -111,8 +111,8 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
         LambdaQueryWrapper<TbCoreUser> queryWrapper = Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getLoginId,loginId);
         if (SecureUtil.isRoot()){
             tenantCode = Fc.isBlank(tenantCode)?DEFAULT_TENANT_CODE:tenantCode;
+            queryWrapper.eq(TbCoreUser::getTenantCode,tenantCode);
         }
-        queryWrapper.eq(TbCoreUser::getTenantCode,tenantCode);
         return coreUserDao.getOne(queryWrapper);
     }
 
