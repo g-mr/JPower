@@ -8,7 +8,8 @@ file/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**
 !**/src/test/**
-.log
+*.log
+out
 
 ### STS ###
 .apt_generated
