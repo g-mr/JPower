@@ -9,7 +9,7 @@ package com.wlcb.jpower.module.common.utils.constants;
  */
 public class ConstantsReturn {
     
-    /*
+    /**
      * @Author 郭丁志
      * @Description //TODO 406返回值
      * @Date 14:36 2020-03-27
@@ -45,5 +45,11 @@ public class ConstantsReturn {
      * @Date 14:38 2020-03-27
      **/
     public static final Integer RECODE_FAIL = 505;
+    /**
+     * @Author 郭丁志
+     * @Description //TODO API报错
+     * @Date 14:38 2020-03-27
+     **/
+    public static final Integer RECODE_API = 600;
 
 }

@@ -24,15 +24,6 @@ public interface CoreOrgService extends BaseService<TbCoreOrg> {
 
     /**
      * @Author 郭丁志
-     * @Description //TODO 通过code查询组织机构
-     * @Date 17:33 2020-05-20
-     * @Param [code]
-     * @return com.wlcb.jpower.module.dbs.entity.core.user.TbCoreOrg
-     **/
-    TbCoreOrg selectOrgByCode(String code);
-
-    /**
-     * @Author 郭丁志
      * @Description //TODO 新增组织机构
      * @Date 17:34 2020-05-20
      * @Param [coreOrg]
@@ -85,4 +76,5 @@ public interface CoreOrgService extends BaseService<TbCoreOrg> {
      * @return java.util.List<java.lang.String>
      */
     List<String> queryChildById(String id);
+
 }

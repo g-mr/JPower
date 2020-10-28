@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
+import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import feign.hystrix.FallbackFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -24,8 +25,8 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
     public UserClient create(Throwable cause) {
         return new UserClient() {
             @Override
-            public ResponseData<TbCoreUser> queryUserByLoginIdPwd(String loginId, String password) {
-                log.error("调用queryUserByLoginIdPwd失败，参数：loginId={}，password={},e={}",loginId,password,cause);
+            public ResponseData<TbCoreUser> queryUserByLoginId(String loginId, String tenantCode) {
+                log.error("调用queryUserByLoginIdPwd失败，参数：loginId={}，e={}",loginId,cause);
                 return ReturnJsonUtil.fail("查询失败");
             }
 
@@ -41,7 +42,7 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
             }
 
             @Override
-            public ResponseData<TbCoreUser> queryUserByCode(String otherCode) {
+            public ResponseData<TbCoreUser> queryUserByCode(String otherCode, String tenantCode) {
                 return ReturnJsonUtil.fail("查询失败");
             }
 
@@ -51,8 +52,14 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
             }
 
             @Override
-            public ResponseData<TbCoreUser> queryUserByPhone(String phone) {
+            public ResponseData<TbCoreUser> queryUserByPhone(String phone, String tenantCode) {
                 return ReturnJsonUtil.fail("查询失败");
+            }
+
+            @Override
+            public ResponseData saveAdmin(TbCoreUser user,String roleId) {
+                log.error("调用saveAdmin失败，参数：user={}，roleId={} ，e={}",user,roleId,cause);
+                return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_API, cause.getMessage(),false);
             }
         };
     }

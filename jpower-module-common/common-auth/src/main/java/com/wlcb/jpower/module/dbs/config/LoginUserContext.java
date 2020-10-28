@@ -35,6 +35,21 @@ public class LoginUserContext {
 
     /**
      * @Author 郭丁志
+     * @Description //TODO 返回用户ID
+     * @Date 17:12 2020-07-09
+     * @Param []
+     * @return java.lang.String
+     **/
+    public static String getUserId() {
+        UserInfo user = get();
+        if (user == null){
+            return null;
+        }
+        return user.getUserId();
+    }
+
+    /**
+     * @Author 郭丁志
      * @Description //TODO 返回用户名称
      * @Date 17:12 2020-07-09
      * @Param []

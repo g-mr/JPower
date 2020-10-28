@@ -25,4 +25,5 @@ public class JpowerConstants {
 
     /** 框架版本 **/
     public static final String JPOWER_VESION = "1.0.1";
+
 }

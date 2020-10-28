@@ -1,8 +1,7 @@
 package com.wlcb.jpower.dbs.entity.role;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.wlcb.jpower.module.base.annotation.Dict;
-import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
+import com.wlcb.jpower.module.tenant.entity.TenantEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -16,12 +15,12 @@ import java.io.Serializable;
  * @Version 1.0
  */
 @Data
-public class TbCoreRole extends BaseEntity implements Serializable {
+public class TbCoreRole extends TenantEntity implements Serializable {
 
     private static final long serialVersionUID = 7093626905745914312L;
 
-    @ApiModelProperty("角色编码")
-    private String code;
+    @ApiModelProperty("角色别名")
+    private String alias;
     @ApiModelProperty("角色名称")
     private String name;
     @ApiModelProperty("角色父级ID")
@@ -33,8 +32,4 @@ public class TbCoreRole extends BaseEntity implements Serializable {
     private Integer isSysRole;
     @ApiModelProperty("备注说明")
     private String remark;
-
-    @ApiModelProperty("是否系统角色")
-    @TableField(exist = false)
-    private String isSysRoleStr;
 }

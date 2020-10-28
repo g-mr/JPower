@@ -78,12 +78,12 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
 
     /**
      * @author 郭丁志
-     * @Description //TODO 懒加载树形功能
+     * @Description //TODO 查询角色所有权限ID
      * @date 22:50 2020/7/26 0026
-     * @param parentId
+     * @param roleIds
      * @return java.util.List<com.wlcb.jpower.module.common.node.Node>
      */
-    List<Node> lazyTree(String parentId);
+    List<String> queryUrlIdByRole(String roleIds);
 
     /**
      * @author 郭丁志
@@ -93,16 +93,7 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @param roleIds
      * @return java.util.List<com.wlcb.jpower.module.common.node.Node>
      */
-    List<Node> lazyTreeByRole(String parentId, String roleIds);
-
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 根据橘色获取所有的权限放到redis中
-     * @Date 20:20 2020-07-28
-     * @Param [roleIds]
-     * @return void
-     **/
-    void putRedisAllFunctionByRoles(List<String> roleIds, Long expiresIn, String accessToken);
+    List<Node> lazyTreeByRole(String parentId, List<String> roleIds);
 
     /**
      * @Author 郭丁志
@@ -111,7 +102,7 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @Param [roleIds]
      * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction>
      **/
-    List<TbCoreFunction> listMenuByRoleId(String roleIds);
+    List<TbCoreFunction> listMenuByRoleId(List<String> roleIds);
 
     /**
      * @Author 郭丁志
@@ -120,7 +111,7 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @Param [roleIds, code]
      * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction>
      **/
-    List<TbCoreFunction> listBtnByRoleIdAndPcode(String roleIds, String id);
+    List<TbCoreFunction> listBtnByRoleIdAndPcode(List<String> roleIds, String id);
 
     /**
      * @Author 郭丁志
@@ -129,7 +120,9 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @Param [roleIds, functionVoClass]
      * @return java.util.List<com.wlcb.jpower.module.dbs.vo.FunctionVo>
      **/
-    List<FunctionVo> listTreeByRoleId(String roleIds);
+    List<FunctionVo> listTreeByRoleId(List<String> roleIds);
 
     Integer queryRoleByUrl(String url);
+
+    List<Object> getUrlsByRoleIds(String roleIds);
 }

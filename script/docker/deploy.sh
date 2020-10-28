@@ -19,6 +19,11 @@ stopCore(){
   docker-compose stop jpower-gateway jpower-auth jpower-user jpower-system jpower-file
 }
 
+#关闭核心程序模块
+pull(){
+  docker-compose pull jpower-gateway jpower-auth jpower-user jpower-system jpower-file
+}
+
 #关闭所有模块
 stop(){
   docker-compose stop
@@ -53,6 +58,9 @@ case "$1" in
 ;;
 "stopCore")
   stopCore
+;;
+"pull")
+  pull
 ;;
 *)
   usage

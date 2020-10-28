@@ -1,5 +1,6 @@
 package com.wlcb.jpower.module.common.utils;
 
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.lang.Nullable;
@@ -18,7 +19,6 @@ public class CacheUtil {
 
     private static CacheManager cacheManager;
 
-
     private static CacheManager getCacheManager() {
         if (cacheManager == null) {
             cacheManager = SpringUtil.getBean(CacheManager.class);
@@ -33,6 +33,10 @@ public class CacheUtil {
      * @Date 11:32 2020-09-01
      **/
     public static Cache getCache(String cacheName) {
+        String tenantCode = SecureUtil.getTenantCode();
+        if (Fc.isNotBlank(tenantCode)){
+            return getCacheManager().getCache(tenantCode.concat(StringPool.COLON).concat(cacheName));
+        }
         return getCacheManager().getCache(cacheName);
     }
 

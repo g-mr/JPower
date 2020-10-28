@@ -8,6 +8,7 @@ public enum JpowerError {
     Rpc(530, "rpc异常"),
     RateLimit(520, "流量限制"),
     Parser(510, "解析异常"),
+    Auth(401, "权限异常:%s"),
     Unknown(500, "系统异常:%s"),
     Api(600, "api错误[retcode:%s,retmsg:%s]"),
     Arg(406, "参数错误:%s"),

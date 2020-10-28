@@ -3,7 +3,6 @@ package com.wlcb.jpower.gateway.config;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wlcb.jpower.gateway.feign.SystemClient;
-import com.wlcb.jpower.gateway.properties.WhileIpProperties;
 import com.wlcb.jpower.gateway.utils.ExculdesUrl;
 import com.wlcb.jpower.gateway.utils.IpUtil;
 import com.wlcb.jpower.gateway.utils.TokenUtil;
@@ -15,6 +14,7 @@ import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.JwtUtil;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
+import com.wlcb.jpower.module.properties.AuthProperties;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +37,7 @@ import reactor.core.publisher.Mono;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -50,7 +51,7 @@ import java.util.Map;
 @Component
 @Slf4j
 @RefreshScope
-@EnableConfigurationProperties({WhileIpProperties.class})
+@EnableConfigurationProperties({AuthProperties.class})
 public class AuthFilter implements GlobalFilter, Ordered {
 
     @Autowired
@@ -61,7 +62,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
     private SystemClient systemClient;
 
     @Resource
-    private WhileIpProperties whileIpProperties;
+    private AuthProperties authProperties;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -81,7 +82,8 @@ public class AuthFilter implements GlobalFilter, Ordered {
         if (Fc.isNotBlank(token)) {
 
             Claims claims = JwtUtil.parseJWT(token);
-            List<String> listUrl = (List<String>) redisUtil.get(CacheNames.TOKEN_URL_KEY + token);
+            Object o = redisUtil.get(CacheNames.TOKEN_URL_KEY + token);
+            List<String> listUrl = Fc.isNull(o)?new ArrayList<>():(List<String>) o;
             if (Fc.isNull(claims) || !Fc.contains(listUrl.iterator(), currentPath)) {
                 return unAuth(exchange.getResponse(), "请求未授权");
             }
@@ -90,7 +92,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
         }else {
             //白名单
             String ip = IpUtil.getIP(exchange.getRequest());
-            if (Fc.contains(whileIpProperties.getWhileIp().iterator(),ip)){
+            if (Fc.contains(authProperties.getWhileIp().iterator(),ip)){
                 return chain.filter(addHeader(exchange,ip));
             }
 

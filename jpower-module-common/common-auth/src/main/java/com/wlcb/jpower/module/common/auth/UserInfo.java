@@ -24,6 +24,9 @@ public class UserInfo {
     /** 白名单 **/
     public static final Integer TBALE_USER_TYPE_WHILT = 2;
 
+    @ApiModelProperty("租户CODE")
+    private String tenantCode;
+
     @ApiModelProperty("用户ID")
     private String userId;
 

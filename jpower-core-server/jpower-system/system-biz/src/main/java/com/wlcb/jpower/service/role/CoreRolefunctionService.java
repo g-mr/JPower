@@ -30,12 +30,4 @@ public interface CoreRolefunctionService extends BaseService<TbCoreRoleFunction>
      */
     Integer addRolefunctions(String roleId, String functionIds);
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 通过角色和菜单查询是否有权限
-     * @Date 14:00 2020-07-31
-     * @Param [toStrList, id]
-     * @return com.wlcb.jpower.module.common.utils.StringUtil
-     **/
-    Integer countByRoleIdsAndFunctionId(List<String> toStrList, String id);
 }

@@ -3,6 +3,7 @@ package com.wlcb.jpower.module.common.utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
+import org.springframework.lang.Nullable;
 
 import java.lang.reflect.*;
 import java.util.Date;
@@ -359,7 +360,7 @@ public class ReflectUtil
         return (Class) params[index];
     }
 
-    public static Class<?> getUserClass(Object instance)
+    public static Class<?> getSuperClass(Object instance)
     {
         if (instance == null)
         {
@@ -393,5 +394,22 @@ public class ReflectUtil
             return new RuntimeException(msg, ((InvocationTargetException) e).getTargetException());
         }
         return new RuntimeException(msg, e);
+    }
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 获取一个字段
+     * @date 2:13 2020/10/18 0018
+     */
+    @Nullable
+    public static Field getField(Class<?> clz, String fieldName) {
+        while (Object.class != clz){
+            try {
+                return clz.getDeclaredField(fieldName);
+            } catch (NoSuchFieldException e) {
+                clz = clz.getSuperclass();
+            }
+        }
+        return null;
     }
 }

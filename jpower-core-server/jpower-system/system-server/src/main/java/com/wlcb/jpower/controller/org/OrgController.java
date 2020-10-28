@@ -5,21 +5,24 @@ import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
+import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.utils.BeanUtil;
+import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
-import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
-import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.service.org.CoreOrgService;
 import com.wlcb.jpower.vo.OrgVo;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
@@ -38,7 +41,7 @@ public class OrgController extends BaseController {
     public ResponseData<PageInfo<OrgVo>> listLazyByParent(TbCoreOrg coreOrg){
 
         if (StringUtils.isBlank(coreOrg.getParentId())){
-            coreOrg.setParentId("-1");
+            coreOrg.setParentId(JpowerConstants.TOP_CODE);
         }
 
         PaginationContext.startPage();
@@ -46,30 +49,20 @@ public class OrgController extends BaseController {
         return ReturnJsonUtil.ok("获取成功", pageInfo);
     }
 
-    @ApiOperation(value = "新增一个组织机构",notes = "无需传主键")
+    @ApiOperation(value = "新增一个组织机构",notes = "无需传主键(id)")
     @RequestMapping(value = "/add",method = {RequestMethod.POST},produces="application/json")
     public ResponseData add(TbCoreOrg coreOrg){
 
         BeanUtil.allFieldIsNULL(coreOrg,
                 "name","code");
 
-        TbCoreOrg org = coreOrgService.selectOrgByCode(coreOrg.getCode());
-        if (org != null){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该组织机构已存在", false);
-        }
-
-        if (StringUtils.isBlank(coreOrg.getParentId())){
-            coreOrg.setParentId("-1");
-            coreOrg.setAncestorId("-1");
-        }else {
-            coreOrg.setAncestorId(coreOrg.getParentId().concat(StringPool.COMMA).concat(coreOrgService.getById(coreOrg.getParentId()).getAncestorId()));
-        }
         Boolean is = coreOrgService.add(coreOrg);
 
         if (is){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"新增成功", true);
+            CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE);
+            return ReturnJsonUtil.ok("新增成功");
         }else {
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"新增失败", false);
+            return ReturnJsonUtil.fail("新增失败");
         }
     }
 
@@ -81,41 +74,35 @@ public class OrgController extends BaseController {
 
         Integer c = coreOrgService.listOrgByPids(ids);
         if (c > 0){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"您选中的组织机构存在下级机构，请先删除下级机构", false);
+            return ReturnJsonUtil.busFail("您选中的组织机构存在下级机构，请先删除下级机构");
         }
 
         Boolean is = coreOrgService.removeByIds(Fc.toStrList(ids));
 
         if (is){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"删除成功", true);
+            CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE);
+            return ReturnJsonUtil.ok("删除成功");
         }else {
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"删除失败", false);
+            return ReturnJsonUtil.fail("删除失败");
         }
     }
 
-    @ApiOperation("修改组织机构信息")
+    @ApiOperation(value = "修改组织机构信息")
     @RequestMapping(value = "/update",method = {RequestMethod.PUT},produces="application/json")
     public ResponseData update(TbCoreOrg coreOrg){
-
         JpowerAssert.notEmpty(coreOrg.getId(), JpowerError.Arg,"id不可为空");
-
-        if (StringUtils.isNotBlank(coreOrg.getCode())){
-            TbCoreOrg org = coreOrgService.selectOrgByCode(coreOrg.getCode());
-            if (org != null && !StringUtils.equals(org.getId(),coreOrg.getId())){
-                return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该组织机构编码已存在", false);
-            }
-        }
 
         Boolean is = coreOrgService.update(coreOrg);
 
         if (is){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"修改成功", true);
+            CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE);
+            return ReturnJsonUtil.ok("修改成功");
         }else {
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"修改失败", false);
+            return ReturnJsonUtil.fail("修改失败");
         }
     }
 
-    @ApiOperation("加载部门树形菜单")
+    @ApiOperation("加载组织机构树形菜单")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "code",value = "编码",paramType = "query"),
             @ApiImplicitParam(name = "name",value = "名称",paramType = "query"),
@@ -134,7 +121,7 @@ public class OrgController extends BaseController {
         return ReturnJsonUtil.ok("查询成功",list);
     }
 
-    @ApiOperation("懒加载部门树形菜单")
+    @ApiOperation("懒加载组织机构树形菜单")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "code",value = "编码",paramType = "query"),
             @ApiImplicitParam(name = "name",value = "名称",paramType = "query"),

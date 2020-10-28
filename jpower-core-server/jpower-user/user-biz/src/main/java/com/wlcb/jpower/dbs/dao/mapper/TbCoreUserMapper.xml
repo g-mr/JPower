@@ -25,7 +25,7 @@
         update_user,
         update_time,
         status,
-        is_deleted
+        tenant_code
     </sql>
 
     <sql id="Base_Column_List_Alias">
@@ -51,69 +51,22 @@
         u.update_user,
         u.update_time,
         u.status,
-        u.is_deleted
+        u.is_deleted,
+        u.tenant_code
     </sql>
 
-    <insert id="insertList">
-        insert into tb_core_user
-        (id,
-        org_id,
-        login_id,
-        password,
-        user_name,
-        id_type,
-        id_no,
-        user_type,
-        birthday,
-        email,
-        telephone,
-        address,
-        post_code,
-        activation_status,
-        activation_code,
-        create_user,
-        update_user,
-        is_deleted)
-        values
-        <foreach collection="list" item="user" separator=",">
-            (
-            #{user.id},
-            (SELECT id FROM tb_core_org WHERE name = #{user.orgName} limit 1),
-            #{user.loginId},
-            #{user.password},
-            #{user.userName},
-            #{user.idType},
-            #{user.idNo},
-            #{user.userType},
-            #{user.birthday},
-            #{user.email},
-            #{user.telephone},
-            #{user.address},
-            #{user.postCode},
-            #{user.activationStatus},
-            #{user.activationCode},
-            #{user.createUser},
-            #{user.createUser},
-            #{user.isDeleted}
-            )
-        </foreach>
-    </insert>
-
     <select id="selectAllById" resultType="com.wlcb.jpower.dbs.entity.TbCoreUser">
-        select <include refid="Base_Column_List_Alias"/>,o.name as orgName,
-            (select group_concat(role_id) from tb_core_user_role r where r.user_id = u.id) as roleIds
+        select <include refid="Base_Column_List_Alias"/>,
+        (select group_concat(role_id) from tb_core_user_role r where r.user_id = u.id) as roleIds
         from tb_core_user u
-        left join tb_core_org o on o.id = u.org_id
         where u.id = #{id,jdbcType=VARCHAR} and u.is_deleted = 0
     </select>
 
     <select id="selectUserList" resultType="com.wlcb.jpower.dbs.entity.TbCoreUser">
         select
-            <include refid="Base_Column_List_Alias"/>,
-            o.name as orgName,
-            (select group_concat(role_id) from tb_core_user_role r where r.user_id = u.id) as roleIds
+        <include refid="Base_Column_List_Alias"/>,
+        (select group_concat(role_id) from tb_core_user_role r where r.user_id = u.id) as roleIds
         from tb_core_user u
-        left join tb_core_org o on o.id = u.org_id
         where u.is_deleted = 0
 
         <if test="coreUser != null and coreUser.orgId != null and coreUser.orgId != ''">

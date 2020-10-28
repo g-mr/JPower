@@ -369,4 +369,28 @@ public class JpowerAssert {
             createException(err);
         }
     }
+
+    /**
+     * 如果数字大于0，则抛出异常
+     *
+     * @param i
+     * @param err
+     */
+    public static void geZero(Integer i, JpowerError err, Object... args) {
+        if (i > 0) {
+            createException(err,args);
+        }
+    }
+
+    /**
+     * 如果数字不大于0，则抛出异常
+     *
+     * @param i
+     * @param err
+     */
+    public static void notGeZero(Integer i, JpowerError err, Object... args) {
+        if (i <= 0) {
+            createException(err,args);
+        }
+    }
 }

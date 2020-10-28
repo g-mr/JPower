@@ -4,10 +4,7 @@ import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,8 +18,8 @@ import java.util.List;
 @FeignClient(value = AppConstant.JPOWER_USER, fallbackFactory = UserClientFallback.class, path = "/core/user")
 public interface UserClient {
 
-    @GetMapping("/queryUserByLoginIdPwd")
-    ResponseData<TbCoreUser> queryUserByLoginIdPwd(@RequestParam String loginId, @RequestParam String password);
+    @GetMapping("/queryUserByLoginId")
+    ResponseData<TbCoreUser> queryUserByLoginId(@RequestParam String loginId, @RequestParam String tenantCode);
 
     @GetMapping("/getRoleIdsByUserId")
     ResponseData<List<String>> getRoleIds(@RequestParam String userId);
@@ -31,11 +28,14 @@ public interface UserClient {
     ResponseData updateUserLoginInfo(@RequestBody TbCoreUser user);
 
     @GetMapping("/queryUserByCode")
-    ResponseData<TbCoreUser> queryUserByCode(@RequestParam String otherCode);
+    ResponseData<TbCoreUser> queryUserByCode(@RequestParam String otherCode, @RequestParam String tenantCode);
 
     @GetMapping("/get")
     ResponseData<TbCoreUser> get(@RequestParam String id);
 
     @GetMapping("/queryUserByPhone")
-    ResponseData<TbCoreUser> queryUserByPhone(@RequestParam String phone);
+    ResponseData<TbCoreUser> queryUserByPhone(@RequestParam String phone,@RequestParam String tenantCode);
+
+    @PostMapping("/saveAdmin")
+    ResponseData saveAdmin(@RequestBody TbCoreUser user,@RequestParam String roleId);
 }

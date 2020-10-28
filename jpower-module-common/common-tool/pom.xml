@@ -13,6 +13,7 @@
 
     <packaging>jar</packaging>
     <dependencies>
+
         <dependency>
             <groupId>com.wlcb</groupId>
             <artifactId>common-auth</artifactId>
@@ -55,10 +56,6 @@
             <version>${com.jpower.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.github.pagehelper</groupId>
-            <artifactId>pagehelper-spring-boot-starter</artifactId>
-        </dependency>
     </dependencies>
 
 </project>

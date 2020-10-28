@@ -7,9 +7,8 @@ import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.UUIDUtil;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
-import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.role.CoreRolefunctionService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,10 +19,10 @@ import java.util.Map;
 /**
  * @author mr.gmac
  */
+@AllArgsConstructor
 @Service("coreRolefunctionService")
 public class CoreRolefunctionServiceImpl extends BaseServiceImpl<TbCoreRoleFunctionMapper, TbCoreRoleFunction> implements CoreRolefunctionService {
 
-    @Autowired
     public TbCoreRoleFunctionDao coreRoleFunctionDao;
 
     @Override
@@ -57,10 +56,4 @@ public class CoreRolefunctionServiceImpl extends BaseServiceImpl<TbCoreRoleFunct
         return 1;
     }
 
-    @Override
-    public Integer countByRoleIdsAndFunctionId(List<String> roleIds, String functionId) {
-        return coreRoleFunctionDao.count(Condition.<TbCoreRoleFunction>getQueryWrapper().lambda()
-                .in(TbCoreRoleFunction::getRoleId, roleIds)
-                .eq(TbCoreRoleFunction::getFunctionId,functionId));
-    }
 }

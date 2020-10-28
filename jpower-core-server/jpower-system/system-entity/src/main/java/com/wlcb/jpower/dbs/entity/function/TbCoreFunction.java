@@ -1,6 +1,5 @@
 package com.wlcb.jpower.dbs.entity.function;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
@@ -46,7 +45,4 @@ public class TbCoreFunction extends BaseEntity implements Serializable {
     @ApiModelProperty("菜单级别")
     private Integer functionLevel;
 
-    @ApiModelProperty("是否菜单")
-    @TableField(exist = false)
-    private String isMenuStr;
 }

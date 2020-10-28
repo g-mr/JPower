@@ -79,6 +79,8 @@ public class JpowerApplication {
         props.setProperty("spring.cloud.nacos.config.namespace", "${jpower.".concat(profile).concat(".nacos.namespace:}"));
         //sentinel配置
         props.setProperty("spring.cloud.sentinel.transport.dashboard", "${jpower.".concat(profile).concat(".sentinel.dashboard:}"));
+        //seata启用
+        props.setProperty("seata.enabled", "${jpower.seata.enabled:false}");
 
         List<DeployService> deployServiceList = new ArrayList<>();
         ServiceLoader.load(DeployService.class).forEach(deployServiceList::add);

@@ -53,8 +53,8 @@ public class GlobalExceptionHandler {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         }else if (e instanceof JpowerException) {
             r.setCode(((JpowerException) e).getCode());
-            //标记返回为500错误
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            //标记返回为指定错误
+            response.setStatus(((JpowerException) e).getCode());
         } else {
             r.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
             //标记返回为500错误

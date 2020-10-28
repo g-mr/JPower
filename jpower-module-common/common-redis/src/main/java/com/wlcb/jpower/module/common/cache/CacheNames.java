@@ -9,9 +9,12 @@ package com.wlcb.jpower.module.common.cache;
  */
 public interface CacheNames {
 
-
-    String DICT_REDIS_TYPE_MAP_KEY = "dict:typeMap:";
-    String DICT_REDIS_CODE_KEY = "dict:code:";
+    /** 登陆验证码缓存KEY **/
+    String CAPTCHA_KEY = "jpower:auth::captcha:";
+    /** 手机号验证码缓存KEY **/
+    String PHONE_KEY = "jpower:auth::phone:";
+    /** 登陆用户权限缓存KEY **/
+    String TOKEN_URL_KEY = "jpower:auth::token:";
 
     /** 行政区域缓存 **/
     String CITY_REDIS_CACHE = "jpower:citys";
@@ -19,15 +22,11 @@ public interface CacheNames {
     String PARAMS_REDIS_CACHE = "jpower:params";
     /** 字典缓存 **/
     String DICT_REDIS_CACHE = "jpower:dicts";
+    /** 系统缓存 **/
+    String SYSTEM_REDIS_CACHE = "jpower:system";
+    /** 用户缓存 **/
+    String USER_REDIS_CACHE = "jpower:user";
 
-
-
-    /** 登陆验证码缓存KEY **/
-    String CAPTCHA_KEY = "jpower:auth::captcha:";
-    /** 手机号验证码缓存KEY **/
-    String PHONE_KEY = "jpower:auth::phone:";
-    /** 登陆用户权限缓存KEY **/
-    String TOKEN_URL_KEY = "jpower:auth::token:";
 
     /** 行政树形区域 **/
     String CITY_PARENT_REDIS_KEY = CITY_REDIS_CACHE+"::list:pcodeTree";
@@ -38,5 +37,25 @@ public interface CacheNames {
 
     /** 系统参数key（code） **/
     String PARAMS_REDIS_CODE_KEY = "param:code:";
+    /** 部门key **/
+    String SYSTEM_ORG_ID_KEY = "org:id:";
+    /** 部门下级所有ID key **/
+    String SYSTEM_ORG_PARENT_KEY = "org:parent:";
+    /** 客户端信息 key **/
+    String SYSTEM_CLIENT_KEY = "client:code:";
+    /** 角色的权限URL key **/
+    String SYSTEM_URL_ROLES_KEY = "url:roles:";
+    /** 租户信息 key（tenantCode） **/
+    String SYSTEM_TENANT_CODE_KEY = "tenant:code:";
+    /** 用户信息 key（手机号） **/
+    String USER_PHPNE_KEY = "user:phone:";
+    /** 用户信息 key（loginId） **/
+    String USER_LOGINID_KEY = "user:loginId:";
+    /** 用户角色列表Id key（userid） **/
+    String USER_ROLEID_USERID_KEY = "user:roleid:";
+    /** 用户信息Id key（otherCode） **/
+    String USER_OTHERCODE_KEY = "user:otherCode:";
+    /** 字典列表 key(dictType) **/
+    String DICT_TYPE_KEY = "dict:type:";
 
 }

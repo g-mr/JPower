@@ -37,6 +37,10 @@
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-web</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.wlcb</groupId>
+                    <artifactId>common-swagger</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 

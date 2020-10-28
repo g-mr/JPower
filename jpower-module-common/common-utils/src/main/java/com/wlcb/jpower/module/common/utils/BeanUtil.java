@@ -18,6 +18,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BeanUtil  extends org.springframework.beans.BeanUtils {
 
@@ -223,7 +224,7 @@ public class BeanUtil  extends org.springframework.beans.BeanUtils {
 
     /**
      * @Author 郭丁志
-     * @Description //TODO 获取属性列表 去除继承的属性
+     * @Description //TODO 获取属性列表
      * @Date 18:50 2020-03-03
      * @Param [clazz]
      * @return java.util.List<java.lang.reflect.Field>
@@ -407,7 +408,7 @@ public class BeanUtil  extends org.springframework.beans.BeanUtils {
      * @param annotationType 指定得注解
      * @return java.util.List<java.lang.reflect.Field>
      */
-    public static List<Field> getFiledHaveAnnotation(Class<?> cls, Class<? extends Annotation> annotationType) {
+    public static List<Field> getFiledByAnnotation(Class<?> cls, Class<? extends Annotation> annotationType) {
         List<Field> fieldList = new ArrayList<>();
 
         List<Field> fields = FieldUtils.getAllFieldsList(cls);
@@ -418,5 +419,17 @@ public class BeanUtil  extends org.springframework.beans.BeanUtils {
             }
         }
         return fieldList;
+    }
+
+    public static boolean isContainsField(List<Field> list,String fieldName) {
+
+        AtomicBoolean isExist = new AtomicBoolean(false);
+
+        list.forEach(field -> {
+            if (Fc.equals(field.getName(),fieldName)){
+                isExist.set(true);
+            }
+        });
+        return isExist.get();
     }
 }

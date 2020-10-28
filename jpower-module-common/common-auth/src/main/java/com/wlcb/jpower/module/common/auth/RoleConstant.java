@@ -8,13 +8,13 @@ package com.wlcb.jpower.module.common.auth;
  */
 public class RoleConstant {
 
-    public static final String ADMIN = "root";
+    public static final String ROOT = "root";
 
-    public static final String ADMIN_ID = "1";
+    public static final String ROOT_ID = "1";
 
-    public static final String ADMIN_NAME = "超级管理员";
+    public static final String ROOT_NAME = "超级管理员";
 
-    public static final Integer ADMIN_UESR_TYPE = 0;
+    public static final Integer ROOT_UESR_TYPE = 0;
 
 
     public static final String ANONYMOUS = "anonymous";

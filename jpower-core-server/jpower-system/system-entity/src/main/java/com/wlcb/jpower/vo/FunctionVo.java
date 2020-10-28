@@ -3,6 +3,7 @@ package com.wlcb.jpower.vo;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.wlcb.jpower.dbs.entity.function.TbCoreFunction;
 import com.wlcb.jpower.module.common.node.Node;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -17,6 +18,9 @@ import java.util.List;
  */
 @Data
 public class FunctionVo extends TbCoreFunction implements Node {
+
+    @ApiModelProperty("是否菜单")
+    private String isMenuStr;
 
     /**
      * 子孙节点

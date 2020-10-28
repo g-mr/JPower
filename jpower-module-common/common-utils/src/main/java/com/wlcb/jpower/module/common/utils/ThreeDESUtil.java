@@ -1,5 +1,6 @@
 package com.wlcb.jpower.module.common.utils;
 
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,8 +13,8 @@ import java.nio.charset.StandardCharsets;
  * @Author 郭丁志
  * @Description //TODO 3DES
  * @Date 12:05 2020-03-26
- * @Param 
- * @return 
+ * @Param
+ * @return
  **/
 public class ThreeDESUtil {
 
@@ -40,6 +41,13 @@ public class ThreeDESUtil {
         return null;
     }
 
+    public static String encrypt(String data) {
+        if (Fc.isNull(data)){
+            return StringPool.EMPTY;
+        }
+        return DigestUtil.toHex(encryptMode(data.getBytes(StandardCharsets.UTF_8)));
+    }
+
     // keybyte为加密密钥，长度为24字节
     // src为加密后的缓冲区
     public static byte[] decryptMode(byte[] src) {
@@ -57,15 +65,26 @@ public class ThreeDESUtil {
         return null;
     }
 
+    public static String decrypt(String data) {
+        return new String(decryptMode(DigestUtil.hex2Bytes(data)), StandardCharsets.UTF_8);
+    }
+
 
     public static void main(String[] args) {
-        String txt = "成都市发展公司";
-        byte[] bytes = encryptMode(txt.getBytes(StandardCharsets.UTF_8));
-        System.out.println(DigestUtil.toHex(bytes));
+        String txt = -1+";"+null;
+//        byte[] bytes = encryptMode(txt.getBytes(StandardCharsets.UTF_8));
+//        System.out.println(DigestUtil.toHex(bytes));
+//
+//        byte[] bytes1 = decryptMode(bytes);
+//        String string = new String(bytes1, StandardCharsets.UTF_8);
+//        System.out.println(string);
 
-        byte[] bytes1 = decryptMode(bytes);
-        String string = new String(bytes1, StandardCharsets.UTF_8);
-        System.out.println(string);
+        String data = encrypt(txt);
+        System.out.println(data);
 
+
+        data = decrypt(data);
+        System.out.println(data);
+        System.out.println(Fc.equals(data.split(";")[1],"null"));
     }
 }

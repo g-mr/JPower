@@ -3,6 +3,7 @@ package com.wlcb.jpower.vo;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.wlcb.jpower.dbs.entity.dict.TbCoreDict;
 import com.wlcb.jpower.module.common.node.Node;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -17,6 +18,9 @@ import java.util.List;
  */
 @Data
 public class DictVo extends TbCoreDict implements Node {
+
+    @ApiModelProperty("语言类型")
+    private String localeStr;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<Node> children;

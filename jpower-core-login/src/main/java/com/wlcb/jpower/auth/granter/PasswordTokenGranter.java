@@ -1,14 +1,12 @@
 package com.wlcb.jpower.auth.granter;
 
+import com.wlcb.jpower.cache.UserCache;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
-import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.Fc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
 
 
 /**
@@ -21,8 +19,6 @@ public class PasswordTokenGranter implements TokenGranter {
 
 	public static final String GRANT_TYPE = "password";
 
-	@Resource
-	private UserClient client;
 	@Autowired(required = false)
 	private AuthUserInfo authUserInfo;
 
@@ -30,11 +26,12 @@ public class PasswordTokenGranter implements TokenGranter {
 	public UserInfo grant(ChainMap tokenParameter) {
 		String account = tokenParameter.getStr("account");
 		String password = tokenParameter.getStr("password");
+		String tenantCode = tokenParameter.getStr("tenantCode");
 		if (Fc.isNoneBlank(account, password)) {
 			if (!Fc.isNull(authUserInfo)){
 				return authUserInfo.getPasswordUserInfo(tokenParameter);
 			}else {
-				TbCoreUser result = client.queryUserByLoginIdPwd(account,password).getData();
+				TbCoreUser result = UserCache.queryUserByLoginIdPwd(account,password,tenantCode);
 				return TokenGranterBuilder.toUserInfo(result);
 			}
 		}

@@ -1,8 +1,10 @@
 package com.wlcb.jpower.dbs.entity.dict;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wlcb.jpower.module.base.annotation.Dict;
-import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
+import com.wlcb.jpower.module.tenant.entity.TenantEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -14,7 +16,7 @@ import lombok.Data;
  * @Version 1.0
  */
 @Data
-public class TbCoreDictType extends BaseEntity {
+public class TbCoreDictType extends TenantEntity {
 
     private static final long serialVersionUID = 2104502370643051282L;
 
@@ -22,23 +24,27 @@ public class TbCoreDictType extends BaseEntity {
     private String dictTypeCode;
     @ApiModelProperty("字典类型名称")
     private String dictTypeName;
-    @ApiModelProperty("语言类型 字典YYZL")
-    @Dict(name = "YYZL",attributes = "localeCodeStr")
-    private String localeCode;
     @ApiModelProperty("备注")
     private String note;
     @ApiModelProperty("是否允许删除 字典YN")
-    @Dict(name = "YN",attributes = "delEnabledStr")
+    @Dict(name = "YN")
     private String delEnabled;
     @ApiModelProperty("排序")
     private Integer sortNum;
     @ApiModelProperty("父级ID")
     private String parentId;
+    @ApiModelProperty("是否树形结构 字典YN01")
+    @Dict(name = "YN01")
+    private Integer isTree;
 
-    @ApiModelProperty("是否允许删除")
+    /**
+     * @author 郭丁志
+     * @Description //TODO 旧ID，新增租户字典的时候需要用来存一下，无其他作用
+     * @date 16:41 2020/10/25 0025
+     */
+    @ApiModelProperty(hidden = true)
+    @JSONField(serialize = false)
     @TableField(exist = false)
-    private String delEnabledStr;
-    @ApiModelProperty("语言类型")
-    @TableField(exist = false)
-    private String localeCodeStr;
+    @JsonIgnore
+    private String oldId;
 }

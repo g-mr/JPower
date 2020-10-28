@@ -1,15 +1,13 @@
 package com.wlcb.jpower.auth.granter;
 
+import com.wlcb.jpower.cache.UserCache;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
-import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.Fc;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
 
 
 /**
@@ -22,20 +20,19 @@ import javax.annotation.Resource;
 public class OtherCodeTokenGranter implements TokenGranter {
     public static final String GRANT_TYPE = "otherCode";
 
-    @Resource
-    protected UserClient userClient;
     @Autowired(required = false)
     private AuthUserInfo authUserInfo;
 
     @Override
     public UserInfo grant(ChainMap tokenParameter) {
         String otherCode = tokenParameter.getStr("otherCode");
+        String tenantCode = tokenParameter.getStr("tenantCode");
         if (Fc.isNotBlank(otherCode)) {
 
             if (!Fc.isNull(authUserInfo)){
                 return authUserInfo.getOtherCodeUserInfo(tokenParameter);
             }else {
-                TbCoreUser result = userClient.queryUserByCode(otherCode).getData();
+                TbCoreUser result = UserCache.getUserByCode(otherCode,tenantCode);
                 return TokenGranterBuilder.toUserInfo(result);
             }
 

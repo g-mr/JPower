@@ -6,9 +6,10 @@ import com.wlcb.jpower.auth.AuthInfo;
 import com.wlcb.jpower.auth.granter.TokenGranter;
 import com.wlcb.jpower.auth.granter.TokenGranterBuilder;
 import com.wlcb.jpower.auth.utils.TokenUtil;
+import com.wlcb.jpower.cache.SystemCache;
+import com.wlcb.jpower.cache.UserCache;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
-import com.wlcb.jpower.feign.SystemClient;
-import com.wlcb.jpower.feign.UserClient;
+import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
@@ -18,7 +19,7 @@ import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.*;
-import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
+import com.wlcb.jpower.module.tenant.JpowerTenantProperties;
 import com.wlcb.jpower.utils.SmsAliyun;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
@@ -26,8 +27,12 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import static com.wlcb.jpower.module.tenant.TenantConstant.getExpireTime;
 
 /**
  * @ClassName LoginController
@@ -42,9 +47,8 @@ import java.util.concurrent.TimeUnit;
 @AllArgsConstructor
 public class LoginController extends BaseController {
 
-    private UserClient userClient;
-    private SystemClient systemClient;
     private RedisUtil redisUtil;
+    private JpowerTenantProperties tenantProperties;
 
     @ApiOperation(value = "用户登录",notes = "Authorization（客户端识别码）：由clientCode+\":\"+clientSecret组成字符串后用base64编码后获得值，再由Basic +base64编码后的值组成客户端识别码； <br/>" +
             "&nbsp;&nbsp;&nbsp;clientCode和clientSecret的值由后端统一提供，不同的登录客户端值也不一样。<br/>" +
@@ -52,6 +56,7 @@ public class LoginController extends BaseController {
             "token如何使用：tokenType+\" \"+token组成的值要放到header；header头是jpower-auth；具体写法如下；<br/>" +
             "&nbsp;&nbsp;&nbsp;jpower-auth=tokenType+\" \"+token")
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "tenantCode",required = true,value="租户编码",paramType = "form"),
             @ApiImplicitParam(name = "loginId",required = false,value="账号",paramType = "form"),
             @ApiImplicitParam(name = "passWord",required = false,value="密码",paramType = "form"),
             @ApiImplicitParam(name = "grantType",required = false,value="授权类型 (密码登录=password、验证码登录=captcha、第三方平台登录=otherCode、手机号验证码登录=phone、刷新token=refresh_token)",paramType = "form"),
@@ -65,12 +70,25 @@ public class LoginController extends BaseController {
             @ApiImplicitParam(name = "Captcha-Code",required = false,value="验证码值    grantType=captcha时必填",paramType = "header")
     })
     @PostMapping(value = "/login",produces="application/json")
-    public ResponseData<AuthInfo> login(String loginId,String passWord,String grantType,String refreshToken
-            ,String phone,String phoneCode,String otherCode) {
+    public ResponseData<AuthInfo> login(String tenantCode, String loginId, String passWord, String grantType, String refreshToken
+            , String phone, String phoneCode, String otherCode) {
+
+        if (tenantProperties.getEnable()){
+            JpowerAssert.notNull(tenantCode,JpowerError.Arg,"租户编码不可为空");
+            TbCoreTenant tenant = SystemCache.getTenantByCode(tenantCode);
+            if (Fc.isNull(tenant)){
+                return ReturnJsonUtil.fail("租户不存在");
+            }
+            Date expireTime = getExpireTime(tenant.getLicenseKey());
+            if (Fc.notNull(tenant.getExpireTime()) && Fc.notNull(expireTime) && new Date().before(expireTime)){
+                return ReturnJsonUtil.fail("租户已过期");
+            }
+        }
 
         String userType = Fc.toStr(WebUtil.getRequest().getHeader(TokenUtil.USER_TYPE_HEADER_KEY), TokenUtil.DEFAULT_USER_TYPE);
 
-        ChainMap tokenParameter = ChainMap.init().set("account", loginId)
+        ChainMap tokenParameter = ChainMap.init().set("tenantCode", tenantCode)
+                .set("account", loginId)
                 .set("password", passWord)
                 .set("grantType", grantType)
                 .set("refreshToken", refreshToken)
@@ -89,10 +107,9 @@ public class LoginController extends BaseController {
 
         AuthInfo authInfo = TokenUtil.createAuthInfo(userInfo);
 
-        if (systemClient.putRedisAllFunctionByRoles(userInfo.getRoleIds(),authInfo.getExpiresIn(),authInfo.getAccessToken())){
-            return ReturnJsonUtil.ok("登录成功",authInfo);
-        }
-        return ReturnJsonUtil.fail("登录失败");
+        List<Object> list = SystemCache.getUrlsByRoleIds(userInfo.getRoleIds());
+        redisUtil.set(CacheNames.TOKEN_URL_KEY+authInfo.getAccessToken(),list , authInfo.getExpiresIn(), TimeUnit.SECONDS);
+        return ReturnJsonUtil.ok("登录成功",authInfo);
     }
 
     @ApiOperation(value = "退出登录")
@@ -100,7 +117,7 @@ public class LoginController extends BaseController {
     public ResponseData<String> loginOut(@ApiParam(value = "用户ID",required = true)@RequestParam String userId) {
         JpowerAssert.notEmpty(userId, JpowerError.Arg,"用户ID不可为空");
         UserInfo user = SecureUtil.getUser();
-        if(Fc.equals(userId,user.getUserId())){
+        if(Fc.notNull(user) && Fc.equals(userId,user.getUserId())){
             redisUtil.remove(CacheNames.TOKEN_URL_KEY+JwtUtil.getToken(getRequest()));
             return ReturnJsonUtil.ok("退出成功");
         }else{
@@ -111,7 +128,7 @@ public class LoginController extends BaseController {
     @ApiOperation(value = "获取验证码")
     @GetMapping("/captcha")
     public ResponseData<Map> captcha() {
-        SpecCaptcha specCaptcha = new SpecCaptcha(130, 48, 5);
+        SpecCaptcha specCaptcha = new SpecCaptcha(130, 48, 4);
         String verCode = specCaptcha.text().toLowerCase();
         String key = UUIDUtil.getUUID();
         // 存入redis并设置过期时间为30分钟
@@ -122,8 +139,9 @@ public class LoginController extends BaseController {
 
     @ApiOperation(value = "发送手机登录验证码")
     @RequestMapping(value = "/phoneCaptcha",method = RequestMethod.GET,produces="application/json")
-    public ResponseData<String> loginVercode(@ApiParam(value = "手机号",required = true) @RequestParam String phone) {
+    public ResponseData<String> loginVercode(@ApiParam(value = "租户编号",required = true) @RequestParam String tenantCode, @ApiParam(value = "手机号",required = true) @RequestParam String phone) {
 
+        JpowerAssert.notNull(tenantCode,JpowerError.Arg,"租户编码不可为空");
         if (StringUtils.isBlank(phone) || !StrUtil.isPhone(phone)){
             return ReturnJsonUtil.fail("手机号不合法");
         }
@@ -132,12 +150,11 @@ public class LoginController extends BaseController {
             return ReturnJsonUtil.fail("该验证码已经发送，请一分钟后重试");
         }
 
-//        TbCoreUser user = coreUserService.selectByPhone(phone);
-        TbCoreUser user = userClient.queryUserByPhone(phone).getData();
+        TbCoreUser user = UserCache.getUserByPhone(phone,tenantCode);
 
-        if (user == null){
-            //用户名空则返回
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_NOTFOUND,"手机号不存在",false);
+        if (Fc.isNull(user)){
+            //用户空则返回
+            return ReturnJsonUtil.notFind("手机号不存在");
         }
 
         String code = RandomStringUtils.randomNumeric(6);

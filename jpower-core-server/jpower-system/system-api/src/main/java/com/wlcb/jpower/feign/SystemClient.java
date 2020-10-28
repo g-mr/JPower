@@ -1,10 +1,12 @@
 package com.wlcb.jpower.feign;
 
+import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
+import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
+import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -23,9 +25,18 @@ public interface SystemClient {
      * @return com.wlcb.jpower.module.base.vo.ResponseData<java.lang.String>
      */
     @GetMapping("/org/queryChildById")
-    ResponseData<List<String>> queryChildById(@RequestParam String id);
+    ResponseData<List<String>> queryChildOrgById(@RequestParam String id);
 
-    @PostMapping("/function/putRedisAllFunctionByRoles")
-    boolean putRedisAllFunctionByRoles(@RequestParam List<String> roleIds, @RequestParam Long expiresIn, @RequestParam String accessToken);
+    @GetMapping("/org/queryOrgById")
+    ResponseData<TbCoreOrg> queryOrgById(@RequestParam String orgId);
+
+    @GetMapping("/client/getClientByClientCode")
+    ResponseData<TbCoreClient> getClientByClientCode(@RequestParam String clientCode);
+
+    @GetMapping("/function/getUrlsByRoleIds")
+    ResponseData<List<Object>> getUrlsByRoleIds(@RequestParam String roleIds);
+
+    @GetMapping("/tenant/getTenantByCode")
+    ResponseData<TbCoreTenant> getTenantByCode(@RequestParam String tenantCode);
 
 }

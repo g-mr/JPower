@@ -5,29 +5,39 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.github.pagehelper.PageInfo;
-import com.wlcb.jpower.config.param.ParamConfig;
+import com.wlcb.jpower.cache.SystemCache;
+import com.wlcb.jpower.cache.UserCache;
+import com.wlcb.jpower.cache.param.ParamConfig;
 import com.wlcb.jpower.dbs.dao.TbCoreUserDao;
 import com.wlcb.jpower.dbs.dao.TbCoreUserRoleDao;
 import com.wlcb.jpower.dbs.dao.mapper.TbCoreUserMapper;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.dbs.entity.TbCoreUserRole;
-import com.wlcb.jpower.feign.SystemClient;
-import com.wlcb.jpower.module.base.enums.JpowerError;
-import com.wlcb.jpower.module.base.exception.JpowerAssert;
-import com.wlcb.jpower.module.base.vo.ResponseData;
+import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
+import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
-import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.UUIDUtil;
-import com.wlcb.jpower.module.common.utils.constants.*;
+import com.wlcb.jpower.module.common.utils.*;
+import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
+import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
+import com.wlcb.jpower.module.common.utils.constants.ParamsConstants;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.CoreUserService;
+import com.wlcb.jpower.vo.UserVo;
+import com.wlcb.jpower.wrapper.UserWrapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import static com.wlcb.jpower.module.tenant.TenantConstant.*;
 
 /**
  * @author mr.gmac
@@ -38,40 +48,32 @@ import java.util.List;
 public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCoreUser> implements CoreUserService {
 
     private TbCoreUserDao coreUserDao;
-    private SystemClient systemClient;
     private TbCoreUserRoleDao coreUserRoleDao;
 
     @Override
-    public PageInfo<TbCoreUser> listPage(TbCoreUser coreUser) {
-        List<String> listOrgId = null;
-        if (Fc.isNotBlank(coreUser.getOrgId())){
-            listOrgId = queruOrgId(coreUser.getOrgId());
-        }
+    public PageInfo<UserVo> listPage(TbCoreUser coreUser) {
+        List<String> listOrgId = Fc.isNotBlank(coreUser.getOrgId())?SystemCache.getChildIdOrgById(coreUser.getOrgId()):null;
 
         PaginationContext.startPage();
         List<TbCoreUser> list = coreUserDao.getBaseMapper().selectUserList(coreUser,listOrgId);
-        return new PageInfo<>(list);
+        return new PageInfo<>(UserWrapper.builder().build().listVO(list));
     }
 
     @Override
-    public List<TbCoreUser> list(TbCoreUser coreUser) {
-        List<String> listOrgId = null;
-        if (Fc.isNotBlank(coreUser.getOrgId())){
-            listOrgId = queruOrgId(coreUser.getOrgId());
-        }
+    public List<UserVo> list(TbCoreUser coreUser) {
+        List<String> listOrgId = Fc.isNotBlank(coreUser.getOrgId())?SystemCache.getChildIdOrgById(coreUser.getOrgId()):null;
 
         List<TbCoreUser> list = coreUserDao.getBaseMapper().selectUserList(coreUser,listOrgId);
-        return list;
-    }
-
-    private List<String> queruOrgId(String orgId){
-        ResponseData<List<String>> data = systemClient.queryChildById(orgId);
-        JpowerAssert.isTrue(Fc.equals(data.getCode(), ConstantsReturn.RECODE_SUCCESS), JpowerError.Api,data.getCode(),data.getMessage());
-        return data.getData();
+        return UserWrapper.builder().build().listVO(list);
     }
 
     @Override
     public boolean save(TbCoreUser coreUser) {
+        setActivationStatus(coreUser);
+        return coreUserDao.save(coreUser);
+    }
+
+    private void setActivationStatus(TbCoreUser coreUser) {
         if (Fc.isNull(coreUser.getActivationStatus())){
             Integer isActivation = ParamConfig.getInt(ParamsConstants.IS_ACTIVATION, ConstantsUtils.DEFAULT_USER_ACTIVATION);
             coreUser.setActivationStatus(isActivation);
@@ -81,9 +83,8 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
             coreUser.setActivationCode(UUIDUtil.create10UUidNum());
             coreUser.setActivationStatus(ConstantsEnum.ACTIVATION_STATUS.ACTIVATION_NO.getValue());
         }
-
-        return coreUserDao.save(coreUser);
     }
+
 
     @Override
     public Boolean delete(String ids) {
@@ -106,44 +107,155 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     }
 
     @Override
-    public TbCoreUser selectUserLoginId(String loginId) {
-        return coreUserDao.getOne(Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getLoginId,loginId));
+    public TbCoreUser selectUserLoginId(String loginId,String tenantCode) {
+        LambdaQueryWrapper<TbCoreUser> queryWrapper = Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getLoginId,loginId);
+        if (SecureUtil.isRoot()){
+            tenantCode = Fc.isBlank(tenantCode)?DEFAULT_TENANT_CODE:tenantCode;
+            queryWrapper.eq(TbCoreUser::getTenantCode,tenantCode);
+        }
+        return coreUserDao.getOne(queryWrapper);
     }
 
     @Override
     public TbCoreUser selectUserById(String id) {
-        return baseMapper.selectAllById(id);
+        return coreUserDao.getBaseMapper().selectAllById(id);
+    }
+
+    @Override
+    public TbCoreUser selectUserByOtherCode(String otherCode, String tenantCode) {
+        LambdaQueryWrapper<TbCoreUser> queryWrapper = Condition.<TbCoreUser>getQueryWrapper()
+                .lambda().eq(TbCoreUser::getOtherCode,otherCode);
+        if (SecureUtil.isRoot()){
+            queryWrapper.eq(TbCoreUser::getTenantCode,Fc.isBlank(tenantCode)? DEFAULT_TENANT_CODE :tenantCode);
+        }
+        return coreUserDao.getOne(queryWrapper);
+    }
+
+    @Override
+    public boolean saveAdmin(TbCoreUser user, String roleId) {
+        if (coreUserDao.save(user)){
+            TbCoreUserRole userRole = new TbCoreUserRole();
+            userRole.setUserId(user.getId());
+            userRole.setRoleId(roleId);
+            return coreUserRoleDao.save(userRole);
+        }
+        return false;
     }
 
     @Override
     public Boolean updateUserPassword(String ids, String pass) {
-        UpdateWrapper wrapper = new UpdateWrapper<TbCoreUser>();
-        wrapper.in("id",ids);
-        wrapper.set("password",pass);
-        return coreUserDao.update(new TbCoreUser(),wrapper);
+        return coreUserDao.update(new UpdateWrapper<TbCoreUser>().lambda().set(TbCoreUser::getPassword,pass).in(TbCoreUser::getId,Fc.toStrList(ids)));
+    }
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 去除重复以及正确验证
+     * @date 1:46 2020/10/20 0020
+     */
+    private <T> Predicate<T> filterUser(Function<? super T, TbCoreUser> keyExtractor) {
+        Map<Object, Boolean> loginIdMap = new ConcurrentHashMap();
+        Map<Object, Boolean> phoneMap = new ConcurrentHashMap();
+
+        return object ->
+            Fc.isNull(loginIdMap.putIfAbsent(keyExtractor.apply(object).getLoginId(), Boolean.TRUE))&&
+                    Fc.isNotBlank(keyExtractor.apply(object).getTelephone()) ? Fc.isNull(phoneMap.putIfAbsent(keyExtractor.apply(object).getTelephone(), Boolean.TRUE)) : Boolean.TRUE;
     }
 
     @Override
-    public Boolean insertBatch(List<TbCoreUser> list) {
-        return coreUserDao.saveBatch(list);
+    public boolean insertBatch(List<TbCoreUser> list,boolean isCover) {
+
+        List<TbCoreUser> userList = new ArrayList<>();
+
+        String password = DigestUtil.encrypt(MD5.parseStrToMd5U32(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD,ConstantsUtils.DEFAULT_USER_PASSWORD)));
+
+        for (TbCoreUser coreUser : list) {
+            if (Fc.isBlank(coreUser.getLoginId())){
+                continue;
+            }
+            if (Fc.isNotBlank(coreUser.getTelephone()) && !StrUtil.isPhone(coreUser.getTelephone())){
+                continue;
+            }
+            if (Fc.isNotBlank(coreUser.getEmail()) && !StrUtil.isEmail(coreUser.getEmail())){
+                continue;
+            }
+            if (Fc.isNotBlank(coreUser.getIdNo()) && ConstantsEnum.ID_TYPE.ID_CARD.getValue().equals(coreUser.getIdType()) && !StrUtil.cardCodeVerifySimple(coreUser.getIdNo())){
+                continue;
+            }
+
+            coreUser.setPassword(password);
+            coreUser.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_SYSTEM.getValue());
+
+            if (SecureUtil.isRoot()){
+                coreUser.setTenantCode(Fc.isBlank(coreUser.getTenantCode())?SecureUtil.getTenantCode():coreUser.getTenantCode());
+            }else {
+                coreUser.setTenantCode(SecureUtil.getTenantCode());
+            }
+
+            setActivationStatus(coreUser);
+
+            TbCoreUser user = UserCache.getUserByLoginId(coreUser.getLoginId(),coreUser.getTenantCode());
+            if (Fc.notNull(user)){
+                if (isCover){
+                    coreUser.setId(user.getId());
+                }else {
+                    //如果loginID重复但是不进行覆盖则去除
+                    continue;
+                }
+            }
+
+            if (Fc.isNotBlank(coreUser.getTelephone())){
+                user = UserCache.getUserByPhone(coreUser.getTelephone(),coreUser.getTenantCode());
+                if (Fc.notNull(user)) {
+                    if (isCover) {
+                        if (Fc.isNotBlank(coreUser.getId()) && !Fc.equals(coreUser.getId(),user.getId())){
+                            //如果loginID已经重复且不是一条数据的情况下，不进行覆盖也不新增
+                            continue;
+                        }
+                        coreUser.setId(user.getId());
+                    }else {
+                        //如果手机号重复但是不进行覆盖则去除
+                        continue;
+                    }
+                }
+            }
+
+            userList.add(coreUser);
+        }
+
+        //list去重
+        userList = userList.stream().filter(filterUser(o -> o)).collect(Collectors.toList());
+
+        List<String> tenantCodes = userList.stream().map(TbCoreUser::getTenantCode).distinct().collect(Collectors.toList());
+        tenantCodes.forEach(tenantCode -> {
+
+            TbCoreTenant tenant = SystemCache.getTenantByCode(tenantCode);
+            Integer accountNumber = getAccountNumber(tenant.getLicenseKey());
+            if (!Fc.equals(accountNumber, TENANT_ACCOUNT_NUMBER)){
+                Integer count = coreUserDao.count(Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getTenantCode,tenantCode));
+                if (count >= accountNumber){
+                    throw new BusinessException(tenant.getTenantName()+"租户账号额度不足");
+                }
+            }
+
+        });
+
+        return coreUserDao.saveOrUpdateBatch(userList);
     }
 
     @Override
     public Boolean updateUsersRole(String userIds, String roleIds) {
         //先删除用户原有角色
-        String[] uIds = userIds.split(StringPool.COMMA);
+        List<String> uIds = Fc.toStrList(userIds);
 
-        QueryWrapper wrapper = new QueryWrapper<TbCoreUserRole>();
-        wrapper.in("user_id",uIds);
+        LambdaQueryWrapper<TbCoreUserRole> wrapper = new QueryWrapper<TbCoreUserRole>().lambda().in(TbCoreUserRole::getUserId,uIds);
         coreUserRoleDao.removeReal(wrapper);
 
         if (Fc.isNotBlank(roleIds)){
-            String[] rIds = roleIds.split(StringPool.COMMA);
+            List<String> rIds = Fc.toStrList(roleIds);
             List<TbCoreUserRole> userRoles = new ArrayList<>();
             for (String rId : rIds) {
                 for (String userId : uIds) {
                     TbCoreUserRole userRole = new TbCoreUserRole();
-                    userRole.setId(UUIDUtil.getUUID());
                     userRole.setUserId(userId);
                     userRole.setRoleId(rId);
                     userRoles.add(userRole);
@@ -159,18 +271,13 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     }
 
     @Override
-    public TbCoreUser selectByPhone(String phone) {
-        QueryWrapper wrapper = new QueryWrapper<TbCoreUserRole>();
-        wrapper.eq("telephone",phone);
-        return coreUserDao.getOne(wrapper);
-    }
-
-    @Override
-    public TbCoreUser selectByUserNameAndId(String id, String username) {
-        LambdaQueryWrapper<TbCoreUser> wrapper = new QueryWrapper<TbCoreUser>().lambda();
-        wrapper.eq(TbCoreUser::getLoginId,username);
-        wrapper.eq(TbCoreUser::getId,id);
-        return coreUserDao.getOne(wrapper);
+    public TbCoreUser selectByPhone(String phone,String tenantCode) {
+        LambdaQueryWrapper<TbCoreUser> queryWrapper = Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getTelephone,phone);
+        if (SecureUtil.isRoot()){
+            tenantCode = Fc.isBlank(tenantCode)? DEFAULT_TENANT_CODE:tenantCode;
+            queryWrapper.eq(TbCoreUser::getTenantCode,tenantCode);
+        }
+        return coreUserDao.getOne(queryWrapper);
     }
 
     @Override
@@ -179,7 +286,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
         .set(TbCoreUser::getLoginCount,user.getLoginCount())
         .set(TbCoreUser::getLastLoginTime,user.getLastLoginTime())
         .eq(TbCoreUser::getId,user.getId());
-        return coreUserDao.update(new TbCoreUser(),wrapper);
+        return coreUserDao.update(wrapper);
     }
 
 }

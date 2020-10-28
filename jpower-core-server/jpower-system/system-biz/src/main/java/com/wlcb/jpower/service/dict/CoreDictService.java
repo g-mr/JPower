@@ -6,7 +6,6 @@ import com.wlcb.jpower.module.common.service.BaseService;
 import com.wlcb.jpower.vo.DictVo;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author mr.gmac
@@ -41,11 +40,10 @@ public interface CoreDictService extends BaseService<TbCoreDict> {
     List<DictVo> listByType(TbCoreDict dict);
 
     /**
-     * @author 郭丁志
-     * @Description //TODO 通过多个字典类型查询字典
-     * @date 0:56 2020/9/2 0002
-     * @param list
-     * @return java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
-     */
-    List<Map<String,Object>> dictListByTypes(List<String> list);
+     * @Author 郭丁志
+     * @Description //TODO 通过字典类型查询字典列表
+     * @Date 17:34 2020-10-22
+     * @Param [dictTypeCode]
+     **/
+    List<TbCoreDict> listByTypeCode(String dictTypeCode);
 }

@@ -15,25 +15,10 @@ logging:
   level:
     root: info
 
-
 jpower:
-#  xss:
-#    #是否开启富文本过滤(如果开启，content参数名和以WithHtml结尾得参数名将不进行XSS过滤，默认关闭)
-#    isIncludeRichText: false
-#    #XSS不过滤得接口路径，支持通配符模式
-#    excludes:
-#      - /core/**
-#  auth:
-#    client:
-#    #开启需要校验的客户端，值写数据库的clientCode即可
-#      - code: admin
-#    #需要客户端校验的URL
-#        path:
-#          - /core/user/**
-#    #鉴权需要过滤的白名单地址
-#    whileIp:
-#      - 192.168.1.2
-##      - 0:0:0:0:0:0:0:1
+  tenant:
+    #    是否启用多租户模式
+    enable: false
   dev:
     datasource:
       driver-class-name: com.mysql.cj.jdbc.Driver
