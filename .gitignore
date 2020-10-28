@@ -8,7 +8,9 @@ file/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**
 !**/src/test/**
-.log
+*.log
+out
+.DS_Store
 
 ### STS ###
 .apt_generated
