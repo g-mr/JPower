@@ -10,6 +10,7 @@ file/
 !**/src/test/**
 *.log
 out
+.DS_Store
 
 ### STS ###
 .apt_generated
