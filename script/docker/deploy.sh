@@ -1,12 +1,12 @@
 #使用说明，用来提示输入参数
-usage() {
-  echo "Usage: sh 执行脚本.sh [base|core|stop|rm|rmiNoneTag]"
+usage(){
+  echo "Usage: sh 执行脚本.sh [base|core|stop|pull|rm|rmiNoneTag]"
   exit 1
 }
 
 #启动基础支撑模块
 base(){
-  docker-compose up -d nacos sentinel seata elasticsearch skywalking-oap skywalking-ui
+  docker-compose up -d nginx nacos sentinel seata elasticsearch skywalking-oap skywalking-ui
 }
 
 #启动核心程序模块
@@ -19,7 +19,7 @@ stopCore(){
   docker-compose stop jpower-gateway jpower-auth jpower-user jpower-system jpower-file
 }
 
-#关闭核心程序模块
+#下载核心程序模块镜像
 pull(){
   docker-compose pull jpower-gateway jpower-auth jpower-user jpower-system jpower-file
 }
@@ -51,7 +51,7 @@ case "$1" in
   stop
 ;;
 "rm")
-	rm
+  rm
 ;;
 "rmiNoneTag")
   rmiNoneTag

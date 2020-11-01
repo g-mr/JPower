@@ -31,13 +31,13 @@ jpower:
   #   测试环境
   test:
     nacos:
-      #      配置中心地址，如果nacos配置没有配置注册中心地址，则注册中心默认走这里的地址
-      server-addr: 172.16.238.50:8848
+      #      注册中心地址
+      server-addr: 192.168.0.4:82
     sentinel:
       #      sentinel流控组件地址
-      dashboard: 192.168.0.8:84
+      dashboard: 192.168.0.4:84
     seata:
-      grouplist: 172.16.238.54:8091
+      grouplist: 192.168.0.4:85
     datasource:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://219.148.186.214:18995/jpower?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8
