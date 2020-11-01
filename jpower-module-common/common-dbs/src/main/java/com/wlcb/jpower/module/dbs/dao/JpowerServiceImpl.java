@@ -37,7 +37,7 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> ex
      * @date 2:47 2020/10/18 0018
      */
     private void resolveEntity(T entity){
-        // todo start 这里获取实际登陆人，如果是匿名用户或者其他登陆端，交给mp来赋值（可应用于未登录状态，根据具体业务前端可控制这些字段来保存更加符合的值）
+        // todo start 这里获取实际登陆人，如果是匿名用户或者其他接口调用方，交给 mp来赋值（可应用于未登录状态，根据具体业务，接口调用方可控制这些字段来保存更加符合的值）
         String userId = SecureUtil.getUserId();
         userId = Fc.isBlank(userId)?null:userId;
         Date now = new Date();

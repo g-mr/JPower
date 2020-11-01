@@ -38,7 +38,7 @@ public class PhoneTokenGranter implements TokenGranter {
         String phoneCode = tokenParameter.getStr("phoneCode");
         String tenantCode = tokenParameter.getStr(TenantConstant.TENANT_CODE);
         // 获取验证码
-        String redisCode = String.valueOf(redisUtils.get(CacheNames.PHONE_KEY + phone));
+        String redisCode = String.valueOf(redisUtils.get(CacheNames.PHONE_KEY + phone + tenantCode));
         // 判断验证码
         if (phoneCode == null || !StringUtil.equalsIgnoreCase(redisCode, phoneCode)) {
             throw new BusinessException(TokenUtil.PHONE_NOT_CORRECT);

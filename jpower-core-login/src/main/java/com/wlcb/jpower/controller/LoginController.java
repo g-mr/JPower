@@ -20,7 +20,7 @@ import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.tenant.JpowerTenantProperties;
-import com.wlcb.jpower.utils.SmsAliyun;
+import com.wlcb.jpower.utils.SmsUtil;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -139,14 +139,16 @@ public class LoginController extends BaseController {
 
     @ApiOperation(value = "发送手机登录验证码")
     @RequestMapping(value = "/phoneCaptcha",method = RequestMethod.GET,produces="application/json")
-    public ResponseData<String> loginVercode(@ApiParam(value = "租户编号",required = true) @RequestParam String tenantCode, @ApiParam(value = "手机号",required = true) @RequestParam String phone) {
+    public ResponseData<String> loginVercode(@ApiParam(value = "租户编号",required = false) @RequestParam(required = false) String tenantCode, @ApiParam(value = "手机号",required = true) @RequestParam String phone) {
+        if (tenantProperties.getEnable()){
+            JpowerAssert.notNull(tenantCode,JpowerError.Arg,"租户编码不可为空");
+        }
 
-        JpowerAssert.notNull(tenantCode,JpowerError.Arg,"租户编码不可为空");
         if (StringUtils.isBlank(phone) || !StrUtil.isPhone(phone)){
             return ReturnJsonUtil.fail("手机号不合法");
         }
 
-        if (redisUtil.getExpire(CacheNames.PHONE_KEY+phone,TimeUnit.MINUTES) >= 4){
+        if (redisUtil.getExpire(CacheNames.PHONE_KEY+phone+tenantCode,TimeUnit.MINUTES) >= 4){
             return ReturnJsonUtil.fail("该验证码已经发送，请一分钟后重试");
         }
 
@@ -159,10 +161,10 @@ public class LoginController extends BaseController {
 
         String code = RandomStringUtils.randomNumeric(6);
 
-        JSONObject json = SmsAliyun.send(phone,"乌丽吉",code);
+        JSONObject json = SmsUtil.send(phone,code);
 
         if ("OK".equals(json.getString("Code"))){
-            redisUtil.set(CacheNames.PHONE_KEY+phone,code,5L, TimeUnit.MINUTES);
+            redisUtil.set(CacheNames.PHONE_KEY+phone+tenantCode,code,5L, TimeUnit.MINUTES);
             return ReturnJsonUtil.ok(user.getLoginId()+"的验证码发送成功");
         }else {
             return ReturnJsonUtil.fail("验证码发送失败");

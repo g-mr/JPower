@@ -1,6 +1,7 @@
 package com.wlcb.jpower.module.config;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.wlcb.jpower.module.common.auth.RoleConstant;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.dbs.config.LoginUserContext;
@@ -51,7 +52,7 @@ public class UpdateRelatedFieldsMetaHandler implements MetaObjectHandler {
      * @Date 17:49 2020-07-09
      **/
     private String getUserName(){
-        return Fc.isBlank(LoginUserContext.getUserId())?"匿名用户":LoginUserContext.getUserId();
+        return Fc.isBlank(LoginUserContext.getUserId())? RoleConstant.ANONYMOUS_ID:LoginUserContext.getUserId();
     }
 
 }

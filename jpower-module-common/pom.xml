@@ -44,13 +44,6 @@
                 <artifactId>lombok</artifactId>
             </dependency>
 
-            <!--阿里云短信jdk，后期移到短信服务工具服务中-->
-            <dependency>
-                <groupId>com.aliyun</groupId>
-                <artifactId>aliyun-java-sdk-core</artifactId>
-                <version>${aliyun.version}</version>
-            </dependency>
-
         </dependencies>
 
         <dependencyManagement>
