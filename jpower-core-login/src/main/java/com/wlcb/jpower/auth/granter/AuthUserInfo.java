@@ -2,6 +2,7 @@ package com.wlcb.jpower.auth.granter;
 
 import com.wlcb.jpower.cache.UserCache;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
+import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.Fc;
@@ -50,11 +51,12 @@ public interface AuthUserInfo {
      * @date 22:43 2020/8/6 0006
      */
     default UserInfo getOtherCodeUserInfo(ChainMap tokenParameter){
-        String otherCode = tokenParameter.getStr("otherCode");
-        String tenantCode = tokenParameter.getStr("tenantCode");
-
-        TbCoreUser result = UserCache.getUserByCode(otherCode,tenantCode);
-        return TokenGranterBuilder.toUserInfo(result);
+//        String otherCode = tokenParameter.getStr("otherCode");
+//        String tenantCode = tokenParameter.getStr("tenantCode");
+//
+//        TbCoreUser result = UserCache.getUserByCode(otherCode,tenantCode);
+//        return TokenGranterBuilder.toUserInfo(result);
+        throw new BusinessException("暂不支持第三方验证码登录");
     }
 
     /**

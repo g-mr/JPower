@@ -1,7 +1,6 @@
 package com.wlcb.jpower.auth.granter;
 
-import com.wlcb.jpower.cache.UserCache;
-import com.wlcb.jpower.dbs.entity.TbCoreUser;
+import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.Fc;
@@ -32,8 +31,9 @@ public class OtherCodeTokenGranter implements TokenGranter {
             if (!Fc.isNull(authUserInfo)){
                 return authUserInfo.getOtherCodeUserInfo(tokenParameter);
             }else {
-                TbCoreUser result = UserCache.getUserByCode(otherCode,tenantCode);
-                return TokenGranterBuilder.toUserInfo(result);
+//                TbCoreUser result = UserCache.getUserByCode(otherCode,tenantCode);
+//                return TokenGranterBuilder.toUserInfo(result);
+                throw new BusinessException("暂不支持第三方验证码登录");
             }
 
         }
