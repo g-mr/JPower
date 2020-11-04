@@ -2,6 +2,7 @@ package com.wlcb.jpower.module.datascope.interceptor;
 
 import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
 import com.baomidou.mybatisplus.extension.handlers.AbstractSqlParserHandler;
+import com.wlcb.jpower.module.datascope.DataAuth;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -47,12 +48,11 @@ public class DataScopeInterceptor extends AbstractSqlParserHandler implements In
         }
 
         String originalSql = ((BoundSql) metaObject.getValue("delegate.boundSql")).getSql();
+        DataAuth dataAuth = this.findDataAuth();
 
 
 
-
-
-        return null;
+        return invocation.proceed();
     }
 
     /**
