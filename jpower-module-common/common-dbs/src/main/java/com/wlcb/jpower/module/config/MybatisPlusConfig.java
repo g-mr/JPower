@@ -8,12 +8,15 @@ import com.baomidou.mybatisplus.extension.plugins.OptimisticLockerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.optimize.JsqlParserCountOptimize;
 import com.wlcb.jpower.module.common.utils.ObjectUtil;
+import com.wlcb.jpower.module.datascope.interceptor.DataScopeInterceptor;
 import com.wlcb.jpower.module.mp.CustomSqlInjector;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.Arrays;
@@ -30,11 +33,7 @@ import java.util.Arrays;
 public class MybatisPlusConfig {
 
     /**
-     * @Author 郭丁志
-     * @Description //TODO 配置公用字段
-     * @Date 17:48 2020-07-09
-     * @Param []
-     * @return com.baomidou.mybatisplus.core.config.GlobalConfig
+     * 配置公用字段
      **/
     @Bean
     public GlobalConfig globalConfig() {
@@ -45,8 +44,7 @@ public class MybatisPlusConfig {
 
     @Bean
     public OptimisticLockerInterceptor optimisticLockerInterceptor(){
-        OptimisticLockerInterceptor interceptor = new OptimisticLockerInterceptor();
-        return interceptor;
+        return new OptimisticLockerInterceptor();
     }
 
     @Bean
@@ -78,4 +76,15 @@ public class MybatisPlusConfig {
     public ISqlInjector sqlInjector() {
         return new CustomSqlInjector();
     }
+
+    /**
+     * 数据权限插件
+     **/
+    @Order(10)
+    @Bean
+    @ConditionalOnProperty(value = {"jpower.datascope.enable"}, matchIfMissing = true)
+    public DataScopeInterceptor dataScopeInterceptor() {
+        return new DataScopeInterceptor();
+    }
+
 }
