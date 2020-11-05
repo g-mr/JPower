@@ -1,6 +1,8 @@
 package com.wlcb.jpower.feign;
 
 import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
+import com.wlcb.jpower.dbs.entity.function.TbCoreDataScope;
+import com.wlcb.jpower.dbs.entity.function.TbCoreFunction;
 import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
 import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
 import com.wlcb.jpower.module.base.vo.ResponseData;
@@ -34,9 +36,17 @@ public interface SystemClient {
     ResponseData<TbCoreClient> getClientByClientCode(@RequestParam String clientCode);
 
     @GetMapping("/function/getUrlsByRoleIds")
-    ResponseData<List<Object>> getUrlsByRoleIds(@RequestParam String roleIds);
+    ResponseData<List<Object>> getUrlsByRoleIds(@RequestParam List<String> roleIds);
 
     @GetMapping("/tenant/getTenantByCode")
     ResponseData<TbCoreTenant> getTenantByCode(@RequestParam String tenantCode);
 
+    @GetMapping("/function/getMenuListByRole")
+    ResponseData<List<TbCoreFunction>> getMenuListByRole(@RequestParam List<String> roleIds);
+
+    @GetMapping("/dataScope/getAllRoleDataScope")
+    ResponseData<List<TbCoreDataScope>> getAllRoleDataScope();
+
+    @GetMapping("/dataScope/getDataScopeByRole")
+    ResponseData<List<TbCoreDataScope>> getDataScopeByRole(@RequestParam List<String> roleIds);
 }

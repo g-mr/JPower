@@ -9,6 +9,9 @@ import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.StringUtil;
+import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.role.CoreDataScopeService;
 import lombok.AllArgsConstructor;
@@ -28,6 +31,8 @@ public class CoreDataScopeServiceImpl extends BaseServiceImpl<TbCoreDataScopeMap
 
     private TbCoreDataScopeDao dataScopeDao;
     private TbCoreRoleDataDao roleDataDao;
+
+    private final String sql = "select data_id from tb_core_role_data where role_id in ({})";
 
     @Override
     public boolean save(TbCoreDataScope dataScope){
@@ -54,6 +59,18 @@ public class CoreDataScopeServiceImpl extends BaseServiceImpl<TbCoreDataScopeMap
             return roleDataDao.saveBatch(list);
         }
         return true;
+    }
+
+    @Override
+    public List<TbCoreDataScope> getAllRoleDataScope() {
+        return dataScopeDao.list(Condition.<TbCoreDataScope>getQueryWrapper().lambda().eq(TbCoreDataScope::getAllRole, ConstantsEnum.YN01.Y.getValue()));
+    }
+
+    @Override
+    public List<TbCoreDataScope> getDataScopeByRole(List<String> roleIds) {
+        String inSql = StringUtil.collectionToDelimitedString(roleIds, StringPool.COMMA, StringPool.SINGLE_QUOTE, StringPool.SINGLE_QUOTE);
+        return dataScopeDao.list(Condition.<TbCoreDataScope>getQueryWrapper().lambda()
+                .in(TbCoreDataScope::getId, StringUtil.format(sql,inSql)));
     }
 
 }

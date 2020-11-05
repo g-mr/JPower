@@ -6,6 +6,7 @@ import com.wlcb.jpower.module.common.auth.RoleConstant;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.redis.RedisUtil;
+import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
@@ -26,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName AuthFilter
@@ -81,7 +83,11 @@ public class AuthFilter implements Filter {
                 UserInfo user = SecureUtil.getUser();
                 List<String> listUrl = (List<String>) redisUtil.get(CacheNames.TOKEN_URL_KEY + token);
                 if (!Fc.isNull(user) && Fc.contains(listUrl.iterator(), currentPath)) {
-                    chain.doFilter(addHeader(httpRequest, StringPool.EMPTY), response);
+
+                    Object dataAuth = redisUtil.get(CacheNames.TOKEN_DATA_SCOPE_KEY + token);
+                    Map<String,String> map = Fc.isNull(dataAuth) ? ChainMap.newMap() : (Map<String, String>) dataAuth;
+
+                    chain.doFilter(addHeader(httpRequest, StringPool.EMPTY, map.get(currentPath)), response);
                     return;
                 }else {
                     ResponseData responseData = ReturnJsonUtil.printJson(HttpStatus.UNAUTHORIZED.value(),"请求未授权",false);
@@ -89,15 +95,17 @@ public class AuthFilter implements Filter {
                     return;
                 }
             }else {
+                //白名单
                 String ip = WebUtil.getIP();
                 if (Fc.contains(authProperties.getWhileIp().iterator(),ip)){
-                    chain.doFilter(addHeader(httpRequest,ip), response);
+                    chain.doFilter(addHeader(httpRequest,ip,StringPool.EMPTY), response);
                     return;
                 }
 
+                //匿名用户
                 Integer roleCount = coreFunctionService.queryRoleByUrl(currentPath);
                 if(roleCount>0){
-                    chain.doFilter(addHeader(httpRequest, RoleConstant.ANONYMOUS), response);
+                    chain.doFilter(addHeader(httpRequest, RoleConstant.ANONYMOUS,StringPool.EMPTY), response);
                     return;
                 }
             }
@@ -110,9 +118,10 @@ public class AuthFilter implements Filter {
 
     }
 
-    private ServletRequest addHeader(HttpServletRequest request,String value) {
+    private ServletRequest addHeader(HttpServletRequest request,String value, String dataScope) {
         MutableHttpServletRequest mutableRequest = new MutableHttpServletRequest(request);
         mutableRequest.putHeader(TokenConstant.PASS_HEADER_NAME, value);
+        mutableRequest.putHeader(TokenConstant.DATA_SCOPE_NAME,dataScope);
         return mutableRequest;
     }
 

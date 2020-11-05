@@ -124,5 +124,7 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
 
     Integer queryRoleByUrl(String url);
 
-    List<Object> getUrlsByRoleIds(String roleIds);
+    List<Object> getUrlsByRoleIds(List<String> roleIds);
+
+    List<TbCoreFunction> getMenuListByRole(List<String> roleIds);
 }

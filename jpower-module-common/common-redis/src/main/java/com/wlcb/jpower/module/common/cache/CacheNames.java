@@ -49,6 +49,13 @@ public interface CacheNames {
     String SYSTEM_CLIENT_KEY = "client:code:";
     /** 角色的权限URL key **/
     String SYSTEM_URL_ROLES_KEY = "url:roles:";
+    /** 角色的菜单 key **/
+    String SYSTEM_MENU_ROLES_KEY = "menu:roles:";
+    /** 所有角色的数据权限 key **/
+    String SYSTEM_DATASCOPE_ALLROLES_KEY = "dataScope:roles:all:";
+    /** 角色的数据权限 key **/
+    String SYSTEM_DATASCOPE_ROLES_KEY = "dataScope:roles:";
+
     /** 租户信息 key（tenantCode） **/
     String SYSTEM_TENANT_CODE_KEY = "tenant:code:";
     /** 用户信息 key（手机号） **/
