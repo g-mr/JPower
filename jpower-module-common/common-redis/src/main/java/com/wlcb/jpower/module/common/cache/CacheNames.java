@@ -15,6 +15,8 @@ public interface CacheNames {
     String PHONE_KEY = "jpower:auth::phone:";
     /** 登陆用户权限缓存KEY **/
     String TOKEN_URL_KEY = "jpower:auth::token:";
+    /** 登录用户数据权限缓存KEY **/
+    String TOKEN_DATA_SCOPE_KEY = "jpower:auth::dataScope:";
 
     /** 行政区域缓存 **/
     String CITY_REDIS_CACHE = "jpower:citys";
@@ -26,6 +28,8 @@ public interface CacheNames {
     String SYSTEM_REDIS_CACHE = "jpower:system";
     /** 用户缓存 **/
     String USER_REDIS_CACHE = "jpower:user";
+    /** 数据权限缓存 **/
+    String DATASCOPE_REDIS_CACHE = "jpower:dataScope";
 
 
     /** 行政树形区域 **/

@@ -228,7 +228,7 @@ public class ConstantsEnum {
     public static enum DATA_SCOPE_TYPE{
 
         ALL(1,"全部"),OWN(2,"本人可见"),OWN_ORG(3,"所在机构可见")
-        ,OWN_DEPT_CHILD(4,"所在机构及子级可见"),CUSTOM(5,"自定义");
+        ,OWN_ORG_CHILD(4,"所在机构及子级可见"),CUSTOM(5,"自定义");
 
         private DATA_SCOPE_TYPE(Integer value, String name){
             this.value = value;

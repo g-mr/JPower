@@ -6,7 +6,9 @@ import com.wlcb.jpower.dbs.entity.role.TbCoreRoleData;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
+import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.page.PaginationContext;
+import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
@@ -60,6 +62,7 @@ public class DataScopeController {
             JpowerAssert.notEmpty(dataScope.getScopeValue(), JpowerError.Arg,"数据权限值域不可为空");
         }
 
+        CacheUtil.clear(CacheNames.DATASCOPE_REDIS_CACHE);
         return ReturnJsonUtil.status(dataScopeService.save(dataScope));
     }
 
@@ -74,6 +77,7 @@ public class DataScopeController {
             return ReturnJsonUtil.fail("编号已经存在");
         }
 
+        CacheUtil.clear(CacheNames.DATASCOPE_REDIS_CACHE);
         return ReturnJsonUtil.status(dataScopeService.updateById(dataScope));
     }
 
@@ -81,6 +85,7 @@ public class DataScopeController {
     @DeleteMapping(value = "/delete",produces="application/json")
     public ResponseData delete(@ApiParam(value = "主键",required = true) @RequestParam String id){
         JpowerAssert.notEmpty(id, JpowerError.Arg,"主键不可为空");
+        CacheUtil.clear(CacheNames.DATASCOPE_REDIS_CACHE);
         return ReturnJsonUtil.status(dataScopeService.removeRealById(id));
     }
 
@@ -115,11 +120,11 @@ public class DataScopeController {
 
     @ApiOperation("通过角色ID查询所有数据权限ID")
     @GetMapping(value = "/listIdByRoleId",produces="application/json")
-    public ResponseData<List<String>> listIdByRoleId(@ApiParam(value = "角色ID",required = true) @RequestParam String roleId){
-        JpowerAssert.notEmpty(roleId, JpowerError.Arg,"角色ID不可为空");
+    public ResponseData<List<String>> listIdByRoleId(@ApiParam(value = "角色ID 多个逗号分割",required = true) @RequestParam String roleIds){
+        JpowerAssert.notEmpty(roleIds, JpowerError.Arg,"角色ID不可为空");
         return ReturnJsonUtil.ok("查询成功",roleDataService.listObjs(Condition.<TbCoreRoleData>getQueryWrapper().lambda()
                 .select(TbCoreRoleData::getDataId)
-                .eq(TbCoreRoleData::getRoleId,roleId),Fc::toStr));
+                .in(TbCoreRoleData::getRoleId,roleIds),Fc::toStr));
     }
 
     @ApiOperation("角色赋权")
@@ -129,6 +134,7 @@ public class DataScopeController {
         JpowerAssert.notEmpty(roleId, JpowerError.Arg,"角色主键不可为空");
         JpowerAssert.notNull(roleService.getById(roleId), JpowerError.Parser,"该角色找不到");
 
+        CacheUtil.clear(CacheNames.DATASCOPE_REDIS_CACHE);
         return ReturnJsonUtil.status(dataScopeService.roleDataScope(roleId,dataIds));
     }
 }

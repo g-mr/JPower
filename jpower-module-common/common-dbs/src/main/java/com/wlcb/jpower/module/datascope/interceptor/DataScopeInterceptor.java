@@ -1,8 +1,14 @@
 package com.wlcb.jpower.module.datascope.interceptor;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
 import com.baomidou.mybatisplus.extension.handlers.AbstractSqlParserHandler;
-import com.wlcb.jpower.module.datascope.DataAuth;
+import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.StringUtil;
+import com.wlcb.jpower.module.common.utils.WebUtil;
+import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
+import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
+import com.wlcb.jpower.module.datascope.DataScope;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -48,11 +54,48 @@ public class DataScopeInterceptor extends AbstractSqlParserHandler implements In
         }
 
         String originalSql = ((BoundSql) metaObject.getValue("delegate.boundSql")).getSql();
-        DataAuth dataAuth = this.findDataAuth();
+        DataScope dataScope = this.findDataScope();
+        if (dataScope == null) {
+            return invocation.proceed();
+        }
 
+        String mapperId = mappedStatement.getId();
+        if (Fc.equalsValue(mapperId,dataScope.getScopeClass())){
+            // 查询全部
+            if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.ALL.getValue())){
+                return invocation.proceed();
+            }
 
+            String sqlCondition = " select {} from ({}) scope where ";
+            if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.CUSTOM.getValue())){
+                sqlCondition = StringUtil.format(sqlCondition + dataScope.getScopeValue(), Fc.toStr(dataScope.getScopeField(), "*"), originalSql);
+            }else {
+                sqlCondition = StringUtil.format(sqlCondition + " scope.{} in ({})", Fc.toStr(dataScope.getScopeField(), "*"), originalSql, dataScope.getScopeColumn(), StringUtil.join(dataScope.getIds()));
+            }
+
+            metaObject.setValue("delegate.boundSql.sql", sqlCondition);
+        }
 
         return invocation.proceed();
+    }
+
+    /**
+     * 获取数据权限
+     *
+     * @Author ding
+     * @Date 14:46 2020-11-05
+     **/
+    private DataScope findDataScope() {
+        if (Fc.isNull(WebUtil.getRequest())){
+            return null;
+        }
+
+        String data = WebUtil.getRequest().getHeader(TokenConstant.DATA_SCOPE_NAME);
+        if (Fc.isNotBlank(data)){
+            return JSON.parseObject(data,DataScope.class);
+        }
+
+        return null;
     }
 
     /**

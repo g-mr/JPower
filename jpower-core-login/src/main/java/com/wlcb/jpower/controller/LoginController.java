@@ -5,6 +5,7 @@ import com.wf.captcha.SpecCaptcha;
 import com.wlcb.jpower.auth.AuthInfo;
 import com.wlcb.jpower.auth.granter.TokenGranter;
 import com.wlcb.jpower.auth.granter.TokenGranterBuilder;
+import com.wlcb.jpower.auth.utils.AuthInfoUtil;
 import com.wlcb.jpower.auth.utils.TokenUtil;
 import com.wlcb.jpower.cache.SystemCache;
 import com.wlcb.jpower.cache.UserCache;
@@ -28,7 +29,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -107,8 +107,8 @@ public class LoginController extends BaseController {
 
         AuthInfo authInfo = TokenUtil.createAuthInfo(userInfo);
 
-        List<Object> list = SystemCache.getUrlsByRoleIds(userInfo.getRoleIds());
-        redisUtil.set(CacheNames.TOKEN_URL_KEY+authInfo.getAccessToken(),list , authInfo.getExpiresIn(), TimeUnit.SECONDS);
+        AuthInfoUtil.cacheAuth(authInfo);
+
         return ReturnJsonUtil.ok("登录成功",authInfo);
     }
 

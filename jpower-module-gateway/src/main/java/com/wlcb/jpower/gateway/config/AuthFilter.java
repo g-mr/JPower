@@ -88,25 +88,30 @@ public class AuthFilter implements GlobalFilter, Ordered {
                 return unAuth(exchange.getResponse(), "请求未授权");
             }
 
-            return chain.filter(addHeader(exchange, StringPool.EMPTY));
+            Object dataAuth = redisUtil.get(CacheNames.TOKEN_DATA_SCOPE_KEY + token);
+            Map<String,String> map = Fc.isNull(dataAuth) ? ChainMap.newMap() : (Map<String, String>) dataAuth;
+            return chain.filter(addHeader(exchange, StringPool.EMPTY, map.get(currentPath)));
         }else {
             //白名单
             String ip = IpUtil.getIP(exchange.getRequest());
             if (Fc.contains(authProperties.getWhileIp().iterator(),ip)){
-                return chain.filter(addHeader(exchange,ip));
+                return chain.filter(addHeader(exchange,ip,StringPool.EMPTY));
             }
 
             //匿名用户
             ResponseData<Boolean> responseData = systemClient.queryRoleByUrl(currentPath);
             if (responseData.getCode() == HttpStatus.OK.value() && responseData.getData() != null && responseData.getData()){
-                return chain.filter(addHeader(exchange,"anonymous"));
+                return chain.filter(addHeader(exchange,"anonymous",StringPool.EMPTY));
             }
             return unAuth(exchange.getResponse(), "缺失令牌，鉴权失败");
         }
     }
 
-    private ServerWebExchange addHeader(ServerWebExchange exchange,String value) {
-        ServerHttpRequest host = exchange.getRequest().mutate().header(TokenConstant.PASS_HEADER_NAME,value).build();
+    private ServerWebExchange addHeader(ServerWebExchange exchange,String otherAuth, String dataScope) {
+        ServerHttpRequest host = exchange.getRequest().mutate()
+                .header(TokenConstant.PASS_HEADER_NAME,otherAuth)
+                .header(TokenConstant.DATA_SCOPE_NAME,dataScope)
+                .build();
         //将现在的request 变成 change对象
         return exchange.mutate().request(host).build();
     }
