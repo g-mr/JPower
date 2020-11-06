@@ -31,6 +31,7 @@ public class UpdateRelatedFieldsMetaHandler implements MetaObjectHandler {
         this.strictInsertFill(metaObject, "updateUser", String.class, getUserName());
         this.strictInsertFill(metaObject, "createTime", Date.class, new Date());
         this.strictInsertFill(metaObject, "updateTime", Date.class, new Date());
+        this.strictInsertFill(metaObject, "createOrg", String.class, getOrg());
         this.strictInsertFill(metaObject, "status", Integer.class, JpowerConstants.DB_STATUS_NORMAL);
         this.strictInsertFill(metaObject, "isDeleted", Integer.class, JpowerConstants.DB_NOT_DELETE);
     }
@@ -53,6 +54,15 @@ public class UpdateRelatedFieldsMetaHandler implements MetaObjectHandler {
      **/
     private String getUserName(){
         return Fc.isBlank(LoginUserContext.getUserId())? RoleConstant.ANONYMOUS_ID:LoginUserContext.getUserId();
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 获取当前登陆用户的所在部门
+     * @Date 17:49 2020-07-09
+     **/
+    private String getOrg(){
+        return LoginUserContext.getOrgId();
     }
 
 }

@@ -16,6 +16,7 @@ import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.datascope.DataScope;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -29,8 +30,6 @@ import java.util.stream.Collectors;
 public class AuthInfoUtil {
 
     private static RedisUtil redisUtil;
-
-    private static final String REGEX = "\\$\\{(.*?)\\}";
 
     static {
         redisUtil = SpringUtil.getBean(RedisUtil.class);
@@ -71,7 +70,7 @@ public class AuthInfoUtil {
             DataScope dataScope = map.get(key);
             //本人可见
             if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.OWN.getValue())){
-                dataScope.setIds(Collections.singletonList(authInfo.getUser().getUserId()));
+                dataScope.setIds(Collections.singletonList  (authInfo.getUser().getUserId()));
             }
             //本级可见
             if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.OWN_ORG.getValue())){
@@ -80,6 +79,7 @@ public class AuthInfoUtil {
             //本级以及子级可见
             if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.OWN_ORG_CHILD.getValue())){
                 List<String> listOrgId = SystemCache.getChildIdOrgById(authInfo.getUser().getOrgId());
+                listOrgId = Fc.isNull(listOrgId)? new ArrayList<>() : listOrgId;
                 listOrgId.add(authInfo.getUser().getOrgId());
                 dataScope.setIds(listOrgId);
             }

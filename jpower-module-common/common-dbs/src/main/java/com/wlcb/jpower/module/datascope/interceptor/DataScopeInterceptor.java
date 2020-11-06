@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
 import com.baomidou.mybatisplus.extension.handlers.AbstractSqlParserHandler;
 import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.SecureUtil;
 import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.WebUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
@@ -44,6 +45,9 @@ public class DataScopeInterceptor extends AbstractSqlParserHandler implements In
     @Override
     @SneakyThrows
     public Object intercept(Invocation invocation) {
+        if (SecureUtil.isRoot()){
+            return invocation.proceed();
+        }
 
         StatementHandler statementHandler = PluginUtils.realTarget(invocation.getTarget());
         MetaObject metaObject = SystemMetaObject.forObject(statementHandler);
@@ -69,9 +73,9 @@ public class DataScopeInterceptor extends AbstractSqlParserHandler implements In
 
             String sqlCondition = " select {} from ({}) scope where ";
             if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.CUSTOM.getValue())){
-                sqlCondition = StringUtil.format(sqlCondition + dataScope.getScopeValue(), Fc.toStr(dataScope.getScopeField(), "*"), originalSql);
+                sqlCondition = StringUtil.format(sqlCondition + dataScope.getScopeValue(), Fc.toStr(dataScope.getScopeColumn(), "*"), originalSql);
             }else {
-                sqlCondition = StringUtil.format(sqlCondition + " scope.{} in ({})", Fc.toStr(dataScope.getScopeField(), "*"), originalSql, dataScope.getScopeColumn(), StringUtil.collectionToDelimitedString(dataScope.getIds(), StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE));
+                sqlCondition = StringUtil.format(sqlCondition + " scope.{} in ({})", Fc.toStr(dataScope.getScopeColumn(), "*"), originalSql, dataScope.getScopeField(), StringUtil.collectionToDelimitedString(dataScope.getIds(), StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE));
             }
 
             metaObject.setValue("delegate.boundSql.sql", sqlCondition);
