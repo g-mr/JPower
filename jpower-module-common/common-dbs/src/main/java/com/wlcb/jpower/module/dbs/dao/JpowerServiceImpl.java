@@ -12,7 +12,6 @@ import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import com.wlcb.jpower.module.mp.support.Condition;
-import com.wlcb.jpower.module.tenant.TenantConstant;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -20,7 +19,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.wlcb.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
+import static com.wlcb.jpower.module.tenant.TenantConstant.*;
 
 /**
  * @ClassName JpowerServiceImpl
@@ -54,13 +53,13 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> ex
         entity.setUpdateTime(now);
         // todo end
 
-        Field field = ReflectUtil.getField(entity.getClass(), TenantConstant.TENANT_CODE);
+        Field field = ReflectUtil.getField(entity.getClass(), TENANT_CODE);
         if (ObjectUtil.isNotEmpty(field)){
-            String tenantCode = ReflectUtil.invokeGetter(entity,TenantConstant.TENANT_CODE);
+            String tenantCode = ReflectUtil.invokeGetter(entity,TENANT_CODE);
             if (SecureUtil.isRoot() && isSave){
-                ReflectUtil.invokeSetter(entity,TenantConstant.TENANT_CODE,Fc.isBlank(tenantCode)?DEFAULT_TENANT_CODE:tenantCode);
+                ReflectUtil.invokeSetter(entity,TENANT_CODE,Fc.isBlank(tenantCode)?DEFAULT_TENANT_CODE:tenantCode);
             }else {
-                ReflectUtil.invokeSetter(entity,TenantConstant.TENANT_CODE,null);
+                ReflectUtil.invokeSetter(entity,TENANT_CODE,null);
             }
         }
     }

@@ -1,6 +1,8 @@
 package com.wlcb.jpower.module.configurer.xss;
 
+import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SqlInjectionUtil;
+import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,13 +33,15 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
      */
     @Override
     public String getParameter(String name) {
+
         if(("content".equals(name) || name.endsWith("WithHtml")) && isIncludeRichText){
             return super.getParameter(name);
         }
-        name = SqlInjectionUtil.filter(name);//;JsoupUtils.clean(name);
+
+        name = SqlInjectionUtil.filter(name);
         String value = super.getParameter(name);
         if (StringUtils.isNotBlank(value)) {
-            value = SqlInjectionUtil.filter(value);//JsoupUtils.clean(value);
+            value = SqlInjectionUtil.filter(value);
             if (StringUtils.equals(value,"null") || StringUtils.equals(value,"undefined")){
                 value = null;
             }
@@ -64,10 +68,14 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
      */
     @Override
     public String getHeader(String name) {
-        name = SqlInjectionUtil.filter(name);//JsoupUtils.clean(name);
+        if (Fc.equalsValue(TokenConstant.PASS_HEADER_NAME,name) || Fc.equalsValue(TokenConstant.DATA_SCOPE_NAME,name)){
+            return super.getHeader(name);
+        }
+
+        name = SqlInjectionUtil.filter(name);
         String value = super.getHeader(name);
         if (StringUtils.isNotBlank(value) && !StringUtils.equals(name,"Accept") ) {
-            value = SqlInjectionUtil.filter(value);//JsoupUtils.clean(value);
+            value = SqlInjectionUtil.filter(value);
             if (StringUtils.equals(value,"null") || StringUtils.equals(value,"undefined")){
                 value = null;
             }
