@@ -36,14 +36,14 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> ex
      * @Description //TODO 设置实体值
      * @date 2:47 2020/10/18 0018
      */
-    private void resolveEntity(T entity){
+    private void resolveEntity(T entity,boolean isSave){
         // todo start 这里获取实际登陆人，如果是匿名用户或者其他接口调用方，交给 mp来赋值（可应用于未登录状态，根据具体业务，接口调用方可控制这些字段来保存更加符合的值）
         String userId = SecureUtil.getUserId();
         String orgId = SecureUtil.getOrgId();
         userId = Fc.isBlank(userId)?null:userId;
         orgId = Fc.isBlank(orgId)?null:orgId;
         Date now = new Date();
-        if (Fc.isBlank(entity.getId())){
+        if (isSave){
             entity.setCreateTime(now);
             entity.setCreateUser(userId);
             entity.setCreateOrg(orgId);
@@ -57,7 +57,7 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> ex
         Field field = ReflectUtil.getField(entity.getClass(), TenantConstant.TENANT_CODE);
         if (ObjectUtil.isNotEmpty(field)){
             String tenantCode = ReflectUtil.invokeGetter(entity,TenantConstant.TENANT_CODE);
-            if (SecureUtil.isRoot() && Fc.isBlank(entity.getId())){
+            if (SecureUtil.isRoot() && isSave){
                 ReflectUtil.invokeSetter(entity,TenantConstant.TENANT_CODE,Fc.isBlank(tenantCode)?DEFAULT_TENANT_CODE:tenantCode);
             }else {
                 ReflectUtil.invokeSetter(entity,TenantConstant.TENANT_CODE,null);
@@ -67,37 +67,37 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> ex
 
     @Override
     public boolean save(T entity) {
-        resolveEntity(entity);
+        resolveEntity(entity,true);
         return super.save(entity);
     }
 
     @Override
     public boolean saveBatch(Collection<T> entityList, int batchSize) {
-        entityList.forEach(this::resolveEntity);
+        entityList.forEach(e -> this.resolveEntity(e,true));
         return super.saveBatch(entityList,batchSize);
     }
 
     @Override
     public boolean saveOrUpdate(T entity) {
-        resolveEntity(entity);
+        resolveEntity(entity, Fc.isBlank(entity.getId()));
         return super.saveOrUpdate(entity);
     }
 
     @Override
     public boolean saveOrUpdateBatch(Collection<T> entityList, int batchSize) {
-        entityList.forEach(this::resolveEntity);
+        entityList.forEach(e -> this.resolveEntity(e,Fc.isBlank(e.getId())));
         return super.saveOrUpdateBatch(entityList,batchSize);
     }
 
     @Override
     public boolean updateBatchById(Collection<T> entityList) {
-        entityList.forEach(this::resolveEntity);
+        entityList.forEach(e -> this.resolveEntity(e,false));
         return super.updateBatchById(entityList);
     }
 
     @Override
     public boolean updateById(T entity) {
-        resolveEntity(entity);
+        resolveEntity(entity,false);
         return super.updateById(entity);
     }
 
@@ -106,7 +106,7 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> ex
         if (Fc.isNull(entity)){
             entity = BeanUtil.newInstance(ReflectUtil.getClassGenricType(this.getClass(),1));
         }
-        resolveEntity(entity);
+        resolveEntity(entity,false);
         return super.update(entity,updateWrapper);
     }
 

@@ -8,7 +8,6 @@ import com.wlcb.jpower.module.common.utils.SecureUtil;
 import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.WebUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
-import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
 import com.wlcb.jpower.module.datascope.DataScope;
 import lombok.AllArgsConstructor;
@@ -23,6 +22,8 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 
 import java.sql.Connection;
+
+import static com.wlcb.jpower.module.common.utils.constants.StringPool.*;
 
 /**
  * mybatis 数据权限拦截器
@@ -75,7 +76,7 @@ public class DataScopeInterceptor extends AbstractSqlParserHandler implements In
             if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.CUSTOM.getValue())){
                 sqlCondition = StringUtil.format(sqlCondition + dataScope.getScopeValue(), Fc.toStr(dataScope.getScopeColumn(), "*"), originalSql);
             }else {
-                sqlCondition = StringUtil.format(sqlCondition + " scope.{} in ({})", Fc.toStr(dataScope.getScopeColumn(), "*"), originalSql, dataScope.getScopeField(), StringUtil.collectionToDelimitedString(dataScope.getIds(), StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE));
+                sqlCondition = StringUtil.format(sqlCondition + " scope.{} in ({})", Fc.toStr(dataScope.getScopeColumn(), "*"), originalSql, dataScope.getScopeField(), StringUtil.collectionToDelimitedString(dataScope.getIds(), COMMA,SINGLE_QUOTE,SINGLE_QUOTE));
             }
 
             metaObject.setValue("delegate.boundSql.sql", sqlCondition);

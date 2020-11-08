@@ -25,7 +25,8 @@
         update_user,
         update_time,
         status,
-        tenant_code
+        tenant_code,
+        create_org
     </sql>
 
     <sql id="Base_Column_List_Alias">
@@ -52,7 +53,8 @@
         u.update_time,
         u.status,
         u.is_deleted,
-        u.tenant_code
+        u.tenant_code,
+        u.create_org
     </sql>
 
     <select id="selectAllById" resultType="com.wlcb.jpower.dbs.entity.TbCoreUser">
