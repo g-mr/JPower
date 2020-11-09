@@ -60,7 +60,7 @@ public interface CoreOrgService extends BaseService<TbCoreOrg> {
 
     /**
      * @author 郭丁志
-     * @Description //TODO 懒加载树形组织机构
+     * @Description TODO 懒加载树形组织机构
      * @date 22:27 2020/7/26 0026
      * @param parentCode
      * @param coreOrg

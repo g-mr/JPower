@@ -128,6 +128,16 @@ public class SecureUtil {
     }
 
     /**
+     * 获取部门id
+     *
+     * @return orgId
+     */
+    public static String getOrgId() {
+        UserInfo user = getUser();
+        return (null == user) ? StringPool.EMPTY : user.getOrgId();
+    }
+
+    /**
      * 获取用户id
      *
      * @param request request

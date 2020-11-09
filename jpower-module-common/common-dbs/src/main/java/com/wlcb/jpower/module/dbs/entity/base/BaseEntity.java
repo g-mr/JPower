@@ -29,6 +29,10 @@ public class BaseEntity implements Serializable {
     @TableId(value = "id",type = IdType.ASSIGN_UUID)
     private String id;
 
+    @ApiModelProperty(value = "创建部门",hidden=true)
+    @TableField(value = "create_org", fill = FieldFill.INSERT)
+    private String createOrg;
+
     @ApiModelProperty(value = "创建人",hidden=true)
     @Excel(name = "创建人", type = Excel.Type.EXPORT)
     @TableField(value = "create_user", fill = FieldFill.INSERT)

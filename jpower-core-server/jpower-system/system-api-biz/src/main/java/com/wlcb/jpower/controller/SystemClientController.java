@@ -1,6 +1,8 @@
 package com.wlcb.jpower.controller;
 
 import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
+import com.wlcb.jpower.dbs.entity.function.TbCoreDataScope;
+import com.wlcb.jpower.dbs.entity.function.TbCoreFunction;
 import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
 import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
 import com.wlcb.jpower.feign.SystemClient;
@@ -9,6 +11,7 @@ import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.client.CoreClientService;
 import com.wlcb.jpower.service.org.CoreOrgService;
+import com.wlcb.jpower.service.role.CoreDataScopeService;
 import com.wlcb.jpower.service.role.CoreFunctionService;
 import com.wlcb.jpower.service.tenant.TenantService;
 import lombok.AllArgsConstructor;
@@ -33,18 +36,36 @@ public class SystemClientController implements SystemClient {
     private CoreClientService coreClientService;
     private CoreFunctionService coreFunctionService;
     private TenantService tenantService;
+    private CoreDataScopeService coreDataScopeService;
 
     @Override
     @GetMapping("/org/queryChildById")
     public ResponseData<List<String>> queryChildOrgById(@RequestParam String id){
-        List<String> list = coreOrgService.queryChildById(id);
-        return ReturnJsonUtil.ok("查询成功",list);
+        return ReturnJsonUtil.ok("查询成功",coreOrgService.queryChildById(id));
     }
 
     @Override
     @GetMapping("/function/getUrlsByRoleIds")
-    public ResponseData<List<Object>> getUrlsByRoleIds(@RequestParam String roleIds) {
+    public ResponseData<List<Object>> getUrlsByRoleIds(@RequestParam List<String> roleIds) {
         return ReturnJsonUtil.ok("查询成功",coreFunctionService.getUrlsByRoleIds(roleIds));
+    }
+
+    @Override
+    @GetMapping("/function/getMenuListByRole")
+    public ResponseData<List<TbCoreFunction>> getMenuListByRole(@RequestParam List<String> roleIds) {
+        return ReturnJsonUtil.ok("查询成功",coreFunctionService.getMenuListByRole(roleIds));
+    }
+
+    @Override
+    @GetMapping("/dataScope/getAllRoleDataScope")
+    public ResponseData<List<TbCoreDataScope>> getAllRoleDataScope() {
+        return ReturnJsonUtil.ok("查询成功",coreDataScopeService.getAllRoleDataScope());
+    }
+
+    @Override
+    @GetMapping("/dataScope/getDataScopeByRole")
+    public ResponseData<List<TbCoreDataScope>> getDataScopeByRole(@RequestParam List<String> roleIds) {
+        return ReturnJsonUtil.ok("查询成功",coreDataScopeService.getDataScopeByRole(roleIds));
     }
 
     @Override

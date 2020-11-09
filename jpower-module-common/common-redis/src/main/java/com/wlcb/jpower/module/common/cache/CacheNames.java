@@ -15,6 +15,8 @@ public interface CacheNames {
     String PHONE_KEY = "jpower:auth::phone:";
     /** 登陆用户权限缓存KEY **/
     String TOKEN_URL_KEY = "jpower:auth::token:";
+    /** 登录用户数据权限缓存KEY **/
+    String TOKEN_DATA_SCOPE_KEY = "jpower:auth::dataScope:";
 
     /** 行政区域缓存 **/
     String CITY_REDIS_CACHE = "jpower:citys";
@@ -26,6 +28,8 @@ public interface CacheNames {
     String SYSTEM_REDIS_CACHE = "jpower:system";
     /** 用户缓存 **/
     String USER_REDIS_CACHE = "jpower:user";
+    /** 数据权限缓存 **/
+    String DATASCOPE_REDIS_CACHE = "jpower:dataScope";
 
 
     /** 行政树形区域 **/
@@ -45,6 +49,13 @@ public interface CacheNames {
     String SYSTEM_CLIENT_KEY = "client:code:";
     /** 角色的权限URL key **/
     String SYSTEM_URL_ROLES_KEY = "url:roles:";
+    /** 角色的菜单 key **/
+    String SYSTEM_MENU_ROLES_KEY = "menu:roles:";
+    /** 所有角色的数据权限 key **/
+    String SYSTEM_DATASCOPE_ALLROLES_KEY = "dataScope:roles:all:";
+    /** 角色的数据权限 key **/
+    String SYSTEM_DATASCOPE_ROLES_KEY = "dataScope:roles:";
+
     /** 租户信息 key（tenantCode） **/
     String SYSTEM_TENANT_CODE_KEY = "tenant:code:";
     /** 用户信息 key（手机号） **/

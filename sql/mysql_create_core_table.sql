@@ -24,6 +24,7 @@ create table tb_core_user(
   create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
   update_user varchar(32) default 'root' not null comment '更新人',
   update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
+  create_org varchar(32) null default null comment '创建部门',
   status   tinyint(1) default 1 comment '状态',
   is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
   tenant_code varchar(6) not null default '000000' comment '租户编码',
@@ -45,6 +46,7 @@ create table tb_core_role(
   create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
   update_user varchar(32) default 'root' not null comment '更新人',
   update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
+  create_org varchar(32) null default null comment '创建部门',
   status   tinyint(1) default 1 comment '状态',
   is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
   tenant_code varchar(6) not null default '000000' comment '租户编码',
@@ -68,6 +70,7 @@ create table tb_core_tenant(
   create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
   update_user varchar(32) default 'root' not null comment '更新人',
   update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
+  create_org varchar(32) null default null comment '创建部门',
   status   tinyint(1) default 1 comment '状态',
   is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
   PRIMARY KEY (id) USING BTREE
@@ -83,6 +86,7 @@ create table tb_core_user_role(
   create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
   update_user varchar(32) default 'root' not null comment '更新人',
   update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
+  create_org varchar(32) null default null comment '创建部门',
   status   tinyint(1) default 1 comment '状态',
   is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
   PRIMARY KEY (id) USING BTREE,
@@ -113,6 +117,7 @@ create table tb_core_org(
  create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
  update_user varchar(32) default 'root' not null comment '更新人',
  update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
+ create_org varchar(32) null default null comment '创建部门',
  status tinyint(1) default 1 comment '状态',
  is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
  tenant_code varchar(6) not null default '000000' comment '租户编码',
@@ -139,6 +144,7 @@ create table tb_core_function(
  create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
  update_user varchar(32) default 'root' not null comment '更新人',
  update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
+ create_org varchar(32) null default null comment '创建部门',
  status tinyint(1) default 1 comment '状态',
  is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
  PRIMARY KEY (id) USING BTREE,
@@ -154,11 +160,52 @@ create table tb_core_role_function(
   create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
   update_user varchar(32) default 'root' not null comment '更新人',
   update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
+  create_org varchar(32) null default null comment '创建部门',
   status   tinyint(1) default 1 comment '状态',
   is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
   PRIMARY KEY (id) USING BTREE,
   unique key core_dict_type(role_id, function_id) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '角色菜单表';
+
+DROP TABLE IF EXISTS `tb_core_data_scope`;
+CREATE TABLE `tb_core_data_scope`  (
+  id varchar(32) NOT NULL COMMENT '主键',
+  menu_id varchar(32) NULL DEFAULT NULL COMMENT '菜单主键',
+  scope_code varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '编号',
+  scope_name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '数据权限名称',
+  scope_field varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '数据权限字段',
+  scope_class varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '数据权限类名',
+  scope_column varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '*' COMMENT '数据可见字段',
+  scope_type tinyint(1) NULL DEFAULT NULL COMMENT '数据权限类型 字典：DATA_SCOPE_TYPE',
+  scope_value varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '数据权限值域',
+  all_role tinyint(1) not NULL DEFAULT 0 COMMENT '是否所有角色都执行',
+  note varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '数据权限备注',
+  create_user varchar(32) default 'root' not null comment '创建人',
+  create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
+  update_user varchar(32) default 'root' not null comment '更新人',
+  update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
+  create_org varchar(32) null default null comment '创建部门',
+  status tinyint(1) DEFAULT 1 COMMENT '状态',
+  is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
+  PRIMARY KEY (id) USING BTREE,
+  unique key uk_scope_code(scope_code) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COMMENT = '数据权限表';
+
+drop table if exists tb_core_role_data;
+create table tb_core_role_data(
+  id varchar(32) not null comment '主键',
+  role_id varchar(50) not null comment '角色ID',
+  data_id varchar(100) not null comment '数据权限ID',
+  create_user varchar(32) default 'root' not null comment '创建人',
+  create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
+  update_user varchar(32) default 'root' not null comment '更新人',
+  update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
+  create_org varchar(32) null default null comment '创建部门',
+  status   tinyint(1) default 1 comment '状态',
+  is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
+  PRIMARY KEY (id) USING BTREE,
+  unique key core_dict_type(role_id, data_id) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '角色数据权限关联表';
 
 drop table if exists tb_core_param;
 create table tb_core_param(
@@ -172,6 +219,7 @@ create table tb_core_param(
   create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
   update_user varchar(32) default 'root' not null comment '更新人',
   update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
+  create_org varchar(32) null default null comment '创建部门',
   status   tinyint(1) default 1 comment '状态',
   is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
   PRIMARY KEY (id) USING BTREE
@@ -190,6 +238,7 @@ create table tb_core_dict_type(
   create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
   update_user varchar(32) default 'root' not null comment '更新人',
   update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
+  create_org varchar(32) null default null comment '创建部门',
   status   tinyint(1) default 1 comment '状态',
   is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
   tenant_code varchar(6) not null default '000000' comment '租户编码',
@@ -215,6 +264,7 @@ create table tb_core_dict
   create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
   update_user varchar(32) default 'root' not null comment '更新人',
   update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
+  create_org varchar(32) null default null comment '创建部门',
   status   tinyint(1) default 1 comment '状态',
   is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
   tenant_code varchar(6) not null default '000000' comment '租户编码',
@@ -240,6 +290,7 @@ create table tb_core_city(
   create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
   update_user varchar(32) default 'root' not null comment '更新人',
   update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
+  create_org varchar(32) null default null comment '创建部门',
   status   tinyint(1) default 1 comment '状态',
   is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
   PRIMARY KEY (id) USING BTREE
@@ -260,6 +311,7 @@ create table tb_core_client(
   create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
   update_user varchar(32) default 'root' not null comment '更新人',
   update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
+  create_org varchar(32) null default null comment '创建部门',
   status   tinyint(1) default 1 comment '状态',
   is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
   PRIMARY KEY (id) USING BTREE
@@ -280,6 +332,7 @@ create table tb_core_file(
   create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
   update_user varchar(32) default 'root' not null comment '更新人',
   update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
+  create_org varchar(32) null default null comment '创建部门',
   status   tinyint(1) default 1 comment '状态',
   is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
   PRIMARY KEY (id) USING BTREE

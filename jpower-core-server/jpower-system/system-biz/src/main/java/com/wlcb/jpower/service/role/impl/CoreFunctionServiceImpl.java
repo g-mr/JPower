@@ -9,7 +9,6 @@ import com.wlcb.jpower.dbs.entity.function.TbCoreFunction;
 import com.wlcb.jpower.dbs.entity.role.TbCoreRoleFunction;
 import com.wlcb.jpower.module.common.auth.RoleConstant;
 import com.wlcb.jpower.module.common.node.Node;
-import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.StringUtil;
@@ -23,7 +22,6 @@ import com.wlcb.jpower.wrapper.BaseDictWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
@@ -39,8 +37,6 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     private TbCoreFunctionDao coreFunctionDao;
     @Autowired
     private TbCoreRoleFunctionDao coreRoleFunctionDao;
-    @Resource
-    private RedisUtil redisUtil;
 
     @Override
     public List<TbCoreFunction> listByParent(Map<String,Object> coreFunction) {
@@ -103,11 +99,19 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     }
 
     @Override
-    public List<Object> getUrlsByRoleIds(String roleIds) {
-        String inSql = "'"+roleIds.replaceAll(",","','")+"'";
+    public List<Object> getUrlsByRoleIds(List<String> roleIds) {
+        String inSql = StringUtil.collectionToDelimitedString(roleIds, StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE);
         return coreFunctionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                 .select(TbCoreFunction::getUrl)
                 .isNotNull(TbCoreFunction::getUrl)
+                .inSql(TbCoreFunction::getId,StringUtil.format(sql,inSql)));
+    }
+
+    @Override
+    public List<TbCoreFunction> getMenuListByRole(List<String> roleIds) {
+        String inSql = StringUtil.collectionToDelimitedString(roleIds, StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE);
+        return coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
+                .eq(TbCoreFunction::getIsMenu,ConstantsEnum.YN01.Y.getValue())
                 .inSql(TbCoreFunction::getId,StringUtil.format(sql,inSql)));
     }
 

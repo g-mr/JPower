@@ -28,4 +28,6 @@ public interface TokenConstant {
     Integer AUTH_LENGTH = 7;
     /** 匿名用户和白名单的HEADER **/
     String PASS_HEADER_NAME = "jpower-auth-pass";
+    /** 数据权限的HEADER **/
+    String DATA_SCOPE_NAME = "data-scope";
 }

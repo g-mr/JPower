@@ -1,6 +1,8 @@
 package com.wlcb.jpower.cache;
 
 import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
+import com.wlcb.jpower.dbs.entity.function.TbCoreDataScope;
+import com.wlcb.jpower.dbs.entity.function.TbCoreFunction;
 import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
 import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
 import com.wlcb.jpower.feign.SystemClient;
@@ -84,9 +86,8 @@ public class SystemCache {
      * @param roleIds 角色ID
      */
     public static List<Object> getUrlsByRoleIds(List<String> roleIds) {
-        String roles = Fc.join(roleIds);
-        return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_URL_ROLES_KEY,roles,() -> {
-            ResponseData<List<Object>> responseData = systemClient.getUrlsByRoleIds(roles);
+        return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_URL_ROLES_KEY,roleIds,() -> {
+            ResponseData<List<Object>> responseData = systemClient.getUrlsByRoleIds(roleIds);
             return responseData.getData();
         });
     }
@@ -101,6 +102,49 @@ public class SystemCache {
     public static TbCoreTenant getTenantByCode(String tenantCode) {
         return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_TENANT_CODE_KEY,tenantCode,() -> {
             ResponseData<TbCoreTenant> responseData = systemClient.getTenantByCode(tenantCode);
+            return responseData.getData();
+        });
+    }
+
+    /**
+     * 通过角色ID获取所有菜单
+     *
+     * @author 郭丁志
+     * @date 23:28 2020/11/5 0005
+     * @param roleIds 角色ID
+     */
+    public static List<TbCoreFunction> getMenuListByRole(List<String> roleIds) {
+        return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_MENU_ROLES_KEY,roleIds,() -> {
+            ResponseData<List<TbCoreFunction>> responseData = systemClient.getMenuListByRole(roleIds);
+            return responseData.getData();
+        });
+    }
+
+    /**
+     * 查询可所有角色执行得数据权限
+     *
+     * @author 郭丁志
+     * @date 23:31 2020/11/5 0005
+     * @return java.util.List<com.wlcb.jpower.dbs.entity.function.TbCoreDataScope>
+     */
+    public static List<TbCoreDataScope> getAllRoleDataScope() {
+        return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_DATASCOPE_ALLROLES_KEY,"all",() -> {
+            ResponseData<List<TbCoreDataScope>> responseData = systemClient.getAllRoleDataScope();
+            return responseData.getData();
+        });
+    }
+
+    /**
+     * 根据角色ID获取数据权限
+     *
+     * @author 郭丁志
+     * @date 23:38 2020/11/5 0005
+     * @param roleIds  角色ID
+     * @return java.util.List<com.wlcb.jpower.dbs.entity.function.TbCoreDataScope>
+     */
+    public static List<TbCoreDataScope> getDataScopeByRole(List<String> roleIds) {
+        return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_DATASCOPE_ROLES_KEY,roleIds,() -> {
+            ResponseData<List<TbCoreDataScope>> responseData = systemClient.getDataScopeByRole(roleIds);
             return responseData.getData();
         });
     }

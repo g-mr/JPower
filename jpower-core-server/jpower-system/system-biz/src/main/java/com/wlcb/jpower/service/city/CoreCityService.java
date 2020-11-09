@@ -26,10 +26,9 @@ public interface CoreCityService extends BaseService<TbCoreCity> {
      * @Author 郭丁志
      * @Description //TODO 查询行政取区域列表
      * @Date 11:16 2020-07-23
-     * @Param [coreCity]
      * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.city.TbCoreCity>
-     *
-     * @param coreCity*/
+     * @param coreCity
+     */
     List<TbCoreCity> list(TbCoreCity coreCity);
 
     /**
