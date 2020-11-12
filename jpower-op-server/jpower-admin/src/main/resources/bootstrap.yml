@@ -1,0 +1,28 @@
+server:
+  port: 8828
+  undertow:
+    # 设置IO线程数, 它主要执行非阻塞的任务,它们会负责多个连接, 默认设置每个CPU核心一个线程
+    io-threads: 4
+    # 阻塞任务线程池, 当执行类似servlet请求阻塞操作, undertow会从这个线程池中取得线程,它的值设置取决于系统的负载
+    worker-threads: 20
+    # 以下的配置会影响buffer,这些buffer会用于服务器连接的IO操作,有点类似netty的池化内存管理
+    buffer-size: 1024
+    # 是否分配的直接内存
+    direct-buffers: true
+
+jpower:
+  #  开发环境
+  dev:
+    nacos:
+      #      配置中心地址。 如果nacos配置没有配置注册中心地址，则注册中心默认走这里的地址
+      server-addr: 219.148.186.214:8847
+  #   测试环境
+  test:
+    nacos:
+      #      注册中心地址
+      server-addr: 192.168.0.4:82
+  #  正式环境
+  prod:
+    nacos:
+      #      配置中心地址，如果nacos配置没有配置注册中心地址，则注册中心默认走这里的地址
+      server-addr: 192.168.0.20:8848
