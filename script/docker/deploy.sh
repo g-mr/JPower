@@ -6,7 +6,7 @@ usage(){
 
 #启动基础支撑模块
 base(){
-  docker-compose up -d nginx nacos sentinel seata elasticsearch skywalking-oap skywalking-ui
+  docker-compose up -d nginx nacos sentinel seata elasticsearch skywalking-oap skywalking-ui jpower-admin
 }
 
 #启动核心程序模块

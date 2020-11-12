@@ -141,6 +141,13 @@ services:
       jpower_net:
         ipv4_address: 172.16.238.54
 
+  jpower-admin:
+    image: "219.148.186.235:99/jpower/jpower-admin:1.0.1-SNAPSHOT"
+    privileged: true
+    restart: always
+    networks:
+      - jpower_net
+
   jpower-gateway:
     image: "219.148.186.235:99/jpower/gateway-server:1.0.1-SNAPSHOT"
     privileged: true

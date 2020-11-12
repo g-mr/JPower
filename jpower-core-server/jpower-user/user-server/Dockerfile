@@ -1,6 +1,6 @@
 FROM openjdk:8-jre
 
-MAINTAINER null
+MAINTAINER ding
 
 RUN mkdir -p /jpower/user \
     && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \

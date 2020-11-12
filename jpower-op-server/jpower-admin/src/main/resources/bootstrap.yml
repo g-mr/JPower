@@ -1,5 +1,5 @@
 server:
-  port: 8828
+  port: 8868
   undertow:
     # 设置IO线程数, 它主要执行非阻塞的任务,它们会负责多个连接, 默认设置每个CPU核心一个线程
     io-threads: 4
@@ -9,6 +9,19 @@ server:
     buffer-size: 1024
     # 是否分配的直接内存
     direct-buffers: true
+
+spring:
+  security:
+    user:
+      name: "admin"
+      password: "admin"
+  cloud:
+    nacos:
+      discovery:
+        # 将本服务实例注册到服务中心时，在元信息中携带访问本服务使用的用户名和密码
+        metadata:
+          user.name: "admin"
+          user.password: "admin"
 
 jpower:
   #  开发环境
