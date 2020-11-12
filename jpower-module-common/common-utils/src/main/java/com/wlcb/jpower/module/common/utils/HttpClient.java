@@ -2,8 +2,8 @@ package com.wlcb.jpower.module.common.utils;
 
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
-import org.apache.http.ProtocolException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.EntityBuilder;
@@ -31,7 +31,6 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -434,11 +433,12 @@ public class HttpClient {
             //设置传输参数
             MultipartEntityBuilder multipartEntity = MultipartEntityBuilder.create();
             multipartEntity.addPart(fileName, fundFileBin);
-            //设计文件以外的参数
+            //文件以外的参数
             Set<String> keySet = paramMap.keySet();
             for (String key : keySet) {
                 multipartEntity.addPart(key, new StringBody(paramMap.get(key), ContentType.create("multipart/form-data", Consts.UTF_8)));
             }
+
 
             HttpEntity reqEntity = multipartEntity.build();
             httpPost.setEntity(reqEntity);
@@ -468,11 +468,62 @@ public class HttpClient {
         return result;
     }
 
+    public static String uploadFile(byte[] bytes, String url, String paramFileName, String fileName, String json) {
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        CloseableHttpResponse response = null;
+        String result = null;
+        HttpPost httpPost = null;
+        HttpEntity httpEntity = null;
+
+        try {
+            //服务器地址
+            httpPost = new HttpPost(url);
+            MultipartEntityBuilder mEntityBuilder = MultipartEntityBuilder.create();
+            mEntityBuilder.setCharset(Charset.forName("utf-8"));
+            mEntityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+            mEntityBuilder.addBinaryBody(paramFileName, bytes, ContentType.MULTIPART_FORM_DATA,fileName);
+            ContentType contentType = ContentType.create("application/json", "utf-8");
+            StringBody stringBody = new StringBody(json,contentType);
+            mEntityBuilder.addPart("objectJsonStr", stringBody);
+
+            httpPost.setEntity(mEntityBuilder.build());
+            response = httpClient.execute(httpPost);
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode == HttpStatus.SC_OK) {
+                httpEntity = response.getEntity();
+                result =EntityUtils.toString(httpEntity);
+            }
+        } catch (ClientProtocolException e) {
+            logger.error(ExceptionsUtil.getStackTraceAsString(e));
+        } catch (IOException e) {
+            logger.error(ExceptionsUtil.getStackTraceAsString(e));
+        } finally {
+            // 释放资源
+            try {
+                if( null != httpEntity ) {
+                    EntityUtils.consume(httpEntity);
+                }
+                if( null != response ) {
+                    response.close();
+                }
+                if( null != httpPost ){
+                    httpPost.releaseConnection();
+                }
+                if( null != httpClient ){
+                    httpClient.close();
+                }
+            } catch (IOException e) {
+                logger.error(ExceptionsUtil.getStackTraceAsString(e));
+            }
+        }
+        return result;
+    }
+
     public static void main(String[] args) {
-        File file = new File("C:\\Users\\Administrator\\Pictures\\Saved Pictures\\1.png");
-        Map<String, String> map = new HashMap<>();
-        map.put("act", "upload_files");
-        String s = uploadFile(file,  "http://47.104.96.84:8001/api/web.php","file[]", map);
-        System.out.println(s);
+//        File file = new File("C:\\Users\\Administrator\\Pictures\\Saved Pictures\\1.png");
+//        Map<String, String> map = new HashMap<>();
+//        map.put("act", "upload_files");
+//        String s = uploadFile(file,  "http://47.104.96.84:8001/api/web.php","file[]", map);
+//        System.out.println(s);
     }
 }
