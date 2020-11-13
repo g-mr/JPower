@@ -1,6 +1,7 @@
 package com.wlcb.jpower.dbs.entity;
 
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -17,11 +18,18 @@ public class TbCoreFile extends BaseEntity {
 
     private static final long serialVersionUID = -6889020017108014146L;
 
+    @ApiModelProperty("文件名称")
     private String name;
+    @ApiModelProperty("文件大小")
     private Long fileSize;
+    @ApiModelProperty("文件类型")
     private String fileType;
+    @ApiModelProperty("文件路径")
     private String path;
+    @ApiModelProperty("文件内容")
     private byte[] content;
+    @ApiModelProperty("排序")
     private Integer sortNum;
+    @ApiModelProperty("备注")
     private String note;
 }

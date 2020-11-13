@@ -20,8 +20,8 @@ spring:
       discovery:
         # 将本服务实例注册到服务中心时，在元信息中携带访问本服务使用的用户名和密码
         metadata:
-          user.name: "admin"
-          user.password: "admin"
+          user.name: ${spring.security.user.name}
+          user.password: ${spring.security.user.password}
 
 jpower:
   #  开发环境

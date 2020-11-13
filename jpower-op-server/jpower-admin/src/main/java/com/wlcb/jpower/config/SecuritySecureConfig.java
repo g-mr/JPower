@@ -9,7 +9,7 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 /**
  * @ClassName SecuritySecureConfig
- * @Description TODO
+ * @Description TODO 安全验证
  * @Author 郭丁志
  * @Date 2020/11/13 0013 0:21
  * @Version 1.0

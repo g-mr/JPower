@@ -1,36 +1,38 @@
 package com.wlcb.jpower.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wlcb.jpower.dbs.entity.TbCoreFile;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
+import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
+import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.CoreFileService;
+import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * @ClassName FileController
  * @Description TODO 文件相关
- * @Author 郭丁志
- * @Date 2020-02-13 14:10
+ * @Author 郭 * @Date 2020-02-13 14:10
  * @Version 1.0
- *
  */
+@Api(tags = "文件管理")
 @RestController
 @RequestMapping("/core/file")
 public class FileController extends BaseController {
@@ -43,15 +45,9 @@ public class FileController extends BaseController {
     @Resource
     private CoreFileService coreFileService;
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 上传文件
-     * @Date 15:59 2020-07-20
-     * @Param [file]
-     * @return com.wlcb.jpower.module.base.vo.ResponseData
-     **/
-    @RequestMapping(value = "/upload",method = {RequestMethod.POST},produces="application/json")
-    public ResponseData upload(MultipartFile file){
+    @ApiOperation("上传文件")
+    @PostMapping(value = "/upload",produces="application/json")
+    public ResponseData upload(@ApiParam("文件") @RequestParam(required = false) MultipartFile file){
 
         JpowerAssert.notTrue(file == null || file.isEmpty(),JpowerError.Arg,"文件不可为空");
         JpowerAssert.notEmpty(fileParentPath,JpowerError.Unknown,"未配置文件保存路径");
@@ -83,15 +79,9 @@ public class FileController extends BaseController {
         }
     }
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 下载文件
-     * @Date 17:08 2020-07-20
-     * @Param [base]
-     * @return void
-     **/
-    @RequestMapping(value = "/download",method = {RequestMethod.GET},produces="application/json")
-    public void download(String base){
+    @ApiOperation("下载文件")
+    @GetMapping(value = "/download",produces="application/json")
+    public void download(@ApiParam(value = "文件标识",required = true) @RequestParam String base){
         JpowerAssert.notEmpty(base,JpowerError.Arg,"文件标识不可为空");
 
         String id = DESUtil.decrypt(base,ConstantsUtils.FILE_DES_KEY);
@@ -120,15 +110,32 @@ public class FileController extends BaseController {
         }
     }
 
-    /**
-     * @author 郭丁志
-     * @Description //TODO 对导出文件进行下载
-     * @date 20:59 2020/8/5 0005
-     * @param fileName 下载完成
-     * @return void
-     */
+    @ApiOperation("文件列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageNum",value = "第几页",defaultValue = "1",paramType = "query",dataType = "int",required = true),
+            @ApiImplicitParam(name = "pageSize",value = "每页长度",defaultValue = "10",paramType = "query",dataType = "int",required = true),
+            @ApiImplicitParam(name = "name",value = "文件名称",paramType = "query",required = false),
+            @ApiImplicitParam(name = "fileType_eq",value = "文件类型",paramType = "query",required = false),
+            @ApiImplicitParam(name = "fileSize_ge",value = "文件大小最大值",paramType = "query",required = false),
+            @ApiImplicitParam(name = "fileSize_le",value = "文件大小最小值",paramType = "query",required = false)
+    })
+    @GetMapping(value = "/listPage",produces="application/json")
+    public ResponseData<Page<TbCoreFile>> listPage(@ApiIgnore @RequestParam Map<String,Object> map){
+        Page<TbCoreFile> page = coreFileService.page(PaginationContext.getMpPage(), Condition.getQueryWrapper(map,TbCoreFile.class));
+        return ReturnJsonUtil.ok("获取成功",page);
+    }
+
+    @ApiOperation("详情")
+    @GetMapping(value = "/get",produces="application/json")
+    public ResponseData<TbCoreFile> get(@RequestParam String id){
+        JpowerAssert.notEmpty(id,JpowerError.Arg,"主键不可为空");
+        TbCoreFile coreFile = coreFileService.getById(id);
+        return ReturnJsonUtil.ok("获取成功",coreFile);
+    }
+
+    @ApiOperation("对导出文件进行下载")
     @GetMapping("/export/download")
-    public void syncStart(String fileName){
+    public void syncStart(@ApiParam("文件名称") @RequestParam String fileName){
 
         JpowerAssert.isTrue(FileUtil.isValidFilename(fileName), JpowerError.BUSINESS,"文件名称("+fileName+")非法，不允许下载。 ");
 

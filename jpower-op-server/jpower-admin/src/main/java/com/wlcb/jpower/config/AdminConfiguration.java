@@ -21,11 +21,4 @@ public class AdminConfiguration {
 		return new NacosWatch(nacosDiscoveryProperties);
 	}
 
-//	@Bean
-//	@ConditionalOnMissingBean
-//	@ConditionalOnProperty(value = "spring.boot.admin.notify.dingtalk.enabled", havingValue = "true")
-//	public CustomNotifier customNotifier(InstanceRepository repository) {
-//		return new CustomNotifier(repository);
-//	}
-
 }
