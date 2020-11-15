@@ -85,7 +85,7 @@ public class UserController extends BaseController {
             }
         }
 
-        if (StringUtils.isNotBlank(coreUser.getTelephone())){
+        if (StringUtils.isNotBlank(coreUser.getTelephone()) && !StrUtil.isPhone(coreUser.getTelephone())){
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"手机号不合法", false);
         }
 
