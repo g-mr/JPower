@@ -98,6 +98,9 @@ public class UserController extends BaseController {
             tenantCode = Fc.isBlank(coreUser.getTenantCode())?DEFAULT_TENANT_CODE:coreUser.getTenantCode();
         }
         TbCoreTenant tenant = SystemCache.getTenantByCode(tenantCode);
+        if (Fc.isNull(tenant)){
+            return ReturnJsonUtil.fail("租户不存在");
+        }
         Integer accountNumber = getAccountNumber(tenant.getLicenseKey());
         if (!Fc.equals(accountNumber, TENANT_ACCOUNT_NUMBER)){
             Integer count = coreUserService.count(Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getTenantCode,tenantCode));
