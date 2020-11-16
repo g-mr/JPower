@@ -229,6 +229,9 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
         tenantCodes.forEach(tenantCode -> {
 
             TbCoreTenant tenant = SystemCache.getTenantByCode(tenantCode);
+            if (Fc.isNull(tenant)){
+                throw new BusinessException(tenantCode+"租户不存在");
+            }
             Integer accountNumber = getAccountNumber(tenant.getLicenseKey());
             if (!Fc.equals(accountNumber, TENANT_ACCOUNT_NUMBER)){
                 Integer count = coreUserDao.count(Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getTenantCode,tenantCode));

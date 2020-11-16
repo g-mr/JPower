@@ -18,6 +18,6 @@ public class TenantEntity extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = -7549710952290937270L;
 
-    @ApiModelProperty("租户编码")
+    @ApiModelProperty(value = "租户编码")
     private String tenantCode;
 }
