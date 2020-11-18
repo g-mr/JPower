@@ -10,6 +10,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.netty.handler.codec.http.FullHttpRequest;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,7 +43,7 @@ public class SecureUtil {
     private final static String IS_SYS_USER = TokenConstant.IS_SYS_USER;
 
     private static String BASE64_SECURITY = Base64.getEncoder().encodeToString(TokenConstant.SIGN_KEY.getBytes(CharsetKit.CHARSET_UTF_8));
-    private static boolean TENANT_MODE = EnvBeanUtil.get("jpower.tenant.enable",Boolean.class,true);
+    private static boolean TENANT_MODE = EnvBeanUtil.get("jpower.tenant.enable", Boolean.class, true);
 
     /**
      * 获取用户信息
@@ -66,7 +67,7 @@ public class SecureUtil {
         return (UserInfo) coreuser;
     }
 
-    public static UserInfo getUser(Claims claims ) {
+    public static UserInfo getUser(Claims claims) {
         if (claims == null) {
             return null;
         }
@@ -207,7 +208,7 @@ public class SecureUtil {
      */
     public static List<String> getUserRole(HttpServletRequest request) {
         UserInfo user = getUser(request);
-        if (Fc.isNull(user)){
+        if (Fc.isNull(user)) {
             List<String> list = new ArrayList<>();
             list.add(RoleConstant.ANONYMOUS_ID);
             return list;
@@ -231,19 +232,19 @@ public class SecureUtil {
      * @return tenantId
      */
     public static String getTenantCode(HttpServletRequest request) {
-        if (!TENANT_MODE){
+        if (!TENANT_MODE) {
             return StringPool.EMPTY;
         }
         UserInfo user = getUser(request);
 
         String tenantCode = StringPool.EMPTY;
-        if (Fc.notNull(request)){
+        if (Fc.notNull(request)) {
             String code = request.getParameter(TokenConstant.TENANT_CODE);
-            tenantCode = Fc.isBlank(code)?request.getHeader(TokenConstant.HEADER_TENANT):code;
+            tenantCode = Fc.isBlank(code) ? request.getHeader(TokenConstant.HEADER_TENANT) : code;
         }
 
         //先从当前登陆用户中获取租户编码，如果当前用户没有登陆则去参数里获取租户编码如果还没有则去header里去取
-        return Fc.isNull(user)?Fc.isNull(request)?StringPool.EMPTY:tenantCode:user.getTenantCode();
+        return Fc.isNull(user) ? Fc.isNull(request) ? StringPool.EMPTY : tenantCode : user.getTenantCode();
     }
 
     /**
@@ -278,6 +279,16 @@ public class SecureUtil {
     }
 
     /**
+     * 获取Claims
+     *
+     * @param fullHttpRequest
+     * @return Claims
+     */
+    public static Claims getClaims(FullHttpRequest fullHttpRequest) {
+        return JwtUtil.parseJWT(JwtUtil.getToken(fullHttpRequest));
+    }
+
+    /**
      * 获取请求头
      *
      * @return header
@@ -305,7 +316,7 @@ public class SecureUtil {
      * @param tokenType tokenType
      * @return jwt
      */
-    public static TokenInfo createJWT(Map<String, Object> user, String audience, String issuer, String tokenType,ClientDetails clientDetails) {
+    public static TokenInfo createJWT(Map<String, Object> user, String audience, String issuer, String tokenType, ClientDetails clientDetails) {
 
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
@@ -404,7 +415,8 @@ public class SecureUtil {
 
     /**
      * 校验Client
-     * @param clientCode 客户端code
+     *
+     * @param clientCode   客户端code
      * @param clientSecret 客户端密钥
      * @return boolean
      */
