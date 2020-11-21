@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="false">
 
+    <!-- 自定义参数 -->
+    <contextListener class="com.wlcb.jpower.log.listener.LoggerStartupListener" />
+
     <!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径-->
     <property name="log.base" value="./logs" />
 
@@ -67,6 +70,80 @@
         </encoder>
     </appender>
 
+    <if condition='property("ELK_MODE").toUpperCase().contains("TRUE")'>
+        <then>
+            <!-- 推送日志至elk -->
+            <appender name="log_logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+                <destination>${DESTINATION}</destination>
+                <!-- 日志输出编码 -->
+                <encoder charset="UTF-8" class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+<!--                    <layout class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">-->
+                        <providers>
+                            <timestamp>
+                                <timeZone>UTC</timeZone>
+                            </timestamp>
+                            <pattern>
+                                <pattern>
+                                    {
+                                    "traceId": "%tid",
+                                    "logLevel": "%level",
+                                    "serviceName": "${springAppName:-SpringApp}",
+                                    "pid": "${PID:-}",
+                                    "thread": "%thread",
+                                    "class": "%logger{40}",
+                                    "line":"%L",
+                                    "message": "%message"
+                                    }
+                                </pattern>
+                            </pattern>
+                        </providers>
+<!--                    </layout>-->
+                </encoder>
+                <!-- 打印日志级别 -->
+                <filter class="ch.qos.logback.classic.filter.LevelFilter">
+                    <level>INFO</level>
+                    <onMatch>ACCEPT</onMatch>
+                    <onMismatch>DENY</onMismatch>
+                </filter>
+            </appender>
+
+            <!-- 推送日志至elk -->
+<!--            <appender name="error_logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">-->
+<!--                <destination>${DESTINATION}</destination>-->
+<!--                &lt;!&ndash; 日志输出编码 &ndash;&gt;-->
+<!--                <encoder charset="UTF-8" class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">-->
+<!--                    <layout class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">-->
+<!--                        <providers>-->
+<!--                            <timestamp>-->
+<!--                                <timeZone>UTC</timeZone>-->
+<!--                            </timestamp>-->
+<!--                            <pattern>-->
+<!--                                <pattern>-->
+<!--                                    {-->
+<!--                                    "traceId": "%tid",-->
+<!--                                    "logLevel": "%level",-->
+<!--                                    "serviceName": "${springAppName:-SpringApp}",-->
+<!--                                    "pid": "${PID:-}",-->
+<!--                                    "thread": "%thread",-->
+<!--                                    "class": "%logger{40}",-->
+<!--                                    "line":"%L",-->
+<!--                                    "message": "%message"-->
+<!--                                    }-->
+<!--                                </pattern>-->
+<!--                            </pattern>-->
+<!--                        </providers>-->
+<!--                    </layout>-->
+<!--                </encoder>-->
+<!--                &lt;!&ndash; 打印日志级别 &ndash;&gt;-->
+<!--                <filter class="ch.qos.logback.classic.filter.LevelFilter">-->
+<!--                    <level>ERROR</level>-->
+<!--                    <onMatch>ACCEPT</onMatch>-->
+<!--                    <onMismatch>DENY</onMismatch>-->
+<!--                </filter>-->
+<!--            </appender>-->
+        </then>
+    </if>
+
     <!--myibatis log configure-->
     <logger name="com.apache.ibatis" level="info"/>
     <logger name="com.ibatis" level="info" />
@@ -76,19 +153,25 @@
     <logger name="java.sql.Connection" level="info" />
     <logger name="java.sql.Statement" level="info" />
     <logger name="java.sql.PreparedStatement" level="info" />
+    <!-- 减少nacos日志 -->
+    <logger name="com.alibaba.nacos" level="ERROR"/>
 
     <logger name="com.wlcb.jpower.dbs.dao" level="DEBUG" />
 
     <logger name="com.wlcb" level="INFO" additivity="false">
-        <appender-ref ref="log" />
+<!--        <appender-ref ref="${LOG_APPENDER}"/>-->
+<!--        <appender-ref ref="${ERROR_APPENDER}"/>-->
+        <appender-ref ref="log"/>
+        <appender-ref ref="error"/>
         <appender-ref ref="stdout" />
-        <appender-ref ref="error" />
     </logger>
 
     <!-- 日志输出级别 -->
     <root level="info">
-        <appender-ref ref="log" />
-        <appender-ref ref="error" />
+<!--        <appender-ref ref="${LOG_APPENDER}"/>-->
+<!--        <appender-ref ref="${ERROR_APPENDER}"/>-->
+        <appender-ref ref="log"/>
+        <appender-ref ref="error"/>
         <appender-ref ref="stdout" />
     </root>
 </configuration>

@@ -56,6 +56,12 @@
             <version>${com.jpower.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.wlcb</groupId>
+            <artifactId>common-log</artifactId>
+            <version>${com.jpower.version}</version>
+        </dependency>
+
     </dependencies>
 
 </project>

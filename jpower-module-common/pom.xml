@@ -15,6 +15,7 @@
         <module>common-sentinel</module>
         <module>common-tool</module>
         <module>common-feign</module>
+        <module>common-log</module>
     </modules>
     <parent>
         <groupId>com.wlcb</groupId>

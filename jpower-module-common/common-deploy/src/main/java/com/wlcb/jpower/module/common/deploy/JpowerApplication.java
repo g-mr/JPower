@@ -81,6 +81,8 @@ public class JpowerApplication {
         props.setProperty("spring.cloud.sentinel.transport.dashboard", "${jpower.".concat(profile).concat(".sentinel.dashboard:}"));
         //seata启用
         props.setProperty("seata.enabled", "${jpower.seata.enabled:false}");
+        //elk地址
+        props.setProperty("jpower.log.elk.destination", "${jpower.".concat(profile).concat(".elk.destination:}"));
 
         List<DeployService> deployServiceList = new ArrayList<>();
         ServiceLoader.load(DeployService.class).forEach(deployServiceList::add);
