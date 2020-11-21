@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * @ClassName EnvBeanUtil
- * @Description TODO
+ * @Description TODO 环境变量获取
  * @Author 郭丁志
  * @Date 2020/10/16 0016 22:32
  * @Version 1.0

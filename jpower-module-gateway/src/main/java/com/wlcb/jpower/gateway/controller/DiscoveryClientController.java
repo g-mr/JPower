@@ -25,6 +25,7 @@ public class DiscoveryClientController {
      */
     @GetMapping("/instances")
     public Map<String, List<ServiceInstance>> instances() {
+        log.info("这是个测试日志");
         Map<String, List<ServiceInstance>> instances = ChainMap.newMap();
         List<String> services = discoveryClient.getServices();
         services.forEach(s -> {

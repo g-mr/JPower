@@ -44,6 +44,7 @@ public class JpowerApplication {
         propertySources.addFirst(new SimpleCommandLinePropertySource(args));
         propertySources.addLast(new MapPropertySource("systemProperties", environment.getSystemProperties()));
         propertySources.addLast(new SystemEnvironmentPropertySource("systemEnvironment", environment.getSystemEnvironment()));
+
         // 获取配置的环境变量
         String[] activeProfiles = environment.getActiveProfiles();
 
@@ -79,10 +80,10 @@ public class JpowerApplication {
         props.setProperty("spring.cloud.nacos.config.namespace", "${jpower.".concat(profile).concat(".nacos.namespace:}"));
         //sentinel配置
         props.setProperty("spring.cloud.sentinel.transport.dashboard", "${jpower.".concat(profile).concat(".sentinel.dashboard:}"));
-        //seata启用
+        //seata启用,默认关闭
         props.setProperty("seata.enabled", "${jpower.seata.enabled:false}");
         //elk地址
-        props.setProperty("jpower.log.elk.destination", "${jpower.".concat(profile).concat(".elk.destination:}"));
+//        props.setProperty("jpower.log.elk.destination", "${jpower.".concat(profile).concat(".elk.destination:}"));
 
         List<DeployService> deployServiceList = new ArrayList<>();
         ServiceLoader.load(DeployService.class).forEach(deployServiceList::add);
