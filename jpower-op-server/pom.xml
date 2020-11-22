@@ -19,8 +19,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.skywalking</groupId>
-            <artifactId>apm-toolkit-logback-1.x</artifactId>
+            <groupId>com.wlcb</groupId>
+            <artifactId>common-log</artifactId>
+            <version>${com.jpower.version}</version>
         </dependency>
     </dependencies>
 

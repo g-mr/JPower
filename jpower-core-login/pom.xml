@@ -34,11 +34,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.skywalking</groupId>
-            <artifactId>apm-toolkit-logback-1.x</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>com.wlcb</groupId>
             <artifactId>common-sentinel</artifactId>
             <version>${com.jpower.version}</version>
