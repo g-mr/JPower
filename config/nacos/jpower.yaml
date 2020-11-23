@@ -1,13 +1,13 @@
 #通用配置
 
 ## 开启Swagger的Basic认证功能,默认是false  （目前这块配置暂时没测试是否可用，生产已经写死不可用）
-knife4j:
-  basic:
-    enable: false
-    ## Basic认证用户名
-    username: guodingzhi
-    ## Basic认证密码
-    password: guodingzhi
+#knife4j:
+#  basic:
+#    enable: false
+#    ## Basic认证用户名
+#    username: guodingzhi
+#    ## Basic认证密码
+#    password: guodingzhi
 
 servlet:
   multipart:
