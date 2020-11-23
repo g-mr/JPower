@@ -9,8 +9,10 @@ import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.node.ForestNodeMerger;
 import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.utils.*;
+import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
+import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.role.CoreFunctionService;
 import com.wlcb.jpower.vo.FunctionVo;
 import com.wlcb.jpower.wrapper.BaseDictWrapper;
@@ -135,7 +137,11 @@ public class FunctionController extends BaseController {
     @RequestMapping(value = "/lazyTree",method = {RequestMethod.GET},produces="application/json")
     public ResponseData<List<Node>> lazyTree(@ApiParam(value = "父级编码",defaultValue = JpowerConstants.TOP_CODE,required = true) @RequestParam(defaultValue = JpowerConstants.TOP_CODE) String parentId){
         List<String> roleIds = SecureUtil.getUserRole();
-        List<Node> list = coreFunctionService.lazyTreeByRole(parentId,roleIds);
+
+        List<Node> list = SecureUtil.isRoot()?coreFunctionService.tree(Condition.getTreeWrapper(TbCoreFunction::getId,TbCoreFunction::getParentId,TbCoreFunction::getFunctionName,TbCoreFunction::getUrl)
+                .lazy(parentId).lambda()
+                .orderByAsc(TbCoreFunction::getSort)):
+                coreFunctionService.lazyTreeByRole(parentId,roleIds);
         return ReturnJsonUtil.ok("查询成功",list);
     }
 
@@ -143,7 +149,11 @@ public class FunctionController extends BaseController {
     @RequestMapping(value = "/listMenuTree",method = {RequestMethod.GET},produces="application/json")
     public ResponseData<List<FunctionVo>> listMenuTree(){
         List<String> roleIds = SecureUtil.getUserRole();
-        List<TbCoreFunction> list = coreFunctionService.listMenuByRoleId(roleIds);
+
+        List<TbCoreFunction> list = SecureUtil.isRoot()?coreFunctionService.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
+                .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.Y.getValue())
+                .orderByAsc(TbCoreFunction::getSort)):
+                coreFunctionService.listMenuByRoleId(roleIds);
         return ReturnJsonUtil.ok("查询成功", ForestNodeMerger.merge(BaseDictWrapper.dict(list,FunctionVo.class)));
     }
 
@@ -158,7 +168,9 @@ public class FunctionController extends BaseController {
     @ApiOperation("查询登录用户所有功能的树形列表")
     @RequestMapping(value = "/listTree",method = {RequestMethod.GET},produces="application/json")
     public ResponseData<List<FunctionVo>> listTree(){
-        List<FunctionVo> list = coreFunctionService.listTreeByRoleId(SecureUtil.getUserRole());
+        List<FunctionVo> list = SecureUtil.isRoot()?
+                coreFunctionService.listTree(Condition.getQueryWrapper(),FunctionVo.class):
+                coreFunctionService.listTreeByRoleId(SecureUtil.getUserRole());
         return ReturnJsonUtil.ok("查询成功", list);
     }
 
