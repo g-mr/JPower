@@ -1,0 +1,79 @@
+version: '3'
+services:
+
+  elasticsearch:
+    container_name: elasticsearch
+    hostname: elasticsearch
+    image: elasticsearch:7.5.0
+    privileged: true
+    restart: always
+    ports:
+      - 9200:9200
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - TZ=Asia/Shanghai
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      elk_net:
+        ipv4_address: 172.17.238.80
+
+  kibana:
+    container_name: kibana
+    hostname: kibana
+    image: kibana:7.5.0
+    volumes: 
+      - /docker/elk/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+    ports:
+      - 90:5601
+    restart: always
+    networks: 
+      - elk_net
+
+  filebeat:
+    container_name: filebeat
+    hostname: filebeat
+    image: elastic/filebeat:7.5.0
+    restart: always
+    user: root
+    volumes:
+      - /docker/elk/filebeat/config/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - /docker/elk/filebeat/logs:/usr/share/filebeat/logs
+      - /docker/elk/filebeat/data:/usr/share/filebeat/data
+    links:
+      - logstash
+    ports:
+      - 9000:9000
+    networks:
+      - elk_net
+
+  logstash: 
+    container_name: logstash
+    hostname: logstash
+    image: logstash:7.5.0
+    volumes:
+      - /docker/elk/logstash/config/logstash.conf:/usr/share/logstash/conf/logstash.conf
+      - /docker/elk/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+    command: logstash -f ./conf/logstash.conf
+    ports:
+      - 5044:5044
+    restart: always
+    networks:
+      - elk_net
+
+networks:
+  elk_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.17.238.0/24
