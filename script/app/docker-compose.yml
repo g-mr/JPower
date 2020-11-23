@@ -18,10 +18,6 @@ services:
   skywalking-oap:
     image: apache/skywalking-oap-server:8.1.0-es7
     privileged: true
-    depends_on:
-      - elasticsearch
-    links:
-      - elasticsearch
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "/skywalking/bin/swctl"]

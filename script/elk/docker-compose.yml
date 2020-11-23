@@ -26,18 +26,40 @@ services:
         hard: -1
     networks:
       elk_net:
-        ipv4_address: 172.17.238.80
+        ipv4_address: 172.15.238.80
 
   kibana:
     container_name: kibana
     hostname: kibana
     image: kibana:7.5.0
-    volumes: 
+    depends_on:
+      - elasticsearch
+    links:
+      - elasticsearch
+    volumes:
       - /docker/elk/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
     ports:
       - 90:5601
     restart: always
     networks: 
+      - elk_net
+
+  logstash:
+    container_name: logstash
+    hostname: logstash
+    image: logstash:7.5.0
+    volumes:
+      - /docker/elk/logstash/config/logstash.conf:/usr/share/logstash/conf/logstash.conf
+      - /docker/elk/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+    command: logstash -f ./conf/logstash.conf
+    depends_on:
+      - elasticsearch
+    links:
+      - elasticsearch
+    ports:
+      - 5044:5044
+    restart: always
+    networks:
       - elk_net
 
   filebeat:
@@ -50,24 +72,12 @@ services:
       - /docker/elk/filebeat/config/filebeat.yml:/usr/share/filebeat/filebeat.yml
       - /docker/elk/filebeat/logs:/usr/share/filebeat/logs
       - /docker/elk/filebeat/data:/usr/share/filebeat/data
+    depends_on:
+      - logstash
     links:
       - logstash
     ports:
       - 9000:9000
-    networks:
-      - elk_net
-
-  logstash: 
-    container_name: logstash
-    hostname: logstash
-    image: logstash:7.5.0
-    volumes:
-      - /docker/elk/logstash/config/logstash.conf:/usr/share/logstash/conf/logstash.conf
-      - /docker/elk/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
-    command: logstash -f ./conf/logstash.conf
-    ports:
-      - 5044:5044
-    restart: always
     networks:
       - elk_net
 
@@ -76,4 +86,4 @@ networks:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.17.238.0/24
+        - subnet: 172.15.238.0/24
