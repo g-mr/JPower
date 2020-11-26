@@ -86,7 +86,7 @@ public class DictController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum",value = "第几页",defaultValue = "1",paramType = "query",dataType = "int",required = true),
             @ApiImplicitParam(name = "pageSize",value = "每页长度",defaultValue = "10",paramType = "query",dataType = "int",required = true),
-            @ApiImplicitParam(name = "tenantCode",value = "租户编码，超级用户必传",paramType = "query"),
+            @ApiImplicitParam(name = "tenantCode",value = "租户编码",paramType = "query"),
             @ApiImplicitParam(name = "dictTypeCode",value = "字典类型编码",paramType = "query",required = true),
             @ApiImplicitParam(name = "code",value = "字典编码",paramType = "query"),
             @ApiImplicitParam(name = "name",value = "字典名称",paramType = "query")
@@ -94,6 +94,9 @@ public class DictController {
     @RequestMapping(value = "/listByType",method = RequestMethod.GET,produces="application/json")
     public ResponseData<PageInfo<DictVo>> listByType(@ApiIgnore TbCoreDict dict){
         JpowerAssert.notEmpty(dict.getDictTypeCode(), JpowerError.Arg,"字典类型不可为空");
+        if (Fc.isBlank(dict.getParentId())){
+            dict.setParentId(TOP_CODE);
+        }
 
         PaginationContext.startPage();
         List<DictVo> list = coreDictService.listByType(dict);

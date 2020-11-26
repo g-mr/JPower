@@ -129,11 +129,10 @@ public class FileController extends BaseController {
     @GetMapping(value = "/get",produces="application/json")
     public ResponseData<TbCoreFile> get(@RequestParam String id){
         JpowerAssert.notEmpty(id,JpowerError.Arg,"主键不可为空");
-        TbCoreFile coreFile = coreFileService.getById(id);
-        return ReturnJsonUtil.ok("获取成功",coreFile);
+        return ReturnJsonUtil.ok("获取成功",coreFileService.getById(id));
     }
 
-    @ApiOperation("对导出文件进行下载")
+    @ApiOperation(value = "对导出文件进行下载",hidden = true)
     @GetMapping("/export/download")
     public void syncStart(@ApiParam("文件名称") @RequestParam String fileName){
 
