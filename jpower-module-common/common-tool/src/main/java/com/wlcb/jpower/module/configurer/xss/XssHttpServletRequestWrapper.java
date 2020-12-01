@@ -68,7 +68,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
      */
     @Override
     public String getHeader(String name) {
-        if (Fc.equalsValue(TokenConstant.PASS_HEADER_NAME,name) || Fc.equalsValue(TokenConstant.DATA_SCOPE_NAME,name)){
+        if (Fc.equalsValue(TokenConstant.PASS_HEADER_NAME,name) || Fc.equalsValue(TokenConstant.DATA_SCOPE_NAME,name) || Fc.equalsValue(TokenConstant.HEADER,name)){
             return super.getHeader(name);
         }
 
