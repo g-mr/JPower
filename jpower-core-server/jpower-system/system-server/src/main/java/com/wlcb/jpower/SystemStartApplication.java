@@ -9,13 +9,12 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 /**
  * @ClassName SpringBootStartApplication
  * @Description TODO 系统管理入口
- * @Author 郭丁志
+ * @Author Ding
  * @Date 2020-02-24 18:41
  * @Version 1.0
  */
 @EnableTransactionManagement
 @SpringBootApplication
-//@EnableDiscoveryClient
 @EnableFeignClients
 public class SystemStartApplication {
 
