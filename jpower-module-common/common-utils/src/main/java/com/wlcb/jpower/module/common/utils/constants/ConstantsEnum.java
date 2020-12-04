@@ -15,14 +15,15 @@ public class ConstantsEnum {
      * @Description //TODO 证件类型
      * @Date 16:14 2020-05-19
      **/
-    public static enum ID_TYPE{
+    public static enum ID_TYPE {
 
-        ID_CARD(1,"身份证"),CHINESE_PASSPORT(2,"中国护照"),MTP_S(3,"台胞证"),FOREIGN_PASSPORT(4,"外国护照"),PERMANENT_RESIDENCE_PERMIT(5,"外国人永久居住证");
+        ID_CARD(1, "身份证"), CHINESE_PASSPORT(2, "中国护照"), MTP_S(3, "台胞证"), FOREIGN_PASSPORT(4, "外国护照"), PERMANENT_RESIDENCE_PERMIT(5, "外国人永久居住证");
 
-        private ID_TYPE(Integer value, String name){
+        private ID_TYPE(Integer value, String name) {
             this.value = value;
             this.name = name;
         }
+
         private final Integer value;
         private final String name;
 
@@ -50,14 +51,15 @@ public class ConstantsEnum {
      * @Description //TODO 激活状态
      * @Date 16:14 2020-05-19
      **/
-    public static enum ACTIVATION_STATUS{
+    public static enum ACTIVATION_STATUS {
 
-        ACTIVATION_YES(1,"激活"),ACTIVATION_NO(0,"未激活");
+        ACTIVATION_YES(1, "激活"), ACTIVATION_NO(0, "未激活");
 
-        private ACTIVATION_STATUS(Integer value, String name){
+        private ACTIVATION_STATUS(Integer value, String name) {
             this.value = value;
             this.name = name;
         }
+
         private final Integer value;
         private final String name;
 
@@ -87,14 +89,20 @@ public class ConstantsEnum {
      * @return
      */
 
-    public static enum USER_TYPE{
+    public static enum USER_TYPE {
 
-        USER_TYPE_SYSTEM(0,"系统用户"),USER_TYPE_GENERAL(1,"普通用户"),USER_TYPE_FIRM(2,"单位用户"),USER_TYPE_MEMBER(3,"会员"),USER_TYPE_ANONYMOUS(9,"匿名用户");
+        USER_TYPE_SYSTEM(0, "系统用户"),
+        USER_TYPE_GENERAL(1, "普通用户"),
+        USER_TYPE_FIRM(2, "单位用户"),
+        USER_TYPE_MEMBER(3, "会员"),
+        USER_TYPE_CUSTOMER(4, "客服用户"),
+        USER_TYPE_ANONYMOUS(9, "匿名用户");
 
-        private USER_TYPE(Integer value, String name){
+        private USER_TYPE(Integer value, String name) {
             this.value = value;
             this.name = name;
         }
+
         private final Integer value;
         private final String name;
 
@@ -123,14 +131,15 @@ public class ConstantsEnum {
      * @date 18:36 2020/7/26 0026
      * @return
      */
-    public static enum YN{
+    public static enum YN {
 
-        Y("Y","是"),N("N","否");
+        Y("Y", "是"), N("N", "否");
 
-        private YN(String value, String name){
+        private YN(String value, String name) {
             this.value = value;
             this.name = name;
         }
+
         private final String value;
         private final String name;
 
@@ -159,14 +168,15 @@ public class ConstantsEnum {
      * @date 18:36 2020/7/26 0026
      * @return
      */
-    public static enum YN01{
+    public static enum YN01 {
 
-        Y(1,"是"),N(0,"否");
+        Y(1, "是"), N(0, "否");
 
-        private YN01(Integer value, String name){
+        private YN01(Integer value, String name) {
             this.value = value;
             this.name = name;
         }
+
         private final Integer value;
         private final String name;
 
@@ -195,14 +205,15 @@ public class ConstantsEnum {
      * @date 18:36 2020/7/26 0026
      * @return
      */
-    public static enum YYZL{
+    public static enum YYZL {
 
-        CHINA("zh_cn","中文"),ENG("en","英文");
+        CHINA("zh_cn", "中文"), ENG("en", "英文");
 
-        private YYZL(String value, String name){
+        private YYZL(String value, String name) {
             this.value = value;
             this.name = name;
         }
+
         private final String value;
         private final String name;
 
@@ -225,15 +236,15 @@ public class ConstantsEnum {
         }
     }
 
-    public static enum DATA_SCOPE_TYPE{
+    public static enum DATA_SCOPE_TYPE {
 
-        ALL(1,"全部"),OWN(2,"本人可见"),OWN_ORG(3,"所在机构可见")
-        ,OWN_ORG_CHILD(4,"所在机构及子级可见"),CUSTOM(5,"自定义");
+        ALL(1, "全部"), OWN(2, "本人可见"), OWN_ORG(3, "所在机构可见"), OWN_ORG_CHILD(4, "所在机构及子级可见"), CUSTOM(5, "自定义");
 
-        private DATA_SCOPE_TYPE(Integer value, String name){
+        private DATA_SCOPE_TYPE(Integer value, String name) {
             this.value = value;
             this.name = name;
         }
+
         private final Integer value;
         private final String name;
 
