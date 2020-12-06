@@ -9,7 +9,7 @@ import java.util.Properties;
 
 /**
  * @ClassName DeployService
- * @Description TODO 启动参数配置
+ * @Description TODO 扩展启动参数配置
  * @Author 郭丁志
  * @Date 2020-08-19 16:22
  * @Version 1.0
