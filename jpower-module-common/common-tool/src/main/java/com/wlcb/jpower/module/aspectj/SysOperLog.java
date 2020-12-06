@@ -9,8 +9,7 @@ import lombok.Data;
  * @Date 17:00 2020-07-10
  **/
 @Data
-public class SysOperLog extends BaseEntity
-{
+public class SysOperLog extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /** 日志主键 */

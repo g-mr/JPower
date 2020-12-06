@@ -3,6 +3,8 @@ package com.wlcb.jpower.controller.tenant;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
+import com.wlcb.jpower.module.base.annotation.Log;
+import com.wlcb.jpower.module.base.enums.BusinessType;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
@@ -71,6 +73,7 @@ public class TenantController extends BaseController {
     }
 
     @ApiOperation("删除租户信息")
+    @Log(value = "删除租户",businessType = BusinessType.DELETE)
     @DeleteMapping("/delete")
     public ResponseData delete(@ApiParam("租户主键，多个逗号分隔") @RequestParam String ids){
         JpowerAssert.isTrue(SecureUtil.isRoot(), JpowerError.Auth,"只可超级管理员删除租户");

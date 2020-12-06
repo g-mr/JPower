@@ -60,32 +60,25 @@ public class LogAspect
         {
             // 获得注解
             Log controllerLog = getAnnotationLog(joinPoint);
-            if (controllerLog == null)
-            {
+            if (controllerLog == null) {
                 return;
             }
 
             // 获取当前的用户
             UserInfo currentUser = LoginUserContext.get();
-//            UserInfo currentUser = SecureUtil.getUser(request);
 
-
-            // *========数据库日志=========*//
             SysOperLog operLog = new SysOperLog();
             operLog.setStatus(BusinessStatus. SUCCESS.ordinal());
-            // 请求的地址
 
             operLog.setOperUrl(WebUtil.getRequest().getRequestURI());
-            if (currentUser != null)
-            {
+            if (currentUser != null){
                 operLog.setOperIp(currentUser.getClientCode());
                 operLog.setOperId(currentUser.getUserId());
                 operLog.setOperName(currentUser.getUserName());
                 operLog.setOperUserType(currentUser.getIsSysUser());
             }
 
-            if (e != null)
-            {
+            if (e != null){
                 operLog.setStatus(BusinessStatus.FAIL.ordinal());
                 operLog.setErrorMsg(StringUtils.substring(e.getMessage(), 0, 2000));
             }
