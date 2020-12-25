@@ -37,9 +37,9 @@ import java.util.Map;
 @RequestMapping("/core/file")
 public class FileController extends BaseController {
 
-    @Value("${fileParentPath:}")
+    @Value("${jpower.fileParentPath:}")
     private String fileParentPath;
-    @Value("${downloadPath:}")
+    @Value("${jpower.downloadPath:}")
     private String downloadPath;
 
     @Resource

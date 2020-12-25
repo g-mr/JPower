@@ -90,16 +90,16 @@ logging:
 swagger:
   termsOfServiceUrl: http://localhost:81
 
-jpower:
+#jpower:
 #  seata:
-#   是否启用分布式事务（默认不开启）
+##   是否启用分布式事务（默认不开启）
 #    enabled: false
 #  tenant:
-#    是否启用多租户模式
+##    是否启用多租户模式
 #    enable: true
-#   多租户字段
+##   多租户字段
 #    column: tenant_code
-#   不进行多租户过滤的表
+##   不进行多租户过滤的表
 #    excludeTables:
 #      - tb_core_table
 #  xss:
@@ -110,12 +110,12 @@ jpower:
 #      - /html/**
 #  auth:
 #    client:
-#开启需要校验的客户端，值写数据库的clientCode即可
+##开启需要校验的客户端，值写数据库的clientCode即可
 #      - code: admin
-#需要客户端校验的URL
+##需要客户端校验的URL
 #        path:
 #          - /core/user/**
-#鉴权需要过滤的白名单地址
+##鉴权需要过滤的白名单地址
 #    whileIp:
 #      - 192.168.1.2
 #      - 0:0:0:0:0:0:0:1
