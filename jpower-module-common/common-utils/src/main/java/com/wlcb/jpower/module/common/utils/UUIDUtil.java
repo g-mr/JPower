@@ -263,6 +263,6 @@ public class UUIDUtil {
     }
 
 	public static void main(String[] args) {
-        System.out.println(Fc.format(new Date(),DateUtil.DATE_FORMAT));
+        System.out.println(createOrderId(""));
 	}
 }
