@@ -26,7 +26,7 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
         return new UserClient() {
             @Override
             public ResponseData<TbCoreUser> queryUserByLoginId(String loginId, String tenantCode) {
-                log.error("调用queryUserByLoginIdPwd失败，参数：loginId={}，e={}",loginId,cause);
+                log.error("调用queryUserByLoginIdPwd失败，参数：loginId={}，e={}", loginId, cause);
                 return ReturnJsonUtil.fail("查询失败");
             }
 
@@ -37,7 +37,7 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
 
             @Override
             public ResponseData updateUserLoginInfo(TbCoreUser user) {
-                log.error("调用updateUserLoginInfo失败，参数：{}，e={}", JSON.toJSONString(user),cause);
+                log.error("调用updateUserLoginInfo失败，参数：{}，e={}", JSON.toJSONString(user), cause);
                 return ReturnJsonUtil.fail("更新失败");
             }
 
@@ -57,9 +57,15 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
             }
 
             @Override
-            public ResponseData saveAdmin(TbCoreUser user,String roleId) {
-                log.error("调用saveAdmin失败，参数：user={}，roleId={} ，e={}",user,roleId,cause);
-                return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_API, cause.getMessage(),false);
+            public ResponseData saveAdmin(TbCoreUser user, String roleId) {
+                log.error("调用saveAdmin失败，参数：user={}，roleId={} ，e={}", user, roleId, cause);
+                return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_API, cause.getMessage(), false);
+            }
+
+            @Override
+            public ResponseData<List<TbCoreUser>> listByUserType(Integer userType) {
+                log.error("调用listByUserType失败，参数：userType={}", userType);
+                return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_API, cause.getMessage(), false);
             }
         };
     }

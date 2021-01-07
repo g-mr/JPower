@@ -4,9 +4,11 @@ import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
+import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.CoreUserRoleService;
 import com.wlcb.jpower.service.CoreUserService;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -77,5 +79,13 @@ public class UserClientController implements UserClient {
     @PostMapping("/saveAdmin")
     public ResponseData saveAdmin(@RequestBody TbCoreUser user,@RequestParam String roleId) {
         return ReturnJsonUtil.status(coreUserService.saveAdmin(user,roleId));
+    }
+
+
+    @Override
+    @GetMapping(value = "/listByUserType")
+    public ResponseData<List<TbCoreUser>> listByUserType(@ApiParam(value = "用户类型", required = true) @RequestParam Integer userType) {
+        List<TbCoreUser> list = coreUserService.list(Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getUserType, userType));
+        return ReturnJsonUtil.ok("获取成功", list);
     }
 }

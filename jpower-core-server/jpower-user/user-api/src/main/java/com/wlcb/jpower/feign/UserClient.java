@@ -38,4 +38,7 @@ public interface UserClient {
 
     @PostMapping("/saveAdmin")
     ResponseData saveAdmin(@RequestBody TbCoreUser user,@RequestParam String roleId);
+
+    @GetMapping("/listByUserType")
+    ResponseData<List<TbCoreUser>> listByUserType(@RequestParam Integer userType);
 }
