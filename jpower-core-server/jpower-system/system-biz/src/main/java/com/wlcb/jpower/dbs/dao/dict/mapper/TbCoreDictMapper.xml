@@ -28,5 +28,6 @@
                 and dict.tenant_code = #{tenantCode}
             </if>
         </where>
+        order by dict.sort_num asc
     </select>
 </mapper>

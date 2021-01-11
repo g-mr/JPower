@@ -40,7 +40,7 @@ public class ClientInterceptor extends HandlerInterceptorAdapter {
             }
 
             log.info("客户端认证失败，请求接口：{}，请求IP：{}，请求参数：{}", request.getRequestURI(), WebUtil.getIP(request), JSON.toJSONString(request.getParameterMap()));
-            ReturnJsonUtil.sendJsonMessage(response,ReturnJsonUtil.printJson(HttpStatus.NOT_ACCEPTABLE.value(),"无效的客户端",false));
+            ReturnJsonUtil.sendJsonMessage(response,ReturnJsonUtil.printJson(HttpStatus.NOT_ACCEPTABLE.value(),"无效的客户端请求",false));
             return false;
         }
     }
