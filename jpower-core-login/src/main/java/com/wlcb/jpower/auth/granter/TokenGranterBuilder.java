@@ -1,6 +1,7 @@
 package com.wlcb.jpower.auth.granter;
 
 import com.wlcb.jpower.auth.utils.TokenUtil;
+import com.wlcb.jpower.cache.SystemCache;
 import com.wlcb.jpower.cache.UserCache;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.feign.UserClient;
@@ -71,16 +72,26 @@ public class TokenGranterBuilder {
             List<String> list  = UserCache.getRoleIds(result.getId());
             userInfo = new UserInfo();
             userInfo.setUserId(result.getId());
-            userInfo.setIsSysUser(0);
+            userInfo.setIsSysUser(UserInfo.TBALE_USER_TYPE_CORE);
             userInfo.setOrgId(result.getOrgId());
+            userInfo.setOrgName(SystemCache.getOrgName(result.getOrgId()));
             userInfo.setUserType(result.getUserType());
             userInfo.setTelephone(result.getTelephone());
             userInfo.setLoginId(result.getLoginId());
             userInfo.setUserName(result.getUserName());
             userInfo.setNickName(result.getNickName());
-            userInfo.setOtherCode(result.getOtherCode());
+//            userInfo.setOtherCode(result.getOtherCode());
             userInfo.setTenantCode(result.getTenantCode());
             userInfo.setRoleIds(list);
+            userInfo.setPostCode(result.getPostCode());
+            userInfo.setEmail(result.getEmail());
+            userInfo.setAddress(result.getAddress());
+            userInfo.setBirthday(result.getBirthday());
+            userInfo.setIdType(result.getIdType());
+            userInfo.setIdNo(result.getIdNo());
+            userInfo.setLastLoginTime(result.getLastLoginTime());
+            userInfo.setLoginCount(result.getLoginCount());
+
 
             // TODO: 2020-07-28 登录成功要刷新用户登录数据
             result.setLastLoginTime(new Date());

@@ -1,8 +1,12 @@
 package com.wlcb.jpower.module.common.auth;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.wlcb.jpower.module.common.utils.DateUtil;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -42,8 +46,8 @@ public class UserInfo {
     @ApiModelProperty("昵称")
     private String nickName;
 
-    @ApiModelProperty("第三方平台标识")
-    private String otherCode;
+//    @ApiModelProperty("第三方平台标识")
+//    private String otherCode;
 
     @ApiModelProperty("电话")
     private String telephone;
@@ -53,6 +57,37 @@ public class UserInfo {
 
     @ApiModelProperty("部门ID")
     private String orgId;
+
+    @ApiModelProperty("部门")
+    private String orgName;
+
+    @ApiModelProperty("邮编")
+    private String postCode;
+
+    @ApiModelProperty("邮箱")
+    private String email;
+
+    @ApiModelProperty("地址")
+    private String address;
+
+    @ApiModelProperty("出生日期")
+    @JSONField(format="yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING,timezone = "GMT+8", pattern = DateUtil.PATTERN_DATE,locale = "zh_CN")
+    private Date birthday;
+
+    @ApiModelProperty("证件类型")
+    private Integer idType;
+
+    @ApiModelProperty("证件号码")
+    private String idNo;
+
+    @ApiModelProperty("登录次数")
+    private Integer loginCount;
+
+    @ApiModelProperty("最后登录时间")
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING,timezone = "GMT+8", pattern = DateUtil.PATTERN_DATETIME,locale = "zh_CN")
+    private Date lastLoginTime;
 
     @ApiModelProperty("角色集合")
     private List<String> roleIds;
