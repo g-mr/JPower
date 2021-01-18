@@ -28,7 +28,7 @@ public class TokenUtil {
             return null;
         }
 
-        String token = Fc.isBlank(header)?Fc.isBlank(cookies)?param:cookies:header;
+        String token = Fc.isBlank(header)?Fc.isBlank(cookies)?param:Fc.decode(cookies):header;
         if (StringUtil.isNotBlank(token) && token.length() > TokenConstant.AUTH_LENGTH) {
             String headStr = token.substring(0, 6).toLowerCase();
             if (headStr.compareTo(TokenConstant.JPOWER) == 0) {

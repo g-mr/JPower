@@ -21,7 +21,7 @@ public class ExculdesUrl {
         exculudesUrl.add("/auth/**");
         exculudesUrl.add("/v2/api-docs-ext/**");
         exculudesUrl.add("/v2/api-docs/**");
-        exculudesUrl.add("/core/tenant/queryByDomain");
+        exculudesUrl.add("/core/dict/getDictListByType");
         exculudesUrl.add("/chat/file/**");
     }
 
