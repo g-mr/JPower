@@ -40,6 +40,9 @@ public class UserInfo {
     @ApiModelProperty("账号")
     private String loginId;
 
+    @ApiModelProperty("头像")
+    private String avatar;
+
     @ApiModelProperty("姓名")
     private String userName;
 

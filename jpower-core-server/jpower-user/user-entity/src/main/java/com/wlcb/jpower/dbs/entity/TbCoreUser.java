@@ -30,6 +30,8 @@ public class TbCoreUser extends TenantEntity implements Serializable {
     private String loginId;
     @ApiModelProperty(name = "密码",hidden = true)
     private String password;
+    @ApiModelProperty("头像")
+    private String avatar;
     @ApiModelProperty("昵称")
     @Excel(name = "昵称")
     private String nickName;

@@ -5,7 +5,7 @@ spring:
     host: 127.0.0.1
     port: 6379
     password:
-    database: 99
+    database: 1
     ssl: false
     ##redis 集群环境配置
     #cluster:
@@ -13,6 +13,7 @@ spring:
     #  commandTimeout: 5000
 
 jpower:
+  fileParentPath: /Users/mr.gmac/IdeaProjects/wlcb/file
   #  开发环境
   dev:
     nacos:

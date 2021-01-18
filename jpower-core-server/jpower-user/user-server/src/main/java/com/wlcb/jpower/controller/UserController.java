@@ -140,7 +140,7 @@ public class UserController extends BaseController {
     @RequestMapping(value = "/update", method = {RequestMethod.PUT}, produces = "application/json")
     public ResponseData update(TbCoreUser coreUser) {
 
-        JpowerAssert.notEmpty(coreUser.getId(), JpowerError.Arg, "用户名不可为空");
+        JpowerAssert.notEmpty(coreUser.getId(), JpowerError.Arg, "用户ID不可为空");
 
         if (coreUser.getIdType() != null && ConstantsEnum.ID_TYPE.ID_CARD.getValue().equals(coreUser.getIdType())) {
             if (!StrUtil.cardCodeVerifySimple(coreUser.getIdNo())) {
@@ -171,6 +171,37 @@ public class UserController extends BaseController {
         }
 
         coreUser.setPassword(null);
+        CacheUtil.clear(CacheNames.USER_REDIS_CACHE);
+        return ReturnJsonUtil.status(coreUserService.update(coreUser));
+    }
+
+    @ApiOperation(value = "修改个人信息")
+    @Log(title = "修改个人信息", businessType = BusinessType.UPDATE)
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "avatar", value = "头像", paramType = "query", required = false),
+        @ApiImplicitParam(name = "orgId", value = "部门ID", paramType = "query", required = false),
+        @ApiImplicitParam(name = "nickName", value = "昵称", paramType = "query", required = false),
+        @ApiImplicitParam(name = "userName", value = "姓名", paramType = "query", required = false),
+        @ApiImplicitParam(name = "idType", value = "证件类型", paramType = "query", required = false),
+        @ApiImplicitParam(name = "idNo", value = "证件号码", paramType = "query", required = false),
+        @ApiImplicitParam(name = "birthday", value = "出生日期", paramType = "query", required = false),
+        @ApiImplicitParam(name = "postCode", value = "邮编", paramType = "query", required = false),
+        @ApiImplicitParam(name = "address", value = "地址", paramType = "query", required = false)
+    })
+    @PutMapping(value = "/updateLogin", produces = "application/json")
+    public ResponseData updateLogin(@ApiIgnore TbCoreUser coreUser) {
+        JpowerAssert.notEmpty(coreUser.getId(), JpowerError.Arg, "用户ID不可为空");
+        JpowerAssert.notNull(SecureUtil.getUser(), JpowerError.Arg, "用户未登录");
+
+        if (coreUser.getIdType() != null && ConstantsEnum.ID_TYPE.ID_CARD.getValue().equals(coreUser.getIdType())) {
+            if (!StrUtil.cardCodeVerifySimple(coreUser.getIdNo())) {
+                return ReturnJsonUtil.busFail("身份证不合法");
+            }
+        }
+
+        coreUser.setPassword(null);
+        coreUser.setRoleIds(null);
+        coreUser.setId(SecureUtil.getUser().getUserId());
         CacheUtil.clear(CacheNames.USER_REDIS_CACHE);
         return ReturnJsonUtil.status(coreUserService.update(coreUser));
     }
@@ -307,7 +338,8 @@ public class UserController extends BaseController {
 
     @ApiOperation(value = "修改密码")
     @GetMapping(value = "/updatePassword")
-    public ResponseData<String> updatePassword(@ApiParam(value = "旧密码", required = true) @RequestParam String oldPw, @ApiParam(value = "新密码", required = true) @RequestParam String newPw) {
+    public ResponseData<String> updatePassword(@ApiParam(value = "旧密码", required = true) @RequestParam String oldPw,
+                                               @ApiParam(value = "新密码", required = true) @RequestParam String newPw) {
         UserInfo userInfo = SecureUtil.getUser();
         JpowerAssert.notNull(userInfo, JpowerError.BUSINESS, "用户未登录");
 

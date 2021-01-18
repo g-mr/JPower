@@ -5,6 +5,7 @@ create table tb_core_user(
   org_id varchar(32) default null comment '组织机构主键',
   login_id varchar(50) not null comment '登录用户名',
   password varchar(50) not null comment '登录密码',
+  avatar varchar(150) default null comment '头像',
   user_name varchar(20) default null comment '真实姓名',
   id_type tinyint(1) default 1 comment '证件类型 1:身份证 2:中国护照 3:台胞证 4:外国护照 5:外国人永居证',
   id_no varchar(40) default null comment '证件编码',

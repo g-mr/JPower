@@ -57,7 +57,7 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper, TbCoreO
             coreOrg.setParentId(JpowerConstants.TOP_CODE);
             coreOrg.setAncestorId(JpowerConstants.TOP_CODE);
         }else {
-            coreOrg.setAncestorId(coreOrg.getParentId().concat(StringPool.COMMA).concat(coreOrgDao.getById(coreOrg.getParentId()).getAncestorId()));
+            coreOrg.setAncestorId(coreOrg.getParentId().concat(StringPool.COMMA).concat(Fc.toStr(coreOrgDao.getById(coreOrg.getParentId()).getAncestorId())));
         }
         return coreOrgDao.save(coreOrg);
     }
