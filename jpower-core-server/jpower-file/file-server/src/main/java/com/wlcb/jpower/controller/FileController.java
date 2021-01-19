@@ -116,8 +116,10 @@ public class FileController extends BaseController {
             @ApiImplicitParam(name = "pageSize",value = "每页长度",defaultValue = "10",paramType = "query",dataType = "int",required = true),
             @ApiImplicitParam(name = "name",value = "文件名称",paramType = "query",required = false),
             @ApiImplicitParam(name = "fileType_eq",value = "文件类型",paramType = "query",required = false),
-            @ApiImplicitParam(name = "fileSize_ge",value = "文件大小最大值",paramType = "query",required = false),
-            @ApiImplicitParam(name = "fileSize_le",value = "文件大小最小值",paramType = "query",required = false)
+            @ApiImplicitParam(name = "fileSize_gt",value = "文件大小最大值",paramType = "query",required = false),
+            @ApiImplicitParam(name = "fileSize_lt",value = "文件大小最小值",paramType = "query",required = false),
+            @ApiImplicitParam(name = "createTime_dategt",value = "上传时间最小值",paramType = "query",required = false),
+            @ApiImplicitParam(name = "createTime_datelt",value = "上传时间最大值",paramType = "query",required = false)
     })
     @GetMapping(value = "/listPage",produces="application/json")
     public ResponseData<Page<TbCoreFile>> listPage(@ApiIgnore @RequestParam Map<String,Object> map){

@@ -120,7 +120,7 @@ public class TenantController extends BaseController {
         if (Fc.notNull(tenant)){
             map.set("tenantCode",tenant.getTenantCode())
                     .set("domain",tenant.getDomain())
-                    .set("backgroundUrl",tenant.getBackgroundUrl());
+                    .set("logo",tenant.getLogo());
         }
         return ReturnJsonUtil.ok("查询成功",map);
     }

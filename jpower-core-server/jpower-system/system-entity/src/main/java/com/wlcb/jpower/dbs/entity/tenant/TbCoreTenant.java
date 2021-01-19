@@ -28,8 +28,8 @@ public class TbCoreTenant extends BaseEntity {
     private String tenantName;
     @ApiModelProperty(value = "域名地址")
     private String domain;
-    @ApiModelProperty(value = "系统背景")
-    private String backgroundUrl;
+    @ApiModelProperty(value = "租户LOGO")
+    private String logo;
     @ApiModelProperty(value = "联系人")
     private String contactName;
     @ApiModelProperty(value = "联系电话")
