@@ -327,7 +327,7 @@ create table tb_core_file(
   file_type varchar(31) comment '文件类型',
   path varchar(255) comment '文件路径',
   content longblob comment '文件内容',
-  sort_num int(6) comment '排序',
+  mark varchar(256) comment '文件标识',
   note varchar(255) comment '备注',
   create_user varchar(32) default 'root' not null comment '创建人',
   create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',

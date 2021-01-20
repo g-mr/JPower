@@ -63,14 +63,15 @@ public class FileController extends BaseController {
             coreFile.setFileSize(file.getSize());
             coreFile.setName(saveFile.getName());
             coreFile.setId(UUIDUtil.getUUID());
+            coreFile.setMark(DESUtil.encrypt(coreFile.getId(), ConstantsUtils.FILE_DES_KEY));
 
             Boolean is = coreFileService.add(coreFile);
 
             if (is){
-                return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"获取成功", DESUtil.encrypt(coreFile.getId(), ConstantsUtils.FILE_DES_KEY),true);
+                return ReturnJsonUtil.ok("上传成功", coreFile.getMark());
             }else {
                 FileUtil.deleteFile(saveFile);
-                return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_FAIL,"文件保存失败", false);
+                return ReturnJsonUtil.fail("文件保存失败");
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -123,7 +124,7 @@ public class FileController extends BaseController {
     })
     @GetMapping(value = "/listPage",produces="application/json")
     public ResponseData<Page<TbCoreFile>> listPage(@ApiIgnore @RequestParam Map<String,Object> map){
-        Page<TbCoreFile> page = coreFileService.page(PaginationContext.getMpPage(), Condition.getQueryWrapper(map,TbCoreFile.class));
+        Page<TbCoreFile> page = coreFileService.page(PaginationContext.getMpPage(), Condition.getQueryWrapper(map,TbCoreFile.class).lambda().orderByDesc(TbCoreFile::getCreateTime));
         return ReturnJsonUtil.ok("获取成功",page);
     }
 
@@ -134,8 +135,35 @@ public class FileController extends BaseController {
         return ReturnJsonUtil.ok("获取成功",coreFileService.getById(id));
     }
 
+    @ApiOperation("批量删除")
+    @DeleteMapping(value = "/delete",produces="application/json")
+    public ResponseData delete(@RequestParam String ids){
+        JpowerAssert.notEmpty(ids,JpowerError.Arg,"主键不可为空");
+
+        coreFileService.listByIds(Fc.toStrList(ids)).forEach(tbCoreFile -> {
+            File file = new File(fileParentPath+File.separator+tbCoreFile.getPath());
+            FileUtil.deleteFile(file);
+        });
+
+        return ReturnJsonUtil.status(coreFileService.removeRealByIds(Fc.toStrList(ids)));
+    }
+
+    @ApiOperation("修改文件")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "主键",paramType = "query",required = true),
+            @ApiImplicitParam(name = "name",value = "文件名称",paramType = "query",required = false),
+            @ApiImplicitParam(name = "fileType",value = "文件类型",paramType = "query",required = false),
+            @ApiImplicitParam(name = "note",value = "备注",paramType = "query",required = false)
+    })
+    @PutMapping(value = "/update",produces="application/json")
+    public ResponseData update(@ApiIgnore TbCoreFile file){
+        JpowerAssert.notEmpty(file.getId(),JpowerError.Arg,"主键不可为空");
+        return ReturnJsonUtil.status(coreFileService.updateById(file));
+    }
+
     @ApiOperation(value = "对导出文件进行下载",hidden = true)
     @GetMapping("/export/download")
+    @Deprecated
     public void syncStart(@ApiParam("文件名称") @RequestParam String fileName){
 
         JpowerAssert.isTrue(FileUtil.isValidFilename(fileName), JpowerError.BUSINESS,"文件名称("+fileName+")非法，不允许下载。 ");

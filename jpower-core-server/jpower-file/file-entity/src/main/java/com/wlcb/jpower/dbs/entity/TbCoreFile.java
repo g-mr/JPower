@@ -28,8 +28,8 @@ public class TbCoreFile extends BaseEntity {
     private String path;
     @ApiModelProperty("文件内容")
     private byte[] content;
-    @ApiModelProperty("排序")
-    private Integer sortNum;
+    @ApiModelProperty("文件标识")
+    private String mark;
     @ApiModelProperty("备注")
     private String note;
 }
