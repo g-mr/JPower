@@ -162,7 +162,7 @@ public class LoginController extends BaseController {
 
         JSONObject json = SmsUtil.send(phone,code);
 
-        if ("OK".equals(json.getString("Code"))){
+        if (json.getBoolean("isSuccess")){
             redisUtil.set(CacheNames.PHONE_KEY+phone+tenantCode,code,5L, TimeUnit.MINUTES);
             return ReturnJsonUtil.ok(user.getLoginId()+"的验证码发送成功");
         }else {
