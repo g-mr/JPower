@@ -1,6 +1,8 @@
 package com.wlcb.jpower.dbs.entity.tenant;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.wlcb.jpower.module.common.utils.DateUtil;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
@@ -42,6 +44,7 @@ public class TbCoreTenant extends BaseEntity {
     @JsonFormat(shape = JsonFormat.Shape.STRING,timezone = "GMT+8", pattern = DateUtil.PATTERN_DATETIME,locale = "zh_CN")
     @JSONField(format= DateUtil.PATTERN_DATETIME)
     @ApiModelProperty(value = "过期时间")
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private Date expireTime;
     @ApiModelProperty(value = "授权码",hidden = true)
     private String licenseKey;

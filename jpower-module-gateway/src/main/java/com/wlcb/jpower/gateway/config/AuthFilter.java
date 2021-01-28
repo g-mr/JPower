@@ -103,7 +103,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
             if (responseData.getCode() == HttpStatus.OK.value() && responseData.getData() != null && responseData.getData()){
                 return chain.filter(addHeader(exchange,"anonymous",StringPool.EMPTY));
             }
-            return unAuth(exchange.getResponse(), "缺失令牌，鉴权失败");
+            return proxyAuthenticationRequired(exchange.getResponse(), "缺失令牌，鉴权失败");
         }
     }
 
@@ -116,8 +116,17 @@ public class AuthFilter implements GlobalFilter, Ordered {
         return exchange.mutate().request(host).build();
     }
 
+    private Mono<Void> proxyAuthenticationRequired(ServerHttpResponse resp, String msg) {
+        resp.setStatusCode(HttpStatus.PROXY_AUTHENTICATION_REQUIRED);
+        return sendMesg(resp,msg);
+    }
+
     private Mono<Void> unAuth(ServerHttpResponse resp, String msg) {
         resp.setStatusCode(HttpStatus.UNAUTHORIZED);
+        return sendMesg(resp,msg);
+    }
+
+    private Mono<Void> sendMesg(ServerHttpResponse resp, String msg) {
         resp.getHeaders().add("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE);
         String result = "";
         try {
