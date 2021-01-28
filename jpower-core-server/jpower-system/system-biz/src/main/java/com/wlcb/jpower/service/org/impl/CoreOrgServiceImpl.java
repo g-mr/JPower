@@ -8,6 +8,7 @@ import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
+import com.wlcb.jpower.module.common.node.ForestNodeMerger;
 import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.Fc;
@@ -18,7 +19,6 @@ import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.org.CoreOrgService;
 import com.wlcb.jpower.vo.OrgVo;
-import com.wlcb.jpower.wrapper.BaseDictWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,9 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper, TbCoreO
 
     @Override
     public List<OrgVo> listLazyByParent(TbCoreOrg coreOrg) {
-        return BaseDictWrapper.dict(coreOrgDao.getBaseMapper().listLazyByParent(coreOrg),OrgVo.class);
+//        return coreOrgDao.listTree(Condition.getQueryWrapper(coreOrg),OrgVo.class);
+        return ForestNodeMerger.merge(coreOrgDao.getBaseMapper().listLazyByParent(coreOrg));
+//        return BaseDictWrapper.dict(coreOrgDao.getBaseMapper().listLazyByParent(coreOrg),OrgVo.class);
     }
 
     @Override

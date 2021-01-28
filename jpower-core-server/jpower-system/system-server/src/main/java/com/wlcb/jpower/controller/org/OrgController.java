@@ -18,11 +18,7 @@ import com.wlcb.jpower.service.org.CoreOrgService;
 import com.wlcb.jpower.vo.OrgVo;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
@@ -36,14 +32,16 @@ public class OrgController extends BaseController {
 
     private CoreOrgService coreOrgService;
 
+    @ApiOperation("懒加载组织机构树形列表")
+    @GetMapping(value = "/listLazyByParent",produces="application/json")
+    public ResponseData<List<OrgVo>> listLazyByParent(TbCoreOrg coreOrg){
+        return ReturnJsonUtil.ok("获取成功", coreOrgService.listLazyByParent(coreOrg));
+    }
+
     @ApiOperation("分页懒加载组织机构树形列表")
-    @RequestMapping(value = "/listLazyByParent",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
-    public ResponseData<PageInfo<OrgVo>> listLazyByParent(TbCoreOrg coreOrg){
-
-        if (StringUtils.isBlank(coreOrg.getParentId())){
-            coreOrg.setParentId(JpowerConstants.TOP_CODE);
-        }
-
+    @GetMapping(value = "/listLazy",produces="application/json")
+    public ResponseData<PageInfo<OrgVo>> listLazy(TbCoreOrg coreOrg){
+//        coreOrg.setParentId(JpowerConstants.TOP_CODE);
         PaginationContext.startPage();
         PageInfo<OrgVo> pageInfo = new PageInfo<>(coreOrgService.listLazyByParent(coreOrg));
         return ReturnJsonUtil.ok("获取成功", pageInfo);
