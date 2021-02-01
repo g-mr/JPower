@@ -19,6 +19,9 @@
             <if test="org.isVirtual!=null and org.isVirtual!=''">
                 and org.is_virtual = #{org.isVirtual}
             </if>
+            <if test="org.tenantCode!=null and org.tenantCode!=''">
+                and org.tenant_code = #{org.tenantCode}
+            </if>
             <if test="org.name!=null and org.name!=''">
                 and org.name like concat(concat('%', #{org.name}),'%')
             </if>

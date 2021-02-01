@@ -56,6 +56,17 @@ public class TenantController extends BaseController {
         return ReturnJsonUtil.ok("查询成功",tenantService.page(PaginationContext.getMpPage(), queryWrapper));
     }
 
+    @ApiOperation("租户下拉项列表")
+    @GetMapping("/selectors")
+    public ResponseData<List<Map<String,Object>>> selectors(@ApiParam("租户名称") @RequestParam(required = false) String tenantName){
+        LambdaQueryWrapper<TbCoreTenant> wrapper = Condition.<TbCoreTenant>getQueryWrapper().lambda()
+                .select(TbCoreTenant::getTenantName,TbCoreTenant::getTenantCode);
+        if (Fc.isNotBlank(tenantName)){
+            wrapper.like(TbCoreTenant::getTenantName,tenantName);
+        }
+        return ReturnJsonUtil.ok("查询成功",tenantService.listMaps(wrapper));
+    }
+
     @ApiOperation("修改租户信息")
     @PutMapping("/update")
     public ResponseData update(TbCoreTenant tenant){
