@@ -41,9 +41,7 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper, TbCoreO
 
     @Override
     public List<OrgVo> listLazyByParent(TbCoreOrg coreOrg) {
-//        return coreOrgDao.listTree(Condition.getQueryWrapper(coreOrg),OrgVo.class);
         return ForestNodeMerger.merge(coreOrgDao.getBaseMapper().listLazyByParent(coreOrg));
-//        return BaseDictWrapper.dict(coreOrgDao.getBaseMapper().listLazyByParent(coreOrg),OrgVo.class);
     }
 
     @Override
