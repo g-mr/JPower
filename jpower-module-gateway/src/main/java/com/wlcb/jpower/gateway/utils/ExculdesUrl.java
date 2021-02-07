@@ -23,6 +23,7 @@ public class ExculdesUrl {
         exculudesUrl.add("/v2/api-docs/**");
         exculudesUrl.add("/core/dict/getDictListByType");
         exculudesUrl.add("/chat/file/**");
+        exculudesUrl.add("/core/user/downloadTemplate");
     }
 
     /**
