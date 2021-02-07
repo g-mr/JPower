@@ -20,6 +20,7 @@
         login_count,
         activation_status,
         activation_code,
+        nick_name,
         create_user,
         create_time,
         update_user,
@@ -47,6 +48,7 @@
         u.login_count,
         u.activation_status,
         u.activation_code,
+        u.nick_name,
         u.create_user,
         u.create_time,
         u.update_user,
@@ -101,7 +103,7 @@
 
         <if test="orgIds != null and orgIds.size > 0">
             and u.org_id in
-            <foreach collection="orgId" item="orgIds" open="(" close=")" separator=",">
+            <foreach collection="orgIds" item="orgId" open="(" close=")" separator=",">
                 #{orgId,jdbcType=VARCHAR}
             </foreach>
         </if>
