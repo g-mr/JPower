@@ -1,0 +1,4 @@
+cluster.name: "docker-cluster"
+network.host: 0.0.0.0
+thread_pool.get.queue_size: 500
+thread_pool.write.queue_size: 500
