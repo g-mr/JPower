@@ -2,6 +2,7 @@ package com.wlcb.jpower.module.common.utils;
 
 import com.wlcb.jpower.module.common.support.NamedThreadFactory;
 import com.wlcb.jpower.module.common.utils.constants.CharPool;
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
 
@@ -366,7 +367,7 @@ public class FileUtil extends org.apache.commons.io.FileUtils {
         // 项目的编译文件的根目录
         String path = null;
         try {
-            path = URLDecoder.decode(FileUtil.class.getClass().getResource("/").getPath(), String.valueOf(StandardCharsets.UTF_8));
+            path = URLDecoder.decode(FileUtil.class.getResource(StringPool.SLASH).getPath(), String.valueOf(StandardCharsets.UTF_8));
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }

@@ -58,10 +58,42 @@ public class UserController extends BaseController {
             @ApiImplicitParam(name = "userType", value = "用户类型 字典USER_TYPE", paramType = "query", required = false),
             @ApiImplicitParam(name = "telephone", value = "电话", paramType = "query", required = false)
     })
-    @RequestMapping(value = "/list", method = {RequestMethod.GET, RequestMethod.POST}, produces = "application/json")
+    @GetMapping(value = "/list", produces = "application/json")
     public ResponseData<PageInfo<UserVo>> list(@ApiIgnore TbCoreUser coreUser) {
         PageInfo<UserVo> list = coreUserService.listPage(coreUser);
         return ReturnJsonUtil.ok("获取成功", list);
+    }
+
+    @ApiOperation(value = "导出用户")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "orgId", value = "部门ID", paramType = "query", required = false),
+            @ApiImplicitParam(name = "loginId", value = "登录名", paramType = "query", required = false),
+            @ApiImplicitParam(name = "nickName", value = "昵称", paramType = "query", required = false),
+            @ApiImplicitParam(name = "userName", value = "姓名", paramType = "query", required = false),
+            @ApiImplicitParam(name = "idNo", value = "证件号码", paramType = "query", required = false),
+            @ApiImplicitParam(name = "userType", value = "用户类型 字典USER_TYPE", paramType = "query", required = false),
+            @ApiImplicitParam(name = "telephone", value = "电话", paramType = "query", required = false)
+    })
+    @GetMapping(value = "/exportUser")
+    public void exportUser(@ApiIgnore TbCoreUser coreUser) {
+        List<UserVo> list = coreUserService.list(coreUser);
+
+        BeanExcelUtil<UserVo> beanExcelUtil = new BeanExcelUtil<>(UserVo.class, ImportExportConstants.EXPORT_PATH);
+        ResponseData responseData = beanExcelUtil.exportExcel(list, "用户列表");
+
+        File file = new File(ImportExportConstants.EXPORT_PATH + responseData.getData());
+        if (file.exists()) {
+            try {
+                FileUtil.download(file, getResponse(), "用户数据.xlsx");
+            } catch (IOException e) {
+                logger.error("下载文件出错。file={},error={}", file.getAbsolutePath(), e.getMessage());
+                throw new BusinessException("下载文件出错，请联系网站管理员");
+            }
+
+            FileUtil.deleteFile(file);
+        } else {
+            throw new BusinessException(responseData.getData() + "文件生成失败，无法下载");
+        }
     }
 
     @ApiOperation("查询用户详情")
@@ -254,38 +286,6 @@ public class UserController extends BaseController {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_ERROR, "上传出错，请稍后重试", false);
         }
 
-    }
-
-    @ApiOperation(value = "导出用户")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "orgId", value = "部门ID", paramType = "query", required = false),
-            @ApiImplicitParam(name = "loginId", value = "登录名", paramType = "query", required = false),
-            @ApiImplicitParam(name = "nickName", value = "昵称", paramType = "query", required = false),
-            @ApiImplicitParam(name = "userName", value = "姓名", paramType = "query", required = false),
-            @ApiImplicitParam(name = "idNo", value = "证件号码", paramType = "query", required = false),
-            @ApiImplicitParam(name = "userType", value = "用户类型 字典USER_TYPE", paramType = "query", required = false),
-            @ApiImplicitParam(name = "telephone", value = "电话", paramType = "query", required = false)
-    })
-    @RequestMapping(value = "/exportUser", method = {RequestMethod.GET, RequestMethod.POST})
-    public void exportUser(TbCoreUser coreUser) {
-        List<UserVo> list = coreUserService.list(coreUser);
-
-        BeanExcelUtil<UserVo> beanExcelUtil = new BeanExcelUtil<>(UserVo.class, ImportExportConstants.EXPORT_PATH);
-        ResponseData responseData = beanExcelUtil.exportExcel(list, "用户列表");
-
-        File file = new File(ImportExportConstants.EXPORT_PATH + responseData.getData());
-        if (file.exists()) {
-            try {
-                FileUtil.download(file, getResponse(), "用户数据.xlsx");
-            } catch (IOException e) {
-                logger.error("下载文件出错。file={},error={}", file.getAbsolutePath(), e.getMessage());
-                throw new BusinessException("下载文件出错，请联系网站管理员");
-            }
-
-            FileUtil.deleteFile(file);
-        } else {
-            throw new BusinessException(responseData.getData() + "文件生成失败，无法下载");
-        }
     }
 
     @ApiOperation(value = "给用户重新设置角色")
