@@ -174,8 +174,8 @@ public class UserController extends BaseController {
 
         JpowerAssert.notEmpty(coreUser.getId(), JpowerError.Arg, "用户ID不可为空");
 
-        if (coreUser.getIdType() != null && ConstantsEnum.ID_TYPE.ID_CARD.getValue().equals(coreUser.getIdType())) {
-            if (!StrUtil.cardCodeVerifySimple(coreUser.getIdNo())) {
+        if (Fc.notNull(coreUser.getIdType()) && ConstantsEnum.ID_TYPE.ID_CARD.getValue().equals(coreUser.getIdType())) {
+            if (Fc.isNotBlank(coreUser.getIdNo()) && !StrUtil.cardCodeVerifySimple(coreUser.getIdNo())) {
                 return ReturnJsonUtil.busFail("身份证不合法");
             }
         }
