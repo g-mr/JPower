@@ -60,4 +60,9 @@ public class SystemClientFallback implements SystemClient {
     public ResponseData<List<TbCoreDataScope>> getDataScopeByRole(List<String> roleIds) {
         return ReturnJsonUtil.fail("查询失败");
     }
+
+    @Override
+    public ResponseData<List<String>> getRoleNameByIds(List<String> roleIds) {
+        return ReturnJsonUtil.fail("查询失败");
+    }
 }

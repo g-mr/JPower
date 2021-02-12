@@ -15,6 +15,7 @@ import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.dbs.entity.TbCoreUserRole;
 import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
 import com.wlcb.jpower.module.base.exception.BusinessException;
+import com.wlcb.jpower.module.common.auth.RoleConstant;
 import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.*;
@@ -88,7 +89,16 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
 
     @Override
     public Boolean delete(String ids) {
-        List<String> list = Fc.toStrList(ids);
+        List<String> list = new ArrayList<>(Fc.toStrList(ids));
+
+        if(Fc.contains(list.iterator(), RoleConstant.ROOT_ID) || Fc.contains(list.iterator(), RoleConstant.ANONYMOUS_ID)){
+            list.removeIf(obj -> StringUtil.equals(obj,RoleConstant.ROOT_ID) || StringUtil.equals(obj,RoleConstant.ANONYMOUS_ID));
+
+            if (list.size() <= 0){
+                throw new BusinessException("超级用户和匿名用户不可删除");
+            }
+        }
+
         boolean is = coreUserDao.removeByIds(list);
         if (is){
             coreUserRoleDao.removeReal(new QueryWrapper<TbCoreUserRole>().lambda().in(TbCoreUserRole::getUserId,list));
@@ -255,6 +265,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
 
         if (Fc.isNotBlank(roleIds)){
             List<String> rIds = Fc.toStrList(roleIds);
+
             List<TbCoreUserRole> userRoles = new ArrayList<>();
             for (String rId : rIds) {
                 for (String userId : uIds) {
@@ -263,6 +274,21 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
                     userRole.setRoleId(rId);
                     userRoles.add(userRole);
                 }
+            }
+
+            //如果修改超级用户，并且角色不包含超级用户角色，则给超级用户添加超级用户角色
+            if (Fc.contains(uIds.iterator(),RoleConstant.ROOT_ID) && !Fc.contains(rIds.iterator(),RoleConstant.ROOT_ID)){
+                TbCoreUserRole userRole = new TbCoreUserRole();
+                userRole.setUserId(RoleConstant.ROOT_ID);
+                userRole.setRoleId(RoleConstant.ROOT_ID);
+                userRoles.add(userRole);
+            }
+            //如果修改匿名用户，并且角色不包含匿名用户角色，则给匿名用户添加匿名用户角色
+            if (Fc.contains(uIds.iterator(),RoleConstant.ANONYMOUS_ID) && !Fc.contains(rIds.iterator(),RoleConstant.ANONYMOUS_ID)){
+                TbCoreUserRole userRole = new TbCoreUserRole();
+                userRole.setUserId(RoleConstant.ANONYMOUS_ID);
+                userRole.setRoleId(RoleConstant.ANONYMOUS_ID);
+                userRoles.add(userRole);
             }
 
             if (userRoles.size() > 0){

@@ -55,6 +55,8 @@ public interface CacheNames {
     String SYSTEM_DATASCOPE_ALLROLES_KEY = "dataScope:roles:all:";
     /** 角色的数据权限 key **/
     String SYSTEM_DATASCOPE_ROLES_KEY = "dataScope:roles:";
+    /** 角色名称 key **/
+    String SYSTEM_ROLES_NAME_KEY = "role:name:";
 
     /** 租户信息 key（tenantCode） **/
     String SYSTEM_TENANT_CODE_KEY = "tenant:code:";

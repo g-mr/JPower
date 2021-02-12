@@ -4,15 +4,18 @@ import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
 import com.wlcb.jpower.dbs.entity.function.TbCoreDataScope;
 import com.wlcb.jpower.dbs.entity.function.TbCoreFunction;
 import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
+import com.wlcb.jpower.dbs.entity.role.TbCoreRole;
 import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
 import com.wlcb.jpower.feign.SystemClient;
 import com.wlcb.jpower.module.base.vo.ResponseData;
+import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.client.CoreClientService;
 import com.wlcb.jpower.service.org.CoreOrgService;
 import com.wlcb.jpower.service.role.CoreDataScopeService;
 import com.wlcb.jpower.service.role.CoreFunctionService;
+import com.wlcb.jpower.service.role.CoreRoleService;
 import com.wlcb.jpower.service.tenant.TenantService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,6 +40,7 @@ public class SystemClientController implements SystemClient {
     private CoreFunctionService coreFunctionService;
     private TenantService tenantService;
     private CoreDataScopeService coreDataScopeService;
+    private CoreRoleService coreRoleService;
 
     @Override
     @GetMapping("/org/queryChildById")
@@ -66,6 +70,12 @@ public class SystemClientController implements SystemClient {
     @GetMapping("/dataScope/getDataScopeByRole")
     public ResponseData<List<TbCoreDataScope>> getDataScopeByRole(@RequestParam List<String> roleIds) {
         return ReturnJsonUtil.ok("查询成功",coreDataScopeService.getDataScopeByRole(roleIds));
+    }
+
+    @Override
+    @GetMapping("/role/getRoleNameByIds")
+    public ResponseData<List<String>> getRoleNameByIds(@RequestParam List<String> roleIds) {
+        return ReturnJsonUtil.ok("查询成功",coreRoleService.listObjs(Condition.<TbCoreRole>getQueryWrapper().lambda().select(TbCoreRole::getName).in(TbCoreRole::getId,roleIds), Fc::toStr));
     }
 
     @Override

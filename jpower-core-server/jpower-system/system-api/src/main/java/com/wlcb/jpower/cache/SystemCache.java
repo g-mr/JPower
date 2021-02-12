@@ -148,4 +148,19 @@ public class SystemCache {
             return responseData.getData();
         });
     }
+
+    /**
+     * 通过角色ID获取角色名称
+     *
+     * @author 郭丁志
+     * @date 23:38 2020/11/5 0005
+     * @param roleIds  角色ID
+     * @return java.util.List<com.wlcb.jpower.dbs.entity.function.TbCoreDataScope>
+     */
+    public static List<String> getRoleNameByIds(List<String> roleIds) {
+        return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_ROLES_NAME_KEY,roleIds,() -> {
+            ResponseData<List<String>> responseData = systemClient.getRoleNameByIds(roleIds);
+            return responseData.getData();
+        });
+    }
 }

@@ -61,6 +61,7 @@ public class TenantController extends BaseController {
     public ResponseData<List<Map<String,Object>>> selectors(@ApiParam("租户名称") @RequestParam(required = false) String tenantName){
         LambdaQueryWrapper<TbCoreTenant> wrapper = Condition.<TbCoreTenant>getQueryWrapper().lambda()
                 .select(TbCoreTenant::getTenantName,TbCoreTenant::getTenantCode);
+
         if (Fc.isNotBlank(tenantName)){
             wrapper.like(TbCoreTenant::getTenantName,tenantName);
         }

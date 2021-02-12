@@ -44,8 +44,6 @@ public class JpowerTenantHandler implements TenantHandler, SmartInitializingSing
     public boolean doTableFilter(String tableName) {
         // 在表中不存在tenant_code字段的、超级用户登陆的、获取不到request的（例如：多线程、定时任务等）情况下不做多租户过滤
         return !tenantTableList.contains(tableName) || Fc.isNull(WebUtil.getRequest()) || SecureUtil.isRoot();
-//        在表中不存在tenant_code字段的、获取不到request的（例如：多线程、定时任务等）情况下不做多租户过滤
-//        return !tenantTableList.contains(tableName) || Fc.isNull(WebUtil.getRequest());
     }
 
     @Override

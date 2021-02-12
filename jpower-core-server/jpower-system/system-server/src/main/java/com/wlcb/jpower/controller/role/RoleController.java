@@ -5,6 +5,7 @@ import com.wlcb.jpower.module.base.annotation.Log;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
+import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.utils.BeanUtil;
 import com.wlcb.jpower.module.common.utils.CacheUtil;
@@ -70,6 +71,7 @@ public class RoleController extends BaseController {
             coreRole.setIsSysRole(ConstantsEnum.YN01.N.getValue());
         }
 
+        CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE);
         return ReturnJsonUtil.status(coreRoleService.add(coreRole));
     }
 
@@ -84,7 +86,8 @@ public class RoleController extends BaseController {
             return ReturnJsonUtil.busFail("该角色存在下级角色，请先删除下级角色");
         }
 
-        return ReturnJsonUtil.status(coreRoleService.removeReal(Condition.<TbCoreRole>getQueryWrapper().lambda()
+        CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE);
+        return ReturnJsonUtil.status(coreRoleService.remove(Condition.<TbCoreRole>getQueryWrapper().lambda()
                 .in(TbCoreRole::getId,Fc.toStrList(ids))
                 .eq(TbCoreRole::getIsSysRole,ConstantsEnum.YN01.N.getValue())));
     }
@@ -95,6 +98,7 @@ public class RoleController extends BaseController {
 
         JpowerAssert.notEmpty(coreRole.getId(), JpowerError.Arg,"id不可为空");
 
+        CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE);
         return ReturnJsonUtil.status(coreRoleService.update(coreRole));
     }
 

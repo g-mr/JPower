@@ -41,7 +41,6 @@ public class OrgController extends BaseController {
     @ApiOperation("分页懒加载组织机构树形列表")
     @GetMapping(value = "/listLazy",produces="application/json")
     public ResponseData<PageInfo<OrgVo>> listLazy(TbCoreOrg coreOrg){
-//        coreOrg.setParentId(JpowerConstants.TOP_CODE);
         PaginationContext.startPage();
         PageInfo<OrgVo> pageInfo = new PageInfo<>(coreOrgService.listLazyByParent(coreOrg));
         return ReturnJsonUtil.ok("获取成功", pageInfo);

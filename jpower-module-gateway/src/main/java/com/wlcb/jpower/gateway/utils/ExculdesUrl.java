@@ -21,9 +21,11 @@ public class ExculdesUrl {
         exculudesUrl.add("/auth/**");
         exculudesUrl.add("/v2/api-docs-ext/**");
         exculudesUrl.add("/v2/api-docs/**");
-        exculudesUrl.add("/core/dict/getDictListByType");
         exculudesUrl.add("/chat/file/**");
+
+        exculudesUrl.add("/core/dict/getDictListByType");
         exculudesUrl.add("/core/user/downloadTemplate");
+        exculudesUrl.add("/core/tenant/selectors");
     }
 
     /**

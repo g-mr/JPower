@@ -25,11 +25,13 @@ public class TbCoreRole extends TenantEntity implements Serializable {
     private String name;
     @ApiModelProperty("角色父级ID")
     private String parentId;
-    @ApiModelProperty("图标")
-    private String iconUrl;
+//    @ApiModelProperty("图标")
+//    private String iconUrl;
     @ApiModelProperty("是否系统角色 字典YN01")
     @Dict(name = "YN01",attributes = "isSysRoleStr")
     private Integer isSysRole;
     @ApiModelProperty("备注说明")
     private String remark;
+    @ApiModelProperty("排序")
+    private Integer sort;
 }

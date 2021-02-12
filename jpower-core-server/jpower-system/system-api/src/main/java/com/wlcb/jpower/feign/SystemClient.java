@@ -49,4 +49,7 @@ public interface SystemClient {
 
     @GetMapping("/dataScope/getDataScopeByRole")
     ResponseData<List<TbCoreDataScope>> getDataScopeByRole(@RequestParam List<String> roleIds);
+
+    @GetMapping("/role/getRoleNameByIds")
+    ResponseData<List<String>> getRoleNameByIds(@RequestParam List<String> roleIds);
 }

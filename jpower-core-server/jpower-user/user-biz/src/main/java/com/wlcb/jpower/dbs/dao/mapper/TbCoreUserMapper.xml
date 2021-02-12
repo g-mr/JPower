@@ -78,11 +78,11 @@
         </if>
 
         <if test="coreUser != null and coreUser.loginId != null and coreUser.loginId != ''">
-            and u.login_id = #{coreUser.loginId,jdbcType=VARCHAR}
+            and u.login_id like CONCAT('%',#{coreUser.loginId,jdbcType=VARCHAR},'%')
         </if>
 
         <if test="coreUser != null and coreUser.nickName != null and coreUser.nickName != ''">
-            and u.nick_name = CONCAT('%',#{coreUser.nickName,jdbcType=VARCHAR},'%')
+            and u.nick_name like CONCAT('%',#{coreUser.nickName,jdbcType=VARCHAR},'%')
         </if>
 
         <if test="coreUser != null and coreUser.userName != null and coreUser.userName != ''">
@@ -90,15 +90,19 @@
         </if>
 
         <if test="coreUser != null and coreUser.idNo != null and coreUser.idNo != ''">
-            and u.id_no = CONCAT('%',#{coreUser.idNo,jdbcType=VARCHAR},'%')
+            and u.id_no like CONCAT('%',#{coreUser.idNo,jdbcType=VARCHAR},'%')
         </if>
 
-        <if test="coreUser != null and coreUser.userType != null and coreUser.userType != ''">
-            and u.user_type = #{coreUser.userType,jdbcType=VARCHAR}
+        <if test="coreUser != null and coreUser.userType != null">
+            and u.user_type = #{coreUser.userType,jdbcType=INTEGER}
         </if>
 
         <if test="coreUser != null and coreUser.telephone != null and coreUser.telephone != ''">
             and u.telephone like CONCAT('%',#{coreUser.telephone,jdbcType=VARCHAR},'%')
+        </if>
+
+        <if test="coreUser != null and coreUser.tenantCode != null and coreUser.tenantCode != ''">
+            and u.tenant_code = #{coreUser.tenantCode,jdbcType=VARCHAR}
         </if>
 
         <if test="orgIds != null and orgIds.size > 0">
