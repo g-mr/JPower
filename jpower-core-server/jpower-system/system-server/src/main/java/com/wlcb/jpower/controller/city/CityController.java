@@ -62,7 +62,7 @@ public class CityController extends BaseController {
         PaginationContext.startPage();
         List<TbCoreCity> list = coreCityService.list(coreCity);
 
-        return ReturnJsonUtil.ok("获取成功", new PageInfo<>(BaseDictWrapper.dict(list,TbCoreCity.class)));
+        return ReturnJsonUtil.ok("获取成功", BaseDictWrapper.<TbCoreCity,TbCoreCity>builder().pageVo(list));
     }
 
     @ApiOperation(value = "新增行政区域",notes = "主键不可传")

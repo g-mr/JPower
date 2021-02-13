@@ -4,7 +4,6 @@ import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.cache.SystemCache;
 import com.wlcb.jpower.cache.param.ParamConfig;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
-import com.wlcb.jpower.dbs.entity.TbCoreUserRole;
 import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
 import com.wlcb.jpower.module.base.annotation.Log;
 import com.wlcb.jpower.module.base.enums.BusinessType;
@@ -102,7 +101,7 @@ public class UserController extends BaseController {
         JpowerAssert.notEmpty(id, JpowerError.Arg, "id不可为空");
 
         TbCoreUser user = coreUserService.selectUserById(id);
-        return ReturnJsonUtil.ok("查询成功", UserWrapper.builder().build().entityVO(user));
+        return ReturnJsonUtil.ok("查询成功", UserWrapper.builder().entityVO(user));
     }
 
     @ApiOperation(value = "新增", notes = "主键不用传")
@@ -286,29 +285,6 @@ public class UserController extends BaseController {
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_ERROR, "上传出错，请稍后重试", false);
         }
 
-    }
-
-    @ApiOperation(value = "给用户重新设置角色")
-    @RequestMapping(value = "/addRole", method = {RequestMethod.POST}, produces = "application/json")
-    public ResponseData addRole(@ApiParam(value = "用户主键 多个逗号分割", required = true) @RequestParam String userIds,
-                                @ApiParam(value = "角色主键 多个逗号分割") @RequestParam(required = false) String roleIds) {
-
-        JpowerAssert.notEmpty(userIds, JpowerError.Arg, "userIds不可为空");
-        JpowerAssert.notTrue(Fc.toStrArray(userIds).length <= 0, JpowerError.Arg, "userIds不可为空");
-
-        return ReturnJsonUtil.status(coreUserService.updateUsersRole(userIds, roleIds));
-    }
-
-    @ApiOperation(value = "查询用户所有角色ID")
-    @GetMapping(value = "/userRole", produces = "application/json")
-    public ResponseData<List<String>> userRole(@ApiParam(value = "用户主键", required = true) @RequestParam String userId) {
-
-        JpowerAssert.notEmpty(userId, JpowerError.Arg, "用户ID不可为空");
-
-        CacheUtil.clear(CacheNames.USER_REDIS_CACHE);
-
-        List<String> userRoleList = coreUserRoleService.listObjs(Condition.<TbCoreUserRole>getQueryWrapper().lambda().select(TbCoreUserRole::getRoleId).eq(TbCoreUserRole::getUserId, userId), Fc::toStr);
-        return ReturnJsonUtil.ok("查询成功", userRoleList);
     }
 
     @ApiOperation(value = "用户上传模板下载")

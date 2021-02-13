@@ -5,7 +5,6 @@ import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.module.common.utils.BeanUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.vo.UserVo;
-import lombok.Builder;
 
 import java.util.Objects;
 
@@ -16,8 +15,12 @@ import java.util.Objects;
  * @Date 2020-10-16 15:39
  * @Version 1.0
  */
-@Builder
 public class UserWrapper extends BaseDictWrapper<TbCoreUser, UserVo> {
+
+    public static UserWrapper builder(){
+        return new UserWrapper();
+    }
+
     @Override
     protected UserVo conver(TbCoreUser user) {
         UserVo userVo = Objects.requireNonNull(BeanUtil.copy(user, UserVo.class));

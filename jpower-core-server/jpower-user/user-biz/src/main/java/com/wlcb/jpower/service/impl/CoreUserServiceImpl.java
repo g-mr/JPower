@@ -57,7 +57,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
 
         PaginationContext.startPage();
         List<TbCoreUser> list = coreUserDao.getBaseMapper().selectUserList(coreUser,listOrgId);
-        return new PageInfo<>(UserWrapper.builder().build().listVO(list));
+        return UserWrapper.builder().pageVo(list);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
         List<String> listOrgId = Fc.isNotBlank(coreUser.getOrgId())?SystemCache.getChildIdOrgById(coreUser.getOrgId()):null;
 
         List<TbCoreUser> list = coreUserDao.getBaseMapper().selectUserList(coreUser,listOrgId);
-        return UserWrapper.builder().build().listVO(list);
+        return UserWrapper.builder().listVO(list);
     }
 
     @Override
@@ -297,6 +297,37 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean addRoleUsers(String roleId, List<String> userIds) {
+        List<TbCoreUserRole> list = new ArrayList<>();
+        userIds.forEach((userId)->{
+            TbCoreUserRole userRole = new TbCoreUserRole();
+            userRole.setRoleId(roleId);
+            userRole.setUserId(userId);
+            list.add(userRole);
+        });
+
+        return coreUserRoleDao.saveBatch(list);
+    }
+
+    @Override
+    public boolean deleteRoleUsers(String roleId, List<String> userIds) {
+
+        userIds.removeIf(userId->
+                (Fc.equalsValue(roleId,RoleConstant.ROOT_ID)&&Fc.equalsValue(userId,RoleConstant.ROOT_ID))
+                ||
+                (Fc.equalsValue(roleId,RoleConstant.ANONYMOUS_ID)&&Fc.equalsValue(userId,RoleConstant.ANONYMOUS_ID)));
+
+        if (userIds.size() <= 0){
+            throw new BusinessException("不可去除超级用户或匿名用户的角色");
+        }
+
+        return coreUserRoleDao.removeReal(Condition.<TbCoreUserRole>getQueryWrapper()
+                .lambda()
+                .eq(TbCoreUserRole::getRoleId,roleId)
+                .in(TbCoreUserRole::getUserId,userIds));
     }
 
     @Override

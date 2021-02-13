@@ -14,6 +14,7 @@ import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.params.CoreParamService;
+import com.wlcb.jpower.wrapper.BaseDictWrapper;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,7 +45,7 @@ public class ParamsController extends BaseController {
     public ResponseData<PageInfo<TbCoreParam>> list(@ApiIgnore TbCoreParam coreParam){
         PaginationContext.startPage();
         List<TbCoreParam> list = paramService.list(coreParam);
-        return ReturnJsonUtil.ok("获取成功", new PageInfo<>(list));
+        return ReturnJsonUtil.ok("获取成功", BaseDictWrapper.<TbCoreParam,TbCoreParam>builder().pageVo(list));
     }
 
     @ApiOperation("删除系统参数")

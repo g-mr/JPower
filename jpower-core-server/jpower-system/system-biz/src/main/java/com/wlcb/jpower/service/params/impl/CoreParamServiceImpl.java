@@ -10,7 +10,6 @@ import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.service.params.CoreParamService;
-import com.wlcb.jpower.wrapper.BaseDictWrapper;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -51,7 +50,7 @@ public class CoreParamServiceImpl extends BaseServiceImpl<TbCoreParamsMapper, Tb
 
         wrapper.orderByDesc(TbCoreParam::getCreateTime);
 
-        return BaseDictWrapper.dict(paramsDao.list(wrapper), TbCoreParam.class);
+        return paramsDao.list(wrapper);
     }
 
     @Override

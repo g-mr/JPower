@@ -14,7 +14,6 @@ import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.dict.CoreDictService;
 import com.wlcb.jpower.vo.DictVo;
-import com.wlcb.jpower.wrapper.BaseDictWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -59,7 +58,7 @@ public class CoreDictServiceImpl extends BaseServiceImpl<TbCoreDictMapper, TbCor
         if (SecureUtil.isRoot()){
             dict.setTenantCode(Fc.isBlank(dict.getTenantCode())?DEFAULT_TENANT_CODE:dict.getTenantCode());
         }
-        return BaseDictWrapper.dict(dictDao.getBaseMapper().listByType(dict),DictVo.class);
+        return dictDao.getBaseMapper().listByType(dict);
     }
 
     @Override

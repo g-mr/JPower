@@ -138,4 +138,8 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
      * @param roleId 角色ID
      */
     boolean saveAdmin(TbCoreUser user, String roleId);
+
+    boolean addRoleUsers(String roleId, List<String> userIds);
+
+    boolean deleteRoleUsers(String roleId, List<String> toStrList);
 }

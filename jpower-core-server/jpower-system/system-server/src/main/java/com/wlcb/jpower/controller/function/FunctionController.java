@@ -19,10 +19,7 @@ import com.wlcb.jpower.wrapper.BaseDictWrapper;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
@@ -53,11 +50,11 @@ public class FunctionController extends BaseController {
         }
 
         List<TbCoreFunction> list = coreFunctionService.listByParent(coreFunction);
-        return ReturnJsonUtil.ok("获取成功", BaseDictWrapper.dict(list,FunctionVo.class));
+        return ReturnJsonUtil.ok("获取成功", BaseDictWrapper.<TbCoreFunction,FunctionVo>builder().dict(list,FunctionVo.class));
     }
 
     @ApiOperation("新增菜单")
-    @RequestMapping(value = "/add",method = {RequestMethod.POST},produces="application/json")
+    @PostMapping(value = "/add", produces="application/json")
     public ResponseData add(TbCoreFunction coreFunction){
 
         BeanUtil.allFieldIsNULL(coreFunction,
@@ -154,7 +151,7 @@ public class FunctionController extends BaseController {
                 .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.Y.getValue())
                 .orderByAsc(TbCoreFunction::getSort)):
                 coreFunctionService.listMenuByRoleId(roleIds);
-        return ReturnJsonUtil.ok("查询成功", ForestNodeMerger.merge(BaseDictWrapper.dict(list,FunctionVo.class)));
+        return ReturnJsonUtil.ok("查询成功", ForestNodeMerger.merge(BaseDictWrapper.<TbCoreFunction,FunctionVo>builder().dict(list,FunctionVo.class)));
     }
 
     @ApiOperation("查询登录用户一个菜单下的所有按钮")

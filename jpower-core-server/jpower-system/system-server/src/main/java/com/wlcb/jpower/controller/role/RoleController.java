@@ -53,7 +53,7 @@ public class RoleController extends BaseController {
         List<RoleVo> list = coreRoleService.listTree(Condition.getQueryWrapper(coreRole)
                 .lambda().orderByAsc(TbCoreRole::getCreateTime)
                 , RoleVo.class);
-        return ReturnJsonUtil.ok("获取成功", BaseDictWrapper.dict(list,RoleVo.class));
+        return ReturnJsonUtil.ok("获取成功", BaseDictWrapper.dict(list));
     }
 
     @ApiOperation("新增角色")
