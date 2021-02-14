@@ -1,5 +1,6 @@
 package com.wlcb.jpower.controller.function;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wlcb.jpower.dbs.entity.function.TbCoreFunction;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
@@ -12,6 +13,7 @@ import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.role.CoreFunctionService;
 import com.wlcb.jpower.vo.FunctionVo;
@@ -143,6 +145,23 @@ public class FunctionController extends BaseController {
     }
 
     @ApiOperation("查询登录用户所有菜单树形结构")
+    @GetMapping(value = "/menuTree", produces="application/json")
+    public ResponseData<List<Node>> menuTree(){
+        LambdaQueryWrapper<TbCoreFunction> wrapper = Condition.getTreeWrapper(TbCoreFunction::getId,TbCoreFunction::getParentId,TbCoreFunction::getFunctionName,TbCoreFunction::getUrl)
+                .lambda()
+                .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.Y.getValue())
+                .orderByAsc(TbCoreFunction::getSort);
+
+        if (!SecureUtil.isRoot()){
+            String inSql = StringPool.SINGLE_QUOTE.concat(Fc.join(SecureUtil.getUserRole(),StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE);
+            wrapper.inSql(TbCoreFunction::getId, StringUtil.format("select function_id from tb_core_role_function where role_id in ({})",inSql));
+        }
+
+        List<Node> list = coreFunctionService.tree(wrapper);
+        return ReturnJsonUtil.ok("查询成功", list);
+    }
+
+    @ApiOperation("查询登录用户所有菜单树形列表结构")
     @RequestMapping(value = "/listMenuTree",method = {RequestMethod.GET},produces="application/json")
     public ResponseData<List<FunctionVo>> listMenuTree(){
         List<String> roleIds = SecureUtil.getUserRole();
