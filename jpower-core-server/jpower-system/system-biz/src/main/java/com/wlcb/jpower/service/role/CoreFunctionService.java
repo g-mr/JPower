@@ -15,12 +15,12 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
 
     /**
      * @Author 郭丁志
-     * @Description //TODO 通过父级查询子节点菜单
+     * @Description //TODO map查询
      * @Date 15:33 2020-05-20
      * @Param [coreFunction]
      * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction>
      **/
-    List<TbCoreFunction> listByParent(Map<String,Object> coreFunction);
+    List<TbCoreFunction> listFunction(Map<String,Object> coreFunction);
 
     /**
      * @Author 郭丁志
@@ -126,5 +126,4 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
 
     List<Object> getUrlsByRoleIds(List<String> roleIds);
 
-    List<TbCoreFunction> getMenuListByRole(List<String> roleIds);
 }

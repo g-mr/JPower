@@ -34,7 +34,7 @@ public class StrUtil {
      **/
     public static boolean cardCodeVerifySimple(String cardcode) {
         //验证身份证
-        if (cardcode.matches(IS_ID_CARD1) || cardCodeVerify(cardcode)) {
+        if (Fc.isNoneBlank(cardcode) && (cardcode.matches(IS_ID_CARD1) || cardCodeVerify(cardcode))) {
             return true;
         }
         return false;

@@ -132,7 +132,7 @@ public class SystemCache {
      */
     public static List<TbCoreFunction> getMenuListByRole(List<String> roleIds) {
         return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_MENU_ROLES_KEY,roleIds,() -> {
-            List<TbCoreFunction> responseData = coreFunctionService.getMenuListByRole(roleIds);
+            List<TbCoreFunction> responseData = coreFunctionService.listMenuByRoleId(roleIds);
             return responseData;
         });
     }

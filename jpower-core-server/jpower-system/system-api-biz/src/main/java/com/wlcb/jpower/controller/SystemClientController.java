@@ -57,7 +57,7 @@ public class SystemClientController implements SystemClient {
     @Override
     @GetMapping("/function/getMenuListByRole")
     public ResponseData<List<TbCoreFunction>> getMenuListByRole(@RequestParam List<String> roleIds) {
-        return ReturnJsonUtil.ok("查询成功",coreFunctionService.getMenuListByRole(roleIds));
+        return ReturnJsonUtil.ok("查询成功",coreFunctionService.listMenuByRoleId(roleIds));
     }
 
     @Override

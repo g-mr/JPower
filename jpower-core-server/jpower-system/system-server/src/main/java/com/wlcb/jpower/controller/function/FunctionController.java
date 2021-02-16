@@ -13,7 +13,6 @@ import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
-import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.role.CoreFunctionService;
 import com.wlcb.jpower.vo.FunctionVo;
@@ -51,7 +50,7 @@ public class FunctionController extends BaseController {
             coreFunction.put("parentId_eq",JpowerConstants.TOP_CODE);
         }
 
-        List<TbCoreFunction> list = coreFunctionService.listByParent(coreFunction);
+        List<TbCoreFunction> list = coreFunctionService.listFunction(coreFunction);
         return ReturnJsonUtil.ok("获取成功", BaseDictWrapper.<TbCoreFunction,FunctionVo>builder().dict(list,FunctionVo.class));
     }
 
@@ -144,25 +143,8 @@ public class FunctionController extends BaseController {
         return ReturnJsonUtil.ok("查询成功",list);
     }
 
-    @ApiOperation("查询登录用户所有菜单树形结构")
-    @GetMapping(value = "/menuTree", produces="application/json")
-    public ResponseData<List<Node>> menuTree(){
-        LambdaQueryWrapper<TbCoreFunction> wrapper = Condition.getTreeWrapper(TbCoreFunction::getId,TbCoreFunction::getParentId,TbCoreFunction::getFunctionName,TbCoreFunction::getUrl)
-                .lambda()
-                .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.Y.getValue())
-                .orderByAsc(TbCoreFunction::getSort);
-
-        if (!SecureUtil.isRoot()){
-            String inSql = StringPool.SINGLE_QUOTE.concat(Fc.join(SecureUtil.getUserRole(),StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE);
-            wrapper.inSql(TbCoreFunction::getId, StringUtil.format("select function_id from tb_core_role_function where role_id in ({})",inSql));
-        }
-
-        List<Node> list = coreFunctionService.tree(wrapper);
-        return ReturnJsonUtil.ok("查询成功", list);
-    }
-
     @ApiOperation("查询登录用户所有菜单树形列表结构")
-    @RequestMapping(value = "/listMenuTree",method = {RequestMethod.GET},produces="application/json")
+    @GetMapping(value = "/listMenuTree", produces="application/json")
     public ResponseData<List<FunctionVo>> listMenuTree(){
         List<String> roleIds = SecureUtil.getUserRole();
 
@@ -174,7 +156,7 @@ public class FunctionController extends BaseController {
     }
 
     @ApiOperation("查询登录用户一个菜单下的所有按钮")
-    @RequestMapping(value = "/listBut",method = {RequestMethod.GET},produces="application/json")
+    @GetMapping(value = "/listBut", produces="application/json")
     public ResponseData<List<TbCoreFunction>> listBut(@ApiParam(value = "菜单Id",required = true) @RequestParam String id){
         JpowerAssert.notEmpty(id, JpowerError.Arg, "菜单id不可为空");
         List<TbCoreFunction> list = coreFunctionService.listBtnByRoleIdAndPcode(SecureUtil.getUserRole(),id);
@@ -182,7 +164,7 @@ public class FunctionController extends BaseController {
     }
 
     @ApiOperation("查询登录用户所有功能的树形列表")
-    @RequestMapping(value = "/listTree",method = {RequestMethod.GET},produces="application/json")
+    @GetMapping(value = "/listTree", produces="application/json")
     public ResponseData<List<FunctionVo>> listTree(){
         List<FunctionVo> list = SecureUtil.isRoot()?
                 coreFunctionService.listTree(Condition.getQueryWrapper(),FunctionVo.class):
@@ -190,4 +172,29 @@ public class FunctionController extends BaseController {
         return ReturnJsonUtil.ok("查询成功", list);
     }
 
+    @ApiOperation("查询所有菜单树形结构")
+    @GetMapping(value = "/menuTree", produces="application/json")
+    public ResponseData<List<Node>> menuTree(){
+        LambdaQueryWrapper<TbCoreFunction> wrapper = Condition.getTreeWrapper(TbCoreFunction::getId,TbCoreFunction::getParentId,TbCoreFunction::getFunctionName,TbCoreFunction::getUrl)
+                .lambda()
+                .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.Y.getValue())
+                .orderByAsc(TbCoreFunction::getSort);
+
+        List<Node> list = coreFunctionService.tree(wrapper);
+        return ReturnJsonUtil.ok("查询成功", list);
+    }
+
+    @ApiOperation(value = "查询菜单下的所有按钮接口资源", notes = "当不传菜单ID时，会查出顶级资源")
+    @GetMapping(value = "/listButByMenu", produces="application/json")
+    public ResponseData<List<TbCoreFunction>> listButByMenu(@ApiParam(value = "菜单Id",required = true) @RequestParam(required = false,defaultValue = JpowerConstants.TOP_CODE) String id){
+        if (Fc.isBlank(id)){
+            id = JpowerConstants.TOP_CODE;
+        }
+        List<TbCoreFunction> list = coreFunctionService.list(Condition.<TbCoreFunction>getQueryWrapper()
+                .lambda()
+                .eq(TbCoreFunction::getParentId,id)
+                .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.N.getValue())
+                .orderByAsc(TbCoreFunction::getSort));
+        return ReturnJsonUtil.ok("查询成功", list);
+    }
 }

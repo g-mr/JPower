@@ -1,6 +1,7 @@
 package com.wlcb.jpower.gateway.utils;
 
 import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.JwtUtil;
 import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
 import org.apache.commons.lang3.StringUtils;
@@ -22,20 +23,26 @@ public class TokenUtil {
         HttpCookie httpCookie = request.getCookies().getFirst(TokenConstant.HEADER);
         String cookies = Fc.isNull(httpCookie)?null:httpCookie.getValue();
 
-        String param = request.getQueryParams().getFirst(TokenConstant.HEADER);
+        if (StringUtils.isAllBlank(header,cookies)){
+            String param = request.getQueryParams().getFirst(TokenConstant.HEADER);
+            if (StringUtil.isNotBlank(param)) {
+                return param;
+            }
 
-        if (StringUtils.isAllBlank(header,cookies,param)){
             return null;
         }
 
-        String token = Fc.isBlank(header)?Fc.isBlank(cookies)?param:Fc.decode(cookies):header;
-        if (StringUtil.isNotBlank(token) && token.length() > TokenConstant.AUTH_LENGTH) {
-            String headStr = token.substring(0, 6).toLowerCase();
-            if (headStr.compareTo(TokenConstant.JPOWER) == 0) {
-                token = token.substring(TokenConstant.AUTH_LENGTH);
-                return token;
-            }
+        String token = Fc.isBlank(header)?Fc.decode(cookies):header;
+        if (StringUtil.isNotBlank(token)) {
+//            String headStr = token.substring(0, 6).toLowerCase();
+//            if (headStr.compareTo(TokenConstant.JPOWER) == 0) {
+//                token = token.substring(TokenConstant.AUTH_LENGTH);
+//                return token;
+//            }
+            return JwtUtil.parsingToken(token);
         }
+
+
         return null;
     }
 

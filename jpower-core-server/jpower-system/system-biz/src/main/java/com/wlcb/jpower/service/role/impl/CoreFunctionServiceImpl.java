@@ -39,7 +39,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     private TbCoreRoleFunctionDao coreRoleFunctionDao;
 
     @Override
-    public List<TbCoreFunction> listByParent(Map<String,Object> coreFunction) {
+    public List<TbCoreFunction> listFunction(Map<String,Object> coreFunction) {
         return coreFunctionDao.list(Condition.getQueryWrapper(coreFunction,TbCoreFunction.class).lambda()
                 .orderByAsc(TbCoreFunction::getSort));
     }
@@ -104,14 +104,6 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
         return coreFunctionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                 .select(TbCoreFunction::getUrl)
                 .isNotNull(TbCoreFunction::getUrl)
-                .inSql(TbCoreFunction::getId,StringUtil.format(sql,inSql)));
-    }
-
-    @Override
-    public List<TbCoreFunction> getMenuListByRole(List<String> roleIds) {
-        String inSql = StringUtil.collectionToDelimitedString(roleIds, StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE);
-        return coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
-                .eq(TbCoreFunction::getIsMenu,ConstantsEnum.YN01.Y.getValue())
                 .inSql(TbCoreFunction::getId,StringUtil.format(sql,inSql)));
     }
 
