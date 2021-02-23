@@ -57,6 +57,8 @@ public interface CacheNames {
     String SYSTEM_DATASCOPE_ROLES_KEY = "dataScope:roles:";
     /** 角色名称 key **/
     String SYSTEM_ROLES_NAME_KEY = "role:name:";
+    /** 地区信息 key **/
+    String SYSTEM_CITY_CODE_KEY = "city:code:";
 
     /** 租户信息 key（tenantCode） **/
     String SYSTEM_TENANT_CODE_KEY = "tenant:code:";

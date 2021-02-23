@@ -1,5 +1,6 @@
 package com.wlcb.jpower.cache;
 
+import com.wlcb.jpower.dbs.entity.city.TbCoreCity;
 import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
 import com.wlcb.jpower.dbs.entity.function.TbCoreDataScope;
 import com.wlcb.jpower.dbs.entity.function.TbCoreFunction;
@@ -160,6 +161,36 @@ public class SystemCache {
     public static List<String> getRoleNameByIds(List<String> roleIds) {
         return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_ROLES_NAME_KEY,roleIds,() -> {
             ResponseData<List<String>> responseData = systemClient.getRoleNameByIds(roleIds);
+            return responseData.getData();
+        });
+    }
+
+    /**
+     * 获取地区名称
+     *
+     * @Author ding
+     * @Date 23:38 2021-02-21
+     * @param code
+     * @return java.lang.String
+     **/
+    public static String getCityName(String code) {
+        TbCoreCity city = getCity(code);
+        if (Fc.isNull(city)){
+            return StringPool.EMPTY;
+        }
+        return city.getName();
+    }
+
+    /**
+     * 获取地区
+     * @Author ding
+     * @Date 23:39 2021-02-21
+     * @param code
+     * @return com.wlcb.jpower.dbs.entity.city.TbCoreCity
+     **/
+    public static TbCoreCity getCity(String code) {
+        return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_CITY_CODE_KEY,code,() -> {
+            ResponseData<TbCoreCity> responseData = systemClient.getCityByCode(code);
             return responseData.getData();
         });
     }

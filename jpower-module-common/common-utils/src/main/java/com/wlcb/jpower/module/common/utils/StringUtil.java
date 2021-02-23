@@ -14,6 +14,7 @@ import java.text.MessageFormat;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -1522,6 +1523,18 @@ public class StringUtil extends StringUtils {
     public static boolean isSpace(char aChar) {
         return aChar == SPACE_32 || aChar == SPACE_12288 || aChar == SPACE_160 || aChar == SPACE_8194
                 || aChar == SPACE_8195 || aChar == SPACE_8197 || aChar == SPACE_8201;
+    }
+
+    /**
+     * 字符串连接
+     * @Author ding
+     * @Date 00:21 2021-02-22
+     * @param strs
+     * @return java.lang.String
+     **/
+    public static String concat(String... strs) {
+        List<String> list = Arrays.stream(strs).filter(StringUtil::isNotBlank).collect(Collectors.toList());
+        return join(list,"");
     }
 
     /**

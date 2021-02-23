@@ -1,7 +1,7 @@
 package com.wlcb.jpower.vo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.wlcb.jpower.dbs.entity.function.TbCoreFunction;
+import com.wlcb.jpower.dbs.entity.city.TbCoreCity;
 import com.wlcb.jpower.module.common.node.Node;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -10,29 +10,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @ClassName Function
- * @Description TODO 菜单返回试图
+ * @ClassName CityVo
+ * @Description TODO
  * @Author 郭丁志
- * @Date 2020-07-30 10:49
+ * @Date 2020/8/22 0022 0:36
  * @Version 1.0
  */
 @Data
-public class FunctionVo extends TbCoreFunction implements Node {
+public class CityVo extends TbCoreCity implements Node {
 
-    @ApiModelProperty("是否菜单")
-    private String isMenuStr;
+    private static final long serialVersionUID = 3438947425188438375L;
 
-    @ApiModelProperty("页面打开方式")
-    private String targetStr;
+    @ApiModelProperty("城市类型")
+    private String cityTypeStr;
 
-    /**
-     * 子孙节点
-     */
+    @ApiModelProperty("上级地区")
+    private String pname;
+
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<Node> children;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Boolean hasChildren;
+
+    @Override
+    public String getParentId() {
+        return getPcode();
+    }
 
     @Override
     public List<Node> getChildren() {

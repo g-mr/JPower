@@ -1,5 +1,6 @@
 package com.wlcb.jpower.feign;
 
+import com.wlcb.jpower.dbs.entity.city.TbCoreCity;
 import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
 import com.wlcb.jpower.dbs.entity.function.TbCoreDataScope;
 import com.wlcb.jpower.dbs.entity.function.TbCoreFunction;
@@ -63,6 +64,11 @@ public class SystemClientFallback implements SystemClient {
 
     @Override
     public ResponseData<List<String>> getRoleNameByIds(List<String> roleIds) {
+        return ReturnJsonUtil.fail("查询失败");
+    }
+
+    @Override
+    public ResponseData<TbCoreCity> getCityByCode(String code) {
         return ReturnJsonUtil.fail("查询失败");
     }
 }

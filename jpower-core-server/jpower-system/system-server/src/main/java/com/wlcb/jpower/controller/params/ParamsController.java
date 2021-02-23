@@ -17,13 +17,11 @@ import com.wlcb.jpower.service.params.CoreParamService;
 import com.wlcb.jpower.wrapper.BaseDictWrapper;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
+import java.util.Map;
 
 @Api(tags = "系统参数管理")
 @RestController
@@ -41,18 +39,18 @@ public class ParamsController extends BaseController {
             @ApiImplicitParam(name = "name",value = "名称",paramType = "query"),
             @ApiImplicitParam(name = "value",value = "值",paramType = "query")
     })
-    @RequestMapping(value = "/list",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
-    public ResponseData<PageInfo<TbCoreParam>> list(@ApiIgnore TbCoreParam coreParam){
+    @GetMapping(value = "/list" , produces="application/json")
+    public ResponseData<PageInfo<TbCoreParam>> list(@ApiIgnore @RequestParam Map<String,Object> coreParam){
         PaginationContext.startPage();
-        List<TbCoreParam> list = paramService.list(coreParam);
+        List<TbCoreParam> list = paramService.list(Condition.getQueryWrapper(coreParam,TbCoreParam.class).lambda().orderByDesc(TbCoreParam::getCreateTime));
         return ReturnJsonUtil.ok("获取成功", BaseDictWrapper.<TbCoreParam,TbCoreParam>builder().pageVo(list));
     }
 
     @ApiOperation("删除系统参数")
     @RequestMapping(value = "/delete",method = RequestMethod.DELETE,produces="application/json")
-    public ResponseData delete(@ApiParam(value = "主键",required = true) @RequestParam String id){
-        JpowerAssert.notEmpty(id, JpowerError.Arg,"id不可为空");
-        return ReturnJsonUtil.status(paramService.delete(id));
+    public ResponseData delete(@ApiParam(value = "主键",required = true) @RequestParam String ids){
+        JpowerAssert.notEmpty(ids, JpowerError.Arg,"ids不可为空");
+        return ReturnJsonUtil.status(paramService.deletes(ids));
     }
 
     @ApiOperation("修改系统参数")

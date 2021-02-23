@@ -23,6 +23,18 @@ import java.util.stream.Collectors;
 @Slf4j
 public abstract class BaseDictWrapper<T, V> extends BaseWrapper<T, V> {
 
+    private static final String DICT_ATTRIBUTES_SUFFIX = "Str";
+
+
+    public static <T, V> BaseDictWrapper<T, V> builder(){
+        return new BaseDictWrapper<T, V>() {
+            @Override
+            protected Object conver(Object entity) {
+                return entity;
+            }
+        };
+    }
+
     @Override
     public V entityVO(T entity){
         return dict(conver(entity));
@@ -33,13 +45,13 @@ public abstract class BaseDictWrapper<T, V> extends BaseWrapper<T, V> {
      * @Description //TODO 查询字典值
      * @date 0:27 2020/10/22 0022
      */
-    private static <V> V dict(V bean){
+    public static <V> V dict(V bean){
         List<Field> list = BeanUtil.getFiledByAnnotation(bean.getClass(), Dict.class);
         for (Field field : list) {
             Dict dict = field.getAnnotation(Dict.class);
             String dictTypeCode = dict.name();
             String attributes = dict.attributes();
-            attributes = Fc.isBlank(attributes) ? field.getName().concat("Str") : attributes;
+            attributes = Fc.isBlank(attributes) ? field.getName().concat(DICT_ATTRIBUTES_SUFFIX) : attributes;
             String code = Fc.toStr(ReflectUtil.invokeGetter(bean,field.getName()));
             String value = DictCache.getDictByTypeAndCode(dictTypeCode, code);
             if (!BeanUtil.isContainsField(BeanUtil.getFieldList(bean.getClass()), attributes)) {
@@ -50,12 +62,16 @@ public abstract class BaseDictWrapper<T, V> extends BaseWrapper<T, V> {
         return bean;
     }
 
-    public static <T,V> V dict(T entity,Class<V> clz){
+    public V dict(T entity,Class<V> clz){
         return dict(BeanUtil.copy(entity,clz));
     }
 
-    public static <T,V> List<V> dict(List<T> list, Class<V> v){
+    public List<V> dict(List<T> list, Class<V> v){
         return list.stream().map(t -> dict(t,v)).collect(Collectors.toList());
+    }
+
+    public static <V> List<V> dict(List<V> list){
+        return list.stream().map(BaseDictWrapper::dict).collect(Collectors.toList());
     }
 
 }

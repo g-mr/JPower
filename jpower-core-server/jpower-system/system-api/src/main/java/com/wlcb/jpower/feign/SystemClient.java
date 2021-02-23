@@ -1,5 +1,6 @@
 package com.wlcb.jpower.feign;
 
+import com.wlcb.jpower.dbs.entity.city.TbCoreCity;
 import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
 import com.wlcb.jpower.dbs.entity.function.TbCoreDataScope;
 import com.wlcb.jpower.dbs.entity.function.TbCoreFunction;
@@ -52,4 +53,7 @@ public interface SystemClient {
 
     @GetMapping("/role/getRoleNameByIds")
     ResponseData<List<String>> getRoleNameByIds(@RequestParam List<String> roleIds);
+
+    @GetMapping("/city/getCityByCode")
+    ResponseData<TbCoreCity> getCityByCode(@RequestParam String code);
 }

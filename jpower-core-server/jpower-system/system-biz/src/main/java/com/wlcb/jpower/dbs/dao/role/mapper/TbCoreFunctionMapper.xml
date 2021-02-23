@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wlcb.jpower.dbs.dao.role.mapper.TbCoreFunctionMapper">
+
+
+    <select id="listFunction"
+            resultType="com.wlcb.jpower.vo.FunctionVo">
+        select *,
+        (
+            SELECT CASE WHEN count( 1 ) > 0 THEN 1 ELSE 0 END
+            FROM tb_core_function
+            WHERE parent_id = f.id
+            <if test="isMenu!=null">
+                AND is_menu = ${isMenu}
+            </if>
+        ) AS "has_children"
+        from tb_core_function f
+        ${ew.customSqlSegment}
+    </select>
+
+</mapper>

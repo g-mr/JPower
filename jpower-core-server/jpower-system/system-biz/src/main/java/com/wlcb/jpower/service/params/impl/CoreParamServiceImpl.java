@@ -1,14 +1,16 @@
 package com.wlcb.jpower.service.params.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wlcb.jpower.dbs.dao.params.TbCoreParamsDao;
 import com.wlcb.jpower.dbs.dao.params.mapper.TbCoreParamsMapper;
 import com.wlcb.jpower.dbs.entity.params.TbCoreParam;
+import com.wlcb.jpower.module.base.enums.JpowerError;
+import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.common.cache.CacheNames;
-import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.CacheUtil;
+import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
+import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.params.CoreParamService;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +26,6 @@ import java.util.List;
 public class CoreParamServiceImpl extends BaseServiceImpl<TbCoreParamsMapper, TbCoreParam> implements CoreParamService {
 
     private TbCoreParamsDao paramsDao;
-    private RedisUtil redisUtil;
 
     @Override
     public String selectByCode(String code) {
@@ -32,33 +33,12 @@ public class CoreParamServiceImpl extends BaseServiceImpl<TbCoreParamsMapper, Tb
     }
 
     @Override
-    public List<TbCoreParam> list(TbCoreParam coreParam) {
-
-        LambdaQueryWrapper<TbCoreParam> wrapper = new QueryWrapper<TbCoreParam>().lambda();
-
-        if (StringUtils.isNotBlank(coreParam.getCode())){
-            wrapper.eq(TbCoreParam::getCode,coreParam.getCode());
-        }
-
-        if (StringUtils.isNotBlank(coreParam.getName())){
-            wrapper.eq(TbCoreParam::getName,coreParam.getName());
-        }
-
-        if (StringUtils.isNotBlank(coreParam.getName())){
-            wrapper.like(TbCoreParam::getValue,coreParam.getValue());
-        }
-
-        wrapper.orderByDesc(TbCoreParam::getCreateTime);
-
-        return paramsDao.list(wrapper);
-    }
-
-    @Override
-    public Boolean delete(String id) {
-        TbCoreParam coreParam = paramsDao.getById(id);
-        Boolean c = paramsDao.removeById(id);
+    public Boolean deletes(String ids) {
+        List<String> id = Fc.toStrList(ids);
+        List<TbCoreParam> coreParam = paramsDao.listByIds(id);
+        Boolean c = paramsDao.removeByIds(id);
         if (c){
-            CacheUtil.evict(CacheNames.PARAMS_REDIS_CACHE,CacheNames.PARAMS_REDIS_CODE_KEY,coreParam.getCode());
+            coreParam.forEach((param) -> CacheUtil.evict(CacheNames.PARAMS_REDIS_CACHE,CacheNames.PARAMS_REDIS_CODE_KEY,param.getCode()));
         }
         return c;
     }
@@ -70,7 +50,8 @@ public class CoreParamServiceImpl extends BaseServiceImpl<TbCoreParamsMapper, Tb
 
     @Override
     public void effectAll() {
-        List<TbCoreParam> params = paramsDao.list();
+        List<TbCoreParam> params = paramsDao.list(Condition.<TbCoreParam>getQueryWrapper().lambda().eq(TbCoreParam::getIsEffect, ConstantsEnum.YN01.Y.getValue()));
+        JpowerAssert.notGeZero(params.size(), JpowerError.BUSINESS,"不支持立即生效，需重启项目");
         for (TbCoreParam param : params) {
             if (StringUtils.isNotBlank(param.getValue())){
                 CacheUtil.put(CacheNames.PARAMS_REDIS_CACHE,CacheNames.PARAMS_REDIS_CODE_KEY,param.getCode(),param.getValue());

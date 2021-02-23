@@ -66,4 +66,6 @@ public interface CoreCityService extends BaseService<TbCoreCity> {
      * @return java.util.List<com.wlcb.jpower.module.common.node.Node>
      **/
     List<Node> lazyTree(String pcode);
+
+    Boolean update(TbCoreCity coreCity);
 }

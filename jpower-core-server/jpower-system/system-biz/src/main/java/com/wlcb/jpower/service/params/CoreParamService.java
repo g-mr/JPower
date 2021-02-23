@@ -3,8 +3,6 @@ package com.wlcb.jpower.service.params;
 import com.wlcb.jpower.dbs.entity.params.TbCoreParam;
 import com.wlcb.jpower.module.common.service.BaseService;
 
-import java.util.List;
-
 /**
  * @author mr.gmac
  */
@@ -21,21 +19,12 @@ public interface CoreParamService extends BaseService<TbCoreParam> {
 
     /**
      * @Author 郭丁志
-     * @Description //TODO 系统参数列表
-     * @Date 16:59 2020-05-07
-     * @Param [coreParam]
-     * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.params.TbCoreParam>
-     **/
-    List<TbCoreParam> list(TbCoreParam coreParam);
-
-    /**
-     * @Author 郭丁志
      * @Description //TODO 删除系统参数
      * @Date 17:16 2020-05-07
      * @Param [id]
      * @return java.lang.Integer
      **/
-    Boolean delete(String id);
+    Boolean deletes(String id);
 
     /**
      * @Author 郭丁志

@@ -20,7 +20,7 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @Param [coreFunction]
      * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction>
      **/
-    List<TbCoreFunction> listFunction(Map<String,Object> coreFunction);
+    List<FunctionVo> listFunction(Map<String,Object> coreFunction);
 
     /**
      * @Author 郭丁志

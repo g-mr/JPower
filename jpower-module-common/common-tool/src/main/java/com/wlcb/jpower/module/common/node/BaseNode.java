@@ -49,11 +49,6 @@ public class BaseNode implements Node {
      */
     @Override
     public Boolean getHasChildren() {
-//        if (children.size() > 0) {
-//            return true;
-//        } else {
-//            return this.hasChildren;
-//        }
         return this.hasChildren;
     }
 

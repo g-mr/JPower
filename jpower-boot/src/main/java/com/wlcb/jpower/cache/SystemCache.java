@@ -1,5 +1,6 @@
 package com.wlcb.jpower.cache;
 
+import com.wlcb.jpower.dbs.entity.city.TbCoreCity;
 import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
 import com.wlcb.jpower.dbs.entity.function.TbCoreDataScope;
 import com.wlcb.jpower.dbs.entity.function.TbCoreFunction;
@@ -11,6 +12,8 @@ import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SpringUtil;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.mp.support.Condition;
+import com.wlcb.jpower.service.city.CoreCityService;
+import com.wlcb.jpower.service.city.impl.CoreCityServiceImpl;
 import com.wlcb.jpower.service.client.CoreClientService;
 import com.wlcb.jpower.service.client.impl.CoreClientServiceImpl;
 import com.wlcb.jpower.service.org.CoreOrgService;
@@ -38,6 +41,7 @@ public class SystemCache {
     private static CoreFunctionService coreFunctionService;
     private static TenantService tenantService;
     private static CoreDataScopeService coreDataScopeService;
+    private static CoreCityService coreCityService;
 
     static {
         coreOrgService = SpringUtil.getBean(CoreOrgServiceImpl.class);
@@ -45,6 +49,7 @@ public class SystemCache {
         coreFunctionService = SpringUtil.getBean(CoreFunctionServiceImpl.class);
         tenantService = SpringUtil.getBean(TenantServiceImpl.class);
         coreDataScopeService = SpringUtil.getBean(CoreDataScopeServiceImpl.class);
+        coreCityService = SpringUtil.getBean(CoreCityServiceImpl.class);
     }
 
     /**
@@ -162,6 +167,36 @@ public class SystemCache {
     public static List<TbCoreDataScope> getDataScopeByRole(List<String> roleIds) {
         return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_DATASCOPE_ROLES_KEY,roleIds,() -> {
             List<TbCoreDataScope> responseData = coreDataScopeService.getDataScopeByRole(roleIds);
+            return responseData;
+        });
+    }
+
+    /**
+     * 获取地区名称
+     *
+     * @Author ding
+     * @Date 23:38 2021-02-21
+     * @param code
+     * @return java.lang.String
+     **/
+    public static String getCityName(String code) {
+        TbCoreCity city = getCity(code);
+        if (Fc.isNull(city)){
+            return StringPool.EMPTY;
+        }
+        return city.getName();
+    }
+
+    /**
+     * 获取地区
+     * @Author ding
+     * @Date 23:39 2021-02-21
+     * @param code
+     * @return com.wlcb.jpower.dbs.entity.city.TbCoreCity
+     **/
+    public static TbCoreCity getCity(String code) {
+        return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_CITY_CODE_KEY,code,() -> {
+            TbCoreCity responseData = coreCityService.queryByCode(code);
             return responseData;
         });
     }

@@ -1,5 +1,6 @@
 package com.wlcb.jpower.controller;
 
+import com.wlcb.jpower.dbs.entity.city.TbCoreCity;
 import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
 import com.wlcb.jpower.dbs.entity.function.TbCoreDataScope;
 import com.wlcb.jpower.dbs.entity.function.TbCoreFunction;
@@ -11,6 +12,7 @@ import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.mp.support.Condition;
+import com.wlcb.jpower.service.city.CoreCityService;
 import com.wlcb.jpower.service.client.CoreClientService;
 import com.wlcb.jpower.service.org.CoreOrgService;
 import com.wlcb.jpower.service.role.CoreDataScopeService;
@@ -41,6 +43,7 @@ public class SystemClientController implements SystemClient {
     private TenantService tenantService;
     private CoreDataScopeService coreDataScopeService;
     private CoreRoleService coreRoleService;
+    private CoreCityService coreCityService;
 
     @Override
     @GetMapping("/org/queryChildById")
@@ -96,4 +99,9 @@ public class SystemClientController implements SystemClient {
         return ReturnJsonUtil.ok("查询成功",coreClientService.loadClientByClientCode(clientCode));
     }
 
+    @Override
+    @GetMapping("/city/getCityByCode")
+    public ResponseData<TbCoreCity> getCityByCode(@RequestParam String code) {
+        return ReturnJsonUtil.ok("查询成功",coreCityService.queryByCode(code));
+    }
 }

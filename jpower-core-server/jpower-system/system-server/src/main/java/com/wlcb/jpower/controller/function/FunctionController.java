@@ -38,23 +38,38 @@ public class FunctionController extends BaseController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "parentId_eq",value = "父级节点",defaultValue = JpowerConstants.TOP_CODE,required = true,paramType = "query"),
             @ApiImplicitParam(name = "alias",value = "别名",paramType = "query"),
-            @ApiImplicitParam(name = "code_eq",value = "编码",paramType = "query"),
+            @ApiImplicitParam(name = "code",value = "编码",paramType = "query"),
             @ApiImplicitParam(name = "isMenu_eq",value = "是否菜单 字典YN01",paramType = "query"),
             @ApiImplicitParam(name = "functionName",value = "功能名称",paramType = "query"),
             @ApiImplicitParam(name = "url",value = "功能URL",paramType = "query")
     })
     @RequestMapping(value = "/listByParent",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
     public ResponseData<List<FunctionVo>> list(@ApiIgnore @RequestParam Map<String,Object> coreFunction){
+        coreFunction.remove("parentId");
 
-        if(StringUtils.isBlank(Fc.toStr(coreFunction.get("parentId_eq")))){
+        Integer size = coreFunction.size();
+
+        if (coreFunction.containsKey("parentId_eq")){
+            size--;
+        }
+        if (coreFunction.containsKey("isMenu_eq")){
+            size--;
+        }
+
+
+        if(StringUtils.isBlank(Fc.toStr(coreFunction.get("parentId_eq"))) && size <= 0 ){
             coreFunction.put("parentId_eq",JpowerConstants.TOP_CODE);
         }
 
-        List<TbCoreFunction> list = coreFunctionService.listFunction(coreFunction);
-        return ReturnJsonUtil.ok("获取成功", BaseDictWrapper.<TbCoreFunction,FunctionVo>builder().dict(list,FunctionVo.class));
+        List<FunctionVo> list = coreFunctionService.listFunction(coreFunction);
+        if (coreFunction.containsKey("parentId_eq")){
+            return ReturnJsonUtil.ok("获取成功", BaseDictWrapper.dict(list));
+        }else {
+            return ReturnJsonUtil.ok("获取成功", ForestNodeMerger.merge(BaseDictWrapper.dict(list)));
+        }
     }
 
-    @ApiOperation("新增菜单")
+    @ApiOperation("新增")
     @PostMapping(value = "/add", produces="application/json")
     public ResponseData add(TbCoreFunction coreFunction){
 
@@ -80,7 +95,7 @@ public class FunctionController extends BaseController {
         }
     }
 
-    @ApiOperation("删除菜单")
+    @ApiOperation("删除")
     @RequestMapping(value = "/delete",method = {RequestMethod.DELETE},produces="application/json")
     public ResponseData delete(@ApiParam(value = "主键 多个逗号分割",required = true) @RequestParam String ids){
 
@@ -101,7 +116,7 @@ public class FunctionController extends BaseController {
         }
     }
 
-    @ApiOperation("修改菜单")
+    @ApiOperation("修改")
     @RequestMapping(value = "/update",method = {RequestMethod.PUT},produces="application/json")
     public ResponseData update(TbCoreFunction coreFunction){
 

@@ -19,7 +19,7 @@ public class CacheUtil {
 
     private static CacheManager cacheManager;
 
-    private static CacheManager getCacheManager() {
+    public static CacheManager getCacheManager() {
         if (cacheManager == null) {
             cacheManager = SpringUtil.getBean(CacheManager.class);
         }

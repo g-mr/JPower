@@ -32,6 +32,9 @@ public class TbCoreFunction extends BaseEntity implements Serializable {
     @ApiModelProperty("是否菜单 字典YN01")
     @Dict(name = "YN01",attributes = "isMenuStr")
     private Integer isMenu;
+    @ApiModelProperty("打开方式 字典DKFS")
+    @Dict(name = "DKFS",attributes = "targetStr")
+    private String target;
     @ApiModelProperty("图标")
     private String icon;
     @ApiModelProperty("排序")

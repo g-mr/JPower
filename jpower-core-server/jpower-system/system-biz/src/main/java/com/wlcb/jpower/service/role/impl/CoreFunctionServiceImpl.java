@@ -39,9 +39,15 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     private TbCoreRoleFunctionDao coreRoleFunctionDao;
 
     @Override
-    public List<TbCoreFunction> listFunction(Map<String,Object> coreFunction) {
-        return coreFunctionDao.list(Condition.getQueryWrapper(coreFunction,TbCoreFunction.class).lambda()
-                .orderByAsc(TbCoreFunction::getSort));
+    public List<FunctionVo> listFunction(Map<String,Object> coreFunction) {
+
+        String isMenu = null;
+        if (coreFunction.containsKey("isMenu_eq")){
+            isMenu = Fc.toStr(coreFunction.get("isMenu_eq"));
+        }
+
+        return coreFunctionDao.getBaseMapper().listFunction(Condition.getQueryWrapper(coreFunction,TbCoreFunction.class).lambda()
+                .orderByAsc(TbCoreFunction::getSort), isMenu);
     }
 
     @Override
