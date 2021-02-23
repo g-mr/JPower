@@ -103,6 +103,17 @@ public class DictController {
         return ReturnJsonUtil.ok("查询成功", BaseDictWrapper.<DictVo,DictVo>builder().pageVo(list));
     }
 
+    @ApiOperation("通过字典类型查询字典列表")
+    @GetMapping("/getDictListByType")
+    public ResponseData<List<DictVo>> getDictListByType(TbCoreDict dict){
+        JpowerAssert.notEmpty(dict.getDictTypeCode(), JpowerError.Arg,"字典类型不可为空");
+        if (Fc.isBlank(dict.getParentId())){
+            dict.setParentId(TOP_CODE);
+        }
+
+        return ReturnJsonUtil.ok("查询成功", coreDictService.listByType(dict));
+    }
+
     @ApiOperation(value = "查询下级字典",notes = "不可传-1")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "parentId",value = "父级字典",paramType = "query",required = true),
@@ -163,17 +174,6 @@ public class DictController {
     public ResponseData<TbCoreDict> getDict(@ApiParam(value = "字典ID",required = true) @RequestParam(required = false) String id){
         JpowerAssert.notEmpty(id, JpowerError.Arg,"字典ID不可为空");
         return ReturnJsonUtil.ok("查询成功", BaseDictWrapper.dict(coreDictService.getById(id)));
-    }
-
-    @ApiOperation("通过字典类型查询字典列表")
-    @GetMapping("/getDictListByType")
-    public ResponseData<List<DictVo>> getDictListByType(TbCoreDict dict){
-        JpowerAssert.notEmpty(dict.getDictTypeCode(), JpowerError.Arg,"字典类型不可为空");
-        if (Fc.isBlank(dict.getParentId())){
-            dict.setParentId(TOP_CODE);
-        }
-
-        return ReturnJsonUtil.ok("查询成功", coreDictService.listByType(dict));
     }
 
     @ApiOperation("查询顶级字典类型")
