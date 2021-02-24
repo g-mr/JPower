@@ -10,7 +10,6 @@ import com.wlcb.jpower.dbs.entity.dict.TbCoreDictType;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.common.node.Node;
-import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SecureUtil;
@@ -19,6 +18,7 @@ import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.dict.CoreDictService;
 import com.wlcb.jpower.service.dict.CoreDictTypeService;
+import com.wlcb.jpower.vo.DictTypeVo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +35,6 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
 
     private TbCoreDictTypeDao coreDictTypeDao;
     private CoreDictService coreDictService;
-    private RedisUtil redisUtil;
 
     @Override
     public List<Node> tree() {
@@ -46,6 +45,11 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
                 TbCoreDictType::getIsTree)
                 .lambda();
         return coreDictTypeDao.tree(queryWrapper.orderByAsc(TbCoreDictType::getSortNum));
+    }
+
+    @Override
+    public List<DictTypeVo> listTree(TbCoreDictType dictType) {
+        return coreDictTypeDao.listTree(Condition.getQueryWrapper(dictType).lambda().orderByAsc(TbCoreDictType::getSortNum), DictTypeVo.class);
     }
 
     @Override

@@ -8,14 +8,13 @@ import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.page.PaginationContext;
-import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
-import com.wlcb.jpower.module.common.utils.SecureUtil;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.dict.CoreDictService;
 import com.wlcb.jpower.service.dict.CoreDictTypeService;
+import com.wlcb.jpower.vo.DictTypeVo;
 import com.wlcb.jpower.vo.DictVo;
 import com.wlcb.jpower.wrapper.BaseDictWrapper;
 import io.swagger.annotations.*;
@@ -23,12 +22,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.wlcb.jpower.module.common.cache.CacheNames.DICT_REDIS_CACHE;
 import static com.wlcb.jpower.module.common.utils.constants.JpowerConstants.TOP_CODE;
-import static com.wlcb.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
 
 /**
  * @ClassName DictController
@@ -50,6 +47,12 @@ public class DictController {
     @RequestMapping(value = "/dictTypeTree",method = RequestMethod.GET,produces="application/json")
     public ResponseData<List<Node>> dictTypeTree(){
         return ReturnJsonUtil.ok("查询成功",coreDictTypeService.tree());
+    }
+
+    @ApiOperation("查询所有字典类型树形列表结构")
+    @RequestMapping(value = "/dictTypeListTree",method = RequestMethod.GET,produces="application/json")
+    public ResponseData<List<DictTypeVo>> dictTypeListTree(TbCoreDictType dictType){
+        return ReturnJsonUtil.ok("查询成功",coreDictTypeService.listTree(dictType));
     }
 
     @ApiOperation(value = "新增字典类型")
@@ -176,18 +179,4 @@ public class DictController {
         return ReturnJsonUtil.ok("查询成功", BaseDictWrapper.dict(coreDictService.getById(id)));
     }
 
-    @ApiOperation("查询顶级字典类型")
-    @GetMapping("/getTopDictType")
-    public ResponseData<List<ChainMap>> getTopDictType(){
-        JpowerAssert.isTrue(SecureUtil.isRoot(), JpowerError.Auth,"只可超级管理员查询");
-
-        List<ChainMap> list = new ArrayList<>();
-        coreDictTypeService.list(Condition.<TbCoreDictType>getQueryWrapper().lambda().eq(TbCoreDictType::getParentId,TOP_CODE).eq(TbCoreDictType::getTenantCode, DEFAULT_TENANT_CODE)).forEach(type -> {
-            list.add(ChainMap.init().
-                    set("id",type.getId()).
-                    set("code",type.getDictTypeCode()).
-                    set("name",type.getDictTypeName()));
-        });
-        return ReturnJsonUtil.ok("查询成功", list);
-    }
 }
