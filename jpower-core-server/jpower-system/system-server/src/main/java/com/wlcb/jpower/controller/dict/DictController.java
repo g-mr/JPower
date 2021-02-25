@@ -89,7 +89,6 @@ public class DictController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum",value = "第几页",defaultValue = "1",paramType = "query",dataType = "int",required = true),
             @ApiImplicitParam(name = "pageSize",value = "每页长度",defaultValue = "10",paramType = "query",dataType = "int",required = true),
-            @ApiImplicitParam(name = "tenantCode",value = "租户编码",paramType = "query"),
             @ApiImplicitParam(name = "dictTypeCode",value = "字典类型编码",paramType = "query",required = true),
             @ApiImplicitParam(name = "code",value = "字典编码",paramType = "query"),
             @ApiImplicitParam(name = "name",value = "字典名称",paramType = "query")
@@ -117,7 +116,7 @@ public class DictController {
         return ReturnJsonUtil.ok("查询成功", coreDictService.listByType(dict));
     }
 
-    @ApiOperation(value = "查询下级字典",notes = "不可传-1")
+    @ApiOperation(value = "查询下级字典",notes = "parentId不可传-1")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "parentId",value = "父级字典",paramType = "query",required = true),
             @ApiImplicitParam(name = "code",value = "字典编码",paramType = "query"),

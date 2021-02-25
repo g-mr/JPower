@@ -7,6 +7,7 @@
     <select id="listByType" resultType="com.wlcb.jpower.vo.DictVo">
         SELECT
         *,
+        ( SELECT name FROM tb_core_dict WHERE id = dict.parent_id ) AS "parent_name",
         ( SELECT CASE WHEN count( 1 ) > 0 THEN 1 ELSE 0 END FROM tb_core_dict WHERE parent_id = dict.id ) AS "has_children"
         FROM
         tb_core_dict dict
@@ -16,7 +17,7 @@
                 and dict.dict_type_code = #{dictTypeCode}
             </if>
             <if test="code!=null and code!=''">
-                and dict.code = #{code}
+                and dict.code like concat(concat('%', #{code}),'%')
             </if>
             <if test="name!=null and name!=''">
                 and dict.name like concat(concat('%', #{name}),'%')

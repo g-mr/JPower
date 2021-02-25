@@ -22,6 +22,9 @@ public class DictVo extends TbCoreDict implements Node {
     @ApiModelProperty("语言类型")
     private String localeStr;
 
+    @ApiModelProperty("父级字典名称")
+    private String parentName;
+
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<Node> children;
 
