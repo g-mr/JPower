@@ -44,12 +44,19 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
                 TbCoreDictType::getDictTypeCode,
                 TbCoreDictType::getIsTree)
                 .lambda();
+        if (SecureUtil.isRoot()){
+            queryWrapper.eq(TbCoreDictType::getTenantCode,DEFAULT_TENANT_CODE);
+        }
         return coreDictTypeDao.tree(queryWrapper.orderByAsc(TbCoreDictType::getSortNum));
     }
 
     @Override
     public List<DictTypeVo> listTree(TbCoreDictType dictType) {
-        return coreDictTypeDao.listTree(Condition.getQueryWrapper(dictType).lambda().orderByAsc(TbCoreDictType::getSortNum), DictTypeVo.class);
+        LambdaQueryWrapper<TbCoreDictType> queryWrapper =
+                SecureUtil.isRoot()
+                ? Condition.getQueryWrapper(dictType).lambda().eq(TbCoreDictType::getTenantCode,DEFAULT_TENANT_CODE).orderByAsc(TbCoreDictType::getSortNum)
+                : Condition.getQueryWrapper(dictType).lambda().orderByAsc(TbCoreDictType::getSortNum);
+        return coreDictTypeDao.listTree(queryWrapper, DictTypeVo.class);
     }
 
     @Override

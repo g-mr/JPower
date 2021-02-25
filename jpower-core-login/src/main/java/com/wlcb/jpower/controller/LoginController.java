@@ -76,11 +76,11 @@ public class LoginController extends BaseController {
             JpowerAssert.notNull(tenantCode,JpowerError.Arg,"租户编码不可为空");
             TbCoreTenant tenant = SystemCache.getTenantByCode(tenantCode);
             if (Fc.isNull(tenant)){
-                return ReturnJsonUtil.fail("租户不存在");
+                return ReturnJsonUtil.busFail("租户不存在");
             }
             Date expireTime = getExpireTime(tenant.getLicenseKey());
             if (Fc.notNull(tenant.getExpireTime()) && Fc.notNull(expireTime) && new Date().before(expireTime)){
-                return ReturnJsonUtil.fail("租户已过期");
+                return ReturnJsonUtil.busFail("租户已过期");
             }
         }
 
