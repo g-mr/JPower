@@ -49,8 +49,8 @@ public class UserInfo {
     @ApiModelProperty("昵称")
     private String nickName;
 
-//    @ApiModelProperty("第三方平台标识")
-//    private String otherCode;
+    @ApiModelProperty("第三方平台标识")
+    private String otherCode;
 
     @ApiModelProperty("电话")
     private String telephone;
