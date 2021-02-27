@@ -1,11 +1,9 @@
 package com.wlcb.jpower.cache;
 
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
+import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.cache.CacheNames;
-import com.wlcb.jpower.module.common.utils.CacheUtil;
-import com.wlcb.jpower.module.common.utils.DigestUtil;
-import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.SpringUtil;
+import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.service.CoreUserRoleService;
 import com.wlcb.jpower.service.CoreUserService;
 import com.wlcb.jpower.service.impl.CoreUserRoleServiceImpl;
@@ -27,6 +25,10 @@ public class UserCache {
     static {
         userService = SpringUtil.getBean(CoreUserServiceImpl.class);
         userRoleService = SpringUtil.getBean(CoreUserRoleServiceImpl.class);
+    }
+
+    public static ResponseData saveAdmin(TbCoreUser user, String roleId) {
+        return userService.saveAdmin(user,roleId)?ReturnJsonUtil.ok("用户创建成功"):ReturnJsonUtil.fail("用户创建失败");
     }
 
     public static TbCoreUser getUserByPhone(String telephone, String tenantCode) {

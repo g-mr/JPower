@@ -126,4 +126,22 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
 
     List<Object> getUrlsByRoleIds(List<String> roleIds);
 
+    /**
+     * 查询树形菜单
+     * @Author ding
+     * @Date 00:46 2021-02-27
+     * @param roleIds 角色ID
+     * @return java.util.List<com.wlcb.jpower.module.common.node.Node>
+     **/
+    List<Node> menuTreeByRoleIds(List<String> roleIds);
+
+    /**
+     * 查询资源
+     * @Author ding
+     * @Date 00:47 2021-02-27
+     * @param roleIds 角色ID
+     * @param id 菜单ID
+     * @return java.util.List<com.wlcb.jpower.dbs.entity.function.TbCoreFunction>
+     **/
+    List<TbCoreFunction> listButByMenu(List<String> roleIds, String id);
 }

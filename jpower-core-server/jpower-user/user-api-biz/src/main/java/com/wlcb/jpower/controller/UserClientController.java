@@ -78,7 +78,7 @@ public class UserClientController implements UserClient {
     @Override
     @PostMapping("/saveAdmin")
     public ResponseData saveAdmin(@RequestBody TbCoreUser user,@RequestParam String roleId) {
-        return ReturnJsonUtil.status(coreUserService.saveAdmin(user,roleId));
+        return coreUserService.saveAdmin(user,roleId)?ReturnJsonUtil.ok("用户创建成功"):ReturnJsonUtil.fail("用户创建失败");
     }
 
 

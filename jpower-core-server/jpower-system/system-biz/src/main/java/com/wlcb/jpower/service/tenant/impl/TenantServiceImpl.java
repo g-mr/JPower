@@ -1,6 +1,7 @@
 package com.wlcb.jpower.service.tenant.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.wlcb.jpower.cache.UserCache;
 import com.wlcb.jpower.cache.param.ParamConfig;
 import com.wlcb.jpower.dbs.dao.dict.TbCoreDictDao;
 import com.wlcb.jpower.dbs.dao.dict.TbCoreDictTypeDao;
@@ -18,7 +19,6 @@ import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
 import com.wlcb.jpower.dbs.entity.role.TbCoreRole;
 import com.wlcb.jpower.dbs.entity.role.TbCoreRoleFunction;
 import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
-import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
@@ -60,7 +60,6 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
     private TbCoreRoleFunctionDao roleFunctionDao;
     private TbCoreDictTypeDao dictTypeDao;
     private TbCoreDictDao dictDao;
-    private UserClient userClient;
 
     @Override
     public boolean updateById(TbCoreTenant tenant){
@@ -111,9 +110,9 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
                 role.setTenantCode(tenant.getTenantCode());
             }
             roleDao.save(role);
-            //创建租户权限
+            //创建租户初始权限
             LambdaQueryWrapper<TbCoreFunction> queryWrapper = Condition.<TbCoreFunction>getQueryWrapper().lambda().select(TbCoreFunction::getId);
-            if (Fc.notNull(functionCodes) && functionCodes.size()>0){
+            if (Fc.isNotEmpty(functionCodes)){
                 queryWrapper.in(TbCoreFunction::getCode,functionCodes);
             }
             queryWrapper.or(c -> c.eq(TbCoreFunction::getParentId,TOP_CODE).eq(TbCoreFunction::getIsMenu,ConstantsEnum.YN01.N.getValue()));
@@ -126,28 +125,31 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
                 roleFunctionList.add(roleFunction);
             });
             roleFunctionDao.saveBatch(roleFunctionList);
-            //创建租户默认字典
-            TbCoreDictType dictType = new TbCoreDictType();
-            dictType.setDictTypeCode(tenant.getTenantCode());
-            dictType.setDictTypeName(tenant.getTenantName());
-            dictType.setParentId(TOP_CODE);
-            dictType.setDelEnabled(ConstantsEnum.YN.N.getValue());
-            dictType.setSortNum(1);
-            dictType.setIsTree(ConstantsEnum.YN01.N.getValue());
-            dictTypeDao.save(dictType);
 
-            if (Fc.notNull(dictTypeCodes) && dictTypeCodes.size()>0){
+            //创建租户默认字典
+//            TbCoreDictType dictType = new TbCoreDictType();
+//            dictType.setDictTypeCode(tenant.getTenantCode());
+//            dictType.setDictTypeName(tenant.getTenantName());
+//            dictType.setParentId(TOP_CODE);
+//            dictType.setDelEnabled(ConstantsEnum.YN.N.getValue());
+//            dictType.setSortNum(1);
+//            dictType.setIsTree(ConstantsEnum.YN01.N.getValue());
+////            dictType.setTenantCode(tenant.getTenantCode());
+//            dictTypeDao.save(dictType);
+
+            if (Fc.isNotEmpty(dictTypeCodes)){
                 dictTypeDao.listObjs(Condition.<TbCoreDictType>getQueryWrapper().lambda()
                         .select(TbCoreDictType::getId)
                         .in(TbCoreDictType::getDictTypeCode,dictTypeCodes)
                         .eq(TbCoreDictType::getParentId,TOP_CODE)
-                        .eq(TbCoreDictType::getTenantCode,tenant.getTenantCode()),Fc::toStr)
-                .forEach(id -> saveDictType(id,dictType.getId(),tenant.getTenantCode()));
+                        .eq(TbCoreDictType::getTenantCode,tenant.getTenantCode())
+                        ,Fc::toStr)
+                .forEach(id -> saveDictType(id,TOP_CODE,tenant.getTenantCode()));
             }else {
-                saveDictType(TOP_CODE,dictType.getId(),tenant.getTenantCode());
+                saveDictType(TOP_CODE,TOP_CODE,tenant.getTenantCode());
             }
 
-            //创建租户默认用户 (必须放到最后，因为没有启动分布式事务)
+            //创建租户默认用户 (必须放到最后创建，因为没有启动分布式事务)
             TbCoreUser user = new TbCoreUser();
             user.setLoginId("admin");
             user.setPassword(DigestUtil.encrypt(MD5.parseStrToMd5U32(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD, ConstantsUtils.DEFAULT_USER_PASSWORD))));
@@ -160,7 +162,7 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
             if (SecureUtil.isRoot()){
                 user.setTenantCode(tenant.getTenantCode());
             }
-            ResponseData data = userClient.saveAdmin(user,role.getId());
+            ResponseData data = UserCache.saveAdmin(user,role.getId());
             JpowerAssert.isTrue(data.isStatus(), JpowerError.Api, data.getCode(), data.getMessage());
             return true;
         }

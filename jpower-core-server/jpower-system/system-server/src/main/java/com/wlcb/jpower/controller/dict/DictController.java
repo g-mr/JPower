@@ -6,6 +6,7 @@ import com.wlcb.jpower.dbs.entity.dict.TbCoreDictType;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
+import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.utils.CacheUtil;
@@ -38,7 +39,7 @@ import static com.wlcb.jpower.module.common.utils.constants.JpowerConstants.TOP_
 @RestController
 @RequestMapping("/core/dict")
 @AllArgsConstructor
-public class DictController {
+public class DictController extends BaseController {
 
     private CoreDictService coreDictService;
     private CoreDictTypeService coreDictTypeService;
