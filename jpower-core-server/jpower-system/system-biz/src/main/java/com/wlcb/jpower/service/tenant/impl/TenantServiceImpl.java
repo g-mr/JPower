@@ -1,6 +1,5 @@
 package com.wlcb.jpower.service.tenant.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wlcb.jpower.cache.UserCache;
 import com.wlcb.jpower.cache.param.ParamConfig;
 import com.wlcb.jpower.dbs.dao.dict.TbCoreDictDao;
@@ -35,9 +34,7 @@ import com.wlcb.jpower.service.tenant.TenantService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static com.wlcb.jpower.module.common.utils.constants.JpowerConstants.TOP_CODE;
 import static com.wlcb.jpower.module.tenant.TenantConstant.*;
@@ -76,7 +73,7 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
     }
 
     @Override
-    public boolean save(TbCoreTenant tenant, List<String> functionCodes, List<String> dictTypeCodes){
+    public boolean save(TbCoreTenant tenant, List<String> functionCodes){
         if (Fc.isBlank(tenant.getTenantCode())){
             List<String> tenantCodeList = tenantDao.listObjs(Condition.<TbCoreTenant>getQueryWrapper().lambda()
                     .select(TbCoreTenant::getTenantCode),Fc::toStr);
@@ -111,12 +108,21 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
             }
             roleDao.save(role);
             //创建租户初始权限
-            LambdaQueryWrapper<TbCoreFunction> queryWrapper = Condition.<TbCoreFunction>getQueryWrapper().lambda().select(TbCoreFunction::getId);
+//            LambdaQueryWrapper<TbCoreFunction> queryWrapper = Condition.<TbCoreFunction>getQueryWrapper().lambda().select(TbCoreFunction::getId);
+//            if (Fc.isNotEmpty(functionCodes)){
+//                queryWrapper.in(TbCoreFunction::getCode,functionCodes);
+//            }
+//            queryWrapper.or(c -> c.eq(TbCoreFunction::getParentId,TOP_CODE).eq(TbCoreFunction::getIsMenu,ConstantsEnum.YN01.N.getValue()));
+//            List<String> functionIds = functionDao.listObjs(queryWrapper,Fc::toStr);
+
+            List<String> functionIds = functionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
+                    .select(TbCoreFunction::getId)
+                    .eq(TbCoreFunction::getParentId,TOP_CODE)
+                    .eq(TbCoreFunction::getIsMenu,ConstantsEnum.YN01.N.getValue()),Fc::toStr);
+
             if (Fc.isNotEmpty(functionCodes)){
-                queryWrapper.in(TbCoreFunction::getCode,functionCodes);
+                functionIds.addAll(getFunctions(functionCodes,new LinkedList<>()));
             }
-            queryWrapper.or(c -> c.eq(TbCoreFunction::getParentId,TOP_CODE).eq(TbCoreFunction::getIsMenu,ConstantsEnum.YN01.N.getValue()));
-            List<String> functionIds = functionDao.listObjs(queryWrapper,Fc::toStr);
             List<TbCoreRoleFunction> roleFunctionList = new ArrayList<>();
             functionIds.forEach(id -> {
                 TbCoreRoleFunction roleFunction = new TbCoreRoleFunction();
@@ -137,17 +143,22 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
 ////            dictType.setTenantCode(tenant.getTenantCode());
 //            dictTypeDao.save(dictType);
 
-            if (Fc.isNotEmpty(dictTypeCodes)){
-                dictTypeDao.listObjs(Condition.<TbCoreDictType>getQueryWrapper().lambda()
-                        .select(TbCoreDictType::getId)
-                        .in(TbCoreDictType::getDictTypeCode,dictTypeCodes)
-                        .eq(TbCoreDictType::getParentId,TOP_CODE)
-                        .eq(TbCoreDictType::getTenantCode,tenant.getTenantCode())
-                        ,Fc::toStr)
-                .forEach(id -> saveDictType(id,TOP_CODE,tenant.getTenantCode()));
-            }else {
-                saveDictType(TOP_CODE,TOP_CODE,tenant.getTenantCode());
-            }
+//            if (Fc.isNotEmpty(dictTypeCodes)){
+//                dictTypeDao.listObjs(Condition.<TbCoreDictType>getQueryWrapper().lambda()
+//                        .select(TbCoreDictType::getId)
+//                        .in(TbCoreDictType::getDictTypeCode,dictTypeCodes)
+//                        .eq(TbCoreDictType::getParentId,TOP_CODE)
+//                        .eq(TbCoreDictType::getTenantCode,tenant.getTenantCode())
+//                        ,Fc::toStr)
+//                .forEach(id -> saveDictType(id,TOP_CODE,tenant.getTenantCode()));
+//            }else {
+//                saveDictType(TOP_CODE,TOP_CODE,tenant.getTenantCode());
+//            }
+            LinkedList<TbCoreDictType> dictTypes = new LinkedList<>();
+            LinkedList<TbCoreDict> dicts = new LinkedList<>();
+            getDictTypes(TOP_CODE,TOP_CODE,tenant.getTenantCode(),dictTypes,dicts);
+            dictTypeDao.saveBatch(dictTypes);
+            dictDao.saveBatch(dicts);
 
             //创建租户默认用户 (必须放到最后创建，因为没有启动分布式事务)
             TbCoreUser user = new TbCoreUser();
@@ -169,51 +180,78 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
         return false;
     }
 
-    /**
-     * @author 郭丁志
-     * @Description //TODO 新增字典类型
-     * @date 16:50 2020/10/25 0025
-     * @return void
-     */
-    private void saveDictType(String top,String parentId,String tenantCode){
-        List<TbCoreDictType> dictTypeList = dictTypeDao.list(Condition.<TbCoreDictType>getQueryWrapper().lambda()
-                .eq(TbCoreDictType::getTenantCode,DEFAULT_TENANT_CODE)
-                .eq(TbCoreDictType::getParentId,top));
-        dictTypeList.forEach(type -> {
-            type.setOldId(type.getId());
-            type.setId(null);
-            type.setTenantCode(tenantCode);
-            type.setParentId(parentId);
-        });
-        dictTypeDao.saveBatch(dictTypeList);
-        dictTypeList.forEach(type -> {
-            saveDictType(type.getOldId(),type.getId(),tenantCode);
+    private List<String> getFunctions(List<String> functionCodes,LinkedList<String> functionIds) {
 
-            saveDict(type.getDictTypeCode(),TOP_CODE,TOP_CODE,tenantCode);
+        List<String> ids = functionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
+                .select(TbCoreFunction::getId)
+                .in(TbCoreFunction::getCode,functionCodes),Fc::toStr);
+
+        ids.forEach(id->{
+            functionIds.add(id);
+
+            List<String> btnIds = functionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
+                    .select(TbCoreFunction::getId)
+                    .eq(TbCoreFunction::getIsMenu,ConstantsEnum.YN01.N.getValue())
+                    .eq(TbCoreFunction::getParentId,id),Fc::toStr);
+
+            functionIds.addAll(btnIds);
         });
+
+        return functionIds;
     }
 
     /**
      * @author 郭丁志
-     * @Description //TODO 新增字典
+     * @Description //TODO 查询新租户默认字典类型
      * @date 16:50 2020/10/25 0025
      * @return void
      */
-    private void saveDict(String typeCode,String top,String parentId,String tenantCode){
+    private void getDictTypes(String oldParentId,String newParentId,String tenantCode,LinkedList<TbCoreDictType> dictTypes,LinkedList<TbCoreDict> dicts){
+        List<TbCoreDictType> dictTypeList = dictTypeDao.list(Condition.<TbCoreDictType>getQueryWrapper().lambda()
+                .eq(TbCoreDictType::getTenantCode,DEFAULT_TENANT_CODE)
+                .eq(TbCoreDictType::getParentId,oldParentId));
+        dictTypeList.forEach(type -> {
+            String oldId = type.getId();
+            type.setId(Fc.randomUUID());
+            type.setTenantCode(tenantCode);
+            type.setParentId(newParentId);
+            dictTypes.add(type);
+            getDicts(type.getDictTypeCode(),TOP_CODE,TOP_CODE,tenantCode,dicts);
+            getDictTypes(oldId,type.getId(),tenantCode,dictTypes,dicts);
+        });
+//        dictTypeDao.saveBatch(dictTypeList);
+//        dictTypeList.forEach(type -> {
+//            saveDictType(type.getOldId(),type.getId(),tenantCode);
+//
+//            saveDict(type.getDictTypeCode(),TOP_CODE,TOP_CODE,tenantCode);
+//        });
+
+
+    }
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 新增新租户默认字典
+     * @date 16:50 2020/10/25 0025
+     * @return void
+     */
+    private void getDicts(String typeCode,String top,String parentId,String tenantCode,LinkedList<TbCoreDict> dicts){
         List<TbCoreDict> dictList = dictDao.list(Condition.<TbCoreDict>getQueryWrapper().lambda()
                 .eq(TbCoreDict::getTenantCode,DEFAULT_TENANT_CODE)
                 .eq(TbCoreDict::getDictTypeCode,typeCode)
                 .eq(TbCoreDict::getParentId,top));
 
-        dictList.forEach(type -> {
-            type.setOldId(type.getId());
-            type.setId(null);
-            type.setTenantCode(tenantCode);
-            type.setParentId(parentId);
+        dictList.forEach(dict -> {
+            String oldId = dict.getId();
+            dict.setId(Fc.randomUUID());
+            dict.setTenantCode(tenantCode);
+            dict.setParentId(parentId);
+            dicts.add(dict);
+            getDicts(typeCode,oldId,dict.getId(),tenantCode,dicts);
         });
-        dictDao.saveBatch(dictList);
+//        dictDao.saveBatch(dictList);
 
-        dictList.forEach(dict -> saveDict(typeCode,dict.getOldId(),dict.getId(),tenantCode));
+//        dictList.forEach(dict -> saveDict(typeCode,dict.getOldId(),dict.getId(),tenantCode));
     }
 
     @Override

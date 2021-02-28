@@ -25,9 +25,8 @@ public interface TenantService extends BaseService<TbCoreTenant> {
      * @date 22:14 2020/10/24 0024
      * @param tenant 租户信息
      * @param functionCodes 权限Code
-     * @param dictTypeCodes 字典类型Code
      */
-    boolean save(TbCoreTenant tenant, List<String> functionCodes, List<String> dictTypeCodes);
+    boolean save(TbCoreTenant tenant, List<String> functionCodes);
 
     /**
      * @author 郭丁志

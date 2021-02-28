@@ -96,8 +96,7 @@ public class TenantController extends BaseController {
     @ApiOperation("新增租户信息")
     @PostMapping(value = "/add",produces = "application/json")
     public ResponseData add(TbCoreTenant tenant,
-                            @ApiParam("功能CODE 多个逗号分隔") @RequestParam(required = false) List<String> functionCodes,
-                            @ApiParam("字典类型CODE 多个逗号分隔") @RequestParam(required = false) List<String> dictTypeCodes){
+                            @ApiParam("功能CODE 多个逗号分隔") @RequestParam(required = false) List<String> functionCodes){
         tenant.setId(null);
         JpowerAssert.isTrue(SecureUtil.isRoot(), JpowerError.Auth,"只可超级管理员增加租户");
         JpowerAssert.notEmpty(tenant.getTenantName(), JpowerError.Arg,"租户名称不可为空");
@@ -108,10 +107,13 @@ public class TenantController extends BaseController {
             JpowerAssert.geZero(tenantService.count(Condition.<TbCoreTenant>getQueryWrapper().lambda().eq(TbCoreTenant::getTenantCode,tenant.getTenantCode()))
                     ,JpowerError.BUSINESS,"该租户已存在");
         }
-        JpowerAssert.geZero(tenantService.count(Condition.<TbCoreTenant>getQueryWrapper().lambda().eq(TbCoreTenant::getDomain,tenant.getDomain()))
-                ,JpowerError.BUSINESS,"该域名已存在");
 
-        return ReturnJsonUtil.status(tenantService.save(tenant,functionCodes,dictTypeCodes));
+        if (Fc.isNotBlank(tenant.getDomain())){
+            JpowerAssert.geZero(tenantService.count(Condition.<TbCoreTenant>getQueryWrapper().lambda().eq(TbCoreTenant::getDomain,tenant.getDomain()))
+                    ,JpowerError.BUSINESS,"该域名已存在");
+        }
+
+        return ReturnJsonUtil.status(tenantService.save(tenant,functionCodes));
     }
 
     @ApiOperation("租户授权配置")
