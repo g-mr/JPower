@@ -16,15 +16,4 @@ public class ConstantsUtils {
     /** 用戶默認是否激活。這裏的優先級最低 **/
     public static final Integer DEFAULT_USER_ACTIVATION = ConstantsEnum.YN01.N.getValue();
 
-//    短信APPKEY
-//    public static final String APP_KEY = "102138";
-////    短信密钥
-//    public static final String APP_SECRET = "48405d1cf063e976";
-//    public static final String HTTP_SERVER = "http://182.92.7.106:7892";
-//    public static final String SMS_SEND_URL = HTTP_SERVER + "/api/sms/air/send";
-//    public static final String SMS_QUERY_BALANCE_URL = HTTP_SERVER + "/api/sms/air/balance";
-//    public static final String SMS_QUERY_REPORT_URL = HTTP_SERVER + "/api/sms/air/report";
-//    public static final String SMS_QUERY_MO_URL = HTTP_SERVER + "/api/sms/air/mo";
-//    public static final String SMS_SECURITY_SEND_URL = HTTP_SERVER + "/api/sms/air/encrptySend";
-
 }

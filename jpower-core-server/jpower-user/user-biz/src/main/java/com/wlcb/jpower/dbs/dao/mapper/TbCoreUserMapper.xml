@@ -73,10 +73,6 @@
         from tb_core_user u
         where u.is_deleted = 0
 
-        <if test="coreUser != null and coreUser.orgId != null and coreUser.orgId != ''">
-            and u.org_id = #{coreUser.orgId,jdbcType=VARCHAR}
-        </if>
-
         <if test="coreUser != null and coreUser.loginId != null and coreUser.loginId != ''">
             and u.login_id like CONCAT('%',#{coreUser.loginId,jdbcType=VARCHAR},'%')
         </if>

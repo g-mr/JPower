@@ -53,19 +53,22 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
 
     @Override
     public PageInfo<UserVo> listPage(TbCoreUser coreUser) {
-        List<String> listOrgId = Fc.isNotBlank(coreUser.getOrgId())?SystemCache.getChildIdOrgById(coreUser.getOrgId()):null;
-
         PaginationContext.startPage();
-        List<TbCoreUser> list = coreUserDao.getBaseMapper().selectUserList(coreUser,listOrgId);
+        List<TbCoreUser> list = coreUserDao.getBaseMapper().selectUserList(coreUser,getChildOrg(coreUser.getOrgId()));
         return UserWrapper.builder().pageVo(list);
     }
 
     @Override
     public List<UserVo> list(TbCoreUser coreUser) {
-        List<String> listOrgId = Fc.isNotBlank(coreUser.getOrgId())?SystemCache.getChildIdOrgById(coreUser.getOrgId()):null;
-
-        List<TbCoreUser> list = coreUserDao.getBaseMapper().selectUserList(coreUser,listOrgId);
+        List<TbCoreUser> list = coreUserDao.getBaseMapper().selectUserList(coreUser,getChildOrg(coreUser.getOrgId()));
         return UserWrapper.builder().listVO(list);
+    }
+
+    private List<String> getChildOrg(String orgId){
+        List<String> listOrgId = Fc.isNotBlank(orgId)?SystemCache.getChildIdOrgById(orgId):null;
+        listOrgId = Fc.isNull(listOrgId)?new ArrayList<>():listOrgId;
+        listOrgId.add(orgId);
+        return listOrgId;
     }
 
     @Override
