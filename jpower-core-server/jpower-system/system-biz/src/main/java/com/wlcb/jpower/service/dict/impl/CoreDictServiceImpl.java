@@ -33,9 +33,13 @@ public class CoreDictServiceImpl extends BaseServiceImpl<TbCoreDictMapper, TbCor
 
     @Override
     public TbCoreDict queryDictTypeByCode(String dictTypeCode, String code) {
-        return dictDao.getOne(Condition.<TbCoreDict>getQueryWrapper().lambda()
+        LambdaQueryWrapper<TbCoreDict> wrapper = Condition.<TbCoreDict>getQueryWrapper().lambda()
                 .eq(TbCoreDict::getDictTypeCode,dictTypeCode)
-                .eq(TbCoreDict::getCode,code));
+                .eq(TbCoreDict::getCode,code);
+        if(SecureUtil.isRoot()){
+            wrapper.eq(TbCoreDict::getTenantCode,DEFAULT_TENANT_CODE);
+        }
+        return dictDao.getOne(wrapper);
     }
 
     @Override
