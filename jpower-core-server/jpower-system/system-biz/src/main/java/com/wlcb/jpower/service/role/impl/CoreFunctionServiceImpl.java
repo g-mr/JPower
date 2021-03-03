@@ -14,7 +14,6 @@ import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SecureUtil;
 import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
-import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.role.CoreFunctionService;
@@ -25,6 +24,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+
+import static com.wlcb.jpower.module.common.utils.constants.JpowerConstants.TOP_CODE;
 
 /**
  * @author mr.gmac
@@ -147,7 +148,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
         return coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                 .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.N.getValue())
                 .and(consumer -> consumer.eq(TbCoreFunction::getParentId, id).or(c
-                        -> c.eq(TbCoreFunction::getParentId, JpowerConstants.TOP_CODE)))
+                        -> c.eq(TbCoreFunction::getParentId, TOP_CODE)))
                 .inSql(TbCoreFunction::getId,StringUtil.format(sql,inSql)));
     }
 
