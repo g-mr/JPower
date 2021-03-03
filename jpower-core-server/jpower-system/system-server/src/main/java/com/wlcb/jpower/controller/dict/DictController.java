@@ -147,7 +147,9 @@ public class DictController extends BaseController {
         }
 
         if (Fc.isNotBlank(dict.getDictTypeCode())){
-            if(coreDictTypeService.count(Condition.<TbCoreDictType>getQueryWrapper().lambda().eq(TbCoreDictType::getDictTypeCode,dict.getDictTypeCode())) <= 0){
+            if(coreDictTypeService.count(Condition.<TbCoreDictType>getQueryWrapper()
+                    .lambda()
+                    .eq(TbCoreDictType::getDictTypeCode,dict.getDictTypeCode())) <= 0){
                 return ReturnJsonUtil.notFind("字典类型不存在");
             }
         }
