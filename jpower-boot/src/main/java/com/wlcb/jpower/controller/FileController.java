@@ -16,7 +16,6 @@ import com.wlcb.jpower.service.CoreFileService;
 import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
@@ -34,7 +33,6 @@ import java.util.Map;
  * @Version 1.0
  */
 @Api(tags = "文件管理")
-@RefreshScope
 @RestController
 @RequestMapping("/core/file")
 public class FileController extends BaseController {

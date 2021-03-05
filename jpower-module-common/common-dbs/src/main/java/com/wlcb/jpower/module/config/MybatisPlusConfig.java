@@ -87,4 +87,14 @@ public class MybatisPlusConfig {
         return new DataScopeInterceptor();
     }
 
+    /**
+     * 演示环境
+     **/
+    @Order(11)
+    @Bean
+    @ConditionalOnProperty(value = {"jpower.demo.enable"}, matchIfMissing = false)
+    public DemoInterceptor demoInterceptor() {
+        return new DemoInterceptor();
+    }
+
 }

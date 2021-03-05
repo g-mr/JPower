@@ -80,7 +80,9 @@ public class AuthInfoUtil {
             if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.OWN_ORG_CHILD.getValue())){
                 List<String> listOrgId = SystemCache.getChildIdOrgById(authInfo.getUser().getOrgId());
                 listOrgId = Fc.isNull(listOrgId)? new ArrayList<>() : listOrgId;
-                listOrgId.add(authInfo.getUser().getOrgId());
+                if (Fc.isNotBlank(authInfo.getUser().getOrgId())){
+                    listOrgId.add(authInfo.getUser().getOrgId());
+                }
                 dataScope.setIds(listOrgId);
             }
             //自定义

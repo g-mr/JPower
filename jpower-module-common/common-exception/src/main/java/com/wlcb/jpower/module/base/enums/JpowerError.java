@@ -1,5 +1,7 @@
 package com.wlcb.jpower.module.base.enums;
 
+import org.springframework.http.HttpStatus;
+
 public enum JpowerError {
 
     // 异常信息
@@ -12,7 +14,7 @@ public enum JpowerError {
     Unknown(500, "系统异常:%s"),
     Api(600, "api错误[retcode:%s,retmsg:%s]"),
     Arg(406, "参数错误:%s"),
-    BUSINESS(300, "%s");
+    BUSINESS(HttpStatus.NOT_IMPLEMENTED.value(), "%s");
 
     private int    code;
     private String message;

@@ -67,7 +67,9 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     private List<String> getChildOrg(String orgId){
         List<String> listOrgId = Fc.isNotBlank(orgId)?SystemCache.getChildIdOrgById(orgId):null;
         listOrgId = Fc.isNull(listOrgId)?new ArrayList<>():listOrgId;
-        listOrgId.add(orgId);
+        if(Fc.isNotBlank(orgId)){
+            listOrgId.add(orgId);
+        }
         return listOrgId;
     }
 

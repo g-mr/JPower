@@ -49,8 +49,8 @@ public class GlobalExceptionHandler {
             response.setStatus(HttpStatus.NOT_FOUND.value());
         }else if (e instanceof BusinessException) {
             r.setCode(HttpStatus.NOT_IMPLEMENTED.value());
-            //标记返回为500错误
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            //标记返回为501错误
+            response.setStatus(HttpStatus.NOT_IMPLEMENTED.value());
         }else if (e instanceof JpowerException) {
             r.setCode(((JpowerException) e).getCode());
             //标记返回为指定错误
