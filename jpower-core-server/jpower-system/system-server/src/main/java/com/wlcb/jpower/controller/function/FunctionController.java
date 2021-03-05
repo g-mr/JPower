@@ -160,7 +160,7 @@ public class FunctionController extends BaseController {
         return ReturnJsonUtil.ok("查询成功",list);
     }
 
-    @ApiOperation("查询登录用户所有菜单树形列表结构")
+    @ApiOperation("页面菜单获取")
     @GetMapping(value = "/listMenuTree", produces="application/json")
     public ResponseData<List<FunctionVo>> listMenuTree(){
         List<String> roleIds = SecureUtil.getUserRole();
@@ -172,7 +172,7 @@ public class FunctionController extends BaseController {
         return ReturnJsonUtil.ok("查询成功", ForestNodeMerger.merge(BaseDictWrapper.<TbCoreFunction,FunctionVo>builder().dict(list,FunctionVo.class)));
     }
 
-    @ApiOperation(value = "（用于权限判断）查询登录用户一个菜单下的所有按钮接口资源", notes = "用于页面权限判断，会把顶级按钮一起返回，顶级按钮代表所有菜单都可拥有权限")
+    @ApiOperation(value = "（用于页面权限）查询登录用户一个菜单下的所有按钮接口资源", notes = "用于页面权限判断，会把顶级按钮一起返回，顶级按钮代表所有菜单都可拥有权限")
     @GetMapping(value = "/listBut", produces="application/json")
     public ResponseData<List<TbCoreFunction>> listBut(@ApiParam(value = "菜单Id",required = true) @RequestParam String id){
         JpowerAssert.notEmpty(id, JpowerError.Arg, "菜单id不可为空");
