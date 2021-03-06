@@ -1,10 +1,8 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : 219.148.186.214
  Source Server Type    : MySQL
  Source Server Version : 50724
- Source Host           : 219.148.186.214:18995
  Source Schema         : jpower
 
  Target Server Type    : MySQL

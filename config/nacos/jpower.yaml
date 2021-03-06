@@ -91,7 +91,7 @@ swagger:
   termsOfServiceUrl: http://localhost:81
 
 jpower:
-  #通用开发环境配置（自己改成自己文件存储路径即可，如果docker部署要记得修改docker-compose.yml的映射路径）
+  #文件存储地址（自己改成自己文件存储路径即可，如果docker部署要记得修改docker-compose.yml的映射路径）
   fileParentPath: /root/file
 #  seata:
 ##   是否启用分布式事务（默认不开启）

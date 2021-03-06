@@ -6,7 +6,7 @@ spring:
     ##redis 单机环境配置
     host: 192.168.128.100
     port: 6379
-    password: Wlcb20200515
+    password:
     database: 99
     timeout: 5000
     ssl: false
