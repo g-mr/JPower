@@ -1,12 +1,11 @@
-# 《灯灯》中后台快速开发平台
+<img src="docs/image/logo.png" width="50%" syt height="50%" />
 
-[![AUR](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg)](https://github.com/zuihou/lamp-cloud/blob/master/LICENSE)
-[![](https://img.shields.io/badge/作者-zuihou-orange.svg)](https://github.com/zuihou)
-[![](https://img.shields.io/badge/版本-3.1.0.PRE.1-brightgreen.svg)](https://github.com/zuihou/lamp-cloud)
-[![GitHub stars](https://img.shields.io/github/stars/zuihou/lamp-cloud.svg?style=social&label=Stars)](https://github.com/zuihou/lamp-cloud/stargazers)
-[![star](https://gitee.com/zuihou111/lamp-cloud/badge/star.svg?theme=white)](https://gitee.com/zuihou111/lamp-cloud/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/zuihou/lamp-cloud.svg?style=social&label=Fork)](https://github.com/zuihou/lamp-cloud/network/members)
-[![fork](https://gitee.com/zuihou111/lamp-cloud/badge/fork.svg?theme=white)](https://gitee.com/zuihou111/lamp-cloud/members)
+# JPower：中后台快速开发平台
+
+[![Gitter](https://img.shields.io/badge/Release-V1.0.1-green.svg)](https://gitee.com/gdzWork/JPower)   [![License](https://img.shields.io/badge/Author-goo-orange.svg)](https://gitee.com/gdzWork/JPower)
+[![Gitter](https://img.shields.io/badge/Copyright%20-@Jpower-%23ff3f59.svg)](https://gitee.com/gdzWork/JPower)
+
+-------
 
 # lamp 项目名字由来
 ## 叙事版：
