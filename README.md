@@ -1,4 +1,4 @@
-![预览.png](docs/image/logo.png)
+<img src="docs/image/logo.png" width="50%" syt height="50%" />
 
 # JPower：中后台快速开发平台
 
