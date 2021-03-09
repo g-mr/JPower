@@ -5,8 +5,8 @@ import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
-import feign.hystrix.FallbackFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
