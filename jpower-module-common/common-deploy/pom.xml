@@ -16,6 +16,11 @@
     <dependencies>
 
         <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bootstrap</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.wlcb</groupId>
             <artifactId>common-nacos</artifactId>
             <version>${com.jpower.version}</version>
