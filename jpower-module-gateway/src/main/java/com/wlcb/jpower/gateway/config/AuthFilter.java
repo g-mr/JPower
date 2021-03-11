@@ -127,7 +127,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
     }
 
     private Mono<Void> sendMesg(ServerHttpResponse resp, String msg) {
-        resp.getHeaders().add("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE);
+        resp.getHeaders().setContentType(MediaType.APPLICATION_JSON);
         String result = "";
         try {
             result = objectMapper.writeValueAsString(response(HttpStatus.UNAUTHORIZED.value(),msg));

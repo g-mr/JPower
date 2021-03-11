@@ -2,8 +2,8 @@ package com.wlcb.jpower;
 
 import com.wlcb.jpower.annotation.EnableJpowerFeignClients;
 import com.wlcb.jpower.module.common.deploy.JpowerApplication;
+import com.wlcb.jpower.module.common.deploy.service.annotation.JpowerCloudApplication;
 import com.wlcb.jpower.module.common.utils.constants.AppConstant;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * @ClassName GetwayApplication
@@ -13,7 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @Version 1.0
  */
 //@SpringCloudApplication
-@SpringBootApplication
+@JpowerCloudApplication
 @EnableJpowerFeignClients
 public class GatewayApplication {
     public static void main(String[] args) {

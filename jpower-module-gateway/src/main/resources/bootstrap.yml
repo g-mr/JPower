@@ -5,10 +5,6 @@ spring:
         locator:
           #启用自动根据服务ID建立路由
           enabled: true
-    discovery:
-      reactive:
-        #关闭反应式创建路由(目前发现只有spring5.2生效)
-        enabled: false
     loadbalancer:
       #开启重试机制
         retry:
@@ -31,7 +27,7 @@ jpower:
   dev:
     nacos:
       #      配置中心地址，如果配置没有配置注册中心地址，则注册中心默认走这里的地址
-      server-addr: 219.148.186.214:8847
+      server-addr: localhost:8848
   test:
     nacos:
       #      配置中心地址，如果配置没有配置注册中心地址，则注册中心默认走这里的地址

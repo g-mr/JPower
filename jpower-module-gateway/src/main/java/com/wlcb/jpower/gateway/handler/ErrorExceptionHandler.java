@@ -1,67 +1,63 @@
 package com.wlcb.jpower.gateway.handler;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wlcb.jpower.module.common.support.ChainMap;
-import org.springframework.boot.autoconfigure.web.ErrorProperties;
-import org.springframework.boot.autoconfigure.web.ResourceProperties;
-import org.springframework.boot.autoconfigure.web.reactive.error.DefaultErrorWebExceptionHandler;
-import org.springframework.boot.web.reactive.error.ErrorAttributes;
-import org.springframework.cloud.gateway.support.NotFoundException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.web.reactive.function.server.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
+import org.springframework.core.io.buffer.DataBufferFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.lang.NonNull;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.Map;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
 
 /**
  * @ClassName ErrorExceptionHandler
- * @Description TODO 重写异常返回
+ * @Description TODO 异常返回
  * @Author 郭丁志
  * @Date 2020/8/27 0027 1:58
  * @Version 1.0
  */
-public class ErrorExceptionHandler extends DefaultErrorWebExceptionHandler {
+@Order(-1)
+@Configuration
+@RequiredArgsConstructor
+public class ErrorExceptionHandler implements ErrorWebExceptionHandler {
 
-    public ErrorExceptionHandler(ErrorAttributes errorAttributes, ResourceProperties resourceProperties,
-                                 ErrorProperties errorProperties, ApplicationContext applicationContext) {
-        super(errorAttributes, resourceProperties, errorProperties, applicationContext);
-    }
+    private final ObjectMapper objectMapper;
 
-    /**
-     * 获取异常属性
-     */
+    @NonNull
     @Override
-    protected Map<String, Object> getErrorAttributes(ServerRequest request, boolean includeStackTrace) {
-        int code = 500;
-        Throwable error = super.getError(request);
-        if (error instanceof NotFoundException) {
-            code = 404;
+    public Mono<Void> handle(ServerWebExchange exchange, @NonNull Throwable ex) {
+        ServerHttpRequest request = exchange.getRequest();
+        ServerHttpResponse response = exchange.getResponse();
+        if (response.isCommitted()) {
+            return Mono.error(ex);
         }
-        if (error instanceof ResponseStatusException) {
-            code = ((ResponseStatusException) error).getStatus().value();
+        response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+        if (ex instanceof ResponseStatusException) {
+            response.setStatusCode(((ResponseStatusException) ex).getStatus());
         }
-        return ChainMap.init().set("code",code).set("message",this.buildMessage(request, error)).set("status",false);
+        return response.writeWith(Mono.fromSupplier(() -> {
+            DataBufferFactory bufferFactory = response.bufferFactory();
+            try {
+                HttpStatus status = HttpStatus.BAD_GATEWAY;
+                if (ex instanceof ResponseStatusException) {
+                    status = ((ResponseStatusException) ex).getStatus();
+                }
+                return bufferFactory.wrap(objectMapper.writeValueAsBytes(ChainMap.init().set("code",status.value()).set("message",this.buildMessage(request, ex)).set("status",false)));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+                return bufferFactory.wrap(new byte[0]);
+            }
+        }));
     }
 
-    /**
-     * 指定响应处理方法为JSON处理的方法
-     *
-     * @param errorAttributes
-     */
-    @Override
-    protected RouterFunction<ServerResponse> getRoutingFunction(ErrorAttributes errorAttributes) {
-        return RouterFunctions.route(RequestPredicates.all(), this::renderErrorResponse);
-    }
-
-    /**
-     * 根据code获取对应的HttpStatus
-     *
-     * @param errorAttributes
-     * @return
-     */
-    @Override
-    protected int getHttpStatus(Map<String, Object> errorAttributes) {
-        return (int) errorAttributes.get("code");
-    }
 
     /**
      * 构建异常信息
@@ -70,11 +66,11 @@ public class ErrorExceptionHandler extends DefaultErrorWebExceptionHandler {
      * @param ex
      * @return
      */
-    private String buildMessage(ServerRequest request, Throwable ex) {
+    private String buildMessage(ServerHttpRequest request, Throwable ex) {
         StringBuilder message = new StringBuilder("Failed to handle request [");
-        message.append(request.methodName());
+        message.append(request.getMethodValue());
         message.append(" ");
-        message.append(request.uri());
+        message.append(request.getURI());
         message.append("]");
         if (ex != null) {
             message.append(": ");
