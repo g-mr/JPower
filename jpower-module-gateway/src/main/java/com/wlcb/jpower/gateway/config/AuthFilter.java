@@ -117,23 +117,28 @@ public class AuthFilter implements GlobalFilter, Ordered {
     }
 
     private Mono<Void> proxyAuthenticationRequired(ServerHttpResponse resp, String msg) {
-        resp.setStatusCode(HttpStatus.PROXY_AUTHENTICATION_REQUIRED);
-        return sendMesg(resp,msg);
+        String result = "";
+        try {
+            result = objectMapper.writeValueAsString(response(HttpStatus.PROXY_AUTHENTICATION_REQUIRED.value(),msg));
+        } catch (JsonProcessingException e) {
+            log.error(e.getMessage(), e);
+        }
+        return sendMesg(resp,result);
     }
 
     private Mono<Void> unAuth(ServerHttpResponse resp, String msg) {
-        resp.setStatusCode(HttpStatus.UNAUTHORIZED);
-        return sendMesg(resp,msg);
-    }
-
-    private Mono<Void> sendMesg(ServerHttpResponse resp, String msg) {
-        resp.getHeaders().setContentType(MediaType.APPLICATION_JSON);
         String result = "";
         try {
             result = objectMapper.writeValueAsString(response(HttpStatus.UNAUTHORIZED.value(),msg));
         } catch (JsonProcessingException e) {
             log.error(e.getMessage(), e);
         }
+        return sendMesg(resp,result);
+    }
+
+    private Mono<Void> sendMesg(ServerHttpResponse resp, String result) {
+        resp.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+        resp.setStatusCode(HttpStatus.UNAUTHORIZED);
         DataBuffer buffer = resp.bufferFactory().wrap(result.getBytes(StandardCharsets.UTF_8));
         return resp.writeWith(Flux.just(buffer));
     }

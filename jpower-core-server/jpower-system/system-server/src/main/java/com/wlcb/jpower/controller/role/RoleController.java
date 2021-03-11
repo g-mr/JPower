@@ -43,7 +43,7 @@ public class RoleController extends BaseController {
 
     @ApiOperation(value = "查询匿名用户是否拥有URL的权限", hidden = true)
     @GetMapping("/queryRoleByUrl")
-    public ResponseData<Boolean> queryRoleByUrl(String url){
+    public ResponseData<Boolean> queryRoleByUrl(@RequestParam String url){
         return ReturnJsonUtil.ok("查询成功",coreFunctionService.queryRoleByUrl(url)>0?Boolean.TRUE:Boolean.FALSE);
     }
 

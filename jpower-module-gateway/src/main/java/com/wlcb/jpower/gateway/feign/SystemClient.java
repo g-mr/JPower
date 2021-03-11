@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @Date 2020/8/30 0030 15:50
  * @Version 1.0
  */
-@FeignClient(value = AppConstant.JPOWER_SYSTEM, fallback = SystemClientFallback.class, path = "/core/")
+@FeignClient(value = AppConstant.JPOWER_SYSTEM, fallbackFactory = SystemClientFallback.class, path = "/core/")
 public interface SystemClient {
 
     /**

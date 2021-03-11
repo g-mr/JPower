@@ -28,7 +28,6 @@
         <dependency>
             <groupId>com.alibaba.csp</groupId>
             <artifactId>sentinel-datasource-nacos</artifactId>
-            <version>${alibaba.csp.version}</version>
         </dependency>
 
     </dependencies>

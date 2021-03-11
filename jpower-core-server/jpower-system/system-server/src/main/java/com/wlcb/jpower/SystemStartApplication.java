@@ -1,9 +1,9 @@
 package com.wlcb.jpower;
 
+import com.wlcb.jpower.annotation.EnableJpowerFeignClients;
 import com.wlcb.jpower.module.common.deploy.JpowerApplication;
+import com.wlcb.jpower.module.common.deploy.service.annotation.JpowerCloudApplication;
 import com.wlcb.jpower.module.common.utils.constants.AppConstant;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
@@ -14,8 +14,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @Version 1.0
  */
 @EnableTransactionManagement
-@SpringBootApplication
-@EnableFeignClients
+@JpowerCloudApplication
+@EnableJpowerFeignClients
 public class SystemStartApplication {
 
     public static void main(String[] args) {
