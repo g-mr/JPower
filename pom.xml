@@ -63,6 +63,7 @@
         <logstash.version>6.2</logstash.version>
 
         <srping-alibaba.version>2.2.5.RELEASE</srping-alibaba.version>
+        <srping-cloud.version>2020.0.1</srping-cloud.version>
 
 
         <dockerfile-maven-plugin.version>1.4.13</dockerfile-maven-plugin.version>
@@ -103,16 +104,16 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>2020.0.1</version>
+                <version>${srping-cloud.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
 
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-all</artifactId>
-                <version>${netty.version}</version>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>io.netty</groupId>-->
+<!--                <artifactId>netty-all</artifactId>-->
+<!--                <version>${netty.version}</version>-->
+<!--            </dependency>-->
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid-spring-boot-starter</artifactId>

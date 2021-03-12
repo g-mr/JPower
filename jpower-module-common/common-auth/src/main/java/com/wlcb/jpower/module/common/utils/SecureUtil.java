@@ -10,7 +10,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.netty.handler.codec.http.FullHttpRequest;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -278,15 +277,15 @@ public class SecureUtil {
         return JwtUtil.parseJWT(JwtUtil.getToken(request));
     }
 
-    /**
-     * 获取Claims
-     *
-     * @param fullHttpRequest
-     * @return Claims
-     */
-    public static Claims getClaims(FullHttpRequest fullHttpRequest) {
-        return JwtUtil.parseJWT(JwtUtil.getToken(fullHttpRequest));
-    }
+//    /**
+//     * 获取Claims
+//     *
+//     * @param fullHttpRequest
+//     * @return Claims
+//     */
+//    public static Claims getClaims(FullHttpRequest fullHttpRequest) {
+//        return JwtUtil.parseJWT(JwtUtil.getToken(fullHttpRequest));
+//    }
 
     /**
      * 获取请求头
