@@ -41,11 +41,11 @@ public class RoleController extends BaseController {
     private CoreRolefunctionService coreRolefunctionService;
     private CoreFunctionService coreFunctionService;
 
-    @ApiOperation(value = "查询匿名用户是否拥有URL的权限", hidden = true)
-    @GetMapping("/queryRoleByUrl")
-    public ResponseData<Boolean> queryRoleByUrl(@RequestParam String url){
-        return ReturnJsonUtil.ok("查询成功",coreFunctionService.queryRoleByUrl(url)>0?Boolean.TRUE:Boolean.FALSE);
-    }
+//    @ApiOperation(value = "查询匿名用户是否拥有URL的权限", hidden = true)
+//    @GetMapping("/queryRoleByUrl")
+//    public ResponseData<Boolean> queryRoleByUrl(@RequestParam String url){
+//        return ReturnJsonUtil.ok("查询成功",coreFunctionService.queryRoleByUrl(url)>0?Boolean.TRUE:Boolean.FALSE);
+//    }
 
     @ApiOperation("查询角色树结构列表")
     @RequestMapping(value = "/listTree",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
@@ -116,14 +116,12 @@ public class RoleController extends BaseController {
     @Log(title = "重新给角色赋权",isSaveLog = true)
     @RequestMapping(value = "/addFunction",method = {RequestMethod.POST},produces="application/json")
     public ResponseData addFunction(@ApiParam(value = "角色主键",required = true) @RequestParam String roleId,
-                                    @ApiParam(value = "菜单主键 多个逗号分割") @RequestParam(required = false) String functionIds){
+                                    @ApiParam(value = "功能主键 多个逗号分割") @RequestParam(required = false) String functionIds){
 
         JpowerAssert.notEmpty(roleId, JpowerError.Arg,"角色id不可为空");
         JpowerAssert.notNull(coreRoleService.getById(roleId),JpowerError.BUSINESS,"该角色不存在");
 
-        Integer count = coreRolefunctionService.addRolefunctions(roleId,functionIds);
-
-        if (count > 0){
+        if (coreRolefunctionService.addRolefunctions(roleId,functionIds)){
             CacheUtil.clear(SYSTEM_REDIS_CACHE);
             return ReturnJsonUtil.ok("设置成功");
         }else {

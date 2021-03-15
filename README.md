@@ -1,6 +1,6 @@
 <img src="docs/image/logo.png" width="50%" syt height="50%" />
 
-# JPower：中后台快速开发平台
+# JPower：微服务快速开发平台
 
 [![Gitter](https://img.shields.io/badge/Release-V1.0.1-green.svg)](https://gitee.com/gdzWork/JPower)   [![License](https://img.shields.io/badge/Author-goo-orange.svg)](https://gitee.com/gdzWork/JPower)
 [![Gitter](https://img.shields.io/badge/Copyright%20-@Jpower-%23ff3f59.svg)](https://gitee.com/gdzWork/JPower)
@@ -161,6 +161,10 @@ JPower
     *  服务器：CentOS
     *  Docker 18
     *  Nginx
+
+## 交流群，加群前请先给项目点个 "Star"，谢谢！😘
+
+- 860452768
 
 ## 项目截图：
 

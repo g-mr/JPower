@@ -42,7 +42,7 @@
         <wxpay.version>0.0.3</wxpay.version>
         <guava.version>25.0-jre</guava.version>
         <poi.version>3.17</poi.version>
-        <knife4j.version>2.0.8</knife4j.version>
+        <knife4j.version>2.0.4</knife4j.version>
         <swagger-annotations.version>1.5.22</swagger-annotations.version>
         <swagger.version>2.9.2</swagger.version>
         <nacos.version>2.2.1.RELEASE</nacos.version>

@@ -2,11 +2,10 @@ package com.wlcb.jpower.gateway.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wlcb.jpower.gateway.feign.SystemClient;
 import com.wlcb.jpower.gateway.utils.ExculdesUrl;
 import com.wlcb.jpower.gateway.utils.IpUtil;
 import com.wlcb.jpower.gateway.utils.TokenUtil;
-import com.wlcb.jpower.module.base.vo.ResponseData;
+import com.wlcb.jpower.module.common.auth.RoleConstant;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.support.ChainMap;
@@ -59,9 +58,6 @@ public class AuthFilter implements GlobalFilter, Ordered {
     @Autowired
     private ObjectMapper objectMapper;
     @Resource
-    private SystemClient systemClient;
-
-    @Resource
     private AuthProperties authProperties;
 
     @Override
@@ -99,12 +95,17 @@ public class AuthFilter implements GlobalFilter, Ordered {
             }
 
             //匿名用户
-            ResponseData<Boolean> responseData = systemClient.queryRoleByUrl(currentPath);
-            if (responseData.getCode() == HttpStatus.OK.value() && responseData.getData() != null && responseData.getData()){
+            if (getIsAnonymous(currentPath)){
                 return chain.filter(addHeader(exchange,"anonymous",StringPool.EMPTY));
             }
             return proxyAuthenticationRequired(exchange.getResponse(), "缺失令牌，鉴权失败");
         }
+    }
+
+    private boolean getIsAnonymous(String currentPath){
+        Object o = redisUtil.get(CacheNames.TOKEN_URL_KEY+ RoleConstant.ANONYMOUS);
+        List<String> listUrl = Fc.isNull(o)?new ArrayList<>():(List<String>) o;
+        return Fc.contains(listUrl.iterator(),currentPath);
     }
 
     private ServerWebExchange addHeader(ServerWebExchange exchange,String otherAuth, String dataScope) {

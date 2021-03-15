@@ -28,6 +28,8 @@ public interface CoreRolefunctionService extends BaseService<TbCoreRoleFunction>
      * @param functionIds
      * @return java.lang.Integer
      */
-    Integer addRolefunctions(String roleId, String functionIds);
+    boolean addRolefunctions(String roleId, String functionIds);
+
+    void cacheAnonymous();
 
 }
