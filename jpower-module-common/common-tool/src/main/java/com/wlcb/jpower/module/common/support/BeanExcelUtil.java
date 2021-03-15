@@ -196,8 +196,7 @@ public class BeanExcelUtil<T> {
             wb.write(out);
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"生成成功",filename,true);
         }
-        catch (Exception e)
-        {
+        catch (Exception e){
             log.error("导出Excel异常{}", e.getMessage());
             throw new BusinessException("导出Excel失败，请联系网站管理员！");
         }

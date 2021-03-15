@@ -26,6 +26,13 @@
             <version>${com.jpower.version}</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.wlcb</groupId>
+            <artifactId>common-deploy</artifactId>
+            <version>${com.jpower.version}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>

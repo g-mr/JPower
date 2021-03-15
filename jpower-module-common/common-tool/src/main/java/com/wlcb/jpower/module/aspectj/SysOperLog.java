@@ -1,6 +1,5 @@
 package com.wlcb.jpower.module.aspectj;
 
-import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import lombok.Data;
 
 /**
@@ -9,7 +8,7 @@ import lombok.Data;
  * @Date 17:00 2020-07-10
  **/
 @Data
-public class SysOperLog extends BaseEntity {
+public class SysOperLog {
     private static final long serialVersionUID = 1L;
 
     /** 日志主键 */

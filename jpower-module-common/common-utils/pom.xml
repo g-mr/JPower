@@ -83,10 +83,5 @@
             <artifactId>poi-ooxml</artifactId>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>com.wlcb</groupId>-->
-<!--            <artifactId>common-exception</artifactId>-->
-<!--            <version>${com.jpower.version}</version>-->
-<!--        </dependency>-->
     </dependencies>
 </project>

@@ -47,6 +47,9 @@ public class MybatisPlusConfig {
         return new OptimisticLockerInterceptor();
     }
 
+    /**
+     * mapper扫描
+     */
     @Bean
     public MapperScannerConfigurer mapperScannerConfigurer() {
         MapperScannerConfigurer mapperScannerConfigurer = new MapperScannerConfigurer();

@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Configuration;
  * @Date 2020-01-31 16:11
  * @Version 1.0
  */
-//@Component
 @Aspect
 @Configuration
 public class ExceptionLogAspect {

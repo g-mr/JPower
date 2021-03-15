@@ -55,7 +55,9 @@ public class CoreRolefunctionServiceImpl extends BaseServiceImpl<TbCoreRoleFunct
 
         if (roleFunctions.size() > 0){
             boolean is = coreRoleFunctionDao.saveBatch(roleFunctions);
-            cacheAnonymous();
+            if(Fc.equals(roleId,RoleConstant.ANONYMOUS_ID)){
+                cacheAnonymous();
+            }
             return is;
         }
         return true;

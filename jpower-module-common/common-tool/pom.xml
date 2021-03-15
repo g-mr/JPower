@@ -15,27 +15,8 @@
     <dependencies>
 
         <dependency>
-            <groupId>com.wlcb</groupId>
-            <artifactId>common-auth</artifactId>
-            <version>${com.jpower.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.wlcb</groupId>
-            <artifactId>common-deploy</artifactId>
-            <version>${com.jpower.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.wlcb</groupId>
-            <artifactId>common-nacos</artifactId>
-            <version>${com.jpower.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.wlcb</groupId>
-            <artifactId>common-redis</artifactId>
-            <version>${com.jpower.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
         <dependency>
@@ -46,19 +27,7 @@
 
         <dependency>
             <groupId>com.wlcb</groupId>
-            <artifactId>common-transaction</artifactId>
-            <version>${com.jpower.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.wlcb</groupId>
             <artifactId>common-exception</artifactId>
-            <version>${com.jpower.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.wlcb</groupId>
-            <artifactId>common-log</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
 
