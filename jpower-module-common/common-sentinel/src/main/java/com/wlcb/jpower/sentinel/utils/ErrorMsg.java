@@ -1,4 +1,4 @@
-package com.wlcb.jpower.utils;
+package com.wlcb.jpower.sentinel.utils;
 
 import com.alibaba.csp.sentinel.slots.block.authority.AuthorityException;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeException;

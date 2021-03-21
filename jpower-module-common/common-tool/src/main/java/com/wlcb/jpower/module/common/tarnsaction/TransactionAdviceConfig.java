@@ -53,7 +53,10 @@ public class TransactionAdviceConfig {
         source.addTransactionalMethod("list*", txAttr_REQUIRED_READONLY);
         source.addTransactionalMethod("count*", txAttr_REQUIRED_READONLY);
         source.addTransactionalMethod("is*", txAttr_REQUIRED_READONLY);
-        return new TransactionInterceptor(transactionManager, source);
+        TransactionInterceptor transactionInterceptor = new TransactionInterceptor();
+        transactionInterceptor.setTransactionManager(transactionManager);
+        transactionInterceptor.setTransactionAttributeSource(source);
+        return transactionInterceptor;
     }
 
     @Bean

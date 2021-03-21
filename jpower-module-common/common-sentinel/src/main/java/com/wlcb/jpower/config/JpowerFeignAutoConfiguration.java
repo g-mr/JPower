@@ -1,7 +1,9 @@
 package com.wlcb.jpower.config;
 
 import com.alibaba.cloud.sentinel.feign.SentinelFeignAutoConfiguration;
-import com.wlcb.jpower.ext.JpowerSentinelFeign;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.BlockExceptionHandler;
+import com.wlcb.jpower.feign.ext.JpowerSentinelFeign;
+import com.wlcb.jpower.sentinel.handler.UrlBlockHandler;
 import feign.Feign;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -26,5 +28,12 @@ public class JpowerFeignAutoConfiguration {
     public Feign.Builder feignSentinelBuilder() {
         return JpowerSentinelFeign.builder();
     }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public BlockExceptionHandler blockExceptionHandler() {
+        return new UrlBlockHandler();
+    }
+
 
 }

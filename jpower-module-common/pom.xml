@@ -12,9 +12,8 @@
         <module>common-dbs</module>
         <module>common-transaction</module>
         <module>common-exception</module>
-        <module>common-sentinel</module>
         <module>common-tool</module>
-        <module>common-feign</module>
+        <module>common-sentinel</module>
         <module>common-log</module>
     </modules>
     <parent>
@@ -45,6 +44,21 @@
                 <artifactId>lombok</artifactId>
             </dependency>
 
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-aop</artifactId>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-tx</artifactId>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.retry</groupId>
+                <artifactId>spring-retry</artifactId>
+            </dependency>
+
         </dependencies>
 
         <dependencyManagement>
@@ -56,11 +70,11 @@
                     <version>${dom4j.version}</version>
                 </dependency>
 
-<!--                <dependency>-->
-<!--                    <groupId>io.netty</groupId>-->
-<!--                    <artifactId>netty-all</artifactId>-->
-<!--                    <version>${netty.version}</version>-->
-<!--                </dependency>-->
+                <dependency>
+                    <groupId>io.netty</groupId>
+                    <artifactId>netty-all</artifactId>
+                    <version>${netty.version}</version>
+                </dependency>
 
                 <dependency>
                     <groupId>commons-io</groupId>
@@ -143,44 +157,43 @@
                     <artifactId>easy-captcha</artifactId>
                     <version>${easy-captcha.version}</version>
                 </dependency>
+
+                <dependency>
+                    <groupId>com.alibaba</groupId>
+                    <artifactId>druid-spring-boot-starter</artifactId>
+                    <version>${druid-spring.version}</version>
+                </dependency>
+
+                <dependency>
+                    <groupId>com.baomidou</groupId>
+                    <artifactId>mybatis-plus-boot-starter</artifactId>
+                    <version>${mybatis-plus.version}</version>
+                </dependency>
+
+                <dependency>
+                    <groupId>com.alibaba</groupId>
+                    <artifactId>fastjson</artifactId>
+                    <version>${fastjson.version}</version>
+                </dependency>
+
+                <dependency>
+                    <groupId>com.sun.mail</groupId>
+                    <artifactId>javax.mail</artifactId>
+                    <version>${javax.mail.version}</version>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.apache.skywalking</groupId>
+                    <artifactId>apm-toolkit-logback-1.x</artifactId>
+                    <version>${skywalking.version}</version>
+                </dependency>
+
+                <dependency>
+                    <groupId>net.logstash.logback</groupId>
+                    <artifactId>logstash-logback-encoder</artifactId>
+                    <version>${logstash.version}</version>
+                </dependency>
             </dependencies>
         </dependencyManagement>
-
-<!--    <build>-->
-
-<!--        <plugins>-->
-
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-jar-plugin</artifactId>-->
-<!--                <version>3.1.0</version>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>utils</id>-->
-<!--                        <goals><goal>jar</goal></goals>-->
-<!--                        <phase>package</phase>-->
-<!--                        <configuration>-->
-<!--                            <archive>-->
-<!--                                <manifest>-->
-<!--                                    &lt;!&ndash; 是否添加依赖的jar路径配置 &ndash;&gt;-->
-<!--                                    <addClasspath>true</addClasspath>-->
-<!--                                    &lt;!&ndash; 依赖的jar包存放位置，和生成的jar放在同一级目录下 &ndash;&gt;-->
-<!--                                    <classpathPrefix>lib/</classpathPrefix>-->
-<!--                                </manifest>-->
-<!--                            </archive>-->
-
-<!--                            <classifier>utils</classifier>-->
-<!--                            <includes>-->
-<!--                                <include>**/utils/**</include>-->
-<!--                            </includes>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-
-<!--            </plugin>-->
-
-<!--        </plugins>-->
-
-<!--    </build>-->
 
 </project>

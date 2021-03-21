@@ -1,4 +1,4 @@
-package com.wlcb.jpower.interceptor;
+package com.wlcb.jpower.feign.interceptor;
 
 import com.wlcb.jpower.module.common.auth.SecureConstant;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;

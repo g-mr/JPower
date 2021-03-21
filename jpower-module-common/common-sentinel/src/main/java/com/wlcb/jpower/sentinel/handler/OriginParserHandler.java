@@ -1,4 +1,4 @@
-package com.wlcb.jpower.handler;
+package com.wlcb.jpower.sentinel.handler;
 
 import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.RequestOriginParser;
 import com.wlcb.jpower.module.common.utils.SecureUtil;

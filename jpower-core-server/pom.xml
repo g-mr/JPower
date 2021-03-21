@@ -34,6 +34,13 @@
 
         <dependency>
             <groupId>com.wlcb</groupId>
+            <artifactId>common-sentinel</artifactId>
+            <version>${com.jpower.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wlcb</groupId>
             <artifactId>common-redis</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>

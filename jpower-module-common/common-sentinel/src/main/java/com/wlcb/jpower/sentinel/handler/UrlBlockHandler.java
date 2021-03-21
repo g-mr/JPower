@@ -1,14 +1,13 @@
-package com.wlcb.jpower.handler;
+package com.wlcb.jpower.sentinel.handler;
 
 import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.BlockExceptionHandler;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
-import com.wlcb.jpower.utils.ErrorMsg;
+import com.wlcb.jpower.sentinel.utils.ErrorMsg;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
  * @Version 1.0
  */
 @Slf4j
-@Component
 public class UrlBlockHandler implements BlockExceptionHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, BlockException ex) throws Exception {
@@ -29,9 +27,8 @@ public class UrlBlockHandler implements BlockExceptionHandler {
 
         response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
         response.setCharacterEncoding(StringPool.UTF_8);
-        response.setHeader("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE);
-        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-        new ObjectMapper()
-                .writeValue(response.getWriter(),ErrorMsg.blockException(ex));
+        response.setHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        new ObjectMapper().writeValue(response.getWriter(), ErrorMsg.blockException(ex));
     }
 }

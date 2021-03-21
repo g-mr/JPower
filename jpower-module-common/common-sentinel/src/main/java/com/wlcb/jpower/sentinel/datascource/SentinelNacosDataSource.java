@@ -1,4 +1,4 @@
-package com.wlcb.jpower.datasource;
+package com.wlcb.jpower.sentinel.datascource;
 
 import com.alibaba.csp.sentinel.datasource.ReadableDataSource;
 import com.alibaba.csp.sentinel.datasource.nacos.NacosDataSource;

@@ -133,8 +133,9 @@
                             <excludes>
                                 <exclude>io.seata:seata-spring-boot-starter</exclude>
                                 <exclude>com.alibaba.cloud:spring-cloud-starter-alibaba-seata</exclude>
-                                <exclude>com.wlcb:common-nacos</exclude>
                                 <exclude>com.wlcb:common-deploy</exclude>
+                                <exclude>com.wlcb:common-transaction</exclude>
+                                <exclude>com.wlcb:common-sentinel</exclude>
                                 <exclude>org.springframework.cloud:spring-cloud-commons</exclude>
 
                                 <exclude>com.wlcb:system-api</exclude>

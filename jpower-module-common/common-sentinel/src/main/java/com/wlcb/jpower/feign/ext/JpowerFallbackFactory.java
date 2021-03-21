@@ -1,4 +1,4 @@
-package com.wlcb.jpower.ext;
+package com.wlcb.jpower.feign.ext;
 
 import feign.Target;
 import lombok.AllArgsConstructor;

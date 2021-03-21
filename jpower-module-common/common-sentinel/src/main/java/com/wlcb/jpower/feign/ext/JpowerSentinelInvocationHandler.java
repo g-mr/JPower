@@ -1,4 +1,4 @@
-package com.wlcb.jpower.ext;
+package com.wlcb.jpower.feign.ext;
 
 import com.alibaba.cloud.sentinel.feign.SentinelContractHolder;
 import com.alibaba.cloud.sentinel.feign.SentinelInvocationHandler;

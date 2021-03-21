@@ -1,6 +1,6 @@
 package com.alibaba.cloud.seata.feign;
 
-import com.wlcb.jpower.ext.JpowerSentinelFeign;
+import com.wlcb.jpower.feign.ext.JpowerSentinelFeign;
 import feign.Client;
 import feign.Feign;
 import feign.Retryer;

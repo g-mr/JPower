@@ -21,12 +21,4 @@
         <module>system-entity</module>
     </modules>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.wlcb</groupId>
-            <artifactId>common-sentinel</artifactId>
-            <version>${com.jpower.version}</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
 </project>

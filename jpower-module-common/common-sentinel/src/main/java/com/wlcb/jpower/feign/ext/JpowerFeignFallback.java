@@ -1,4 +1,4 @@
-package com.wlcb.jpower.ext;
+package com.wlcb.jpower.feign.ext;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.wlcb.jpower.module.common.utils.JsonUtil;
