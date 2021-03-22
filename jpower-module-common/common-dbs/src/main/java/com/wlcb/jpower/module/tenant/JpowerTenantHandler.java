@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
-import com.baomidou.mybatisplus.extension.plugins.tenant.TenantHandler;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SecureUtil;
 import com.wlcb.jpower.module.common.utils.WebUtil;
@@ -21,7 +20,7 @@ import java.util.List;
  * @Description TODO 租户实现逻辑(基于表字段)
  * @Author 郭丁志
  * @Date 2020-10-14 21:07
- * @Version 1.0
+ * @Version 2.0
  */
 @AllArgsConstructor
 public class JpowerTenantHandler implements TenantLineHandler, SmartInitializingSingleton {

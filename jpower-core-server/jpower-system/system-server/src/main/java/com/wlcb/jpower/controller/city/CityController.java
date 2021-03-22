@@ -43,22 +43,6 @@ public class CityController extends BaseController {
         return ReturnJsonUtil.ok("获取成功", list);
     }
 
-//    @ApiOperation("分页查询行政区域列表")
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "pageNum",value = "第几页",defaultValue = "1",paramType = "query",dataType = "int",required = true),
-//            @ApiImplicitParam(name = "pageSize",value = "每页长度",defaultValue = "10",paramType = "query",dataType = "int",required = true),
-//            @ApiImplicitParam(name = "pcode",value = "父级编码",defaultValue = JpowerConstants.TOP_CODE,required = true,paramType = "query")
-//    })
-//    @RequestMapping(value = "/listPage",method = {RequestMethod.GET},produces="application/json")
-//    public ResponseData<PageInfo<TbCoreCity>> listPage(TbCoreCity coreCity){
-//        coreCity.setPcode(Fc.isNotBlank(coreCity.getPcode())?coreCity.getPcode():JpowerConstants.TOP_CODE);
-//
-//        PaginationContext.startPage();
-//        List<TbCoreCity> list = coreCityService.list(coreCity);
-//
-//        return ReturnJsonUtil.ok("获取成功", BaseDictWrapper.<TbCoreCity,TbCoreCity>builder().pageVo(list));
-//    }
-
     @ApiOperation(value = "新增行政区域",notes = "主键不可传")
     @RequestMapping(value = "/add",method = {RequestMethod.POST},produces="application/json")
     public ResponseData add( TbCoreCity coreCity){

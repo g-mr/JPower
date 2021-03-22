@@ -78,7 +78,7 @@ public class TenantController extends BaseController {
     public ResponseData<Page<TbCoreTenant>> list(@ApiIgnore @RequestParam Map<String, Object> map){
         LambdaQueryWrapper<TbCoreTenant> queryWrapper = Condition.getQueryWrapper(map,TbCoreTenant.class).lambda();
         if (!SecureUtil.isRoot()){
-            queryWrapper.eq(TbCoreTenant::getTenantCode,SecureUtil.getTenantCode());
+//            queryWrapper.eq(TbCoreTenant::getTenantCode,SecureUtil.getTenantCode());
         }
         return ReturnJsonUtil.ok("查询成功",tenantService.page(PaginationContext.getMpPage(), queryWrapper));
     }
