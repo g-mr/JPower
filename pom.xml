@@ -43,15 +43,14 @@
         <skywalking.version>8.1.0</skywalking.version>
         <spring-boot-admin.version>2.4.0</spring-boot-admin.version>
         <logstash.version>6.2</logstash.version>
+        <netty.version>4.1.45.Final</netty.version>
         <srping-alibaba.version>2.2.5.RELEASE</srping-alibaba.version>
         <srping-cloud.version>2020.0.1</srping-cloud.version>
-
 
         <dockerfile-maven-plugin.version>1.4.13</dockerfile-maven-plugin.version>
         <docker.image.prefix>jpower</docker.image.prefix>
         <docker.registry>219.148.186.235:99</docker.registry>
 
-        <netty.version>4.1.45.Final</netty.version>
     </properties>
 
     <modules>

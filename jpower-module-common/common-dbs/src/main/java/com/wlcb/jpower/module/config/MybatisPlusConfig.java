@@ -1,15 +1,22 @@
 package com.wlcb.jpower.module.config;
 
+import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.core.injector.ISqlInjector;
 import com.baomidou.mybatisplus.core.parser.ISqlParser;
 import com.baomidou.mybatisplus.core.parser.ISqlParserFilter;
+import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.OptimisticLockerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
+import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.optimize.JsqlParserCountOptimize;
 import com.wlcb.jpower.module.common.utils.ObjectUtil;
 import com.wlcb.jpower.module.datascope.interceptor.DataScopeInterceptor;
 import com.wlcb.jpower.module.mp.CustomSqlInjector;
+import lombok.AllArgsConstructor;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -29,8 +36,11 @@ import java.util.Arrays;
  * @Version 1.0
  */
 @EnableTransactionManagement
+@AllArgsConstructor
 @Configuration
 public class MybatisPlusConfig {
+
+    private final TenantLineHandler tenantLineHandler;
 
     /**
      * 配置公用字段
@@ -40,11 +50,6 @@ public class MybatisPlusConfig {
         GlobalConfig globalConfig = new GlobalConfig();
         globalConfig.setMetaObjectHandler(new UpdateRelatedFieldsMetaHandler());
         return globalConfig;
-    }
-
-    @Bean
-    public OptimisticLockerInterceptor optimisticLockerInterceptor(){
-        return new OptimisticLockerInterceptor();
     }
 
     /**
@@ -60,18 +65,30 @@ public class MybatisPlusConfig {
     /**
      * 分页插件
      */
+//    @Bean
+//    public PaginationInterceptor paginationInterceptor(ObjectProvider<ISqlParser[]> sqlParsers, ObjectProvider<ISqlParserFilter> sqlParserFilter) {
+//        PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
+//
+//        ISqlParser[] sqlParsersArray = sqlParsers.getIfAvailable();
+//        if (ObjectUtil.isNotEmpty(sqlParsersArray)) {
+//            paginationInterceptor.setSqlParserList(Arrays.asList(sqlParsersArray));
+//        }
+//
+//        paginationInterceptor.setSqlParserFilter(sqlParserFilter.getIfAvailable());
+//        paginationInterceptor.setCountSqlParser(new JsqlParserCountOptimize(true));
+//        return paginationInterceptor;
+//    }
+
     @Bean
-    public PaginationInterceptor paginationInterceptor(ObjectProvider<ISqlParser[]> sqlParsers, ObjectProvider<ISqlParserFilter> sqlParserFilter) {
-        PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
-
-        ISqlParser[] sqlParsersArray = sqlParsers.getIfAvailable();
-        if (ObjectUtil.isNotEmpty(sqlParsersArray)) {
-            paginationInterceptor.setSqlParserList(Arrays.asList(sqlParsersArray));
-        }
-
-        paginationInterceptor.setSqlParserFilter(sqlParserFilter.getIfAvailable());
-        paginationInterceptor.setCountSqlParser(new JsqlParserCountOptimize(true));
-        return paginationInterceptor;
+    public MybatisPlusInterceptor paginationInterceptor() {
+        MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+        // 乐观锁插件
+        interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
+        // 分页插件 DbType：数据库类型(根据类型获取应使用的分页方言)
+        interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
+        // 多租户
+        interceptor.addInnerInterceptor(new TenantLineInnerInterceptor(tenantLineHandler));
+        return interceptor;
     }
 
     @Bean

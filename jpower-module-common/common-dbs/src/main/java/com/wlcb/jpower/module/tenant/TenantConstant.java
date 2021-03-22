@@ -20,6 +20,14 @@ public interface TenantConstant {
     /** 租户额度默认值为不限制 **/
     Integer TENANT_ACCOUNT_NUMBER = -1;
 
+
+    /**
+     * 生成自定义租户id
+     *
+     * @return string
+     */
+    String generate();
+
     /**
      * @author 郭丁志
      * @Description // 创建一个租户Code
