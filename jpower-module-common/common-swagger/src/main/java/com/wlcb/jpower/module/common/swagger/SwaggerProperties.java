@@ -27,6 +27,20 @@ public class SwaggerProperties {
 
     private List<String> basePackage = new ArrayList(Collections.singletonList("com.wlcb"));
 
+    /**
+     * swagger会解析的url规则
+     **/
+    private List<String> basePath = new ArrayList<>();
+    /**
+     * 在basePath基础上需要排除的url规则
+     **/
+    private List<String> excludePath = new ArrayList<>();
+
+    /**
+     * host信息
+     **/
+    private String host = "";
+
     private String title = "Jpower 接口文档系统";
     private String description = "Jpower 接口文档系统";
     private String license = "Powered By Jpower";

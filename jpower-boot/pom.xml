@@ -73,12 +73,8 @@
                     <artifactId>spring-cloud-commons</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>com.alibaba.cloud</groupId>
-                    <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>io.seata</groupId>
-                    <artifactId>seata-spring-boot-starter</artifactId>
+                    <groupId>com.wlcb</groupId>
+                    <artifactId>common-transaction</artifactId>
                 </exclusion>
             </exclusions>
             <version>${com.jpower.version}</version>

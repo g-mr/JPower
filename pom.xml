@@ -36,9 +36,9 @@
         <dom4j.version>1.6.1</dom4j.version>
         <guava.version>25.0-jre</guava.version>
         <poi.version>3.17</poi.version>
-        <knife4j.version>2.0.4</knife4j.version>
-        <swagger-annotations.version>1.5.22</swagger-annotations.version>
-        <swagger.version>2.9.2</swagger.version>
+        <knife4j.version>2.0.8</knife4j.version>
+        <swagger-annotations.version>1.6.2</swagger-annotations.version>
+        <swagger.version>2.10.5</swagger.version>
         <common-io.version>2.8.0</common-io.version>
         <skywalking.version>8.1.0</skywalking.version>
         <spring-boot-admin.version>2.4.0</spring-boot-admin.version>
