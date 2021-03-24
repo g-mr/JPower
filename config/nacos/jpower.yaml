@@ -1,14 +1,5 @@
 #通用配置
 
-## 开启Swagger的Basic认证功能,默认是false  （目前这块配置暂时没测试是否可用，生产已经写死不可用）
-#knife4j:
-#  basic:
-#    enable: false
-#    ## Basic认证用户名
-#    username: guodingzhi
-#    ## Basic认证密码
-#    password: guodingzhi
-
 servlet:
   multipart:
     enabled: true
@@ -25,6 +16,12 @@ servlet:
     buffer-size: 1024
     # 是否分配的直接内存
     direct-buffers: true
+    # 线程配置
+    threads:
+      # 设置IO线程数, 它主要执行非阻塞的任务,它们会负责多个连接, 默认设置每个CPU核心一个线程
+      io: 16
+      # 阻塞任务线程池, 当执行类似servlet请求阻塞操作, undertow会从这个线程池中取得线程,它的值设置取决于系统的负载
+      worker: 400
 
 spring:
   cloud:
@@ -32,44 +29,19 @@ spring:
       eager: true
       log:
         dir: ./logs/sentinel
+  security:
+    user:
+      name: "admin"
+      password: "admin"
 
 #feign配置
 feign:
-  hystrix:
+  sentinel:
     enabled: true
   okhttp:
     enabled: true
   httpclient:
     enabled: false
-
-hystrix:
-  threadpool:
-    default:
-      #并发执行的最大线程数，默认10
-      coreSize: 500
-      #BlockingQueue的最大队列数，默认值-1
-      maxQueueSize: 1200
-      #即使maxQueueSize没有达到，达到queueSizeRejectionThreshold该值后，请求也会被拒绝，默认值5
-      queueSizeRejectionThreshold: 1000
-  command:
-    default:
-      execution:
-        timeout:
-          #如果enabled设置为false，则请求超时交给ribbon控制
-          enabled: false
-
-#ribbon重试配置
-ribbon:
-  #对当前实例的重试次数
-  MaxAutoRetries: 1
-  #切换实例的重试次数
-  MaxAutoRetriesNextServer: 2
-  #请求处理的超时时间
-  ReadTimeout: 60000
-  #请求连接的超时时间
-  ConnectTimeout: 60000
-  #对所有操作请求都进行重试
-  OkToRetryOnAllOperations: true
 
 management:
   # 端点检查（健康检查）
@@ -87,8 +59,41 @@ logging:
   level:
     root: info
 
+#knife4j配置
+knife4j:
+  #启用
+  enable: true
+  #基础认证
+  basic:
+    enable: false
+    username: jpower
+    password: jpower
+  #增强配置
+  setting:
+    enableSwaggerModels: true
+    enableDocumentManage: true
+    enableHost: false
+    enableHostText: http://localhost
+    enableRequestCache: true
+    enableFilterMultipartApis: false
+    enableFilterMultipartApiMethodType: POST
+    language: zh-CN
+    enableFooter: false
+    enableFooterCustom: true
+    footerCustomContent: Copyright © 2021 JPower All Rights Reserved
+
+#swagger公共信息
 swagger:
-  termsOfServiceUrl: http://localhost:81
+  title: JPower 接口文档系统
+  description: JPower 接口文档系统
+  version: 2.0.0.RELEASE
+  license: Powered By JPower
+  license-url: https://gitee.com/gdzWork/JPower
+  terms-of-service-url: https://jpower.top
+  contact:
+    name: mr.g
+    email: ding931226@yeah.net
+    url: https://gitee.com/gdzWork
 
 jpower:
   #文件存储地址（自己改成自己文件存储路径即可，如果docker部署要记得修改docker-compose.yml的映射路径）

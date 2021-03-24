@@ -68,10 +68,12 @@ public class JpowerApplication {
         }
 
         Properties props = System.getProperties();
+        props.setProperty("jpower.name", appName);
+        props.setProperty("jpower.env", profile);
+        props.setProperty("jpower.is-local", String.valueOf(isLocalDev()));
         props.setProperty("spring.application.name", appName);
         props.setProperty("spring.profiles.active", profile);
         props.setProperty("logging.config", "classpath:logback-spring.xml");
-        props.setProperty("jpower.is-local", String.valueOf(isLocalDev()));
         props.setProperty("spring.main.allow-bean-definition-overriding", "true");
         //nacos配置
         props.setProperty("spring.cloud.nacos.discovery.server-addr", "${jpower.".concat(profile).concat(".nacos.server-addr:}"));
@@ -88,7 +90,7 @@ public class JpowerApplication {
         deployServiceList.stream().sorted(Comparator.comparing(DeployService::getOrder)).collect(Collectors.toList())
                 .forEach(deployService -> deployService.launcher(builder, appName, profile));
 
-        log.warn("{}项目已启动,运行环境：{}",appName,profile);
+        log.info("{}项目已启动,运行环境：{}",appName,profile);
         return builder;
     }
 

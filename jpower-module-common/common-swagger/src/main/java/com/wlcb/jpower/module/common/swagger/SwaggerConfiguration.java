@@ -2,7 +2,10 @@ package com.wlcb.jpower.module.common.swagger;
 
 import com.github.xiaoymin.knife4j.spring.extension.OpenApiExtensionResolver;
 import com.google.common.collect.Lists;
+import com.wlcb.jpower.module.common.deploy.props.JpowerProperties;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +21,7 @@ import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.ApiSelectorBuilder;
 import springfox.documentation.spring.web.plugins.Docket;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,31 +39,25 @@ import static com.google.common.collect.Lists.newArrayList;
 @EnableSwagger
 @EnableConfigurationProperties({SwaggerProperties.class})
 @Import({BeanValidatorPluginsConfiguration.class})
+@AllArgsConstructor
 public class SwaggerConfiguration {
 
     private static final String DEFAULT_BASE_PATH = "/**";
     private static final List<String> DEFAULT_EXCLUDE_PATH = Arrays.asList("/error", "/actuator/**");
 
-//    @Value("${spring.application.name}")
-//    private String appName;
+    /**
+     * JPower配置
+     **/
+    private final JpowerProperties properties;
 
     /**
      * 引入Knife4j扩展类
      */
-    @Autowired
-    private OpenApiExtensionResolver openApiExtensionResolver;
-
-//    @Bean
-//    @ConditionalOnMissingBean
-//    public SwaggerProperties getSwaggerProperties(){
-//        return new SwaggerProperties();
-//    }
+    private final OpenApiExtensionResolver openApiExtensionResolver;
 
     @Bean
     @ConditionalOnMissingBean
     public Docket createRestApi(SwaggerProperties swaggerProperties) {
-
-//        getSwaggerProperties()
 
         // base-path处理
         if (swaggerProperties.getBasePath().size() == 0) {
@@ -88,7 +86,7 @@ public class SwaggerConfiguration {
         return apis.build()
                 .securitySchemes(securitySchemes(swaggerProperties))
                 .securityContexts(Lists.newArrayList(securityContexts(swaggerProperties)))
-                .extensions(openApiExtensionResolver.buildExtensions("s"))
+                .extensions(openApiExtensionResolver.buildExtensions(properties.getName()))
                 .pathMapping("/");
     }
 
