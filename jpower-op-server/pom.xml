@@ -15,6 +15,7 @@
 
     <modules>
         <module>jpower-admin</module>
+        <module>jpower-api</module>
     </modules>
 
     <dependencies>

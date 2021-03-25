@@ -6,6 +6,7 @@ import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.config.listener.Listener;
+import com.alibaba.nacos.api.exception.NacosException;
 import com.wlcb.jpower.gateway.utils.NacosUtils;
 import com.wlcb.jpower.module.common.utils.ExceptionsUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
@@ -68,7 +69,7 @@ public class NacosDynamicRouteListener {
                 dynamicRouteService.publishEvent();
             }
 
-        } catch (Exception e) {
+        } catch (NacosException e) {
             log.error("nacos-addListener-error", ExceptionsUtil.getStackTraceAsString(e));
         }
     }

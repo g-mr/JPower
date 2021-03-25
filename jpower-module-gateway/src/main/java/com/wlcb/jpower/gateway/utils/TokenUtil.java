@@ -34,11 +34,6 @@ public class TokenUtil {
 
         String token = Fc.isBlank(header)?Fc.decode(cookies):header;
         if (StringUtil.isNotBlank(token)) {
-//            String headStr = token.substring(0, 6).toLowerCase();
-//            if (headStr.compareTo(TokenConstant.JPOWER) == 0) {
-//                token = token.substring(TokenConstant.AUTH_LENGTH);
-//                return token;
-//            }
             return JwtUtil.parsingToken(token);
         }
 

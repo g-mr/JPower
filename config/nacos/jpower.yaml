@@ -78,6 +78,7 @@ knife4j:
     enableFilterMultipartApis: false
     enableFilterMultipartApiMethodType: POST
     language: zh-CN
+    enableVersion: true
     enableFooter: false
     enableFooterCustom: true
     footerCustomContent: Copyright © 2021 JPower All Rights Reserved
@@ -89,7 +90,7 @@ swagger:
   version: 2.0.0.RELEASE
   license: Powered By JPower
   license-url: https://gitee.com/gdzWork/JPower
-  terms-of-service-url: https://jpower.top
+  terms-of-service-url: http://jpower.top
   contact:
     name: mr.g
     email: ding931226@yeah.net

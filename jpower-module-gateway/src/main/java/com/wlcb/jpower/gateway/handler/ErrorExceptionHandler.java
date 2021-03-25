@@ -29,6 +29,8 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class ErrorExceptionHandler implements ErrorWebExceptionHandler {
 
+    private static final String API_PATH = "doc.html";
+
     private final ObjectMapper objectMapper;
 
     @NonNull
@@ -67,6 +69,12 @@ public class ErrorExceptionHandler implements ErrorWebExceptionHandler {
      * @return
      */
     private String buildMessage(ServerHttpRequest request, Throwable ex) {
+
+        String uri = request.getURI().toString();
+        if (uri.endsWith(API_PATH)) {
+            return "[聚合网关] 已迁移至 [jpower-api] 服务，请启动 [jpower-api] 服务并访问 [http://localhost:18000/doc.html]";
+        }
+
         StringBuilder message = new StringBuilder("Failed to handle request [");
         message.append(request.getMethodValue());
         message.append(" ");

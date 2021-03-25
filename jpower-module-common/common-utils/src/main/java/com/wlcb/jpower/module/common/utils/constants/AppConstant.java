@@ -33,6 +33,9 @@ public interface AppConstant {
     /** spring boot admin **/
     String JPOWER_ADMIN = JPOWER.concat("-admin");
 
+    /** swagger聚合文档 **/
+    String JPOWER_API = JPOWER.concat("-api");
+
     /** 网关模块名称 **/
     String JPOWER_GATEWAY = "jpower-gateway";
 

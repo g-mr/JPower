@@ -11,6 +11,7 @@ import com.wlcb.jpower.module.datascope.interceptor.DataScopeInterceptor;
 import com.wlcb.jpower.module.mp.CustomSqlInjector;
 import com.wlcb.jpower.module.tenant.JpowerTenantProperties;
 import lombok.AllArgsConstructor;
+import org.mybatis.spring.annotation.MapperScan;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -28,6 +29,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @EnableTransactionManagement
 @AllArgsConstructor
+@MapperScan("com.wlcb.**.dbs.dao.**")
 @Configuration(proxyBeanMethods = false)
 public class MybatisPlusConfig {
 
@@ -39,16 +41,6 @@ public class MybatisPlusConfig {
         GlobalConfig globalConfig = new GlobalConfig();
         globalConfig.setMetaObjectHandler(new UpdateRelatedFieldsMetaHandler());
         return globalConfig;
-    }
-
-    /**
-     * mapper扫描
-     */
-    @Bean
-    public MapperScannerConfigurer mapperScannerConfigurer() {
-        MapperScannerConfigurer mapperScannerConfigurer = new MapperScannerConfigurer();
-        mapperScannerConfigurer.setBasePackage("com.wlcb.**.dbs.dao");
-        return mapperScannerConfigurer;
     }
 
     @Bean
