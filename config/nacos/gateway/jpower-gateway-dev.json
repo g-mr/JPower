@@ -1,7 +1,7 @@
 [
   {
     "id": "jpower-system",
-    "order": 2,
+    "order": 0,
     "predicates": [
       {
         "name": "Path",
@@ -15,7 +15,7 @@
   },
   {
     "id": "route-example",
-    "order": 0,
+    "order": 1,
     "predicates": [{
       "name": "Path",
       "args": {
