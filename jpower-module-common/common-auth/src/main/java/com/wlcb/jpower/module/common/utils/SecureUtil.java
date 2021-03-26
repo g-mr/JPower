@@ -47,7 +47,7 @@ public class SecureUtil {
     /**
      * 获取用户信息
      *
-     * @return BladeUser
+     * @return UserInfo
      */
     public static UserInfo getUser() {
         HttpServletRequest request = WebUtil.getRequest();
@@ -100,7 +100,7 @@ public class SecureUtil {
      * 获取用户信息
      *
      * @param request request
-     * @return BladeUser
+     * @return UserInfo
      */
     public static UserInfo getUser(HttpServletRequest request) {
         Claims claims = getClaims(request);

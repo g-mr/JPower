@@ -1,5 +1,4 @@
 #通用配置
-
 servlet:
   multipart:
     enabled: true

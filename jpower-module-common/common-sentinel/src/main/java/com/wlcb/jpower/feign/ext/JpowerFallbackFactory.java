@@ -6,7 +6,7 @@ import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cloud.openfeign.FallbackFactory;
 
 /**
- * @ClassName BladeFallbackFactory
+ * @ClassName JpowerFallbackFactory
  * @Description TODO 默认 Fallback
  * @Author 郭丁志
  * @Date 2021/3/10 0010 2:32

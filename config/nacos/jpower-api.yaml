@@ -1,0 +1,17 @@
+knife4j:
+  enableAggregation: true
+  cloud:
+    enable: true
+    routes:
+      - name: 授权模块
+        uri: 127.0.0.1
+        location: /jpower-auth/v2/api-docs
+      - name: 系统管理
+        uri: 127.0.0.1
+        location: /jpower-system/v2/api-docs
+      - name: 用户模块
+        uri: 127.0.0.1
+        location: /jpower-user/v2/api-docs
+      - name: 文件模块
+        uri: 127.0.0.1
+        location: /jpower-file/v2/api-docs
