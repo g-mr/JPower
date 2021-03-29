@@ -64,10 +64,10 @@
                     <groupId>com.wlcb</groupId>
                     <artifactId>common-nacos</artifactId>
                 </exclusion>
-                <exclusion>
-                    <groupId>com.wlcb</groupId>
-                    <artifactId>common-deploy</artifactId>
-                </exclusion>
+<!--                <exclusion>-->
+<!--                    <groupId>com.wlcb</groupId>-->
+<!--                    <artifactId>common-deploy</artifactId>-->
+<!--                </exclusion>-->
                 <exclusion>
                     <groupId>org.springframework.cloud</groupId>
                     <artifactId>spring-cloud-commons</artifactId>
@@ -85,6 +85,23 @@
             <artifactId>knife4j-spring-ui</artifactId>
             <version>${knife4j.version}</version>
         </dependency>
+
+        <!--        <dependency>-->
+<!--            <groupId>com.wlcb</groupId>-->
+<!--            <artifactId>common-deploy</artifactId>-->
+<!--            <version>${com.jpower.version}</version>-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>com.wlcb</groupId>-->
+<!--                    <artifactId>common-nacos</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.springframework.cloud</groupId>-->
+<!--                    <artifactId>spring-cloud-starter-bootstrap</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
+
     </dependencies>
 
     <build>
@@ -129,7 +146,7 @@
                             <excludes>
                                 <exclude>io.seata:seata-spring-boot-starter</exclude>
                                 <exclude>com.alibaba.cloud:spring-cloud-starter-alibaba-seata</exclude>
-                                <exclude>com.wlcb:common-deploy</exclude>
+<!--                                <exclude>com.wlcb:common-deploy</exclude>-->
                                 <exclude>com.wlcb:common-transaction</exclude>
                                 <exclude>com.wlcb:common-sentinel</exclude>
                                 <exclude>org.springframework.cloud:spring-cloud-commons</exclude>

@@ -9,8 +9,6 @@ import org.springframework.core.annotation.Order;
 
 /**
  * 配置类
- *
- * @author Chill
  */
 @Configuration(proxyBeanMethods = false)
 @AllArgsConstructor
