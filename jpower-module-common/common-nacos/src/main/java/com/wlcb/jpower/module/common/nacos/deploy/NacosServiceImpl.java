@@ -1,4 +1,4 @@
-package com.wlcb.jpower.module.common.deploy.service.impl;
+package com.wlcb.jpower.module.common.nacos.deploy;
 
 import com.wlcb.jpower.module.common.deploy.service.DeployService;
 import com.wlcb.jpower.module.common.nacos.NacosConstants;
@@ -14,7 +14,7 @@ import java.util.Properties;
  * @Date 2020-08-19 16:22
  * @Version 1.0
  */
-public class DeployServiceImpl implements DeployService {
+public class NacosServiceImpl implements DeployService {
 
     @Override
     public void launcher(SpringApplicationBuilder builder, String appName, String profile) {

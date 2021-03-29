@@ -51,6 +51,12 @@
             <version>${com.jpower.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.wlcb</groupId>
+            <artifactId>common-nacos</artifactId>
+            <version>${com.jpower.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

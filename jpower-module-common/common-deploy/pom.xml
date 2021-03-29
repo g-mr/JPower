@@ -22,7 +22,7 @@
 
         <dependency>
             <groupId>com.wlcb</groupId>
-            <artifactId>common-nacos</artifactId>
+            <artifactId>common-utils</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
 

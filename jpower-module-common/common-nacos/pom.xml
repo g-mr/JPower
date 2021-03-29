@@ -15,7 +15,6 @@
 
     <dependencies>
 
-        <!-- https://mvnrepository.com/artifact/com.alibaba.cloud/spring-cloud-starter-alibaba-nacos-discovery -->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
@@ -34,9 +33,14 @@
 
         <dependency>
             <groupId>com.wlcb</groupId>
+            <artifactId>common-deploy</artifactId>
+            <version>${com.jpower.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wlcb</groupId>
             <artifactId>common-utils</artifactId>
             <version>${com.jpower.version}</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

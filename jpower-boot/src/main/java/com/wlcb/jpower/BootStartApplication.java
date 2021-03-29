@@ -1,7 +1,6 @@
 package com.wlcb.jpower;
 
 import com.wlcb.jpower.module.common.deploy.JpowerApplication;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -17,9 +16,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class BootStartApplication {
 
     public static void main(String[] args) {
-//        SpringApplication.run(BootStartApplication.class,args);
         JpowerApplication.run("jpower-boot",BootStartApplication.class);
-
     }
-
 }
