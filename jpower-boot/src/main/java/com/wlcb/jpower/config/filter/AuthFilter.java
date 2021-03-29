@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 
 import javax.annotation.Resource;
 import javax.servlet.*;
@@ -37,7 +38,6 @@ import java.util.Map;
  * @Version 1.0
  */
 @Component
-//@RefreshScope
 @Order(999)
 @Slf4j
 public class AuthFilter implements Filter {
@@ -50,6 +50,8 @@ public class AuthFilter implements Filter {
 
     @Autowired
     private CoreFunctionService coreFunctionService;
+
+    private final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
     /** 环境 **/
     @Value("${spring.profiles.active}")
@@ -72,7 +74,7 @@ public class AuthFilter implements Filter {
         String currentPath = httpRequest.getServletPath();
 
         //不鉴权得URL
-        if (AuthDefExculdesUrl.getExculudesUrl().stream().map(url -> url.replace(AuthDefExculdesUrl.TARGET, AuthDefExculdesUrl.REPLACEMENT)).anyMatch(currentPath::contains)){
+        if (isSkip(currentPath)){
             chain.doFilter(request, response);
             return;
         }
@@ -116,6 +118,11 @@ public class AuthFilter implements Filter {
             e.printStackTrace();
         }
 
+    }
+
+    private boolean isSkip(String path) {
+        return AuthDefExculdesUrl.getExculudesUrl().stream().anyMatch(pattern -> antPathMatcher.match(pattern, path))
+                || authProperties.getSkipUrl().stream().anyMatch(pattern -> antPathMatcher.match(pattern, path));
     }
 
     private ServletRequest addHeader(HttpServletRequest request,String value, String dataScope) {

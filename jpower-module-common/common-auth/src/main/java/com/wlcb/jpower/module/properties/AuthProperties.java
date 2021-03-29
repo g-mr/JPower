@@ -17,7 +17,17 @@ import java.util.List;
 @ConfigurationProperties("jpower.auth")
 public class AuthProperties {
 
+    /**
+     * 放行API集合
+     */
+    private final List<String> skipUrl = new ArrayList<>();
+    /**
+     * 白名单集合
+     */
     private List<String> whileIp = new ArrayList<>();
+    /**
+     * 客户端信息
+     */
     private List<Client> client = new ArrayList<>();
 
     @Data

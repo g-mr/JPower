@@ -15,8 +15,8 @@ import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
 import com.wlcb.jpower.module.properties.AuthProperties;
 import io.jsonwebtoken.Claims;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -30,11 +30,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,15 +50,14 @@ import java.util.Map;
 @Component
 @Slf4j
 @RefreshScope
+@AllArgsConstructor
 @EnableConfigurationProperties({AuthProperties.class})
 public class AuthFilter implements GlobalFilter, Ordered {
 
-    @Autowired
-    private RedisUtil redisUtil;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Resource
-    private AuthProperties authProperties;
+    private final RedisUtil redisUtil;
+    private final ObjectMapper objectMapper;
+    private final AuthProperties authProperties;
+    private final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -70,7 +69,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
         }
 
         //不鉴权得URL
-        if (ExculdesUrl.getExculudesUrl().stream().map(url -> url.replace(ExculdesUrl.TARGET, ExculdesUrl.REPLACEMENT)).anyMatch(currentPath::contains)){
+        if (isSkip(currentPath)){
             return chain.filter(exchange);
         }
 
@@ -100,6 +99,11 @@ public class AuthFilter implements GlobalFilter, Ordered {
             }
             return proxyAuthenticationRequired(exchange.getResponse(), "缺失令牌，鉴权失败");
         }
+    }
+
+    private boolean isSkip(String path) {
+        return ExculdesUrl.getExculudesUrl().stream().anyMatch(pattern -> antPathMatcher.match(pattern, path))
+                || authProperties.getSkipUrl().stream().anyMatch(pattern -> antPathMatcher.match(pattern, path));
     }
 
     private boolean getIsAnonymous(String currentPath){

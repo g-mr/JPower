@@ -86,7 +86,7 @@ knife4j:
 swagger:
   title: JPower 接口文档系统
   description: JPower 接口文档系统
-  version: 2.0.0.RELEASE
+  version: 2.0.0
   license: Powered By JPower
   license-url: https://gitee.com/gdzWork/JPower
   terms-of-service-url: http://jpower.top
@@ -116,6 +116,9 @@ jpower:
 #    excludes:
 #      - /html/**
 #  auth:
+#    skipUrl:
+#      - /auth/**
+#      - /core/user/downloadTemplate
 #    client:
 ##开启需要校验的客户端，值写数据库的clientCode即可
 #      - code: admin
