@@ -2,7 +2,7 @@
 
 # JPower：微服务快速开发平台
 
-[![Gitter](https://img.shields.io/badge/Release-V1.0.1-green.svg)](https://gitee.com/gdzWork/JPower)   [![License](https://img.shields.io/badge/Author-goo-orange.svg)](https://gitee.com/gdzWork/JPower)
+[![Gitter](https://img.shields.io/badge/Release-V2.0.0-green.svg)](https://gitee.com/gdzWork/JPower)   [![License](https://img.shields.io/badge/Author-mr.g-orange.svg)](https://gitee.com/gdzWork/JPower)
 [![Gitter](https://img.shields.io/badge/Copyright%20-@Jpower-%23ff3f59.svg)](https://gitee.com/gdzWork/JPower)
 
 -------
@@ -12,14 +12,16 @@
 ## JPower 简介
 `JPower`是由一款政府商业项目升级优化而来。
 
-采用前后端分离的模式，前端开源项目：jpower-ui (基于 AVue、Vue、Element-UI)
+采用前后端分离的模式，前端开源项目：[jpower-ui](https://gitee.com/gdzWork/jpower-ui) (基于 AVue、Vue、Element-UI)、[JPowerWeb](https://gitee.com/deep_letters/jpower)(基于 Vue、Element-UI)
 
-`JPower` 基于`SpringCloud(Hoxton.SR7)`  + `SpringBoot(2.2.5.RELEASE)` 的微服务快速开发平台.
+`JPower` 基于`SpringCloud(2020.0.1)`  + `SpringBoot(2.4.2)` 的微服务快速开发平台.
 具备网关统一鉴权、Xss防跨站攻击、分布式事务等多个模块，支持多业务系统并行开发，
 支持多服务并行开发，可以作为后端服务的开发脚手架。代码简洁，注释齐全，架构清晰，非常适合学习和作为基础框架使用。
+`JPower` 的目标蓝图是能够打造一款集成各种比较好用的工具于一体的开发框架，例如可在页面配置各种报表，集成echarts可实现快速生成页面，各种场景下的数据传输等等各类工具。
+目前只是开发了基础的架构，后续会逐渐开发各种各样的工具到框架中。
 
 核心技术采用Spring Cloud Alibaba、SpringBoot、Mybatis、Seata、Sentinel、SkyWalking等主要框架和中间件。
-希望能努力打造一套从集 `基础框架` `分布式微服务架构` `持续集成` `系统监测` 的解决方案。`本项目旨在实现基础能力，不涉及具体业务。`
+希望能努力打造一套集 `基础框架` —>`分布式微服务架构` —>  `工具集成` —> `系统监测` 的解决方案。`本项目旨在实现基础能力，不涉及具体业务。`
 
 采用JWT做Token认证，可拓展集成Redis等细颗粒度控制方案。
 
@@ -29,7 +31,7 @@
 
 ## 分支介绍
 1. master 分支为最新的稳定版本，每次提交都会升级一个版本号
-2. dev 分支为作者的开发分支，作者开发的最新功能会实时提交上来，喜欢尝鲜的可以切换为dev。 但可能有报错、漏提等，对项目不是很熟的朋友千万别尝试。
+2. dev 分支为作者的开发分支，作者开发的最新代码会实时提交上来，喜欢尝鲜的可以切换为dev。 但可能有报错、漏提等，对项目不是很熟的朋友千万别尝试。
 3. tag 每个固定的版本都会打一个tag方便后续切换任意版本。
 
 ## 技术文档
@@ -126,31 +128,31 @@ JPower
 ├    ├── common-dbs -- 数据库工具包 
 ├    ├── common-deploy -- 基础启动工具包 
 ├    ├── common-exception -- 异常工具包
-├    ├── common-feign -- feign工具包 
 ├    ├── common-log -- 日志工具包 
 ├    ├── common-nacos -- nacos工具包 
 ├    ├── common-redis -- 缓存工具包 
-├    ├── common-sentinel -- sentinel工具包 
+├    ├── common-sentinel -- sentinel工具包同时集成feign
 ├    ├── common-swagger -- swagger工具包 
-├    ├── common-tool -- 综合工具包 
-├    ├── common-transaction -- 事务工具包 
+├    ├── common-tool -- 基础配置工具包 
+├    ├── common-transaction -- 分布式事务工具包 
 ├    └── common-utils -- 工具类 
 ├── jpower-module-gateway -- 网关模块
 ├── jpower-op-server -- 运维模块
+├    ├── jpower-api -- swagger聚合文档
 └──  └── jpower-admin -- SpringBootAdmin 
 ~~~
     
 ## 技术栈：
 * 所涉及的相关的技术有
-    *   缓存：Redis
-    *   数据库： MySQL 5.7
+    *  缓存：Redis
+    *  数据库： MySQL 5.7
     *  持久层框架： Mybatis-plus
     *  API网关：Gateway
     *  服务注册与发现: Nacos
     *  服务消费：OpenFeign
     *  负载均衡：Ribbon
     *  配置中心：Nacos
-    *  服务熔断：Hystrix
+    *  服务熔断：Sentinel
     *  项目构建：Maven 3.3
     *  分布式事务： seata
     *  分布式系统的流量防卫兵： Sentinel
