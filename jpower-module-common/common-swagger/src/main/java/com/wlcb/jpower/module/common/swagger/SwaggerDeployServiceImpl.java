@@ -11,7 +11,7 @@ import java.util.Properties;
  * 初始化Swagger配置
  * @author mr.g
  */
-public class SwaggerLauncherServiceImpl implements DeployService {
+public class SwaggerDeployServiceImpl implements DeployService {
 	@Override
 	public void launcher(SpringApplicationBuilder builder, String appName, String profile) {
 		Properties props = System.getProperties();

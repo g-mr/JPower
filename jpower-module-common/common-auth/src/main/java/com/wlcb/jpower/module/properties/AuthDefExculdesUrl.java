@@ -12,9 +12,6 @@ import java.util.List;
  */
 public class AuthDefExculdesUrl {
 
-    public static String TARGET = "/**";
-    public static String REPLACEMENT = "";
-
     private static List<String> exculudesUrl = new ArrayList<>();
 
     static {

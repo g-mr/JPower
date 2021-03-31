@@ -3,6 +3,7 @@ package com.wlcb.jpower.module.base.exception.config;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.base.exception.JpowerException;
 import com.wlcb.jpower.module.base.vo.ErrorReturnJson;
+import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * @ClassName GlobalExceptionHandler
- * @Description TODO
+ * @Description TODO 全局异常获取
  * @Author 郭丁志
  * @Date 2020-01-27 17:24
  * @Version 1.0
@@ -28,9 +29,10 @@ public class GlobalExceptionHandler {
      * @return
      * @throws Exception
      */
+    @SneakyThrows
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
-    public ErrorReturnJson defaultErrorHandler(HttpServletRequest request, HttpServletResponse response, Exception e) throws Exception{
+    public ErrorReturnJson defaultErrorHandler(HttpServletRequest request, HttpServletResponse response, Exception e){
         String currentPath = request.getServletPath();
 
         ErrorReturnJson r = new ErrorReturnJson();

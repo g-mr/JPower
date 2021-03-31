@@ -16,7 +16,7 @@
     <dependencies>
         <dependency>
             <groupId>com.wlcb</groupId>
-            <artifactId>common-swagger</artifactId>
+            <artifactId>common-utils</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
 

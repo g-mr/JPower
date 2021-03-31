@@ -6,12 +6,12 @@ knife4j:
   cloud:
     enable: true
     routes:
-      - name: 授权模块
-        uri: localhost
-        location: /jpower-auth/v2/api-docs
       - name: 系统管理
         uri: localhost
         location: /jpower-system/v2/api-docs
+      - name: 授权模块
+        uri: localhost
+        location: /jpower-auth/v2/api-docs
       - name: 用户模块
         uri: localhost
         location: /jpower-user/v2/api-docs

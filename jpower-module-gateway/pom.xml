@@ -50,29 +50,6 @@
         </dependency>
 
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>${swagger.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>io.swagger</groupId>
-                    <artifactId>swagger-models</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-models</artifactId>
-            <version>${swagger-annotations.version}</version>
-        </dependency>
-
-<!--        <dependency>-->
-<!--            <groupId>com.github.xiaoymin</groupId>-->
-<!--            <artifactId>knife4j-spring-ui</artifactId>-->
-<!--            <version>${knife4j.version}</version>-->
-<!--        </dependency>-->
-
-        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>
         </dependency>
@@ -81,6 +58,18 @@
         <dependency>
             <groupId>com.wlcb</groupId>
             <artifactId>common-log</artifactId>
+            <version>${com.jpower.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-web</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wlcb</groupId>
+            <artifactId>common-nacos</artifactId>
             <version>${com.jpower.version}</version>
             <exclusions>
                 <exclusion>
