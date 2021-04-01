@@ -16,11 +16,15 @@ spring:
     #  commandTimeout: 5000
 
 jpower:
-  monitor:
+  monitor-restful:
     enable: true
+    cron: 0 0 1 * * ?
     routes:
       - name: jpower-system
         url: jpower-system
+        location: /all/restful
+      - name: jpower-user
+        url: jpower-user
         location: /all/restful
   #  开发环境
   dev:
