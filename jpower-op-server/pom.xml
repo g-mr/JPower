@@ -20,6 +20,13 @@
     </modules>
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.wlcb</groupId>
+            <artifactId>common-deploy</artifactId>
+            <version>${com.jpower.version}</version>
+        </dependency>
+        
         <dependency>
             <groupId>com.wlcb</groupId>
             <artifactId>common-log</artifactId>

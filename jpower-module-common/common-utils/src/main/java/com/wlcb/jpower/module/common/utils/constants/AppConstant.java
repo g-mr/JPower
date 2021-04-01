@@ -36,6 +36,9 @@ public interface AppConstant {
     /** swagger聚合文档 **/
     String JPOWER_API = JPOWER.concat("-api");
 
+    /** 日志服务 **/
+    String JPOWER_LOG = JPOWER.concat("-log");
+
     /** 网关模块名称 **/
     String JPOWER_GATEWAY = "jpower-gateway";
 

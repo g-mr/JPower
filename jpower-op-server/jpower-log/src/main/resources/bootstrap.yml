@@ -1,0 +1,37 @@
+server:
+  port: 17000
+
+#redis配置
+spring:
+  redis:
+    ##redis 单机环境配置
+    host: 127.0.0.1
+    port: 6379
+    password:
+    database: 1
+    ssl: false
+    ##redis 集群环境配置
+    #cluster:
+    #  nodes: 127.0.0.1:6379,127.0.0.1:6378,127.0.0.1:6377
+    #  commandTimeout: 5000
+
+jpower:
+  monitor:
+    enable: true
+    routes:
+      - name: jpower-system
+        url: jpower-system
+        location: /all/restful
+  #  开发环境
+  dev:
+    nacos:
+      #      配置中心地址，如果配置没有配置注册中心地址，则注册中心默认走这里的地址
+      server-addr: localhost:8848
+  test:
+    nacos:
+      #      配置中心地址，如果配置没有配置注册中心地址，则注册中心默认走这里的地址
+      server-addr: 192.168.0.4:82
+  prod:
+    nacos:
+      #      配置中心地址，如果配置没有配置注册中心地址，则注册中心默认走这里的地址
+      server-addr: 192.168.0.20:8878
