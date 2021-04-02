@@ -18,7 +18,7 @@ spring:
 jpower:
   monitor-restful:
     enable: true
-    cron: 0 0 1 * * ?
+    cron: 0/5 * * * * ?
     routes:
       - name: jpower-system
         url: jpower-system

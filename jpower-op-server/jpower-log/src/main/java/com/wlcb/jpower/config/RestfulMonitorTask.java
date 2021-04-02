@@ -3,6 +3,7 @@ package com.wlcb.jpower.config;
 import com.wlcb.jpower.module.common.utils.DateUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.properties.MonitorRestfulProperties;
+import com.wlcb.jpower.service.TaskService;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -23,12 +24,13 @@ import org.springframework.scheduling.support.CronTrigger;
 public class RestfulMonitorTask implements SchedulingConfigurer {
 
     private final MonitorRestfulProperties properties;
+    private final TaskService taskService;
 
     @Override
     public void configureTasks(ScheduledTaskRegistrar scheduledTaskRegistrar) {
         if (properties.getEnable()){
             properties.getRoutes().forEach(route ->
-                scheduledTaskRegistrar.addTriggerTask(() -> process(route),
+                scheduledTaskRegistrar.addTriggerTask(() -> taskService.process(route),
                         triggerContext -> {
                             String cron = properties.getCron();
                             if (Fc.isBlank(cron)) {
@@ -38,11 +40,6 @@ public class RestfulMonitorTask implements SchedulingConfigurer {
                         })
             );
         }
-    }
-
-    private void process(MonitorRestfulProperties.Routes route) {
-
-        System.out.println(route.getName() + ":" + DateUtil.getDateTime());
     }
 
 }
