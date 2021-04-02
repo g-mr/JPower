@@ -96,6 +96,7 @@ public class HttpClient {
 
             // 执行get请求得到返回对象
             response = httpClient.execute(httpGet);
+            System.out.println(response.getStatusLine().getStatusCode());
             // 通过返回对象获取返回数据
             HttpEntity entity = response.getEntity();
             // 通过EntityUtils中的toString方法将结果转换为字符串
