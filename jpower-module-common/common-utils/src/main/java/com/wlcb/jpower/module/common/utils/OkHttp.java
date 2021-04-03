@@ -306,13 +306,29 @@ public class OkHttp {
      *
      * @return String
      */
+    public OkHttp execute(Interceptor... interceptors) {
+        return execute(true,true, interceptors);
+    }
+
+
+    /**
+     * 执行
+     *
+     * @return String
+     */
     @SneakyThrows
-    public OkHttp execute(Boolean retryOnConnectionFailure,Boolean followRedirects) {
+    public OkHttp execute(Boolean retryOnConnectionFailure,Boolean followRedirects,Interceptor... interceptors) {
         if (Fc.isNull(request)){
             throw new HttpException("OkHttp3 request is null");
         }
         try {
-            OkHttpClient okHttpClient = new OkHttpClient.Builder().retryOnConnectionFailure(retryOnConnectionFailure).followRedirects(followRedirects).build();
+            OkHttpClient.Builder builder = new OkHttpClient.Builder();
+            builder.retryOnConnectionFailure(retryOnConnectionFailure);
+            builder.followRedirects(followRedirects);
+            for (Interceptor interceptor : interceptors) {
+                builder.addInterceptor(interceptor);
+            }
+            OkHttpClient okHttpClient = builder.build();
             response = okHttpClient.newCall(request).execute();
         } catch (Exception e) {
             error = e.getMessage();

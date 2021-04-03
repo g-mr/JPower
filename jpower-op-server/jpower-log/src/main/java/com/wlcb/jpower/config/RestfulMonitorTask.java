@@ -1,6 +1,5 @@
 package com.wlcb.jpower.config;
 
-import com.wlcb.jpower.module.common.utils.DateUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.properties.MonitorRestfulProperties;
 import com.wlcb.jpower.service.TaskService;
