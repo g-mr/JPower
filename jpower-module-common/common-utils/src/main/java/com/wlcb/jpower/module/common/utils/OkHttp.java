@@ -33,6 +33,16 @@ public class OkHttp {
      * GET
      *
      * @param url     请求的url
+     * @return String
+     */
+    public static OkHttp get(String url) {
+        return get(url, null, null);
+    }
+
+    /**
+     * GET
+     *
+     * @param url     请求的url
      * @param queries 请求的参数，在浏览器？后面的数据，没有可以传null
      * @return String
      */
@@ -60,7 +70,7 @@ public class OkHttp {
         if (header != null && header.keySet().size() > 0) {
             header.forEach(builder::addHeader);
         }
-        Request request = builder.url(sb.toString()).build();
+        Request request = builder.url(sb.toString()).get().build();
         return new OkHttp(request);
     }
 
@@ -80,14 +90,14 @@ public class OkHttp {
      *
      * @param url     请求的url
      * @param header  请求头
-     * @param queries 请求的参数，在浏览器？后面的数据，没有可以传null
+     * @param params 请求的参数
      * @return String
      */
-    public static OkHttp delete(String url, Map<String, String> header, Map<String, String> queries) {
-        StringBuffer sb = new StringBuffer(url);
-        sb.append("?clientId=jpower");
-        if (queries != null && queries.keySet().size() > 0) {
-            queries.forEach((k, v) -> sb.append("&").append(k).append("=").append(v));
+    public static OkHttp delete(String url, Map<String, String> header, Map<String, String> params) {
+        FormBody.Builder formBuilder = new FormBody.Builder().add("clientId", "jpower");
+        //添加参数
+        if (params != null && params.keySet().size() > 0) {
+            params.forEach(formBuilder::add);
         }
 
         Request.Builder builder = new Request.Builder();
@@ -95,7 +105,7 @@ public class OkHttp {
         if (header != null && header.keySet().size() > 0) {
             header.forEach(builder::addHeader);
         }
-        Request request = builder.url(sb.toString()).delete().build();
+        Request request = builder.url(url).delete(formBuilder.build()).build();
         return new OkHttp(request);
     }
 
@@ -356,7 +366,7 @@ public class OkHttp {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            log.error("OkHttp3 body error >> ex = {}", e.getMessage());
+            log.error("OkHttp3 getBody error >> ex = {}", e.getMessage());
         }finally {
             close();
         }

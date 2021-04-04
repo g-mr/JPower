@@ -73,6 +73,8 @@ public interface StringPool {
     String UNKNOWN			= "unknown";
     String GET				= "GET";
     String POST				= "POST";
+    String PUT				= "PUT";
+    String DELETE		    = "DELETE";
     String DESC				= "DESC";
     String ASC				= "ASC";
 

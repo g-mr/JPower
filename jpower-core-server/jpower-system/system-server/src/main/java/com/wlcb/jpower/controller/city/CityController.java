@@ -1,6 +1,7 @@
 package com.wlcb.jpower.controller.city;
 
 import com.wlcb.jpower.dbs.entity.city.TbCoreCity;
+import com.wlcb.jpower.dbs.entity.dict.TbCoreDict;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
@@ -41,6 +42,25 @@ public class CityController extends BaseController {
                                                             @ApiParam(value = "名称") @RequestParam(required = false) String name){
         List<Map<String,Object>> list = coreCityService.listChild(ChainMap.init().set("pcode"+ SqlKeyword.EQUAL,pcode).set("name",name));
         return ReturnJsonUtil.ok("获取成功", list);
+    }
+
+    @ApiOperation(value = "新增行政区域",notes = "主键不可传")
+    @RequestMapping(value = "/adds/{id}",method = {RequestMethod.GET},produces="application/json")
+    public ResponseData adds(@PathVariable(name = "id",required = false) String id,@RequestBody TbCoreCity coreCity,@RequestBody TbCoreDict coreDict){
+
+        return ReturnJsonUtil.status(true);
+    }
+
+    @ApiOperation(value = "新增行政区域",notes = "主键不可传")
+    @RequestMapping(value = "/adds",method = {RequestMethod.POST},produces="application/json")
+    public ResponseData adds(@RequestBody TbCoreCity coreCity, @RequestParam String aaa){
+
+        JpowerAssert.notEmpty(coreCity.getCode(),JpowerError.Arg,"编号不可为空");
+        JpowerAssert.notEmpty(coreCity.getName(),JpowerError.Arg,"名称不可为空");
+        JpowerAssert.notTrue(Fc.isEmpty(coreCity.getRankd()),JpowerError.Arg,"城市级别不可为空");
+        JpowerAssert.notEmpty(coreCity.getCityType(),JpowerError.Arg,"城市类型不可为空");
+
+        return ReturnJsonUtil.status(coreCityService.add(coreCity));
     }
 
     @ApiOperation(value = "新增行政区域",notes = "主键不可传")

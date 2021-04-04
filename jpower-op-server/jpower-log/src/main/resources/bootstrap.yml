@@ -21,10 +21,7 @@ jpower:
     cron: 0/5 * * * * ?
     routes:
       - name: jpower-system
-        url: jpower-system
-        location: /all/restful
-      - name: jpower-user
-        url: jpower-user
+        url: http://localhost:81
         location: /all/restful
   #  开发环境
   dev:

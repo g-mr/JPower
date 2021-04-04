@@ -133,27 +133,6 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
             roleFunctionDao.saveBatch(roleFunctionList);
 
             //创建租户默认字典
-//            TbCoreDictType dictType = new TbCoreDictType();
-//            dictType.setDictTypeCode(tenant.getTenantCode());
-//            dictType.setDictTypeName(tenant.getTenantName());
-//            dictType.setParentId(TOP_CODE);
-//            dictType.setDelEnabled(ConstantsEnum.YN.N.getValue());
-//            dictType.setSortNum(1);
-//            dictType.setIsTree(ConstantsEnum.YN01.N.getValue());
-////            dictType.setTenantCode(tenant.getTenantCode());
-//            dictTypeDao.save(dictType);
-
-//            if (Fc.isNotEmpty(dictTypeCodes)){
-//                dictTypeDao.listObjs(Condition.<TbCoreDictType>getQueryWrapper().lambda()
-//                        .select(TbCoreDictType::getId)
-//                        .in(TbCoreDictType::getDictTypeCode,dictTypeCodes)
-//                        .eq(TbCoreDictType::getParentId,TOP_CODE)
-//                        .eq(TbCoreDictType::getTenantCode,tenant.getTenantCode())
-//                        ,Fc::toStr)
-//                .forEach(id -> saveDictType(id,TOP_CODE,tenant.getTenantCode()));
-//            }else {
-//                saveDictType(TOP_CODE,TOP_CODE,tenant.getTenantCode());
-//            }
             LinkedList<TbCoreDictType> dictTypes = new LinkedList<>();
             LinkedList<TbCoreDict> dicts = new LinkedList<>();
             getDictTypes(TOP_CODE,TOP_CODE,tenant.getTenantCode(),dictTypes,dicts);
@@ -174,7 +153,7 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
                 user.setTenantCode(tenant.getTenantCode());
             }
             ResponseData data = UserCache.saveAdmin(user,role.getId());
-            JpowerAssert.isTrue(data.isStatus(), JpowerError.Api, data.getCode(), data.getMessage());
+            JpowerAssert.isTrue(data.isStatus(), JpowerError.Rpc, data.getCode(), data.getMessage());
             return true;
         }
         return false;
