@@ -3,17 +3,23 @@ package com.wlcb.jpower.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.wlcb.jpower.handler.HttpInfoHandler;
+import com.wlcb.jpower.interceptor.AuthInterceptor;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.OkHttp;
+import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.properties.MonitorRestfulProperties;
 import com.wlcb.jpower.service.TaskService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 /**
  * @author mr.g
  * @date 2021-04-02 11:27
  */
+@Slf4j
 @Service
 @AllArgsConstructor
 public class TaskServiceImpl implements TaskService {
@@ -47,19 +53,59 @@ public class TaskServiceImpl implements TaskService {
             JSONObject restFulInfo = JSON.parseObject(body);
             restFulInfo.getJSONObject("paths").forEach((url,methods)->{
                 HttpInfoHandler handler = new HttpInfoHandler(JSON.parseObject(Fc.toStr(methods)),restFulInfo.getJSONObject("definitions"));
-                handler.getMethodTypes().forEach(type -> {
+                handler.getMethodTypes().forEach(method -> {
 
-
-                    handler.getPathParam(type);
-                    handler.getHeaderParam(type);
-
-                    // 判断是否有多个body，如果有则全部按form提交，反之get、head请求不提交body，其他请求正常提交body,from参数按url参数处理
-                    handler.getBodyParam(type);
-                    handler.getFormParam(type);
-
+                    Map<String,String> paths = handler.getPathParam(method);
+                    String httpUrl = route.getUrl().concat(StringUtil.format(url,paths));
+                    Map<String,String> headers = handler.getHeaderParam(method);
+                    Map<String,String> forms = handler.getFormParam(method);
+                    Map<String,String> bodys = handler.getBodyParam(method);
+                    requestRestFul(httpUrl,method.toUpperCase(),headers,forms,bodys);
 
                 });
             });
+        }
+    }
+
+    /**
+     * 请求接口
+     * @author mr.g
+     * @param httpUrl 请求地址
+     * @param method 请求类型
+     * @param headers header参数
+     * @param forms form参数
+     * @param bodys body参数
+     * @return void
+     */
+    private void requestRestFul(String httpUrl, String method, Map<String,String> headers, Map<String,String> forms, Map<String,String> bodys) {
+
+        AuthInterceptor interceptor = new AuthInterceptor("","");
+
+        switch (method) {
+            case "HEAD" :
+                OkHttp.head(httpUrl,headers,forms).execute(interceptor);
+                break;
+            case "GET" :
+                OkHttp.get(httpUrl,headers,forms).execute(interceptor);
+                break;
+            case "PUT" :
+            case "POST" :
+                if (bodys.size() == 1) {
+                    StringBuffer sb = new StringBuffer(httpUrl);
+                    sb.append("?clientId=jpower");
+                    if (forms != null && forms.keySet().size() > 0) {
+                        forms.forEach((k, v) -> sb.append("&").append(k).append("=").append(v));
+                    }
+                    httpUrl = sb.toString();
+                }
+            default:
+                if (bodys.size() == 1) {
+                    OkHttp.content(httpUrl,method,headers,bodys.entrySet().iterator().next().getValue(),OkHttp.JSON).execute(interceptor);
+                }else {
+                    forms.putAll(bodys);
+                    OkHttp.method(httpUrl,method,headers,forms).execute(interceptor);
+                }
+                break;
         }
     }
 

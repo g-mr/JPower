@@ -75,6 +75,30 @@ public class OkHttp {
     }
 
     /**
+     * HEAD
+     *
+     * @param url     请求的url
+     * @param header  请求头
+     * @param queries 请求的参数，在浏览器？后面的数据，没有可以传null
+     * @return String
+     */
+    public static OkHttp head(String url, Map<String, String> header, Map<String, String> queries) {
+        StringBuffer sb = new StringBuffer(url);
+        sb.append("?clientId=jpower");
+        if (queries != null && queries.keySet().size() > 0) {
+            queries.forEach((k, v) -> sb.append("&").append(k).append("=").append(v));
+        }
+
+        Request.Builder builder = new Request.Builder();
+
+        if (header != null && header.keySet().size() > 0) {
+            header.forEach(builder::addHeader);
+        }
+        Request request = builder.url(sb.toString()).head().build();
+        return new OkHttp(request);
+    }
+
+    /**
      * DELETE
      *
      * @param url     请求的url
@@ -181,6 +205,23 @@ public class OkHttp {
         return new OkHttp(request);
     }
 
+    public static OkHttp method(String url, String method, Map<String, String> header, Map<String, String> params) {
+        FormBody.Builder formBuilder = new FormBody.Builder().add("clientId", "jpower");
+        //添加参数
+        if (params != null && params.keySet().size() > 0) {
+            params.forEach(formBuilder::add);
+        }
+
+        Request.Builder builder = new Request.Builder();
+
+        if (header != null && header.keySet().size() > 0) {
+            header.forEach(builder::addHeader);
+        }
+
+        Request request = builder.url(url).method(method,formBuilder.build()).build();
+        return new OkHttp(request);
+    }
+
     /**
      * POST请求发送JSON数据
      *
@@ -236,13 +277,17 @@ public class OkHttp {
      * @return String
      */
     public static OkHttp postContent(String url, Map<String, String> header, String content, MediaType mediaType) {
+        return content(url,"POST",header,content,mediaType);
+    }
+
+    public static OkHttp content(String url,String method, Map<String, String> header, String content, MediaType mediaType) {
         RequestBody requestBody = RequestBody.create(mediaType, content);
         Request.Builder builder = new Request.Builder();
 
         if (header != null && header.keySet().size() > 0) {
             header.forEach(builder::addHeader);
         }
-        Request request = builder.url(url).post(requestBody).build();
+        Request request = builder.url(url).method(method,requestBody).build();
         return new OkHttp(request);
     }
 

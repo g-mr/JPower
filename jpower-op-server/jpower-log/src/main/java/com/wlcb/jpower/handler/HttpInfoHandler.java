@@ -1,6 +1,7 @@
 package com.wlcb.jpower.handler;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.DateUtil;
@@ -25,7 +26,6 @@ public class HttpInfoHandler {
     private JSONObject methodsInfo;
     private JSONObject definitions;
 
-
     private interface JSON_CONSTANT_KEY {
 
         String PARAMETERS		= "parameters";
@@ -47,7 +47,7 @@ public class HttpInfoHandler {
 
     private interface JSON_CONSTANT_VALUE {
         String PATH		        = "path";
-        String HEADER		        = "header";
+        String HEADER		    = "header";
         String BODY		        = "body";
         String STRING		    = "string";
         String DATE		        = "date";
@@ -79,19 +79,16 @@ public class HttpInfoHandler {
      * @param method 请求类型
      * @return java.util.List<java.util.Map<java.lang.String,java.lang.String>>
      **/
-    public List<Map<String,String>> getPathParam(String method) {
-        List<Map<String,String>> list = new ArrayList<>();
+    public Map<String,String> getPathParam(String method) {
+        Map<String,String> map = ChainMap.newMap();
         methodsInfo.getJSONObject(method).getJSONArray(JSON_CONSTANT_KEY.PARAMETERS).forEach(str -> {
             JSONObject param = (JSONObject) str;
             if (Fc.equals(param.getString(JSON_CONSTANT_KEY.IN),JSON_CONSTANT_VALUE.PATH)){
-                Map<String,String> map = ChainMap.newMap();
-                map.put("name",param.getString(JSON_CONSTANT_KEY.NAME));
-                map.put("value",defaultValue(param));
-                list.add(map);
+                map.put(param.getString(JSON_CONSTANT_KEY.NAME),defaultValue(param));
             }
         });
 
-        return list;
+        return map;
     }
 
     /**
@@ -100,19 +97,71 @@ public class HttpInfoHandler {
      * @param method
      * @return java.util.List<java.util.Map<java.lang.String,java.lang.String>>
      **/
-    public List<Map<String,String>> getHeaderParam(String method) {
-        List<Map<String,String>> list = new ArrayList<>();
+    public Map<String,String> getHeaderParam(String method) {
+        Map<String,String> map = ChainMap.newMap();
         methodsInfo.getJSONObject(method).getJSONArray(JSON_CONSTANT_KEY.PARAMETERS).forEach(str -> {
             JSONObject param = (JSONObject) str;
             if (param.getBoolean(JSON_CONSTANT_KEY.REQUIRED) && Fc.equals(param.getString(JSON_CONSTANT_KEY.IN),JSON_CONSTANT_VALUE.HEADER)){
-                Map<String,String> map = ChainMap.newMap();
-                map.put("name",param.getString(JSON_CONSTANT_KEY.NAME));
-                map.put("value",defaultValue(param));
-                list.add(map);
+                map.put(param.getString(JSON_CONSTANT_KEY.NAME),defaultValue(param));
+            }
+        });
+        return map;
+    }
+
+    /**
+     * 获取Body参数
+     * @author mr.g
+     * @param method 
+     * @return java.util.List<java.util.Map<java.lang.String,java.lang.String>>
+     */
+    public Map<String,String> getBodyParam(String method) {
+        Map<String,String> map = ChainMap.newMap();
+        JSONArray json = methodsInfo.getJSONObject(method).getJSONArray(JSON_CONSTANT_KEY.PARAMETERS);
+        if (isMultipleBody(json)){
+            return map;
+        }
+
+        json.forEach(str -> {
+            JSONObject param = (JSONObject) str;
+            if (Fc.equals(param.getString(JSON_CONSTANT_KEY.IN),JSON_CONSTANT_VALUE.BODY)){
+                map.put(param.getString(JSON_CONSTANT_KEY.NAME),defaultValue(param));
+            }
+        });
+        return map;
+    }
+
+    /**
+     * 获取formData参数
+     *  只要不是path和header统一按from处理
+     * @author mr.g
+     * @param method 
+     * @return java.util.List<java.util.Map<java.lang.String,java.lang.String>>
+     */
+    public Map<String,String> getFormParam(String method) {
+        Map<String,String> map = ChainMap.newMap();
+        JSONArray json = methodsInfo.getJSONObject(method).getJSONArray(JSON_CONSTANT_KEY.PARAMETERS);
+        json.forEach(str -> {
+            JSONObject param = (JSONObject) str;
+            String type = param.getString(JSON_CONSTANT_KEY.IN);
+
+            // 不是path和header参数并是必须得 或者 存在多个body得情况下，统一全部按from参数处理
+            boolean isBody = isMultipleBody(json) && Fc.equals(type,JSON_CONSTANT_VALUE.BODY);
+            if ((param.getBoolean(JSON_CONSTANT_KEY.REQUIRED) && JSON_CONSTANT_VALUE.HEADER.concat("|").concat(JSON_CONSTANT_VALUE.PATH).contains(type)) || isBody){
+                map.put(param.getString(JSON_CONSTANT_KEY.NAME),defaultValue(param));
             }
         });
 
-        return list;
+        return map;
+    }
+
+    /**
+     * 是否多个body
+     * @author mr.g
+     * @param params 参数列表
+     * @return boolean
+     */
+    private boolean isMultipleBody(JSONArray params) {
+        return params.stream().map(str -> (JSONObject) str).filter(param -> Fc.equals(param.getString(JSON_CONSTANT_KEY.IN), JSON_CONSTANT_VALUE.BODY)).count() > 1;
     }
 
     private String defaultValue(JSONObject param) {

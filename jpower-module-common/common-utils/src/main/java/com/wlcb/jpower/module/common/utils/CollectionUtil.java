@@ -109,9 +109,9 @@ public class CollectionUtil extends CollectionUtils{
      * @return java.lang.String
      **/
     public static String[] removeStart(String[] arrays){
-        String[] ss = new String[arrays.length-1];
-        System.arraycopy(arrays, 1, ss, 0, ss.length);
-        return ss;
+        String[] strings = new String[arrays.length-1];
+        System.arraycopy(arrays, 1, strings, 0, strings.length);
+        return strings;
     }
 
 }
