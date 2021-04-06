@@ -50,12 +50,12 @@ public class TaskServiceImpl implements TaskService {
                 handler.getMethodTypes().forEach(type -> {
 
 
-                    handler.getPathParam();
-                    handler.getHeaderParam();
+                    handler.getPathParam(type);
+                    handler.getHeaderParam(type);
 
                     // 判断是否有多个body，如果有则全部按form提交，反之get、head请求不提交body，其他请求正常提交body,from参数按url参数处理
-                    handler.getBodyParam();
-                    handler.getFormParam();
+                    handler.getBodyParam(type);
+                    handler.getFormParam(type);
 
 
                 });
