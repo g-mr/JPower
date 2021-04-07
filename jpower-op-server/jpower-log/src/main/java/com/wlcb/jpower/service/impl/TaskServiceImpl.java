@@ -2,6 +2,7 @@ package com.wlcb.jpower.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.wlcb.jpower.dbs.entity.TbLogMonitorResult;
 import com.wlcb.jpower.handler.HttpInfoHandler;
 import com.wlcb.jpower.interceptor.AuthInterceptor;
 import com.wlcb.jpower.module.common.utils.Fc;
@@ -10,6 +11,7 @@ import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.properties.MonitorRestfulProperties;
 import com.wlcb.jpower.service.TaskService;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -60,10 +62,39 @@ public class TaskServiceImpl implements TaskService {
                     Map<String,String> headers = handler.getHeaderParam(method);
                     Map<String,String> forms = handler.getFormParam(method);
                     Map<String,String> bodys = handler.getBodyParam(method);
-                    requestRestFul(httpUrl,method.toUpperCase(),headers,forms,bodys);
+                    OkHttp okHttp = requestRestFul(httpUrl,method.toUpperCase(),headers,forms,bodys);
+                    saveResult(httpUrl,method.toUpperCase(),headers,forms,bodys,okHttp);
 
                 });
             });
+        }
+    }
+
+    /**
+     * 保存接口请求结果
+     * @Author mr.g
+     * @param httpUrl
+     * @param method
+     * @param headers
+     * @param forms
+     * @param bodys
+     * @param okHttp
+     * @return void
+     **/
+    private void saveResult(String httpUrl, String method, Map<String, String> headers, Map<String, String> forms, Map<String, String> bodys, OkHttp okHttp) {
+
+        TbLogMonitorResult result = new TbLogMonitorResult();
+        result.setUrl(okHttp.getRequest().url().toString());
+        result.setMethod(okHttp.getRequest().method());
+        result.setHeader(okHttp.getRequest().headers().toString());
+        result.setForm(okHttp.getRequest().url().query());
+        result.setBody(okHttp.getRequest().body().toString());
+        if (Fc.isNull(okHttp.getResponse())){
+            result.setError(okHttp.getError());
+        }else {
+            result.setRespose(okHttp.getResponse().toString());
+            result.setResposeCode(okHttp.getResponse().code());
+            result.setRestfulResponse(okHttp.getBody());
         }
     }
 
@@ -77,17 +108,22 @@ public class TaskServiceImpl implements TaskService {
      * @param bodys body参数
      * @return void
      */
-    private void requestRestFul(String httpUrl, String method, Map<String,String> headers, Map<String,String> forms, Map<String,String> bodys) {
+    private OkHttp requestRestFul(String httpUrl, String method, Map<String,String> headers, Map<String,String> forms, Map<String,String> bodys) {
 
         AuthInterceptor interceptor = new AuthInterceptor("","");
 
+        OkHttp okHttp;
         switch (method) {
             case "HEAD" :
-                OkHttp.head(httpUrl,headers,forms).execute(interceptor);
+                okHttp = OkHttp.head(httpUrl,headers,forms).execute(interceptor);
                 break;
             case "GET" :
-                OkHttp.get(httpUrl,headers,forms).execute(interceptor);
+                okHttp = OkHttp.get(httpUrl,headers,forms).execute(interceptor);
                 break;
+            case "DELETE" :
+            case "PATCH" :
+            case "OPTIONS" :
+            case "TRACE" :
             case "PUT" :
             case "POST" :
                 if (bodys.size() == 1) {
@@ -100,13 +136,15 @@ public class TaskServiceImpl implements TaskService {
                 }
             default:
                 if (bodys.size() == 1) {
-                    OkHttp.content(httpUrl,method,headers,bodys.entrySet().iterator().next().getValue(),OkHttp.JSON).execute(interceptor);
+                    okHttp = OkHttp.content(httpUrl,method,headers,bodys.entrySet().iterator().next().getValue(),OkHttp.JSON).execute(interceptor);
                 }else {
                     forms.putAll(bodys);
-                    OkHttp.method(httpUrl,method,headers,forms).execute(interceptor);
+                    okHttp = OkHttp.method(httpUrl,method,headers,forms).execute(interceptor);
                 }
                 break;
         }
+
+        return okHttp;
     }
 
 

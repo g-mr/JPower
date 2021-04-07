@@ -396,3 +396,26 @@ CREATE TABLE `tb_core_user_role` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户角色表';
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+-- ----------------------------
+-- Table structure for tb_log_monitor_result
+-- ----------------------------
+create table tb_log_monitor_result(
+  id varchar(32) not null COMMENT '主建',
+  url varchar(100) default null comment '请求接口',
+  method varchar(5) default null comment '请求方式',
+  error varchar(289) default null comment '请求错误',
+  respose varchar(289) default null comment '响应数据',
+  respose_code int(10) default null comment '响应编码',
+  restful_response text default null comment '接口返回数据',
+  header text default null comment 'header参数',
+  form text default null comment 'form参数',
+  body text default null comment 'body参数',
+  create_user varchar(32) default 'root' not null comment '创建人',
+  create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
+  update_user varchar(32) default 'root' not null comment '更新人',
+  update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
+  status   tinyint(1) default 1 comment '状态',
+  is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
+  PRIMARY KEY (id) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='接口返回详情';
