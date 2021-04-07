@@ -18,10 +18,10 @@ spring:
 jpower:
   monitor-restful:
     enable: true
-    cron: 0/5 * * * * ?
+    cron: 0/59 * * * * ?
     routes:
-      - name: jpower-system
-        url: http://localhost:81
+      - name: zw-general
+        url: http://localhost:90
         location: /all/restful
   #  开发环境
   dev:

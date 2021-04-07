@@ -2,6 +2,7 @@ package com.wlcb.jpower.module.common.deploy.service.annotation;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.lang.annotation.*;
 
@@ -14,6 +15,7 @@ import java.lang.annotation.*;
 @Documented
 @Inherited
 @EnableDiscoveryClient
+@EnableTransactionManagement
 @SpringBootApplication(excludeName = "org.springframework.cloud.netflix.ribbon.RibbonAutoConfiguration")
 public @interface JpowerCloudApplication {
 }

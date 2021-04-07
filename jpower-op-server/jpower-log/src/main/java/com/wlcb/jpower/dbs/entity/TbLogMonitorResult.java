@@ -3,11 +3,15 @@ package com.wlcb.jpower.dbs.entity;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * @author mr.g
  * @date 2021-04-07 15:53
  */
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @Data
 public class TbLogMonitorResult extends BaseEntity {
 

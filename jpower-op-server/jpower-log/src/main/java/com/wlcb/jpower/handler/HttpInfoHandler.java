@@ -170,11 +170,20 @@ public class HttpInfoHandler {
             return param.getString(JSON_CONSTANT_KEY.DEFAULT);
         }
 
+
         if (param.containsKey(JSON_CONSTANT_KEY.SCHEMA) && StringUtil.equalsIgnoreCase(param.getString(JSON_CONSTANT_KEY.IN),JSON_CONSTANT_VALUE.BODY)){
-            return bodyValue(param.getJSONObject(JSON_CONSTANT_KEY.SCHEMA),0);
+            JSONObject schema = param.getJSONObject(JSON_CONSTANT_KEY.SCHEMA);
+            //如果schema内包含type属性就按form参数处理，反之正常body处理
+            return schema.containsKey(JSON_CONSTANT_KEY.TYPE)
+                    ?formValue(param,schema.getString(JSON_CONSTANT_KEY.TYPE).toLowerCase())
+                    :bodyValue(schema,0);
         }
 
-        switch (param.getString(JSON_CONSTANT_KEY.TYPE).toLowerCase()) {
+        return formValue(param,param.getString(JSON_CONSTANT_KEY.TYPE).toLowerCase());
+    }
+
+    private String formValue(JSONObject param,String type){
+        switch (type) {
             case JSON_CONSTANT_VALUE.STRING :
                 String format =  param.getString(JSON_CONSTANT_KEY.FORMAT);
                 if (StringUtil.equalsIgnoreCase(format,JSON_CONSTANT_VALUE.DATE)){
@@ -195,24 +204,33 @@ public class HttpInfoHandler {
         }
     }
 
+    /**
+     * 获取body参数得值
+     * @author mr.g
+     * @param schema
+     * @param level 循环层级，防止无限获取下去
+     * @return java.lang.String
+     */
     private String bodyValue(JSONObject schema, int level) {
         JSONObject json = new JSONObject();
 
         String originalRef = schema.getString(JSON_CONSTANT_KEY.ORIGINAL_REF);
-        definitions.getJSONObject(originalRef).getJSONObject(JSON_CONSTANT_KEY.PROPERTIES).forEach((k,v) -> {
-            JSONObject attributes = (JSONObject) v;
-            if (attributes.containsKey(JSON_CONSTANT_KEY.EXAMPLE)){
-                json.put(k,attributes.get(JSON_CONSTANT_KEY.EXAMPLE));
-            }else if (attributes.containsKey(JSON_CONSTANT_KEY.$REF) && attributes.containsKey(JSON_CONSTANT_KEY.ORIGINAL_REF) && level <= 2){
-                json.put(k,bodyValue(attributes, level+1));
-            }else if (JSON_CONSTANT_VALUE.NUMBER.concat("|").concat(JSON_CONSTANT_VALUE.INTEGER).contains(attributes.getString(JSON_CONSTANT_KEY.TYPE))){
-                json.put(k,0);
-            }else if (JSON_CONSTANT_VALUE.BOOLEAN.contains(attributes.getString(JSON_CONSTANT_KEY.TYPE))){
-                json.put(k,StringPool.TRUE);
-            }else {
-                json.put(k,StringPool.EMPTY);
-            }
-        });
+        if (Fc.isNotBlank(originalRef)){
+            definitions.getJSONObject(originalRef).getJSONObject(JSON_CONSTANT_KEY.PROPERTIES).forEach((k,v) -> {
+                JSONObject attributes = (JSONObject) v;
+                if (attributes.containsKey(JSON_CONSTANT_KEY.EXAMPLE)){
+                    json.put(k,attributes.get(JSON_CONSTANT_KEY.EXAMPLE));
+                }else if (attributes.containsKey(JSON_CONSTANT_KEY.$REF) && attributes.containsKey(JSON_CONSTANT_KEY.ORIGINAL_REF) && level <= 2){
+                    json.put(k,bodyValue(attributes, level+1));
+                }else if (JSON_CONSTANT_VALUE.NUMBER.concat("|").concat(JSON_CONSTANT_VALUE.INTEGER).contains(attributes.getString(JSON_CONSTANT_KEY.TYPE))){
+                    json.put(k,0);
+                }else if (JSON_CONSTANT_VALUE.BOOLEAN.contains(attributes.getString(JSON_CONSTANT_KEY.TYPE))){
+                    json.put(k,StringPool.TRUE);
+                }else {
+                    json.put(k,StringPool.EMPTY);
+                }
+            });
+        }
 
         return JSON.toJSONString(json);
     }

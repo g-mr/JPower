@@ -2,6 +2,7 @@ package com.wlcb.jpower.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.wlcb.jpower.dbs.dao.LogMonitorResultDao;
 import com.wlcb.jpower.dbs.entity.TbLogMonitorResult;
 import com.wlcb.jpower.handler.HttpInfoHandler;
 import com.wlcb.jpower.interceptor.AuthInterceptor;
@@ -11,7 +12,6 @@ import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.properties.MonitorRestfulProperties;
 import com.wlcb.jpower.service.TaskService;
 import lombok.AllArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +26,8 @@ import java.util.Map;
 @AllArgsConstructor
 public class TaskServiceImpl implements TaskService {
 
+
+    private LogMonitorResultDao logMonitorResultDao;
 
 //    public static void main(String[] args) throws IOException {
 //        HashMap<String,String> map = ChainMap.newMap();
@@ -82,19 +84,30 @@ public class TaskServiceImpl implements TaskService {
      * @return void
      **/
     private void saveResult(String httpUrl, String method, Map<String, String> headers, Map<String, String> forms, Map<String, String> bodys, OkHttp okHttp) {
+        try {
+            TbLogMonitorResult result = new TbLogMonitorResult();
+            result.setUrl(okHttp.getRequest().url().toString());
+            result.setMethod(okHttp.getRequest().method());
+            result.setHeader(okHttp.getResponse().headers().toString());
 
-        TbLogMonitorResult result = new TbLogMonitorResult();
-        result.setUrl(okHttp.getRequest().url().toString());
-        result.setMethod(okHttp.getRequest().method());
-        result.setHeader(okHttp.getRequest().headers().toString());
-        result.setForm(okHttp.getRequest().url().query());
-        result.setBody(okHttp.getRequest().body().toString());
-        if (Fc.isNull(okHttp.getResponse())){
-            result.setError(okHttp.getError());
-        }else {
-            result.setRespose(okHttp.getResponse().toString());
-            result.setResposeCode(okHttp.getResponse().code());
-            result.setRestfulResponse(okHttp.getBody());
+            result.setForm(okHttp.getRequest().url().query());
+//            if (okHttp.getRequest().body() instanceof FormBody){
+//                这里到时候试试能否把body和formbody区分开
+//            }
+            result.setBody(okHttp.getRequestBody());
+
+            if (Fc.isNull(okHttp.getResponse())){
+                result.setError(okHttp.getError());
+            }else {
+                result.setRespose(okHttp.getResponse().toString());
+                result.setResposeCode(okHttp.getResponse().code());
+                result.setRestfulResponse(okHttp.getBody());
+            }
+
+//            System.out.println(result);
+            logMonitorResultDao.save(result);
+        }catch (Exception e){
+            log.error("保存请求结果出错 ==> {}",e.getMessage());
         }
     }
 
@@ -110,7 +123,7 @@ public class TaskServiceImpl implements TaskService {
      */
     private OkHttp requestRestFul(String httpUrl, String method, Map<String,String> headers, Map<String,String> forms, Map<String,String> bodys) {
 
-        AuthInterceptor interceptor = new AuthInterceptor("","");
+        AuthInterceptor interceptor = new AuthInterceptor("admin","123456");
 
         OkHttp okHttp;
         switch (method) {

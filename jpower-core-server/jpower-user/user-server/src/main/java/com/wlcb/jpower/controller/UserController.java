@@ -18,7 +18,6 @@ import com.wlcb.jpower.module.common.support.BeanExcelUtil;
 import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.*;
 import com.wlcb.jpower.module.mp.support.Condition;
-import com.wlcb.jpower.service.CoreUserRoleService;
 import com.wlcb.jpower.service.CoreUserService;
 import com.wlcb.jpower.vo.UserVo;
 import com.wlcb.jpower.wrapper.UserWrapper;
@@ -43,7 +42,6 @@ import static com.wlcb.jpower.module.tenant.TenantConstant.*;
 public class UserController extends BaseController {
 
     private CoreUserService coreUserService;
-    private CoreUserRoleService coreUserRoleService;
 
     @ApiOperation("查询用户分页列表")
     @ApiImplicitParams({

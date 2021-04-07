@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
+import okio.Buffer;
 import org.apache.http.HttpException;
 
 import java.util.Map;
@@ -406,9 +407,7 @@ public class OkHttp {
 
         String responseBody = StringPool.EMPTY;
         try {
-            if (response.isSuccessful()) {
-                return response.body().string();
-            }
+            return response.body().string();
         } catch (Exception e) {
             e.printStackTrace();
             log.error("OkHttp3 getBody error >> ex = {}", e.getMessage());
@@ -416,6 +415,20 @@ public class OkHttp {
             close();
         }
         return responseBody;
+    }
+
+    public String getRequestBody() {
+        try {
+            Buffer buffer = new Buffer();
+            RequestBody requestBody = request.body();
+            if (!Fc.isNull(requestBody)){
+                requestBody.writeTo(buffer);
+                return buffer.readUtf8();
+            }
+        } catch (Exception e) {
+            log.error("OkHttp3 read body error ==> {}",e.getMessage());
+        }
+        return null;
     }
 
     /**

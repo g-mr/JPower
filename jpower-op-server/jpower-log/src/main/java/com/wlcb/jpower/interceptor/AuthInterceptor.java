@@ -1,11 +1,11 @@
 package com.wlcb.jpower.interceptor;
 
+import com.wlcb.jpower.module.common.utils.Fc;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
-
-import java.io.IOException;
 
 /**
  * @Author mr.g
@@ -18,7 +18,11 @@ public final class AuthInterceptor implements Interceptor {
     private final String password;
 
     @Override
-    public Response intercept(Chain chain) throws IOException {
+    @SneakyThrows
+    public Response intercept(Chain chain) {
+        if (Fc.isBlank(user)){
+            throw new NullPointerException("header ==> name is null");
+        }
         Request request = chain.request();
         request = request.newBuilder().addHeader(user,password).build();
         return chain.proceed(request);
