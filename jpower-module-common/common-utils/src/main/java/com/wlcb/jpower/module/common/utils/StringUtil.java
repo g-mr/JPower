@@ -1583,4 +1583,10 @@ public class StringUtil extends StringUtils {
         return sb.toString();
     }
 
+    public static String toLowerCase(String str){
+        if (Fc.isBlank(str)){
+            return StringPool.EMPTY;
+        }
+        return str.toLowerCase();
+    }
 }

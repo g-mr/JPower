@@ -13,6 +13,7 @@ import com.wlcb.jpower.properties.MonitorRestfulProperties;
 import com.wlcb.jpower.service.TaskService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.FormBody;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -90,11 +91,13 @@ public class TaskServiceImpl implements TaskService {
             result.setMethod(okHttp.getRequest().method());
             result.setHeader(okHttp.getResponse().headers().toString());
 
-            result.setForm(okHttp.getRequest().url().query());
-//            if (okHttp.getRequest().body() instanceof FormBody){
-//                这里到时候试试能否把body和formbody区分开
-//            }
             result.setBody(okHttp.getRequestBody());
+
+//            if (okHttp.getRequest().body() instanceof FormBody){
+//                result.setBody(okHttp.getRequestBody());
+//            }else {
+//                result.setForm(okHttp.getRequestBody());
+//            }
 
             if (Fc.isNull(okHttp.getResponse())){
                 result.setError(okHttp.getError());
@@ -104,8 +107,8 @@ public class TaskServiceImpl implements TaskService {
                 result.setRestfulResponse(okHttp.getBody());
             }
 
-//            System.out.println(result);
-            logMonitorResultDao.save(result);
+            System.out.println(result);
+//            logMonitorResultDao.save(result);
         }catch (Exception e){
             log.error("保存请求结果出错 ==> {}",e.getMessage());
         }

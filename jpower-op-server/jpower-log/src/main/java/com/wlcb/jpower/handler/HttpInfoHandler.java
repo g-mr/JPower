@@ -49,6 +49,7 @@ public class HttpInfoHandler {
         String PATH		        = "path";
         String HEADER		    = "header";
         String BODY		        = "body";
+        String QUERY		        = "query";
         String STRING		    = "string";
         String DATE		        = "date";
         String DATE_TIME		= "date-time";
@@ -132,7 +133,7 @@ public class HttpInfoHandler {
 
     /**
      * 获取formData参数
-     *  只要不是path和header统一按from处理
+     *  只要不是path和header、body统一按from处理
      * @author mr.g
      * @param method 
      * @return java.util.List<java.util.Map<java.lang.String,java.lang.String>>
@@ -142,11 +143,16 @@ public class HttpInfoHandler {
         JSONArray json = methodsInfo.getJSONObject(method).getJSONArray(JSON_CONSTANT_KEY.PARAMETERS);
         json.forEach(str -> {
             JSONObject param = (JSONObject) str;
-            String type = param.getString(JSON_CONSTANT_KEY.IN);
+            String type = Fc.toStr(param.getString(JSON_CONSTANT_KEY.IN),JSON_CONSTANT_VALUE.QUERY);
 
-            // 不是path和header参数并是必须得 或者 存在多个body得情况下，统一全部按from参数处理
+            // 不是path和header、body参数并是必须得 或者 存在多个body得情况下，统一全部按from参数处理
             boolean isBody = isMultipleBody(json) && Fc.equals(type,JSON_CONSTANT_VALUE.BODY);
-            if ((param.getBoolean(JSON_CONSTANT_KEY.REQUIRED) && JSON_CONSTANT_VALUE.HEADER.concat("|").concat(JSON_CONSTANT_VALUE.PATH).contains(type)) || isBody){
+            if (
+                    (param.getBoolean(JSON_CONSTANT_KEY.REQUIRED)
+                        && !JSON_CONSTANT_VALUE.HEADER.concat("|").concat(JSON_CONSTANT_VALUE.PATH).concat("|".concat(JSON_CONSTANT_VALUE.BODY)).contains(type)
+                    )
+                    || isBody
+               ){
                 map.put(param.getString(JSON_CONSTANT_KEY.NAME),defaultValue(param));
             }
         });
@@ -161,7 +167,11 @@ public class HttpInfoHandler {
      * @return boolean
      */
     private boolean isMultipleBody(JSONArray params) {
-        return params.stream().map(str -> (JSONObject) str).filter(param -> Fc.equals(param.getString(JSON_CONSTANT_KEY.IN), JSON_CONSTANT_VALUE.BODY)).count() > 1;
+        return params.stream().map(str -> (JSONObject) str).filter(param ->
+                Fc.equals(param.getString(JSON_CONSTANT_KEY.IN), JSON_CONSTANT_VALUE.BODY)
+//                        && param.containsKey(JSON_CONSTANT_KEY.SCHEMA) &&
+//                    !param.getJSONObject(JSON_CONSTANT_KEY.SCHEMA).containsKey(JSON_CONSTANT_KEY.TYPE)
+        ).count() > 1;
     }
 
     private String defaultValue(JSONObject param) {
@@ -173,17 +183,16 @@ public class HttpInfoHandler {
 
         if (param.containsKey(JSON_CONSTANT_KEY.SCHEMA) && StringUtil.equalsIgnoreCase(param.getString(JSON_CONSTANT_KEY.IN),JSON_CONSTANT_VALUE.BODY)){
             JSONObject schema = param.getJSONObject(JSON_CONSTANT_KEY.SCHEMA);
-            //如果schema内包含type属性就按form参数处理，反之正常body处理
-            return schema.containsKey(JSON_CONSTANT_KEY.TYPE)
-                    ?formValue(param,schema.getString(JSON_CONSTANT_KEY.TYPE).toLowerCase())
-                    :bodyValue(schema,0);
+            return bodyValue(schema,0);
         }
 
-        return formValue(param,param.getString(JSON_CONSTANT_KEY.TYPE).toLowerCase());
+        return formValue(param);
     }
 
-    private String formValue(JSONObject param,String type){
-        switch (type) {
+    private String formValue(JSONObject param){
+        String type = param.getString(JSON_CONSTANT_KEY.TYPE);
+
+        switch (StringUtil.toLowerCase(type)) {
             case JSON_CONSTANT_VALUE.STRING :
                 String format =  param.getString(JSON_CONSTANT_KEY.FORMAT);
                 if (StringUtil.equalsIgnoreCase(format,JSON_CONSTANT_VALUE.DATE)){
@@ -212,6 +221,7 @@ public class HttpInfoHandler {
      * @return java.lang.String
      */
     private String bodyValue(JSONObject schema, int level) {
+
         JSONObject json = new JSONObject();
 
         String originalRef = schema.getString(JSON_CONSTANT_KEY.ORIGINAL_REF);
@@ -230,6 +240,8 @@ public class HttpInfoHandler {
                     json.put(k,StringPool.EMPTY);
                 }
             });
+        }else {
+            return formValue(schema);
         }
 
         return JSON.toJSONString(json);
