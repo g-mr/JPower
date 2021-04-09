@@ -187,6 +187,9 @@ JPower
 # 如果觉得还不错，请作者喝杯咖啡吧 ☺
 ![](docs/image/erweima.png)
 
+# 感谢 JetBrains 提供的免费开源 License：
+[![JetBrains](docs/image/jetbrains.png)](https://www.jetbrains.com/?from=lamp-cloud)
+
 # 友情链接 & 特别鸣谢
 * 微服务快速开发平台：[https://gitee.com/gdzWork/JPower](https://gitee.com/gdzWork/JPower)
 * jpower-ui：[https://gitee.com/gdzWork/jpower-ui](https://gitee.com/gdzWork/jpower-ui)

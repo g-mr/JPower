@@ -7,13 +7,13 @@ import com.wlcb.jpower.dbs.entity.TbLogMonitorResult;
 import com.wlcb.jpower.handler.HttpInfoHandler;
 import com.wlcb.jpower.interceptor.AuthInterceptor;
 import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.JsonUtil;
 import com.wlcb.jpower.module.common.utils.OkHttp;
 import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.properties.MonitorRestfulProperties;
 import com.wlcb.jpower.service.TaskService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.FormBody;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -53,20 +53,18 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void process(MonitorRestfulProperties.Routes route) {
-        String body = OkHttp.get(route.getUrl()+route.getLocation()).execute().getBody();
-        if (Fc.isNotBlank(body)){
-            JSONObject restFulInfo = JSON.parseObject(body);
+        TbLogMonitorResult result = saveResult(OkHttp.get(route.getUrl()+route.getLocation()).execute());
+        if (result.getResposeCode() == 200){
+            JSONObject restFulInfo = JSON.parseObject(result.getRestfulResponse());
             restFulInfo.getJSONObject("paths").forEach((url,methods)->{
                 HttpInfoHandler handler = new HttpInfoHandler(JSON.parseObject(Fc.toStr(methods)),restFulInfo.getJSONObject("definitions"));
                 handler.getMethodTypes().forEach(method -> {
 
                     Map<String,String> paths = handler.getPathParam(method);
                     String httpUrl = route.getUrl().concat(StringUtil.format(url,paths));
-                    Map<String,String> headers = handler.getHeaderParam(method);
-                    Map<String,String> forms = handler.getFormParam(method);
-                    Map<String,String> bodys = handler.getBodyParam(method);
-                    OkHttp okHttp = requestRestFul(httpUrl,method.toUpperCase(),headers,forms,bodys);
-                    saveResult(httpUrl,method.toUpperCase(),headers,forms,bodys,okHttp);
+
+                    OkHttp okHttp = requestRestFul(handler,method,httpUrl);
+                    saveResult(okHttp);
 
                 });
             });
@@ -76,28 +74,17 @@ public class TaskServiceImpl implements TaskService {
     /**
      * 保存接口请求结果
      * @Author mr.g
-     * @param httpUrl
-     * @param method
-     * @param headers
-     * @param forms
-     * @param bodys
      * @param okHttp
      * @return void
      **/
-    private void saveResult(String httpUrl, String method, Map<String, String> headers, Map<String, String> forms, Map<String, String> bodys, OkHttp okHttp) {
+    private TbLogMonitorResult saveResult(OkHttp okHttp) {
+        TbLogMonitorResult result = new TbLogMonitorResult();
         try {
-            TbLogMonitorResult result = new TbLogMonitorResult();
             result.setUrl(okHttp.getRequest().url().toString());
             result.setMethod(okHttp.getRequest().method());
-            result.setHeader(okHttp.getResponse().headers().toString());
+            result.setHeader(okHttp.getRequest().headers().toString());
 
             result.setBody(okHttp.getRequestBody());
-
-//            if (okHttp.getRequest().body() instanceof FormBody){
-//                result.setBody(okHttp.getRequestBody());
-//            }else {
-//                result.setForm(okHttp.getRequestBody());
-//            }
 
             if (Fc.isNull(okHttp.getResponse())){
                 result.setError(okHttp.getError());
@@ -107,29 +94,33 @@ public class TaskServiceImpl implements TaskService {
                 result.setRestfulResponse(okHttp.getBody());
             }
 
+            //如果是上传文件接口怎么办？需要测试一下
             System.out.println(result);
+            System.out.println("=========================================");
 //            logMonitorResultDao.save(result);
         }catch (Exception e){
             log.error("保存请求结果出错 ==> {}",e.getMessage());
         }
+        return result;
     }
 
     /**
      * 请求接口
      * @author mr.g
-     * @param httpUrl 请求地址
      * @param method 请求类型
-     * @param headers header参数
-     * @param forms form参数
-     * @param bodys body参数
+     * @param httpUrl
      * @return void
      */
-    private OkHttp requestRestFul(String httpUrl, String method, Map<String,String> headers, Map<String,String> forms, Map<String,String> bodys) {
+    private OkHttp requestRestFul(HttpInfoHandler handler, String method, String httpUrl) {
 
         AuthInterceptor interceptor = new AuthInterceptor("admin","123456");
 
+        Map<String,String> headers = handler.getHeaderParam(method);
+        Map<String,String> forms = handler.getFormParam(method);
+        Map<String,String> bodys = handler.getBodyParam(method);
+
         OkHttp okHttp;
-        switch (method) {
+        switch (method.toUpperCase()) {
             case "HEAD" :
                 okHttp = OkHttp.head(httpUrl,headers,forms).execute(interceptor);
                 break;
@@ -143,16 +134,25 @@ public class TaskServiceImpl implements TaskService {
             case "PUT" :
             case "POST" :
                 if (bodys.size() == 1) {
-                    StringBuffer sb = new StringBuffer(httpUrl);
-                    sb.append("?clientId=jpower");
+                    StringBuffer sb = new StringBuffer();
                     if (forms != null && forms.keySet().size() > 0) {
                         forms.forEach((k, v) -> sb.append("&").append(k).append("=").append(v));
                     }
-                    httpUrl = sb.toString();
+                    if (sb.length()>0){
+                        httpUrl = httpUrl+"?"+StringUtil.removeAllPrefix(sb,"&");
+                    }
                 }
             default:
                 if (bodys.size() == 1) {
-                    okHttp = OkHttp.content(httpUrl,method,headers,bodys.entrySet().iterator().next().getValue(),OkHttp.JSON).execute(interceptor);
+                    Map.Entry<String, String> body = bodys.entrySet().iterator().next();
+                    //获取Body请求数据类型
+                    String dataType = handler.getBodyDataType(method);
+                    if(StringUtil.startsWithIgnoreCase(dataType, "application/xml")){
+                        String clz = handler.getBodyClass(method,body.getKey());
+                        okHttp = OkHttp.content(httpUrl,method,headers, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<" + clz + ">" + JsonUtil.json2xml(body.getValue()) + "</" + clz + ">",OkHttp.XML).execute(interceptor);
+                    }else {
+                        okHttp = OkHttp.content(httpUrl,method,headers,body.getValue(),OkHttp.JSON).execute(interceptor);
+                    }
                 }else {
                     forms.putAll(bodys);
                     okHttp = OkHttp.method(httpUrl,method,headers,forms).execute(interceptor);

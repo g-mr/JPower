@@ -402,14 +402,13 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- ----------------------------
 create table tb_log_monitor_result(
   id varchar(32) not null COMMENT '主建',
-  url varchar(100) default null comment '请求接口',
+  url text default null comment '请求接口',
   method varchar(5) default null comment '请求方式',
   error varchar(289) default null comment '请求错误',
   respose varchar(289) default null comment '响应数据',
   respose_code int(10) default null comment '响应编码',
   restful_response text default null comment '接口返回数据',
   header text default null comment 'header参数',
-  form text default null comment 'form参数',
   body text default null comment 'body参数',
   create_user varchar(32) default 'root' not null comment '创建人',
   create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',

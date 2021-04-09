@@ -31,8 +31,6 @@ public class TbLogMonitorResult extends BaseEntity {
     private String restfulResponse;
     @ApiModelProperty("header参数")
     private String header;
-    @ApiModelProperty("form参数")
-    private String form;
     @ApiModelProperty("body参数")
     private String body;
 

@@ -28,6 +28,7 @@ public class HttpInfoHandler {
 
     private interface JSON_CONSTANT_KEY {
 
+        String CONSUMES		= "consumes";
         String PARAMETERS		= "parameters";
 
         String IN		        = "in";
@@ -71,6 +72,21 @@ public class HttpInfoHandler {
             list.add(keys.next());
         }
         return list;
+    }
+
+    /**
+     * 获取数据请求类型
+     * @author mr.g
+     * @param method 
+     * @return void
+     */
+    public String getBodyDataType(String method) {
+        JSONObject methodJson = methodsInfo.getJSONObject(method);
+        if (methodJson.containsKey(JSON_CONSTANT_KEY.CONSUMES)){
+            JSONArray consumes = methodJson.getJSONArray(JSON_CONSTANT_KEY.CONSUMES);
+            return consumes.size()>0?consumes.getString(0):StringPool.EMPTY;
+        }
+        return StringPool.EMPTY;
     }
 
     /**
@@ -168,10 +184,7 @@ public class HttpInfoHandler {
      */
     private boolean isMultipleBody(JSONArray params) {
         return params.stream().map(str -> (JSONObject) str).filter(param ->
-                Fc.equals(param.getString(JSON_CONSTANT_KEY.IN), JSON_CONSTANT_VALUE.BODY)
-//                        && param.containsKey(JSON_CONSTANT_KEY.SCHEMA) &&
-//                    !param.getJSONObject(JSON_CONSTANT_KEY.SCHEMA).containsKey(JSON_CONSTANT_KEY.TYPE)
-        ).count() > 1;
+                Fc.equals(param.getString(JSON_CONSTANT_KEY.IN), JSON_CONSTANT_VALUE.BODY)).count() > 1;
     }
 
     private String defaultValue(JSONObject param) {
@@ -246,4 +259,21 @@ public class HttpInfoHandler {
 
         return JSON.toJSONString(json);
     }
+
+    /**
+     * 获取body类型
+     * @author mr.g
+     * @param method 请求方式
+     * @param name   参数名称
+     * @return java.lang.String
+     */
+    public String getBodyClass(String method, String name) {
+        JSONArray json = methodsInfo.getJSONObject(method).getJSONArray(JSON_CONSTANT_KEY.PARAMETERS);
+        JSONObject jsonObject = json.stream().map(str -> (JSONObject) str).filter(param ->
+                Fc.equals(param.getString(JSON_CONSTANT_KEY.NAME), name) &&
+                Fc.equals(param.getString(JSON_CONSTANT_KEY.IN), JSON_CONSTANT_VALUE.BODY)).findFirst().get();
+        JSONObject schema = jsonObject.getJSONObject(JSON_CONSTANT_KEY.SCHEMA);
+        return schema.containsKey(JSON_CONSTANT_KEY.ORIGINAL_REF)?schema.getString(JSON_CONSTANT_KEY.ORIGINAL_REF):jsonObject.getString(JSON_CONSTANT_KEY.NAME);
+    }
+
 }

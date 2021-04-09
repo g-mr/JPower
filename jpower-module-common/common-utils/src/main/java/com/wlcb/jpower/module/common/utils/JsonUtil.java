@@ -1,5 +1,8 @@
 package com.wlcb.jpower.module.common.utils;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.json.JsonReadFeature;
@@ -311,4 +314,33 @@ public class JsonUtil {
         }
     }
 
+    /**
+     * JSON转XML
+     * @author mr.g
+     * @param jsonStr
+     * @return java.lang.String
+     */
+    public static String json2xml(String jsonStr) {
+        JSONObject jsonObj = JSON.parseObject(jsonStr);
+        StringBuffer buff = new StringBuffer();
+        String tempObj = null;
+        JSONArray tempArr = null;
+        for (String temp : jsonObj.keySet()) {
+            buff.append("<" + temp.trim() + ">");
+            if (jsonObj.get(temp) instanceof JSONObject) {
+                tempObj = jsonObj.getString(temp);
+                buff.append(json2xml(tempObj));
+            } else if (jsonObj.get(temp) instanceof JSONArray) {
+                tempArr = (JSONArray) jsonObj.get(temp);
+                if (tempArr.size() > 0) {
+                    tempArr.stream().map(Fc::toStr).forEach(str -> buff.append(json2xml(str)));
+                }
+            } else {
+                String tempStr = jsonObj.get(temp).toString();
+                buff.append(tempStr.trim());
+            }
+            buff.append("</" + temp.trim() + ">");
+        }
+        return buff.toString();
+    }
 }

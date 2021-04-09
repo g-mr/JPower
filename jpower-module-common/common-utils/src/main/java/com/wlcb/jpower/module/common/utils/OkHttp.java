@@ -20,7 +20,7 @@ public class OkHttp {
     public static MediaType XML = MediaType.parse("application/xml; charset=utf-8");
 
     @Getter
-    private final Request request;
+    private Request request;
     @Getter
     private Response response;
     @Getter
@@ -219,7 +219,7 @@ public class OkHttp {
             header.forEach(builder::addHeader);
         }
 
-        Request request = builder.url(url).method(method,formBuilder.build()).build();
+        Request request = builder.url(url).method(method.toUpperCase(),formBuilder.build()).build();
         return new OkHttp(request);
     }
 
@@ -288,7 +288,7 @@ public class OkHttp {
         if (header != null && header.keySet().size() > 0) {
             header.forEach(builder::addHeader);
         }
-        Request request = builder.url(url).method(method,requestBody).build();
+        Request request = builder.url(url).method(method.toUpperCase(),requestBody).build();
         return new OkHttp(request);
     }
 
@@ -386,6 +386,8 @@ public class OkHttp {
             }
             OkHttpClient okHttpClient = builder.build();
             response = okHttpClient.newCall(request).execute();
+            // 获取最终得request
+            request = response.request();
         } catch (Exception e) {
             error = e.getMessage();
             log.error("OkHttp3 execute error >> ex = {}", e.getMessage());
