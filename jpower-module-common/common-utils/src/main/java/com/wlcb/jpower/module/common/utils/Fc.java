@@ -888,6 +888,15 @@ public class Fc {
     }
 
     /**
+     * 生成雪花ID
+     *
+     * @return UUID
+     */
+    public static String randomSnowFlakeId() {
+        return Fc.toStr(SnowFlakeIdUtil.getInstance().nextId());
+    }
+
+    /**
      * 转义HTML用于安全过滤
      *
      * @param html html
@@ -922,7 +931,7 @@ public class Fc {
      * 计算MD5摘要，并以32个字符的十六进制字符串形式返回值。
      *
      * @param data Data to digest
-     * @return MD5 digest as a hex string
+     * @return MD5 digest as a hexg string
      */
     public static String md5Hex(final String data) {
         return DigestUtil.md5Hex(data);

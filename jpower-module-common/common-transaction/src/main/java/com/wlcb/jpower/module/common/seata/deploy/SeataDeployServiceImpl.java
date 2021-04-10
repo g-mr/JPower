@@ -20,7 +20,6 @@ public class SeataDeployServiceImpl implements DeployService {
     public void launcher(SpringApplicationBuilder builder, String appName, String profile) {
         Properties props = System.getProperties();
         //seata配置
-        props.setProperty("spring.cloud.alibaba.seata.tx-service-group", appName.concat(SeataConstants.SUFFIX_SEATA_GROUP));
         props.setProperty("seata.tx-service-group", appName.concat(SeataConstants.SUFFIX_SEATA_GROUP));
         props.setProperty("seata.service.grouplist.default", "${jpower.".concat(profile).concat(".seata.grouplist:}"));
         props.setProperty("seata.service.vgroup-mapping.".concat(appName.concat(SeataConstants.SUFFIX_SEATA_GROUP)), SeataConstants.DEFAULT);

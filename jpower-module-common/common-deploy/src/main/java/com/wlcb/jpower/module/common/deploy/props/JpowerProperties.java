@@ -10,6 +10,7 @@ import java.util.Map;
 
 /**
  * 配置文件
+ * @author mr.g
  */
 @ConfigurationProperties("jpower")
 public class JpowerProperties {

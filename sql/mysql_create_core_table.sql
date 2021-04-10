@@ -414,6 +414,7 @@ create table tb_log_monitor_result(
   create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
   update_user varchar(32) default 'root' not null comment '更新人',
   update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
+  create_org varchar(32) DEFAULT NULL comment '创建部门',
   status   tinyint(1) default 1 comment '状态',
   is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
   PRIMARY KEY (id) USING BTREE

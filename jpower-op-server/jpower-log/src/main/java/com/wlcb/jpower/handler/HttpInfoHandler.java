@@ -203,6 +203,9 @@ public class HttpInfoHandler {
     }
 
     private String formValue(JSONObject param){
+        /*String type = !param.containsKey(JSON_CONSTANT_KEY.TYPE) && param.containsKey(JSON_CONSTANT_KEY.SCHEMA)?
+            param.getJSONObject(JSON_CONSTANT_KEY.SCHEMA).getString(JSON_CONSTANT_KEY.TYPE):
+                param.getString(JSON_CONSTANT_KEY.TYPE);*/
         String type = param.getString(JSON_CONSTANT_KEY.TYPE);
 
         switch (StringUtil.toLowerCase(type)) {

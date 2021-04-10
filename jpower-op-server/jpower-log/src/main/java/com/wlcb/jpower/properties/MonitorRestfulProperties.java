@@ -34,11 +34,11 @@ public class MonitorRestfulProperties {
          */
         private String name;
         /**
-         * 项目地址
+         * 获取接口信息地址
          */
         private String url;
         /**
-         * 获取接口信息地址
+         * 项目地址
          */
         private String location;
     }

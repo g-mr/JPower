@@ -16,18 +16,26 @@ spring:
     #  commandTimeout: 5000
 
 jpower:
+  seata:
+    #   是否启用分布式事务（默认不开启）
+    enabled: true
   monitor-restful:
     enable: true
-    cron: 0/59 * * * * ?
+    cron: 0 * * * * ?
     routes:
       - name: zw-general
-        url: http://localhost:90
-        location: /all/restful
+        location: http://localhost:90
+        url: /all/restful
+      - name: test
+        location: http://localhost:80
+        url: /all/restful
   #  开发环境
   dev:
     nacos:
       #      配置中心地址，如果配置没有配置注册中心地址，则注册中心默认走这里的地址
       server-addr: localhost:8848
+    seata:
+      grouplist: 219.148.186.214:85
   test:
     nacos:
       #      配置中心地址，如果配置没有配置注册中心地址，则注册中心默认走这里的地址
