@@ -11,6 +11,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 /**
+ * 接口请求完成后回滚事务，不要把测试数据保存到数据库中
  * @Author mr.g
  * @Date 2021/4/4 0004 0:36
  */
