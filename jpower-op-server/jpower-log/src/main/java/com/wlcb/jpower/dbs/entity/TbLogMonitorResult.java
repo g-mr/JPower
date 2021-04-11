@@ -17,6 +17,10 @@ public class TbLogMonitorResult extends BaseEntity {
 
     private static final long serialVersionUID = 5898028806232318030L;
 
+    @ApiModelProperty("服务名称")
+    private String name;
+    @ApiModelProperty("监控地址")
+    private String path;
     @ApiModelProperty("接口地址")
     private String url;
     @ApiModelProperty("接口方式")

@@ -2,23 +2,34 @@ package com.wlcb.jpower.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.nacos.common.utils.HttpMethod;
 import com.wlcb.jpower.dbs.dao.LogMonitorResultDao;
 import com.wlcb.jpower.dbs.entity.TbLogMonitorResult;
+import com.wlcb.jpower.handler.AuthBuilder;
 import com.wlcb.jpower.handler.HttpInfoBuilder;
 import com.wlcb.jpower.handler.HttpInfoHandler;
 import com.wlcb.jpower.interceptor.AuthInterceptor;
 import com.wlcb.jpower.interceptor.RollbackInterceptor;
+import com.wlcb.jpower.module.common.deploy.props.JpowerProperties;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.JsonUtil;
 import com.wlcb.jpower.module.common.utils.OkHttp;
 import com.wlcb.jpower.module.common.utils.StringUtil;
+import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import com.wlcb.jpower.properties.MonitorRestfulProperties;
 import com.wlcb.jpower.service.TaskService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.Headers;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import org.apache.http.HttpStatus;
+import org.apache.http.entity.ContentType;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author mr.g
@@ -29,36 +40,56 @@ import java.util.Map;
 @AllArgsConstructor
 public class TaskServiceImpl implements TaskService {
 
+    private static final String PATHS = "paths";
+    private static final String DEFINITIONS = "definitions";
 
-    private LogMonitorResultDao logMonitorResultDao;
-    private RollbackInterceptor rollbackInterceptor;
-
+    private final LogMonitorResultDao logMonitorResultDao;
+    private final RollbackInterceptor rollbackInterceptor;
+    private final JpowerProperties properties;
+    private AuthInterceptor authInterceptor;
 
     @Override
-    public void process(MonitorRestfulProperties.Routes route) {
-        TbLogMonitorResult result = saveResult(OkHttp.get(route.getLocation()+route.getUrl()).execute());
-        if (result.getResposeCode() == 200){
+    public void process(MonitorRestfulProperties.Route route) {
+        authInterceptor = Fc.isNull(route.getAuth())?authInterceptor:AuthBuilder.getInterceptor(route);
+        TbLogMonitorResult result = saveResult(route.getName(), route.getUrl(), OkHttp.get(route.getLocation()+route.getUrl()).execute());
+        log.info("---> START TEST SERVER {} {}",route.getName(),route.getLocation()+route.getUrl());
+        if (result.getResposeCode() == HttpStatus.SC_OK){
             JSONObject restFulInfo = JSON.parseObject(result.getRestfulResponse());
-            restFulInfo.getJSONObject("paths").forEach((url,methods)->{
-                String httpUrl = route.getLocation().concat(url);
-                HttpInfoHandler handler = HttpInfoBuilder.newHandler(httpUrl,JSON.parseObject(Fc.toStr(methods)),restFulInfo.getJSONObject("definitions"));
-                handler.getMethodTypes().forEach(method -> {
-                    OkHttp okHttp = requestRestFul(method,httpUrl);
-                    saveResult(okHttp);
+            if (restFulInfo.containsKey(PATHS)){
+                restFulInfo.getJSONObject(PATHS).forEach((url,methods)->{
+                    String httpUrl = route.getLocation().concat(url);
+                    HttpInfoHandler handler = HttpInfoBuilder.newHandler(httpUrl,JSON.parseObject(Fc.toStr(methods)),restFulInfo.getJSONObject(DEFINITIONS));
+                    handler.getMethodTypes().forEach(method -> {
+                        try{
+                            log.info("--> START TEST REST {} {}",method,url);
+                            OkHttp okHttp = requestRestFul(method,httpUrl);
+                            log.info("<-- END TEST REST {} {}",method,url);
+                            saveResult(route.getName(),url,okHttp);
+                        }catch (Exception e){
+                            log.error("===>  接口测试异常，error={}",e.getMessage());
+                        }
+                    });
                 });
-            });
+            }else {
+                log.info("  {}服务未发现接口",route.getName());
+            }
         }
+        log.info("<--- END TEST SERVER {} {}; Response={}",route.getName(),route.getLocation()+route.getUrl(),result.getResposeCode());
     }
 
     /**
      * 保存接口请求结果
      * @Author mr.g
-     * @param okHttp
+     * @param name 服务名称
+     * @param path 监控地址
+     * @param okHttp 请求体
      * @return void
      **/
-    private TbLogMonitorResult saveResult(OkHttp okHttp) {
+    private TbLogMonitorResult saveResult(String name, String path, OkHttp okHttp) {
         TbLogMonitorResult result = new TbLogMonitorResult();
         try {
+            result.setName(name);
+            result.setPath(path);
             result.setUrl(okHttp.getRequest().url().toString());
             result.setMethod(okHttp.getRequest().method());
             result.setHeader(okHttp.getRequest().headers().toString());
@@ -75,7 +106,7 @@ public class TaskServiceImpl implements TaskService {
 
             logMonitorResultDao.save(result);
         }catch (Exception e){
-            log.error("保存请求结果出错 ==> {}",e.getMessage());
+            log.error("===>  保存请求结果出错 ==> {}",e.getMessage());
         }finally {
             okHttp.close();
         }
@@ -90,30 +121,28 @@ public class TaskServiceImpl implements TaskService {
      * @return void
      */
     private OkHttp requestRestFul(String method, String url) {
-
-        AuthInterceptor interceptor = new AuthInterceptor("admin","123456");
-
         Map<String,String> paths = HttpInfoBuilder.getHandler(url).getPathParam(method);
         Map<String,String> headers = HttpInfoBuilder.getHandler(url).getHeaderParam(method);
         Map<String,String> forms = HttpInfoBuilder.getHandler(url).getFormParam(method);
         Map<String,String> bodys = HttpInfoBuilder.getHandler(url).getBodyParam(method);
 
         String httpUrl = StringUtil.format(url,paths);
+        log.info("  TEST REST URL=>{}",httpUrl);
 
         OkHttp okHttp;
         switch (method.toUpperCase()) {
-            case "HEAD" :
-                okHttp = OkHttp.head(httpUrl,headers,forms).execute(interceptor,rollbackInterceptor);
+            case HttpMethod.HEAD :
+                okHttp = OkHttp.head(httpUrl,headers,forms);
                 break;
-            case "GET" :
-                okHttp = OkHttp.get(httpUrl,headers,forms).execute(interceptor,rollbackInterceptor);
+            case HttpMethod.GET :
+                okHttp = OkHttp.get(httpUrl,headers,forms);
                 break;
-            case "DELETE" :
-            case "PATCH" :
-            case "OPTIONS" :
-            case "TRACE" :
-            case "PUT" :
-            case "POST" :
+            case HttpMethod.DELETE :
+            case HttpMethod.PATCH :
+            case HttpMethod.OPTIONS :
+            case HttpMethod.TRACE :
+            case HttpMethod.PUT :
+            case HttpMethod.POST :
                 if (bodys.size() == 1) {
                     StringBuffer sb = new StringBuffer();
                     if (forms != null && forms.keySet().size() > 0) {
@@ -126,23 +155,70 @@ public class TaskServiceImpl implements TaskService {
             default:
                 if (bodys.size() == 1) {
                     Map.Entry<String, String> body = bodys.entrySet().iterator().next();
+                    if (!AppConstant.PROD_CODE.equals(properties.getEnv())){
+                        log.info("  TEST REST PARAMS bodys==>{}",body.getValue());
+                    }
                     //获取Body请求数据类型
                     String dataType = HttpInfoBuilder.getHandler(url).getBodyDataType(method);
-                    if(StringUtil.startsWithIgnoreCase(dataType, "application/xml")){
+                    if(StringUtil.startsWithIgnoreCase(dataType, ContentType.APPLICATION_XML.getMimeType())){
                         String clz = HttpInfoBuilder.getHandler(url).getBodyClass(method,body.getKey());
-                        okHttp = OkHttp.content(httpUrl,method,headers, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<" + clz + ">" + JsonUtil.json2xml(body.getValue()) + "</" + clz + ">",OkHttp.XML).execute(interceptor);
+                        okHttp = OkHttp.content(httpUrl,method,headers, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<" + clz + ">" + JsonUtil.json2xml(body.getValue()) + "</" + clz + ">",OkHttp.XML);
                     }else {
-                        okHttp = OkHttp.content(httpUrl,method,headers,body.getValue(),OkHttp.JSON).execute(interceptor,rollbackInterceptor);
+                        okHttp = OkHttp.content(httpUrl,method,headers,body.getValue(),OkHttp.JSON);
                     }
                 }else {
                     forms.putAll(bodys);
-                    okHttp = OkHttp.method(httpUrl,method,headers,forms).execute(interceptor,rollbackInterceptor);
+                    okHttp = OkHttp.method(httpUrl,method,headers,forms);
                 }
                 break;
         }
 
+
+        logBefore(okHttp,forms);
+        long startNs = System.nanoTime();
+        okHttp = okHttp.execute(authInterceptor,rollbackInterceptor);
+        logAfter(okHttp,TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs));
+
         return okHttp;
     }
 
+    private void logAfter(OkHttp okHttp,long time){
+        if (Fc.isNull(okHttp.getResponse())){
+            log.info("<-- END TEST REST FAILED {} : {}"," (" + time + "ms)",okHttp.getError());
+        }else {
+            ResponseBody responseBody = okHttp.getResponse().body();
+            long contentLength = responseBody.contentLength();
+            String bodySize = contentLength != -1 ? contentLength + "-byte" : "unknown-length";
+            log.info("<-- END TEST REST {} {} {}",okHttp.getResponse().code(),(okHttp.getResponse().message().isEmpty() ? "" : ' ' + okHttp.getResponse().message())
+                    ," (" + time + "ms" + ", " + bodySize + " body" + ")");
+        }
+    }
+
+    private void logBefore(OkHttp okHttp,Map<String,String> forms){
+        if (!AppConstant.PROD_CODE.equals(properties.getEnv())){
+            log.info("  TEST REST PARAMS FORMS==>");
+            forms.forEach((key,val)->{
+                log.info("    {}: {}",key,val);
+            });
+
+            log.info("  TEST REST PARAMS HEADERS==>");
+            Headers hd = okHttp.getRequest().headers();
+            for (int i = 0, count = hd.size(); i < count; i++) {
+                String name = hd.name(i);
+                if (!"Content-Type".equalsIgnoreCase(name) && !"Content-Length".equalsIgnoreCase(name)) {
+                    log.info("    {}: {}",name,hd.value(i));
+                }
+            }
+        }
+        RequestBody requestBody = okHttp.getRequest().body();
+        try {
+            if (Objects.requireNonNull(requestBody).contentType() != null) {
+                log.info("  Content-Type: " + requestBody.contentType());
+            }
+            if (Objects.requireNonNull(requestBody).contentLength() != -1) {
+                log.info("  Content-Length: " + requestBody.contentLength());
+            }
+        } catch (Exception ignored) {}
+    }
 
 }

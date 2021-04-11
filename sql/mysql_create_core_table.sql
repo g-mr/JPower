@@ -400,8 +400,11 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- ----------------------------
 -- Table structure for tb_log_monitor_result
 -- ----------------------------
+DROP TABLE IF EXISTS `tb_log_monitor_result`;
 create table tb_log_monitor_result(
   id varchar(32) not null COMMENT '主建',
+  name text not null comment '服务名称',
+  path text not null comment '测试地址',
   url text default null comment '请求接口',
   method varchar(5) default null comment '请求方式',
   error varchar(289) default null comment '请求错误',
@@ -418,4 +421,4 @@ create table tb_log_monitor_result(
   status   tinyint(1) default 1 comment '状态',
   is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
   PRIMARY KEY (id) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='接口返回详情';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='接口监控详情';

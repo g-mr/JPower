@@ -2,6 +2,7 @@ package com.wlcb.jpower.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +26,16 @@ public class MonitorRestfulProperties {
     /**
      * 监控项目列表
      */
-    private List<Routes> routes = new ArrayList<>();
+    private List<Route> routes = new ArrayList<>();
+
+    /**
+     * 所有服务得鉴权信息
+     */
+    @NestedConfigurationProperty
+    private AuthInfoConfiguration auth = null;
 
     @Data
-    public static class Routes{
+    public static class Route{
         /**
          * 项目名称
          */
@@ -41,5 +48,12 @@ public class MonitorRestfulProperties {
          * 项目地址
          */
         private String location;
+
+        /**
+         * 鉴权信息
+         */
+        @NestedConfigurationProperty
+        private AuthInfoConfiguration auth = null;
     }
+
 }

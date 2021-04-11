@@ -7,5 +7,5 @@ import com.wlcb.jpower.properties.MonitorRestfulProperties;
  * @date 2021-04-02 11:25
  */
 public interface TaskService {
-    void process(MonitorRestfulProperties.Routes route);
+    void process(MonitorRestfulProperties.Route route);
 }

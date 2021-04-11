@@ -1,7 +1,6 @@
 package com.wlcb.jpower.handler;
 
 import com.alibaba.fastjson.JSONObject;
-import lombok.AllArgsConstructor;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -10,10 +9,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Author mr.g
  * @Date 2021/4/10 0010 17:34
  */
-@AllArgsConstructor
 public class HttpInfoBuilder {
     /**
-     * TokenGranter缓存池
+     * HttpInfoHandler缓存池
      */
     private static final Map<String, HttpInfoHandler> HANDLER_POOL = new ConcurrentHashMap<>();
 

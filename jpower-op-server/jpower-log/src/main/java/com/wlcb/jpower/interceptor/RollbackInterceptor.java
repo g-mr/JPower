@@ -9,13 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
-import org.springframework.stereotype.Component;
 
 /**
  * @Author mr.g
  * @Date 2021/4/4 0004 0:36
  */
-@Component
 @Slf4j
 public final class RollbackInterceptor implements Interceptor {
 

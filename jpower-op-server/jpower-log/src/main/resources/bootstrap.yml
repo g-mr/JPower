@@ -17,15 +17,34 @@ spring:
 
 jpower:
   seata:
-    #   是否启用分布式事务（默认不开启）
+    #   是否启用分布式事务（使用接口监控需开启）
     enabled: true
   monitor-restful:
     enable: true
     cron: 0 * * * * ?
     routes:
-      - name: zw-general
-        location: http://localhost:90
-        url: /all/restful
+#      - name: zw-general
+#        location: http://localhost:90
+#        url: /all/restful
+#        auth:
+#          url: /jpower-auth/auth/login
+#          method: post
+#          user: admin
+#          password: 123456
+#          params: type=test&web=hhh
+#          headers: type=test&web=hhh
+#          code-field: data.code
+#          success-code: 200
+#          token: sakfjdoasjfopasjdopasjdopajdojasodjasodjaosjda
+#          token-field: data.accessToken
+#          token-position: header
+#          expires-in: data.expiresIn
+#          expires-field: data.expiresIn
+#          expires-unit: ss
+#          token-prefix: jpower
+#          token-prefix-field: data.tokenType
+#          token-suffix: jpower
+#          token-suffix-field: data.tokenType
       - name: test
         location: http://localhost:80
         url: /all/restful
