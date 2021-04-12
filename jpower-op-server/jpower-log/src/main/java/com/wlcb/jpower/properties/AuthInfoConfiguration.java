@@ -2,6 +2,8 @@ package com.wlcb.jpower.properties;
 
 import lombok.Data;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * @Author mr.g
  * @Date 2021/4/11 0011 20:23
@@ -12,19 +14,11 @@ public class AuthInfoConfiguration{
     /**
      * token接口
      */
-    private String url;
+    private String url = "";
     /**
      * 接口请求方式
      */
     private MethodType method = MethodType.GET;
-    /**
-     * 用户名
-     */
-    private String user;
-    /**
-     * 密码
-     */
-    private String password;
     /**
      * 接口请求参数
      */
@@ -58,7 +52,7 @@ public class AuthInfoConfiguration{
      */
     private AuthTokenPosition tokenPosition = AuthTokenPosition.HEADER;
     /**
-     * 过期时间
+     * 过期时间 0代表永不过期
      */
     private long expiresIn = 0;
     /**
@@ -68,7 +62,7 @@ public class AuthInfoConfiguration{
     /**
      * 过期时间单位
      */
-    private ExpiresTimeUnit expiresUnit = ExpiresTimeUnit.SS;
+    private TimeUnit expiresUnit = TimeUnit.SECONDS;
     /**
      * token得前缀
      */
@@ -106,35 +100,6 @@ public class AuthInfoConfiguration{
          * QUERY.
          */
         QUERY
-
-    }
-
-    public enum ExpiresTimeUnit {
-
-        /**
-         * 毫秒.
-         */
-        MS,
-
-        /**
-         * 秒.
-         */
-        SS,
-
-        /**
-         * 分钟.
-         */
-        MM,
-
-        /**
-         * 小时.
-         */
-        HH,
-
-        /**
-         * 天.
-         */
-        DD
 
     }
 

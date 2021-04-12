@@ -34,8 +34,6 @@ public class CacheMap<K, V> extends ConcurrentHashMap<K, V> {
      */
     private Map<K,Long> expireMap = new HashMap<K, Long>();
 
-    private long EXPIRE_TIME = 1000;
-
     /**
      * 默认过期时间
      */
@@ -44,20 +42,12 @@ public class CacheMap<K, V> extends ConcurrentHashMap<K, V> {
         super();
     }
 
-    public CacheMap(long expire){
-        this.EXPIRE_TIME = expire;
-    }
-
-    public CacheMap(TimeUnit unit, long duration){
-        this.EXPIRE_TIME = unit.toMillis(duration);
-    }
-
     @Override
     public V put(K key, V value) {
         if(key == null){
             return null;
         }
-        expireMap.put(key, System.currentTimeMillis() + EXPIRE_TIME);
+        expireMap.put(key, 0L);
         return super.put(key, value);
     }
 
@@ -66,6 +56,14 @@ public class CacheMap<K, V> extends ConcurrentHashMap<K, V> {
             return null;
         }
         expireMap.put(key, System.currentTimeMillis() + expireTime);
+        return super.put(key, value);
+    }
+
+    public V put(K key, V value,long expireTime,TimeUnit unit) {
+        if(key == null){
+            return null;
+        }
+        expireMap.put(key, System.currentTimeMillis() + unit.toMillis(expireTime));
         return super.put(key, value);
     }
 
@@ -96,6 +94,9 @@ public class CacheMap<K, V> extends ConcurrentHashMap<K, V> {
             return false;
         }else {
             long time1 = expireMap.get(key);
+            if (time1 == 0L){
+                return false;
+            }
             long time2 = System.currentTimeMillis();
             return (time2 - time1) > 0;
         }
@@ -113,48 +114,12 @@ public class CacheMap<K, V> extends ConcurrentHashMap<K, V> {
         }
     }
 
-    private void clearTime(CacheMap cacheMap){
-
-
-//        ThreadFactory namedThreadFactory = new ThreadFactoryBuilder()
-//                .setNameFormat("test-pool-%d").build();
-//        ExecutorService pool = new ThreadPoolExecutor(5, 20,
-//                0L, TimeUnit.MILLISECONDS,
-//                new LinkedBlockingQueue<Runnable>(100), namedThreadFactory, new
-//                ThreadPoolExecutor.
-//                        AbortPolicy());
-//        pool.submit(new Runnable() {
-//            @Override
-//            public void run() {
-//                if (!Fc.isNull(cacheMap)){
-//                    cacheMap.removeALLExpired();
-//                }
-//            }
-//        });
-
-
-//        ExecutorService executor = new ThreadPoolExecutor(10, 10,
-//                60L, TimeUnit.SECONDS,
-//                new ArrayBlockingQueue(10));
-//        executor.submit(new Runnable() {
-//            @Override
-//            public void run() {
-//                if (!Fc.isNull(cacheMap)){
-//                    cacheMap.removeALLExpired();
-//                }
-//            }
-//        });
-
-
-
-        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-        service.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                if (!Fc.isNull(cacheMap)){
-                    cacheMap.removeALLExpired();
-                }
-            }
-        }, 10, 10, TimeUnit.SECONDS);
+    private void clearTime(CacheMap<K, V> cacheMap){
+        new ScheduledThreadPoolExecutor(3, new ThreadFactoryBuilder().setNameFormat("remove-cacheMap-pool-%d").build())
+                .scheduleAtFixedRate(()->{
+                    if (!Fc.isNull(cacheMap)){
+                        cacheMap.removeALLExpired();
+                    }
+                }, 1, 1, TimeUnit.SECONDS);
     }
 }

@@ -2,6 +2,7 @@ package com.wlcb.jpower.module.common.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -268,6 +269,53 @@ public class JsonUtil {
             throw ExceptionsUtil.unchecked(e);
         }
     }
+
+    /**
+     * 判断是否是JSON字符串
+     * @author mr.g
+     * @param jsonInString
+     * @return boolean
+     */
+    public static boolean isJsonValid(String jsonInString ) {
+        try {
+            final ObjectMapper mapper = new ObjectMapper();
+            mapper.readTree(jsonInString);
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    /**
+     * 判断是否是JsonObject
+     * @author mr.g
+     * @param jsonInString
+     * @return boolean
+     */
+    public final static boolean isJsonObject(String jsonInString) {
+        try {
+            JSONObject.parseObject(jsonInString);
+        } catch (JSONException ex) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 判断是否是JsonArray
+     * @author mr.g
+     * @param jsonInString
+     * @return boolean
+     */
+    public final static boolean isJsonArray(String jsonInString) {
+        try {
+            JSONObject.parseArray(jsonInString);
+        } catch (JSONException ex1) {
+            return false;
+        }
+        return true;
+    }
+
 
     public static ObjectMapper getInstance() {
         return JacksonHolder.INSTANCE;

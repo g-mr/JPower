@@ -29,10 +29,8 @@ jpower:
 #        auth:
 #          url: /jpower-auth/auth/login
 #          method: post
-#          user: admin
-#          password: 123456
-#          params: type=test&web=hhh
-#          headers: type=test&web=hhh
+#          params: user=admin&password=123456
+#          headers: user=admin&password=123456
 #          code-field: data.code
 #          success-code: 200
 #          token: sakfjdoasjfopasjdopasjdopajdojasodjasodjaosjda
@@ -41,7 +39,7 @@ jpower:
 #          token-position: header
 #          expires-in: data.expiresIn
 #          expires-field: data.expiresIn
-#          expires-unit: ss
+#          expires-unit: seconds
 #          token-prefix: jpower
 #          token-prefix-field: data.tokenType
 #          token-suffix: jpower
