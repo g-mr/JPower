@@ -1,12 +1,11 @@
 package com.wlcb.jpower.module.common.utils;
 
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * 带过期时间的map
@@ -115,6 +114,39 @@ public class CacheMap<K, V> extends ConcurrentHashMap<K, V> {
     }
 
     private void clearTime(CacheMap cacheMap){
+
+
+//        ThreadFactory namedThreadFactory = new ThreadFactoryBuilder()
+//                .setNameFormat("test-pool-%d").build();
+//        ExecutorService pool = new ThreadPoolExecutor(5, 20,
+//                0L, TimeUnit.MILLISECONDS,
+//                new LinkedBlockingQueue<Runnable>(100), namedThreadFactory, new
+//                ThreadPoolExecutor.
+//                        AbortPolicy());
+//        pool.submit(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (!Fc.isNull(cacheMap)){
+//                    cacheMap.removeALLExpired();
+//                }
+//            }
+//        });
+
+
+//        ExecutorService executor = new ThreadPoolExecutor(10, 10,
+//                60L, TimeUnit.SECONDS,
+//                new ArrayBlockingQueue(10));
+//        executor.submit(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (!Fc.isNull(cacheMap)){
+//                    cacheMap.removeALLExpired();
+//                }
+//            }
+//        });
+
+
+
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
         service.scheduleAtFixedRate(new Runnable() {
             @Override
