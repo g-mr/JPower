@@ -37,6 +37,7 @@ jpower:
 #          success-code: 200
 #          token: sakfjdoasjfopasjdopasjdopajdojasodjasodjaosjda
 #          token-field: data.accessToken
+#          token-name: jpower-auth
 #          token-position: header
 #          expires-in: data.expiresIn
 #          expires-field: data.expiresIn
@@ -45,6 +46,7 @@ jpower:
 #          token-prefix-field: data.tokenType
 #          token-suffix: jpower
 #          token-suffix-field: data.tokenType
+#          token-delimiter:
       - name: test
         location: http://localhost:80
         url: /all/restful

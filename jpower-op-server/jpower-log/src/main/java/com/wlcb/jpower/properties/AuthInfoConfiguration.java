@@ -16,7 +16,7 @@ public class AuthInfoConfiguration{
     /**
      * 接口请求方式
      */
-    private MethodType method;
+    private MethodType method = MethodType.GET;
     /**
      * 用户名
      */
@@ -30,7 +30,7 @@ public class AuthInfoConfiguration{
      */
     private String params;
     /**
-     * 接口请求得头
+     * 接口请求header参数
      */
     private String headers;
     /**
@@ -50,13 +50,17 @@ public class AuthInfoConfiguration{
      */
     private String tokenField;
     /**
+     * token参数名称
+     */
+    private String tokenName = "Authorization";
+    /**
      * token参数位置
      */
     private AuthTokenPosition tokenPosition = AuthTokenPosition.HEADER;
     /**
      * 过期时间
      */
-    private long expiresIn;
+    private long expiresIn = 0;
     /**
      * 接口返回得过期时间字段（优先级高于expiresIn）
      */
@@ -64,7 +68,7 @@ public class AuthInfoConfiguration{
     /**
      * 过期时间单位
      */
-    private ExpiresTimeUnit expiresUnit;
+    private ExpiresTimeUnit expiresUnit = ExpiresTimeUnit.SS;
     /**
      * token得前缀
      */
@@ -81,6 +85,10 @@ public class AuthInfoConfiguration{
      * 接口返回得token得后缀字段（优先级高于tokenSuffix）
      */
     private String tokenSuffixField;
+    /**
+     * 拼接前后缀字符的分隔符，默认为空格
+     */
+    private String tokenDelimiter = " ";
 
     public enum AuthTokenPosition {
 
