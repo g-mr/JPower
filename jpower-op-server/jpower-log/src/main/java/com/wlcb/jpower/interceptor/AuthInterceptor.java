@@ -2,11 +2,13 @@ package com.wlcb.jpower.interceptor;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.base.CharMatcher;
+import com.google.common.base.Functions;
+import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
-import com.wlcb.jpower.module.common.utils.CacheMap;
-import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.JsonUtil;
-import com.wlcb.jpower.module.common.utils.OkHttp;
+import com.google.common.collect.Lists;
+import com.google.common.primitives.Chars;
+import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.properties.AuthInfoConfiguration;
 import lombok.AllArgsConstructor;
@@ -15,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.http.HttpException;
 
 import java.util.Map;
@@ -125,5 +128,58 @@ public final class AuthInterceptor implements Interceptor {
             //如何深结构获取数据
         }
         return token;
+    }
+
+    public static void main(String[] args) {
+
+
+        String keyss = "code[0].data";
+        JSONObject jsonObject = JSON.parseObject("{\n" +
+                "\t\"code\": [{\"data\":\"data1\"},{\"data\":\"data2\"}],\n" +
+                "\t\"data\": {\n" +
+                "\t\t\"accessToken\": \"asdmklasjmdloasjmdas\",\n" +
+                "\t\t\"expiresIn\": 0,\n" +
+                "\t\t\"refreshToken\": \"\",\n" +
+                "\t\t\"tokenType\": \"\",\n" +
+                "\t\t\"user\": {\n" +
+                "\t\t\t\"address\": \"\",\n" +
+                "\t\t\t\"avatar\": \"\",\n" +
+                "\t\t\t\"birthday\": \"\",\n" +
+                "\t\t\t\"clientCode\": \"\",\n" +
+                "\t\t\t\"email\": \"\",\n" +
+                "\t\t\t\"idNo\": \"\",\n" +
+                "\t\t\t\"idType\": 0,\n" +
+                "\t\t\t\"isSysUser\": 0,\n" +
+                "\t\t\t\"lastLoginTime\": \"\",\n" +
+                "\t\t\t\"loginCount\": 0,\n" +
+                "\t\t\t\"loginId\": \"\",\n" +
+                "\t\t\t\"nickName\": \"\",\n" +
+                "\t\t\t\"orgId\": \"\",\n" +
+                "\t\t\t\"orgName\": \"\",\n" +
+                "\t\t\t\"otherCode\": \"\",\n" +
+                "\t\t\t\"postCode\": \"\",\n" +
+                "\t\t\t\"roleIds\": [],\n" +
+                "\t\t\t\"telephone\": \"\",\n" +
+                "\t\t\t\"tenantCode\": \"\",\n" +
+                "\t\t\t\"userId\": \"\",\n" +
+                "\t\t\t\"userName\": \"\",\n" +
+                "\t\t\t\"userType\": 0\n" +
+                "\t\t}\n" +
+                "\t},\n" +
+                "\t\"message\": \"请求成功\",\n" +
+                "\t\"status\": true\n" +
+                "}");
+        System.out.println(JsonUtil.find(jsonObject,keyss));
+//        String[] ss = Fc.toStrArray(".", keyss);
+//        for (int i = 0; i < ss.length; i++) {
+//
+//        }
+
+
+
+
+//        for (String s : ss) {
+//            jsonObject.getJSONObject(s);
+//        }
     }
 }

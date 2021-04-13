@@ -12,7 +12,11 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.google.common.base.CharMatcher;
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.wlcb.jpower.module.common.jackson.JpowerJavaTimeModule;
+import com.wlcb.jpower.module.common.utils.constants.CharPool;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import lombok.extern.slf4j.Slf4j;
 
@@ -390,5 +394,34 @@ public class JsonUtil {
             buff.append("</" + temp.trim() + ">");
         }
         return buff.toString();
+    }
+
+
+    public static String find(JSONObject json,String keys) {
+        if (Fc.isNull(json)){
+            return null;
+        }
+
+        List<String> ss = Splitter.on(".").omitEmptyStrings().trimResults().splitToList(keys);
+        for (int i = 0; i < ss.size(); i++) {
+            String key = ss.get(i);
+            if (i == ss.size()-1){
+                if (CharMatcher.inRange(CharPool.NUMBER_0, CharPool.NUMBER_9).removeFrom(key).endsWith(StringPool.LEFT_SQ_BRACKET+StringPool.RIGHT_SQ_BRACKET)){
+                    int index = Fc.toInt(StringUtil.subBetween(key,StringPool.LEFT_SQ_BRACKET,StringPool.RIGHT_SQ_BRACKET,true));
+                    String arrayKey = StringUtil.removeSuffix(key,StringPool.LEFT_SQ_BRACKET+index+StringPool.RIGHT_SQ_BRACKET);
+                    return json.getJSONArray(arrayKey).getString(index);
+                }
+                return json.getString(key);
+            }else {
+
+                if (CharMatcher.inRange(CharPool.NUMBER_0, CharPool.NUMBER_9).removeFrom(key).endsWith(StringPool.LEFT_SQ_BRACKET+StringPool.RIGHT_SQ_BRACKET)){
+                    int index = Fc.toInt(StringUtil.subBetween(key,StringPool.LEFT_SQ_BRACKET,StringPool.RIGHT_SQ_BRACKET,true));
+                    String arrayKey = StringUtil.removeSuffix(key,StringPool.LEFT_SQ_BRACKET+index+StringPool.RIGHT_SQ_BRACKET);
+                    return find(json.getJSONArray(arrayKey).getJSONObject(index),StringUtil.removePrefix(keys,key+StringPool.DOT));
+                }
+                return find(json.getJSONObject(key),StringUtil.removePrefix(keys,key+StringPool.DOT));
+            }
+        }
+        return null;
     }
 }

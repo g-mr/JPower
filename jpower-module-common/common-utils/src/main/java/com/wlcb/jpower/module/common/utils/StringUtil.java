@@ -708,6 +708,19 @@ public class StringUtil extends StringUtils {
      * @since 3.1.1
      */
     public static String subBetween(CharSequence str, CharSequence before, CharSequence after) {
+        return subBetween(str,before,after,false);
+    }
+
+    /**
+     * 截取指定字符串中间部分，不包括标识字符串
+     * @param str    被切割的字符串
+     * @param before 截取开始的字符串标识
+     * @param after  截取到的字符串标识
+     * @param isLastSeparator  是否查找最后一个分隔字符串（多次出现分隔字符串时选取最后一个），true为选取最后一个
+     * @return 截取后的字符串
+     * @since 3.1.1
+     */
+    public static String subBetween(CharSequence str, CharSequence before, CharSequence after, boolean isLastSeparator) {
         if (str == null || before == null || after == null) {
             return null;
         }
@@ -716,7 +729,7 @@ public class StringUtil extends StringUtils {
         final String before2 = before.toString();
         final String after2 = after.toString();
 
-        final int start = str2.indexOf(before2);
+        final int start = isLastSeparator ? str2.lastIndexOf(before2) : str2.indexOf(before2);
         if (start != INDEX_NOT_FOUND) {
             final int end = str2.indexOf(after2, start + before2.length());
             if (end != INDEX_NOT_FOUND) {

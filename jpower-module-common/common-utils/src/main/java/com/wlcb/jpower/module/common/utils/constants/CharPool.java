@@ -11,6 +11,8 @@ public interface CharPool {
     char LOWER_A		= 'a';
     char UPPER_Z		= 'Z';
     char LOWER_Z		= 'z';
+    char NUMBER_0		= '0';
+    char NUMBER_9		= '9';
     char DOT			= '.';
     char AT				= '@';
     char LEFT_BRACE		= '{';
