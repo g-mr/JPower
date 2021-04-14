@@ -1,6 +1,7 @@
 package com.wlcb.jpower.gateway.dynamic;
 
 import com.wlcb.jpower.module.common.utils.ExceptionsUtil;
+import com.wlcb.jpower.module.common.utils.Fc;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.event.RefreshRoutesEvent;
 import org.springframework.cloud.gateway.route.RouteDefinition;
@@ -54,6 +55,8 @@ public class DynamicRouteService implements ApplicationEventPublisherAware {
     }
 
     public void publishList(List<RouteDefinition> definitions){
-        definitions.forEach(this::publish);
+        if (!Fc.isNull(definitions)){
+            definitions.forEach(this::publish);
+        }
     }
 }

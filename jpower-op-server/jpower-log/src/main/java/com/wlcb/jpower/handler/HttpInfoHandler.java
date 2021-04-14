@@ -90,6 +90,18 @@ public class HttpInfoHandler {
     }
 
     /**
+     * 获取所有参数
+     * @Author mr.g
+     * @param method 请求方式
+     * @return com.alibaba.fastjson.JSONArray
+     **/
+    private JSONArray listParams(String method){
+        return methodsInfo.getJSONObject(method).containsKey(JSON_CONSTANT_KEY.PARAMETERS)?
+            methodsInfo.getJSONObject(method).getJSONArray(JSON_CONSTANT_KEY.PARAMETERS):
+            new JSONArray();
+    }
+
+    /**
      * 获取path参数
      * @Author mr.g
      * @Date 17:01 2021-04-06
@@ -98,7 +110,7 @@ public class HttpInfoHandler {
      **/
     public Map<String,String> getPathParam(String method) {
         Map<String,String> map = ChainMap.newMap();
-        methodsInfo.getJSONObject(method).getJSONArray(JSON_CONSTANT_KEY.PARAMETERS).forEach(str -> {
+        listParams(method).forEach(str -> {
             JSONObject param = (JSONObject) str;
             if (Fc.equals(param.getString(JSON_CONSTANT_KEY.IN),JSON_CONSTANT_VALUE.PATH)){
                 map.put(param.getString(JSON_CONSTANT_KEY.NAME),defaultValue(param));
@@ -116,7 +128,7 @@ public class HttpInfoHandler {
      **/
     public Map<String,String> getHeaderParam(String method) {
         Map<String,String> map = ChainMap.newMap();
-        methodsInfo.getJSONObject(method).getJSONArray(JSON_CONSTANT_KEY.PARAMETERS).forEach(str -> {
+        listParams(method).forEach(str -> {
             JSONObject param = (JSONObject) str;
             if (param.getBoolean(JSON_CONSTANT_KEY.REQUIRED) && Fc.equals(param.getString(JSON_CONSTANT_KEY.IN),JSON_CONSTANT_VALUE.HEADER)){
                 map.put(param.getString(JSON_CONSTANT_KEY.NAME),defaultValue(param));
@@ -133,7 +145,7 @@ public class HttpInfoHandler {
      */
     public Map<String,String> getBodyParam(String method) {
         Map<String,String> map = ChainMap.newMap();
-        JSONArray json = methodsInfo.getJSONObject(method).getJSONArray(JSON_CONSTANT_KEY.PARAMETERS);
+        JSONArray json = listParams(method);
         if (isMultipleBody(json)){
             return map;
         }
@@ -156,7 +168,7 @@ public class HttpInfoHandler {
      */
     public Map<String,String> getFormParam(String method) {
         Map<String,String> map = ChainMap.newMap();
-        JSONArray json = methodsInfo.getJSONObject(method).getJSONArray(JSON_CONSTANT_KEY.PARAMETERS);
+        JSONArray json = listParams(method);
         json.forEach(str -> {
             JSONObject param = (JSONObject) str;
             String type = Fc.toStr(param.getString(JSON_CONSTANT_KEY.IN),JSON_CONSTANT_VALUE.QUERY);

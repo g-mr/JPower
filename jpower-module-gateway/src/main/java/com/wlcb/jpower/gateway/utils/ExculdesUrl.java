@@ -25,6 +25,7 @@ public class ExculdesUrl {
         exculudesUrl.add("/core/tenant/selectors");
         exculudesUrl.add("/core/function/listMenuTree");
         exculudesUrl.add("/core/function/listBut");
+        exculudesUrl.add("/all/restful");
     }
 
     /**

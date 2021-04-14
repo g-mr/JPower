@@ -46,25 +46,6 @@ public class CityController extends BaseController {
     }
 
     @ApiOperation(value = "新增行政区域",notes = "主键不可传")
-    @RequestMapping(value = "/adds/{id}",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData adds(@PathVariable(name = "id",required = false) String id,@RequestBody TbCoreCity coreCity,@RequestBody TbCoreDict coreDict){
-
-        return ReturnJsonUtil.status(true);
-    }
-
-    @ApiOperation(value = "新增行政区域",notes = "主键不可传")
-    @RequestMapping(value = "/adds",method = {RequestMethod.POST},produces="application/json")
-    public ResponseData adds(@RequestBody TbCoreCity coreCity, @RequestParam Date date, @RequestParam(defaultValue = "ss") String aaa){
-
-        JpowerAssert.notEmpty(coreCity.getCode(),JpowerError.Arg,"编号不可为空");
-        JpowerAssert.notEmpty(coreCity.getName(),JpowerError.Arg,"名称不可为空");
-        JpowerAssert.notTrue(Fc.isEmpty(coreCity.getRankd()),JpowerError.Arg,"城市级别不可为空");
-        JpowerAssert.notEmpty(coreCity.getCityType(),JpowerError.Arg,"城市类型不可为空");
-
-        return ReturnJsonUtil.status(coreCityService.add(coreCity));
-    }
-
-    @ApiOperation(value = "新增行政区域",notes = "主键不可传")
     @RequestMapping(value = "/add",method = {RequestMethod.POST},produces="application/json")
     public ResponseData add( TbCoreCity coreCity){
 

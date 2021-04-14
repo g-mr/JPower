@@ -42,6 +42,7 @@ public class TaskServiceImpl implements TaskService {
 
     private static final String PATHS = "paths";
     private static final String DEFINITIONS = "definitions";
+    private static final String BASEPATH = "basePath";
 
     private final LogMonitorResultDao logMonitorResultDao;
     private final RollbackInterceptor rollbackInterceptor;
@@ -51,28 +52,37 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void process(MonitorRestfulProperties.Route route) {
         authInterceptor = Fc.isNull(route.getAuth())?authInterceptor:AuthBuilder.getInterceptor(route);
-        TbLogMonitorResult result = saveResult(route.getName(), route.getUrl(), OkHttp.get(route.getLocation()+route.getUrl()).execute());
+        TbLogMonitorResult result = saveResult(route.getName(), route.getUrl(), OkHttp.get(route.getLocation()+route.getUrl()).execute(authInterceptor));
         log.info("---> START TEST SERVER {} {}",route.getName(),route.getLocation()+route.getUrl());
         if (result.getResposeCode() == HttpStatus.SC_OK){
             JSONObject restFulInfo = JSON.parseObject(result.getRestfulResponse());
             if (restFulInfo.containsKey(PATHS)){
-                restFulInfo.getJSONObject(PATHS).forEach((url,methods)->{
-                    String httpUrl = route.getLocation().concat(url);
+                JSONObject paths = restFulInfo.getJSONObject(PATHS);
+                log.info("---> SERVER RESTFUL SUM={}",paths.size());
+                paths.forEach((url,methods)->{
+                    String httpUrl = route.getLocation().concat(restFulInfo.getString(BASEPATH)).concat(url);
                     HttpInfoHandler handler = HttpInfoBuilder.newHandler(httpUrl,JSON.parseObject(Fc.toStr(methods)),restFulInfo.getJSONObject(DEFINITIONS));
                     handler.getMethodTypes().forEach(method -> {
+                        OkHttp okHttp = null;
                         try{
                             log.info("--> START TEST REST {} {}",method,url);
-                            OkHttp okHttp = requestRestFul(method,httpUrl);
-                            log.info("<-- END TEST REST {} {}",method,url);
+                            okHttp = requestRestFul(method,httpUrl);
                             saveResult(route.getName(),url,okHttp);
                         }catch (Exception e){
                             log.error("===>  接口测试异常，error={}",e.getMessage());
+                        }finally {
+                            if (!Fc.isNull(okHttp)){
+                                okHttp.close();
+                            }
+                            log.info("<-- END TEST REST {} {}",method,url);
                         }
                     });
                 });
             }else {
                 log.info("  {}服务未发现接口",route.getName());
             }
+        }else {
+            log.info("  获取服务接口数据异常resposeCode=>{}",result.getResposeCode());
         }
         log.info("<--- END TEST SERVER {} {}; Response={}",route.getName(),route.getLocation()+route.getUrl(),result.getResposeCode());
     }
