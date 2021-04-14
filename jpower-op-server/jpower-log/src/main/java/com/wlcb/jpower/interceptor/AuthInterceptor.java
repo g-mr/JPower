@@ -3,6 +3,7 @@ package com.wlcb.jpower.interceptor;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Splitter;
+import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.properties.AuthInfoConfiguration;
@@ -30,51 +31,51 @@ public final class AuthInterceptor implements Interceptor {
 
     private final AuthInfoConfiguration authInfo;
 
-    /**
-     * 获取token一旦报错，整个服务得本次监控将取消
-     * @author mr.g
-     * @param chain
-     * @return okhttp3.Response
-     */
     @Override
     @SneakyThrows
     public Response intercept(@NotNull Chain chain) {
+        Request request = chain.request();
         if (!Fc.isNull(authInfo)){
-            Request request = chain.request();
-            String token = getToken(request);
-            log.info("--> TEST REST AUTH {} {}",authInfo.getTokenName(),token);
+            try {
+                String token = getToken(request);
+                log.info("--> TEST REST AUTH {} {}",authInfo.getTokenName(),token);
 
-            switch (authInfo.getTokenPosition()){
-                case HEADER:
-                    return chain.proceed(request.newBuilder().addHeader(authInfo.getTokenName(),token).build());
-                case FORM:
-                    // TODO: 2021/4/13 0013 这里需要测试FormBody是否可以正确获取，以及测试无参数得情况下是否正常
-                    if (request.body() instanceof FormBody) {
-                        // 构造新的请求表单
-                        FormBody.Builder builder = new FormBody.Builder();
-                        FormBody body = (FormBody) request.body();
-                        //将以前的参数添加
-                        for (int i = 0; i < body.size(); i++) {
-                            builder.add(body.encodedName(i), body.encodedValue(i));
+                switch (authInfo.getTokenPosition()){
+                    case HEADER:
+                        request = request.newBuilder().addHeader(authInfo.getTokenName(),token).build();
+                        break;
+                    case FORM:
+                        if (request.body() instanceof FormBody) {
+                            // 构造新的请求表单
+                            FormBody.Builder builder = new FormBody.Builder();
+                            FormBody body = (FormBody) request.body();
+                            //将以前的参数添加
+                            for (int i = 0; i < body.size(); i++) {
+                                builder.add(body.encodedName(i), body.encodedValue(i));
+                            }
+                            //追加token参数
+                            builder.add(authInfo.getTokenName(), token);
+                            request = request.newBuilder().post(builder.build()).build();
+                            break;
                         }
-                        //追加token参数
-                        builder.add(authInfo.getTokenName(), token);
-                        request = request.newBuilder().post(builder.build()).build();
-                        return chain.proceed(request);
-                    }
-                case QUERY:
-                    // TODO: 2021/4/13 0013 这里需要测试post请求是否正常，以及get请求有参（加上是否以前得参数没有了）无参得情况下是否都能加上
-                    HttpUrl url = request.url();
-                    HttpUrl newUrl = url.newBuilder()
-                            .addEncodedQueryParameter(authInfo.getTokenName(),token)
-                            .build();
-                    return chain.proceed(request.newBuilder().url(newUrl).build());
-                default:
-                    throw new InvalidStateException("auth request tokenPosition error tokenPosition=>"+authInfo.getTokenPosition());
+                    case QUERY:
+                        HttpUrl url = request.url();
+                        HttpUrl newUrl = url.newBuilder()
+                                .addEncodedQueryParameter(authInfo.getTokenName(),token)
+                                .build();
+                        request = request.newBuilder().url(newUrl).build();
+                        break;
+                    default:
+                        throw new InvalidStateException("auth request tokenPosition error tokenPosition=>"+authInfo.getTokenPosition());
+                }
+            }catch (Exception e){
+                //如果是请求token期间报错，则抛出一个固定错误，用于try catch接受后停止整个服务得监控
+                // TODO: 2021/4/14 0014 token请求错误再进行接口测试无意义
+                throw new BusinessException("请求token出错；停止本次服务监控，error=>"+e.getMessage());
             }
         }
 
-        return chain.proceed(chain.request());
+        return chain.proceed(request);
     }
 
     /**
@@ -84,7 +85,6 @@ public final class AuthInterceptor implements Interceptor {
      * @return java.lang.String
      **/
     private String getToken(Request request) {
-        // TODO: 2021/4/13 0013 这里需要测试真实域名得获取情况
         String domain = "http://"+request.url().host()+StringPool.COLON+request.url().port();
 
         String token = authInfo.getToken();
@@ -127,7 +127,7 @@ public final class AuthInterceptor implements Interceptor {
     @SneakyThrows
     private String requestToken(String domain) throws NullArgumentException {
 
-        String httpUrl = authInfo.getUrl().startsWith(StringPool.SLASH)?domain.concat(authInfo.getUrl()):domain.concat(StringPool.SLASH+authInfo.getUrl());
+        String httpUrl = StringUtil.startsWithIgnoreCase(authInfo.getUrl(),"http")?authInfo.getUrl():domain.concat(authInfo.getUrl());
 
         Map<String, String> headers = Fc.isBlank(authInfo.getHeaders())?null:Splitter.on(StringPool.AMPERSAND).withKeyValueSeparator(StringPool.EQUALS).split(authInfo.getHeaders());
         Map<String, String> forms = Fc.isBlank(authInfo.getParams())?null:Splitter.on(StringPool.AMPERSAND).withKeyValueSeparator(StringPool.EQUALS).split(authInfo.getParams());
@@ -151,7 +151,7 @@ public final class AuthInterceptor implements Interceptor {
         }
         if (!okHttp.getResponse().isSuccessful()){
             okHttp.close();
-            throw new IllegalStateException("auth response code error code=>"+okHttp.getResponse().code());
+            throw new IllegalStateException("auth response code error code=> "+okHttp.getResponse().code()+" 【error=>"+okHttp.getResponse().message()+"】【messgar=>"+okHttp.getResponse().body().string()+"】");
         }
         String token = okHttp.getBody();
         if (JsonUtil.isJsonObject(token)){

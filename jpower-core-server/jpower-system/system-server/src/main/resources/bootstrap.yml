@@ -16,9 +16,6 @@ knife4j:
   enable: true
 
 jpower:
-  seata:
-    #   是否启用分布式事务（使用接口监控需开启）
-    enabled: true
 #  开发环境
   dev:
     nacos:

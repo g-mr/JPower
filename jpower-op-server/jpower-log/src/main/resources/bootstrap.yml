@@ -25,9 +25,9 @@ jpower:
     auth:
       url: /jpower-auth/auth/login
       method: post
-      params: loginId=root&passWord=123456&tenantCode=000000&grantType=password
-      headers: User-Type=web
-      code-field: data.code
+      params: loginId=root&passWord=E10ADC3949BA59ABBE56E057F20F883E&tenantCode=000000&grantType=password
+      headers: User-Type=web&Authorization=Basic YWRtaW46U0Nld21t
+      code-field: code
       success-code: 200
       token-field: data.accessToken
       token-name: jpower-auth
@@ -35,45 +35,56 @@ jpower:
       expires-field: data.expiresIn
       expires-unit: seconds
       token-prefix-field: data.tokenType
-      token-delimiter:
     routes:
-#      - name: zw-general
-#        location: http://localhost:90
-#        url: /all/restful
-#        auth:
-#          url: /jpower-auth/auth/login
-#          method: post
-#          params: user=admin&password=123456
-#          headers: user=admin&password=123456
-#          code-field: data.code
-#          success-code: 200
-#          token: sakfjdoasjfopasjdopasjdopajdojasodjasodjaosjda
-#          token-field: data.accessToken
-#          token-name: jpower-auth
-#          token-position: header
-#          expires-in: data.expiresIn
-#          expires-field: data.expiresIn
-#          expires-unit: seconds
-#          token-prefix: jpower
-#          token-prefix-field: data.tokenType
-#          token-suffix: jpower
-#          token-suffix-field: data.tokenType
-#          token-delimiter:
       - name: jpower-system
         location: http://localhost:80
         url: /jpower-system/all/restful
   #  开发环境
   dev:
     nacos:
-      #      配置中心地址，如果配置没有配置注册中心地址，则注册中心默认走这里的地址
+      #      配置中心地址。 如果nacos配置没有配置注册中心地址，则注册中心默认走这里的地址
       server-addr: localhost:8848
+    sentinel:
+      #      sentinel流控组件地址
+      dashboard: 192.168.0.8:8857
     seata:
       grouplist: 192.168.0.8:85
+    datasource:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/jpower?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8
+      username: root
+      password: 12345678
+  #   测试环境
   test:
     nacos:
-      #      配置中心地址，如果配置没有配置注册中心地址，则注册中心默认走这里的地址
+      #      注册中心地址
       server-addr: 192.168.0.4:82
+    sentinel:
+      #      sentinel流控组件地址
+      dashboard: 192.168.0.4:84
+    seata:
+      grouplist: 192.168.0.4:85
+    elk:
+      destination: 192.168.0.4:9000
+    datasource:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://192.168.0.8:18995/jpower?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8
+      username: root
+      password: root
+  #  正式环境
   prod:
     nacos:
-      #      配置中心地址，如果配置没有配置注册中心地址，则注册中心默认走这里的地址
-      server-addr: 192.168.0.20:8878
+      #      配置中心地址，如果nacos配置没有配置注册中心地址，则注册中心默认走这里的地址
+      server-addr: 192.168.0.20:8848
+    sentinel:
+      #      sentinel流控组件地址
+      dashboard: 192.168.0.20:8858
+    seata:
+      grouplist: 192.168.0.20:8878
+    elk:
+      destination: 192.168.0.20:9000
+    datasource:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://119.3.189.156:18992/jpower?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8
+      username: root
+      password: root

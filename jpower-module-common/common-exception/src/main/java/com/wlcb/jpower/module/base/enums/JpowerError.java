@@ -9,10 +9,9 @@ public enum JpowerError {
     Http(540, "http异常"),
     Rpc(530, "rpc异常[retcode:%s,retmsg:%s]"),
     RateLimit(520, "流量限制"),
-    Parser(510, "解析异常"),
+    Parser(510, "解析异常:%s"),
     Auth(401, "权限异常:%s"),
     Unknown(500, "系统异常:%s"),
-//    Api(600, "api错误[retcode:%s,retmsg:%s]"),
     Arg(406, "参数错误:%s"),
     BUSINESS(HttpStatus.NOT_IMPLEMENTED.value(), "%s");
 

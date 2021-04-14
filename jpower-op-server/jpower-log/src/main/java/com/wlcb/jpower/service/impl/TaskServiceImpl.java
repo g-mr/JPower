@@ -10,6 +10,7 @@ import com.wlcb.jpower.handler.HttpInfoBuilder;
 import com.wlcb.jpower.handler.HttpInfoHandler;
 import com.wlcb.jpower.interceptor.AuthInterceptor;
 import com.wlcb.jpower.interceptor.RollbackInterceptor;
+import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.common.deploy.props.JpowerProperties;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.JsonUtil;
@@ -54,7 +55,7 @@ public class TaskServiceImpl implements TaskService {
         authInterceptor = Fc.isNull(route.getAuth())?authInterceptor:AuthBuilder.getInterceptor(route);
         TbLogMonitorResult result = saveResult(route.getName(), route.getUrl(), OkHttp.get(route.getLocation()+route.getUrl()).execute(authInterceptor));
         log.info("---> START TEST SERVER {} {}",route.getName(),route.getLocation()+route.getUrl());
-        if (result.getResposeCode() == HttpStatus.SC_OK){
+        if (Fc.equals(HttpStatus.SC_OK,result.getResposeCode())){
             JSONObject restFulInfo = JSON.parseObject(result.getRestfulResponse());
             if (restFulInfo.containsKey(PATHS)){
                 JSONObject paths = restFulInfo.getJSONObject(PATHS);
@@ -70,6 +71,9 @@ public class TaskServiceImpl implements TaskService {
                             saveResult(route.getName(),url,okHttp);
                         }catch (Exception e){
                             log.error("===>  接口测试异常，error={}",e.getMessage());
+                            if (e instanceof BusinessException){
+                                throw e;
+                            }
                         }finally {
                             if (!Fc.isNull(okHttp)){
                                 okHttp.close();

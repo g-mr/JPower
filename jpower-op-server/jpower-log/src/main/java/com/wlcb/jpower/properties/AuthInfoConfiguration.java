@@ -1,5 +1,6 @@
 package com.wlcb.jpower.properties;
 
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import lombok.Data;
 
 import java.util.concurrent.TimeUnit;
@@ -82,7 +83,7 @@ public class AuthInfoConfiguration{
     /**
      * 拼接前后缀字符的分隔符，默认为空格
      */
-    private String tokenDelimiter = " ";
+    private String tokenDelimiter = StringPool.SPACE;
 
     public enum AuthTokenPosition {
 

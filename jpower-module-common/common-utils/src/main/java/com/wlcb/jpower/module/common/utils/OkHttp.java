@@ -61,7 +61,7 @@ public class OkHttp {
      */
     public static OkHttp get(String url, Map<String, String> header, Map<String, String> queries) {
         StringBuffer sb = new StringBuffer(url);
-        sb.append("?clientId=jpower");
+        sb.append("?httpClientId=jpower");
         if (queries != null && queries.keySet().size() > 0) {
             queries.forEach((k, v) -> sb.append("&").append(k).append("=").append(v));
         }
@@ -85,7 +85,7 @@ public class OkHttp {
      */
     public static OkHttp head(String url, Map<String, String> header, Map<String, String> queries) {
         StringBuffer sb = new StringBuffer(url);
-        sb.append("?clientId=jpower");
+        sb.append("?httpClientId=jpower");
         if (queries != null && queries.keySet().size() > 0) {
             queries.forEach((k, v) -> sb.append("&").append(k).append("=").append(v));
         }
@@ -119,7 +119,7 @@ public class OkHttp {
      * @return String
      */
     public static OkHttp delete(String url, Map<String, String> header, Map<String, String> params) {
-        FormBody.Builder formBuilder = new FormBody.Builder().add("clientId", "jpower");
+        FormBody.Builder formBuilder = new FormBody.Builder().add("httpClientId", "jpower");
         //添加参数
         if (params != null && params.keySet().size() > 0) {
             params.forEach(formBuilder::add);
@@ -154,7 +154,7 @@ public class OkHttp {
      * @return String
      */
     public static OkHttp put(String url, Map<String, String> header, Map<String, String> params) {
-        FormBody.Builder formBuilder = new FormBody.Builder().add("clientId", "jpower");
+        FormBody.Builder formBuilder = new FormBody.Builder().add("httpClientId", "jpower");
         //添加参数
         if (params != null && params.keySet().size() > 0) {
             params.forEach(formBuilder::add);
@@ -190,7 +190,7 @@ public class OkHttp {
      * @return String
      */
     public static OkHttp post(String url, Map<String, String> header, Map<String, String> params) {
-        FormBody.Builder formBuilder = new FormBody.Builder().add("clientId", "jpower");
+        FormBody.Builder formBuilder = new FormBody.Builder().add("httpClientId", "jpower");
         //添加参数
         if (params != null && params.keySet().size() > 0) {
             params.forEach(formBuilder::add);
@@ -207,7 +207,7 @@ public class OkHttp {
     }
 
     public static OkHttp method(String url, String method, Map<String, String> header, Map<String, String> params) {
-        FormBody.Builder formBuilder = new FormBody.Builder().add("clientId", "jpower");
+        FormBody.Builder formBuilder = new FormBody.Builder().add("httpClientId", "jpower");
         //添加参数
         if (params != null && params.keySet().size() > 0) {
             params.forEach(formBuilder::add);
