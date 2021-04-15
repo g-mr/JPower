@@ -19,6 +19,10 @@ import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import com.wlcb.jpower.properties.MonitorRestfulProperties;
 import com.wlcb.jpower.service.TaskService;
+import io.seata.core.context.RootContext;
+import io.seata.core.exception.TransactionException;
+import io.seata.spring.annotation.GlobalTransactional;
+import io.seata.tm.api.GlobalTransactionContext;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Headers;
@@ -52,9 +56,12 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void process(MonitorRestfulProperties.Route route) {
+
+        log.info("---> START TEST SERVER {} {}",route.getName(),route.getLocation()+route.getUrl());
+
         authInterceptor = Fc.isNull(route.getAuth())?authInterceptor:AuthBuilder.getInterceptor(route);
         TbLogMonitorResult result = saveResult(route.getName(), route.getUrl(), OkHttp.get(route.getLocation()+route.getUrl()).execute(authInterceptor));
-        log.info("---> START TEST SERVER {} {}",route.getName(),route.getLocation()+route.getUrl());
+
         if (Fc.equals(HttpStatus.SC_OK,result.getResposeCode())){
             JSONObject restFulInfo = JSON.parseObject(result.getRestfulResponse());
             if (restFulInfo.containsKey(PATHS)){
@@ -66,9 +73,13 @@ public class TaskServiceImpl implements TaskService {
                     handler.getMethodTypes().forEach(method -> {
                         OkHttp okHttp = null;
                         try{
-                            log.info("--> START TEST REST {} {}",method,url);
-                            okHttp = requestRestFul(method,httpUrl);
-                            saveResult(route.getName(),url,okHttp);
+
+//                            if (url.endsWith("/corporate/export") || url.endsWith("/speaker/training/getText")){
+                                log.info("--> START TEST REST {} {}",method,url);
+                                okHttp = requestRestFul(method,httpUrl);
+                                saveResult(route.getName(),url,okHttp);
+//                            }
+
                         }catch (Exception e){
                             log.error("===>  接口测试异常，error={}",e.getMessage());
                             if (e instanceof BusinessException){
@@ -198,12 +209,12 @@ public class TaskServiceImpl implements TaskService {
 
     private void logAfter(OkHttp okHttp,long time){
         if (Fc.isNull(okHttp.getResponse())){
-            log.info("<-- END TEST REST FAILED {} : {}"," (" + time + "ms)",okHttp.getError());
+            log.info("  END REQUEST TEST REST FAILED {} : {}"," (" + time + "ms)",okHttp.getError());
         }else {
             ResponseBody responseBody = okHttp.getResponse().body();
             long contentLength = responseBody.contentLength();
             String bodySize = contentLength != -1 ? contentLength + "-byte" : "unknown-length";
-            log.info("<-- END TEST REST {} {} {}",okHttp.getResponse().code(),(okHttp.getResponse().message().isEmpty() ? "" : ' ' + okHttp.getResponse().message())
+            log.info("  END REQUEST TEST REST {} {} {}",okHttp.getResponse().code(),(okHttp.getResponse().message().isEmpty() ? "" : ' ' + okHttp.getResponse().message())
                     ," (" + time + "ms" + ", " + bodySize + " body" + ")");
         }
     }

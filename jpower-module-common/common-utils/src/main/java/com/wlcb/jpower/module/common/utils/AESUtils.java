@@ -114,20 +114,4 @@ public class AESUtils {
         return StringUtils.isEmpty(encryptStr) ? null : aesDecryptByBytes(Base64Util.decodeFromString(encryptStr), decryptKey);
     }
 
-    public static void main(String[] args) throws Exception {
-        String content = "{\"park_id\":\"001\",\"plate\":\"陕K629Z8\",\"entry_time\":1587744007}";
-
-        String encryptResult = aesEncrypt(content);
-
-
-        System.out.println(encryptResult);
-
-
-        // 解密
-        String decryptResult = aesDecrypt(encryptResult);
-
-
-
-        System.out.println(decryptResult);
-    }
 }

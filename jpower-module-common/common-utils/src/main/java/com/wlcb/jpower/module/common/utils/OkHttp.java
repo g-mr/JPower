@@ -397,7 +397,7 @@ public class OkHttp {
     }
 
     /**
-     * 获取body
+     * 获取body,获取body后会直接把okhttp流关掉
      *
      * @return String
      */

@@ -7,16 +7,20 @@ import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.properties.AuthInfoConfiguration;
+import io.micrometer.core.instrument.config.InvalidConfigurationException;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.apache.commons.lang.NullArgumentException;
 import org.apache.http.HttpException;
+import org.codehaus.janino.Java;
 import org.jetbrains.annotations.NotNull;
-import sun.plugin.dom.exception.InvalidStateException;
 
+import java.nio.charset.Charset;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 接口监控鉴权拦截器
@@ -66,7 +70,7 @@ public final class AuthInterceptor implements Interceptor {
                         request = request.newBuilder().url(newUrl).build();
                         break;
                     default:
-                        throw new InvalidStateException("auth request tokenPosition error tokenPosition=>"+authInfo.getTokenPosition());
+                        throw new InvalidConfigurationException("auth request tokenPosition error tokenPosition=>"+authInfo.getTokenPosition());
                 }
             }catch (Exception e){
                 //如果是请求token期间报错，则抛出一个固定错误，用于try catch接受后停止整个服务得监控
@@ -129,8 +133,11 @@ public final class AuthInterceptor implements Interceptor {
 
         String httpUrl = StringUtil.startsWithIgnoreCase(authInfo.getUrl(),"http")?authInfo.getUrl():domain.concat(authInfo.getUrl());
 
-        Map<String, String> headers = Fc.isBlank(authInfo.getHeaders())?null:Splitter.on(StringPool.AMPERSAND).withKeyValueSeparator(StringPool.EQUALS).split(authInfo.getHeaders());
-        Map<String, String> forms = Fc.isBlank(authInfo.getParams())?null:Splitter.on(StringPool.AMPERSAND).withKeyValueSeparator(StringPool.EQUALS).split(authInfo.getParams());
+        //对转换后的参数需要进行一次解码
+        Map<String, String> headers = Fc.isBlank(authInfo.getHeaders())?null:Splitter.on(StringPool.AMPERSAND).withKeyValueSeparator(StringPool.EQUALS).split(authInfo.getHeaders())
+                .entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> UrlUtil.decodeURL(entry.getValue(),Charset.defaultCharset())));
+        Map<String, String> forms = Fc.isBlank(authInfo.getParams())?null:Splitter.on(StringPool.AMPERSAND).withKeyValueSeparator(StringPool.EQUALS).split(authInfo.getParams())
+                .entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> UrlUtil.decodeURL(entry.getValue(),Charset.defaultCharset())));
 
         OkHttp okHttp;
         switch (authInfo.getMethod()) {
@@ -150,8 +157,7 @@ public final class AuthInterceptor implements Interceptor {
             throw new HttpException("auth request error==>"+okHttp.getError());
         }
         if (!okHttp.getResponse().isSuccessful()){
-            okHttp.close();
-            throw new IllegalStateException("auth response code error code=> "+okHttp.getResponse().code()+" 【error=>"+okHttp.getResponse().message()+"】【messgar=>"+okHttp.getResponse().body().string()+"】");
+            throw new IllegalStateException("auth response code error code=> "+okHttp.getResponse().code()+" 【error=>"+okHttp.getResponse().message()+"】【messgar=>"+okHttp.getBody()+"】");
         }
         String token = okHttp.getBody();
         if (JsonUtil.isJsonObject(token)){

@@ -38,23 +38,6 @@ public class DESUtil {
      */
     private static final String PAD_STR = "\0";
 
-    public static void main(String[] args) throws Exception {
-//e6b58be8af95
-        System.out.println(DigestUtil.toHex("s都吃完".getBytes()));
-
-
-        String clearText = "d7320de3c8a011ea87a2fa163e5c4fd4";
-
-        String key = "COREFILEENCRYPTKEY20200720";
-        System.out.println("明文：" + clearText + "\n密钥：" + key);
-        String encryptText = encrypt(clearText, key);
-        System.out.println("加密后：" + encryptText);
-        String decryptText = decrypt(encryptText, key);
-        System.out.println("解密后："+decryptText);
-
-        System.out.println(decryptText.trim().equals("123456"));
-    }
-
     public static String encrypt(String souce, String key) {
         try {
             return encryptByDes(pkcs5Pad(souce), pkcs5Pad(key));
