@@ -48,6 +48,7 @@ public final class RollbackInterceptor implements Interceptor {
                     log.error("GlobalTransaction rollback fail; error==>{}",e.getMessage());
                 }finally {
                     try {
+                        //解除事务，防止回滚监控结果
                         tx.suspend(true);
                     } catch (TransactionException e) {
                         log.error("GlobalTransaction suspend fail; error==>{}",e.getMessage());
