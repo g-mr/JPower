@@ -17,12 +17,9 @@ import com.wlcb.jpower.module.common.utils.JsonUtil;
 import com.wlcb.jpower.module.common.utils.OkHttp;
 import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.AppConstant;
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.properties.MonitorRestfulProperties;
 import com.wlcb.jpower.service.TaskService;
-import io.seata.core.context.RootContext;
-import io.seata.core.exception.TransactionException;
-import io.seata.spring.annotation.GlobalTransactional;
-import io.seata.tm.api.GlobalTransactionContext;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Headers;
@@ -68,18 +65,15 @@ public class TaskServiceImpl implements TaskService {
                 JSONObject paths = restFulInfo.getJSONObject(PATHS);
                 log.info("---> SERVER RESTFUL SUM={}",paths.size());
                 paths.forEach((url,methods)->{
-                    String httpUrl = route.getLocation().concat(restFulInfo.getString(BASEPATH)).concat(url);
+
+                    String httpUrl = route.getLocation().concat(Fc.equals(StringPool.SLASH,restFulInfo.getString(BASEPATH))?StringPool.EMPTY:restFulInfo.getString(BASEPATH)).concat(url);
                     HttpInfoHandler handler = HttpInfoBuilder.newHandler(httpUrl,JSON.parseObject(Fc.toStr(methods)),restFulInfo.getJSONObject(DEFINITIONS));
                     handler.getMethodTypes().forEach(method -> {
                         OkHttp okHttp = null;
                         try{
-
-//                            if (url.endsWith("/corporate/export") || url.endsWith("/speaker/training/getText")){
-                                log.info("--> START TEST REST {} {}",method,url);
-                                okHttp = requestRestFul(method,httpUrl);
-                                saveResult(route.getName(),url,okHttp);
-//                            }
-
+                            log.info("--> START TEST REST {} {}",method,url);
+                            okHttp = requestRestFul(method,httpUrl);
+                            saveResult(route.getName(),url,okHttp);
                         }catch (Exception e){
                             log.error("===>  接口测试异常，error={}",e.getMessage());
                             if (e instanceof BusinessException){
@@ -110,7 +104,7 @@ public class TaskServiceImpl implements TaskService {
      * @param okHttp 请求体
      * @return void
      **/
-    private TbLogMonitorResult saveResult(String name, String path, OkHttp okHttp) {
+    public TbLogMonitorResult saveResult(String name, String path, OkHttp okHttp) {
         TbLogMonitorResult result = new TbLogMonitorResult();
         try {
             result.setName(name);
@@ -132,6 +126,7 @@ public class TaskServiceImpl implements TaskService {
             logMonitorResultDao.save(result);
         }catch (Exception e){
             log.error("===>  保存请求结果出错 ==> {}",e.getMessage());
+            e.printStackTrace();
         }finally {
             okHttp.close();
         }
