@@ -1,8 +1,11 @@
 package com.wlcb.jpower.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.nacos.common.utils.HttpMethod;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.wlcb.jpower.dbs.dao.LogMonitorResultDao;
 import com.wlcb.jpower.dbs.entity.TbLogMonitorResult;
 import com.wlcb.jpower.handler.AuthBuilder;
@@ -12,25 +15,24 @@ import com.wlcb.jpower.interceptor.AuthInterceptor;
 import com.wlcb.jpower.interceptor.RollbackInterceptor;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.common.deploy.props.JpowerProperties;
-import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.JsonUtil;
-import com.wlcb.jpower.module.common.utils.OkHttp;
-import com.wlcb.jpower.module.common.utils.StringUtil;
+import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
-import com.wlcb.jpower.properties.MonitorRestfulProperties;
+import com.wlcb.jpower.properties.MonitorRestfulProperties.Route;
 import com.wlcb.jpower.service.TaskService;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Headers;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
+import org.apache.http.HttpException;
 import org.apache.http.HttpStatus;
 import org.apache.http.entity.ContentType;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -51,17 +53,51 @@ public class TaskServiceImpl implements TaskService {
     private final JpowerProperties properties;
     private AuthInterceptor authInterceptor;
 
+    private AuthInterceptor getAuthInterceptor(Route route){
+        return Fc.isNull(route.getAuth())?authInterceptor:AuthBuilder.getInterceptor(route);
+    }
+
+    private static class RestCache{
+
+        private static final Cache<String, JSONObject> cache = CacheBuilder.newBuilder()
+                .initialCapacity(1)
+                .maximumSize(100) // 设置缓存的最大容量
+                .expireAfterWrite(1, TimeUnit.DAYS) // 设置缓存在写入一天后失效
+                .concurrencyLevel(Runtime.getRuntime().availableProcessors()) // 设置并发级别为cpu核心数，默认为4
+                .recordStats() // 开启缓存统计
+                .build();
+
+        public static void set(String key, JSONObject value){
+            cache.put(key,value);
+        }
+
+        public static JSONObject get(String key){
+            return cache.getIfPresent(key);
+        }
+
+
+        public @SneakyThrows static JSONObject getOrDefault(Route route) {
+            return cache.get(route.getName(), () -> {
+                String content = OkHttp.get(route.getLocation()+route.getUrl())
+                        .execute(Fc.isNull(route.getAuth())?SpringUtil.getBean(AuthInterceptor.class):AuthBuilder.getInterceptor(route))
+                        .getBody();
+                return JSON.parseObject(Fc.isNotBlank(content)?content:"{}");
+            });
+        }
+    }
+
     @Override
-    public void process(MonitorRestfulProperties.Route route) {
+    public void process(Route route) {
 
         log.info("---> START TEST SERVER {} {}",route.getName(),route.getLocation()+route.getUrl());
 
-        authInterceptor = Fc.isNull(route.getAuth())?authInterceptor:AuthBuilder.getInterceptor(route);
+        authInterceptor = getAuthInterceptor(route);
         TbLogMonitorResult result = saveResult(route.getName(), route.getUrl(), OkHttp.get(route.getLocation()+route.getUrl()).execute(authInterceptor));
 
         if (Fc.equals(HttpStatus.SC_OK,result.getResposeCode())){
             JSONObject restFulInfo = JSON.parseObject(result.getRestfulResponse());
             if (restFulInfo.containsKey(PATHS)){
+                RestCache.set(route.getName(),restFulInfo);
                 JSONObject paths = restFulInfo.getJSONObject(PATHS);
                 log.info("---> SERVER RESTFUL SUM={}",paths.size());
                 paths.forEach((url,methods)->{
@@ -241,4 +277,12 @@ public class TaskServiceImpl implements TaskService {
         } catch (Exception ignored) {}
     }
 
+    @Override
+    public JSONArray tagList(Route route) {
+        JSONObject json = RestCache.getOrDefault(route);
+        if (json.containsKey("tags")){
+            return json.getJSONArray("tags");
+        }
+        return new JSONArray();
+    }
 }

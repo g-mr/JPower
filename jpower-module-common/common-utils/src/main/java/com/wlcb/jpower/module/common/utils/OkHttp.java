@@ -390,6 +390,7 @@ public class OkHttp {
         } catch (Exception e) {
             error = e.getMessage();
             log.error("OkHttp3 execute error >> ex = {}", e.getMessage());
+            throw new HttpException("OkHttp3 execute error >> ex = " + e.getMessage());
         }
 
         return this;

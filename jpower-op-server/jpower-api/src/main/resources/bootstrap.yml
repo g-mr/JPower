@@ -6,6 +6,9 @@ knife4j:
   cloud:
     enable: true
     routes:
+      - name: 日志模块
+        uri: localhost:17000
+        location: /v2/api-docs
       - name: 系统管理
         uri: localhost
         location: /jpower-system/v2/api-docs
