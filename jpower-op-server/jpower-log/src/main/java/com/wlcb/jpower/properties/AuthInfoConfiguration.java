@@ -31,7 +31,7 @@ public class AuthInfoConfiguration{
     /**
      * 标识是否成功得字段
      */
-    private String codeField;
+    private String codeField = "code";
     /**
      * 成功标识
      */

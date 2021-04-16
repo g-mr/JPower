@@ -43,7 +43,7 @@ public class MonitorRestfulProperties {
         /**
          * 获取接口信息地址
          */
-        private String url;
+        private String url = "/v2/api-docs";
         /**
          * 项目地址
          */
