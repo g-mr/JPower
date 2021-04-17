@@ -23,13 +23,13 @@ jpower:
     enable: false
     cron: 0 0 1 * * ?
     routes:
-      - name: wlj
-        location: http://localhost:82
-        url: /all/restful
+      - name: jpower-system
+        location: http://localhost:80
+        url: /jpower-system/all/restful
         auth:
-          url: /auth/login
+          url: /jpower-auth/auth/login
           method: post
-          params: loginId=lipw&passWord=57ba172a6be125cca2f449826f9980ca&grantType=password
+          params: loginId=root&passWord=57ba172a6be125cca2f449826f9980ca&grantType=password
           headers: User-Type=web&Authorization=Basic Y2hhdDppSzFZRlE%3D
           code-field: code
           success-code: 200

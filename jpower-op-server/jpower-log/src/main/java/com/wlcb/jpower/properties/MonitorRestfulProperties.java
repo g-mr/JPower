@@ -3,7 +3,10 @@ package com.wlcb.jpower.properties;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import org.springframework.validation.annotation.Validated;
 
+import javax.annotation.PostConstruct;
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +16,7 @@ import java.util.List;
  */
 @Data
 @ConfigurationProperties(prefix = "jpower.monitor-restful")
+@Validated
 public class MonitorRestfulProperties {
 
     /**
@@ -47,6 +51,7 @@ public class MonitorRestfulProperties {
         /**
          * 项目地址
          */
+        @NotBlank
         private String location;
 
         /**
@@ -56,4 +61,11 @@ public class MonitorRestfulProperties {
         private AuthInfoConfiguration auth = null;
     }
 
+    @PostConstruct
+    private void validatedRoutesName(){
+        long size = routes.stream().map(Route::getName).distinct().count();
+        if (size != routes.size()){
+            throw new IllegalStateException("监控项目名称重复，请检查jpower.monitor-restful.routes.name配置");
+        }
+    }
 }

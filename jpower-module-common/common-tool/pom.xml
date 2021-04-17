@@ -15,6 +15,11 @@
     <dependencies>
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.wlcb</groupId>
             <artifactId>common-dbs</artifactId>
             <version>${com.jpower.version}</version>
