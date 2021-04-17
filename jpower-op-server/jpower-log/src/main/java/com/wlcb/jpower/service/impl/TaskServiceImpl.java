@@ -21,18 +21,18 @@ import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.properties.MonitorRestfulProperties.Route;
 import com.wlcb.jpower.service.TaskService;
 import lombok.AllArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Headers;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
-import org.apache.http.HttpException;
 import org.apache.http.HttpStatus;
 import org.apache.http.entity.ContentType;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.concurrent.ExecutionException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -58,7 +58,6 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private static class RestCache{
-
         private static final Cache<String, JSONObject> cache = CacheBuilder.newBuilder()
                 .initialCapacity(1)
                 .maximumSize(100) // 设置缓存的最大容量
@@ -76,13 +75,22 @@ public class TaskServiceImpl implements TaskService {
         }
 
 
-        public @SneakyThrows static JSONObject getOrDefault(Route route) {
-            return cache.get(route.getName(), () -> {
-                String content = OkHttp.get(route.getLocation()+route.getUrl())
-                        .execute(Fc.isNull(route.getAuth())?SpringUtil.getBean(AuthInterceptor.class):AuthBuilder.getInterceptor(route))
-                        .getBody();
-                return JSON.parseObject(Fc.isNotBlank(content)?content:"{}");
-            });
+        public static JSONObject getOrDefault(Route route) {
+            try {
+                return cache.get(route.getName(), () -> {
+                    String content = OkHttp.get(route.getLocation()+route.getUrl())
+                            .execute(Fc.isNull(route.getAuth())?SpringUtil.getBean(AuthInterceptor.class):AuthBuilder.getInterceptor(route))
+                            .getBody();
+                    return JSON.parseObject(Fc.isNotBlank(content)?content:"{}");
+                });
+            } catch (Exception e) {
+                if (Fc.isNull(route)){
+                    log.error("获取全部接口出错，route is null");
+                }else {
+                    log.error("获取全部接口出错，name={},host={}",route.getName(),route.getLocation());
+                }
+                return new JSONObject();
+            }
         }
     }
 
@@ -92,7 +100,7 @@ public class TaskServiceImpl implements TaskService {
         log.info("---> START TEST SERVER {} {}",route.getName(),route.getLocation()+route.getUrl());
 
         authInterceptor = getAuthInterceptor(route);
-        TbLogMonitorResult result = saveResult(route.getName(), route.getUrl(), OkHttp.get(route.getLocation()+route.getUrl()).execute(authInterceptor));
+        TbLogMonitorResult result = saveResult(route.getName(), route.getUrl(), OkHttp.get(route.getLocation()+route.getUrl()).execute(authInterceptor),new ArrayList<>());
 
         if (Fc.equals(HttpStatus.SC_OK,result.getResposeCode())){
             JSONObject restFulInfo = JSON.parseObject(result.getRestfulResponse());
@@ -109,7 +117,7 @@ public class TaskServiceImpl implements TaskService {
                         try{
                             log.info("--> START TEST REST {} {}",method,url);
                             okHttp = requestRestFul(method,httpUrl);
-                            saveResult(route.getName(),url,okHttp);
+                            saveResult(route.getName(),url,okHttp,HttpInfoBuilder.getHandler(httpUrl).getTags(method));
                         }catch (Exception e){
                             log.error("===>  接口测试异常，error={}",e.getMessage());
                             if (e instanceof BusinessException){
@@ -140,11 +148,12 @@ public class TaskServiceImpl implements TaskService {
      * @param okHttp 请求体
      * @return void
      **/
-    public TbLogMonitorResult saveResult(String name, String path, OkHttp okHttp) {
+    public TbLogMonitorResult saveResult(String name, String path, OkHttp okHttp, List<String> tags) {
         TbLogMonitorResult result = new TbLogMonitorResult();
         try {
             result.setName(name);
             result.setPath(path);
+            result.setTags(Fc.join(tags));
             result.setUrl(okHttp.getRequest().url().toString());
             result.setMethod(okHttp.getRequest().method());
             result.setHeader(okHttp.getRequest().headers().toString());

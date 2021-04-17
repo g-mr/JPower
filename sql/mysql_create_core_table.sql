@@ -405,6 +405,7 @@ create table tb_log_monitor_result(
   id varchar(32) not null COMMENT '主建',
   name text not null comment '服务名称',
   path text not null comment '测试地址',
+  tags varchar(258) default null COMMENT '分组',
   url text default null comment '请求接口',
   method varchar(10) default null comment '请求方式',
   error varchar(289) default null comment '请求错误',

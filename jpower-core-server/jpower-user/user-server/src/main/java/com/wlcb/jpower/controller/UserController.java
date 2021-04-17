@@ -76,21 +76,8 @@ public class UserController extends BaseController {
         List<UserVo> list = coreUserService.list(coreUser);
 
         BeanExcelUtil<UserVo> beanExcelUtil = new BeanExcelUtil<>(UserVo.class, ImportExportConstants.EXPORT_PATH);
-        ResponseData responseData = beanExcelUtil.exportExcel(list, "用户列表");
-
-        File file = new File(ImportExportConstants.EXPORT_PATH + responseData.getData());
-        if (file.exists()) {
-            try {
-                FileUtil.download(file, getResponse(), "用户数据.xlsx");
-            } catch (IOException e) {
-                logger.error("下载文件出错。file={},error={}", file.getAbsolutePath(), e.getMessage());
-                throw new BusinessException("下载文件出错，请联系网站管理员");
-            }
-
-            FileUtil.deleteFile(file);
-        } else {
-            throw new BusinessException(responseData.getData() + "文件生成失败，无法下载");
-        }
+        ResponseData<String> responseData = beanExcelUtil.exportExcel(list, "用户列表");
+        download(responseData,"用户数据.xlsx");
     }
 
     @ApiOperation("查询用户详情")

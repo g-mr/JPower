@@ -127,15 +127,6 @@ public class DateUtil extends org.apache.commons.lang3.time.DateUtils {
         return new DateAndTime(date);
     }
 
-    public static void main(String[] args) throws ParseException {
-        SimpleDateFormat f = new SimpleDateFormat("yyyyMMddHHmmss");
-        Date d = f.parse("20131107021217");
-        Calendar c = Calendar.getInstance();
-        c.setTime(d);
-        c.add(13, 303165);
-        System.out.println(getDate(c.getTime(), "yyyyMMddHHmmss"));
-    }
-
     public static class DateAndTime {
         private String date;
         private String time;

@@ -28,8 +28,9 @@ public class HttpInfoHandler {
 
     private interface JSON_CONSTANT_KEY {
 
-        String CONSUMES		= "consumes";
-        String PARAMETERS		= "parameters";
+        String CONSUMES		    = "consumes";
+        String PARAMETERS	    = "parameters";
+        String TAGS		        = "tags";
 
         String IN		        = "in";
         String NAME		        = "name";
@@ -50,7 +51,7 @@ public class HttpInfoHandler {
         String PATH		        = "path";
         String HEADER		    = "header";
         String BODY		        = "body";
-        String QUERY		        = "query";
+        String QUERY		    = "query";
         String STRING		    = "string";
         String DATE		        = "date";
         String DATE_TIME		= "date-time";
@@ -291,4 +292,7 @@ public class HttpInfoHandler {
         return schema.containsKey(JSON_CONSTANT_KEY.ORIGINAL_REF)?schema.getString(JSON_CONSTANT_KEY.ORIGINAL_REF):jsonObject.getString(JSON_CONSTANT_KEY.NAME);
     }
 
+    public List<String> getTags(String method) {
+        return methodsInfo.getJSONObject(method).getJSONArray(JSON_CONSTANT_KEY.TAGS).toJavaList(String.class);
+    }
 }
