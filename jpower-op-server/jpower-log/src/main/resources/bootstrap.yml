@@ -24,21 +24,21 @@ jpower:
     cron: 0 0 1 * * ?
     routes:
       - name: jpower-system
-        location: http://localhost:80
-        url: /jpower-system/all/restful
-        auth:
-          url: /jpower-auth/auth/login
-          method: post
-          params: loginId=root&passWord=57ba172a6be125cca2f449826f9980ca&grantType=password
-          headers: User-Type=web&Authorization=Basic Y2hhdDppSzFZRlE%3D
-          code-field: code
-          success-code: 200
-          token-field: data.accessToken
-          token-name: jpower-auth
-          token-position: header
-          expires-field: data.expiresIn
-          expires-unit: seconds
-          token-prefix-field: data.tokenType
+        location: http://localhost:81
+        url: /all/restful
+#        auth:
+#          url: /jpower-auth/auth/login
+#          method: post
+#          params: loginId=root&passWord=57ba172a6be125cca2f449826f9980ca&grantType=password
+#          headers: User-Type=web&Authorization=Basic Y2hhdDppSzFZRlE%3D
+#          code-field: code
+#          success-code: 200
+#          token-field: data.accessToken
+#          token-name: jpower-auth
+#          token-position: header
+#          expires-field: data.expiresIn
+#          expires-unit: seconds
+#          token-prefix-field: data.tokenType
   #  开发环境
   dev:
     nacos:

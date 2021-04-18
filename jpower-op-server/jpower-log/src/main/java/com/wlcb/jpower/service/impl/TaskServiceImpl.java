@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * @author mr.g
@@ -45,6 +46,7 @@ import java.util.concurrent.TimeUnit;
 public class TaskServiceImpl implements TaskService {
 
     private static final String PATHS = "paths";
+    private static final String TAGS = "tags";
     private static final String DEFINITIONS = "definitions";
     private static final String BASEPATH = "basePath";
 
@@ -289,9 +291,55 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public JSONArray tagList(Route route) {
         JSONObject json = RestCache.getOrDefault(route);
-        if (json.containsKey("tags")){
-            return json.getJSONArray("tags");
+        if (json.containsKey(TAGS)){
+            return json.getJSONArray(TAGS);
         }
         return new JSONArray();
     }
+
+    @Override
+    public JSONArray tree(Route route) {
+        JSONArray array = new JSONArray();
+
+        JSONObject json = RestCache.getOrDefault(route);
+        if (json.containsKey(TAGS)){
+            json.getJSONArray(TAGS).forEach(tag -> {
+                JSONObject tagJson = new JSONObject();
+                tagJson.put("name",((JSONObject)tag).getString("name"));
+                if (json.containsKey(PATHS)){
+                    JSONArray jsonArray = getTagChildren(json.getJSONObject(PATHS),tagJson.getString("name"));
+                    if (jsonArray.size() > 0){
+                        tagJson.put("children",jsonArray);
+                    }
+                }
+                array.add(tagJson);
+            });
+        }
+        return array;
+    }
+
+    private JSONArray getTagChildren(Map<String, Object> paths, String tag) {
+        JSONArray array = new JSONArray();
+        for (Map.Entry<String, Object> entry : paths.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            List<JSONObject> list = ((Map<String, Object>) value).entrySet().stream().filter(e -> {
+                JSONObject json = (JSONObject) e.getValue();
+                return json.getJSONArray(TAGS).contains(tag);
+            }).map(e -> {
+                JSONObject json = new JSONObject();
+                json.put("name", e.getKey());
+                return json;
+            }).collect(Collectors.toList());
+
+            if (list.size() > 0) {
+                JSONObject js = new JSONObject();
+                js.put("name", key);
+                js.put("children", list);
+                array.add(js);
+            }
+        }
+        return array;
+    }
+
 }

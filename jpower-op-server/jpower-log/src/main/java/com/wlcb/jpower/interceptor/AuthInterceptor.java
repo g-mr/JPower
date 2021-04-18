@@ -8,14 +8,12 @@ import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.properties.AuthInfoConfiguration;
 import io.micrometer.core.instrument.config.InvalidConfigurationException;
-import io.seata.spring.annotation.GlobalTransactional;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.apache.commons.lang.NullArgumentException;
 import org.apache.http.HttpException;
-import org.codehaus.janino.Java;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.Charset;
@@ -75,7 +73,7 @@ public final class AuthInterceptor implements Interceptor {
             }catch (Exception e){
                 //如果是请求token期间报错，则抛出一个固定错误，用于try catch接受后停止整个服务得监控
                 // TODO: 2021/4/14 0014 token请求错误再进行接口测试无意义
-                throw new BusinessException("请求token出错；停止本次服务监控，error=>"+e.getMessage());
+                throw new BusinessException("请求token出错，error=>"+e.getMessage());
             }
         }
 

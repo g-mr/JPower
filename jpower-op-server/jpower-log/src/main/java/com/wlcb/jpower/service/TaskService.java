@@ -1,11 +1,7 @@
 package com.wlcb.jpower.service;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.wlcb.jpower.properties.MonitorRestfulProperties;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author mr.g
@@ -28,4 +24,12 @@ public interface TaskService {
      * @return java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
      **/
     JSONArray tagList(MonitorRestfulProperties.Route name);
+
+    /**
+     * 获取一个监控得树形列表
+     * @author mr.g
+     * @return com.alibaba.fastjson.JSONArray
+     * @param route
+     */
+    JSONArray tree(MonitorRestfulProperties.Route route);
 }
