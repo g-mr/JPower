@@ -14,10 +14,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,11 +75,25 @@ public class SettingController {
         return ReturnJsonUtil.ok("获取成功",json);
     }
 
+    @ApiOperation("保存接口设置")
+    @PostMapping(value = "/save-setup",produces="application/json")
+    public ResponseData<Boolean> saveSetup(@ApiParam(value = "接口设置ID", required = true) String settingId){
+        JSONObject json = new JSONObject();
+        return ReturnJsonUtil.status(true);
+    }
+
     @ApiOperation("获取接口设置")
     @GetMapping(value = "/param",produces="application/json")
     public ResponseData<JSONObject> param(@ApiParam(value = "接口设置ID", required = true) String settingId){
         JSONObject json = new JSONObject();
         return ReturnJsonUtil.ok("获取成功",json);
+    }
+
+    @ApiOperation("保存接口参数")
+    @PostMapping(value = "/save-param/{settingId}",produces="application/json")
+    public ResponseData<Boolean> saveParam(@ApiParam("接口设置ID") @PathVariable String settingId){
+        JSONObject json = new JSONObject();
+        return ReturnJsonUtil.status(true);
     }
 
 }
