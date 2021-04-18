@@ -414,6 +414,7 @@ create table tb_log_monitor_result(
   restful_response longtext default null comment '接口返回数据',
   header text default null comment 'header参数',
   body text default null comment 'body参数',
+  is_success int(1) default null comment '是否成功 0否 1是',
   create_user varchar(32) default 'root' not null comment '创建人',
   create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
   update_user varchar(32) default 'root' not null comment '更新人',

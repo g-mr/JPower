@@ -51,4 +51,7 @@ public class TbLogMonitorResult extends BaseEntity {
     @ApiModelProperty("body参数")
     @Excel(name = "请求参数")
     private String body;
+    @ApiModelProperty("是否成功")
+    @Excel(name = "是否成功",readConverterExp="0=否,1=是")
+    private Integer isSuccess;
 }
