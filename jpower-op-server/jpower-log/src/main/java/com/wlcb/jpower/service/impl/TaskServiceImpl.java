@@ -15,6 +15,7 @@ import com.wlcb.jpower.interceptor.AuthInterceptor;
 import com.wlcb.jpower.interceptor.RollbackInterceptor;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.common.deploy.props.JpowerProperties;
+import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
@@ -106,6 +107,9 @@ public class TaskServiceImpl implements TaskService {
 
         if (Fc.equals(HttpStatus.SC_OK,result.getResposeCode())){
             JSONObject restFulInfo = JSON.parseObject(result.getRestfulResponse());
+
+            //这里需要启动一个线程去和数据库比对，把已经不存在配置删除掉
+
             if (restFulInfo.containsKey(PATHS)){
                 RestCache.set(route.getName(),restFulInfo);
                 JSONObject paths = restFulInfo.getJSONObject(PATHS);
@@ -189,8 +193,8 @@ public class TaskServiceImpl implements TaskService {
      */
     private OkHttp requestRestFul(String method, String url) {
         Map<String,String> paths = HttpInfoBuilder.getHandler(url).getPathParam(method);
-        Map<String,String> headers = HttpInfoBuilder.getHandler(url).getHeaderParam(method);
-        Map<String,String> forms = HttpInfoBuilder.getHandler(url).getFormParam(method);
+        Map<String,String> headers = HttpInfoBuilder.getHandler(url).getHeaderParam(method, true);
+        Map<String,String> forms = HttpInfoBuilder.getHandler(url).getFormParam(method,true);
         Map<String,String> bodys = HttpInfoBuilder.getHandler(url).getBodyParam(method);
 
         String httpUrl = StringUtil.format(url,paths);
@@ -342,4 +346,21 @@ public class TaskServiceImpl implements TaskService {
         return array;
     }
 
+    @Override
+    public List<Map<String, Object>> getParams(Route route, String tag, String path, String method) {
+        List<Map<String, Object>> list = new ArrayList<>();
+
+        JSONObject json = RestCache.getOrDefault(route);
+        if (json.containsKey(PATHS)){
+            JSONObject paths = json.getJSONObject(PATHS);
+            JSONObject methodsInfo = paths.getJSONObject(path);
+            HttpInfoHandler handler = new HttpInfoHandler(methodsInfo,json.getJSONObject(DEFINITIONS));
+
+            handler.getPathParam(method).forEach((key,val) -> list.add(ChainMap.init().set("name",key).set("value",val).set("type","path")));
+            handler.getHeaderParam(method, false).forEach((key,val) -> list.add(ChainMap.init().set("name",key).set("value",val).set("type","header")));
+            handler.getFormParam(method,false).forEach((key,val) -> list.add(ChainMap.init().set("name",key).set("value",val).set("type","query")));
+            handler.getBodyParam(method).forEach((key,val) -> list.add(ChainMap.init().set("name",key).set("value",val).set("type","body")));
+        }
+        return list;
+    }
 }

@@ -32,6 +32,12 @@ public class Condition<T> {
         return new QueryWrapper<T>();
     }
 
+    public static <T> QueryWrapper<T> getQueryWrapper(Class<T> clz) {
+        QueryWrapper<T> qw = new QueryWrapper();
+        qw.setEntity(BeanUtil.newInstance(clz));
+        return qw;
+    }
+
     public static <T> QueryWrapper<T> getQueryWrapper(T entity) {
         return new QueryWrapper<T>(entity);
     }

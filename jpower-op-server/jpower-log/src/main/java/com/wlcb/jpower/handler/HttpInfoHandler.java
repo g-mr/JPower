@@ -124,15 +124,22 @@ public class HttpInfoHandler {
     /**
      * 获取header参数
      * @Author mr.g
-     * @param method
+     * @param method 请求方式
+     * @param required 是否只获取必填参数
      * @return java.util.List<java.util.Map<java.lang.String,java.lang.String>>
      **/
-    public Map<String,String> getHeaderParam(String method) {
+    public Map<String,String> getHeaderParam(String method, boolean required) {
         Map<String,String> map = ChainMap.newMap();
         listParams(method).forEach(str -> {
             JSONObject param = (JSONObject) str;
-            if (param.getBoolean(JSON_CONSTANT_KEY.REQUIRED) && Fc.equals(param.getString(JSON_CONSTANT_KEY.IN),JSON_CONSTANT_VALUE.HEADER)){
-                map.put(param.getString(JSON_CONSTANT_KEY.NAME),defaultValue(param));
+            if (Fc.equals(param.getString(JSON_CONSTANT_KEY.IN),JSON_CONSTANT_VALUE.HEADER)){
+                if (required && param.getBoolean(JSON_CONSTANT_KEY.REQUIRED)){
+                    map.put(param.getString(JSON_CONSTANT_KEY.NAME),defaultValue(param));
+                }
+                if (!required){
+                    map.put(param.getString(JSON_CONSTANT_KEY.NAME),param.getBoolean(JSON_CONSTANT_KEY.REQUIRED)?defaultValue(param):"");
+                }
+
             }
         });
         return map;
@@ -147,9 +154,6 @@ public class HttpInfoHandler {
     public Map<String,String> getBodyParam(String method) {
         Map<String,String> map = ChainMap.newMap();
         JSONArray json = listParams(method);
-        if (isMultipleBody(json)){
-            return map;
-        }
 
         json.forEach(str -> {
             JSONObject param = (JSONObject) str;
@@ -164,40 +168,29 @@ public class HttpInfoHandler {
      * 获取formData参数
      *  只要不是path和header、body统一按from处理
      * @author mr.g
-     * @param method 
+     * @param method
+     * @param required 是否只获取必填参数
      * @return java.util.List<java.util.Map<java.lang.String,java.lang.String>>
      */
-    public Map<String,String> getFormParam(String method) {
+    public Map<String,String> getFormParam(String method, boolean required) {
         Map<String,String> map = ChainMap.newMap();
         JSONArray json = listParams(method);
         json.forEach(str -> {
             JSONObject param = (JSONObject) str;
             String type = Fc.toStr(param.getString(JSON_CONSTANT_KEY.IN),JSON_CONSTANT_VALUE.QUERY);
 
-            // 不是path和header、body参数并是必须得 或者 存在多个body得情况下，统一全部按from参数处理
-            boolean isBody = isMultipleBody(json) && Fc.equals(type,JSON_CONSTANT_VALUE.BODY);
-            if (
-                    (param.getBoolean(JSON_CONSTANT_KEY.REQUIRED)
-                        && !JSON_CONSTANT_VALUE.HEADER.concat("|").concat(JSON_CONSTANT_VALUE.PATH).concat("|".concat(JSON_CONSTANT_VALUE.BODY)).contains(type)
-                    )
-                    || isBody
-               ){
-                map.put(param.getString(JSON_CONSTANT_KEY.NAME),defaultValue(param));
+            // 不是path和header、body参数 统一全部按from参数处理
+            if (!JSON_CONSTANT_VALUE.HEADER.concat("|").concat(JSON_CONSTANT_VALUE.PATH).concat("|".concat(JSON_CONSTANT_VALUE.BODY)).contains(type)){
+                if (required && param.getBoolean(JSON_CONSTANT_KEY.REQUIRED)){
+                    map.put(param.getString(JSON_CONSTANT_KEY.NAME),defaultValue(param));
+                }
+                if (!required){
+                    map.put(param.getString(JSON_CONSTANT_KEY.NAME),param.getBoolean(JSON_CONSTANT_KEY.REQUIRED)?defaultValue(param):"");
+                }
             }
         });
 
         return map;
-    }
-
-    /**
-     * 是否多个body
-     * @author mr.g
-     * @param params 参数列表
-     * @return boolean
-     */
-    private boolean isMultipleBody(JSONArray params) {
-        return params.stream().map(str -> (JSONObject) str).filter(param ->
-                Fc.equals(param.getString(JSON_CONSTANT_KEY.IN), JSON_CONSTANT_VALUE.BODY)).count() > 1;
     }
 
     private String defaultValue(JSONObject param) {

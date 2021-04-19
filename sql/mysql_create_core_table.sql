@@ -431,15 +431,13 @@ create table tb_log_monitor_result(
 DROP TABLE IF EXISTS `tb_log_monitor_setting`;
 create table tb_log_monitor_setting(
   id varchar(32) not null COMMENT '主建',
-  name varchar(10) not null comment '服务名称',
+  name varchar(50) not null comment '服务名称',
   path varchar(30) default null comment '监控地址',
-  tags varchar(258) default null COMMENT '分组',
+  tag varchar(258) default null COMMENT '分组',
   method varchar(10) default null comment '请求方式',
-
   is_monitor int(2) default 1 comment '是否监控 0:否 1:是',
   code varchar(258) default '200' comment 'respose正确code,多个逗号分割',
   exec_js varchar(258) default null comment 'js代码',
-
   create_user varchar(32) default 'root' not null comment '创建人',
   create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
   update_user varchar(32) default 'root' not null comment '更新人',
@@ -456,12 +454,10 @@ create table tb_log_monitor_setting(
 DROP TABLE IF EXISTS `tb_log_monitor_setting_param`;
 create table tb_log_monitor_setting_param(
   id varchar(32) not null COMMENT '主建',
-
   setting_id varchar(32) not null comment '监控设置ID',
   type varchar(10) default null comment '参数类型 字典 PARAM_TYPE（header、path、body、query）',
   name varchar(20) default null comment '参数名称',
   value varchar(258) default null comment '参数值',
-
   create_user varchar(32) default 'root' not null comment '创建人',
   create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
   update_user varchar(32) default 'root' not null comment '更新人',
