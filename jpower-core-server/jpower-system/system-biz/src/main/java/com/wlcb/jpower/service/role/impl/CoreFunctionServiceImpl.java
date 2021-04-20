@@ -87,7 +87,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     public TbCoreFunction selectFunctionByUrl(String url) {
         LambdaQueryWrapper<TbCoreFunction> wrapper = new QueryWrapper<TbCoreFunction>().lambda();
         wrapper.eq(TbCoreFunction::getUrl,url);
-        return coreFunctionDao.getOne(wrapper);
+        return coreFunctionDao.getOne(wrapper,false);
     }
 
     @Override

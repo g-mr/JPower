@@ -73,7 +73,7 @@ public class DataScopeController {
 
         TbCoreDataScope coreDataScope = dataScopeService.getOne(Condition.<TbCoreDataScope>getQueryWrapper().lambda()
                 .eq(TbCoreDataScope::getScopeCode,dataScope.getScopeCode()));
-        if (!Fc.equalsValue(coreDataScope.getId(),dataScope.getId())){
+        if (Fc.notNull(coreDataScope) && !Fc.equalsValue(coreDataScope.getId(),dataScope.getId())){
             return ReturnJsonUtil.fail("编号已经存在");
         }
 

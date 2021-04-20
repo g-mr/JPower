@@ -1,18 +1,19 @@
 package com.wlcb.jpower.module.datascope.interceptor;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.parser.ISqlParser;
+import com.baomidou.mybatisplus.core.parser.SqlInfo;
 import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
 import com.baomidou.mybatisplus.extension.handlers.AbstractSqlParserHandler;
-import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.SecureUtil;
-import com.wlcb.jpower.module.common.utils.StringUtil;
-import com.wlcb.jpower.module.common.utils.WebUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.optimize.JsqlParserCountOptimize;
+import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
 import com.wlcb.jpower.module.datascope.DataScope;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jsqlparser.parser.JSqlParser;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -22,6 +23,7 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 
 import java.sql.Connection;
+import java.util.List;
 
 import static com.wlcb.jpower.module.common.utils.constants.StringPool.*;
 
@@ -42,6 +44,7 @@ import static com.wlcb.jpower.module.common.utils.constants.StringPool.*;
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
 public class DataScopeInterceptor extends AbstractSqlParserHandler implements Interceptor {
 
+    private final String COUNT = "_COUNT";
 
     @Override
     @SneakyThrows
@@ -66,17 +69,26 @@ public class DataScopeInterceptor extends AbstractSqlParserHandler implements In
         }
 
         String mapperId = mappedStatement.getId();
-        if (Fc.equalsValue(mapperId,dataScope.getScopeClass())){
+        if (Fc.equalsValue(mapperId,dataScope.getScopeClass()) || Fc.equalsValue(mapperId,dataScope.getScopeClass().concat(COUNT))){
             // 查询全部
             if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.ALL.getValue())){
                 return invocation.proceed();
             }
 
             String sqlCondition = " select {} from ({}) scope where ";
+            //分页查询
+            if (Fc.equalsValue(mapperId,dataScope.getScopeClass().concat(COUNT))){
+                //联合查询需要谨慎使用
+                List<String> columns = SqlUtil.getSelectSQL(mappedStatement.getSqlSource().getBoundSql(statementHandler.getParameterHandler().getParameterObject()).getSql());
+                String column = Fc.isNull(columns) || columns.size() <= 0?"*":Fc.join(columns);
+                originalSql = originalSql.replaceFirst("count\\(([0-9]|\\*)\\)",column);
+                dataScope.setScopeField("count(0)");
+            }
+
             if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.CUSTOM.getValue())){
-                sqlCondition = StringUtil.format(sqlCondition + dataScope.getScopeValue(), Fc.toStr(dataScope.getScopeColumn(), "*"), originalSql);
+                sqlCondition = StringUtil.format(sqlCondition + dataScope.getScopeValue(), Fc.toStr(dataScope.getScopeField(), "*"), originalSql);
             }else {
-                sqlCondition = StringUtil.format(sqlCondition + " scope.{} in ({})", Fc.toStr(dataScope.getScopeColumn(), "*"), originalSql, dataScope.getScopeField(), StringUtil.collectionToDelimitedString(dataScope.getIds(), COMMA,SINGLE_QUOTE,SINGLE_QUOTE));
+                sqlCondition = StringUtil.format(sqlCondition + " scope.{} in ({})", Fc.toStr(dataScope.getScopeField(), "*"), originalSql, dataScope.getScopeColumn(), StringUtil.collectionToDelimitedString(dataScope.getIds(), COMMA,SINGLE_QUOTE,SINGLE_QUOTE));
             }
 
             metaObject.setValue("delegate.boundSql.sql", sqlCondition);
