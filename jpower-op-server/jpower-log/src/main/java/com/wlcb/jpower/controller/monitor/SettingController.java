@@ -11,6 +11,8 @@ import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
+import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
+import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.properties.MonitorRestfulProperties;
 import com.wlcb.jpower.service.MonitorSettingService;
 import com.wlcb.jpower.service.TaskService;
@@ -94,8 +96,9 @@ public class SettingController {
     @PostMapping(value = "/save-setup",produces="application/json")
     public ResponseData<Boolean> saveSetup(@ApiIgnore TbLogMonitorSetting setting){
         JpowerAssert.notEmpty(setting.getId(),JpowerError.Arg,"设置ID不为空");
-        setting.setIsMonitor(Fc.isNull(setting.getIsMonitor())?1:setting.getIsMonitor());
+        setting.setIsMonitor(Fc.isNull(setting.getIsMonitor())? ConstantsEnum.YN01.Y.getValue() :setting.getIsMonitor());
         setting.setCode(Fc.isBlank(setting.getCode())?"200":setting.getCode());
+        setting.setStatus(JpowerConstants.DB_STATUS_NORMAL);
         return ReturnJsonUtil.status(monitorSettingService.updateById(setting));
     }
 

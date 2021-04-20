@@ -23,11 +23,20 @@ public class TbLogMonitorSetting extends BaseEntity {
     private String tag;
     @ApiModelProperty("请求方式")
     private String method;
-    @ApiModelProperty("是否监控 字典YN01")
+    @ApiModelProperty("是否监控 字典YN_MONITOR")
     private Integer isMonitor;
     @ApiModelProperty("respose正确status,多个逗号分割")
     private String code;
     @ApiModelProperty("js代码")
     private String execJs;
+
+    @ApiModelProperty("是否生效 0不生效 1生效")
+    private Integer status;
+
+//    @ApiModelProperty(hidden = true)
+//    @JSONField(serialize = false)
+//    @TableField(exist = false)
+//    @JsonIgnore
+//    private List<Map<String,Object>> settingParams;
 
 }

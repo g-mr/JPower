@@ -270,7 +270,7 @@ public class HttpInfoHandler {
     }
 
     /**
-     * 获取body类型
+     * 获取xml顶级类型
      * @author mr.g
      * @param method 请求方式
      * @param name   参数名称

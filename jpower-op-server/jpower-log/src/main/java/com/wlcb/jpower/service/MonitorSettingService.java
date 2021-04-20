@@ -1,5 +1,6 @@
 package com.wlcb.jpower.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.wlcb.jpower.dbs.entity.TbLogMonitorSetting;
 import com.wlcb.jpower.dbs.entity.TbLogMonitorSettingParam;
 import com.wlcb.jpower.module.common.service.BaseService;
@@ -49,4 +50,24 @@ public interface MonitorSettingService extends BaseService<TbLogMonitorSetting> 
      * @return java.lang.Boolean
      */
     Boolean saveParams(String settingId, List<TbLogMonitorSettingParam> settingParams);
+
+    /**
+     * 删除不存在的配置
+     * @author mr.g
+     * @param restFulInfo
+     * @param restFulTags
+     * @return void
+     */
+    void deleteSetting(Map<String, Object> restFulInfo, JSONArray restFulTags);
+
+    /**
+     * 获取一个地址是否需要监控
+     * @author mr.g
+     * @param name
+     * @param tags
+     * @param url
+     * @param method
+     * @return boolean
+     */
+    TbLogMonitorSetting getSetting(String name, List<String> tags, String url, String method);
 }

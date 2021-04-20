@@ -24,9 +24,6 @@ public class TbLogMonitorResult extends BaseEntity {
     @ApiModelProperty("监控地址")
     @Excel(name = "监控地址")
     private String path;
-    @ApiModelProperty("所属分组")
-    @Excel(name = "所属分组")
-    private String tags;
     @ApiModelProperty("接口地址")
     @Excel(name = "测试地址")
     private String url;

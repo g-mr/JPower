@@ -8,6 +8,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.wlcb.jpower.dbs.dao.LogMonitorResultDao;
 import com.wlcb.jpower.dbs.entity.TbLogMonitorResult;
+import com.wlcb.jpower.dbs.entity.TbLogMonitorSetting;
 import com.wlcb.jpower.handler.AuthBuilder;
 import com.wlcb.jpower.handler.HttpInfoBuilder;
 import com.wlcb.jpower.handler.HttpInfoHandler;
@@ -18,8 +19,10 @@ import com.wlcb.jpower.module.common.deploy.props.JpowerProperties;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.AppConstant;
+import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.properties.MonitorRestfulProperties.Route;
+import com.wlcb.jpower.service.MonitorSettingService;
 import com.wlcb.jpower.service.TaskService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,6 +55,7 @@ public class TaskServiceImpl implements TaskService {
     private static final String BASEPATH = "basePath";
 
     private final LogMonitorResultDao logMonitorResultDao;
+    private final MonitorSettingService monitorSettingService;
     private final RollbackInterceptor rollbackInterceptor;
     private final JpowerProperties properties;
     private AuthInterceptor authInterceptor;
@@ -103,37 +107,46 @@ public class TaskServiceImpl implements TaskService {
         log.info("---> START TEST SERVER {} {}",route.getName(),route.getLocation()+route.getUrl());
 
         authInterceptor = getAuthInterceptor(route);
-        TbLogMonitorResult result = saveResult(route.getName(), route.getUrl(), OkHttp.get(route.getLocation()+route.getUrl()).execute(authInterceptor),new ArrayList<>());
+        TbLogMonitorResult result = saveResult(route.getName(), route.getUrl(), OkHttp.get(route.getLocation()+route.getUrl()).execute(authInterceptor),new TbLogMonitorSetting());
 
         if (Fc.equals(HttpStatus.SC_OK,result.getResposeCode())){
             JSONObject restFulInfo = JSON.parseObject(result.getRestfulResponse());
 
-            //这里需要启动一个线程去和数据库比对，把已经不存在配置删除掉
-
             if (restFulInfo.containsKey(PATHS)){
-                RestCache.set(route.getName(),restFulInfo);
                 JSONObject paths = restFulInfo.getJSONObject(PATHS);
+
+                //这里需要启动一个线程去和数据库比对，把已经不存在配置删除掉
+                new Thread(() -> monitorSettingService.deleteSetting(paths.getInnerMap(),restFulInfo.getJSONArray(TAGS))).start();
+
+                RestCache.set(route.getName(),restFulInfo);
                 log.info("---> SERVER RESTFUL SUM={}",paths.size());
                 paths.forEach((url,methods)->{
 
                     String httpUrl = route.getLocation().concat(Fc.equals(StringPool.SLASH,restFulInfo.getString(BASEPATH))?StringPool.EMPTY:restFulInfo.getString(BASEPATH)).concat(url);
                     HttpInfoHandler handler = HttpInfoBuilder.newHandler(httpUrl,JSON.parseObject(Fc.toStr(methods)),restFulInfo.getJSONObject(DEFINITIONS));
                     handler.getMethodTypes().forEach(method -> {
-                        OkHttp okHttp = null;
-                        try{
-                            log.info("--> START TEST REST {} {}",method,url);
-                            okHttp = requestRestFul(method,httpUrl);
-                            saveResult(route.getName(),url,okHttp,HttpInfoBuilder.getHandler(httpUrl).getTags(method));
-                        }catch (Exception e){
-                            log.error("===>  接口测试异常，error={}",e.getMessage());
-                            if (e instanceof BusinessException){
-                                throw e;
+
+                        TbLogMonitorSetting setting = monitorSettingService.getSetting(route.getName(),handler.getTags(method),url,method);
+                        //这里获取配置得参数逻辑上有点问题
+
+                        if (Fc.equals(setting.getIsMonitor(), ConstantsEnum.YN01.Y.getValue())){
+                            OkHttp okHttp = null;
+                            try{
+                                log.info("--> START TEST REST {} {}",method,url);
+
+                                okHttp = requestRestFul(method,httpUrl);
+                                saveResult(route.getName(),url,okHttp,setting);
+                            }catch (Exception e){
+                                log.error("===>  接口测试异常，error={}",e.getMessage());
+                                if (e instanceof BusinessException){
+                                    throw e;
+                                }
+                            }finally {
+                                if (!Fc.isNull(okHttp)){
+                                    okHttp.close();
+                                }
+                                log.info("<-- END TEST REST {} {}",method,url);
                             }
-                        }finally {
-                            if (!Fc.isNull(okHttp)){
-                                okHttp.close();
-                            }
-                            log.info("<-- END TEST REST {} {}",method,url);
                         }
                     });
                 });
@@ -152,14 +165,14 @@ public class TaskServiceImpl implements TaskService {
      * @param name 服务名称
      * @param path 监控地址
      * @param okHttp 请求体
+     * @param setting
      * @return void
      **/
-    public TbLogMonitorResult saveResult(String name, String path, OkHttp okHttp, List<String> tags) {
+    public TbLogMonitorResult saveResult(String name, String path, OkHttp okHttp, TbLogMonitorSetting setting) {
         TbLogMonitorResult result = new TbLogMonitorResult();
         try {
             result.setName(name);
             result.setPath(path);
-            result.setTags(Fc.join(tags));
             result.setUrl(okHttp.getRequest().url().toString());
             result.setMethod(okHttp.getRequest().method());
             result.setHeader(okHttp.getRequest().headers().toString());
@@ -168,10 +181,31 @@ public class TaskServiceImpl implements TaskService {
 
             if (Fc.isNull(okHttp.getResponse())){
                 result.setError(okHttp.getError());
+                result.setIsSuccess(ConstantsEnum.YN01.N.getValue());
             }else {
                 result.setRespose(okHttp.getResponse().toString());
                 result.setResposeCode(okHttp.getResponse().code());
                 result.setRestfulResponse(okHttp.getBody());
+
+                int isSuccess = ConstantsEnum.YN01.Y.getValue();
+
+                if (Fc.notNull(setting.getCode())){
+                    isSuccess = setting.getCode().contains(Fc.toStr(okHttp.getResponse().code()))?ConstantsEnum.YN01.Y.getValue():ConstantsEnum.YN01.N.getValue();
+                }
+
+                if (isSuccess==ConstantsEnum.YN01.Y.getValue() && Fc.notNull(setting.getExecJs())){
+                    try{
+                        boolean is = JsUtil.execJsFunction("function exc(result){"+setting.getExecJs()+"}","exc",result.getRestfulResponse());
+                        isSuccess = is?ConstantsEnum.YN01.Y.getValue():ConstantsEnum.YN01.N.getValue();
+                    }catch (Exception e){
+                        isSuccess = ConstantsEnum.YN01.N.getValue();
+                    }
+                }
+
+                if (Fc.isNull(setting.getCode()) && Fc.isNull(setting.getExecJs())){
+                    isSuccess = okHttp.getResponse().isSuccessful()?ConstantsEnum.YN01.Y.getValue():ConstantsEnum.YN01.N.getValue();
+                }
+                result.setIsSuccess(isSuccess);
             }
 
             logMonitorResultDao.save(result);

@@ -14,7 +14,7 @@ public class JsUtil {
     private static final String KEY = "java";
     private static final String JAVASCRIPT = "JavaScript";
 
-    public static <T> T execJsFunction(String js, String functionName , Object... objects) throws ScriptException, NoSuchMethodException {
+    public static <T> T execJsFunction(String js, String functionName , Object... objects) throws ScriptException, NoSuchMethodException, IllegalArgumentException {
         ScriptEngineManager m = new ScriptEngineManager();
         ScriptEngine engine = m.getEngineByName(JAVASCRIPT);
         if (js.contains(KEY)){
