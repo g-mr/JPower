@@ -129,7 +129,7 @@ public class SystemCache {
      * @return java.util.List<com.wlcb.jpower.dbs.entity.function.TbCoreDataScope>
      */
     public static List<TbCoreDataScope> getAllRoleDataScope() {
-        return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_DATASCOPE_ALLROLES_KEY,"all",() -> {
+        return CacheUtil.get(CacheNames.DATASCOPE_REDIS_CACHE,CacheNames.SYSTEM_DATASCOPE_ALLROLES_KEY,"all",() -> {
             ResponseData<List<TbCoreDataScope>> responseData = systemClient.getAllRoleDataScope();
             return responseData.getData();
         });
@@ -144,7 +144,7 @@ public class SystemCache {
      * @return java.util.List<com.wlcb.jpower.dbs.entity.function.TbCoreDataScope>
      */
     public static List<TbCoreDataScope> getDataScopeByRole(List<String> roleIds) {
-        return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_DATASCOPE_ROLES_KEY,roleIds,() -> {
+        return CacheUtil.get(CacheNames.DATASCOPE_REDIS_CACHE,CacheNames.SYSTEM_DATASCOPE_ROLES_KEY,roleIds,() -> {
             ResponseData<List<TbCoreDataScope>> responseData = systemClient.getDataScopeByRole(roleIds);
             return responseData.getData();
         });
