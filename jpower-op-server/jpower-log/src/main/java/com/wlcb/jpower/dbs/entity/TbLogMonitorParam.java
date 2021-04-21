@@ -15,15 +15,23 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Data
-public class TbLogMonitorSettingParam extends BaseEntity {
+public class TbLogMonitorParam extends BaseEntity {
+
+    private static final long serialVersionUID = 5487153187619562214L;
+
 
     @ApiModelProperty(value = "主键",hidden = true)
     @TableId(value = "id",type = IdType.ASSIGN_UUID)
     private String id;
 
 
-    @ApiModelProperty(value = "设置ID",hidden = true)
-    private String settingId;
+    @ApiModelProperty(value = "服务名称",hidden = true)
+    private String server;
+    @ApiModelProperty(value = "监控地址",hidden = true)
+    private String path;
+    @ApiModelProperty(value = "请求方式",hidden = true)
+    private String method;
+
     @ApiModelProperty("参数类型 字典:PARAM_TYPE")
     private String type;
     @ApiModelProperty("参数名称")

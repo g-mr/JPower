@@ -3,8 +3,8 @@ package com.wlcb.jpower.controller.monitor;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import com.wlcb.jpower.dbs.entity.TbLogMonitorParam;
 import com.wlcb.jpower.dbs.entity.TbLogMonitorSetting;
-import com.wlcb.jpower.dbs.entity.TbLogMonitorSettingParam;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
@@ -12,7 +12,6 @@ import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
-import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.properties.MonitorRestfulProperties;
 import com.wlcb.jpower.service.MonitorSettingService;
 import com.wlcb.jpower.service.TaskService;
@@ -80,54 +79,66 @@ public class SettingController {
     @ApiOperationSupport(order = 4)
     @ApiOperation("获取接口设置")
     @GetMapping(value = "/setup",produces="application/json")
-    public ResponseData<TbLogMonitorSetting> setup(@ApiParam(value = "监控服务", required = true) String server, @ApiParam("所属分组") String tag, @ApiParam("监控地址") String path, @ApiParam("请求类型") String method){
-        JpowerAssert.notEmpty(server,JpowerError.Arg,"监控服务不可为空");
-        return ReturnJsonUtil.ok("获取成功",monitorSettingService.setting(server,tag,path,method));
+    public ResponseData<TbLogMonitorSetting> setup(@ApiIgnore TbLogMonitorSetting setting){
+        JpowerAssert.notEmpty(setting.getServer(),JpowerError.Arg,"监控服务不可为空");
+        return ReturnJsonUtil.ok("获取成功",monitorSettingService.getOneSetting(setting));
     }
 
     @ApiOperationSupport(order = 5)
     @ApiOperation("保存接口设置")
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "id",value = "设置ID",paramType = "query",required = true),
+        @ApiImplicitParam(name = "server",value = "服务名称",paramType = "query",required = true),
+        @ApiImplicitParam(name = "tag",value = "所属分组",paramType = "query"),
+        @ApiImplicitParam(name = "path",value = "监控地址",paramType = "query"),
+        @ApiImplicitParam(name = "method",value = "请求方式",paramType = "query"),
         @ApiImplicitParam(name = "isMonitor",value = "是否监控",defaultValue = "1",paramType = "query",dataType = "int",required = true),
-        @ApiImplicitParam(name = "code",value = "RESPOSE-STATUS,多个逗号分割",defaultValue = "200",paramType = "query",required = true),
+        @ApiImplicitParam(name = "code",value = "RESPOSE-STATUS,多个逗号分割",paramType = "query"),
         @ApiImplicitParam(name = "execJs",value = "JS代码",paramType = "query")
     })
     @PostMapping(value = "/save-setup",produces="application/json")
     public ResponseData<Boolean> saveSetup(@ApiIgnore TbLogMonitorSetting setting){
-        JpowerAssert.notEmpty(setting.getId(),JpowerError.Arg,"设置ID不为空");
+        JpowerAssert.notEmpty(setting.getServer(),JpowerError.Arg,"服务名称不可为空");
         setting.setIsMonitor(Fc.isNull(setting.getIsMonitor())? ConstantsEnum.YN01.Y.getValue() :setting.getIsMonitor());
-        setting.setCode(Fc.isBlank(setting.getCode())?"200":setting.getCode());
-        setting.setStatus(JpowerConstants.DB_STATUS_NORMAL);
-        return ReturnJsonUtil.status(monitorSettingService.updateById(setting));
+        return ReturnJsonUtil.status(monitorSettingService.save(setting));
     }
 
     @ApiOperationSupport(order = 6)
-    @ApiOperation("获取接口参数")
-    @GetMapping(value = "/param",produces="application/json")
-    public ResponseData<List<Map<String,Object>>> param(@ApiParam(value = "接口设置ID", required = true, type = "query") @RequestParam String settingId){
-        JpowerAssert.notEmpty(settingId,JpowerError.Arg,"设置ID不为空");
-
-        TbLogMonitorSetting setting = monitorSettingService.getById(settingId);
-        JpowerAssert.notTrue(Fc.isNull(setting) || Fc.isBlank(setting.getName()) || Fc.isBlank(setting.getTag()) || Fc.isBlank(setting.getPath()) || Fc.isBlank(setting.getMethod()),JpowerError.Arg,"只有接口才可获取参数");
-
-        List<Map<String,Object>> list = monitorSettingService.queryParam(settingId);
-        if (Fc.isNull(list) || list.size() <= 0){
-            MonitorRestfulProperties.Route route = properties.getRoutes().stream().filter(rt -> Fc.equals(rt.getName(),setting.getName())).findFirst().get();
-            list = taskService.getParams(route,setting.getTag(),setting.getPath(),setting.getMethod());
-        }
-        return ReturnJsonUtil.ok("获取成功",list);
+    @ApiOperation("删除接口设置")
+    @DeleteMapping(value = "/delete-setup",produces="application/json")
+    public ResponseData<Boolean> deleteSetup(@ApiParam("设置ID") @RequestParam String id){
+        JpowerAssert.notEmpty(id,JpowerError.Arg,"ID不可为空");
+        return ReturnJsonUtil.status(monitorSettingService.removeRealById(id));
     }
 
     @ApiOperationSupport(order = 7)
-    @ApiOperation("保存接口参数")
-    @PostMapping(value = "/save-param/{settingId}",produces="application/json")
-    public ResponseData<Boolean> saveParam(@ApiParam("设置ID") @PathVariable String settingId, @RequestBody List<TbLogMonitorSettingParam> settingParams){
-        JpowerAssert.notEmpty(settingId,JpowerError.Arg,"设置ID不可为空");
-        TbLogMonitorSetting setting = monitorSettingService.getById(settingId);
-        JpowerAssert.notTrue(Fc.isNull(setting) || Fc.isBlank(setting.getName()) || Fc.isBlank(setting.getTag()) || Fc.isBlank(setting.getPath()) || Fc.isBlank(setting.getMethod()),JpowerError.Arg,"只有接口才可设置参数");
+    @ApiOperation("获取接口参数")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "server",value = "服务名称",paramType = "query",required = true),
+            @ApiImplicitParam(name = "path",value = "监控地址",paramType = "query",required = true),
+            @ApiImplicitParam(name = "method",value = "请求方式",paramType = "query",required = true),
+    })
+    @GetMapping(value = "/param",produces="application/json")
+    public ResponseData<List<Map<String,Object>>> param(@ApiIgnore @RequestParam TbLogMonitorParam param){
+        JpowerAssert.notEmpty(param.getServer(),JpowerError.Arg,"服务名称不为空");
+        JpowerAssert.notEmpty(param.getPath(),JpowerError.Arg,"监控地址不为空");
+        JpowerAssert.notEmpty(param.getMethod(),JpowerError.Arg,"请求方式不为空");
 
-        return ReturnJsonUtil.status(monitorSettingService.saveParams(settingId,settingParams));
+        MonitorRestfulProperties.Route route = properties.getRoutes().stream().filter(rt -> Fc.equals(rt.getName(),param.getServer())).findFirst().get();
+        return ReturnJsonUtil.ok("获取成功",taskService.getParams(route,param.getPath(),param.getMethod()));
+    }
+
+    @ApiOperationSupport(order = 8)
+    @ApiOperation("保存接口参数")
+    @PostMapping(value = "/save-param/{server}/{path}/{method}",produces="application/json")
+    public ResponseData<Boolean> saveParam(@ApiParam("服务名称") @PathVariable String server,
+                                           @ApiParam("监控地址") @PathVariable String path,
+                                           @ApiParam("请求方式") @PathVariable String method,
+                                           @RequestBody List<TbLogMonitorParam> settingParams){
+        JpowerAssert.notEmpty(server,JpowerError.Arg,"服务名称不为空");
+        JpowerAssert.notEmpty(path,JpowerError.Arg,"监控地址不为空");
+        JpowerAssert.notEmpty(method,JpowerError.Arg,"请求方式不为空");
+
+        return ReturnJsonUtil.status(monitorSettingService.saveParams(server,path,method,settingParams));
     }
 
 }

@@ -7,6 +7,7 @@ import com.alibaba.nacos.common.utils.HttpMethod;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.wlcb.jpower.dbs.dao.LogMonitorResultDao;
+import com.wlcb.jpower.dbs.entity.TbLogMonitorParam;
 import com.wlcb.jpower.dbs.entity.TbLogMonitorResult;
 import com.wlcb.jpower.dbs.entity.TbLogMonitorSetting;
 import com.wlcb.jpower.handler.AuthBuilder;
@@ -116,14 +117,16 @@ public class TaskServiceImpl implements TaskService {
                 JSONObject paths = restFulInfo.getJSONObject(PATHS);
 
                 //这里需要启动一个线程去和数据库比对，把已经不存在配置删除掉
-                new Thread(() -> monitorSettingService.deleteSetting(paths.getInnerMap(),restFulInfo.getJSONArray(TAGS))).start();
+                new Thread(() -> monitorSettingService.deleteSetting(route.getName(),paths.getInnerMap(),restFulInfo.getJSONArray(TAGS))).start();
 
                 RestCache.set(route.getName(),restFulInfo);
                 log.info("---> SERVER RESTFUL SUM={}",paths.size());
                 paths.forEach((url,methods)->{
 
                     String httpUrl = route.getLocation().concat(Fc.equals(StringPool.SLASH,restFulInfo.getString(BASEPATH))?StringPool.EMPTY:restFulInfo.getString(BASEPATH)).concat(url);
-                    HttpInfoHandler handler = HttpInfoBuilder.newHandler(httpUrl,JSON.parseObject(Fc.toStr(methods)),restFulInfo.getJSONObject(DEFINITIONS));
+
+                    List<TbLogMonitorParam> paramList = monitorSettingService.queryParamByPath(route.getName(),url);
+                    HttpInfoHandler handler = HttpInfoBuilder.newHandler(httpUrl,paramList,JSON.parseObject(Fc.toStr(methods)),restFulInfo.getJSONObject(DEFINITIONS));
                     handler.getMethodTypes().forEach(method -> {
 
                         TbLogMonitorSetting setting = monitorSettingService.getSetting(route.getName(),handler.getTags(method),url,method);
@@ -381,14 +384,14 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Map<String, Object>> getParams(Route route, String tag, String path, String method) {
+    public List<Map<String, Object>> getParams(Route route, String path, String method) {
         List<Map<String, Object>> list = new ArrayList<>();
 
         JSONObject json = RestCache.getOrDefault(route);
         if (json.containsKey(PATHS)){
             JSONObject paths = json.getJSONObject(PATHS);
             JSONObject methodsInfo = paths.getJSONObject(path);
-            HttpInfoHandler handler = new HttpInfoHandler(methodsInfo,json.getJSONObject(DEFINITIONS));
+            HttpInfoHandler handler = new HttpInfoHandler(monitorSettingService.queryParamByPath(route.getName(),path),methodsInfo,json.getJSONObject(DEFINITIONS));
 
             handler.getPathParam(method).forEach((key,val) -> list.add(ChainMap.init().set("name",key).set("value",val).set("type","path")));
             handler.getHeaderParam(method, false).forEach((key,val) -> list.add(ChainMap.init().set("name",key).set("value",val).set("type","header")));

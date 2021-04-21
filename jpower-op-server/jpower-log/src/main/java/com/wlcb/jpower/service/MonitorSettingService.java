@@ -1,8 +1,8 @@
 package com.wlcb.jpower.service;
 
 import com.alibaba.fastjson.JSONArray;
+import com.wlcb.jpower.dbs.entity.TbLogMonitorParam;
 import com.wlcb.jpower.dbs.entity.TbLogMonitorSetting;
-import com.wlcb.jpower.dbs.entity.TbLogMonitorSettingParam;
 import com.wlcb.jpower.module.common.service.BaseService;
 
 import java.util.List;
@@ -24,44 +24,28 @@ public interface MonitorSettingService extends BaseService<TbLogMonitorSetting> 
     boolean save(TbLogMonitorSetting setting);
 
     /**
-     * 查询监控设置
-     * @author mr.g
-     * @param server 服务名称
-     * @param tag 所属分组
-     * @param path 监控路径
-     * @param method 请求方式
-     * @return com.wlcb.jpower.dbs.entity.TbLogMonitorSetting
-     */
-    TbLogMonitorSetting setting(String server, String tag, String path, String method);
-
-    /**
-     * 查询设置的全部参数
-     * @author mr.g
-     * @param settingId
-     * @return java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
-     */
-    List<Map<String, Object>> queryParam(String settingId);
-
-    /**
      * 保存请求参数
      * @author mr.g
-     * @param settingId
+     * @param server
+     * @param path
+     * @param method
      * @param settingParams
      * @return java.lang.Boolean
      */
-    Boolean saveParams(String settingId, List<TbLogMonitorSettingParam> settingParams);
+    Boolean saveParams(String server, String path, String method, List<TbLogMonitorParam> settingParams);
 
     /**
      * 删除不存在的配置
      * @author mr.g
+     * @param server
      * @param restFulInfo
      * @param restFulTags
      * @return void
      */
-    void deleteSetting(Map<String, Object> restFulInfo, JSONArray restFulTags);
+    void deleteSetting(String server, Map<String, Object> restFulInfo, JSONArray restFulTags);
 
     /**
-     * 获取一个地址是否需要监控
+     * 获取一个地址配置
      * @author mr.g
      * @param name
      * @param tags
@@ -70,4 +54,21 @@ public interface MonitorSettingService extends BaseService<TbLogMonitorSetting> 
      * @return boolean
      */
     TbLogMonitorSetting getSetting(String name, List<String> tags, String url, String method);
+
+    /**
+     * 获取一个接口的配置
+     * @Author mr.g
+     * @param setting
+     * @return com.wlcb.jpower.dbs.entity.TbLogMonitorSetting
+     **/
+    TbLogMonitorSetting getOneSetting(TbLogMonitorSetting setting);
+
+    /**
+     * 查询一个监控地址的所有参数
+     * @Author mr.g
+     * @param server
+     * @param url
+     * @return java.util.List<com.wlcb.jpower.dbs.entity.TbLogMonitorSettingParam>
+     **/
+    List<TbLogMonitorParam> queryParamByPath(String server, String url);
 }

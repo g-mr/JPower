@@ -3,6 +3,7 @@ package com.wlcb.jpower.handler;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.wlcb.jpower.dbs.entity.TbLogMonitorParam;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.DateUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
@@ -11,6 +12,7 @@ import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import lombok.AllArgsConstructor;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @Author mr.g
@@ -23,6 +25,7 @@ public class HttpInfoHandler {
     private static final String NUMBER_DEFAULT_VAL = "0";
 
 
+    private List<TbLogMonitorParam> paramList;
     private JSONObject methodsInfo;
     private JSONObject definitions;
 
@@ -97,6 +100,23 @@ public class HttpInfoHandler {
      * @return com.alibaba.fastjson.JSONArray
      **/
     private JSONArray listParams(String method){
+
+        if (Fc.notNull(paramList) && paramList.size() > 0){
+            JSONArray array = paramList.stream()
+                    .filter(param -> StringUtil.equalsIgnoreCase(param.getMethod(),method))
+                    .map(param -> {
+                        JSONObject json = new JSONObject();
+                        json.put(JSON_CONSTANT_KEY.NAME,param.getName());
+                        json.put(JSON_CONSTANT_KEY.IN,param.getType());
+                        json.put(JSON_CONSTANT_KEY.REQUIRED,true);
+                        json.put(JSON_CONSTANT_KEY.DEFAULT,param.getValue());
+                        return json;
+                    }).collect(Collectors.toCollection(JSONArray::new));
+            if (Fc.notNull(array) && array.size() > 0){
+                return array;
+            }
+        }
+
         return methodsInfo.getJSONObject(method).containsKey(JSON_CONSTANT_KEY.PARAMETERS)?
             methodsInfo.getJSONObject(method).getJSONArray(JSON_CONSTANT_KEY.PARAMETERS):
             new JSONArray();

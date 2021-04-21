@@ -41,8 +41,7 @@ public interface TaskService {
      * @author mr.g
      * @param route
      * @param path
-     * @param method
      * @return java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
      */
-    List<Map<String, Object>> getParams(MonitorRestfulProperties.Route route, String tag, String path, String method);
+    List<Map<String, Object>> getParams(MonitorRestfulProperties.Route route, String tag, String path);
 }

@@ -1,5 +1,7 @@
 package com.wlcb.jpower.dbs.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -15,28 +17,21 @@ import lombok.ToString;
 @Data
 public class TbLogMonitorSetting extends BaseEntity {
 
+    private static final long serialVersionUID = -884603554775809089L;
+
     @ApiModelProperty("服务名称")
-    private String name;
+    private String server;
     @ApiModelProperty("监控地址")
     private String path;
     @ApiModelProperty("所属分组")
     private String tag;
     @ApiModelProperty("请求方式")
     private String method;
-    @ApiModelProperty("是否监控 字典YN_MONITOR")
+    @ApiModelProperty("是否监控 字典YN01")
     private Integer isMonitor;
     @ApiModelProperty("respose正确status,多个逗号分割")
     private String code;
     @ApiModelProperty("js代码")
     private String execJs;
-
-    @ApiModelProperty("是否生效 0不生效 1生效")
-    private Integer status;
-
-//    @ApiModelProperty(hidden = true)
-//    @JSONField(serialize = false)
-//    @TableField(exist = false)
-//    @JsonIgnore
-//    private List<Map<String,Object>> settingParams;
 
 }

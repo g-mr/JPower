@@ -431,7 +431,7 @@ create table tb_log_monitor_result(
 DROP TABLE IF EXISTS `tb_log_monitor_setting`;
 create table tb_log_monitor_setting(
   id varchar(32) not null COMMENT '主建',
-  name varchar(50) not null comment '服务名称',
+  server varchar(50) not null comment '服务名称',
   path varchar(30) default null comment '监控地址',
   tag varchar(258) default null COMMENT '分组',
   method varchar(10) default null comment '请求方式',
@@ -451,10 +451,12 @@ create table tb_log_monitor_setting(
 -- ----------------------------
 -- Table structure for tb_log_monitor_setting_param
 -- ----------------------------
-DROP TABLE IF EXISTS `tb_log_monitor_setting_param`;
+DROP TABLE IF EXISTS `tb_log_monitor_param`;
 create table tb_log_monitor_setting_param(
   id varchar(32) not null COMMENT '主建',
-  setting_id varchar(32) not null comment '监控设置ID',
+  server varchar(50) not null comment '服务名称',
+  path varchar(30) default null comment '监控地址',
+  method varchar(10) default null comment '请求方式',
   type varchar(10) default null comment '参数类型 字典 PARAM_TYPE（header、path、body、query）',
   name varchar(20) default null comment '参数名称',
   value varchar(258) default null comment '参数值',

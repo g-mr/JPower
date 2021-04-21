@@ -1,7 +1,9 @@
 package com.wlcb.jpower.handler;
 
 import com.alibaba.fastjson.JSONObject;
+import com.wlcb.jpower.dbs.entity.TbLogMonitorParam;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -34,12 +36,13 @@ public class HttpInfoBuilder {
      * 生成Handler
      *
      * @param  url 请求接口
+     * @param paramList
      * @return HttpInfoHandler
      */
-    public static HttpInfoHandler newHandler(String url, JSONObject methodsInfo,JSONObject definitions) {
+    public static HttpInfoHandler newHandler(String url, List<TbLogMonitorParam> paramList, JSONObject methodsInfo, JSONObject definitions) {
         HttpInfoHandler handler = HANDLER_POOL.get(url);
         if (handler == null) {
-            handler = new HttpInfoHandler(methodsInfo,definitions);
+            handler = new HttpInfoHandler(paramList,methodsInfo,definitions);
             HANDLER_POOL.put(url,handler);
         }
 
