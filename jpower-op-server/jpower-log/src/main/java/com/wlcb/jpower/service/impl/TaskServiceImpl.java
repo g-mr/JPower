@@ -130,7 +130,6 @@ public class TaskServiceImpl implements TaskService {
                     handler.getMethodTypes().forEach(method -> {
 
                         TbLogMonitorSetting setting = monitorSettingService.getSetting(route.getName(),handler.getTags(method),url,method);
-                        //这里获取配置得参数逻辑上有点问题
 
                         if (Fc.equals(setting.getIsMonitor(), ConstantsEnum.YN01.Y.getValue())){
                             OkHttp okHttp = null;
