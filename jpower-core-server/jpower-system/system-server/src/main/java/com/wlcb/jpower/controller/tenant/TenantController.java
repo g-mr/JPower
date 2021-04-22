@@ -78,7 +78,7 @@ public class TenantController extends BaseController {
     public ResponseData<Page<TbCoreTenant>> list(@ApiIgnore @RequestParam Map<String, Object> map){
         LambdaQueryWrapper<TbCoreTenant> queryWrapper = Condition.getQueryWrapper(map,TbCoreTenant.class).lambda();
         if (!SecureUtil.isRoot()){
-//            queryWrapper.eq(TbCoreTenant::getTenantCode,SecureUtil.getTenantCode());
+            queryWrapper.eq(TbCoreTenant::getTenantCode,SecureUtil.getTenantCode());
         }
         return ReturnJsonUtil.ok("查询成功",tenantService.page(PaginationContext.getMpPage(), queryWrapper));
     }
@@ -98,7 +98,7 @@ public class TenantController extends BaseController {
     @ApiOperation("修改租户信息")
     @PutMapping("/update")
     public ResponseData update(TbCoreTenant tenant){
-        JpowerAssert.isTrue(SecureUtil.isRoot(), JpowerError.Auth,"只可超级管理员删除租户");
+        JpowerAssert.isTrue(SecureUtil.isRoot(), JpowerError.Auth,"只可超级管理员修改租户");
         JpowerAssert.notEmpty(tenant.getId(), JpowerError.Arg,"主键不可为空");
 
         if (Fc.isNotBlank(tenant.getDomain())){
