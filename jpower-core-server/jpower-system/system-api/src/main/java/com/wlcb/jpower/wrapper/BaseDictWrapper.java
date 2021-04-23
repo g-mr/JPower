@@ -46,6 +46,10 @@ public abstract class BaseDictWrapper<T, V> extends BaseWrapper<T, V> {
      * @date 0:27 2020/10/22 0022
      */
     public static <V> V dict(V bean){
+        if (Fc.isNull(bean)){
+            return null;
+        }
+
         List<Field> list = BeanUtil.getFiledByAnnotation(bean.getClass(), Dict.class);
         for (Field field : list) {
             Dict dict = field.getAnnotation(Dict.class);

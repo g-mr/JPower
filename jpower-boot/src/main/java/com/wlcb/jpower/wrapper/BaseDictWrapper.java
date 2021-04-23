@@ -26,15 +26,6 @@ public abstract class BaseDictWrapper<T, V> extends BaseWrapper<T, V> {
     private static final String DICT_ATTRIBUTES_SUFFIX = "Str";
 
 
-    public static <T, V> BaseDictWrapper<T, V> builder(){
-        return new BaseDictWrapper<T, V>() {
-            @Override
-            protected Object conver(Object entity) {
-                return entity;
-            }
-        };
-    }
-
     @Override
     public V entityVO(T entity){
         return dict(conver(entity));
