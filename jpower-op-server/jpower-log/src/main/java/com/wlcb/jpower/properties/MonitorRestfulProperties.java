@@ -1,6 +1,8 @@
 package com.wlcb.jpower.properties;
 
+import com.alibaba.fastjson.JSON;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.validation.annotation.Validated;
@@ -8,12 +10,16 @@ import org.springframework.validation.annotation.Validated;
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName MonitorRestfulProperties
  * @Author mr.g
  */
+@Slf4j
 @Data
 @ConfigurationProperties(prefix = "jpower.monitor-restful")
 @Validated
@@ -63,8 +69,9 @@ public class MonitorRestfulProperties {
 
     @PostConstruct
     private void validatedRoutesName(){
-        long size = routes.stream().map(Route::getName).distinct().count();
-        if (size != routes.size()){
+        List<String> routeNames = routes.stream().map(Route::getName).distinct().collect(Collectors.toList());
+        log.info("监控项目列表：{}",JSON.toJSONString(routeNames));
+        if (routeNames.size() != routes.size()){
             throw new IllegalStateException("监控项目名称重复，请检查jpower.monitor-restful.routes.name配置");
         }
     }
