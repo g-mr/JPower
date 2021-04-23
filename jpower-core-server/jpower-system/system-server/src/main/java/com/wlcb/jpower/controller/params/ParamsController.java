@@ -88,7 +88,7 @@ public class ParamsController extends BaseController {
         JpowerAssert.notTrue(Fc.equals(param.getIsEffect(), ConstantsEnum.YN01.N.getValue()), JpowerError.BUSINESS,"该参数无法立即生效，请重启项目");
 
         if (Fc.isNotEmpty(param) && Fc.isNotBlank(param.getValue())){
-            CacheUtil.put(CacheNames.PARAMS_REDIS_CACHE,CacheNames.PARAMS_REDIS_CODE_KEY,param.getCode(),param.getValue());
+            CacheUtil.put(CacheNames.PARAMS_REDIS_CACHE,CacheNames.PARAMS_REDIS_CODE_KEY,param.getCode(),param.getValue(),Boolean.FALSE);
         }else {
             if (Fc.isNull(param)){
                 return ReturnJsonUtil.fail("该参数不存在");

@@ -57,7 +57,6 @@ public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper, TbCor
         coreCity.setFullname(Fc.isNotBlank(coreCity.getFullname())?coreCity.getFullname():coreCity.getName());
         coreCity.setCountryCode(Fc.isNotBlank(coreCity.getCountryCode())?coreCity.getCountryCode():JpowerConstants.COUNTRY_CODE);
         coreCity.setPcode(Fc.isNotBlank(coreCity.getPcode())?coreCity.getPcode():JpowerConstants.TOP_CODE);
-//        coreCity.setCode(RandomUtil.createCityCode(coreCity.getPcode(),coreCity.getCode()));
 
         JpowerAssert.notTrue(queryByCode(coreCity.getCode()) != null, JpowerError.BUSINESS,"该编号已存在");
 
@@ -73,7 +72,7 @@ public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper, TbCor
             log.warn("("+CacheNames.CITY_PARENT_REDIS_KEY+")缓存删除失败："+e.getMessage());
         }
 
-        CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE);
+        CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE,Boolean.FALSE);
         return coreCityDao.save(coreCity);
     }
 
@@ -92,6 +91,7 @@ public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper, TbCor
             JpowerAssert.notTrue(count>0,JpowerError.BUSINESS,"请先删除子区域");
         }
 
+        CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE,Boolean.FALSE);
         return coreCityDao.removeRealByIds(ids);
     }
 
@@ -119,7 +119,7 @@ public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper, TbCor
                     .eq(TbCoreCity::getPcode,city.getCode()));
         }
 
-        CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE);
+        CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE,Boolean.FALSE);
         return is;
     }
 

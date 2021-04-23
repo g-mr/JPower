@@ -1,10 +1,8 @@
 package com.wlcb.jpower.cache.param;
 
 import com.wlcb.jpower.feign.ParamsClient;
-import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.utils.CacheUtil;
-import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SpringUtil;
 import org.apache.commons.lang3.StringUtils;
 
@@ -16,6 +14,8 @@ import org.apache.commons.lang3.StringUtils;
  * @Version 1.0
  */
 public class ParamConfig {
+
+    private static final Boolean TENANT_MODE = Boolean.FALSE;
 
     private static ParamsClient paramsClient;
 
@@ -31,13 +31,7 @@ public class ParamConfig {
      * @Date 15:47 2020-05-06
      **/
     public static String getString(String code){
-        return CacheUtil.get(CacheNames.PARAMS_REDIS_CACHE,PREFIX,code,() -> {
-            ResponseData<String> responseData = paramsClient.queryByCode(code);
-            if (!Fc.isNull(responseData)){
-                return responseData.getData();
-            }
-            return null;
-        });
+        return CacheUtil.get(CacheNames.PARAMS_REDIS_CACHE,PREFIX,code,String.class,TENANT_MODE);
     }
 
     /**

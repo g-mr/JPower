@@ -63,7 +63,7 @@ public class ClientController extends BaseController {
 
         }
 
-        CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE);
+        CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE,Boolean.FALSE);
         return ReturnJsonUtil.status(coreClientService.saveOrUpdate(coreClient));
     }
 
@@ -71,7 +71,7 @@ public class ClientController extends BaseController {
     @DeleteMapping("delete")
     public ResponseData delete(@ApiParam(value = "主键，多个逗号分割",required = true) @RequestParam String ids){
         JpowerAssert.notEmpty(ids,JpowerError.Arg,"客户端主键不可为空");
-        CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE);
+        CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE,Boolean.FALSE);
         return ReturnJsonUtil.status(coreClientService.removeByIds(Fc.toStrList(ids)));
     }
 

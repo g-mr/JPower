@@ -62,7 +62,7 @@ public class DataScopeController {
             JpowerAssert.notEmpty(dataScope.getScopeValue(), JpowerError.Arg,"数据权限值域不可为空");
         }
 
-        CacheUtil.clear(CacheNames.DATASCOPE_REDIS_CACHE);
+        CacheUtil.clear(CacheNames.DATASCOPE_REDIS_CACHE,Boolean.FALSE);
         return ReturnJsonUtil.status(dataScopeService.save(dataScope));
     }
 
@@ -77,7 +77,7 @@ public class DataScopeController {
             return ReturnJsonUtil.fail("编号已经存在");
         }
 
-        CacheUtil.clear(CacheNames.DATASCOPE_REDIS_CACHE);
+        CacheUtil.clear(CacheNames.DATASCOPE_REDIS_CACHE,Boolean.FALSE);
         return ReturnJsonUtil.status(dataScopeService.updateById(dataScope));
     }
 
@@ -85,7 +85,7 @@ public class DataScopeController {
     @DeleteMapping(value = "/delete",produces="application/json")
     public ResponseData delete(@ApiParam(value = "主键",required = true) @RequestParam String id){
         JpowerAssert.notEmpty(id, JpowerError.Arg,"主键不可为空");
-        CacheUtil.clear(CacheNames.DATASCOPE_REDIS_CACHE);
+        CacheUtil.clear(CacheNames.DATASCOPE_REDIS_CACHE,Boolean.FALSE);
         return ReturnJsonUtil.status(dataScopeService.removeRealById(id));
     }
 
@@ -134,7 +134,7 @@ public class DataScopeController {
         JpowerAssert.notEmpty(roleId, JpowerError.Arg,"角色主键不可为空");
         JpowerAssert.notNull(roleService.getById(roleId), JpowerError.Parser,"该角色找不到");
 
-        CacheUtil.clear(CacheNames.DATASCOPE_REDIS_CACHE);
+        CacheUtil.clear(CacheNames.DATASCOPE_REDIS_CACHE,Boolean.FALSE);
         return ReturnJsonUtil.status(dataScopeService.roleDataScope(roleId,dataIds));
     }
 }
