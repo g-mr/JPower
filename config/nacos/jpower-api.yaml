@@ -15,3 +15,6 @@ knife4j:
       - name: 文件模块
         uri: 127.0.0.1
         location: /jpower-file/v2/api-docs
+      - name: 日志模块
+        uri: 127.0.0.1
+        location: /jpower-log/v2/api-docs

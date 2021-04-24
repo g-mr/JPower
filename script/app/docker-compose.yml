@@ -190,6 +190,33 @@ services:
     networks:
       - jpower_net
 
+  jpower-api:
+    image: "219.148.186.235:99/jpower/api-server:2.0.0"
+    volumes:
+      #      系统文件映射路径
+      - /docker/api/:/root/file
+    ports:
+      - 18000:18000
+    privileged: true
+    restart: always
+    networks:
+      - jpower_net
+
+  jpower-log:
+    image: "219.148.186.235:99/jpower/log-server:2.0.0"
+    volumes:
+      #      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
+      - /docker/skywalking/agent/:/jpower/skywalking/agent/
+      #      系统文件映射路径
+      - /docker/log/:/root/file
+    environment:
+      - JAVA_TOOL_OPTIONS=-javaagent:/jpower/skywalking/agent/skywalking-agent.jar
+      - SW_AGENT_COLLECTOR_BACKEND_SERVICES=skywalking-oap:11800
+    privileged: true
+    restart: always
+    networks:
+      - jpower_net
+
 networks:
   jpower_net:
     driver: bridge

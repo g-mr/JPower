@@ -8,6 +8,9 @@ RUN mkdir -p /jpower/log \
 
 WORKDIR /jpower/log
 
+ENV SW_AGENT_COLLECTOR_BACKEND_SERVICES=127.0.0.1:11800 \
+    SW_AGENT_NAME=jpower-log
+
 EXPOSE 17000
 
 ADD ./target/jpower-log-exec.jar ./app.jar
