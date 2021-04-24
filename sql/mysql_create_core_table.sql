@@ -452,7 +452,7 @@ create table tb_log_monitor_setting(
 -- Table structure for tb_log_monitor_setting_param
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_log_monitor_param`;
-create table tb_log_monitor_setting_param(
+create table tb_log_monitor_param(
   id varchar(32) not null COMMENT '主建',
   server varchar(50) not null comment '服务名称',
   path varchar(30) default null comment '监控地址',
