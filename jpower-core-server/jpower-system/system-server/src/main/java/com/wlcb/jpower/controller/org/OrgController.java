@@ -14,6 +14,7 @@ import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
+import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.org.CoreOrgService;
 import com.wlcb.jpower.vo.OrgVo;
 import io.swagger.annotations.*;
@@ -56,7 +57,7 @@ public class OrgController extends BaseController {
         Boolean is = coreOrgService.add(coreOrg);
 
         if (is){
-            CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE);
+            CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE,coreOrg.getTenantCode());
             return ReturnJsonUtil.ok("新增成功");
         }else {
             return ReturnJsonUtil.fail("新增失败");
@@ -74,10 +75,12 @@ public class OrgController extends BaseController {
             return ReturnJsonUtil.busFail("您选中的组织机构存在下级机构，请先删除下级机构");
         }
 
+
+        List<String> tenants = coreOrgService.listObjs(Condition.<TbCoreOrg>getQueryWrapper().lambda().select(TbCoreOrg::getTenantCode).in(TbCoreOrg::getId,Fc.toStrList(ids)),Fc::toStr);
         Boolean is = coreOrgService.removeByIds(Fc.toStrList(ids));
 
         if (is){
-            CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE);
+            CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE, tenants.toArray(new String[tenants.size()]));
             return ReturnJsonUtil.ok("删除成功");
         }else {
             return ReturnJsonUtil.fail("删除失败");
@@ -92,7 +95,7 @@ public class OrgController extends BaseController {
         Boolean is = coreOrgService.update(coreOrg);
 
         if (is){
-            CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE);
+            CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE,coreOrg.getTenantCode());
             return ReturnJsonUtil.ok("修改成功");
         }else {
             return ReturnJsonUtil.fail("修改失败");

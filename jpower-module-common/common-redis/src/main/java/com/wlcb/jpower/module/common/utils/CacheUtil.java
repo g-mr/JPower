@@ -35,7 +35,7 @@ public class CacheUtil {
      * @Date 11:32 2020-09-01
      **/
     public static Cache getCache(String cacheName, String tenantCode) {
-        return getCache(cacheName,TENANT_MODE,tenantCode);
+        return getCache(cacheName,TENANT_MODE,Fc.isNoneBlank(tenantCode)?tenantCode:SecureUtil.getTenantCode());
     }
 
     /**
@@ -174,11 +174,13 @@ public class CacheUtil {
      * @Description //TODO 清空指定租户缓存
      * @Date 11:32 2020-09-01
      **/
-    public static void clear(String cacheName,String tenantCode) {
+    public static void clear(String cacheName,String... tenantCode) {
         // 非超管不可操作其他租户缓存
-        if (SecureUtil.isRoot()){
+        if (SecureUtil.isRoot() && Fc.notNull(tenantCode) && tenantCode.length > 0){
             if (Fc.isNotBlank(cacheName)) {
-                getCache(cacheName, tenantCode).clear();
+                for (String code : tenantCode) {
+                    getCache(cacheName, code).clear();
+                }
             }
         }else {
             clear(cacheName);
@@ -193,4 +195,5 @@ public class CacheUtil {
     public static void clear(String cacheName) {
         clear(cacheName, TENANT_MODE);
     }
+
 }

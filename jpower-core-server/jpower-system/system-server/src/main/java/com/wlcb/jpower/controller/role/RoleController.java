@@ -24,7 +24,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
@@ -40,12 +43,6 @@ public class RoleController extends BaseController {
     private CoreRoleService coreRoleService;
     private CoreRolefunctionService coreRolefunctionService;
     private CoreFunctionService coreFunctionService;
-
-//    @ApiOperation(value = "查询匿名用户是否拥有URL的权限", hidden = true)
-//    @GetMapping("/queryRoleByUrl")
-//    public ResponseData<Boolean> queryRoleByUrl(@RequestParam String url){
-//        return ReturnJsonUtil.ok("查询成功",coreFunctionService.queryRoleByUrl(url)>0?Boolean.TRUE:Boolean.FALSE);
-//    }
 
     @ApiOperation("查询角色树结构列表")
     @RequestMapping(value = "/listTree",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
@@ -71,7 +68,7 @@ public class RoleController extends BaseController {
             coreRole.setIsSysRole(ConstantsEnum.YN01.N.getValue());
         }
 
-        CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE);
+        CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE,coreRole.getTenantCode());
         return ReturnJsonUtil.status(coreRoleService.add(coreRole));
     }
 
@@ -81,12 +78,13 @@ public class RoleController extends BaseController {
 
         JpowerAssert.notEmpty(ids, JpowerError.Arg,"ids不可为空");
 
+        List<String> tenants = coreRoleService.listObjs(Condition.<TbCoreRole>getQueryWrapper().lambda().select(TbCoreRole::getTenantCode).in(TbCoreRole::getId,Fc.toStrList(ids)),Fc::toStr);
         Integer c = coreRoleService.listByPids(ids);
         if (c > 0){
             return ReturnJsonUtil.busFail("该角色存在下级角色，请先删除下级角色");
         }
 
-        CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE);
+        CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE,tenants.toArray(new String[tenants.size()]));
         return ReturnJsonUtil.status(coreRoleService.remove(Condition.<TbCoreRole>getQueryWrapper().lambda()
                 .in(TbCoreRole::getId,Fc.toStrList(ids))
                 .eq(TbCoreRole::getIsSysRole,ConstantsEnum.YN01.N.getValue())));
@@ -98,7 +96,7 @@ public class RoleController extends BaseController {
 
         JpowerAssert.notEmpty(coreRole.getId(), JpowerError.Arg,"id不可为空");
 
-        CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE);
+        CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE,coreRole.getTenantCode());
         return ReturnJsonUtil.status(coreRoleService.update(coreRole));
     }
 
@@ -122,7 +120,8 @@ public class RoleController extends BaseController {
         JpowerAssert.notNull(coreRoleService.getById(roleId),JpowerError.BUSINESS,"该角色不存在");
 
         if (coreRolefunctionService.addRolefunctions(roleId,functionIds)){
-            CacheUtil.clear(SYSTEM_REDIS_CACHE);
+            TbCoreRole role = coreRoleService.getById(roleId);
+            CacheUtil.clear(SYSTEM_REDIS_CACHE,role.getTenantCode());
             return ReturnJsonUtil.ok("设置成功");
         }else {
             return ReturnJsonUtil.fail("设置失败");
