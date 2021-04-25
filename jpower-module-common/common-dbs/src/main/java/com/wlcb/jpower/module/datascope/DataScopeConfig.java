@@ -2,7 +2,7 @@ package com.wlcb.jpower.module.datascope;
 
 import com.github.pagehelper.autoconfigure.PageHelperProperties;
 import com.wlcb.jpower.module.datascope.handler.DataScopeHandler;
-import com.wlcb.jpower.module.datascope.interceptor.DataScopeQueryInterceptor;
+import com.wlcb.jpower.module.datascope.interceptor.DataScopeInterceptor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -32,10 +32,10 @@ public class DataScopeConfig {
     @Bean
     @ConditionalOnProperty(value = {"jpower.datascope.enable"}, matchIfMissing = true)
     @ConditionalOnBean(DataScopeHandler.class)
-    @ConditionalOnMissingBean({DataScopeQueryInterceptor.class})
-    public DataScopeQueryInterceptor dataScopeQueryInterceptor(PageHelperProperties properties,DataScopeHandler dataScopeHandler) {
+    @ConditionalOnMissingBean({DataScopeInterceptor.class})
+    public DataScopeInterceptor dataScopeQueryInterceptor(PageHelperProperties properties,DataScopeHandler dataScopeHandler) {
         properties.setDialect(JpowerPageHelper.class.getName());
         properties.getProperties().setProperty("dataScopeHandler","dataScopeHandler");
-        return new DataScopeQueryInterceptor(dataScopeHandler);
+        return new DataScopeInterceptor(dataScopeHandler);
     }
 }

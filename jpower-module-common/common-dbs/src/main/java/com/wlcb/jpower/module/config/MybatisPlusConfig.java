@@ -5,15 +5,12 @@ import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.core.injector.ISqlInjector;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.datascope.interceptor.DataScopeInterceptor;
 import com.wlcb.jpower.module.mp.CustomSqlInjector;
 import com.wlcb.jpower.module.tenant.JpowerTenantProperties;
 import lombok.AllArgsConstructor;
 import org.mybatis.spring.annotation.MapperScan;
-import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -81,16 +78,6 @@ public class MybatisPlusConfig {
     public ISqlInjector sqlInjector() {
         return new CustomSqlInjector();
     }
-
-//    /**
-//     * 数据权限插件
-//     **/
-//    @Order(10)
-//    @Bean
-//    @ConditionalOnProperty(value = {"jpower.datascope.enable"}, matchIfMissing = true)
-//    public DataScopeInterceptor dataScopeInterceptor() {
-//        return new DataScopeInterceptor();
-//    }
 
     /**
      * 演示环境
