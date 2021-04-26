@@ -42,8 +42,7 @@ public class MonitorController extends BaseController {
     @ApiImplicitParams({
         @ApiImplicitParam(name = "pageNum",value = "第几页",defaultValue = "1",paramType = "query",dataType = "int",required = true),
         @ApiImplicitParam(name = "pageSize",value = "每页长度",defaultValue = "10",paramType = "query",dataType = "int",required = true),
-        @ApiImplicitParam(name = "name",value = "服务名称",paramType = "query"),
-        @ApiImplicitParam(name = "tags",value = "分组名称",paramType = "query"),
+        @ApiImplicitParam(name = "name_eq",value = "服务名称",paramType = "query"),
         @ApiImplicitParam(name = "path",value = "接口地址",paramType = "query"),
         @ApiImplicitParam(name = "createTime" + SqlKeyword.DATE_GT,value = "开始时间",paramType = "query", dataTypeClass = Date.class),
         @ApiImplicitParam(name = "createTime" + SqlKeyword.DATE_LT,value = "结束时间",paramType = "query", dataTypeClass = Date.class)
@@ -69,7 +68,6 @@ public class MonitorController extends BaseController {
         @ApiImplicitParam(name = "pageNum",value = "第几页",defaultValue = "1",paramType = "query",dataType = "int",required = true),
         @ApiImplicitParam(name = "pageSize",value = "每页长度",defaultValue = "10",paramType = "query",dataType = "int",required = true),
         @ApiImplicitParam(name = "name",value = "服务名称",paramType = "query"),
-        @ApiImplicitParam(name = "tags",value = "分组名称",paramType = "query"),
         @ApiImplicitParam(name = "path",value = "接口地址",paramType = "query"),
         @ApiImplicitParam(name = "createTime" + SqlKeyword.DATE_GT,value = "开始时间",paramType = "query", dataTypeClass = Date.class),
         @ApiImplicitParam(name = "createTime" + SqlKeyword.DATE_LT,value = "结束时间",paramType = "query", dataTypeClass = Date.class)
