@@ -185,6 +185,7 @@ public class TaskServiceImpl implements TaskService {
                 result.setError(okHttp.getError());
                 result.setIsSuccess(ConstantsEnum.YN01.N.getValue());
             }else {
+                result.setResponseTime(okHttp.getResponseTime());
                 result.setRespose(okHttp.getResponse().toString());
                 result.setResposeCode(okHttp.getResponse().code());
                 result.setRestfulResponse(okHttp.getBody());

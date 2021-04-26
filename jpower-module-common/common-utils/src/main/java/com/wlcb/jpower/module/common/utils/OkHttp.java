@@ -25,6 +25,12 @@ public class OkHttp {
     private Response response;
     @Getter
     private String error;
+    /**
+     * 执行时间
+     * @Author mr.g
+     **/
+    @Getter
+    private Long responseTime;
 
     public OkHttp(Request request){
         this.request = request;
@@ -384,9 +390,12 @@ public class OkHttp {
                 builder.addInterceptor(interceptor);
             }
             OkHttpClient okHttpClient = builder.build();
+
+            long startTime = System.currentTimeMillis();
             response = okHttpClient.newCall(request).execute();
             // 获取最终得request
             request = response.request();
+            responseTime = (System.currentTimeMillis() - startTime);
         } catch (Exception e) {
             error = e.getMessage();
             log.error("OkHttp3 execute error >> ex = {}", e.getMessage());

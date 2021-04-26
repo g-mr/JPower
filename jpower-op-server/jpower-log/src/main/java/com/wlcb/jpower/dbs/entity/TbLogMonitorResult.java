@@ -1,5 +1,6 @@
 package com.wlcb.jpower.dbs.entity;
 
+import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.base.annotation.Excel;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
@@ -50,5 +51,9 @@ public class TbLogMonitorResult extends BaseEntity {
     private String body;
     @ApiModelProperty("是否成功")
     @Excel(name = "是否成功",readConverterExp="0=否,1=是")
+    @Dict(name = "YN01",attributes = "isSuccessStr")
     private Integer isSuccess;
+    @ApiModelProperty("响应时长 单位毫秒")
+    @Excel(name = "响应时长",suffix="毫秒")
+    private Long responseTime;
 }
