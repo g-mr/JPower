@@ -118,7 +118,7 @@ public class SettingController {
             @ApiImplicitParam(name = "method",value = "请求方式",paramType = "query",required = true),
     })
     @GetMapping(value = "/param",produces="application/json")
-    public ResponseData<List<Map<String,Object>>> param(@ApiIgnore @RequestParam TbLogMonitorParam param){
+    public ResponseData<List<Map<String,Object>>> param(@ApiIgnore TbLogMonitorParam param){
         JpowerAssert.notEmpty(param.getServer(),JpowerError.Arg,"服务名称不为空");
         JpowerAssert.notEmpty(param.getPath(),JpowerError.Arg,"监控地址不为空");
         JpowerAssert.notEmpty(param.getMethod(),JpowerError.Arg,"请求方式不为空");
