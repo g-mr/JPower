@@ -96,10 +96,13 @@ public class SettingController {
         @ApiImplicitParam(name = "execJs",value = "JS代码",paramType = "query")
     })
     @PostMapping(value = "/save-setup",produces="application/json")
-    public ResponseData<Boolean> saveSetup(@ApiIgnore TbLogMonitorSetting setting){
+    public ResponseData<TbLogMonitorSetting> saveSetup(@ApiIgnore TbLogMonitorSetting setting){
         JpowerAssert.notEmpty(setting.getServer(),JpowerError.Arg,"服务名称不可为空");
         setting.setIsMonitor(Fc.isNull(setting.getIsMonitor())? ConstantsEnum.YN01.Y.getValue() :setting.getIsMonitor());
-        return ReturnJsonUtil.status(monitorSettingService.save(setting));
+        if (monitorSettingService.save(setting)){
+            return ReturnJsonUtil.ok("保存成功",setting);
+        }
+        return ReturnJsonUtil.fail("保存失败");
     }
 
     @ApiOperationSupport(order = 6)

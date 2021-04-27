@@ -32,12 +32,11 @@ public class MonitorSettingServiceImpl extends BaseServiceImpl<LogMonitorSetting
 
     @Override
     public boolean save(TbLogMonitorSetting setting) {
-        setting.setId(Fc.randomUUID());
         setting.setTag(Fc.isNotBlank(setting.getTag())?setting.getTag():null);
         setting.setPath(Fc.isNotBlank(setting.getPath())?setting.getPath():null);
         setting.setMethod(Fc.isNotBlank(setting.getMethod())?setting.getMethod():null);
         setting.setIsMonitor(Fc.isNull(setting.getIsMonitor())?ConstantsEnum.YN01.Y.getValue():setting.getIsMonitor());
-        return monitorSettingDao.save(setting);
+        return monitorSettingDao.saveOrUpdate(setting);
     }
 
     @Override
