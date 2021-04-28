@@ -99,6 +99,10 @@
   
     为了解决频繁的服务更新上线，版本回退，快速迭代，公司内部协同开发，本项目采用修改ribbon的负载均衡策略来实现来灰度发布。
     
+13. **接口监控**
+  
+    为了接口能随时保证畅通，专对于此开发了接口的监控，还可实现对其他任何服务的接口监控，可实现自定义的一些参数设置等。
+    
 ## 工程结构：
 ~~~
 JPower
@@ -154,10 +158,10 @@ JPower
     *  配置中心：Nacos
     *  服务熔断：Sentinel
     *  项目构建：Maven 3.3
-    *  分布式事务： seata
-    *  分布式系统的流量防卫兵： Sentinel
-    *  监控： spring-boot-admin
-    *  链路调用跟踪&APM监控： skywalking
+    *  分布式事务：seata
+    *  分布式系统的流量防卫兵：Sentinel
+    *  监控：spring-boot-admin
+    *  链路调用跟踪&APM监控：skywalking
     *  Nginx
 * 部署方面
     *  服务器：CentOS
@@ -166,7 +170,7 @@ JPower
 
 ## 交流群，加群前请先给项目点个 "Star"，谢谢！😘
 
-- 860452768
+- QQ群:860452768
 
 ## 项目截图：
 
@@ -192,6 +196,7 @@ JPower
 
 # 友情链接 & 特别鸣谢
 * 微服务快速开发平台：[https://gitee.com/gdzWork/JPower](https://gitee.com/gdzWork/JPower)
+* JPowerWeb [https://gitee.com/deep_letters/jpower](https://gitee.com/deep_letters/jpower)
 * jpower-ui：[https://gitee.com/gdzWork/jpower-ui](https://gitee.com/gdzWork/jpower-ui)
 * Avue：[https://gitee.com/smallweigit/avue](https://www.avuejs.com/)
 * JWchat：[https://gitee.com/CodeGI/chat](https://gitee.com/CodeGI/chat)
