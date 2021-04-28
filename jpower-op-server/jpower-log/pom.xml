@@ -40,6 +40,11 @@
             <version>${com.jpower.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.wlcb</groupId>
+            <artifactId>system-api</artifactId>
+            <version>${com.jpower.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>17.0.0</version>

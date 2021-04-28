@@ -163,7 +163,7 @@ public final class AuthInterceptor implements Interceptor {
             if (Fc.isNotBlank(authInfo.getCodeField())){
                 String code = DeepJson.findString(jsonObject,authInfo.getCodeField());
                 if (Fc.isNull(code) || !Fc.equals(code,authInfo.getSuccessCode())){
-                    throw new IllegalStateException("auth response restful-code error code=>"+code);
+                    throw new IllegalStateException("auth response restful-code error code=>"+code+",返回内容=>"+token);
                 }
             }
 

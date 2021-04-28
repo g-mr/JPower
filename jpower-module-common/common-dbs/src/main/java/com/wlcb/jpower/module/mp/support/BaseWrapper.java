@@ -41,7 +41,7 @@ public abstract class BaseWrapper <T, V> {
     }
 
     /**
-     * 把分页组件转换
+     * 分页组件转换
      *
      * @author 郭丁志
      * @date 0:13 2021/2/14 0014
