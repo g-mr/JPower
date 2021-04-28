@@ -190,7 +190,7 @@ public class TaskServiceImpl implements TaskService {
                 result.setResposeCode(okHttp.getResponse().code());
                 result.setRestfulResponse(okHttp.getBody());
 
-                int isSuccess = ConstantsEnum.YN01.Y.getValue();
+                int isSuccess = ConstantsEnum.YN01.N.getValue();
 
                 if (Fc.notNull(setting.getCode())){
                     isSuccess = setting.getCode().contains(Fc.toStr(okHttp.getResponse().code()))?ConstantsEnum.YN01.Y.getValue():ConstantsEnum.YN01.N.getValue();

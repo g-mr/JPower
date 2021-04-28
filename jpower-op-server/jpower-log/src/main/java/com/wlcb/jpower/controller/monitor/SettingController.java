@@ -132,10 +132,10 @@ public class SettingController {
 
     @ApiOperationSupport(order = 8)
     @ApiOperation("保存接口参数")
-    @PostMapping(value = "/save-param/{server}/{path}/{method}",produces="application/json")
-    public ResponseData<Boolean> saveParam(@ApiParam("服务名称") @PathVariable String server,
-                                           @ApiParam("监控地址") @PathVariable String path,
-                                           @ApiParam("请求方式") @PathVariable String method,
+    @PostMapping(value = "/save-param",produces="application/json")
+    public ResponseData<Boolean> saveParam(@ApiParam("服务名称") @RequestHeader(required = false) String server,
+                                           @ApiParam("监控地址") @RequestHeader(required = false) String path,
+                                           @ApiParam("请求方式") @RequestHeader(required = false) String method,
                                            @RequestBody List<TbLogMonitorParam> settingParams){
         JpowerAssert.notEmpty(server,JpowerError.Arg,"服务名称不为空");
         JpowerAssert.notEmpty(path,JpowerError.Arg,"监控地址不为空");

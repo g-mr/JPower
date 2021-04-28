@@ -75,16 +75,20 @@ public class MonitorSettingServiceImpl extends BaseServiceImpl<LogMonitorSetting
     @Override
     public Boolean saveParams(String server, String path, String method, List<TbLogMonitorParam> settingParams) {
         //先删除原来的参数
-        settingParamDao.removeReal(Condition.<TbLogMonitorParam>getQueryWrapper().lambda()
+        boolean is = settingParamDao.removeReal(Condition.<TbLogMonitorParam>getQueryWrapper().lambda()
                 .eq(TbLogMonitorParam::getServer,server)
                 .eq(TbLogMonitorParam::getPath,path)
                 .eq(TbLogMonitorParam::getMethod,method));
-        settingParams = settingParams.stream().peek(param -> {
-            param.setServer(server);
-            param.setPath(path);
-            param.setMethod(method);
-        }).collect(Collectors.toList());
-        return settingParamDao.saveBatch(settingParams);
+        if (settingParams.size() > 0){
+            settingParams = settingParams.stream().peek(param -> {
+                param.setServer(server);
+                param.setPath(path);
+                param.setMethod(method);
+            }).collect(Collectors.toList());
+            return settingParamDao.saveBatch(settingParams);
+        }else {
+            return is;
+        }
     }
 
     @Override
