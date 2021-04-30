@@ -1,8 +1,7 @@
-package com.wlcb.jpower.module.aspectj;
+package com.wlcb.jpower.module.base.aspectj;
 
 import com.alibaba.fastjson.JSONObject;
 import com.wlcb.jpower.module.base.annotation.Log;
-import com.wlcb.jpower.module.base.enums.BusinessStatus;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.utils.WebUtil;
 import com.wlcb.jpower.module.dbs.config.LoginUserContext;
@@ -30,7 +29,12 @@ import java.util.Map;
 @Component
 public class LogAspect
 {
-    // 配置织入点
+    /**
+     * 配置织入点
+     * @Author mr.g
+     * @param
+     * @return void
+     **/
     @Pointcut("@annotation(com.wlcb.jpower.module.base.annotation.Log)")
     public void logPointCut(){
     }
@@ -68,7 +72,7 @@ public class LogAspect
             UserInfo currentUser = LoginUserContext.get();
 
             SysOperLog operLog = new SysOperLog();
-            operLog.setStatus(BusinessStatus. SUCCESS.ordinal());
+            operLog.setStatus(Log.BusinessStatus. SUCCESS.ordinal());
 
             operLog.setOperUrl(WebUtil.getRequest().getRequestURI());
             if (currentUser != null){
@@ -79,7 +83,7 @@ public class LogAspect
             }
 
             if (e != null){
-                operLog.setStatus(BusinessStatus.FAIL.ordinal());
+                operLog.setStatus(Log.BusinessStatus.FAIL.ordinal());
                 operLog.setErrorMsg(StringUtils.substring(e.getMessage(), 0, 2000));
             }
             // 设置方法名称

@@ -1,4 +1,4 @@
-package com.wlcb.jpower.module.base.exception.config;
+package com.wlcb.jpower.module.base.error;
 
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.base.exception.JpowerException;

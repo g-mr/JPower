@@ -2,6 +2,12 @@ package com.wlcb.jpower.module.base.enums;
 
 import org.springframework.http.HttpStatus;
 
+/**
+ * 异常信息
+ *
+ * @author mr.gmac
+ */
+
 public enum JpowerError {
 
     // 异常信息

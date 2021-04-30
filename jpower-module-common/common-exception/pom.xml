@@ -29,5 +29,11 @@
             <artifactId>swagger-models</artifactId>
             <version>${swagger-annotations.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.wlcb</groupId>
+            <artifactId>common-auth</artifactId>
+            <version>${com.jpower.version}</version>
+        </dependency>
     </dependencies>
 </project>

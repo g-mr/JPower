@@ -1,4 +1,4 @@
-package com.wlcb.jpower.module.aspectj;
+package com.wlcb.jpower.module.base.aspectj;
 
 import lombok.Data;
 

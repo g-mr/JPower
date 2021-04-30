@@ -1,4 +1,4 @@
-package com.wlcb.jpower.module.base.exception.config;
+package com.wlcb.jpower.module.base.error;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;

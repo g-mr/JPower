@@ -6,7 +6,6 @@ import com.wlcb.jpower.cache.param.ParamConfig;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
 import com.wlcb.jpower.module.base.annotation.Log;
-import com.wlcb.jpower.module.base.enums.BusinessType;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
@@ -33,6 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import static com.wlcb.jpower.module.base.annotation.Log.BusinessType.*;
 import static com.wlcb.jpower.module.tenant.TenantConstant.*;
 
 @Api(tags = "用户管理")
@@ -137,7 +137,7 @@ public class UserController extends BaseController {
     }
 
     @ApiOperation(value = "删除用户")
-    @Log(title = "删除登录用户", businessType = BusinessType.DELETE)
+    @Log(title = "删除登录用户", businessType = DELETE)
     @RequestMapping(value = "/delete", method = {RequestMethod.DELETE}, produces = "application/json")
     public ResponseData delete(@ApiParam(value = "主键 多个逗号分割", required = true) @RequestParam String ids) {
 
@@ -152,7 +152,7 @@ public class UserController extends BaseController {
     }
 
     @ApiOperation(value = "修改用户信息")
-    @Log(title = "修改系统用户信息", businessType = BusinessType.UPDATE)
+    @Log(title = "修改系统用户信息", businessType = UPDATE)
     @RequestMapping(value = "/update", method = {RequestMethod.PUT}, produces = "application/json")
     public ResponseData update(TbCoreUser coreUser) {
 
@@ -192,7 +192,7 @@ public class UserController extends BaseController {
     }
 
     @ApiOperation(value = "修改个人信息")
-    @Log(title = "修改个人信息", businessType = BusinessType.UPDATE)
+    @Log(title = "修改个人信息", businessType = UPDATE)
     @ApiImplicitParams({
         @ApiImplicitParam(name = "avatar", value = "头像", paramType = "query", required = false),
         @ApiImplicitParam(name = "orgId", value = "部门ID", paramType = "query", required = false),
