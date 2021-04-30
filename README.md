@@ -187,7 +187,7 @@ JPower
 # 发现bug请提交 [issues](https://gitee.com/gdzWork/JPower/issues)
 
 # 如果觉得还不错，请作者喝杯咖啡吧 ☺
-![](docs/image/erweima.png)
+![](docs/image/erweima.jpg)
 
 # 感谢 JetBrains 提供的免费开源 License：
 [![JetBrains](docs/image/jetbrains.png)](https://www.jetbrains.com/?from=lamp-cloud)

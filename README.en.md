@@ -5,6 +5,8 @@
 [![Gitter](https://img.shields.io/badge/Release-V2.0.0-green.svg)](https://gitee.com/gdzWork/JPower)   [![License](https://img.shields.io/badge/Author-mr.g-orange.svg)](https://gitee.com/gdzWork/JPower)
 [![Gitter](https://img.shields.io/badge/Copyright%20-@Jpower-%23ff3f59.svg)](https://gitee.com/gdzWork/JPower)
 
+### QQ Number : 860452768
+
 -------
 
 #### JPower is just getting started, many features are still under development, so stay tuned...
@@ -168,10 +170,6 @@ JPower
     *  Docker 18
     *  Nginx
 
-## Exchange group, please give the project a "Star" before joining the group, thank you!😘
-
-- QQ群:860452768
-
 ## Project screenshot：
 
 | Preview | Preview |
@@ -189,7 +187,7 @@ JPower
 # Please submit if you find a bug [issues](https://gitee.com/gdzWork/JPower/issues)
 
 # If you think it's not bad, please have a coffee ☺
-![](docs/image/erweima.png)
+![](docs/image/erweima.jpg)
 
 # Thanks to the free open source license provided by JetBrains:
 [![JetBrains](docs/image/jetbrains.png)](https://www.jetbrains.com/?from=lamp-cloud)
