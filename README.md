@@ -6,7 +6,7 @@
 [![Gitter](https://img.shields.io/badge/Copyright%20-@Jpower-%23ff3f59.svg)](https://gitee.com/gdzWork/JPower)
 
 
-### QQ群:860452768
+### QQ群号 : 860452768
 -------
 
 #### JPower只是刚起步，很多功能还在开发中敬请期待......
