@@ -186,8 +186,11 @@ JPower
 
 # Please submit if you find a bug [issues](https://gitee.com/gdzWork/JPower/issues)
 
-# If you think it's not bad, please have a coffee ☺
-![](docs/image/erweima.jpg)
+# Participate in contribution
+1. Fork This warehouse
+2. New feat_xxx Branch
+3. Submit code
+4. New Pull Request
 
 # Thanks to the free open source license provided by JetBrains:
 [![JetBrains](docs/image/jetbrains.png)](https://www.jetbrains.com/?from=lamp-cloud)

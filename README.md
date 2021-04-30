@@ -186,8 +186,11 @@ JPower
 
 # 发现bug请提交 [issues](https://gitee.com/gdzWork/JPower/issues)
 
-# 如果觉得还不错，请作者喝杯咖啡吧 ☺
-![](docs/image/erweima.jpg)
+# 参与贡献
+1. Fork 本仓库
+2. 新建 feat_xxx 分支
+3. 提交代码
+4. 新建 Pull Request
 
 # 感谢 JetBrains 提供的免费开源 License：
 [![JetBrains](docs/image/jetbrains.png)](https://www.jetbrains.com/?from=lamp-cloud)
