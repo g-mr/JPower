@@ -61,17 +61,4 @@ public class LoginTokenCache {
         return cache.getIfPresent(key);
     }
 
-    public static void main(String[] args) {
-        LoginTokenCache.put("ceshi","123");
-        while (true){
-            try {
-                Thread.sleep(3000);
-                System.out.println(LoginTokenCache.get("ceshi"));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-        }
-    }
-
 }

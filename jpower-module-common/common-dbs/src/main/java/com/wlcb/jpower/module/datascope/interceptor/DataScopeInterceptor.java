@@ -5,7 +5,7 @@ import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SecureUtil;
 import com.wlcb.jpower.module.config.QueryInterceptor;
 import com.wlcb.jpower.module.datascope.handler.DataScopeHandler;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -18,7 +18,7 @@ import org.apache.ibatis.session.RowBounds;
  * @author mr.g
  * @date 2021-04-23 11:56
  */
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class DataScopeInterceptor implements QueryInterceptor {
 
     private final DataScopeHandler dataScopeHandler;
