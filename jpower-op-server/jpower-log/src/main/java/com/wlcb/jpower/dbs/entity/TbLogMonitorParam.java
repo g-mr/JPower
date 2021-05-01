@@ -1,7 +1,5 @@
 package com.wlcb.jpower.dbs.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -18,11 +16,6 @@ import lombok.ToString;
 public class TbLogMonitorParam extends BaseEntity {
 
     private static final long serialVersionUID = 5487153187619562214L;
-
-
-    @ApiModelProperty(value = "主键",hidden = true)
-    @TableId(value = "id",type = IdType.ASSIGN_UUID)
-    private String id;
 
 
     @ApiModelProperty(value = "服务名称",hidden = true)

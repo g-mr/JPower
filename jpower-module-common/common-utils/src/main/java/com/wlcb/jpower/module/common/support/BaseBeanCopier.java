@@ -127,7 +127,6 @@ public abstract class BaseBeanCopier {
             EmitUtils.null_constructor(ce);
             CodeEmitter e = ce.begin_method(Constants.ACC_PUBLIC, COPY, null);
 
-            // 2018.12.27 by L.cm 支持链式 bean
             PropertyDescriptor[] getters = BeanUtil.getBeanGetters(source);
             PropertyDescriptor[] setters = BeanUtil.getBeanSetters(target);
             Map<String, Object> names = new HashMap<>(16);

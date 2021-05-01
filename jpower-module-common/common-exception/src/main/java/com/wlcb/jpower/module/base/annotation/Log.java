@@ -16,11 +16,11 @@ public @interface Log{
 
     /** 模块 **/
     @AliasFor("title")
-    String value() default "";
+    String value() default "日志记录";
 
     /** 模块 **/
     @AliasFor("value")
-    String title() default "";
+    String title() default "日志记录";
 
     /** 功能类型 **/
     BusinessType businessType() default BusinessType.OTHER;
@@ -28,7 +28,7 @@ public @interface Log{
     /** 是否需要记录到数据库 (该配置暂时无效，功能待实现) **/
     boolean isSaveLog() default false;
 
-    /** 是否保存请求的参数 **/
+    /** 是否获取Request信息 **/
     boolean isSaveRequestData() default true;
 
     enum BusinessType {
