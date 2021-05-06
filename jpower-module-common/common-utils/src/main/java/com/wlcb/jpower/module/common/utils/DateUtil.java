@@ -43,9 +43,25 @@ public class DateUtil extends org.apache.commons.lang3.time.DateUtils {
         return (new SimpleDateFormat(TIME_FORMAT)).format(Calendar.getInstance().getTime());
     }
 
-    public static String getDate(int nday) {
+    /**
+     * 改变当前时间天
+     * @author mr.g
+     * @param nday
+     * @return java.util.Date
+     */
+    public static String getDateFormat(int nday) {
         Date d = Calendar.getInstance().getTime();
         return (new SimpleDateFormat(DATE_FORMAT)).format(getDate(d, nday));
+    }
+
+    /**
+     * 改变当前时间天
+     * @author mr.g
+     * @param nday
+     * @return java.util.Date
+     */
+    public static Date getDate(int nday) {
+        return getDate(Calendar.getInstance().getTime(), nday);
     }
 
     public static String getDate(String date, int nday) {
@@ -61,7 +77,7 @@ public class DateUtil extends org.apache.commons.lang3.time.DateUtils {
     public static Date getDate(Date d, int nday) {
         Calendar c = Calendar.getInstance();
         c.setTime(d);
-        c.add(6, nday);
+        c.add(Calendar.DAY_OF_YEAR, nday);
         return c.getTime();
     }
 

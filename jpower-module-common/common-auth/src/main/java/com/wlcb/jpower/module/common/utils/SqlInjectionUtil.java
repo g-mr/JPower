@@ -68,10 +68,10 @@ public class SqlInjectionUtil {
 
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             if(filterKey){
-                if( null!= entry.getKey() && null!= entry.getValue() ){ // 键值均不为空
+                if( null!= entry.getKey() && null!= entry.getValue() ){
                     mapNew.put(filter(entry.getKey()), filter(entry.getValue().toString()));
                 }else{
-                    if( null!= entry.getKey()){ // 键 不为空 ，值为空
+                    if( null!= entry.getKey()){
                         mapNew.put(filter(entry.getKey()), null);
                     }
                 }
@@ -103,12 +103,12 @@ public class SqlInjectionUtil {
             if (null == values) {
                 value = "";
             } else if (values.length>1) {
-                for (int i = 0; i < values.length; i++) { //用于请求参数中有多个相同名称
+                for (int i = 0; i < values.length; i++) {
                     value = values[i] + ",";
                 }
                 value = value.substring(0, value.length() - 1);
             } else {
-                value = values[0];//用于请求参数中请求参数名唯一
+                value = values[0];
             }
 
             // 处理参数值：value

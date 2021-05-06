@@ -94,7 +94,7 @@ public class LoginUserContext {
                 if (!Fc.isNull(header)){
                     user = new UserInfo();
 
-                    try { user.setClientCode(SecureUtil.getClientCodeFromHeader()); }catch (Exception e){}
+                    try { user.setClientCode(SecureUtil.getClientCodeFromHeader()); }catch (Exception ignored){}
                     user.setLoginId(header);
                     user.setNickName(header);
                     if (Fc.equals(header, RoleConstant.ANONYMOUS)){

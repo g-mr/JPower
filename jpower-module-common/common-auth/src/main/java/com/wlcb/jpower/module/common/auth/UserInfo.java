@@ -3,9 +3,11 @@ package com.wlcb.jpower.module.common.auth;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.wlcb.jpower.module.common.utils.DateUtil;
+import com.wlcb.jpower.module.common.utils.Fc;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -17,7 +19,7 @@ import java.util.List;
  * @Version 1.0
  */
 @Data
-public class UserInfo {
+public class UserInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -97,4 +99,8 @@ public class UserInfo {
 
     @ApiModelProperty("用来表示是core_user表数据还是其他表映射的数据 0core_user系统表 1业务表 2白名单")
     private Integer isSysUser = TBALE_USER_TYPE_CORE;
+
+    public boolean isEmpty(){
+        return Fc.allEmpty(userId,loginId);
+    }
 }

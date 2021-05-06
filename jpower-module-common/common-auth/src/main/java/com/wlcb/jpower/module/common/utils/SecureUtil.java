@@ -10,6 +10,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.netty.handler.codec.http.FullHttpRequest;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,30 +20,16 @@ import java.security.Key;
 import java.util.*;
 
 /**
- * @Author 郭丁志
- * @Description //TODO 安全工具类
+ * @Author mr.g
  * @Date 17:00 2020-08-24
  **/
 @Slf4j
 public class SecureUtil {
-    private static final String JPOWER_USER_REQUEST_ATTR = "_JPOWER_USER_REQUEST_ATTR_";
-
+    private static final String REQUEST_JPOWER_USER = "REQUEST_JPOWER_USER";
     private final static String HEADER = TokenConstant.HEADER;
-    private final static String BEARER = TokenConstant.JPOWER;
-
-    private final static String ACCOUNT = TokenConstant.ACCOUNT;
-    private final static String USER_ID = TokenConstant.USER_ID;
-    private final static String USER_NAME = TokenConstant.USER_NAME;
-    private final static String TENANT_CODE = TokenConstant.TENANT_CODE;
-    private final static String CLIENT_CODE = TokenConstant.CLIENT_CODE;
-    private final static String TELE_PHONE = TokenConstant.TELE_PHONE;
-    private final static String USER_TYPE = TokenConstant.USER_TYPE;
-    private final static String ORG_ID = TokenConstant.ORG_ID;
-    private final static String ROLE_IDS = TokenConstant.ROLE_IDS;
-    private final static String IS_SYS_USER = TokenConstant.IS_SYS_USER;
-
-    private static String BASE64_SECURITY = Base64.getEncoder().encodeToString(TokenConstant.SIGN_KEY.getBytes(CharsetKit.CHARSET_UTF_8));
-    private static boolean TENANT_MODE = EnvBeanUtil.get("jpower.tenant.enable", Boolean.class, true);
+    private final static String CLIENT_CODE = ClassUtil.getFiledName(UserInfo::getClientCode);
+    private static final String BASE64_SECURITY = Base64.getEncoder().encodeToString(TokenConstant.SIGN_KEY.getBytes(CharsetKit.CHARSET_UTF_8));
+    private static final boolean TENANT_MODE = EnvBeanUtil.get("jpower.tenant.enable", Boolean.class, true);
 
     /**
      * 获取用户信息
@@ -51,49 +38,34 @@ public class SecureUtil {
      */
     public static UserInfo getUser() {
         HttpServletRequest request = WebUtil.getRequest();
-        if (request == null) {
+        if (Fc.isNull(request)) {
             return null;
         }
-        // 优先从 request 中获取
-        Object coreuser = request.getAttribute(JPOWER_USER_REQUEST_ATTR);
-        if (coreuser == null) {
-            coreuser = getUser(request);
-            if (coreuser != null) {
-                // 设置到 request 中
-                request.setAttribute(JPOWER_USER_REQUEST_ATTR, coreuser);
-            }
+
+        UserInfo userInfo = (UserInfo) request.getSession().getAttribute(REQUEST_JPOWER_USER);
+        if (Fc.isNull(userInfo)) {
+            userInfo = getUser(request);
+            request.getSession().setAttribute(REQUEST_JPOWER_USER, userInfo);
         }
-        return (UserInfo) coreuser;
+
+        return userInfo;
     }
 
     public static UserInfo getUser(Claims claims) {
-        if (claims == null) {
-            return null;
+        UserInfo user = new UserInfo();
+        if (Fc.notNull(claims)) {
+            user.setClientCode(Fc.toStr(claims.get(SecureUtil.CLIENT_CODE)));
+            user.setUserId(Fc.toStr(claims.get(ClassUtil.getFiledName(UserInfo::getUserId))));
+            user.setTenantCode(Fc.toStr(ClassUtil.getFiledName(UserInfo::getTenantCode)));
+            user.setLoginId(Fc.toStr(claims.get(ClassUtil.getFiledName(UserInfo::getLoginId))));
+            user.setRoleIds((List<String>) claims.get(ClassUtil.getFiledName(UserInfo::getRoleIds)));
+            user.setUserName(Fc.toStr(claims.get(ClassUtil.getFiledName(UserInfo::getUserName))));
+            user.setTelephone(Fc.toStr(claims.get(ClassUtil.getFiledName(UserInfo::getTelephone))));
+            user.setUserType(Fc.toInt(claims.get(ClassUtil.getFiledName(UserInfo::getUserType))));
+            user.setOrgId(Fc.toStr(claims.get(ClassUtil.getFiledName(UserInfo::getOrgId))));
+            user.setIsSysUser(Fc.toInt(claims.get(ClassUtil.getFiledName(UserInfo::getIsSysUser))));
         }
-
-        String clientCode = Fc.toStr(claims.get(SecureUtil.CLIENT_CODE));
-        String userId = Fc.toStr(claims.get(SecureUtil.USER_ID));
-        String tenantCode = Fc.toStr(claims.get(SecureUtil.TENANT_CODE));
-        List<String> roleIds = (List<String>) claims.get(SecureUtil.ROLE_IDS);
-        String account = Fc.toStr(claims.get(SecureUtil.ACCOUNT));
-        String userName = Fc.toStr(claims.get(SecureUtil.USER_NAME));
-        String telephone = Fc.toStr(claims.get(SecureUtil.TELE_PHONE));
-        Integer userType = Fc.toInt(claims.get(SecureUtil.USER_TYPE));
-        String orgId = Fc.toStr(claims.get(SecureUtil.ORG_ID));
-        Integer isSysUser = Fc.toInt(claims.get(SecureUtil.IS_SYS_USER));
-
-        UserInfo coreUser = new UserInfo();
-        coreUser.setClientCode(clientCode);
-        coreUser.setUserId(userId);
-        coreUser.setTenantCode(tenantCode);
-        coreUser.setLoginId(account);
-        coreUser.setRoleIds(roleIds);
-        coreUser.setUserName(userName);
-        coreUser.setTelephone(telephone);
-        coreUser.setUserType(userType);
-        coreUser.setOrgId(orgId);
-        coreUser.setIsSysUser(isSysUser);
-        return coreUser;
+        return user.isEmpty()?null:user;
     }
 
     /**
@@ -103,9 +75,7 @@ public class SecureUtil {
      * @return UserInfo
      */
     public static UserInfo getUser(HttpServletRequest request) {
-        Claims claims = getClaims(request);
-
-        return getUser(claims);
+        return getUser(getClaims(request));
     }
 
     /**
@@ -155,7 +125,7 @@ public class SecureUtil {
      */
     public static String getUserAccount() {
         UserInfo user = getUser();
-        return (null == user) ? StringPool.EMPTY : user.getLoginId();
+        return Fc.isNull(user) ? StringPool.EMPTY : user.getLoginId();
     }
 
     /**
@@ -166,7 +136,7 @@ public class SecureUtil {
      */
     public static String getUserAccount(HttpServletRequest request) {
         UserInfo user = getUser(request);
-        return (null == user) ? StringPool.EMPTY : user.getLoginId();
+        return Fc.isNull(user) ? StringPool.EMPTY : user.getLoginId();
     }
 
     /**
@@ -176,7 +146,7 @@ public class SecureUtil {
      */
     public static String getUserName() {
         UserInfo user = getUser();
-        return (null == user) ? StringPool.EMPTY : user.getUserName();
+        return Fc.isNull(user) ? StringPool.EMPTY : user.getUserName();
     }
 
     /**
@@ -187,7 +157,7 @@ public class SecureUtil {
      */
     public static String getUserName(HttpServletRequest request) {
         UserInfo user = getUser(request);
-        return (null == user) ? StringPool.EMPTY : user.getUserName();
+        return Fc.isNull(user) ? StringPool.EMPTY : user.getUserName();
     }
 
     /**
@@ -253,7 +223,7 @@ public class SecureUtil {
      */
     public static String getClientCode() {
         UserInfo user = getUser();
-        return (null == user) ? StringPool.EMPTY : user.getClientCode();
+        return Fc.isNull(user) ? StringPool.EMPTY : user.getClientCode();
     }
 
     /**
@@ -264,7 +234,7 @@ public class SecureUtil {
      */
     public static String getClientCode(HttpServletRequest request) {
         UserInfo user = getUser(request);
-        return (null == user) ? StringPool.EMPTY : user.getClientCode();
+        return Fc.isNull(user) ? StringPool.EMPTY : user.getClientCode();
     }
 
     /**
@@ -277,15 +247,15 @@ public class SecureUtil {
         return JwtUtil.parseJWT(JwtUtil.getToken(request));
     }
 
-//    /**
-//     * 获取Claims
-//     *
-//     * @param fullHttpRequest
-//     * @return Claims
-//     */
-//    public static Claims getClaims(FullHttpRequest fullHttpRequest) {
-//        return JwtUtil.parseJWT(JwtUtil.getToken(fullHttpRequest));
-//    }
+    /**
+     * 获取Claims
+     *
+     * @param fullHttpRequest
+     * @return Claims
+     */
+    public static Claims getClaims(FullHttpRequest fullHttpRequest) {
+        return JwtUtil.parseJWT(JwtUtil.getToken(fullHttpRequest));
+    }
 
     /**
      * 获取请求头
@@ -317,17 +287,17 @@ public class SecureUtil {
      */
     public static TokenInfo createJWT(Map<String, Object> user, String audience, String issuer, String tokenType, ClientDetails clientDetails) {
 
-        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
-
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);
 
-        //生成签名密钥
+        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+
+        //生成密钥
         byte[] apiKeySecretBytes = Base64.getDecoder().decode(BASE64_SECURITY);
         Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
 
         //添加构成JWT的类
-        JwtBuilder builder = Jwts.builder().setHeaderParam("type", "JsonWebToken")
+        JwtBuilder builder = Jwts.builder().setHeaderParam("Type", "JsonWebToken")
                 .setIssuer(issuer)
                 .setAudience(audience)
                 .signWith(signatureAlgorithm, signingKey);
@@ -338,14 +308,12 @@ public class SecureUtil {
         //设置应用Code
         builder.claim(CLIENT_CODE, clientDetails.getClientCode());
 
-        //添加Token过期时间
-        long expireMillis;
+        //添加Token过期时间 默认过期是一天
+        long expireMillis = DateUtil.getDate(1).getTime() - System.currentTimeMillis();
         if (tokenType.equals(TokenConstant.ACCESS_TOKEN)) {
             expireMillis = clientDetails.getAccessTokenValidity() * 1000;
         } else if (tokenType.equals(TokenConstant.REFRESH_TOKEN)) {
             expireMillis = clientDetails.getRefreshTokenValidity() * 1000;
-        } else {
-            expireMillis = getExpire();
         }
         long expMillis = nowMillis + expireMillis;
         Date exp = new Date(expMillis);
@@ -360,21 +328,6 @@ public class SecureUtil {
     }
 
     /**
-     * 获取过期时间(次日凌晨3点)
-     *
-     * @return expire
-     */
-    public static long getExpire() {
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_YEAR, 1);
-        cal.set(Calendar.HOUR_OF_DAY, 3);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-        return cal.getTimeInMillis() - System.currentTimeMillis();
-    }
-
-    /**
      * 客户端信息解码
      */
     @SneakyThrows
@@ -383,21 +336,21 @@ public class SecureUtil {
         String header = Objects.requireNonNull(WebUtil.getRequest()).getHeader(SecureConstant.BASIC_HEADER_KEY);
         header = Fc.toStr(header).replace(SecureConstant.BASIC_HEADER_PREFIX_EXT, SecureConstant.BASIC_HEADER_PREFIX);
         if (!header.startsWith(SecureConstant.BASIC_HEADER_PREFIX)) {
-            throw new RuntimeException("No client information in request header");
+            throw new RuntimeException("请求标头中没有客户端信息");
         }
         byte[] base64Token = header.substring(6).getBytes(CharsetKit.UTF_8);
 
         byte[] decoded;
         try {
             decoded = Base64Util.decode(base64Token);
-        } catch (IllegalArgumentException var7) {
-            throw new RuntimeException("Failed to decode basic authentication token");
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("无法解析Authentication");
         }
 
         String token = new String(decoded, CharsetKit.UTF_8);
         int index = token.indexOf(StringPool.COLON);
         if (index == -1) {
-            throw new RuntimeException("Invalid basic authentication token");
+            throw new RuntimeException("无效的Authentication");
         } else {
             return new String[]{token.substring(0, index), token.substring(index + 1)};
         }

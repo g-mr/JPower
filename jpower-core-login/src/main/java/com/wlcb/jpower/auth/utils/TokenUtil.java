@@ -33,6 +33,8 @@ public class TokenUtil {
     public final static String TOKEN_EXPIRED = "token已过期，请重新登陆";
     public final static String USER_NOT_ACTIVATION = "用户尚未激活";
 
+    private final static String AUDIENCE = "audience";
+    private final static String ISSUSER = "issuser";
 
     /**
      * @author 郭丁志
@@ -71,9 +73,10 @@ public class TokenUtil {
         param.put(TokenConstant.TOKEN_TYPE, TokenConstant.ACCESS_TOKEN);
 
         ClientDetails clientDetails = getClientDetails();
+        assert clientDetails != null;
         userInfo.setClientCode(clientDetails.getClientCode());
 
-        TokenInfo accessToken = SecureUtil.createJWT(param, "audience", "issuser", TokenConstant.ACCESS_TOKEN,clientDetails);
+        TokenInfo accessToken = SecureUtil.createJWT(param, AUDIENCE, ISSUSER, TokenConstant.ACCESS_TOKEN,clientDetails);
         AuthInfo authInfo = new AuthInfo();
         authInfo.setUser(userInfo);
         authInfo.setAccessToken(accessToken.getToken());
@@ -90,10 +93,10 @@ public class TokenUtil {
      * @return refreshToken
      */
     private static TokenInfo createRefreshToken(UserInfo userInfo,ClientDetails clientDetails) {
-        Map<String, Object> param = ChainMap.newMap();
-        param.put(TokenConstant.TOKEN_TYPE, TokenConstant.REFRESH_TOKEN);
-        param.put(TokenConstant.USER_ID, userInfo.getUserId());
-        return SecureUtil.createJWT(param, "audience", "issuser", TokenConstant.REFRESH_TOKEN,clientDetails);
+        return SecureUtil.createJWT(ChainMap.init()
+                .set(TokenConstant.TOKEN_TYPE, TokenConstant.REFRESH_TOKEN)
+                .set(TokenConstant.USER_ID, userInfo.getUserId())
+                , AUDIENCE, ISSUSER, TokenConstant.REFRESH_TOKEN,clientDetails);
     }
 
 }
