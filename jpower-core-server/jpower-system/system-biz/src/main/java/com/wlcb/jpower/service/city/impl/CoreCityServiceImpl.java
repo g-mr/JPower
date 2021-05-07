@@ -10,6 +10,7 @@ import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.CacheUtil;
+import com.wlcb.jpower.module.common.utils.Cm;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
@@ -65,7 +66,7 @@ public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper, TbCor
             if (coreCityDao.count(Condition.<TbCoreCity>getQueryWrapper().lambda().eq(TbCoreCity::getPcode,coreCity.getPcode())) <= 0){
                 TbCoreCity city = queryByCode(coreCity.getPcode());
                 if (Fc.notNull(city)){
-                    Fc.requireNotNull(CacheUtil.getCacheManager().getCache(CacheNames.CITY_PARENT_REDIS_KEY),"缓存不存在").evict(city.getPcode());
+                    Fc.requireNotNull(Cm.getInstance().getCache(CacheNames.CITY_PARENT_REDIS_KEY),"缓存不存在").evict(city.getPcode());
                 }
             }
         }catch (Exception e){
