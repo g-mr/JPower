@@ -1,3 +1,18 @@
+/**
+ * Copyright (c) 2018-2028, Chill Zhuang 庄骞 (smallchill@163.com).
+ * <p>
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE 3.0;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.gnu.org/licenses/lgpl.html
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.wlcb.jpower.module.mp.support;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -8,11 +23,9 @@ import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import java.util.Map;
 
 /**
- * @ClassName SqlKeyword
- * @Description TODO 定义常用的 sql关键字 并拼接查询条件
- * @Author 郭丁志
- * @Date 2020-07-23 17:04
- * @Version 1.0
+ * 定义常用的 sql关键字
+ *
+ * @author Chill
  */
 public class SqlKeyword {
 

@@ -1,11 +1,7 @@
 package com.wlcb.jpower.module.common.swagger;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import springfox.documentation.spring.web.SpringfoxWebMvcConfiguration;
 
 /**
  * @ClassName SwaggerWebConfig
@@ -14,8 +10,6 @@ import springfox.documentation.spring.web.SpringfoxWebMvcConfiguration;
  * @Date 2020-08-12 17:19
  * @Version 1.0
  */
-@Configuration(proxyBeanMethods = false)
-@ConditionalOnClass(SpringfoxWebMvcConfiguration.class)
 public class SwaggerWebConfig implements WebMvcConfigurer {
 
     @Override

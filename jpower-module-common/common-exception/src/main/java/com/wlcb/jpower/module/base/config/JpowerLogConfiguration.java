@@ -5,7 +5,6 @@ import com.wlcb.jpower.module.base.feign.LogClient;
 import com.wlcb.jpower.module.base.listener.ErrorLogListener;
 import com.wlcb.jpower.module.base.listener.OperateLogListener;
 import com.wlcb.jpower.module.common.deploy.props.JpowerProperties;
-import com.wlcb.jpower.module.common.deploy.server.ServerInfo;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
@@ -33,15 +32,13 @@ public class JpowerLogConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(name = "operateLogListener")
-    public OperateLogListener operateLogListener(ServerInfo serverInfo,
-                                                 JpowerProperties jpowerProperties) {
-        return new OperateLogListener(logService, serverInfo, jpowerProperties);
+    public OperateLogListener operateLogListener(JpowerProperties jpowerProperties) {
+        return new OperateLogListener(logService, jpowerProperties);
     }
 
     @Bean
     @ConditionalOnMissingBean(name = "errorLogListener")
-    public ErrorLogListener errorLogListener(ServerInfo serverInfo,
-                                               JpowerProperties jpowerProperties) {
-        return new ErrorLogListener(logService, serverInfo, jpowerProperties);
+    public ErrorLogListener errorLogListener(JpowerProperties jpowerProperties) {
+        return new ErrorLogListener(logService, jpowerProperties);
     }
 }

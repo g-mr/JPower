@@ -19,22 +19,25 @@ import java.util.List;
  * @Version 1.0
  */
 @Data
-@ConfigurationProperties(prefix = "swagger")
+@ConfigurationProperties(prefix = "jpower.swagger")
 public class SwaggerProperties {
 
     private static final String BASIC_HEADER_KEY = "Authorization";
     private static final String HEADER = "jpower-auth";
+
+    /** 分组名称 */
+    private String groupName = "";
 
     private List<String> basePackage = new ArrayList(Collections.singletonList("com.wlcb"));
 
     /**
      * swagger会解析的url规则
      **/
-    private List<String> basePath = new ArrayList<>();
+    private List<String> basePath = new ArrayList<>(Collections.singletonList("/**"));
     /**
      * 在basePath基础上需要排除的url规则
      **/
-    private List<String> excludePath = new ArrayList<>();
+    private List<String> excludePath = Arrays.asList("/error", "/actuator/**");
 
     /**
      * host信息

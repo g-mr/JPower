@@ -30,7 +30,7 @@ public class JpowerPageHelper extends PageHelper {
     @Override
     public String getCountSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds, CacheKey countKey) {
         if (!skip(ms)){
-            String sqlCondition = dataScopeHandler.sqlCondition(ms.getResultMaps().get(0).getId(),boundSql.getSql());
+            String sqlCondition = dataScopeHandler.sql(ms.getResultMaps().get(0).getId(),boundSql.getSql());
             if (Fc.isNotBlank(sqlCondition)){
                 PluginUtils.MPBoundSql mpBoundSql = PluginUtils.mpBoundSql(boundSql);
                 mpBoundSql.sql(sqlCondition);

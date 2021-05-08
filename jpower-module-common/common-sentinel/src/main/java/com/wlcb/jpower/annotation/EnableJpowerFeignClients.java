@@ -6,7 +6,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import java.lang.annotation.*;
 
 /**
- * @author goo
+ * @author mr.g
  * @date 0:06 2021/3/10 0010
  */
 @Target(ElementType.TYPE)

@@ -25,7 +25,7 @@ public class DataScopeHandler {
      * @param originalSql
      * @return java.lang.String
      */
-    public String sqlCondition(String mapperId, String originalSql) {
+    public String sql(String mapperId, String originalSql) {
         DataScope dataScope = this.findDataScope();
         if (Fc.isNull(dataScope)) {
             return null;

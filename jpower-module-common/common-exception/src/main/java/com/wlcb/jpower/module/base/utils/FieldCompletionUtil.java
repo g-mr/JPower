@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.wlcb.jpower.module.base.model.LogDto;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.deploy.props.JpowerProperties;
-import com.wlcb.jpower.module.common.deploy.server.ServerInfo;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.WebUtil;
 
@@ -42,10 +41,10 @@ public class FieldCompletionUtil {
         operLog.setOperUserType(currentUser.getIsSysUser());
     }
 
-    public static void serverInfo(LogDto operateLog, ServerInfo serverInfo, JpowerProperties properties) {
+    public static void serverInfo(LogDto operateLog, JpowerProperties properties) {
         operateLog.setEnv(properties.getEnv());
         operateLog.setServiceName(properties.getName());
-        operateLog.setServerHost(serverInfo.getHostName());
-        operateLog.setServerIp(serverInfo.getIp());
+        operateLog.setServerHost(properties.getHostName());
+        operateLog.setServerIp(properties.getIp());
     }
 }

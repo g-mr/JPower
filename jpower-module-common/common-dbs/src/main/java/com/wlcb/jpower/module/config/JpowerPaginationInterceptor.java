@@ -2,6 +2,7 @@ package com.wlcb.jpower.module.config;
 
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.datascope.interceptor.DataScopeInterceptor;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import org.apache.ibatis.executor.Executor;
@@ -19,15 +20,13 @@ import org.apache.ibatis.session.RowBounds;
 public class JpowerPaginationInterceptor extends PaginationInnerInterceptor {
 
     @Setter
-    private QueryInterceptor[] queryInterceptor;
+    private DataScopeInterceptor queryInterceptor;
 
     @SneakyThrows
     @Override
     public boolean willDoQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql){
-        if (Fc.isNotEmpty(queryInterceptor)){
-            for (QueryInterceptor interceptor : queryInterceptor) {
-                interceptor.intercept(executor,ms,parameter,rowBounds,resultHandler,boundSql);
-            }
+        if (Fc.notNull(queryInterceptor)){
+            queryInterceptor.intercept(ms,boundSql);
         }
         return super.willDoQuery(executor,ms,parameter,rowBounds,resultHandler,boundSql);
     }

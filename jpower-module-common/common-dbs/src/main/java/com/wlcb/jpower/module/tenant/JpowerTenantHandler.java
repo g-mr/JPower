@@ -1,6 +1,5 @@
 package com.wlcb.jpower.module.tenant;
 
-import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
@@ -53,12 +52,9 @@ public class JpowerTenantHandler implements TenantLineHandler, SmartInitializing
         List<TableInfo> tableInfos = TableInfoHelper.getTableInfos();
         tableInfos.forEach(tableInfo -> {
             if (!properties.getExcludeTables().contains(tableInfo.getTableName())){
-                for (TableFieldInfo tableFieldInfo : tableInfo.getFieldList()) {
-                    if (Fc.equals(tableFieldInfo.getColumn(),properties.getColumn())){
-                        tenantTableList.add(tableInfo.getTableName());
-                        break;
-                    }
-                }
+                tableInfo.getFieldList().stream()
+                        .filter(tableFieldInfo -> Fc.equals(tableFieldInfo.getColumn(), properties.getColumn()))
+                        .forEach(tableFieldInfo -> tenantTableList.add(tableInfo.getTableName()));
             }
         });
     }

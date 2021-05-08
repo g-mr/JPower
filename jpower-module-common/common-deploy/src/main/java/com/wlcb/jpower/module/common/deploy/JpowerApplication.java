@@ -1,6 +1,7 @@
 package com.wlcb.jpower.module.common.deploy;
 
 import com.wlcb.jpower.module.common.deploy.service.DeployService;
+import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -30,12 +31,12 @@ public class JpowerApplication {
      * @return org.springframework.context.ConfigurableApplicationContext
      **/
     public static ConfigurableApplicationContext run(String appName, Class source, String... args) {
-        SpringApplicationBuilder builder = createSpringApplicationBuilder(appName, source, args);
+        SpringApplicationBuilder builder = springApplicationBuilder(appName, source, args);
         return builder.run(args);
     }
 
-    private static SpringApplicationBuilder createSpringApplicationBuilder(String appName, Class source, String[] args) {
-        Assert.hasText(appName, "[appName]服务名不能为空");
+    private static SpringApplicationBuilder springApplicationBuilder(String appName, Class source, String[] args) {
+        Assert.hasText(appName, "服务名(appName)不能为空");
         SpringApplicationBuilder builder = new SpringApplicationBuilder(source);
 
         //读取环境变量配置
@@ -102,6 +103,6 @@ public class JpowerApplication {
      **/
     public static boolean isLocalDev() {
         String osName = System.getProperty("os.name");
-        return StringUtils.hasText(osName) && !(AppConstant.OS_NAME_LINUX.equals(osName.toUpperCase()));
+        return StringUtil.hasText(osName) && !(AppConstant.OS_NAME_LINUX.equals(osName.toUpperCase()));
     }
 }

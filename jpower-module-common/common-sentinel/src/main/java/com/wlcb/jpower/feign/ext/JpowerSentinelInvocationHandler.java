@@ -1,3 +1,18 @@
+/**
+ * Copyright (c) 2018-2028, Chill Zhuang 庄骞 (smallchill@163.com).
+ * <p>
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE 3.0;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.gnu.org/licenses/lgpl.html
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.wlcb.jpower.feign.ext;
 
 import com.alibaba.cloud.sentinel.feign.SentinelContractHolder;
@@ -24,11 +39,9 @@ import java.util.Map;
 import static feign.Util.checkNotNull;
 
 /**
- * @ClassName JpowerSentinelInvocationHandler
- * @Description TODO 支持自动降级注入 重写 {@link com.alibaba.cloud.sentinel.feign.SentinelInvocationHandler}
- * @Author goo
- * @Date 2021/3/10 0010 2:54
- * @Version 1.0
+ * 重写 {@link com.alibaba.cloud.sentinel.feign.SentinelInvocationHandler} 适配最新API
+ *
+ * @author Chill
  */
 public class JpowerSentinelInvocationHandler implements InvocationHandler{
 
