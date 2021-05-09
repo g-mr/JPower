@@ -7,6 +7,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
  * @ClassName AuthConfigurer
  * @Description TODO
@@ -23,11 +28,10 @@ public class ClientConfigurer implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        authProperties.getClient().forEach(client -> {
-            if (client.getPath().size()>0){
-                registry.addInterceptor(new ClientInterceptor(client.getCode())).addPathPatterns(client.getPath());
-            }
-        });
+        Set<String> set = new HashSet<>();
+        List<AuthProperties.Client> clients = authProperties.getClient();
+        clients.forEach(client -> set.addAll(client.getPath()));
+        registry.addInterceptor(new ClientInterceptor(clients)).addPathPatterns(new ArrayList<>(set));
     }
 
 }

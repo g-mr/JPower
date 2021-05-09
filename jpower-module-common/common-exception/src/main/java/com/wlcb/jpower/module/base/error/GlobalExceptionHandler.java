@@ -83,15 +83,14 @@ public class GlobalExceptionHandler {
         FieldCompletionUtil.requestInfo(errorLog, request);
         FieldCompletionUtil.userInfo(errorLog,LoginUserContext.get());
 
-        Throwable t = e.getCause();
-        StackTraceElement element = t.getStackTrace()[0];
+        StackTraceElement element = e.getStackTrace()[0];
 
         errorLog.setMessage(e.getMessage());
         errorLog.setMethodClass(element.getClassName());
         errorLog.setMethodName(element.getMethodName());
-        errorLog.setError(ExceptionsUtil.getStackTraceAsString(t));
+        errorLog.setError(ExceptionsUtil.getStackTraceAsString(e));
         errorLog.setLineNumber(element.getLineNumber());
-        errorLog.setExceptionName(t.getClass().getName());
+        errorLog.setExceptionName(e.getClass().getName());
         SpringUtil.publishEvent(new ErrorLogEvent(errorLog));
     }
 
