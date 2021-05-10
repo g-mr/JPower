@@ -1,5 +1,7 @@
 package com.wlcb.jpower.module.common.utils;
 
+import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
+
 /**
  * MD5
  * MD5加密算法
@@ -11,7 +13,7 @@ public class MD5 {
      * @Description: 32位小写MD5
      */
     public static String parseStrToMd5L32(String str){
-        return Fc.md5Hex(str);
+        return DigestUtil.md5DigestAsHex(str.getBytes(CharsetKit.CHARSET_UTF_8));
     }
 
     /**
@@ -21,7 +23,7 @@ public class MD5 {
      */
     public static String parseStrToMd5U32(String str){
         String reStr = parseStrToMd5L32(str);
-        if (reStr != null){
+        if (Fc.notNull(reStr)){
             reStr = reStr.toUpperCase();
         }
         return reStr;

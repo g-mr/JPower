@@ -53,8 +53,8 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> ex
         entity.setUpdateTime(now);
         // todo end
 
-        Field field = ReflectUtil.getField(entity.getClass(), TENANT_CODE);
-        if (ObjectUtil.isNotEmpty(field)){
+        Field field = BeanUtil.getField(entity.getClass(), TENANT_CODE);
+        if (Fc.notNull(field)){
             String tenantCode = ReflectUtil.invokeGetter(entity,TENANT_CODE);
             if (SecureUtil.isRoot() && isSave){
                 //如果是超级用户并且是保存数据，则必传一个租户编码

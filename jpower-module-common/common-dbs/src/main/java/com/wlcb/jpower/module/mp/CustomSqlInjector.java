@@ -23,7 +23,7 @@ public class CustomSqlInjector extends DefaultSqlInjector {
         List<AbstractMethod> methodList = super.getMethodList(mapperClass);
         methodList.add(new InsertBatchSomeColumn(i -> i.getFieldFill() != FieldFill.UPDATE));
         methodList.add(new UpdateAllById(field -> !Fc.contains(new String[]{
-                "create_time", "create_user"
+                "create_time", "create_user", "create_org"
         }, field.getColumn())));
         methodList.add(new DeleteReal());
         methodList.add(new DeleteRealBatchByIds());

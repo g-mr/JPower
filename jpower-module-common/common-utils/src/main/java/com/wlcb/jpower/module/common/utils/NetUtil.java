@@ -28,7 +28,7 @@ public class NetUtil {
         try {
             // force a best effort reverse DNS lookup
             hostname = address.getHostName();
-            if (StringUtil.isEmpty(hostname)) {
+            if (!StringUtil.hasLength(hostname)) {
                 hostname = address.toString();
             }
         } catch (Exception ignore) {
@@ -46,26 +46,13 @@ public class NetUtil {
         String hostAddress;
         try {
             hostAddress = address.getHostAddress();
-            if (StringUtils.isEmpty(hostAddress)) {
+            if (!StringUtils.hasLength(hostAddress)) {
                 hostAddress = address.toString();
             }
         } catch (Exception ignore) {
             hostAddress = LOCAL_HOST;
         }
         return hostAddress;
-    }
-
-    /**
-     * 尝试端口时候被占用
-     * @param port 端口号
-     * @return 没有被占用：true,被占用：false
-     */
-    public static boolean tryPort(int port) {
-        try (ServerSocket ignore = new ServerSocket(port)) {
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
     }
 
 }

@@ -1,10 +1,23 @@
+/**
+ * Copyright (c) 2018-2028, DreamLu 卢春梦 (qq596392912@gmail.com).
+ * <p>
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE 3.0;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.gnu.org/licenses/lgpl.html
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.wlcb.jpower.module.common.utils;
 
-import com.wlcb.jpower.module.common.enums.RandomType;
 import com.wlcb.jpower.module.common.support.StrFormatter;
 import com.wlcb.jpower.module.common.support.StrSpliter;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
-import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.HtmlUtils;
 
@@ -18,11 +31,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * @ClassName StringUtil
- * @Description TODO 字符串工具类
- * @Author 郭丁志
- * @Date 2020-07-23 15:14
- * @Version 1.0
+ * 继承自Spring util的工具类，减少jar依赖
+ *
+ * @author L.cm
  */
 public class StringUtil extends StringUtils {
 
@@ -184,16 +195,6 @@ public class StringUtil extends StringUtils {
     }
 
     /**
-     * 生成uuid
-     *
-     * @return UUID
-     */
-    public static String randomUUID() {
-        ThreadLocalRandom random = ThreadLocalRandom.current();
-        return new UUID(random.nextLong(), random.nextLong()).toString().replace(StringPool.DASH, StringPool.EMPTY);
-    }
-
-    /**
      * 转义HTML用于安全过滤
      *
      * @param html html
@@ -217,42 +218,6 @@ public class StringUtil extends StringUtils {
     private static final String S_INT = "0123456789";
     private static final String S_STR = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     private static final String S_ALL = S_INT + S_STR;
-
-    /**
-     * 随机数生成
-     *
-     * @param count 字符长度
-     * @return 随机数
-     */
-    public static String random(int count) {
-        return StringUtil.random(count, RandomType.ALL);
-    }
-
-    /**
-     * 随机数生成
-     *
-     * @param count      字符长度
-     * @param randomType 随机数类别
-     * @return 随机数
-     */
-    public static String random(int count, RandomType randomType) {
-        if (count == 0) {
-            return "";
-        }
-        Assert.isTrue(count > 0, "Requested random string length " + count + " is less than 0.");
-        final ThreadLocalRandom random = ThreadLocalRandom.current();
-        char[] buffer = new char[count];
-        for (int i = 0; i < count; i++) {
-            if (RandomType.INT == randomType) {
-                buffer[i] = S_INT.charAt(random.nextInt(S_INT.length()));
-            } else if (RandomType.STRING == randomType) {
-                buffer[i] = S_STR.charAt(random.nextInt(S_STR.length()));
-            } else {
-                buffer[i] = S_ALL.charAt(random.nextInt(S_ALL.length()));
-            }
-        }
-        return new String(buffer);
-    }
 
     /**
      * 格式化文本, {} 表示占位符<br>

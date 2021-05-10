@@ -4,11 +4,9 @@ import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 
 /**
- * @ClassName StrFormatter
- * @Description TODO 字符串格式化
- * @Author 郭丁志
- * @Date 2020-07-23 16:58
- * @Version 1.0
+ * 字符串格式化
+ *
+ * @author Chill
  */
 public class StrFormatter {
 

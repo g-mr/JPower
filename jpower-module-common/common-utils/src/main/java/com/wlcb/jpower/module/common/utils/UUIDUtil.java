@@ -1,11 +1,13 @@
 package com.wlcb.jpower.module.common.utils;
 
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @ClassName: UUIDUtil
@@ -210,7 +212,8 @@ public class UUIDUtil {
 	 * @return: String
 	 */
 	public static String getUUID(){
-		return Fc.randomUUID();
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        return new UUID(random.nextLong(), random.nextLong()).toString().replace(StringPool.DASH, StringPool.EMPTY);
 	}
 
     /**

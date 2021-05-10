@@ -1,4 +1,4 @@
-package com.wlcb.jpower.module.base.annotation;
+package com.wlcb.jpower.module.common.utils.constants;
 
 import java.io.Serializable;
 import java.util.function.Function;

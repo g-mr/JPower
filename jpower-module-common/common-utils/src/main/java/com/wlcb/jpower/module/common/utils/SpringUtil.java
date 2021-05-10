@@ -1,3 +1,18 @@
+/**
+ * Copyright (c) 2018-2028, DreamLu 卢春梦 (qq596392912@gmail.com).
+ * <p>
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE 3.0;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.gnu.org/licenses/lgpl.html
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.wlcb.jpower.module.common.utils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -7,11 +22,9 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEvent;
 
 /**
- * @ClassName SpringUtil
- * @Description TODO spring 工具类
- * @Author 郭丁志
- * @Date 2020-07-24 17:12
- * @Version 1.0
+ * spring 工具类
+ *
+ * @author Chill
  */
 @Slf4j
 public class SpringUtil implements ApplicationContextAware {
@@ -23,13 +36,6 @@ public class SpringUtil implements ApplicationContextAware {
         SpringUtil.context = context;
     }
 
-    /**
-     * @author 郭丁志
-     * @Description //TODO 获取一个实例
-     * @date 0:31 2020/8/12 0012
-     * @param clazz
-     * @return T
-     */
     public static <T> T getBean(Class<T> clazz) {
         if (clazz == null) {
             return null;

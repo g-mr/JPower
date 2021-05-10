@@ -47,18 +47,14 @@ public class JwtUtil {
 
     /**
      * 解析获取最后的token
-     * @Author ding
-     * @Date 17:35 2021-02-08
+     *
+     * @Author mr.g
      * @param auth
-     * @return java.lang.String
      **/
     public static String parsingToken(String auth) {
-        if (StringUtil.isNotBlank(auth) && auth.length() > AUTH_LENGTH) {
-            String headStr = auth.substring(0, 6).toLowerCase();
-            if (headStr.compareTo(JPOWER) == 0) {
-                auth = auth.substring(AUTH_LENGTH);
-                return auth;
-            }
+        if (StringUtil.isNotBlank(auth) && auth.length() > AUTH_LENGTH && auth.startsWith(JPOWER)) {
+            auth = auth.substring(AUTH_LENGTH);
+            return auth;
         }
         return null;
     }

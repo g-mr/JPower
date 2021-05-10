@@ -1,5 +1,6 @@
 package com.wlcb.jpower.module.common.support;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,9 +15,9 @@ import java.util.HashMap;
  * @Date 2020-05-02 00:43
  * @Version 1.0
  */
+@Slf4j
 public class FileType {
 
-    private static final Logger logger = LoggerFactory.getLogger(FileType.class);
     // 缓存文件头信息-文件头信息
     public static final HashMap<String, String> mFileTypes = new HashMap<String, String>();
 
@@ -106,7 +107,7 @@ public class FileType {
                 }
             }
         }
-        logger.info(">>>>>文件的头部信息:" + value);
+        log.info(">>>>>文件的头部信息:" + value);
         if (StringUtils.startsWith(value, "FFD8FF")) {
             value = value.substring(0, 6);
         }

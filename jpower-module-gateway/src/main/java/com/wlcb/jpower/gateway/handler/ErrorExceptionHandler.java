@@ -72,7 +72,7 @@ public class ErrorExceptionHandler implements ErrorWebExceptionHandler {
 
         String uri = request.getURI().toString();
         if (uri.endsWith(API_PATH)) {
-            return "[聚合网关] 已迁移至 [jpower-api] 服务，请启动 [jpower-api] 服务并访问 [http://localhost:18000/doc.html]";
+            return "【聚合文档】已迁移至【jpower-api】服务实现，启动【jpower-api】服务并访问 [http://localhost:18000/doc.html]";
         }
 
         StringBuilder message = new StringBuilder("Failed to handle request [");

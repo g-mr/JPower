@@ -1,5 +1,6 @@
 package com.wlcb.jpower.module.common.utils;
 
+import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
@@ -9,11 +10,11 @@ import java.lang.reflect.*;
 import java.util.Date;
 
 /**
- * 反射工具类. 提供调用getter/setter方法, 访问私有变量, 调用私有方法, 获取泛型类型Class, 被AOP过的真实类等工具函数.
- * 
- * @author gdz
+ * 反射工具类
+ *
+ * @author L.cm
  */
-@SuppressWarnings("rawtypes")
+@UtilityClass
 @Slf4j
 public class ReflectUtil
 {
@@ -396,20 +397,4 @@ public class ReflectUtil
         return new RuntimeException(msg, e);
     }
 
-    /**
-     * @author 郭丁志
-     * @Description //TODO 获取一个字段
-     * @date 2:13 2020/10/18 0018
-     */
-    @Nullable
-    public static Field getField(Class<?> clz, String fieldName) {
-        while (Object.class != clz){
-            try {
-                return clz.getDeclaredField(fieldName);
-            } catch (NoSuchFieldException e) {
-                clz = clz.getSuperclass();
-            }
-        }
-        return null;
-    }
 }

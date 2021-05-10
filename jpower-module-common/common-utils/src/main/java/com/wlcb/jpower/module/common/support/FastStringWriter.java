@@ -6,11 +6,9 @@ import org.springframework.lang.Nullable;
 import java.io.Writer;
 
 /**
- * @ClassName FastStringWriter
- * @Description TODO
- * @Author 郭丁志
- * @Date 2020-07-23 15:51
- * @Version 1.0
+ * FastStringWriter
+ *
+ * @author L.cm
  */
 public class FastStringWriter extends Writer {
     private StringBuilder builder;

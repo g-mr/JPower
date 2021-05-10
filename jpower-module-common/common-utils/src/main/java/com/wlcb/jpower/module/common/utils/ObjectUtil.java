@@ -18,7 +18,7 @@ public class ObjectUtil extends org.springframework.util.ObjectUtils {
      * @return boolean
      */
     public static boolean isNotEmpty(@Nullable Object obj) {
-        return !ObjectUtil.isEmpty(obj);
+        return !isEmpty(obj);
     }
 
     /**

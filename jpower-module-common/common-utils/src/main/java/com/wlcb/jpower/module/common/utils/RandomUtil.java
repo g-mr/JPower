@@ -13,6 +13,10 @@ import java.util.Random;
  */
 public class RandomUtil {
 
+    private static final String S_INT = "0123456789";
+    private static final String S_STR = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final String S_ALL = S_STR+S_INT;
+
     /**
      * @Author 郭丁志
      * @Description //TODO 6位随机数
@@ -21,7 +25,41 @@ public class RandomUtil {
      * @return java.lang.String
      **/
     public static String random6Num(){
-        return String.valueOf(new Random().nextInt(899999) + 100000);
+        return randomNum(6);
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 随机数
+     * @Date 14:51 2020-07-31
+     * @Param []
+     * @return java.lang.String
+     **/
+    public static String random(int length){
+        Random random = new Random();
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < length; i++) {
+            int number = random.nextInt(S_ALL.length());
+            sb.append(S_ALL.charAt(number));
+        }
+        return sb.toString();
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 随机数
+     * @Date 14:51 2020-07-31
+     * @Param []
+     * @return java.lang.String
+     **/
+    public static String randomNum(int length){
+        Random random = new Random();
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < length; i++) {
+            int number = random.nextInt(S_INT.length());
+            sb.append(S_INT.charAt(number));
+        }
+        return sb.toString();
     }
 
     /**
@@ -32,12 +70,11 @@ public class RandomUtil {
      * @return java.lang.String
      **/
     public static String randomString(int length) {
-        String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         Random random = new Random();
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < length; i++) {
-            int number = random.nextInt(62);
-            sb.append(str.charAt(number));
+            int number = random.nextInt(S_STR.length());
+            sb.append(S_STR.charAt(number));
         }
         return sb.toString();
     }
@@ -63,7 +100,7 @@ public class RandomUtil {
     }
 
     public static void main(String[] args) {
-        System.out.println(createCityCode(null,"11"));
+        System.out.println(random(6));
     }
 
 }

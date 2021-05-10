@@ -1,3 +1,18 @@
+/**
+ * Copyright (c) 2018-2028, DreamLu 卢春梦 (qq596392912@gmail.com).
+ * <p>
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE 3.0;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.gnu.org/licenses/lgpl.html
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.wlcb.jpower.module.common.support;
 
 import com.wlcb.jpower.module.common.utils.BeanUtil;
@@ -12,11 +27,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @ClassName BaseBeanCopier
- * @Description TODO bean复制支持
- * @Author 郭丁志
- * @Date 2020-07-23 16:43
- * @Version 1.0
+ * spring cglib 魔改
+ *
+ * <p>
+ *     1. 支持链式 bean
+ *     2. 自定义的 BeanCopier 解决 spring boot 和 cglib ClassLoader classLoader 不一致的问题
+ * </p>
+ *
+ * @author L.cm
  */
 public abstract class BaseBeanCopier {
     private static final BeanCopierKey KEY_FACTORY = (BeanCopierKey) KeyFactory.create(BeanCopierKey.class);

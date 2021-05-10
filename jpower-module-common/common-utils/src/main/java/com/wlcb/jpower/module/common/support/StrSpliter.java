@@ -10,11 +10,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @ClassName StrSpliter
- * @Description TODO 字符串切分器
- * @Author 郭丁志
- * @Date 2020-07-23 17:00
- * @Version 1.0
+ * 字符串切分器
+ *
+ * @author Looly
  */
 public class StrSpliter {
 

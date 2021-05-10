@@ -1,3 +1,18 @@
+/**
+ * Copyright (c) 2018-2028, DreamLu 卢春梦 (qq596392912@gmail.com).
+ * <p>
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE 3.0;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.gnu.org/licenses/lgpl.html
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.wlcb.jpower.module.common.utils;
 
 import com.wlcb.jpower.module.common.support.BaseBeanCopier;
@@ -9,6 +24,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.cglib.beans.BeanGenerator;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.cglib.core.CodeGenerationException;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 import java.beans.PropertyDescriptor;
@@ -20,6 +36,11 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * 实体工具类
+ *
+ * @author L.cm
+ */
 public class BeanUtil  extends org.springframework.beans.BeanUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(BeanUtil.class);
@@ -421,6 +442,13 @@ public class BeanUtil  extends org.springframework.beans.BeanUtils {
         return fieldList;
     }
 
+    /**
+     * 是否存在一个字段
+     * @Author mr.g
+     * @param list
+     * @param fieldName
+     * @return boolean
+     **/
     public static boolean isContainsField(List<Field> list,String fieldName) {
 
         AtomicBoolean isExist = new AtomicBoolean(false);
@@ -431,5 +459,22 @@ public class BeanUtil  extends org.springframework.beans.BeanUtils {
             }
         });
         return isExist.get();
+    }
+
+    /**
+     * @author 郭丁志
+     * @Description //TODO 获取一个字段
+     * @date 2:13 2020/10/18 0018
+     */
+    @Nullable
+    public static Field getField(Class<?> clz, String fieldName) {
+        while (Object.class != clz){
+            try {
+                return clz.getDeclaredField(fieldName);
+            } catch (NoSuchFieldException e) {
+                clz = clz.getSuperclass();
+            }
+        }
+        return null;
     }
 }

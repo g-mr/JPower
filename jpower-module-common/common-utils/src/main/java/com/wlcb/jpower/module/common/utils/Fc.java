@@ -1,3 +1,18 @@
+/**
+ * Copyright (c) 2018-2028, DreamLu 卢春梦 (qq596392912@gmail.com).
+ * <p>
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE 3.0;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.gnu.org/licenses/lgpl.html
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.wlcb.jpower.module.common.utils;
 
 import com.wlcb.jpower.module.common.enums.RandomType;
@@ -28,11 +43,9 @@ import java.util.*;
 import java.util.function.Supplier;
 
 /**
- * @ClassName Fc
- * @Description TODO 工具包集合类
- * @Author 郭丁志
- * @Date 2020-07-23 15:12
- * @Version 1.0
+ * 工具包集合，只做简单的调用，不删除原有工具类
+ *
+ * @author L.cm
  */
 public class Fc {
 
@@ -884,7 +897,7 @@ public class Fc {
      * @return UUID
      */
     public static String randomUUID() {
-        return StringUtil.randomUUID();
+        return UUIDUtil.getUUID();
     }
 
     /**
@@ -913,7 +926,7 @@ public class Fc {
      * @return 随机数
      */
     public static String random(int count) {
-        return StringUtil.random(count);
+        return RandomUtil.random(count);
     }
 
     /**
@@ -924,7 +937,13 @@ public class Fc {
      * @return 随机数
      */
     public static String random(int count, RandomType randomType) {
-        return StringUtil.random(count, randomType);
+        if (RandomType.INT == randomType) {
+            return RandomUtil.randomNum(count);
+        }else if (RandomType.STRING == randomType){
+            return RandomUtil.randomString(count);
+        }else {
+            return RandomUtil.random(count);
+        }
     }
 
     /**

@@ -77,17 +77,6 @@ public class SnowFlakeIdUtil {
      */
     private long lastTimestamp = -1L;
 
-    //==============================Constructors=====================================
-
-    /**
-     * 构造函数
-     */
-    private SnowFlakeIdUtil() {
-    }
-
-    // ==============================Methods==========================================
-
-
     /**
      * 测试snowflake算法生成id的速度
      */

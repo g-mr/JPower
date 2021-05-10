@@ -12,6 +12,7 @@ import com.wlcb.jpower.module.common.utils.ExceptionsUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.route.RouteDefinition;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -70,7 +71,7 @@ public class NacosDynamicRouteListener {
             }
 
         } catch (NacosException e) {
-            log.error("nacos-addListener-error", ExceptionsUtil.getStackTraceAsString(e));
+            log.error("nacos-addListener-error:{}", ExceptionsUtil.getStackTraceAsString(e));
         }
     }
 

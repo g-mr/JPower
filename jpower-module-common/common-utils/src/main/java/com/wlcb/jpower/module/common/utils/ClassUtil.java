@@ -1,6 +1,6 @@
 package com.wlcb.jpower.module.common.utils;
 
-import com.wlcb.jpower.module.base.annotation.Fn;
+import com.wlcb.jpower.module.common.utils.constants.Fn;
 import org.springframework.core.BridgeMethodResolver;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.MethodParameter;
@@ -62,20 +62,15 @@ public class ClassUtil  extends org.springframework.util.ClassUtils {
      * @return {Annotation}
      */
     public static <A extends Annotation> A getAnnotation(Method method, Class<A> annotationType) {
-        Class<?> targetClass = method.getDeclaringClass();
-        // The method may be on an interface, but we need attributes from the target class.
-        // If the target class is null, the method will be unchanged.
-        Method specificMethod = ClassUtil.getMostSpecificMethod(method, targetClass);
-        // If we are dealing with method with generic parameters, find the original method.
+        Method specificMethod = ClassUtil.getMostSpecificMethod(method, method.getDeclaringClass());
         specificMethod = BridgeMethodResolver.findBridgedMethod(specificMethod);
         // 先找方法，再找方法上的类
         A annotation = AnnotatedElementUtils.findMergedAnnotation(specificMethod, annotationType);
         ;
-        if (null != annotation) {
-            return annotation;
+        if (Fc.isNull(annotation)) {
+            annotation = AnnotatedElementUtils.findMergedAnnotation(specificMethod.getDeclaringClass(), annotationType);
         }
-        // 获取类上面的Annotation，可能包含组合注解，故采用spring的工具类
-        return AnnotatedElementUtils.findMergedAnnotation(specificMethod.getDeclaringClass(), annotationType);
+        return annotation;
     }
 
     /**
@@ -89,12 +84,10 @@ public class ClassUtil  extends org.springframework.util.ClassUtils {
     public static <A extends Annotation> A getAnnotation(HandlerMethod handlerMethod, Class<A> annotationType) {
         // 先找方法，再找方法上的类
         A annotation = handlerMethod.getMethodAnnotation(annotationType);
-        if (null != annotation) {
-            return annotation;
+        if (Fc.isNull(annotation)) {
+            annotation = AnnotatedElementUtils.findMergedAnnotation(handlerMethod.getBeanType(), annotationType);
         }
-        // 获取类上面的Annotation，可能包含组合注解，故采用spring的工具类
-        Class<?> beanType = handlerMethod.getBeanType();
-        return AnnotatedElementUtils.findMergedAnnotation(beanType, annotationType);
+        return annotation;
     }
 
     /**
