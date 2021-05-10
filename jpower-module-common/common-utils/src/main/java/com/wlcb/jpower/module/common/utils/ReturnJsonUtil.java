@@ -17,6 +17,21 @@ import java.io.PrintWriter;
  */
 public class ReturnJsonUtil {
 
+    /**
+     * 将ResponseData对象转换成json格式并发送到客户端
+     * @param response
+     * @param responseData
+     * @throws Exception
+     */
+    public static void sendJsonMessage(HttpServletResponse response, ResponseData responseData) throws Exception {
+        response.setContentType("application/json; charset=utf-8");
+        PrintWriter writer = response.getWriter();
+        writer.print(JSONObject.toJSONString(responseData, SerializerFeature.WriteMapNullValue,
+                SerializerFeature.WriteDateUseDateFormat));
+        writer.close();
+        response.flushBuffer();
+    }
+
     public static <T> ResponseData<T> printJson(Integer code, String msg, T data, boolean status){
 
         ResponseData<T> r = new ResponseData();
@@ -35,21 +50,6 @@ public class ReturnJsonUtil {
         r.setData(null);
         r.setStatus(status);
         return r;
-    }
-
-    /**
-     * 将ResponseData对象转换成json格式并发送到客户端
-     * @param response
-     * @param responseData
-     * @throws Exception
-     */
-    public static void sendJsonMessage(HttpServletResponse response, ResponseData responseData) throws Exception {
-        response.setContentType("application/json; charset=utf-8");
-        PrintWriter writer = response.getWriter();
-        writer.print(JSONObject.toJSONString(responseData, SerializerFeature.WriteMapNullValue,
-                SerializerFeature.WriteDateUseDateFormat));
-        writer.close();
-        response.flushBuffer();
     }
 
     /**
@@ -104,6 +104,17 @@ public class ReturnJsonUtil {
      **/
     public static <T> ResponseData<T> fail(String msg){
         return fail( msg, null);
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 自定义状态失败的通知
+     * @Date 00:29 2020-03-06
+     * @Param [msg, data]
+     * @return ResponseData
+     **/
+    public static <T> ResponseData<T> fail(Integer code, String msg){
+        return printJson(code, msg, null, false);
     }
 
     public static void main(String[] args) {

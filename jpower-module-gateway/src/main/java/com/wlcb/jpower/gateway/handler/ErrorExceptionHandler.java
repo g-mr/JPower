@@ -1,20 +1,21 @@
 package com.wlcb.jpower.gateway.handler;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wlcb.jpower.module.common.support.ChainMap;
-import lombok.RequiredArgsConstructor;
+import com.alibaba.fastjson.JSON;
+import com.wlcb.jpower.module.base.vo.ResponseData;
+import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
+import org.springframework.cloud.gateway.support.NotFoundException;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
-import org.springframework.lang.NonNull;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
@@ -24,42 +25,29 @@ import reactor.core.publisher.Mono;
  * @Date 2020/8/27 0027 1:58
  * @Version 1.0
  */
+@Slf4j
 @Order(-1)
 @Configuration
-@RequiredArgsConstructor
 public class ErrorExceptionHandler implements ErrorWebExceptionHandler {
 
-    private static final String API_PATH = "doc.html";
+    private static final String API_PATH = "/doc.html";
 
-    private final ObjectMapper objectMapper;
-
-    @NonNull
     @Override
-    public Mono<Void> handle(ServerWebExchange exchange, @NonNull Throwable ex) {
+    public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
+
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpResponse response = exchange.getResponse();
-        if (response.isCommitted()) {
+
+        //参考AbstractErrorWebExceptionHandler
+        if (exchange.getResponse().isCommitted()) {
             return Mono.error(ex);
         }
-        response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
-        if (ex instanceof ResponseStatusException) {
-            response.setStatusCode(((ResponseStatusException) ex).getStatus());
-        }
-        return response.writeWith(Mono.fromSupplier(() -> {
-            DataBufferFactory bufferFactory = response.bufferFactory();
-            try {
-                HttpStatus status = HttpStatus.BAD_GATEWAY;
-                if (ex instanceof ResponseStatusException) {
-                    status = ((ResponseStatusException) ex).getStatus();
-                }
-                return bufferFactory.wrap(objectMapper.writeValueAsBytes(ChainMap.init().set("code",status.value()).set("message",this.buildMessage(request, ex)).set("status",false)));
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-                return bufferFactory.wrap(new byte[0]);
-            }
-        }));
-    }
 
+        ResponseData data = message(request,ex);
+        response.setRawStatusCode(data.getCode());
+        response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+        return response.writeWith(Flux.just(response.bufferFactory().wrap(JSON.toJSONBytes(data))));
+    }
 
     /**
      * 构建异常信息
@@ -68,23 +56,41 @@ public class ErrorExceptionHandler implements ErrorWebExceptionHandler {
      * @param ex
      * @return
      */
-    private String buildMessage(ServerHttpRequest request, Throwable ex) {
+    private ResponseData message(ServerHttpRequest request, Throwable ex) {
+        if (Fc.isNull(ex)){
+            return ReturnJsonUtil.fail(HttpStatus.INTERNAL_SERVER_ERROR.value(),"系统异常,请联系管理员");
+        }
 
         String uri = request.getURI().toString();
         if (uri.endsWith(API_PATH)) {
-            return "【聚合文档】已迁移至【jpower-api】服务实现，启动【jpower-api】服务并访问 [http://localhost:18000/doc.html]";
+            return ReturnJsonUtil.fail(HttpStatus.NOT_FOUND.value(),"接口文档已迁移到【jpower-api】服务,请联系开发人员索要请求地址");
         }
 
-        StringBuilder message = new StringBuilder("Failed to handle request [");
+        StringBuilder message = new StringBuilder("请求[");
         message.append(request.getMethodValue());
         message.append(" ");
         message.append(request.getURI());
-        message.append("]");
-        if (ex != null) {
-            message.append(": ");
+        message.append("]失败 : ");
+
+        int httpStatus = HttpStatus.BAD_GATEWAY.value();
+        if (ex instanceof NotFoundException) {
+            httpStatus = HttpStatus.NOT_FOUND.value();
+            message.append("请求地址找不到");
+        } else if(ex instanceof ResponseStatusException){
+            ResponseStatusException responseStatusException = (ResponseStatusException) ex;
+            httpStatus = responseStatusException.getStatus().value();
+            message.append(ex.getMessage());
+        }else if (ex instanceof RuntimeException) {
+            Throwable cause = ex.getCause();
+            message.append(ex.getMessage());
+            if(null != cause && cause.getMessage().contains("Load balancer does not have available server for client")){
+                message.append("服务不存在");
+            }
+        }else {
             message.append(ex.getMessage());
         }
-        return message.toString();
+
+        return ReturnJsonUtil.fail(httpStatus,message.toString());
     }
 
 }
