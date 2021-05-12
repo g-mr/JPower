@@ -61,47 +61,47 @@ public class AuthFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-
-        Route route = (Route) exchange.getAttributes().get(ServerWebExchangeUtils.GATEWAY_ROUTE_ATTR);
-        String currentPath = exchange.getRequest().getURI().getPath();
-        if (currentPath.startsWith("/"+route.getId())){
-            currentPath = currentPath.replace("/"+route.getId(),"");
-        }
-
-        //不鉴权得URL
-        if (isSkip(currentPath)){
-            return chain.filter(exchange);
-        }
-
-        String token = TokenUtil.getToken(exchange.getRequest());
-        if (Fc.isNotBlank(token)) {
-
-            Claims claims = JwtUtil.parseJWT(token);
-            if (!redisUtil.exists(CacheNames.TOKEN_URL_KEY + token)){
-                return proxyAuthenticationRequired(exchange.getResponse(), "令牌已过期，请重新登陆");
-            }
-            Object o = redisUtil.get(CacheNames.TOKEN_URL_KEY + token);
-            List<String> listUrl = Fc.isNull(o)?new ArrayList<>():(List<String>) o;
-            if (Fc.isNull(claims) || !Fc.contains(listUrl.iterator(), currentPath)) {
-                return unAuth(exchange.getResponse(), "请求未授权");
-            }
-
-            Object dataAuth = redisUtil.get(CacheNames.TOKEN_DATA_SCOPE_KEY + token);
-            Map<String,String> map = Fc.isNull(dataAuth) ? ChainMap.newMap() : (Map<String, String>) dataAuth;
-            return chain.filter(addHeader(exchange, StringPool.EMPTY, map.get(currentPath)));
-        }else {
-            //白名单
-            String ip = IpUtil.getIP(exchange.getRequest());
-            if (Fc.contains(authProperties.getWhileIp().iterator(),ip)){
-                return chain.filter(addHeader(exchange,ip,StringPool.EMPTY));
-            }
-
-            //匿名用户
-            if (getIsAnonymous(currentPath)){
-                return chain.filter(addHeader(exchange,"anonymous",StringPool.EMPTY));
-            }
-            return proxyAuthenticationRequired(exchange.getResponse(), "缺失令牌，鉴权失败");
-        }
+        return chain.filter(exchange);
+//        Route route = (Route) exchange.getAttributes().get(ServerWebExchangeUtils.GATEWAY_ROUTE_ATTR);
+//        String currentPath = exchange.getRequest().getURI().getPath();
+//        if (currentPath.startsWith("/"+route.getId())){
+//            currentPath = currentPath.replace("/"+route.getId(),"");
+//        }
+//
+//        //不鉴权得URL
+//        if (isSkip(currentPath)){
+//            return chain.filter(exchange);
+//        }
+//
+//        String token = TokenUtil.getToken(exchange.getRequest());
+//        if (Fc.isNotBlank(token)) {
+//
+//            Claims claims = JwtUtil.parseJWT(token);
+//            if (!redisUtil.exists(CacheNames.TOKEN_URL_KEY + token)){
+//                return proxyAuthenticationRequired(exchange.getResponse(), "令牌已过期，请重新登陆");
+//            }
+//            Object o = redisUtil.get(CacheNames.TOKEN_URL_KEY + token);
+//            List<String> listUrl = Fc.isNull(o)?new ArrayList<>():(List<String>) o;
+//            if (Fc.isNull(claims) || !Fc.contains(listUrl.iterator(), currentPath)) {
+//                return unAuth(exchange.getResponse(), "请求未授权");
+//            }
+//
+//            Object dataAuth = redisUtil.get(CacheNames.TOKEN_DATA_SCOPE_KEY + token);
+//            Map<String,String> map = Fc.isNull(dataAuth) ? ChainMap.newMap() : (Map<String, String>) dataAuth;
+//            return chain.filter(addHeader(exchange, StringPool.EMPTY, map.get(currentPath)));
+//        }else {
+//            //白名单
+//            String ip = IpUtil.getIP(exchange.getRequest());
+//            if (Fc.contains(authProperties.getWhileIp().iterator(),ip)){
+//                return chain.filter(addHeader(exchange,ip,StringPool.EMPTY));
+//            }
+//
+//            //匿名用户
+//            if (getIsAnonymous(currentPath)){
+//                return chain.filter(addHeader(exchange,"anonymous",StringPool.EMPTY));
+//            }
+//            return proxyAuthenticationRequired(exchange.getResponse(), "缺失令牌，鉴权失败");
+//        }
     }
 
     private boolean isSkip(String path) {

@@ -35,15 +35,14 @@ public class ErrorExceptionHandler implements ErrorWebExceptionHandler {
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
 
-        ServerHttpRequest request = exchange.getRequest();
-        ServerHttpResponse response = exchange.getResponse();
-
         //参考AbstractErrorWebExceptionHandler
         if (exchange.getResponse().isCommitted()) {
             return Mono.error(ex);
         }
 
-        ResponseData data = message(request,ex);
+        ServerHttpResponse response = exchange.getResponse();
+
+        ResponseData data = message(exchange.getRequest(),ex);
         response.setRawStatusCode(data.getCode());
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
         return response.writeWith(Flux.just(response.bufferFactory().wrap(JSON.toJSONBytes(data))));

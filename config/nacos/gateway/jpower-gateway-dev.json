@@ -14,15 +14,15 @@
     "uri": "lb://jpower-system"
   },
   {
-    "id": "route-example",
+    "id": "github_route",
     "order": 1,
     "predicates": [{
       "name": "Path",
       "args": {
-        "pattern": "/example"
+        "pattern": "/github"
       }
     }],
     "filters": [],
-    "uri": "http://www.example.com"
+    "uri": "https://github.com"
   }
 ]
