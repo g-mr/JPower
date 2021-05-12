@@ -1,5 +1,6 @@
 package com.wlcb.jpower.module.common.nacos;
 
+import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 
@@ -16,16 +17,7 @@ public interface NacosConstants {
     String FILE_EXTENSION = "yaml";
 
     /** 通用配置文件 **/
-    String DATA_ID = "jpower".concat(StringPool.DOT).concat(FILE_EXTENSION);
-
-    /** 通用开发环境配置文件 **/
-    String DATA_ID_DEV = "jpower-dev".concat(StringPool.DOT).concat(FILE_EXTENSION);
-
-    /** 通用测试环境配置文件 **/
-    String DATA_ID_TEST = "jpower-test".concat(StringPool.DOT).concat(FILE_EXTENSION);
-
-    /** 通用生产环境配置文件 **/
-    String DATA_ID_PROD = "jpower-prod".concat(StringPool.DOT).concat(FILE_EXTENSION);
+    String DATA_ID = AppConstant.JPOWER.concat(StringPool.DOT).concat(FILE_EXTENSION);
 
     /** 配置文件是否支持动态刷新 **/
     String CONFIG_REFRESH = "true";
@@ -39,15 +31,11 @@ public interface NacosConstants {
      * @param profile 环境变量
      * @return addr
      */
-    static String nacosPublicDataId(String profile) {
-        switch (profile) {
-            case (AppConstant.PROD_CODE):
-                return DATA_ID_PROD;
-            case (AppConstant.TEST_CODE):
-                return DATA_ID_TEST;
-            default:
-                return DATA_ID_DEV;
+    static String nacosProfileDataId(String profile) {
+        if (Fc.isBlank(profile)){
+            profile = AppConstant.DEV_CODE;
         }
+        return AppConstant.JPOWER.concat(StringPool.DASH).concat(profile).concat(StringPool.DOT).concat(FILE_EXTENSION);
     }
 
 }
