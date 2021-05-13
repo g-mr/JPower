@@ -6,7 +6,6 @@ import com.wlcb.jpower.dto.AuthInfo;
 import com.wlcb.jpower.auth.TokenGranterBuilder;
 import com.wlcb.jpower.dto.TokenParameter;
 import com.wlcb.jpower.module.common.auth.SecureConstant;
-import com.wlcb.jpower.utils.AuthUtil;
 import com.wlcb.jpower.utils.TokenUtil;
 import com.wlcb.jpower.cache.SystemCache;
 import com.wlcb.jpower.cache.UserCache;
