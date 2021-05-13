@@ -1,5 +1,6 @@
 package com.wlcb.jpower.module.common.utils.constants;
 
+
 /**
  * @ClassName TokenConstant
  * @Description TODO Token配置常量
@@ -17,6 +18,7 @@ public interface TokenConstant {
     String REFRESH_TOKEN = "refresh_token";
     String USER_ID = "userId";
     String TENANT_CODE = "tenantCode";
+    String CLIENT_CODE = "clientCode";
     Integer AUTH_LENGTH = 7;
     /** 匿名用户和白名单的HEADER **/
     String PASS_HEADER_NAME = "jpower-auth-pass";

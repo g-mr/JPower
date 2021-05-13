@@ -3,6 +3,7 @@ package com.wlcb.jpower.module.common.utils;
 
 import com.wlcb.jpower.module.common.auth.*;
 import com.wlcb.jpower.module.common.support.EnvBeanUtil;
+import com.wlcb.jpower.module.common.utils.constants.CharPool;
 import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
@@ -19,6 +20,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.util.*;
 
+import static com.wlcb.jpower.module.common.auth.SecureConstant.BASIC_HEADER_PREFIX;
+
 /**
  * @Author mr.g
  * @Date 17:00 2020-08-24
@@ -27,7 +30,6 @@ import java.util.*;
 public class SecureUtil {
     private static final String REQUEST_JPOWER_USER = "REQUEST_JPOWER_USER";
     private final static String HEADER = TokenConstant.HEADER;
-    private final static String CLIENT_CODE = ClassUtil.getFiledName(UserInfo::getClientCode);
     private static final String BASE64_SECURITY = Base64.getEncoder().encodeToString(TokenConstant.SIGN_KEY.getBytes(CharsetKit.CHARSET_UTF_8));
     private static final boolean TENANT_MODE = EnvBeanUtil.get("jpower.tenant.enable", Boolean.class, true);
 
@@ -54,7 +56,7 @@ public class SecureUtil {
     public static UserInfo getUser(Claims claims) {
         UserInfo user = new UserInfo();
         if (Fc.notNull(claims)) {
-            user.setClientCode(Fc.toStr(claims.get(SecureUtil.CLIENT_CODE)));
+            user.setClientCode(Fc.toStr(claims.get(TokenConstant.CLIENT_CODE)));
             user.setUserId(Fc.toStr(claims.get(ClassUtil.getFiledName(UserInfo::getUserId))));
             user.setTenantCode(Fc.toStr(ClassUtil.getFiledName(UserInfo::getTenantCode)));
             user.setLoginId(Fc.toStr(claims.get(ClassUtil.getFiledName(UserInfo::getLoginId))));
@@ -279,50 +281,35 @@ public class SecureUtil {
     /**
      * 创建令牌
      *
-     * @param user      user
-     * @param audience  audience
-     * @param issuer    issuer
-     * @param tokenType tokenType
+     * @param param      param
+     * @param expire     expire
      * @return jwt
      */
-    public static TokenInfo createJWT(Map<String, Object> user, String audience, String issuer, String tokenType, ClientDetails clientDetails) {
+    public static TokenInfo createJWT(Map<String, Object> param, long expire) {
+
+        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);
 
-        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
-
-        //生成密钥
+        //生成签名密钥
         byte[] apiKeySecretBytes = Base64.getDecoder().decode(BASE64_SECURITY);
         Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
 
         //添加构成JWT的类
         JwtBuilder builder = Jwts.builder().setHeaderParam("Type", "JsonWebToken")
-                .setIssuer(issuer)
-                .setAudience(audience)
                 .signWith(signatureAlgorithm, signingKey);
 
         //设置JWT参数
-        user.forEach(builder::claim);
+        param.forEach(builder::claim);
 
-        //设置应用Code
-        builder.claim(CLIENT_CODE, clientDetails.getClientCode());
-
-        //添加Token过期时间 默认过期是一天
-        long expireMillis = DateUtil.getDate(1).getTime() - System.currentTimeMillis();
-        if (tokenType.equals(TokenConstant.ACCESS_TOKEN)) {
-            expireMillis = clientDetails.getAccessTokenValidity() * 1000;
-        } else if (tokenType.equals(TokenConstant.REFRESH_TOKEN)) {
-            expireMillis = clientDetails.getRefreshTokenValidity() * 1000;
-        }
-        long expMillis = nowMillis + expireMillis;
-        Date exp = new Date(expMillis);
+        Date exp = new Date(nowMillis + expire * 1000);
         builder.setExpiration(exp).setNotBefore(now);
 
         // 组装Token信息
         TokenInfo tokenInfo = new TokenInfo();
         tokenInfo.setToken(builder.compact());
-        tokenInfo.setExpire((int) expireMillis / 1000);
+        tokenInfo.setExpire(expire);
 
         return tokenInfo;
     }
@@ -330,37 +317,39 @@ public class SecureUtil {
     /**
      * 客户端信息解码
      */
-    @SneakyThrows
-    public static String[] extractAndDecodeHeader() {
+    public static String[] getClientInfo() {
         // 获取请求头客户端信息
         String header = Objects.requireNonNull(WebUtil.getRequest()).getHeader(SecureConstant.BASIC_HEADER_KEY);
-        header = Fc.toStr(header).replace(SecureConstant.BASIC_HEADER_PREFIX_EXT, SecureConstant.BASIC_HEADER_PREFIX);
-        if (!header.startsWith(SecureConstant.BASIC_HEADER_PREFIX)) {
+        header = Fc.toStr(header).replace(SecureConstant.BASIC_HEADER_PREFIX_EXT, BASIC_HEADER_PREFIX);
+        if (!header.startsWith(BASIC_HEADER_PREFIX)) {
             throw new RuntimeException("请求标头中没有客户端信息");
         }
-        byte[] base64Token = header.substring(6).getBytes(CharsetKit.UTF_8);
 
-        byte[] decoded;
-        try {
-            decoded = Base64Util.decode(base64Token);
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException("无法解析Authentication");
-        }
+        String decodeBasic = StringUtil.subAfter(header,BASIC_HEADER_PREFIX,false);
+        return extractClient(decodeBasic);
+    }
 
-        String token = new String(decoded, CharsetKit.UTF_8);
-        int index = token.indexOf(StringPool.COLON);
-        if (index == -1) {
-            throw new RuntimeException("无效的Authentication");
+    private static String[] extractClient(String decodeBasic) {
+        String token = base64Decoder(decodeBasic);
+        if (StringUtil.contains(token, CharPool.COLON)) {
+            return new String[]{
+                    StringUtil.subBefore(token,StringPool.COLON,false),
+                    StringUtil.subAfter(token,StringPool.COLON,false)};
         } else {
-            return new String[]{token.substring(0, index), token.substring(index + 1)};
+            throw new RuntimeException("无效的基本身份验证令牌");
         }
+    }
+
+    @SneakyThrows
+    public static String base64Decoder(String header) {
+        return new String(Base64Util.decode(header.getBytes(CharsetKit.UTF_8)), CharsetKit.UTF_8);
     }
 
     /**
      * 获取请求头中的客户端id
      */
     public static String getClientCodeFromHeader() {
-        String[] tokens = extractAndDecodeHeader();
+        String[] tokens = getClientInfo();
         assert tokens.length == 2;
         return tokens[0];
     }

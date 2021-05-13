@@ -1,18 +1,23 @@
 package com.wlcb.jpower.auth.granter;
 
-import com.wlcb.jpower.auth.utils.TokenUtil;
+import com.wlcb.jpower.auth.AuthUserInfo;
+import com.wlcb.jpower.auth.TokenGranter;
+import com.wlcb.jpower.dto.TokenParameter;
+import com.wlcb.jpower.utils.AuthUtil;
+import com.wlcb.jpower.utils.TokenUtil;
 import com.wlcb.jpower.cache.UserCache;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.redis.RedisUtil;
-import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.StringUtil;
-import com.wlcb.jpower.module.tenant.TenantConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+
+import static com.wlcb.jpower.auth.granter.PhoneTokenGranter.GRANT_TYPE;
 
 
 /**
@@ -22,7 +27,7 @@ import org.springframework.stereotype.Component;
  * @Date 2020-07-28 14:23
  * @Version 1.0
  */
-@Component
+@Component(GRANT_TYPE)
 public class PhoneTokenGranter implements TokenGranter {
 
     public static final String GRANT_TYPE = "phone";
@@ -33,13 +38,13 @@ public class PhoneTokenGranter implements TokenGranter {
     private AuthUserInfo authUserInfo;
 
     @Override
-    public UserInfo grant(ChainMap tokenParameter) {
-        String phone = tokenParameter.getStr("phone");
-        String phoneCode = tokenParameter.getStr("phoneCode");
-        String tenantCode = tokenParameter.getStr(TenantConstant.TENANT_CODE);
+    public UserInfo grant(TokenParameter tokenParameter) {
+        String phone = tokenParameter.getPhone();
+        String phoneCode = tokenParameter.getPhoneCode();
+        String tenantCode = tokenParameter.getTenantCode();
         // 获取验证码
         String redisCode = String.valueOf(redisUtils.get(CacheNames.PHONE_KEY + phone + tenantCode));
-        // 判断验证码
+        // 判断验证码;
         if (phoneCode == null || !StringUtil.equalsIgnoreCase(redisCode, phoneCode)) {
             throw new BusinessException(TokenUtil.PHONE_NOT_CORRECT);
         }
@@ -51,7 +56,7 @@ public class PhoneTokenGranter implements TokenGranter {
                 return authUserInfo.getPhoneUserInfo(tokenParameter);
             }else {
                 TbCoreUser result = UserCache.getUserByPhone(phone,tenantCode);
-                return TokenGranterBuilder.toUserInfo(result);
+                return AuthUtil.toUserInfo(result);
             }
         }
         return userInfo;

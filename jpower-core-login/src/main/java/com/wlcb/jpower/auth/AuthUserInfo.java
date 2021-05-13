@@ -1,5 +1,7 @@
-package com.wlcb.jpower.auth.granter;
+package com.wlcb.jpower.auth;
 
+import com.wlcb.jpower.dto.TokenParameter;
+import com.wlcb.jpower.utils.AuthUtil;
 import com.wlcb.jpower.cache.UserCache;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.module.base.exception.BusinessException;
@@ -22,13 +24,9 @@ public interface AuthUserInfo {
      * @Description //TODO 密码登陆各自业务实现
      * @date 22:43 2020/8/6 0006
      */
-    default UserInfo getPasswordUserInfo(ChainMap tokenParameter){
-        String account = tokenParameter.getStr("account");
-        String password = tokenParameter.getStr("password");
-        String tenantCode = tokenParameter.getStr("tenantCode");
-
-        TbCoreUser result = UserCache.queryUserByLoginIdPwd(account,password,tenantCode);
-        return TokenGranterBuilder.toUserInfo(result);
+    default UserInfo getPasswordUserInfo(TokenParameter tokenParameter){
+        TbCoreUser result = UserCache.queryUserByLoginIdPwd(tokenParameter.getLoginId(),tokenParameter.getPassWord(),tokenParameter.getTenantCode());
+        return AuthUtil.toUserInfo(result);
     }
 
     /**
@@ -36,10 +34,8 @@ public interface AuthUserInfo {
      * @Description //TODO 验证码登陆各自业务实现
      * @date 22:43 2020/8/6 0006
      */
-    default UserInfo getCaptchaUserInfo(ChainMap tokenParameter){
-        String account = tokenParameter.getStr("account");
-        String password = tokenParameter.getStr("password");
-        if (Fc.isNoneBlank(account, password)) {
+    default UserInfo getCaptchaUserInfo(TokenParameter tokenParameter){
+        if (Fc.isNoneBlank(tokenParameter.getLoginId(), tokenParameter.getPassWord())) {
             return getPasswordUserInfo(tokenParameter);
         }
         return null;
@@ -50,7 +46,7 @@ public interface AuthUserInfo {
      * @Description //TODO 第三方Code各自业务实现
      * @date 22:43 2020/8/6 0006
      */
-    default UserInfo getOtherCodeUserInfo(ChainMap tokenParameter){
+    default UserInfo getOtherCodeUserInfo(TokenParameter tokenParameter){
 //        String otherCode = tokenParameter.getStr("otherCode");
 //        String tenantCode = tokenParameter.getStr("tenantCode");
 //
@@ -69,7 +65,7 @@ public interface AuthUserInfo {
      */
     default UserInfo getRefreshUserInfo(String userType,String userId){
         TbCoreUser result = UserCache.getById(userId);
-        return TokenGranterBuilder.toUserInfo(result);
+        return AuthUtil.toUserInfo(result);
     }
 
     /**
@@ -79,11 +75,9 @@ public interface AuthUserInfo {
      * @Param [tokenParameter]
      * @return com.wlcb.jpower.module.common.auth.UserInfo
      **/
-    default UserInfo getPhoneUserInfo(ChainMap tokenParameter){
-        String phone = tokenParameter.getStr("phone");
-        String tenantCode = tokenParameter.getStr(TenantConstant.TENANT_CODE);
-        TbCoreUser result = UserCache.getUserByPhone(phone,tenantCode);
-        return TokenGranterBuilder.toUserInfo(result);
+    default UserInfo getPhoneUserInfo(TokenParameter tokenParameter){
+        TbCoreUser result = UserCache.getUserByPhone(tokenParameter.getPhone(),tokenParameter.getTenantCode());
+        return AuthUtil.toUserInfo(result);
     }
 
 }

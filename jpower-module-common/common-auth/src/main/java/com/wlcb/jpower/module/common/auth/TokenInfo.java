@@ -21,6 +21,6 @@ public class TokenInfo {
     /**
      * 过期秒数
      */
-    private int expire;
+    private Long expire;
 
 }

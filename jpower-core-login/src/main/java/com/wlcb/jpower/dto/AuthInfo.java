@@ -1,4 +1,4 @@
-package com.wlcb.jpower.auth;
+package com.wlcb.jpower.dto;
 
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import io.swagger.annotations.ApiModelProperty;

@@ -1,5 +1,6 @@
-package com.wlcb.jpower.auth.granter;
+package com.wlcb.jpower.auth;
 
+import com.wlcb.jpower.dto.TokenParameter;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.support.ChainMap;
 
@@ -16,6 +17,6 @@ public interface TokenGranter {
 	 * @param tokenParameter 授权参数
 	 * @return UserInfo
 	 */
-	UserInfo grant(ChainMap tokenParameter) ;
+	UserInfo grant(TokenParameter tokenParameter) ;
 
 }

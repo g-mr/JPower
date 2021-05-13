@@ -20,8 +20,8 @@ public class ClientDetails implements Serializable {
     @ApiModelProperty("客户端密钥")
     private String clientSecret;
     @ApiModelProperty("token有效时长 单位秒")
-    private Integer accessTokenValidity;
+    private Long accessTokenValidity;
     @ApiModelProperty("刷新token有效时长 单位秒")
-    private Integer refreshTokenValidity;
+    private Long refreshTokenValidity;
 
 }

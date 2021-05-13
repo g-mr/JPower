@@ -2,11 +2,12 @@ package com.wlcb.jpower.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.wf.captcha.SpecCaptcha;
-import com.wlcb.jpower.auth.AuthInfo;
-import com.wlcb.jpower.auth.granter.TokenGranter;
-import com.wlcb.jpower.auth.granter.TokenGranterBuilder;
-import com.wlcb.jpower.auth.utils.AuthInfoUtil;
-import com.wlcb.jpower.auth.utils.TokenUtil;
+import com.wlcb.jpower.dto.AuthInfo;
+import com.wlcb.jpower.auth.TokenGranterBuilder;
+import com.wlcb.jpower.dto.TokenParameter;
+import com.wlcb.jpower.module.common.auth.SecureConstant;
+import com.wlcb.jpower.utils.AuthUtil;
+import com.wlcb.jpower.utils.TokenUtil;
 import com.wlcb.jpower.cache.SystemCache;
 import com.wlcb.jpower.cache.UserCache;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
@@ -27,6 +28,7 @@ import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Date;
 import java.util.Map;
@@ -49,6 +51,7 @@ public class LoginController extends BaseController {
 
     private RedisUtil redisUtil;
     private JpowerTenantProperties tenantProperties;
+    private TokenGranterBuilder granterBuilder;
 
     @ApiOperation(value = "用户登录",notes = "Authorization（客户端识别码）：由clientCode+\":\"+clientSecret组成字符串后用base64编码后获得值，再由Basic +base64编码后的值组成客户端识别码； <br/>" +
             "&nbsp;&nbsp;&nbsp;clientCode和clientSecret的值由后端统一提供，不同的登录客户端值也不一样。<br/>" +
@@ -69,14 +72,13 @@ public class LoginController extends BaseController {
             @ApiImplicitParam(name = "Captcha-Code",required = false,value="验证码值    grantType=captcha时必填",paramType = "header")
     })
     @PostMapping(value = "/login",produces="application/json")
-    public ResponseData<AuthInfo> login(String tenantCode, String loginId, String passWord, String grantType, String refreshToken
-            , String phone, String phoneCode, String otherCode) {
+    public ResponseData<AuthInfo> login(@ApiIgnore TokenParameter parameter) {
 
         if (tenantProperties.getEnable()){
-            JpowerAssert.notNull(tenantCode,JpowerError.Arg,"租户编码不可为空");
-            TbCoreTenant tenant = SystemCache.getTenantByCode(tenantCode);
+            JpowerAssert.notNull(parameter.getTenantCode(),JpowerError.Arg,"租户编码不可为空");
+            TbCoreTenant tenant = SystemCache.getTenantByCode(parameter.getTenantCode());
             if (Fc.isNull(tenant)){
-                return ReturnJsonUtil.busFail("租户不存在");
+                return ReturnJsonUtil.notFind("租户不存在");
             }
             Date expireTime = getExpireTime(tenant.getLicenseKey());
             if (Fc.notNull(tenant.getExpireTime()) && Fc.notNull(expireTime) && new Date().before(expireTime)){
@@ -84,31 +86,17 @@ public class LoginController extends BaseController {
             }
         }
 
-        String userType = Fc.toStr(WebUtil.getRequest().getHeader(TokenUtil.USER_TYPE_HEADER_KEY), TokenUtil.DEFAULT_USER_TYPE);
+        parameter.setUserType(Fc.toStr(getRequest().getHeader(TokenUtil.USER_TYPE_HEADER_KEY), TokenUtil.DEFAULT_USER_TYPE));
+        parameter.setAuthorization(getRequest().getHeader(SecureConstant.BASIC_HEADER_KEY));
+        parameter.setCaptchaKey(getRequest().getHeader(TokenUtil.CAPTCHA_HEADER_KEY));
+        parameter.setCaptchaCode(getRequest().getHeader(TokenUtil.CAPTCHA_HEADER_CODE));
 
-        ChainMap tokenParameter = ChainMap.init().set("tenantCode", tenantCode)
-                .set("account", loginId)
-                .set("password", passWord)
-                .set("grantType", grantType)
-                .set("refreshToken", refreshToken)
-                //扩展参数，各自业务根据需求使用
-                .set("userType", userType)
-                .set("phone", phone)
-                .set("phoneCode", phoneCode)
-                .set("otherCode", otherCode);
+        UserInfo userInfo = granterBuilder.getGranter(parameter.getGrantType()).grant(parameter);
 
-        TokenGranter granter = TokenGranterBuilder.getGranter(grantType);
-        UserInfo userInfo = granter.grant(tokenParameter);
-
-        if (userInfo == null || userInfo.getUserId() == null) {
+        if (Fc.isNull(userInfo) || Fc.isBlank(userInfo.getUserId())) {
             return ReturnJsonUtil.fail(TokenUtil.USER_NOT_FOUND);
         }
-
-        AuthInfo authInfo = TokenUtil.createAuthInfo(userInfo);
-
-        AuthInfoUtil.cacheAuth(authInfo);
-
-        return ReturnJsonUtil.ok("登录成功",authInfo);
+        return ReturnJsonUtil.ok("登录成功",TokenUtil.createAuthInfo(userInfo));
     }
 
     @ApiOperation(value = "退出登录")

@@ -1,8 +1,9 @@
-package com.wlcb.jpower.auth.utils;
+package com.wlcb.jpower.utils;
 
-import com.wlcb.jpower.auth.AuthInfo;
 import com.wlcb.jpower.cache.SystemCache;
 import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
+import com.wlcb.jpower.dto.AuthInfo;
+import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.common.auth.ClientDetails;
 import com.wlcb.jpower.module.common.auth.TokenInfo;
 import com.wlcb.jpower.module.common.auth.UserInfo;
@@ -33,17 +34,14 @@ public class TokenUtil {
     public final static String TOKEN_EXPIRED = "token已过期，请重新登陆";
     public final static String USER_NOT_ACTIVATION = "用户尚未激活";
 
-    private final static String AUDIENCE = "audience";
-    private final static String ISSUSER = "issuser";
-
     /**
      * @author 郭丁志
      * @Description //TODO 获取客户端信息
      * @date 23:08 2020/10/17 0017
      * @return com.wlcb.jpower.module.common.auth.ClientDetails
      */
-    private static ClientDetails getClientDetails(){
-        String[] tokens = SecureUtil.extractAndDecodeHeader();
+    public static ClientDetails getClientDetails(){
+        String[] tokens = SecureUtil.getClientInfo();
         assert tokens.length == 2;
         String clientCode = tokens[0];
         String clientSecret = tokens[1];
@@ -54,7 +52,7 @@ public class TokenUtil {
 
         // 校验客户端信息
         if (!SecureUtil.validateClient(clientDetails, clientCode, clientSecret)) {
-            throw new RuntimeException("客户端认证失败!");
+            throw new BusinessException("客户端认证失败!");
         }
 
         return clientDetails;
@@ -68,21 +66,23 @@ public class TokenUtil {
      */
     public static AuthInfo createAuthInfo(UserInfo userInfo) {
 
-        //设置jwt参数
-        Map<String, Object> param = Fc.toMap(userInfo);
-        param.put(TokenConstant.TOKEN_TYPE, TokenConstant.ACCESS_TOKEN);
-
         ClientDetails clientDetails = getClientDetails();
         assert clientDetails != null;
         userInfo.setClientCode(clientDetails.getClientCode());
 
-        TokenInfo accessToken = SecureUtil.createJWT(param, AUDIENCE, ISSUSER, TokenConstant.ACCESS_TOKEN,clientDetails);
+        //设置jwt参数
+        Map<String, Object> param = Fc.toMap(userInfo);
+        param.put(TokenConstant.TOKEN_TYPE, TokenConstant.ACCESS_TOKEN);
+        param.put(TokenConstant.CLIENT_CODE, clientDetails.getClientCode());
+
+        TokenInfo accessToken = SecureUtil.createJWT(param, clientDetails.getAccessTokenValidity());
         AuthInfo authInfo = new AuthInfo();
         authInfo.setUser(userInfo);
         authInfo.setAccessToken(accessToken.getToken());
         authInfo.setExpiresIn(accessToken.getExpire());
         authInfo.setRefreshToken(createRefreshToken(userInfo,clientDetails).getToken());
         authInfo.setTokenType(TokenConstant.JPOWER);
+        AuthUtil.cacheAuth(authInfo);
         return authInfo;
     }
 
@@ -96,7 +96,8 @@ public class TokenUtil {
         return SecureUtil.createJWT(ChainMap.init()
                 .set(TokenConstant.TOKEN_TYPE, TokenConstant.REFRESH_TOKEN)
                 .set(TokenConstant.USER_ID, userInfo.getUserId())
-                , AUDIENCE, ISSUSER, TokenConstant.REFRESH_TOKEN,clientDetails);
+                .set(TokenConstant.CLIENT_CODE, clientDetails.getClientCode())
+                ,clientDetails.getRefreshTokenValidity());
     }
 
 }
