@@ -4,13 +4,13 @@ import com.wlcb.jpower.cache.SystemCache;
 import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
 import com.wlcb.jpower.dto.AuthInfo;
 import com.wlcb.jpower.module.base.exception.BusinessException;
-import com.wlcb.jpower.module.common.auth.ClientDetails;
 import com.wlcb.jpower.module.common.auth.TokenInfo;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.support.ChainMap;
-import com.wlcb.jpower.module.common.utils.BeanUtil;
+import com.wlcb.jpower.module.common.utils.DateUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SecureUtil;
+import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
 
 import java.util.Map;
@@ -40,7 +40,7 @@ public class TokenUtil {
      * @date 23:08 2020/10/17 0017
      * @return com.wlcb.jpower.module.common.auth.ClientDetails
      */
-    public static ClientDetails getClientDetails(){
+    public static TbCoreClient getClientDetails(){
         String[] tokens = SecureUtil.getClientInfo();
         assert tokens.length == 2;
         String clientCode = tokens[0];
@@ -48,14 +48,40 @@ public class TokenUtil {
 
         // 获取客户端信息
         TbCoreClient client = SystemCache.getClientByClientCode(clientCode);
-        ClientDetails clientDetails = Fc.notNull(client)?BeanUtil.copy(client,ClientDetails.class):null;
 
         // 校验客户端信息
-        if (!SecureUtil.validateClient(clientDetails, clientCode, clientSecret)) {
+        if (!validateClient(client, clientCode, clientSecret)) {
             throw new BusinessException("客户端认证失败!");
         }
 
-        return clientDetails;
+        return client;
+    }
+
+    /**
+     * 校验Client
+     *
+     * @param clientCode   客户端code
+     * @param clientSecret 客户端密钥
+     * @return boolean
+     */
+    public static boolean validateClient(TbCoreClient client, String clientCode, String clientSecret) {
+        if (Fc.notNull(client)) {
+            return StringUtil.equals(clientCode, client.getClientCode()) && StringUtil.equals(clientSecret, client.getClientSecret());
+        }
+        return false;
+    }
+
+    /**
+     * 获取过期时间
+     * @Author mr.g
+     * @param tokenValidity
+     * @return long
+     **/
+    private static long getExpire(Long tokenValidity) {
+        // 默认时间为1天
+        return Fc.isNull(tokenValidity) || tokenValidity == 0 ?
+                DateUtil.getDate(1).getTime() - System.currentTimeMillis() :
+                tokenValidity;
     }
 
     /**
@@ -66,21 +92,21 @@ public class TokenUtil {
      */
     public static AuthInfo createAuthInfo(UserInfo userInfo) {
 
-        ClientDetails clientDetails = getClientDetails();
-        assert clientDetails != null;
-        userInfo.setClientCode(clientDetails.getClientCode());
+        TbCoreClient client = getClientDetails();
+        assert client != null;
+        userInfo.setClientCode(client.getClientCode());
 
         //设置jwt参数
         Map<String, Object> param = Fc.toMap(userInfo);
         param.put(TokenConstant.TOKEN_TYPE, TokenConstant.ACCESS_TOKEN);
-        param.put(TokenConstant.CLIENT_CODE, clientDetails.getClientCode());
+        param.put(TokenConstant.CLIENT_CODE, client.getClientCode());
 
-        TokenInfo accessToken = SecureUtil.createJWT(param, clientDetails.getAccessTokenValidity());
+        TokenInfo accessToken = SecureUtil.createJWT(param, getExpire(client.getAccessTokenValidity()));
         AuthInfo authInfo = new AuthInfo();
         authInfo.setUser(userInfo);
         authInfo.setAccessToken(accessToken.getToken());
         authInfo.setExpiresIn(accessToken.getExpire());
-        authInfo.setRefreshToken(createRefreshToken(userInfo,clientDetails).getToken());
+        authInfo.setRefreshToken(createRefreshToken(userInfo,client).getToken());
         authInfo.setTokenType(TokenConstant.JPOWER);
         AuthUtil.cacheAuth(authInfo);
         return authInfo;
@@ -92,12 +118,12 @@ public class TokenUtil {
      * @param userInfo 用户信息
      * @return refreshToken
      */
-    private static TokenInfo createRefreshToken(UserInfo userInfo,ClientDetails clientDetails) {
+    private static TokenInfo createRefreshToken(UserInfo userInfo,TbCoreClient client) {
         return SecureUtil.createJWT(ChainMap.init()
                 .set(TokenConstant.TOKEN_TYPE, TokenConstant.REFRESH_TOKEN)
                 .set(TokenConstant.USER_ID, userInfo.getUserId())
-                .set(TokenConstant.CLIENT_CODE, clientDetails.getClientCode())
-                ,clientDetails.getRefreshTokenValidity());
+                .set(TokenConstant.CLIENT_CODE, client.getClientCode())
+                ,getExpire(client.getRefreshTokenValidity()));
     }
 
 }

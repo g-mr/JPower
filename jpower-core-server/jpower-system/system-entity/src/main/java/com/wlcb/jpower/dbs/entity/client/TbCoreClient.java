@@ -14,6 +14,8 @@ import lombok.Data;
 @Data
 public class TbCoreClient extends BaseEntity {
 
+    private static final long serialVersionUID = -4522536489931346102L;
+
     @ApiModelProperty("客户端名称")
     private String name;
     @ApiModelProperty("客户端编码")
@@ -21,9 +23,9 @@ public class TbCoreClient extends BaseEntity {
     @ApiModelProperty("客户端密钥")
     private String clientSecret;
     @ApiModelProperty("token有效时长 单位秒")
-    private Integer accessTokenValidity;
+    private Long accessTokenValidity;
     @ApiModelProperty("刷新token有效时长 单位秒")
-    private Integer refreshTokenValidity;
+    private Long refreshTokenValidity;
     @ApiModelProperty("排序")
     private String sortNum;
     @ApiModelProperty("备注")

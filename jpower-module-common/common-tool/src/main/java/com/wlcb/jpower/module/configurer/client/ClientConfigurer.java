@@ -31,7 +31,9 @@ public class ClientConfigurer implements WebMvcConfigurer {
         Set<String> set = new HashSet<>();
         List<AuthProperties.Client> clients = authProperties.getClient();
         clients.forEach(client -> set.addAll(client.getPath()));
-        registry.addInterceptor(new ClientInterceptor(clients)).addPathPatterns(new ArrayList<>(set));
+        if (clients.size() > 0){
+            registry.addInterceptor(new ClientInterceptor(clients)).addPathPatterns(new ArrayList<>(set));
+        }
     }
 
 }

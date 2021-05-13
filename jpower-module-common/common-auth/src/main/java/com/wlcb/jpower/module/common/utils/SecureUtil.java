@@ -354,18 +354,4 @@ public class SecureUtil {
         return tokens[0];
     }
 
-    /**
-     * 校验Client
-     *
-     * @param clientCode   客户端code
-     * @param clientSecret 客户端密钥
-     * @return boolean
-     */
-    public static boolean validateClient(ClientDetails clientDetails, String clientCode, String clientSecret) {
-        if (clientDetails != null) {
-            return StringUtil.equals(clientCode, clientDetails.getClientCode()) && StringUtil.equals(clientSecret, clientDetails.getClientSecret());
-        }
-        return false;
-    }
-
 }
