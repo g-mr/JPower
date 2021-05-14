@@ -1,5 +1,6 @@
 package com.wlcb.jpower.module.common.utils;
 
+import com.google.common.base.Joiner;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -67,18 +68,17 @@ public class OkHttp {
      */
     public static OkHttp get(String url, Map<String, String> header, Map<String, String> queries) {
         StringBuffer sb = new StringBuffer(url);
-        sb.append("?httpClientId=jpower");
-        if (queries != null && queries.keySet().size() > 0) {
-            queries.forEach((k, v) -> sb.append("&").append(k).append("=").append(v));
-        }
+        sb.append(Joiner.on(StringPool.AMPERSAND).withKeyValueSeparator(StringPool.EQUALS).join(queries));
+        Request request = requestBuilder(header).url(sb.toString()).get().build();
+        return new OkHttp(request);
+    }
 
+    private static Request.Builder requestBuilder(Map<String, String> header){
         Request.Builder builder = new Request.Builder();
-
         if (header != null && header.keySet().size() > 0) {
             header.forEach(builder::addHeader);
         }
-        Request request = builder.url(sb.toString()).get().build();
-        return new OkHttp(request);
+        return builder;
     }
 
     /**
@@ -91,17 +91,8 @@ public class OkHttp {
      */
     public static OkHttp head(String url, Map<String, String> header, Map<String, String> queries) {
         StringBuffer sb = new StringBuffer(url);
-        sb.append("?httpClientId=jpower");
-        if (queries != null && queries.keySet().size() > 0) {
-            queries.forEach((k, v) -> sb.append("&").append(k).append("=").append(v));
-        }
-
-        Request.Builder builder = new Request.Builder();
-
-        if (header != null && header.keySet().size() > 0) {
-            header.forEach(builder::addHeader);
-        }
-        Request request = builder.url(sb.toString()).head().build();
+        sb.append(Joiner.on(StringPool.AMPERSAND).withKeyValueSeparator(StringPool.EQUALS).join(queries));
+        Request request = requestBuilder(header).url(sb.toString()).head().build();
         return new OkHttp(request);
     }
 
@@ -125,18 +116,13 @@ public class OkHttp {
      * @return String
      */
     public static OkHttp delete(String url, Map<String, String> header, Map<String, String> params) {
-        FormBody.Builder formBuilder = new FormBody.Builder().add("httpClientId", "jpower");
+        FormBody.Builder formBuilder = new FormBody.Builder();
         //添加参数
-        if (params != null && params.keySet().size() > 0) {
+        if (Fc.notNull(params) && params.size() > 0) {
             params.forEach(formBuilder::add);
         }
 
-        Request.Builder builder = new Request.Builder();
-
-        if (header != null && header.keySet().size() > 0) {
-            header.forEach(builder::addHeader);
-        }
-        Request request = builder.url(url).delete(formBuilder.build()).build();
+        Request request = requestBuilder(header).url(url).delete(formBuilder.build()).build();
         return new OkHttp(request);
     }
 
@@ -160,19 +146,13 @@ public class OkHttp {
      * @return String
      */
     public static OkHttp put(String url, Map<String, String> header, Map<String, String> params) {
-        FormBody.Builder formBuilder = new FormBody.Builder().add("httpClientId", "jpower");
+        FormBody.Builder formBuilder = new FormBody.Builder();
         //添加参数
-        if (params != null && params.keySet().size() > 0) {
+        if (Fc.notNull(params) && params.size() > 0) {
             params.forEach(formBuilder::add);
         }
 
-        Request.Builder builder = new Request.Builder();
-
-        if (header != null && header.keySet().size() > 0) {
-            header.forEach(builder::addHeader);
-        }
-
-        Request request = builder.url(url).put(formBuilder.build()).build();
+        Request request = requestBuilder(header).url(url).put(formBuilder.build()).build();
         return new OkHttp(request);
     }
 
@@ -196,36 +176,24 @@ public class OkHttp {
      * @return String
      */
     public static OkHttp post(String url, Map<String, String> header, Map<String, String> params) {
-        FormBody.Builder formBuilder = new FormBody.Builder().add("httpClientId", "jpower");
+        FormBody.Builder formBuilder = new FormBody.Builder();
         //添加参数
-        if (params != null && params.keySet().size() > 0) {
+        if (Fc.notNull(params) && params.size() > 0) {
             params.forEach(formBuilder::add);
         }
 
-        Request.Builder builder = new Request.Builder();
-
-        if (header != null && header.keySet().size() > 0) {
-            header.forEach(builder::addHeader);
-        }
-
-        Request request = builder.url(url).post(formBuilder.build()).build();
+        Request request = requestBuilder(header).url(url).post(formBuilder.build()).build();
         return new OkHttp(request);
     }
 
     public static OkHttp method(String url, String method, Map<String, String> header, Map<String, String> params) {
-        FormBody.Builder formBuilder = new FormBody.Builder().add("httpClientId", "jpower");
+        FormBody.Builder formBuilder = new FormBody.Builder();
         //添加参数
-        if (params != null && params.keySet().size() > 0) {
+        if (Fc.notNull(params) && params.size() > 0) {
             params.forEach(formBuilder::add);
         }
 
-        Request.Builder builder = new Request.Builder();
-
-        if (header != null && header.keySet().size() > 0) {
-            header.forEach(builder::addHeader);
-        }
-
-        Request request = builder.url(url).method(method.toUpperCase(),formBuilder.build()).build();
+        Request request = requestBuilder(header).url(url).method(method.toUpperCase(),formBuilder.build()).build();
         return new OkHttp(request);
     }
 

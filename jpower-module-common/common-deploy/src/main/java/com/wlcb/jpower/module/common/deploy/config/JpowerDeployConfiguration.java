@@ -2,8 +2,6 @@ package com.wlcb.jpower.module.common.deploy.config;
 
 import com.wlcb.jpower.module.common.deploy.props.JpowerProperties;
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.NetUtil;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
@@ -36,8 +34,8 @@ public class JpowerDeployConfiguration  implements SmartInitializingSingleton {
 	@Override
 	public void afterSingletonsInstantiated() {
 		if (Fc.notNull(serverProperties)){
-			jpowerProperties.setHostName(NetUtil.getHostName(serverProperties.getAddress()));
-			jpowerProperties.setIp(NetUtil.getHostIp(serverProperties.getAddress()));
+			jpowerProperties.setHostName(serverProperties.getAddress().getHostName());
+			jpowerProperties.setIp(serverProperties.getAddress().getHostAddress());
 			jpowerProperties.setPort(serverProperties.getPort());
 		}
 	}

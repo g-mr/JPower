@@ -69,13 +69,13 @@ public class RedisConfig {
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory, RedisSerializer<Object> redisSerializer) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         StringRedisSerializer redisKeySerializer = new StringRedisSerializer();
-        // key 序列化
-        redisTemplate.setKeySerializer(redisKeySerializer);
-        redisTemplate.setHashKeySerializer(redisKeySerializer);
         // value 序列化
         redisTemplate.setValueSerializer(redisSerializer);
         redisTemplate.setHashValueSerializer(redisSerializer);
         redisTemplate.setConnectionFactory(redisConnectionFactory);
+        // key 序列化
+        redisTemplate.setKeySerializer(redisKeySerializer);
+        redisTemplate.setHashKeySerializer(redisKeySerializer);
         return redisTemplate;
     }
 
