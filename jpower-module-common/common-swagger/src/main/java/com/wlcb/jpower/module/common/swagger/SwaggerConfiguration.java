@@ -40,7 +40,7 @@ import static com.google.common.collect.Lists.newArrayList;
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties({SwaggerProperties.class})
-@ConditionalOnProperty(prefix = "knife4j", name = "enable", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "knife4j", name = "enable", havingValue = "true", matchIfMissing = false)
 @Import({Swagger2Configuration.class})
 @AllArgsConstructor
 public class SwaggerConfiguration {

@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 
+import java.net.InetAddress;
+
 /**
  * 配置类
  *
@@ -34,9 +36,23 @@ public class JpowerDeployConfiguration  implements SmartInitializingSingleton {
 	@Override
 	public void afterSingletonsInstantiated() {
 		if (Fc.notNull(serverProperties)){
-			jpowerProperties.setHostName(serverProperties.getAddress().getHostName());
-			jpowerProperties.setIp(serverProperties.getAddress().getHostAddress());
+			jpowerProperties.setHostName(getHostName(serverProperties.getAddress()));
+			jpowerProperties.setIp(getHostAddress(serverProperties.getAddress()));
 			jpowerProperties.setPort(serverProperties.getPort());
 		}
+	}
+
+	private String getHostName(InetAddress address){
+		if (Fc.isNull(address)){
+			return "127.0.0.1";
+		}
+		return address.getHostName();
+	}
+
+	private String getHostAddress(InetAddress address){
+		if (Fc.isNull(address)){
+			return "127.0.0.1";
+		}
+		return address.getHostAddress();
 	}
 }

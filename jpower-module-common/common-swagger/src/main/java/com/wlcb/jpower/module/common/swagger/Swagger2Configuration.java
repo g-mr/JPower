@@ -12,7 +12,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
  * @date 2021-05-08 17:28
  */
 @EnableSwagger2WebMvc
-@ConditionalOnProperty(prefix = "knife4j", name = "enable", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "knife4j", name = "enable", havingValue = "true", matchIfMissing = false)
 @Import(BeanValidatorPluginsConfiguration.class)
 public class Swagger2Configuration {
 

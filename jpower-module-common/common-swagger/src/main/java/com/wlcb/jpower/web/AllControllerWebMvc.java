@@ -3,6 +3,7 @@ package com.wlcb.jpower.web;
 import io.swagger.models.Swagger;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -31,6 +32,7 @@ import static springfox.documentation.swagger.common.HostNameProvider.components
  * @date 2021-03-31 15:38
  */
 @Controller
+@ConditionalOnProperty(prefix = "knife4j", name = "enable", havingValue = "true", matchIfMissing = false)
 @ConditionalOnClass(name = "javax.servlet.http.HttpServletRequest")
 @ApiIgnore
 @AllArgsConstructor
