@@ -68,7 +68,9 @@ public class OkHttp {
      */
     public static OkHttp get(String url, Map<String, String> header, Map<String, String> queries) {
         StringBuffer sb = new StringBuffer(url);
-        sb.append(Joiner.on(StringPool.AMPERSAND).withKeyValueSeparator(StringPool.EQUALS).join(queries));
+        if (Fc.notNull(queries) && queries.size() > 0){
+            sb.append(Joiner.on(StringPool.AMPERSAND).withKeyValueSeparator(StringPool.EQUALS).join(queries));
+        }
         Request request = requestBuilder(header).url(sb.toString()).get().build();
         return new OkHttp(request);
     }
@@ -91,7 +93,9 @@ public class OkHttp {
      */
     public static OkHttp head(String url, Map<String, String> header, Map<String, String> queries) {
         StringBuffer sb = new StringBuffer(url);
-        sb.append(Joiner.on(StringPool.AMPERSAND).withKeyValueSeparator(StringPool.EQUALS).join(queries));
+        if (Fc.notNull(queries) && queries.size() > 0){
+            sb.append(Joiner.on(StringPool.AMPERSAND).withKeyValueSeparator(StringPool.EQUALS).join(queries));
+        }
         Request request = requestBuilder(header).url(sb.toString()).head().build();
         return new OkHttp(request);
     }

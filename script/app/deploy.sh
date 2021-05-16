@@ -6,22 +6,22 @@ usage(){
 
 #启动基础支撑模块
 base(){
-  docker-compose up -d nginx nacos sentinel seata skywalking-oap skywalking-ui jpower-admin
+  docker-compose up -d nginx nacos sentinel seata skywalking-oap skywalking-ui
 }
 
 #启动核心程序模块
 core(){
-  docker-compose up -d jpower-gateway jpower-auth jpower-user jpower-system jpower-file jpower-log jpower-api
+  docker-compose up -d jpower-gateway jpower-auth jpower-user jpower-system jpower-file jpower-log jpower-api jpower-admin
 }
 
 #关闭核心程序模块
 stopCore(){
-  docker-compose stop jpower-gateway jpower-auth jpower-user jpower-system jpower-file jpower-log jpower-api
+  docker-compose stop jpower-gateway jpower-auth jpower-user jpower-system jpower-file jpower-log jpower-api jpower-admin
 }
 
 #下载核心程序模块镜像
 pull(){
-  docker-compose pull jpower-gateway jpower-auth jpower-user jpower-system jpower-file jpower-log jpower-api
+  docker-compose pull jpower-gateway jpower-auth jpower-user jpower-system jpower-file jpower-log jpower-api jpower-admin
 }
 
 #关闭所有模块

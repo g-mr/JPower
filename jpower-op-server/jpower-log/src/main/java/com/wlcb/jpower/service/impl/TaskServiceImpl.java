@@ -89,13 +89,15 @@ public class TaskServiceImpl implements TaskService {
                     String content = OkHttp.get(route.getLocation()+route.getUrl())
                             .execute(Fc.isNull(route.getAuth())?SpringUtil.getBean(AuthInterceptor.class):AuthBuilder.getInterceptor(route))
                             .getBody();
-                    return JSON.parseObject(Fc.isNotBlank(content)?content:"{}");
+                    log.info("{}获取到接口信息完成:{}",route.getName(),content);
+                    return JSON.parseObject(Fc.isNotBlank(content)&&JsonUtil.isJsonObject(content)?content:"{}");
                 });
             } catch (Exception e) {
                 if (Fc.isNull(route)){
                     log.error("获取全部接口出错，route is null");
                 }else {
-                    log.error("获取全部接口出错，name={},host={}",route.getName(),route.getLocation());
+                    e.printStackTrace();
+                    log.error("获取全部接口出错，name={},host={},error={}",route.getName(),route.getLocation(),e.getMessage());
                 }
                 return new JSONObject();
             }

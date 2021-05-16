@@ -1,10 +1,9 @@
 package com.wlcb.jpower;
 
 import com.wlcb.jpower.module.common.deploy.JpowerApplication;
+import com.wlcb.jpower.module.common.deploy.service.annotation.JpowerCloudApplication;
 import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import de.codecentric.boot.admin.server.config.EnableAdminServer;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 /**
  * @ClassName AdminStartApplication
@@ -13,8 +12,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  * @Date 2020-02-24 18:41
  * @Version 1.0
  */
-@SpringBootApplication
-@EnableDiscoveryClient
+@JpowerCloudApplication
 @EnableAdminServer
 public class AdminStartApplication {
 

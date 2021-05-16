@@ -43,14 +43,17 @@ feign:
     enabled: false
 
 management:
-  # 端点检查（健康检查）
+  endpoint:
+    shutdown:
+      #开启端点
+      enabled: true
+    health:
+      show-details: always
   endpoints:
     web:
       exposure:
+        #开启所有接口
         include: "*"
-  endpoint:
-    health:
-      show-details: always
 
 
 #日志打印级别
@@ -86,7 +89,7 @@ knife4j:
 swagger:
   title: JPower 接口文档系统
   description: JPower 接口文档系统
-  version: 2.0.0
+  version: 2.0.1
   license: Powered By JPower
   license-url: https://gitee.com/gdzWork/JPower
   terms-of-service-url: http://jpower.top
