@@ -7,7 +7,6 @@ import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.controller.BaseController;
-import com.wlcb.jpower.module.common.utils.BeanUtil;
 import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
@@ -56,9 +55,7 @@ public class RoleController extends BaseController {
     @ApiOperation("新增角色")
     @RequestMapping(value = "/add",method = {RequestMethod.POST},produces="application/json")
     public ResponseData add(TbCoreRole coreRole){
-
-        BeanUtil.allFieldIsNULL(coreRole,
-                "name");
+        JpowerAssert.notEmpty(coreRole.getName(),JpowerError.Arg,"名称不可为空");
 
         if (StringUtils.isBlank(coreRole.getParentId())){
             coreRole.setParentId(JpowerConstants.TOP_CODE);

@@ -23,7 +23,7 @@ public class UserWrapper extends BaseDictWrapper<TbCoreUser, UserVo> {
 
     @Override
     protected UserVo conver(TbCoreUser user) {
-        UserVo userVo = Objects.requireNonNull(BeanUtil.copy(user, UserVo.class));
+        UserVo userVo = Objects.requireNonNull(BeanUtil.copyProperties(user, UserVo.class));
         userVo.setOrgName(SystemCache.getOrgName(userVo.getOrgId()));
         userVo.setRoleName(Fc.join(SystemCache.getRoleNameByIds(Fc.toStrList(user.getRoleIds()))," | "));
         return userVo;

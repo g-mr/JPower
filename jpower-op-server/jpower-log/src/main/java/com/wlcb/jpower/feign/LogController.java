@@ -37,7 +37,7 @@ public class LogController implements LogClient {
     @Override
     @PostMapping("/saveOperateLog")
     public ResponseData<Boolean> saveOperateLog(@RequestBody OperateLogDto operateLog){
-        TbLogOperate logOperate = BeanUtil.copy(operateLog, TbLogOperate.class);
+        TbLogOperate logOperate = BeanUtil.copyProperties(operateLog, TbLogOperate.class);
         return ReturnJsonUtil.status(operateLogService.save(logOperate));
     }
 
@@ -49,7 +49,7 @@ public class LogController implements LogClient {
     @Override
     @PostMapping("/saveErrorLog")
     public ResponseData<Boolean> saveErrorLog(ErrorLogDto errorLog){
-        TbLogError logError = BeanUtil.copy(errorLog, TbLogError.class);
+        TbLogError logError = BeanUtil.copyProperties(errorLog, TbLogError.class);
         return ReturnJsonUtil.status(errorLogService.save(logError));
     }
 }

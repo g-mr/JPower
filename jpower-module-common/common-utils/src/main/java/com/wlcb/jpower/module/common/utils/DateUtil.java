@@ -12,7 +12,7 @@ import java.util.Date;
  * @Date 2020-02-03 18:40
  * @Version 1.0
  */
-public class DateUtil extends org.apache.commons.lang3.time.DateUtils {
+public class DateUtil extends cn.hutool.core.date.DateUtil {
 
     public static final String PATTERN_DATETIME = "yyyy-MM-dd HH:mm:ss";
     public static final String PATTERN_DATE = "yyyy-MM-dd";
@@ -101,7 +101,7 @@ public class DateUtil extends org.apache.commons.lang3.time.DateUtils {
         }
         try
         {
-            return parseDate(str.toString(), parsePatterns);
+            return org.apache.commons.lang3.time.DateUtils.parseDate(str.toString(), parsePatterns);
         }
         catch (ParseException e)
         {

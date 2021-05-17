@@ -54,7 +54,7 @@ public abstract class BaseDictWrapper<T, V> extends BaseWrapper<T, V> {
     }
 
     public V dict(T entity,Class<V> clz){
-        return dict(BeanUtil.copy(entity,clz));
+        return dict(BeanUtil.copyProperties(entity,clz));
     }
 
     public List<V> dict(List<T> list, Class<V> v){

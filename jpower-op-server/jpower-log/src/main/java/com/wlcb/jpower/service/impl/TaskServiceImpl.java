@@ -1,5 +1,6 @@
 package com.wlcb.jpower.service.impl;
 
+import cn.hutool.core.thread.ThreadUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -118,8 +119,8 @@ public class TaskServiceImpl implements TaskService {
             if (restFulInfo.containsKey(PATHS)){
                 JSONObject paths = restFulInfo.getJSONObject(PATHS);
 
-                //这里需要启动一个线程去和数据库比对，把已经不存在配置删除掉
-                new Thread(() -> monitorSettingService.deleteSetting(route.getName(),paths.getInnerMap(),restFulInfo.getJSONArray(TAGS))).start();
+                //这里异步执行去和数据库比对，把已经不存在配置删除掉
+                ThreadUtil.execAsync(() -> monitorSettingService.deleteSetting(route.getName(),paths.getInnerMap(),restFulInfo.getJSONArray(TAGS)));
 
                 RestCache.set(route.getName(),restFulInfo);
                 log.info("---> SERVER RESTFUL SUM={}",paths.size());

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 /**
  * Feign接口类
  *
- * @author Chill
+ * @author mr.g
  */
 @FeignClient(value = AppConstant.JPOWER_LOG, fallback = LogClientFallback.class, path = "/log")
 public interface LogClient {

@@ -74,9 +74,10 @@ public class FunctionController extends BaseController {
     @ApiOperation("新增")
     @PostMapping(value = "/add", produces="application/json")
     public ResponseData add(TbCoreFunction coreFunction){
-
-        BeanUtil.allFieldIsNULL(coreFunction,
-                "functionName","code", "url", "isMenu");
+        JpowerAssert.notEmpty(coreFunction.getFunctionName(),JpowerError.Arg,"名称不可为空");
+        JpowerAssert.notEmpty(coreFunction.getCode(),JpowerError.Arg,"编码不可为空");
+        JpowerAssert.notEmpty(coreFunction.getUrl(),JpowerError.Arg,"URL不可为空");
+        JpowerAssert.notNull(coreFunction.getIsMenu(),JpowerError.Arg,"是否菜单不可为空");
 
         if(StringUtils.isBlank(coreFunction.getParentId())){
             coreFunction.setParentId("-1");

@@ -1316,9 +1316,8 @@ public class Fc {
      * @param <T>   泛型标记
      * @return 对象
      */
-    @SuppressWarnings("unchecked")
     public static <T> T newInstance(Class<?> clazz) {
-        return (T) BeanUtil.instantiateClass(clazz);
+        return BeanUtil.newInstance(clazz);
     }
 
     /**
@@ -1364,7 +1363,7 @@ public class Fc {
      * @return T
      */
     public static <T> T clone(T source) {
-        return (T) BeanUtil.copy(source, source.getClass());
+        return (T) BeanUtil.copyProperties(source, source.getClass());
     }
 
     /**
@@ -1378,7 +1377,7 @@ public class Fc {
      * @return T
      */
     public static <T> T copy(Object source, Class<T> clazz) {
-        return BeanUtil.copy(source, clazz);
+        return BeanUtil.copyProperties(source, clazz);
     }
 
     /**
@@ -1390,7 +1389,7 @@ public class Fc {
      * @param targetBean 需要赋值的对象
      */
     public static void copy(Object source, Object targetBean) {
-        BeanUtil.copy(source, targetBean);
+        BeanUtil.copyProperties(source, targetBean);
     }
 
     /**

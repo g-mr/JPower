@@ -4,7 +4,6 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
-import org.springframework.lang.Nullable;
 
 import java.lang.reflect.*;
 import java.util.Date;
@@ -16,8 +15,7 @@ import java.util.Date;
  */
 @UtilityClass
 @Slf4j
-public class ReflectUtil
-{
+public class ReflectUtil extends cn.hutool.core.util.ReflectUtil{
     private static final String SETTER_PREFIX = "set";
 
     private static final String GETTER_PREFIX = "get";
@@ -63,51 +61,6 @@ public class ReflectUtil
         }
     }
 
-    /**
-     * 直接读取对象属性值, 无视private/protected修饰符, 不经过getter函数.
-     */
-    @SuppressWarnings("unchecked")
-    public static <E> E getFieldValue(final Object obj, final String fieldName)
-    {
-        Field field = getAccessibleField(obj, fieldName);
-        if (field == null)
-        {
-            log.debug("在 [" + obj.getClass() + "] 中，没有找到 [" + fieldName + "] 字段 ");
-            return null;
-        }
-        E result = null;
-        try
-        {
-            result = (E) field.get(obj);
-        }
-        catch (IllegalAccessException e)
-        {
-            log.error("不可能抛出的异常{}", e.getMessage());
-        }
-        return result;
-    }
-
-    /**
-     * 直接设置对象属性值, 无视private/protected修饰符, 不经过setter函数.
-     */
-    public static <E> void setFieldValue(final Object obj, final String fieldName, final E value)
-    {
-        Field field = getAccessibleField(obj, fieldName);
-        if (field == null)
-        {
-            // throw new IllegalArgumentException("在 [" + obj.getClass() + "] 中，没有找到 [" + fieldName + "] 字段 ");
-            log.debug("在 [" + obj.getClass() + "] 中，没有找到 [" + fieldName + "] 字段 ");
-            return;
-        }
-        try
-        {
-            field.set(obj, value);
-        }
-        catch (IllegalAccessException e)
-        {
-            log.error("不可能抛出的异常: {}", e.getMessage());
-        }
-    }
 
     /**
      * 直接调用对象方法, 无视private/protected修饰符.

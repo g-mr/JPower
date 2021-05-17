@@ -52,7 +52,7 @@ public class AuthUtil {
             dataScopeList.forEach(dataScope -> {
                 String url = getUrl(menuList,dataScope.getMenuId());
                 if (Fc.isNotBlank(url)){
-                    map.put(url,BeanUtil.copy(dataScope, DataScope.class));
+                    map.put(url,BeanUtil.copyProperties(dataScope, DataScope.class));
                 }
             });
         }
@@ -61,7 +61,7 @@ public class AuthUtil {
             dataScopeRoleList.forEach(dataScope -> {
                 String url = getUrl(menuList,dataScope.getMenuId());
                 if (Fc.isNotBlank(url)){
-                    map.put(url,BeanUtil.copy(dataScope, DataScope.class));
+                    map.put(url,BeanUtil.copyProperties(dataScope, DataScope.class));
                 }
             });
         }

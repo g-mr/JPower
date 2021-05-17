@@ -9,7 +9,6 @@ import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.page.PaginationContext;
-import com.wlcb.jpower.module.common.utils.BeanUtil;
 import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
@@ -50,9 +49,8 @@ public class OrgController extends BaseController {
     @ApiOperation(value = "新增一个组织机构",notes = "无需传主键(id)")
     @RequestMapping(value = "/add",method = {RequestMethod.POST},produces="application/json")
     public ResponseData add(TbCoreOrg coreOrg){
-
-        BeanUtil.allFieldIsNULL(coreOrg,
-                "name","code");
+        JpowerAssert.notEmpty(coreOrg.getName(),JpowerError.Arg,"名称不可为空");
+        JpowerAssert.notEmpty(coreOrg.getCode(),JpowerError.Arg,"编码不可为空");
 
         Boolean is = coreOrgService.add(coreOrg);
 

@@ -53,7 +53,7 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> ex
         entity.setUpdateTime(now);
         // todo end
 
-        Field field = BeanUtil.getField(entity.getClass(), TENANT_CODE);
+        Field field = cn.hutool.core.util.ReflectUtil.getField(entity.getClass(), TENANT_CODE);
         if (Fc.notNull(field)){
             String tenantCode = ReflectUtil.invokeGetter(entity,TENANT_CODE);
             if (SecureUtil.isRoot() && isSave){
@@ -182,7 +182,7 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> ex
      * @return java.util.List<V>
      **/
     public <V extends Node> List<V> listTree(Wrapper<T> queryWrapper,Class<V> clz) {
-        return ForestNodeMerger.merge(listConver(queryWrapper,t -> BeanUtil.copy(t, clz)));
+        return ForestNodeMerger.merge(listConver(queryWrapper,t -> BeanUtil.copyProperties(t, clz)));
     }
 
 }
