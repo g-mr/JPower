@@ -397,6 +397,9 @@ CREATE TABLE `tb_core_user_role` (
 
 SET FOREIGN_KEY_CHECKS = 1;
 
+
+-- start todo 接口监控相关表
+
 -- ----------------------------
 -- Table structure for tb_log_monitor_result
 -- ----------------------------
@@ -450,7 +453,7 @@ create table tb_log_monitor_setting(
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='接口监控设置表';
 
 -- ----------------------------
--- Table structure for tb_log_monitor_setting_param
+-- Table structure for tb_log_monitor_param
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_log_monitor_param`;
 create table tb_log_monitor_param(
@@ -470,3 +473,75 @@ create table tb_log_monitor_param(
   is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
   PRIMARY KEY (id) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='接口监控参数表';
+
+-- end todo 接口监控相关表
+
+-- start todo 日志相关表
+
+-- ----------------------------
+-- Table structure for tb_log_error
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_log_error`;
+create table tb_log_error(
+  id varchar(32) not null COMMENT '主建',
+  server_name varchar(50) not null comment '服务名称',
+  server_ip varchar(20) default null comment '服务器ip',
+  server_host varchar(30) default null comment '服务器名',
+  env varchar(8) default null comment '环境',
+  url varchar(50) default null comment '请求接口',
+  method varchar(8) default null comment '操作方式',
+  method_class varchar(100) default null comment '方法类',
+  method_name varchar(50) default null comment '方法名',
+  param varchar(258) default null comment '请求参数',
+  oper_ip varchar(20) default null comment '操作IP地址',
+  oper_name varchar(50) default null comment '操作人员',
+  oper_user_type tinyint(1) default null comment '操作人员类型，是系统用户还是业务用户 0系统1业务2白名单',
+  client_code varchar(20) default null comment '操作客户端',
+  error text default null comment '错误信息',
+  line_number int(4) default null comment '报错行号',
+  exception_name varchar(258) default null comment '异常名称',
+  message text default null comment '异常信息',
+  create_user varchar(32) default 'root' not null comment '创建人',
+  create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
+  update_user varchar(32) default 'root' not null comment '更新人',
+  update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
+  create_org varchar(32) DEFAULT NULL comment '创建部门',
+  status   tinyint(1) default 1 comment '状态',
+  is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
+  PRIMARY KEY (id) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='错误日志表';
+
+-- ----------------------------
+-- Table structure for tb_log_operate
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_log_operate`;
+create table tb_log_operate(
+  id varchar(32) not null COMMENT '主建',
+  server_name varchar(50) not null comment '服务名称',
+  server_ip varchar(20) default null comment '服务器ip',
+  server_host varchar(30) default null comment '服务器名',
+  env varchar(8) default null comment '环境',
+  url varchar(50) default null comment '请求接口',
+  method varchar(8) default null comment '操作方式',
+  method_class varchar(100) default null comment '方法类',
+  method_name varchar(50) default null comment '方法名',
+  param varchar(258) default null comment '请求参数',
+  oper_ip varchar(20) default null comment '操作IP地址',
+  oper_name varchar(50) default null comment '操作人员',
+  oper_user_type tinyint(1) default null comment '操作人员类型，是系统用户还是业务用户 0系统1业务2白名单',
+  client_code varchar(20) default null comment '操作客户端',
+  title varchar(50) default null comment '操作标题',
+  business_type tinyint(1) default null comment '业务类型（0=其它,1=新增,2=修改,3=删除,4=授权,5=导出,6=导入,7=强退,8=生成代码,9=清空数据）',
+  return_content text default null comment '返回内容',
+  error_msg text default null comment '错误消息',
+  create_user varchar(32) default 'root' not null comment '创建人',
+  create_time datetime not null DEFAULT CURRENT_TIMESTAMP comment '创建时间',
+  update_user varchar(32) default 'root' not null comment '更新人',
+  update_time datetime not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP comment '更新时间',
+  create_org varchar(32) DEFAULT NULL comment '创建部门',
+  status   tinyint(1) default 1 comment '操作状态（0正常 1异常）',
+  is_deleted tinyint(1) default 0 comment '是否删除 0否 1是',
+  PRIMARY KEY (id) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='操作日志表';
+
+-- end todo 日志相关表

@@ -4,7 +4,7 @@ import com.wlcb.jpower.module.base.feign.LogClient;
 import com.wlcb.jpower.module.base.model.ErrorLogDto;
 import com.wlcb.jpower.module.base.utils.FieldCompletionUtil;
 import com.wlcb.jpower.module.common.deploy.props.JpowerProperties;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -16,14 +16,14 @@ import org.springframework.scheduling.annotation.Async;
  * @Date 2021/5/1 0001 1:01
  */
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ErrorLogListener {
 
     private final LogClient logService;
     private final JpowerProperties properties;
 
     @Async
-    @EventListener(OperateLogEvent.class)
+    @EventListener(ErrorLogEvent.class)
     public void saveApiLog(ErrorLogEvent event) {
         ErrorLogDto errorLog = (ErrorLogDto) event.getSource();
         FieldCompletionUtil.serverInfo(errorLog,properties);

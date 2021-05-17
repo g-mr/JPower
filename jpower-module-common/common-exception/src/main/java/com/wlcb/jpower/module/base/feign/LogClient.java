@@ -31,5 +31,5 @@ public interface LogClient {
 	 * @return com.wlcb.jpower.module.base.vo.ResponseData<java.lang.Boolean>
 	 */
 	@PostMapping("/saveErrorLog")
-	ResponseData<Boolean> saveErrorLog(ErrorLogDto errorLog);
+	ResponseData<Boolean> saveErrorLog(@RequestBody ErrorLogDto errorLog);
 }

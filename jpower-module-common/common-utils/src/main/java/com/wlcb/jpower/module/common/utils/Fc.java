@@ -1272,7 +1272,7 @@ public class Fc {
 
     /**
      * 获取Annotation
-     *
+     *      Spring方法获取
      * @param annotatedElement AnnotatedElement
      * @param annotationType   注解类
      * @param <A>              泛型标记
@@ -1285,7 +1285,7 @@ public class Fc {
 
     /**
      * 获取Annotation
-     *
+     *      Spring方法获取
      * @param method         Method
      * @param annotationType 注解类
      * @param <A>            泛型标记
@@ -1298,7 +1298,7 @@ public class Fc {
 
     /**
      * 获取Annotation
-     *
+     *      Spring方法获取
      * @param handlerMethod  HandlerMethod
      * @param annotationType 注解类
      * @param <A>            泛型标记

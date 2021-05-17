@@ -17,7 +17,7 @@ public class LogDto implements Serializable {
     /**
      * 服务名称
      */
-    protected String serviceName;
+    protected String serverName;
     /**
      * 服务器 ip
      */
@@ -30,10 +30,6 @@ public class LogDto implements Serializable {
      * 环境
      */
     protected String env;
-    /**
-     * 操作IP地址
-     */
-    protected String remoteIp;
     /**
      * 操作方式
      */
@@ -54,6 +50,10 @@ public class LogDto implements Serializable {
      * 请求参数
      */
     protected String param;
+    /**
+     * 操作IP地址
+     */
+    protected String operIp;
     /**
      * 操作人员
      */

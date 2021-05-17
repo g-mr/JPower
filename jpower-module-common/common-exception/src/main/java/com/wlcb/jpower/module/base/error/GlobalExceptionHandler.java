@@ -1,5 +1,6 @@
 package com.wlcb.jpower.module.base.error;
 
+import cn.hutool.core.util.StrUtil;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.base.exception.JpowerException;
 import com.wlcb.jpower.module.base.listener.ErrorLogEvent;
@@ -26,6 +27,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private final String JPOWER_PACKAGE = "com.wlcb.jpower";
 
     /**
      * 系统异常处理，比如：404,500
@@ -83,15 +86,23 @@ public class GlobalExceptionHandler {
         FieldCompletionUtil.requestInfo(errorLog, request);
         FieldCompletionUtil.userInfo(errorLog,LoginUserContext.get());
 
-        StackTraceElement element = e.getStackTrace()[0];
+        StackTraceElement element = getStackTrace(e.getStackTrace());
 
         errorLog.setMessage(e.getMessage());
         errorLog.setMethodClass(element.getClassName());
         errorLog.setMethodName(element.getMethodName());
-        errorLog.setError(ExceptionsUtil.getStackTraceAsString(e));
         errorLog.setLineNumber(element.getLineNumber());
+        errorLog.setError(ExceptionsUtil.getStackTraceAsString(e));
         errorLog.setExceptionName(e.getClass().getName());
         SpringUtil.publishEvent(new ErrorLogEvent(errorLog));
     }
 
+    private StackTraceElement getStackTrace(StackTraceElement[] elements){
+        for (StackTraceElement element : elements) {
+            if (StrUtil.startWith(element.getClassName(),JPOWER_PACKAGE)){
+                return element;
+            }
+        }
+        return elements[0];
+    }
 }

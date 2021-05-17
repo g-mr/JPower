@@ -16,12 +16,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * @Author mr.g
  * @Date 2021/5/1 0001 19:32
  */
-@Api(tags = "保存日志",hidden = true)
+@Api(tags = "保存日志")
+@ApiIgnore
 @RestController
 @RequestMapping("/log")
 @AllArgsConstructor
@@ -48,7 +50,7 @@ public class LogController implements LogClient {
      */
     @Override
     @PostMapping("/saveErrorLog")
-    public ResponseData<Boolean> saveErrorLog(ErrorLogDto errorLog){
+    public ResponseData<Boolean> saveErrorLog(@RequestBody ErrorLogDto errorLog){
         TbLogError logError = BeanUtil.copyProperties(errorLog, TbLogError.class);
         return ReturnJsonUtil.status(errorLogService.save(logError));
     }

@@ -7,26 +7,28 @@ import java.lang.annotation.*;
 
 /**
  * 自定义操作日志记录注解
- * @author mr.gmac
+ * @author mr.g
  */
 @Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Log{
+public @interface OperateLog{
 
-    /** 模块 **/
-    @AliasFor("title")
+    /**
+     * Alias for {@link #title}.
+     */
+    @AliasFor(attribute = "title")
     String value() default "日志记录";
 
     /** 模块 **/
-    @AliasFor("value")
+    @AliasFor(attribute = "value")
     String title() default "日志记录";
 
     /** 功能类型 **/
     BusinessType businessType() default BusinessType.OTHER;
 
-    /** 是否需要记录到数据库 (该配置暂时无效，功能待实现) **/
-    boolean isSaveLog() default false;
+    /** 是否需要记录到数据库 **/
+    boolean isSaveLog() default true;
 
     /** 是否获取Request信息 **/
     boolean isSaveRequestData() default true;

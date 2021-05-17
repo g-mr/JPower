@@ -1,7 +1,7 @@
 package com.wlcb.jpower.controller.role;
 
 import com.wlcb.jpower.dbs.entity.role.TbCoreRole;
-import com.wlcb.jpower.module.base.annotation.Log;
+import com.wlcb.jpower.module.base.annotation.OperateLog;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
@@ -108,7 +108,7 @@ public class RoleController extends BaseController {
     }
 
     @ApiOperation("重新给角色赋权")
-    @Log(title = "重新给角色赋权",isSaveLog = true)
+    @OperateLog(title = "重新给角色赋权",isSaveLog = true)
     @RequestMapping(value = "/addFunction",method = {RequestMethod.POST},produces="application/json")
     public ResponseData addFunction(@ApiParam(value = "角色主键",required = true) @RequestParam String roleId,
                                     @ApiParam(value = "功能主键 多个逗号分割") @RequestParam(required = false) String functionIds){

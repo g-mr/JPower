@@ -28,8 +28,8 @@ import com.wlcb.jpower.service.tenant.impl.TenantServiceImpl;
 import java.util.List;
 
 /**
- * @ClassName ParamConfig
- * @Description TODO 获取配置文件参数
+ * @ClassName SystemCache
+ * @Description TODO 系统缓存
  * @Author 郭丁志
  * @Date 2020-05-06 14:55
  * @Version 1.0

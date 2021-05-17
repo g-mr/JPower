@@ -1,6 +1,6 @@
 package com.wlcb.jpower.module.base.aspectj;
 
-import com.wlcb.jpower.module.base.annotation.Log;
+import com.wlcb.jpower.module.base.annotation.OperateLog;
 import com.wlcb.jpower.module.base.listener.OperateLogEvent;
 import com.wlcb.jpower.module.base.model.OperateLogDto;
 import com.wlcb.jpower.module.base.utils.FieldCompletionUtil;
@@ -36,7 +36,7 @@ public class OperateLogAspect
      * @param
      * @return void
      **/
-    @Pointcut("@annotation(com.wlcb.jpower.module.base.annotation.Log)")
+    @Pointcut("@annotation(com.wlcb.jpower.module.base.annotation.OperateLog)")
     public void logPointCut(){
     }
 
@@ -62,7 +62,7 @@ public class OperateLogAspect
     protected void handleLog(final JoinPoint joinPoint, Object rvt, final Exception e){
         try {
             // 获得注解
-            Log controllerLog = getAnnotationLog(joinPoint);
+            OperateLog controllerLog = getAnnotationLog(joinPoint);
             if (Fc.isNull(controllerLog)) {
                 return;
             }
@@ -83,10 +83,10 @@ public class OperateLogAspect
 
             if (controllerLog.isSaveLog()){
 
-                operLog.setStatus(Log.BusinessStatus.SUCCESS.ordinal());
+                operLog.setStatus(OperateLog.BusinessStatus.SUCCESS.ordinal());
 
                 if (Fc.notNull(e)){
-                    operLog.setStatus(Log.BusinessStatus.FAIL.ordinal());
+                    operLog.setStatus(OperateLog.BusinessStatus.FAIL.ordinal());
                     operLog.setErrorMsg(StringUtils.substring(e.getMessage(), 0, 2000));
                 }
 
@@ -99,7 +99,7 @@ public class OperateLogAspect
                 // 设置action动作
                 operLog.setBusinessType(controllerLog.businessType().ordinal());
                 // 设置标题
-                operLog.setTitle(controllerLog.title());
+                operLog.setTitle(controllerLog.value());
                 // 处理设置注解上的参数
                 if (controllerLog.isSaveRequestData()){
                     FieldCompletionUtil.requestInfo(operLog,WebUtil.getRequest());
@@ -117,13 +117,13 @@ public class OperateLogAspect
     /**
      * 是否存在注解，如果存在就获取
      */
-    private Log getAnnotationLog(JoinPoint joinPoint) {
+    private OperateLog getAnnotationLog(JoinPoint joinPoint) {
         Signature signature = joinPoint.getSignature();
         MethodSignature methodSignature = (MethodSignature) signature;
         Method method = methodSignature.getMethod();
 
         if (method != null) {
-            return method.getAnnotation(Log.class);
+            return Fc.getAnnotation(method,OperateLog.class);
         }
         return null;
     }

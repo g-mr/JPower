@@ -28,7 +28,7 @@ public class FieldCompletionUtil {
         operLog.setUrl(request.getRequestURI());
         operLog.setParam(params);
         operLog.setMethod(request.getMethod());
-        operLog.setRemoteIp(WebUtil.getIP());
+        operLog.setOperIp(WebUtil.getIP());
     }
 
     public static void userInfo(LogDto operLog, UserInfo currentUser){
@@ -43,7 +43,7 @@ public class FieldCompletionUtil {
 
     public static void serverInfo(LogDto operateLog, JpowerProperties properties) {
         operateLog.setEnv(properties.getEnv());
-        operateLog.setServiceName(properties.getName());
+        operateLog.setServerName(properties.getName());
         operateLog.setServerHost(properties.getHostName());
         operateLog.setServerIp(properties.getIp());
     }

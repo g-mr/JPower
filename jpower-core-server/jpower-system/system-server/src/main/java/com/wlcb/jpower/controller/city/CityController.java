@@ -1,7 +1,6 @@
 package com.wlcb.jpower.controller.city;
 
 import com.wlcb.jpower.dbs.entity.city.TbCoreCity;
-import com.wlcb.jpower.dbs.entity.dict.TbCoreDict;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
@@ -17,21 +16,20 @@ import com.wlcb.jpower.service.city.CoreCityService;
 import com.wlcb.jpower.vo.CityVo;
 import com.wlcb.jpower.wrapper.CityWrapper;
 import io.swagger.annotations.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 @Api(tags = "行政区域管理")
 @RestController
 @RequestMapping("/core/city")
+@RequiredArgsConstructor
 public class CityController extends BaseController {
 
-    @Resource
-    private CoreCityService coreCityService;
+    private final CoreCityService coreCityService;
 
     @ApiOperation("查询下级列表")
     @ApiResponses({
