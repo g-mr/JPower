@@ -43,7 +43,7 @@ public class Condition<T> {
     }
 
     public static <T> QueryWrapper<T> getQueryWrapper(Map<String, Object> query, Class<T> clazz) {
-        ChainMap exclude = ChainMap.init().set("pageNum", "pageNum").set("pageSize", "pageSize").set("asc", "asc").set("desc", "desc").set("httpClientId", "httpClientId");
+        ChainMap exclude = ChainMap.init().set("pageNum", "pageNum").set("pageSize", "pageSize").set("asc", "asc").set("desc", "desc");
         return getQueryWrapper(query, exclude, clazz);
     }
 

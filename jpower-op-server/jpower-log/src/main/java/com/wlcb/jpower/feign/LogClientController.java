@@ -27,7 +27,7 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 @RequestMapping("/log")
 @AllArgsConstructor
-public class LogController implements LogClient {
+public class LogClientController implements LogClient {
 
     private ErrorLogService errorLogService;
     private OperateLogService operateLogService;
