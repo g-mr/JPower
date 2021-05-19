@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.injector.ISqlInjector;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
+import com.wlcb.jpower.module.config.properties.DemoProperties;
 import com.wlcb.jpower.module.datascope.interceptor.DataScopeInterceptor;
 import com.wlcb.jpower.module.mp.CustomSqlInjector;
 import com.wlcb.jpower.module.tenant.JpowerTenantProperties;
@@ -13,8 +14,10 @@ import lombok.AllArgsConstructor;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -29,6 +32,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @AllArgsConstructor
 @MapperScan("com.wlcb.**.dbs.dao.**")
 @Configuration(proxyBeanMethods = false)
+@EnableConfigurationProperties({DemoProperties.class})
 public class MybatisPlusConfig {
 
     /**
@@ -75,11 +79,11 @@ public class MybatisPlusConfig {
     /**
      * 演示环境
      **/
-    @Order(11)
+    @Order(Ordered.HIGHEST_PRECEDENCE)
     @Bean
     @ConditionalOnProperty(value = {"jpower.demo.enable"}, matchIfMissing = false)
-    public DemoInterceptor demoInterceptor() {
-        return new DemoInterceptor();
+    public DemoInterceptor demoInterceptor(DemoProperties demoProperties) {
+        return new DemoInterceptor(demoProperties);
     }
 
 }

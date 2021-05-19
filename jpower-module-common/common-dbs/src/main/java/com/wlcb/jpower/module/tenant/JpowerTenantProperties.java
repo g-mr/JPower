@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @ClassName JpowerTenantSqlParser
+ * @ClassName JpowerTenantProperties
  * @Description TODO 多租户配置
  * @Author 郭丁志
  * @Date 2020-10-14 21:12
