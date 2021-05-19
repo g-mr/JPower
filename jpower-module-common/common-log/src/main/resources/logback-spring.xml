@@ -132,6 +132,8 @@
         </then>
     </if>
 
+    <!-- 去掉自动装配信息，需要的自行打开 -->
+    <logger name="org.springframework.boot.autoconfigure.logging" level="info" additivity="false" />
     <!--myibatis log configure-->
     <logger name="com.apache.ibatis" level="info"/>
     <logger name="com.ibatis" level="info" />
@@ -143,8 +145,8 @@
     <logger name="java.sql.PreparedStatement" level="info" />
     <!-- 减少nacos日志 -->
     <logger name="com.alibaba.nacos" level="ERROR"/>
-
-    <logger name="com.wlcb.jpower.dbs.dao" level="DEBUG" />
+    <!-- 不打印SQL信息 -->
+    <logger name="com.wlcb.jpower.dbs.dao" level="info" />
 
     <!-- 日志输出级别 -->
     <springProfile name="dev">
