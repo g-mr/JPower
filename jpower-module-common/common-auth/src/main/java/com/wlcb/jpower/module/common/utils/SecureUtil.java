@@ -58,7 +58,7 @@ public class SecureUtil {
         if (Fc.notNull(claims)) {
             user.setClientCode(Fc.toStr(claims.get(TokenConstant.CLIENT_CODE)));
             user.setUserId(Fc.toStr(claims.get(ClassUtil.getFiledName(UserInfo::getUserId))));
-            user.setTenantCode(Fc.toStr(ClassUtil.getFiledName(UserInfo::getTenantCode)));
+            user.setTenantCode(Fc.toStr(claims.get(ClassUtil.getFiledName(UserInfo::getTenantCode))));
             user.setLoginId(Fc.toStr(claims.get(ClassUtil.getFiledName(UserInfo::getLoginId))));
             user.setRoleIds((List<String>) claims.get(ClassUtil.getFiledName(UserInfo::getRoleIds)));
             user.setUserName(Fc.toStr(claims.get(ClassUtil.getFiledName(UserInfo::getUserName))));

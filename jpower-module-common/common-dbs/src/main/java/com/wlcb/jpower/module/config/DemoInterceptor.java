@@ -23,6 +23,7 @@ public class DemoInterceptor implements Interceptor {
 
     @Override
     public Object intercept(Invocation invocation){
+        // TODO: 2021-05-19 这里要加一些情况可以执行，比如日志记录
         log.warn("拦截到操作数据得SQL,演示环境不可操作数据");
         throw new UnsupportedOperationException("演示环境不支持操作！");
     }

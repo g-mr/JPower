@@ -1,5 +1,6 @@
 package com.wlcb.jpower.wrapper;
 
+import cn.hutool.core.util.ArrayUtil;
 import com.wlcb.jpower.cache.dict.DictCache;
 import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.common.support.BeanProperty;
@@ -10,6 +11,7 @@ import com.wlcb.jpower.module.mp.support.BaseWrapper;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,19 +53,27 @@ public abstract class BaseDictWrapper<T, V> extends BaseWrapper<T, V> {
         }
 
         List<Field> list = BeanUtil.getFiledByAnnotation(bean.getClass(), Dict.class);
+        List<String> listAttr = list.stream().map(field -> {
+            Dict dict = field.getAnnotation(Dict.class);
+            return Fc.isBlank(dict.attributes()) ? field.getName().concat(DICT_ATTRIBUTES_SUFFIX) : dict.attributes();
+        }).filter(attribute -> !ReflectUtil.hasField(bean.getClass(), attribute)).collect(Collectors.toList());
+        V newBean = bean;
+        if (Fc.notNull(listAttr) && listAttr.size() > 0){
+            List<BeanProperty> properties = new ArrayList<>();
+            listAttr.forEach(a-> properties.add(new BeanProperty(a,String.class)));
+            newBean = (V) BeanUtil.generator(bean, ArrayUtil.toArray(properties,BeanProperty.class));
+        }
+
         for (Field field : list) {
             Dict dict = field.getAnnotation(Dict.class);
             String dictTypeCode = dict.name();
             String attributes = dict.attributes();
             attributes = Fc.isBlank(attributes) ? field.getName().concat(DICT_ATTRIBUTES_SUFFIX) : attributes;
-            String code = Fc.toStr(ReflectUtil.invokeGetter(bean,field.getName()));
+            String code = Fc.toStr(ReflectUtil.invokeGetter(newBean,field.getName()));
             String value = DictCache.getDictByTypeAndCode(dictTypeCode, code);
-            if (!BeanUtil.isContainsField(BeanUtil.getFieldList(bean.getClass()), attributes)) {
-                bean = (V) BeanUtil.generator(bean, new BeanProperty(attributes, String.class));
-            }
-            ReflectUtil.invokeSetter(bean, attributes, value);
+            ReflectUtil.invokeSetter(newBean, attributes, value);
         }
-        return bean;
+        return newBean;
     }
 
     public V dict(T entity,Class<V> clz){

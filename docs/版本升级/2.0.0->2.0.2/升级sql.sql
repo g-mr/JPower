@@ -12,7 +12,7 @@ create table tb_log_error(
   method varchar(8) default null comment '操作方式',
   method_class varchar(100) default null comment '方法类',
   method_name varchar(50) default null comment '方法名',
-  param varchar(258) default null comment '请求参数',
+  param text default null comment '请求参数',
   oper_ip varchar(20) default null comment '操作IP地址',
   oper_name varchar(50) default null comment '操作人员',
   oper_user_type tinyint(1) default null comment '操作人员类型，是系统用户还是业务用户 0系统1业务2白名单',
@@ -45,13 +45,13 @@ create table tb_log_operate(
   method varchar(8) default null comment '操作方式',
   method_class varchar(100) default null comment '方法类',
   method_name varchar(50) default null comment '方法名',
-  param varchar(258) default null comment '请求参数',
+  param text default null comment '请求参数',
   oper_ip varchar(20) default null comment '操作IP地址',
   oper_name varchar(50) default null comment '操作人员',
   oper_user_type tinyint(1) default null comment '操作人员类型，是系统用户还是业务用户 0系统1业务2白名单',
   client_code varchar(20) default null comment '操作客户端',
   title varchar(50) default null comment '操作标题',
-  business_type tinyint(1) default null comment '业务类型（0=其它,1=新增,2=修改,3=删除,4=授权,5=导出,6=导入,7=强退,8=生成代码,9=清空数据）',
+  business_type varchar(10) default null comment '业务类型（OTHER=其它,INSERT=新增,UPDATE=修改,DELETE=删除,GRANT=授权,EXPORT=导出,IMPORT=导入,FORCE=强退,GENCODE=生成代码,CLEAN=清空数据,REVIEW=审核）',
   return_content text default null comment '返回内容',
   error_msg text default null comment '错误消息',
   create_user varchar(32) default 'root' not null comment '创建人',
@@ -82,25 +82,27 @@ VALUES ('a5c94db5ghda32brty39e64b637e408', 'OPERATE_STATUS', '操作结果状态
 -- add data for tb_core_dict
 -- ----------------------------
 INSERT INTO `tb_core_dict`(`id`, `dict_type_code`, `code`, `name`, `parent_id`, `locale_id`, `note`, `sort_num`, `create_user`, `create_time`, `update_user`, `update_time`, `status`, `is_deleted`, `dict_level`, `pcode`, `tenant_code`, `create_org`)
-VALUES ('17062df17d9jklx103a8de9a4347f5b', 'BUSINESS_TYPE', '0', '其它', '-1', 'zh_cn', '', 0, '1', sysdate(), '1', sysdate(), 1, 0, NULL, '-1', '000000', '');
+VALUES ('17062df17d9jklx103a8de9a4347f5b', 'BUSINESS_TYPE', 'OTHER', '其它', '-1', 'zh_cn', '', 0, '1', sysdate(), '1', sysdate(), 1, 0, NULL, '-1', '000000', '');
 INSERT INTO `tb_core_dict`(`id`, `dict_type_code`, `code`, `name`, `parent_id`, `locale_id`, `note`, `sort_num`, `create_user`, `create_time`, `update_user`, `update_time`, `status`, `is_deleted`, `dict_level`, `pcode`, `tenant_code`, `create_org`)
-VALUES ('17062rf17d9jklx103a8de9a4347f5b', 'BUSINESS_TYPE', '1', '新增', '-1', 'zh_cn', '', 0, '1', sysdate(), '1', sysdate(), 1, 0, NULL, '-1', '000000', '');
+VALUES ('17062rf17d9jklx103a8de9a4347f5b', 'BUSINESS_TYPE', 'INSERT', '新增', '-1', 'zh_cn', '', 0, '1', sysdate(), '1', sysdate(), 1, 0, NULL, '-1', '000000', '');
 INSERT INTO `tb_core_dict`(`id`, `dict_type_code`, `code`, `name`, `parent_id`, `locale_id`, `note`, `sort_num`, `create_user`, `create_time`, `update_user`, `update_time`, `status`, `is_deleted`, `dict_level`, `pcode`, `tenant_code`, `create_org`)
-VALUES ('1706fgf17d9jklx103a8de9a4347f5b', 'BUSINESS_TYPE', '2', '修改', '-1', 'zh_cn', '', 0, '1', sysdate(), '1', sysdate(), 1, 0, NULL, '-1', '000000', '');
+VALUES ('1706fgf17d9jklx103a8de9a4347f5b', 'BUSINESS_TYPE', 'UPDATE', '修改', '-1', 'zh_cn', '', 0, '1', sysdate(), '1', sysdate(), 1, 0, NULL, '-1', '000000', '');
 INSERT INTO `tb_core_dict`(`id`, `dict_type_code`, `code`, `name`, `parent_id`, `locale_id`, `note`, `sort_num`, `create_user`, `create_time`, `update_user`, `update_time`, `status`, `is_deleted`, `dict_level`, `pcode`, `tenant_code`, `create_org`)
-VALUES ('1706yuf17d9jklx103a8de9a4347f5b', 'BUSINESS_TYPE', '3', '删除', '-1', 'zh_cn', '', 0, '1', sysdate(), '1', sysdate(), 1, 0, NULL, '-1', '000000', '');
+VALUES ('1706yuf17d9jklx103a8de9a4347f5b', 'BUSINESS_TYPE', 'DELETE', '删除', '-1', 'zh_cn', '', 0, '1', sysdate(), '1', sysdate(), 1, 0, NULL, '-1', '000000', '');
 INSERT INTO `tb_core_dict`(`id`, `dict_type_code`, `code`, `name`, `parent_id`, `locale_id`, `note`, `sort_num`, `create_user`, `create_time`, `update_user`, `update_time`, `status`, `is_deleted`, `dict_level`, `pcode`, `tenant_code`, `create_org`)
-VALUES ('1706vbf17d9jklx103a8de9a4347f5b', 'BUSINESS_TYPE', '4', '授权', '-1', 'zh_cn', '', 0, '1', sysdate(), '1', sysdate(), 1, 0, NULL, '-1', '000000', '');
+VALUES ('1706vbf17d9jklx103a8de9a4347f5b', 'BUSINESS_TYPE', 'GRANT', '授权', '-1', 'zh_cn', '', 0, '1', sysdate(), '1', sysdate(), 1, 0, NULL, '-1', '000000', '');
 INSERT INTO `tb_core_dict`(`id`, `dict_type_code`, `code`, `name`, `parent_id`, `locale_id`, `note`, `sort_num`, `create_user`, `create_time`, `update_user`, `update_time`, `status`, `is_deleted`, `dict_level`, `pcode`, `tenant_code`, `create_org`)
-VALUES ('1706asf17d9jklx103a8de9a4347f5b', 'BUSINESS_TYPE', '5', '导出', '-1', 'zh_cn', '', 0, '1', sysdate(), '1', sysdate(), 1, 0, NULL, '-1', '000000', '');
+VALUES ('1706asf17d9jklx103a8de9a4347f5b', 'BUSINESS_TYPE', 'EXPORT', '导出', '-1', 'zh_cn', '', 0, '1', sysdate(), '1', sysdate(), 1, 0, NULL, '-1', '000000', '');
 INSERT INTO `tb_core_dict`(`id`, `dict_type_code`, `code`, `name`, `parent_id`, `locale_id`, `note`, `sort_num`, `create_user`, `create_time`, `update_user`, `update_time`, `status`, `is_deleted`, `dict_level`, `pcode`, `tenant_code`, `create_org`)
-VALUES ('1706zxf17d9jklx103a8de9a4347f5b', 'BUSINESS_TYPE', '6', '导入', '-1', 'zh_cn', '', 0, '1', sysdate(), '1', sysdate(), 1, 0, NULL, '-1', '000000', '');
+VALUES ('1706zxf17d9jklx103a8de9a4347f5b', 'BUSINESS_TYPE', 'IMPORT', '导入', '-1', 'zh_cn', '', 0, '1', sysdate(), '1', sysdate(), 1, 0, NULL, '-1', '000000', '');
 INSERT INTO `tb_core_dict`(`id`, `dict_type_code`, `code`, `name`, `parent_id`, `locale_id`, `note`, `sort_num`, `create_user`, `create_time`, `update_user`, `update_time`, `status`, `is_deleted`, `dict_level`, `pcode`, `tenant_code`, `create_org`)
-VALUES ('1706q3f17d9jklx103a8de9a4347f5b', 'BUSINESS_TYPE', '7', '强退', '-1', 'zh_cn', '', 0, '1', sysdate(), '1', sysdate(), 1, 0, NULL, '-1', '000000', '');
+VALUES ('1706q3f17d9jklx103a8de9a4347f5b', 'BUSINESS_TYPE', 'FORCE', '强退', '-1', 'zh_cn', '', 0, '1', sysdate(), '1', sysdate(), 1, 0, NULL, '-1', '000000', '');
 INSERT INTO `tb_core_dict`(`id`, `dict_type_code`, `code`, `name`, `parent_id`, `locale_id`, `note`, `sort_num`, `create_user`, `create_time`, `update_user`, `update_time`, `status`, `is_deleted`, `dict_level`, `pcode`, `tenant_code`, `create_org`)
-VALUES ('17064ff17d9jklx103a8de9a4347f5b', 'BUSINESS_TYPE', '8', '生成代码', '-1', 'zh_cn', '', 0, '1', sysdate(), '1', sysdate(), 1, 0, NULL, '-1', '000000', '');
+VALUES ('17064ff17d9jklx103a8de9a4347f5b', 'BUSINESS_TYPE', 'GENCODE', '生成代码', '-1', 'zh_cn', '', 0, '1', sysdate(), '1', sysdate(), 1, 0, NULL, '-1', '000000', '');
 INSERT INTO `tb_core_dict`(`id`, `dict_type_code`, `code`, `name`, `parent_id`, `locale_id`, `note`, `sort_num`, `create_user`, `create_time`, `update_user`, `update_time`, `status`, `is_deleted`, `dict_level`, `pcode`, `tenant_code`, `create_org`)
-VALUES ('170626gf17d9jklx10a8de9a4347f5b', 'BUSINESS_TYPE', '9', '清空数据', '-1', 'zh_cn', '', 0, '1', sysdate(), '1', sysdate(), 1, 0, NULL, '-1', '000000', '');
+VALUES ('170626gf17d9jklx10a8de9a4347f5b', 'BUSINESS_TYPE', 'CLEAN', '清空数据', '-1', 'zh_cn', '', 0, '1', sysdate(), '1', sysdate(), 1, 0, NULL, '-1', '000000', '');
+INSERT INTO `tb_core_dict`(`id`, `dict_type_code`, `code`, `name`, `parent_id`, `locale_id`, `note`, `sort_num`, `create_user`, `create_time`, `update_user`, `update_time`, `status`, `is_deleted`, `dict_level`, `pcode`, `tenant_code`, `create_org`)
+VALUES ('170626gf1747hklx10a8de9a4347f5b', 'BUSINESS_TYPE', 'REVIEW', '审核', '-1', 'zh_cn', '', 0, '1', sysdate(), '1', sysdate(), 1, 0, NULL, '-1', '000000', '');
 
 INSERT INTO `tb_core_dict`(`id`, `dict_type_code`, `code`, `name`, `parent_id`, `locale_id`, `note`, `sort_num`, `create_user`, `create_time`, `update_user`, `update_time`, `status`, `is_deleted`, `dict_level`, `pcode`, `tenant_code`, `create_org`)
 VALUES ('170626gf17d9yulx10a8de9a4347f5b', 'OPERATE_STATUS', '0', '正常', '-1', 'zh_cn', '', 0, '1', sysdate(), '1', sysdate(), 1, 0, NULL, '-1', '000000', '');
@@ -112,18 +114,21 @@ VALUES ('170626gfu7d9jklx10a8de9a4347f5b', 'OPERATE_STATUS', '1', '异常', '-1'
 -- add data for tb_core_function
 -- ----------------------------
 INSERT INTO `tb_core_function`(`id`, `function_name`, `alias`, `code`, `parent_id`, `url`, `is_menu`, `icon`, `target`, `sort`, `remark`, `moude_summary`, `operate_instruction`, `function_level`, `create_user`, `create_time`, `update_user`, `update_time`, `status`, `is_deleted`, `create_org`)
-VALUES ('30b4baffc04b6260fgtb79a25f307462', '系统日志', '日志', 'LOG', '-1', '/log', 1, 'iconfont icon-caidanguanli', '_blank', 5, '', '', '', NULL, '1', sysdate(), '1', sysdate(), 1, 0, '');
+VALUES ('30b4baffc04b6260fgtb79a25f307462', '系统日志', '日志', 'LOG', '-1', '/log', 1, 'iconfont icon-caidanguanli', '_self', 5, '', '', '', NULL, '1', sysdate(), '1', sysdate(), 1, 0, '');
 INSERT INTO `tb_core_function`(`id`, `function_name`, `alias`, `code`, `parent_id`, `url`, `is_menu`, `icon`, `target`, `sort`, `remark`, `moude_summary`, `operate_instruction`, `function_level`, `create_user`, `create_time`, `update_user`, `update_time`, `status`, `is_deleted`, `create_org`)
-VALUES ('30b4baffc04b4850fgtb79a25f307462', '错误日志', '错误日志', 'ERROR_LOG', '30b4baffc04b6260fgtb79a25f307462', '/log/error', 1, 'iconfont iconicon_doc', '_blank', 5, '', '', '', NULL, '1', sysdate(), '1', sysdate(), 1, 0, '');
+VALUES ('30b4baffc04b4850fgtb79a25f307462', '错误日志', '错误日志', 'ERROR_LOG', '30b4baffc04b6260fgtb79a25f307462', '/log/error', 1, 'iconfont iconicon_doc', '_self', 5, '', '', '', NULL, '1', sysdate(), '1', sysdate(), 1, 0, '');
 INSERT INTO `tb_core_function`(`id`, `function_name`, `alias`, `code`, `parent_id`, `url`, `is_menu`, `icon`, `target`, `sort`, `remark`, `moude_summary`, `operate_instruction`, `function_level`, `create_user`, `create_time`, `update_user`, `update_time`, `status`, `is_deleted`, `create_org`)
-VALUES ('30b4baffc04b6260fgtb79a26f307462', '操作日志', '操作日志', 'OPERATE_LOG', '30b4baffc04b6260fgtb79a25f307462', '/log/operate', 1, 'iconfont iconicon_compile', '_blank', 5, '', '', '', NULL, '1', sysdate(), '1', sysdate(), 1, 0, '');
+VALUES ('30b4baffc04b6260fgtb79a26f307462', '操作日志', '操作日志', 'OPERATE_LOG', '30b4baffc04b6260fgtb79a25f307462', '/log/operate', 1, 'iconfont iconicon_compile', '_self', 5, '', '', '', NULL, '1', sysdate(), '1', sysdate(), 1, 0, '');
 INSERT INTO `tb_core_function`(`id`, `function_name`, `alias`, `code`, `parent_id`, `url`, `is_menu`, `icon`, `target`, `sort`, `remark`, `moude_summary`, `operate_instruction`, `function_level`, `create_user`, `create_time`, `update_user`, `update_time`, `status`, `is_deleted`, `create_org`)
-VALUES ('30b4baffc0487960fgtb79a26f307462', '列表', '列表', 'OPERATE_LOG_LIST', '30b4baffc04b6260fgtb79a26f307462', '/log/listOperateLog', 0, null, '_blank', 1, '', '', '', NULL, '1', sysdate(), '1', sysdate(), 1, 0, '');
+VALUES ('30b4baffc0487960fgtb79a26f307462', '列表', '列表', 'OPERATE_LOG_LIST', '30b4baffc04b6260fgtb79a26f307462', '/log/operate/list', 0, null, '_self', 1, '', '', '', NULL, '1', sysdate(), '1', sysdate(), 1, 0, '');
 INSERT INTO `tb_core_function`(`id`, `function_name`, `alias`, `code`, `parent_id`, `url`, `is_menu`, `icon`, `target`, `sort`, `remark`, `moude_summary`, `operate_instruction`, `function_level`, `create_user`, `create_time`, `update_user`, `update_time`, `status`, `is_deleted`, `create_org`)
-VALUES ('30b4baffc0yjm960fgtb79a26f307462', '列表', '列表', 'ERROR_LOG_LIST', '30b4baffc04b4850fgtb79a25f307462', '/log/listErrorLog', 0, null, '_blank', 1, '', '', '', NULL, '1', sysdate(), '1', sysdate(), 1, 0, '');
+VALUES ('30b4baffc0yjm960fgtb79a26f307462', '列表', '列表', 'ERROR_LOG_LIST', '30b4baffc04b4850fgtb79a25f307462', '/log/error/list', 0, null, '_self', 1, '', '', '', NULL, '1', sysdate(), '1', sysdate(), 1, 0, '');
 
-
-
+-- ----------------------------
+-- update data for tb_core_function
+-- ----------------------------
+update tb_core_function set url = '/log/monitor/result' where code = 'MONITOR_RESULT';
+update tb_core_function set url = '/log/monitor/setting' where code = 'MONITOR_SETTING';
 
 -- ----------------------------
 -- add data for tb_core_role_function

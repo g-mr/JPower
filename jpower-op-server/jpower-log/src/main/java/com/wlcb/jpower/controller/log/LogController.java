@@ -49,25 +49,27 @@ public class LogController extends BaseController {
             @ApiImplicitParam(name = "createTime" + SqlKeyword.DATE_GT,value = "开始时间",paramType = "query", dataTypeClass = Date.class),
             @ApiImplicitParam(name = "createTime" + SqlKeyword.DATE_LT,value = "结束时间",paramType = "query", dataTypeClass = Date.class)
     })
-    @GetMapping("/listOperateLog")
+    @GetMapping("/operate/list")
     public ResponseData<Page<TbLogOperate>> listOperateLog(@ApiIgnore @RequestParam Map<String,Object> operateLog){
-        Page<TbLogOperate> operate = operateLogService.page(PaginationContext.getMpPage(), Condition.getQueryWrapper(operateLog,TbLogOperate.class));
+        Page<TbLogOperate> operate = operateLogService.page(PaginationContext.getMpPage(),
+                Condition.getQueryWrapper(operateLog,TbLogOperate.class).lambda().orderByDesc(TbLogOperate::getCreateTime));
         return ReturnJsonUtil.ok("请求成功", BaseDictWrapper.<TbLogOperate,TbLogOperate>builder().pageVo(operate));
     }
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum",value = "第几页",defaultValue = "1",paramType = "query",dataType = "int",required = true),
             @ApiImplicitParam(name = "pageSize",value = "每页长度",defaultValue = "10",paramType = "query",dataType = "int",required = true),
-            @ApiImplicitParam(name = "exceptionName",value = "异常名称",paramType = "query"),
             @ApiImplicitParam(name = "serverName",value = "服务名称",paramType = "query"),
+            @ApiImplicitParam(name = "exceptionName",value = "异常名称",paramType = "query"),
             @ApiImplicitParam(name = "clientCode_eq",value = "客户端编码",paramType = "query"),
             @ApiImplicitParam(name = "operName",value = "操作人员",paramType = "query"),
             @ApiImplicitParam(name = "createTime" + SqlKeyword.DATE_GT,value = "开始时间",paramType = "query", dataTypeClass = Date.class),
             @ApiImplicitParam(name = "createTime" + SqlKeyword.DATE_LT,value = "结束时间",paramType = "query", dataTypeClass = Date.class)
     })
-    @GetMapping("/listErrorLog")
+    @GetMapping("/error/list")
     public ResponseData<Page<TbLogError>> listErrorLog(@ApiIgnore @RequestParam Map<String,Object> errorLog){
-        Page<TbLogError> errorPage = errorLogService.page(PaginationContext.getMpPage(), Condition.getQueryWrapper(errorLog,TbLogError.class));
+        Page<TbLogError> errorPage = errorLogService.page(PaginationContext.getMpPage(),
+                Condition.getQueryWrapper(errorLog,TbLogError.class).lambda().orderByDesc(TbLogError::getCreateTime));
         return ReturnJsonUtil.ok("请求成功",errorPage);
     }
 }

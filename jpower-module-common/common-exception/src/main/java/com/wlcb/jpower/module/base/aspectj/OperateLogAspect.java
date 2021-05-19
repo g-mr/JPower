@@ -1,5 +1,6 @@
 package com.wlcb.jpower.module.base.aspectj;
 
+import com.alibaba.fastjson.JSON;
 import com.wlcb.jpower.module.base.annotation.OperateLog;
 import com.wlcb.jpower.module.base.listener.OperateLogEvent;
 import com.wlcb.jpower.module.base.model.OperateLogDto;
@@ -95,9 +96,9 @@ public class OperateLogAspect
                 String methodName = joinPoint.getSignature().getName();
                 operLog.setMethodClass(className);
                 operLog.setMethodName(methodName);
-                operLog.setReturnContent(Fc.toStr(rvt));
+                operLog.setReturnContent(JSON.toJSONString(rvt));
                 // 设置action动作
-                operLog.setBusinessType(controllerLog.businessType().ordinal());
+                operLog.setBusinessType(controllerLog.businessType().name());
                 // 设置标题
                 operLog.setTitle(controllerLog.value());
                 // 处理设置注解上的参数

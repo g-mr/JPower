@@ -55,11 +55,6 @@ public @interface OperateLog{
         DELETE,
 
         /**
-         * 审核
-         */
-        REVIEW,
-
-        /**
          * 授权
          */
         GRANT,
@@ -88,6 +83,11 @@ public @interface OperateLog{
          * 清空
          */
         CLEAN,
+
+        /**
+         * 审核
+         */
+        REVIEW,
     }
 
     enum BusinessStatus
