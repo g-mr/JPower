@@ -3,6 +3,7 @@ package com.wlcb.jpower.module.common.utils;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.wlcb.jpower.module.base.vo.ResponseData;
+import com.wlcb.jpower.module.common.support.EnvBeanUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +17,7 @@ import java.io.PrintWriter;
  * @Version 1.0
  */
 public class ReturnJsonUtil {
+
 
     /**
      * 将ResponseData对象转换成json格式并发送到客户端
@@ -124,6 +126,9 @@ public class ReturnJsonUtil {
         if(is){
             return ok("操作成功");
         }else {
+            if (EnvBeanUtil.get("jpower.demo.enable", Boolean.class, false)){
+                return fail("演示环境不支持操作！");
+            }
             return fail("操作失败");
         }
 

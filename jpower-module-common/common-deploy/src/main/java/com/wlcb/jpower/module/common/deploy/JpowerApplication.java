@@ -3,6 +3,7 @@ package com.wlcb.jpower.module.common.deploy;
 import com.wlcb.jpower.module.common.deploy.service.DeployService;
 import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.AppConstant;
+import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -71,6 +72,7 @@ public class JpowerApplication {
         Properties props = System.getProperties();
         props.setProperty("jpower.name", appName);
         props.setProperty("jpower.env", profile);
+        props.setProperty("jpower.version", JpowerConstants.JPOWER_VESION);
         props.setProperty("jpower.is-local", String.valueOf(isLocalDev()));
         props.setProperty("spring.application.name", appName);
         props.setProperty("spring.profiles.active", profile);

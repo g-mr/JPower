@@ -1,0 +1,10 @@
+${AnsiColor.BRIGHT_YELLOW}      ██${AnsiColor.BRIGHT_WHITE} ███████
+${AnsiColor.BRIGHT_YELLOW}     ░██${AnsiColor.BRIGHT_WHITE}░██░░░░██
+${AnsiColor.BRIGHT_YELLOW}     ░██${AnsiColor.BRIGHT_WHITE}░██   ░██  ██████  ███     ██  █████  ██████
+${AnsiColor.BRIGHT_YELLOW}     ░██${AnsiColor.BRIGHT_WHITE}░███████  ██░░░░██░░██  █ ░██ ██░░░██░░██░░█
+${AnsiColor.BRIGHT_YELLOW}     ░██${AnsiColor.BRIGHT_WHITE}░██░░░░  ░██   ░██ ░██ ███░██░███████ ░██ ░
+${AnsiColor.BRIGHT_YELLOW} ██  ░██${AnsiColor.BRIGHT_WHITE}░██      ░██   ░██ ░████░████░██░░░░  ░██
+${AnsiColor.BRIGHT_YELLOW}░░█████ ${AnsiColor.BRIGHT_WHITE}░██      ░░██████  ███░ ░░░██░░██████░███
+${AnsiColor.BRIGHT_YELLOW} ░░░░░  ${AnsiColor.BRIGHT_WHITE}░░        ░░░░░░  ░░░    ░░░  ░░░░░░ ░░░
+
+${AnsiColor.YELLOW}:: JPower:${AnsiColor.RED}${jpower.version}${AnsiColor.YELLOW} :: ${spring.application.name}:${AnsiColor.RED}${jpower.env}${AnsiColor.YELLOW} :: SpringBoot:${AnsiColor.RED}${spring-boot.version}${AnsiColor.YELLOW} ::

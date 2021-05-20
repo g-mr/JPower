@@ -6,7 +6,10 @@ import com.baomidou.mybatisplus.core.injector.ISqlInjector;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
+import com.wlcb.jpower.module.config.interceptor.DemoInterceptor;
+import com.wlcb.jpower.module.config.interceptor.MybatisSqlPrintIntercepter;
 import com.wlcb.jpower.module.config.properties.DemoProperties;
+import com.wlcb.jpower.module.config.properties.MybatisProperties;
 import com.wlcb.jpower.module.datascope.interceptor.DataScopeInterceptor;
 import com.wlcb.jpower.module.mp.CustomSqlInjector;
 import com.wlcb.jpower.module.tenant.JpowerTenantProperties;
@@ -32,7 +35,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @AllArgsConstructor
 @MapperScan("com.wlcb.**.dbs.dao.**")
 @Configuration(proxyBeanMethods = false)
-@EnableConfigurationProperties({DemoProperties.class})
+@EnableConfigurationProperties({DemoProperties.class, MybatisProperties.class})
 public class MybatisPlusConfig {
 
     /**
@@ -47,7 +50,10 @@ public class MybatisPlusConfig {
 
     @Bean
     @ConditionalOnMissingBean({MybatisPlusInterceptor.class})
-    public MybatisPlusInterceptor mybatisPlusInterceptor(DataScopeInterceptor dataScopeInterceptor, TenantLineInnerInterceptor tenantLineInnerInterceptor, JpowerTenantProperties tenantProperties) {
+    public MybatisPlusInterceptor mybatisPlusInterceptor(DataScopeInterceptor dataScopeInterceptor,
+                                                         TenantLineInnerInterceptor tenantLineInnerInterceptor,
+                                                         JpowerTenantProperties tenantProperties,
+                                                         DemoProperties demoProperties) {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         // 乐观锁插件
         interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
@@ -58,6 +64,10 @@ public class MybatisPlusConfig {
         // 多租户插件
         if (tenantProperties.getEnable()){
             interceptor.addInnerInterceptor(tenantLineInnerInterceptor);
+        }
+        //演示环境
+        if (demoProperties.getEnable()){
+            interceptor.addInnerInterceptor(new DemoInterceptor(demoProperties));
         }
         return interceptor;
     }
@@ -77,13 +87,13 @@ public class MybatisPlusConfig {
     }
 
     /**
-     * 演示环境
+     * sql打印
      **/
     @Order(Ordered.HIGHEST_PRECEDENCE)
     @Bean
-    @ConditionalOnProperty(value = {"jpower.demo.enable"}, matchIfMissing = false)
-    public DemoInterceptor demoInterceptor(DemoProperties demoProperties) {
-        return new DemoInterceptor(demoProperties);
+    @ConditionalOnProperty(value = {"jpower.mybatis.sql.print"}, matchIfMissing = true)
+    public MybatisSqlPrintIntercepter mybatisSqlPrintIntercepter(MybatisProperties mybatisProperties) {
+        return new MybatisSqlPrintIntercepter(mybatisProperties.getSql());
     }
 
 }
