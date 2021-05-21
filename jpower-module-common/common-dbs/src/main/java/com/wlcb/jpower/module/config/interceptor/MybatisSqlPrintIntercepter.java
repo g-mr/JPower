@@ -28,6 +28,8 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 import java.util.Date;
 import java.util.List;
 
+import static com.wlcb.jpower.module.common.utils.constants.StringPool.TAB;
+
 /**
  * @author mr.g
  * @date 2021-05-20 17:00
@@ -85,15 +87,15 @@ public class MybatisSqlPrintIntercepter implements Interceptor {
         String[] mappers = getMapper(sqlId);
 
         StringBuilder sb = new StringBuilder(StringPool.NEWLINE)
-                .append("==> Mapper name：").append(mappers[0]).append(StringPool.NEWLINE)
-                .append("==> Mapper method：").append(mappers[1]).append(StringPool.NEWLINE)
-                .append("==> Execute SQL：").append(sql).append(StringPool.NEWLINE)
-                .append("<== Time：").append(time).append(" ms ").append(StringPool.NEWLINE);
+                .append(TAB).append("==> Mapper name：").append(mappers[0]).append(StringPool.NEWLINE)
+                .append(TAB).append("==> Mapper method：").append(mappers[1]).append(StringPool.NEWLINE)
+                .append(TAB).append("==> Execute SQL：").append(sql).append(StringPool.NEWLINE)
+                .append(TAB).append("<== Time：").append(time).append(" ms ").append(StringPool.NEWLINE);
 
         if (rest instanceof List){
-            sb.append("<== Total: ").append(((List) rest).size()).append(StringPool.NEWLINE);
+            sb.append(TAB).append("<== Total: ").append(((List) rest).size()).append(StringPool.NEWLINE);
         }else {
-            sb.append("<== Updates: ").append(rest).append(StringPool.NEWLINE);
+            sb.append(TAB).append("<== Updates: ").append(rest).append(StringPool.NEWLINE);
         }
         log.info(sb.toString());
     }
