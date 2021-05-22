@@ -1,5 +1,6 @@
 package com.wlcb.jpower.feign.properties;
 
+import feign.Logger;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -15,8 +16,8 @@ import static org.springframework.cloud.openfeign.support.FeignHttpClientPropert
 @ConfigurationProperties(prefix = "jpower.feign.http")
 public class FeignHttpProperties {
 
-    /** 是否打印日志 **/
-    private boolean log = true;
+    /** 日志级别 **/
+    private Logger.Level logLevel = Logger.Level.FULL;
 
     /** 线程池最大连接数 **/
     private int maxConnections = DEFAULT_MAX_CONNECTIONS;
@@ -32,7 +33,7 @@ public class FeignHttpProperties {
     /** 是否启用SSL验证 **/
     private boolean disableSslValidation = DEFAULT_DISABLE_SSL_VALIDATION;
     /** 是否开启重试 **/
-    private boolean retryOnConnectionFailure = false;
+    private boolean retryOnConnectionFailure = true;
     /** 读取超时(单位毫秒) **/
     private int readTimeout = 30_000;
     /** 写入超时(单位毫秒) **/

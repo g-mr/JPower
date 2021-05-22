@@ -55,12 +55,6 @@ management:
         #开启所有接口
         include: "*"
 
-
-#日志打印级别
-logging:
-  level:
-    root: info
-
 #knife4j配置
 knife4j:
   #启用

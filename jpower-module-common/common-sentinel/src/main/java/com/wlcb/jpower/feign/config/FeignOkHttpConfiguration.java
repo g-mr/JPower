@@ -2,7 +2,6 @@ package com.wlcb.jpower.feign.config;
 
 import com.wlcb.jpower.feign.interceptor.HttpLogInterceptor;
 import com.wlcb.jpower.feign.properties.FeignHttpProperties;
-import feign.Logger;
 import okhttp3.ConnectionPool;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -30,11 +29,6 @@ public class FeignOkHttpConfiguration {
     private okhttp3.OkHttpClient okHttpClient;
 
     @Bean
-    public Logger.Level feignLoggerLevel(){
-        return Logger.Level.FULL;
-    }
-
-    @Bean
     @ConditionalOnMissingBean(ConnectionPool.class)
     public ConnectionPool httpClientConnectionPool(FeignHttpProperties httpProperties,
                                                    OkHttpClientConnectionPoolFactory connectionPoolFactory) {
@@ -45,7 +39,7 @@ public class FeignOkHttpConfiguration {
 
     @Bean
     public HttpLogInterceptor httpLogInterceptor(FeignHttpProperties httpProperties) {
-        return new HttpLogInterceptor();
+        return new HttpLogInterceptor(httpProperties.getLogLevel());
     }
 
     @Bean

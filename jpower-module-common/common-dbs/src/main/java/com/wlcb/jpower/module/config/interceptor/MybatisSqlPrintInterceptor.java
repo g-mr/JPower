@@ -43,7 +43,7 @@ import static com.wlcb.jpower.module.common.utils.constants.StringPool.TAB;
     }
 )
 @RequiredArgsConstructor
-public class MybatisSqlPrintIntercepter implements Interceptor {
+public class MybatisSqlPrintInterceptor implements Interceptor {
 
 
     private final MybatisProperties.Sql sqlProperties;

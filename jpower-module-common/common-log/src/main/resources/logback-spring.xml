@@ -132,8 +132,6 @@
         </then>
     </if>
 
-
-
     <logger name="org.hibernate" level="info" />
     <logger name="org.jboss.logging" level="info" />
     <logger name="org.springframework.core.env" level="info" />

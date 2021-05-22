@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
 import com.wlcb.jpower.module.config.interceptor.DemoInterceptor;
-import com.wlcb.jpower.module.config.interceptor.MybatisSqlPrintIntercepter;
+import com.wlcb.jpower.module.config.interceptor.MybatisSqlPrintInterceptor;
 import com.wlcb.jpower.module.config.properties.DemoProperties;
 import com.wlcb.jpower.module.config.properties.MybatisProperties;
 import com.wlcb.jpower.module.datascope.interceptor.DataScopeInterceptor;
@@ -92,8 +92,8 @@ public class MybatisPlusConfig {
     @Order(Ordered.HIGHEST_PRECEDENCE)
     @Bean
     @ConditionalOnProperty(value = {"jpower.mybatis.sql.print"}, matchIfMissing = true)
-    public MybatisSqlPrintIntercepter mybatisSqlPrintIntercepter(MybatisProperties mybatisProperties) {
-        return new MybatisSqlPrintIntercepter(mybatisProperties.getSql());
+    public MybatisSqlPrintInterceptor mybatisSqlPrintIntercepter(MybatisProperties mybatisProperties) {
+        return new MybatisSqlPrintInterceptor(mybatisProperties.getSql());
     }
 
 }
