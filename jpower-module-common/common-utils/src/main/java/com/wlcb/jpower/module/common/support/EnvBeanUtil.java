@@ -36,4 +36,8 @@ public class EnvBeanUtil implements EnvironmentAware {
     public static <T> T get(String key, Class<T> clz, T defaultValue) {
         return env.getProperty(key,clz,defaultValue);
     }
+
+    public static String getProfile() {
+        return env.getProperty("jpower.env",String.class);
+    }
 }

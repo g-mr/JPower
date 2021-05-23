@@ -1,5 +1,8 @@
 package com.wlcb.jpower.feign.properties;
 
+import com.wlcb.jpower.module.common.support.EnvBeanUtil;
+import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import feign.Logger;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -15,6 +18,13 @@ import static org.springframework.cloud.openfeign.support.FeignHttpClientPropert
 @Data
 @ConfigurationProperties(prefix = "jpower.feign.http")
 public class FeignHttpProperties {
+
+    public FeignHttpProperties(){
+        String profile = EnvBeanUtil.getProfile();
+        if (Fc.equals(profile,AppConstant.PROD_CODE)){
+            logLevel = Logger.Level.BASIC;
+        }
+    }
 
     /** 日志级别 **/
     private Logger.Level logLevel = Logger.Level.FULL;

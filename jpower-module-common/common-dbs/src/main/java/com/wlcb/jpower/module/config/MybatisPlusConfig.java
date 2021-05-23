@@ -60,6 +60,10 @@ public class MybatisPlusConfig {
         // 分页插件
         JpowerPaginationInterceptor paginationInterceptor = new JpowerPaginationInterceptor();
         paginationInterceptor.setQueryInterceptor(dataScopeInterceptor);
+        // TODO: 2021-05-23 回头这三个参数改成可配置的
+//        paginationInterceptor.setOverflow();
+//        paginationInterceptor.setMaxLimit();
+//        paginationInterceptor.setOptimizeJoin();
         interceptor.addInnerInterceptor(paginationInterceptor);
         // 多租户插件
         if (tenantProperties.getEnable()){
