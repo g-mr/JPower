@@ -55,7 +55,7 @@ public class FeignOkHttpConfiguration {
                 .callTimeout(httpProperties.getCallTimeout(),TimeUnit.MILLISECONDS)
                 .readTimeout(httpProperties.getReadTimeout(),TimeUnit.MILLISECONDS)
                 .writeTimeout(httpProperties.getWriteTimeout(),TimeUnit.MILLISECONDS)
-                .addInterceptor(logInterceptor)
+                .addNetworkInterceptor(logInterceptor)
                 .build();
         return this.okHttpClient;
     }

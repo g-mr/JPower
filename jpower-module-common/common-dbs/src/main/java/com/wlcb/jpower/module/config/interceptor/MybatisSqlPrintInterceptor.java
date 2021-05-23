@@ -27,7 +27,9 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
 
+import static com.wlcb.jpower.module.common.utils.constants.StringPool.NEWLINE;
 import static com.wlcb.jpower.module.common.utils.constants.StringPool.TAB;
 
 /**
@@ -75,7 +77,7 @@ public class MybatisSqlPrintInterceptor implements Interceptor {
                 printSql(boundSql,ms.getConfiguration(),ms.getId(),time,rest);
             }
         } catch (Exception e) {
-            log.error("==> 打印sql 日志异常 {}", ExceptionsUtil.getStackTraceAsString(e));
+            log.error("==> 打印sql 日志异常 {}", NEWLINE+ExceptionsUtil.getStackTraceAsString(e));
         }
         return rest;
     }
@@ -156,7 +158,8 @@ public class MybatisSqlPrintInterceptor implements Interceptor {
                     } else {
                         paramValueStr = value + "";
                     }
-                    sql = sql.replaceFirst("\\?", paramValueStr);
+
+                    sql = sql.replaceFirst("\\?", Matcher.quoteReplacement(paramValueStr));
                 }
             }
         }
