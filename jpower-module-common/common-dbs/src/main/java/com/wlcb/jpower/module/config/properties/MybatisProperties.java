@@ -16,6 +16,20 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "jpower.mybatis")
 public class MybatisProperties {
 
+    /**
+     * 溢出总页数后是否进行处理
+     */
+    private boolean overflow = false;
+    /**
+     * 单页分页条数限制
+     */
+    private Long maxLimit = 10L;
+    /**
+     * 生成 countSql 优化掉 join
+     * 现在只支持 left join
+     */
+    private boolean optimizeJoin = true;
+
     private Sql sql = new Sql(true,0L);
 
     @Data

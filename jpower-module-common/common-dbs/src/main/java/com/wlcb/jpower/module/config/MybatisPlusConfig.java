@@ -53,17 +53,17 @@ public class MybatisPlusConfig {
     public MybatisPlusInterceptor mybatisPlusInterceptor(DataScopeInterceptor dataScopeInterceptor,
                                                          TenantLineInnerInterceptor tenantLineInnerInterceptor,
                                                          JpowerTenantProperties tenantProperties,
-                                                         DemoProperties demoProperties) {
+                                                         DemoProperties demoProperties,
+                                                         MybatisProperties mybatisProperties) {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         // 乐观锁插件
         interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
         // 分页插件
         JpowerPaginationInterceptor paginationInterceptor = new JpowerPaginationInterceptor();
         paginationInterceptor.setQueryInterceptor(dataScopeInterceptor);
-        // TODO: 2021-05-23 回头这三个参数改成可配置的
-//        paginationInterceptor.setOverflow();
-//        paginationInterceptor.setMaxLimit();
-//        paginationInterceptor.setOptimizeJoin();
+        paginationInterceptor.setOverflow(mybatisProperties.isOverflow());
+        paginationInterceptor.setMaxLimit(mybatisProperties.getMaxLimit());
+        paginationInterceptor.setOptimizeJoin(mybatisProperties.isOptimizeJoin());
         interceptor.addInnerInterceptor(paginationInterceptor);
         // 多租户插件
         if (tenantProperties.getEnable()){
