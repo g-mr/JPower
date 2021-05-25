@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
+import okhttp3.internal.http.HttpHeaders;
 import org.springframework.core.Ordered;
 
 import java.io.IOException;
@@ -115,8 +116,9 @@ public class HttpLogInterceptor implements Interceptor, Ordered {
 
         String rpBody = "";
         if (level == Logger.Level.FULL){
-            ResponseBody responseBody = response.body();
-            if (Fc.notNull(responseBody)){
+            if (HttpHeaders.hasBody(response)){
+                ResponseBody responseBody = response.body();
+
                 builder.append("response body: ")
                         .append(responseBody.contentLength() != -1 ? responseBody.contentLength() + "-byte" : "unknown-length")
                         .append(SPACE).append(responseBody.contentType())

@@ -112,7 +112,8 @@ public class IoUtil extends org.springframework.util.StreamUtils {
 
     public static String readResponseBody(ResponseBody responseBody) {
         if (Fc.notNull(responseBody)){
-            try (BufferedSource source = responseBody.source()){
+            try {
+                BufferedSource source = responseBody.source();
                 //缺这行会拿到一个空的Buffer
                 source.request(Long.MAX_VALUE);
                 Buffer buffer = source.getBuffer();
@@ -124,7 +125,7 @@ public class IoUtil extends org.springframework.util.StreamUtils {
                         charset = responseBody.contentType().charset(CharsetKit.CHARSET_UTF_8);
                     }
 
-                    return buffer.readString(charset);
+                    return buffer.clone().readString(charset);
                 }
                 return "omit bodyContent";
             } catch (IOException e) {

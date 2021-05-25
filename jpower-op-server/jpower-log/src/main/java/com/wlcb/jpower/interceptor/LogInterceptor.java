@@ -5,6 +5,7 @@ import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.IoUtil;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
+import okhttp3.internal.http.HttpHeaders;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -60,14 +61,22 @@ public class LogInterceptor implements Interceptor {
                 args.add(System.currentTimeMillis() - startTime);
                 args.add(ExceptionsUtil.getStackTraceAsString(exception));
             }else {
-                ResponseBody responseBody = response.body();
+                if (HttpHeaders.hasBody(response)){
+                    ResponseBody responseBody = response.body();
+                    long contentLength = responseBody.contentLength();
+                    String bodySize = contentLength != -1 ? contentLength + "-byte" : "unknown-length";
 
-                long contentLength = responseBody.contentLength();
-                String bodySize = contentLength != -1 ? contentLength + "-byte" : "unknown-length";
+                    builder.append("  RESULT: {}-byte body  {}").append(NEWLINE).append("    {}");
+                    args.add(bodySize);
+                    args.add(responseBody.contentLength());
+                    args.add(IoUtil.readResponseBody(responseBody));
+                }
+
+
                 builder.append("<==END REQUEST TEST REST {} {} {}");
                 args.add(response.code());
                 args.add((response.message().isEmpty() ? "" : ' ' + response.message()));
-                args.add(" (" + (System.currentTimeMillis() - startTime) + "ms" + ", " + bodySize + " body" + ")");
+                args.add(" (" + (System.currentTimeMillis() - startTime) + "ms)");
             }
             log.info(builder.toString(),args.toArray());
         }

@@ -70,7 +70,7 @@ public class OperateLogAspect
 
             OperateLogDto operLog = new OperateLogDto();
             StringBuilder builder = new StringBuilder(controllerLog.title());
-            builder.append(" 请求==>");
+            builder.append(" 请求==> ");
             // 获取当前的用户
             UserInfo currentUser = LoginUserContext.get();
             if (Fc.notNull(currentUser)){
