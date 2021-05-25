@@ -132,6 +132,7 @@
         </then>
     </if>
 
+    <logger name="io.netty.util.internal" level="info" />
     <logger name="org.hibernate" level="info" />
     <logger name="org.jboss.logging" level="info" />
     <logger name="org.springframework.core.env" level="info" />
