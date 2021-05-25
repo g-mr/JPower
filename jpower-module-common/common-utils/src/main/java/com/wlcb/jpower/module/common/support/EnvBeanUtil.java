@@ -1,5 +1,6 @@
 package com.wlcb.jpower.module.common.support;
 
+import com.wlcb.jpower.module.common.utils.Fc;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Component;
  * @Date 2020/10/16 0016 22:32
  * @Version 1.0
  */
-@Component
+@Component("envBeanUtil")
 public class EnvBeanUtil implements EnvironmentAware {
 
     private static Environment env;
@@ -38,6 +39,9 @@ public class EnvBeanUtil implements EnvironmentAware {
     }
 
     public static String getProfile() {
-        return env.getProperty("jpower.env",String.class);
+        if (Fc.notNull(env)){
+            return env.getProperty("jpower.env",String.class);
+        }
+        return null;
     }
 }

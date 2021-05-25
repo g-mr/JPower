@@ -15,12 +15,11 @@ import com.wlcb.jpower.handler.AuthBuilder;
 import com.wlcb.jpower.handler.HttpInfoBuilder;
 import com.wlcb.jpower.handler.HttpInfoHandler;
 import com.wlcb.jpower.interceptor.AuthInterceptor;
+import com.wlcb.jpower.interceptor.LogInterceptor;
 import com.wlcb.jpower.interceptor.RollbackInterceptor;
 import com.wlcb.jpower.module.base.exception.BusinessException;
-import com.wlcb.jpower.module.common.deploy.props.JpowerProperties;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.*;
-import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.properties.MonitorRestfulProperties.Route;
@@ -28,9 +27,6 @@ import com.wlcb.jpower.service.MonitorSettingService;
 import com.wlcb.jpower.service.TaskService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.Headers;
-import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import org.apache.http.HttpStatus;
 import org.apache.http.entity.ContentType;
 import org.springframework.stereotype.Service;
@@ -38,7 +34,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -59,8 +54,8 @@ public class TaskServiceImpl implements TaskService {
     private final LogMonitorResultDao logMonitorResultDao;
     private final MonitorSettingService monitorSettingService;
     private final RollbackInterceptor rollbackInterceptor;
-    private final JpowerProperties properties;
     private AuthInterceptor authInterceptor;
+    private final LogInterceptor logInterceptor;
 
     private AuthInterceptor getAuthInterceptor(Route route){
         return Fc.isNull(route.getAuth())?authInterceptor:AuthBuilder.getInterceptor(route);
@@ -90,7 +85,7 @@ public class TaskServiceImpl implements TaskService {
                     String content = OkHttp.get(route.getLocation()+route.getUrl())
                             .execute(Fc.isNull(route.getAuth())?SpringUtil.getBean(AuthInterceptor.class):AuthBuilder.getInterceptor(route))
                             .getBody();
-                    log.info("{}获取到接口信息完成:{}",route.getName(),content);
+                    log.debug("{}获取到接口信息完成:{}",route.getName(),content);
                     return JSON.parseObject(Fc.isNotBlank(content)&&JsonUtil.isJsonObject(content)?content:"{}");
                 });
             } catch (Exception e) {
@@ -108,7 +103,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void process(Route route) {
 
-        log.info("---> START TEST SERVER {} {}",route.getName(),route.getLocation()+route.getUrl());
+        log.debug("---> START TEST SERVER {} {}",route.getName(),route.getLocation()+route.getUrl());
 
         authInterceptor = getAuthInterceptor(route);
         TbLogMonitorResult result = saveResult(route.getName(), route.getUrl(), OkHttp.get(route.getLocation()+route.getUrl()).execute(authInterceptor),new TbLogMonitorSetting());
@@ -123,7 +118,7 @@ public class TaskServiceImpl implements TaskService {
                 ThreadUtil.execAsync(() -> monitorSettingService.deleteSetting(route.getName(),paths.getInnerMap(),restFulInfo.getJSONArray(TAGS)));
 
                 RestCache.set(route.getName(),restFulInfo);
-                log.info("---> SERVER RESTFUL SUM={}",paths.size());
+                log.info("---> [{}] SERVER RESTFUL SUM={}",  route.getName(), paths.size());
                 paths.forEach((url,methods)->{
 
                     String httpUrl = route.getLocation().concat(Fc.equals(StringPool.SLASH,restFulInfo.getString(BASEPATH))?StringPool.EMPTY:restFulInfo.getString(BASEPATH)).concat(url);
@@ -142,12 +137,12 @@ public class TaskServiceImpl implements TaskService {
                                 okHttp = requestRestFul(method,httpUrl);
                                 saveResult(route.getName(),url,okHttp,setting);
                             }catch (Exception e){
-                                log.error("===>  接口测试异常，error={}",e.getMessage());
+                                log.error("  接口测试异常，error={}",e.getMessage());
                                 if (e instanceof BusinessException){
                                     throw e;
                                 }
                             }finally {
-                                if (!Fc.isNull(okHttp)){
+                                if (Fc.notNull(okHttp)){
                                     okHttp.close();
                                 }
                                 log.info("<-- END TEST REST {} {}",method,url);
@@ -156,12 +151,12 @@ public class TaskServiceImpl implements TaskService {
                     });
                 });
             }else {
-                log.info("  {}服务未发现接口",route.getName());
+                log.warn("  {}服务未发现接口",route.getName());
             }
         }else {
-            log.info("  获取服务接口数据异常resposeCode=>{}",result.getResposeCode());
+            log.warn("  获取服务接口数据异常resposeCode=>{}",result.getResposeCode());
         }
-        log.info("<--- END TEST SERVER {} {}; Response={}",route.getName(),route.getLocation()+route.getUrl(),result.getResposeCode());
+        log.debug("<--- END TEST SERVER {} {}; Response={}",route.getName(),route.getLocation()+route.getUrl(),result.getResposeCode());
     }
 
     /**
@@ -238,7 +233,6 @@ public class TaskServiceImpl implements TaskService {
         Map<String,String> bodys = HttpInfoBuilder.getHandler(url).getBodyParam(method);
 
         String httpUrl = StringUtil.format(url,paths);
-        log.info("  TEST REST URL=>{}",httpUrl);
 
         OkHttp okHttp;
         switch (method.toUpperCase()) {
@@ -266,9 +260,6 @@ public class TaskServiceImpl implements TaskService {
             default:
                 if (bodys.size() == 1) {
                     Map.Entry<String, String> body = bodys.entrySet().iterator().next();
-                    if (!AppConstant.PROD_CODE.equals(properties.getEnv())){
-                        log.info("  TEST REST PARAMS bodys==>{}",body.getValue());
-                    }
                     //获取Body请求数据类型
                     String dataType = HttpInfoBuilder.getHandler(url).getBodyDataType(method);
                     if(StringUtil.startsWithIgnoreCase(dataType, ContentType.APPLICATION_XML.getMimeType())){
@@ -285,51 +276,8 @@ public class TaskServiceImpl implements TaskService {
         }
 
 
-        logBefore(okHttp,forms);
-        long startNs = System.nanoTime();
-        okHttp = okHttp.execute(authInterceptor,rollbackInterceptor);
-        logAfter(okHttp,TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs));
-
+        okHttp = okHttp.execute(authInterceptor,rollbackInterceptor,logInterceptor);
         return okHttp;
-    }
-
-    private void logAfter(OkHttp okHttp,long time){
-        if (Fc.isNull(okHttp.getResponse())){
-            log.info("  END REQUEST TEST REST FAILED {} : {}"," (" + time + "ms)",okHttp.getError());
-        }else {
-            ResponseBody responseBody = okHttp.getResponse().body();
-            long contentLength = responseBody.contentLength();
-            String bodySize = contentLength != -1 ? contentLength + "-byte" : "unknown-length";
-            log.info("  END REQUEST TEST REST {} {} {}",okHttp.getResponse().code(),(okHttp.getResponse().message().isEmpty() ? "" : ' ' + okHttp.getResponse().message())
-                    ," (" + time + "ms" + ", " + bodySize + " body" + ")");
-        }
-    }
-
-    private void logBefore(OkHttp okHttp,Map<String,String> forms){
-        if (!AppConstant.PROD_CODE.equals(properties.getEnv())){
-            log.info("  TEST REST PARAMS FORMS==>");
-            forms.forEach((key,val)->{
-                log.info("    {}: {}",key,val);
-            });
-
-            log.info("  TEST REST PARAMS HEADERS==>");
-            Headers hd = okHttp.getRequest().headers();
-            for (int i = 0, count = hd.size(); i < count; i++) {
-                String name = hd.name(i);
-                if (!"Content-Type".equalsIgnoreCase(name) && !"Content-Length".equalsIgnoreCase(name)) {
-                    log.info("    {}: {}",name,hd.value(i));
-                }
-            }
-        }
-        RequestBody requestBody = okHttp.getRequest().body();
-        try {
-            if (Objects.requireNonNull(requestBody).contentType() != null) {
-                log.info("  Content-Type: " + requestBody.contentType());
-            }
-            if (Objects.requireNonNull(requestBody).contentLength() != -1) {
-                log.info("  Content-Length: " + requestBody.contentLength());
-            }
-        } catch (Exception ignored) {}
     }
 
     @Override
@@ -362,6 +310,13 @@ public class TaskServiceImpl implements TaskService {
         return array;
     }
 
+    /**
+     * 获取一个paths下的子级
+     * @Author mr.g
+     * @param paths
+     * @param tag
+     * @return com.alibaba.fastjson.JSONArray
+     **/
     private JSONArray getTagChildren(Map<String, Object> paths, String tag) {
         JSONArray array = new JSONArray();
         for (Map.Entry<String, Object> entry : paths.entrySet()) {

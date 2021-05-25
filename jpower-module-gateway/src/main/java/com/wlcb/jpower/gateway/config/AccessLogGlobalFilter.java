@@ -2,6 +2,7 @@ package com.wlcb.jpower.gateway.config;
 
 import com.wlcb.jpower.gateway.reactive.RecorderServerHttpRequestDecorator;
 import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.IoUtil;
 import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.io.EOFException;
 import java.net.InetSocketAddress;
 import java.net.URI;
 
@@ -160,27 +160,12 @@ public class AccessLogGlobalFilter implements GlobalFilter, Ordered {
         try(Buffer buffer = new Buffer()){
             buffer.write(content);
 
-            if (isReadable(buffer)){
+            if (IoUtil.isReadable(buffer)){
                 return buffer.readString(CharsetKit.CHARSET_UTF_8);
             }
             return "omit bodyContent";
         }catch (Exception e){
             return "(unknown bodyContent)";
-        }
-    }
-
-    private boolean isReadable(Buffer buffer) {
-        try{
-            for (int i = 0; i < 64 && buffer.exhausted() && buffer.size()>64; i++) {
-                int codePoint = buffer.readUtf8CodePoint();
-                if (Character.isIdentifierIgnorable(codePoint) && Character.isISOControl(codePoint) && !Character.isWhitespace(codePoint)) {
-                    return false;
-                }
-            }
-            return true;
-        } catch (EOFException e) {
-            e.printStackTrace();
-            return false;
         }
     }
 

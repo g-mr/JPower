@@ -16,12 +16,17 @@
 package com.wlcb.jpower.module.common.utils;
 
 import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
+import lombok.extern.slf4j.Slf4j;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import okio.Buffer;
+import okio.BufferedSource;
 import org.springframework.lang.Nullable;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.nio.charset.Charset;
+
+import static com.wlcb.jpower.module.common.utils.constants.StringPool.NEWLINE;
 
 /**
  * xpath解析xml
@@ -33,6 +38,7 @@ import java.io.OutputStream;
  *
  * @author L.cm
  */
+@Slf4j
 public class IoUtil extends org.springframework.util.StreamUtils {
 
     /**
@@ -101,6 +107,68 @@ public class IoUtil extends org.springframework.util.StreamUtils {
     public static void write(@Nullable final String data, final OutputStream output, final java.nio.charset.Charset encoding) throws IOException {
         if (data != null) {
             output.write(data.getBytes(encoding));
+        }
+    }
+
+    public static String readResponseBody(ResponseBody responseBody) {
+        if (Fc.notNull(responseBody)){
+            try (BufferedSource source = responseBody.source()){
+                //缺这行会拿到一个空的Buffer
+                source.request(Long.MAX_VALUE);
+                Buffer buffer = source.getBuffer();
+
+                if (IoUtil.isReadable(buffer)){
+
+                    Charset charset = CharsetKit.CHARSET_UTF_8;
+                    if (responseBody.contentType() != null){
+                        charset = responseBody.contentType().charset(CharsetKit.CHARSET_UTF_8);
+                    }
+
+                    return buffer.readString(charset);
+                }
+                return "omit bodyContent";
+            } catch (IOException e) {
+                return "(unknown bodyContent)";
+            }
+        }else {
+            return "responseBody is null";
+        }
+    }
+
+    public static String readRequestBody(RequestBody requestBody) {
+        try(Buffer buffer = new Buffer()){
+            if (Fc.notNull(requestBody)){
+                requestBody.writeTo(buffer);
+                if (isReadable(buffer)){
+
+                    Charset charset = CharsetKit.CHARSET_UTF_8;
+                    if (requestBody.contentType() != null){
+                        charset = requestBody.contentType().charset(CharsetKit.CHARSET_UTF_8);
+                    }
+
+                    return buffer.readString(charset);
+                }
+                return "omit bodyContent";
+            }
+            return "requestBody is null";
+        }catch (IOException e){
+            log.error("读取requestBody出错:{}",NEWLINE+ ExceptionsUtil.getStackTraceAsString(e));
+            return "(unknown bodyContent)";
+        }
+    }
+
+    public static boolean isReadable(Buffer buffer) {
+        try{
+            for (int i = 0; i < 64 && buffer.exhausted() && buffer.size()>64; i++) {
+                int codePoint = buffer.readUtf8CodePoint();
+                if (Character.isIdentifierIgnorable(codePoint) && Character.isISOControl(codePoint) && !Character.isWhitespace(codePoint)) {
+                    return false;
+                }
+            }
+            return true;
+        } catch (EOFException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }

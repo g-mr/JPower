@@ -40,7 +40,7 @@ public final class AuthInterceptor implements Interceptor {
         if (!Fc.isNull(authInfo)){
             try {
                 String token = getToken(request);
-                log.info("--> TEST REST AUTH {} {}",authInfo.getTokenName(),token);
+                log.info("===> TEST REST AUTH {} {}",authInfo.getTokenName(),token);
 
                 switch (authInfo.getTokenPosition()){
                     case HEADER:

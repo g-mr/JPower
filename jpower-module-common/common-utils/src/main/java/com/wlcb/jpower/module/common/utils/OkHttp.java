@@ -21,11 +21,11 @@ public class OkHttp {
     public static MediaType XML = MediaType.parse("application/xml; charset=utf-8");
 
     @Getter
-    private Request request;
+    private Request request = null;
     @Getter
-    private Response response;
+    private Response response = null;
     @Getter
-    private String error;
+    private String error = null;
     /**
      * 执行时间
      * @Author mr.g
@@ -370,7 +370,7 @@ public class OkHttp {
             responseTime = (System.currentTimeMillis() - startTime);
         } catch (Exception e) {
             error = e.getMessage();
-            log.error("OkHttp3 execute error >> ex = {}", e.getMessage());
+            log.error("OkHttp3 execute error >> ex = {}", ExceptionsUtil.getStackTraceAsString(e));
             throw new HttpException("OkHttp3 execute error >> ex = " + e.getMessage());
         }
 
@@ -401,10 +401,9 @@ public class OkHttp {
     }
 
     public String getRequestBody() {
-        try {
-            Buffer buffer = new Buffer();
+        try (Buffer buffer = new Buffer()){
             RequestBody requestBody = request.body();
-            if (!Fc.isNull(requestBody)){
+            if (Fc.notNull(requestBody)){
                 requestBody.writeTo(buffer);
                 return buffer.readUtf8();
             }
@@ -420,7 +419,7 @@ public class OkHttp {
      * @return String
      */
     public OkHttp close() {
-        if (!Fc.isNull(response)) {
+        if (Fc.notNull(response)) {
             response.close();
         }
         return this;

@@ -11,6 +11,7 @@ import org.springframework.cloud.commons.httpclient.OkHttpClientFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 
 import javax.annotation.PreDestroy;
 import java.util.concurrent.TimeUnit;
@@ -24,9 +25,15 @@ import java.util.concurrent.TimeUnit;
 @ConditionalOnMissingBean(okhttp3.OkHttpClient.class)
 @ComponentScan(basePackageClasses = HttpClientConfiguration.class)
 @EnableConfigurationProperties(FeignHttpProperties.class)
+@DependsOn("envBeanUtil")
 public class FeignOkHttpConfiguration {
 
     private okhttp3.OkHttpClient okHttpClient;
+
+    @Bean
+    public HttpLogInterceptor httpLogInterceptor(FeignHttpProperties httpProperties) {
+        return new HttpLogInterceptor(httpProperties.getLogLevel());
+    }
 
     @Bean
     @ConditionalOnMissingBean(ConnectionPool.class)
@@ -35,11 +42,6 @@ public class FeignOkHttpConfiguration {
         return connectionPoolFactory.create(httpProperties.getMaxConnections(),
                 httpProperties.getTimeToLive(),
                 httpProperties.getTimeToLiveUnit());
-    }
-
-    @Bean
-    public HttpLogInterceptor httpLogInterceptor(FeignHttpProperties httpProperties) {
-        return new HttpLogInterceptor(httpProperties.getLogLevel());
     }
 
     @Bean

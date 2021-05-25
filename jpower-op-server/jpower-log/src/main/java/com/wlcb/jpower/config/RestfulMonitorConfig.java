@@ -1,6 +1,7 @@
 package com.wlcb.jpower.config;
 
 import com.wlcb.jpower.interceptor.AuthInterceptor;
+import com.wlcb.jpower.interceptor.LogInterceptor;
 import com.wlcb.jpower.interceptor.RollbackInterceptor;
 import com.wlcb.jpower.properties.MonitorRestfulProperties;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
  * @Author mr.g
  * @Date 2021/4/1 0001 22:26
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(MonitorRestfulProperties.class)
 @AllArgsConstructor
 public class RestfulMonitorConfig {
@@ -29,6 +30,11 @@ public class RestfulMonitorConfig {
     @Bean
     public AuthInterceptor authInterceptor(@NotNull MonitorRestfulProperties properties){
         return new AuthInterceptor(properties.getAuth());
+    }
+
+    @Bean
+    public LogInterceptor logInterceptor(){
+        return new LogInterceptor();
     }
 
 }

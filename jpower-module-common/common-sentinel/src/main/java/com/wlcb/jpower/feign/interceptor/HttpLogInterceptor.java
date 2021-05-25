@@ -2,19 +2,15 @@ package com.wlcb.jpower.feign.interceptor;
 
 import com.wlcb.jpower.module.common.utils.ExceptionsUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
+import com.wlcb.jpower.module.common.utils.IoUtil;
 import feign.Logger;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
-import okio.Buffer;
-import okio.BufferedSource;
 import org.springframework.core.Ordered;
 
-import java.io.EOFException;
 import java.io.IOException;
-import java.nio.charset.Charset;
 
 import static com.wlcb.jpower.module.common.utils.constants.StringPool.*;
 
@@ -89,7 +85,7 @@ public class HttpLogInterceptor implements Interceptor, Ordered {
                         .append(SPACE).append(requestBody.contentType())
                         .append(NEWLINE);
 
-                rqBody = readRequestBody(requestBody);
+                rqBody = IoUtil.readRequestBody(requestBody);
                 builder.append(TAB)
                         .append(rqBody)
                         .append(NEWLINE);
@@ -126,7 +122,7 @@ public class HttpLogInterceptor implements Interceptor, Ordered {
                         .append(SPACE).append(responseBody.contentType())
                         .append(NEWLINE);
 
-                rpBody = readResponseBody(responseBody);
+                rpBody = IoUtil.readResponseBody(responseBody);
 
                 builder.append(TAB)
                         .append(rpBody)
@@ -139,61 +135,6 @@ public class HttpLogInterceptor implements Interceptor, Ordered {
         builder.append("<-- end response").append(LEFT_BRACKET).append(rpBody.getBytes().length).append("-byte body").append(RIGHT_BRACKET).append(NEWLINE);
         builder.append("============end feign http=============");
         log.info(builder.toString());
-    }
-
-    private String readResponseBody(ResponseBody responseBody) {
-        try (BufferedSource source = responseBody.source()){
-            //缺这行会拿到一个空的Buffer
-            source.request(Long.MAX_VALUE);
-            Buffer buffer = source.getBuffer();
-
-            if (isReadable(buffer)){
-
-                Charset charset = CharsetKit.CHARSET_UTF_8;
-                if (responseBody.contentType() != null){
-                    charset = responseBody.contentType().charset(CharsetKit.CHARSET_UTF_8);
-                }
-
-                return buffer.readString(charset);
-            }
-            return "omit bodyContent";
-        } catch (IOException e) {
-            return "(unknown bodyContent)";
-        }
-    }
-
-    private String readRequestBody(RequestBody requestBody) {
-        try(Buffer buffer = new Buffer()){
-            requestBody.writeTo(buffer);
-            if (isReadable(buffer)){
-
-                Charset charset = CharsetKit.CHARSET_UTF_8;
-                if (requestBody.contentType() != null){
-                    charset = requestBody.contentType().charset(CharsetKit.CHARSET_UTF_8);
-                }
-
-                return buffer.readString(charset);
-            }
-            return "omit bodyContent";
-        }catch (IOException e){
-            log.error("读取requestBody出错:{}",NEWLINE+ExceptionsUtil.getStackTraceAsString(e));
-            return "(unknown bodyContent)";
-        }
-    }
-
-    private boolean isReadable(Buffer buffer) {
-        try{
-            for (int i = 0; i < 64 && buffer.exhausted() && buffer.size()>64; i++) {
-                int codePoint = buffer.readUtf8CodePoint();
-                if (Character.isIdentifierIgnorable(codePoint) && Character.isISOControl(codePoint) && !Character.isWhitespace(codePoint)) {
-                    return false;
-                }
-            }
-            return true;
-        } catch (EOFException e) {
-            e.printStackTrace();
-            return false;
-        }
     }
 
     @Override
