@@ -12,7 +12,7 @@ import java.util.Map;
  */
 @Data
 @ConfigurationProperties(prefix = "jpower.redis")
-public class CustomRedisProperties {
+public class RedisProperties {
 
     /**
      * 是否缓存 null 值

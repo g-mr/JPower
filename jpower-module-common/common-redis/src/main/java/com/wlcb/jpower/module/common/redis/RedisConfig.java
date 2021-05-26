@@ -15,7 +15,7 @@
  */
 package com.wlcb.jpower.module.common.redis;
 
-import com.wlcb.jpower.module.common.properties.CustomRedisProperties;
+import com.wlcb.jpower.module.common.properties.RedisProperties;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
@@ -51,12 +51,12 @@ import java.util.Optional;
  */
 @EnableCaching
 @Configuration
-@EnableConfigurationProperties(CustomRedisProperties.class)
+@EnableConfigurationProperties(RedisProperties.class)
 @AutoConfigureBefore({RedisAutoConfiguration.class})
 @RequiredArgsConstructor
 public class RedisConfig {
 
-    private final CustomRedisProperties redisProperties;
+    private final RedisProperties redisProperties;
 
     @Bean
     @ConditionalOnMissingBean({RedisSerializer.class})
@@ -88,7 +88,7 @@ public class RedisConfig {
         return def;
     }
 
-    private RedisCacheConfiguration handleRedisCacheConfiguration(CustomRedisProperties.Cache redisProperties, RedisCacheConfiguration config) {
+    private RedisCacheConfiguration handleRedisCacheConfiguration(RedisProperties.Cache redisProperties, RedisCacheConfiguration config) {
         if (Fc.isNull(redisProperties)) {
             return config;
         }
@@ -116,7 +116,7 @@ public class RedisConfig {
         RedisCacheConfiguration defConfig = getDefConf();
         defConfig.entryTtl(redisProperties.getDef().getTimeToLive());
 
-        Map<String, CustomRedisProperties.Cache> configs = redisProperties.getConfigs();
+        Map<String, RedisProperties.Cache> configs = redisProperties.getConfigs();
         Map<String, RedisCacheConfiguration> map = ChainMap.newMap();
         //自定义的缓存过期时间配置
         Optional.ofNullable(configs).ifPresent(config ->
