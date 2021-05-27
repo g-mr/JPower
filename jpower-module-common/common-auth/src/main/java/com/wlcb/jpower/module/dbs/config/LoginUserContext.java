@@ -89,9 +89,9 @@ public class LoginUserContext {
         UserInfo user = SecureUtil.getUser();
 
         if (Fc.isNull(user)){
-            if (!Fc.isNull(WebUtil.getRequest())){
+            if (Fc.notNull(WebUtil.getRequest())){
                 String header = WebUtil.getRequest().getHeader(TokenConstant.PASS_HEADER_NAME);
-                if (!Fc.isNull(header)){
+                if (Fc.isNotBlank(header)){
                     user = new UserInfo();
 
                     try { user.setClientCode(SecureUtil.getClientCodeFromHeader()); }catch (Exception ignored){}

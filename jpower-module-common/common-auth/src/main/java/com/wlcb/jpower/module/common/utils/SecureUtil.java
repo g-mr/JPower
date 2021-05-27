@@ -81,6 +81,16 @@ public class SecureUtil {
     }
 
     /**
+     * 获取用户信息
+     *
+     * @param request request
+     * @return UserInfo
+     */
+    public static UserInfo getUser(FullHttpRequest request) {
+        return getUser(getClaims(request));
+    }
+
+    /**
      * 是否为超管
      *
      * @return boolean
@@ -110,34 +120,12 @@ public class SecureUtil {
     }
 
     /**
-     * 获取用户id
-     *
-     * @param request request
-     * @return userId
-     */
-    public static String getUserId(HttpServletRequest request) {
-        UserInfo user = getUser(request);
-        return (null == user) ? StringPool.EMPTY : user.getUserId();
-    }
-
-    /**
      * 获取用户账号
      *
      * @return userAccount
      */
     public static String getUserAccount() {
         UserInfo user = getUser();
-        return Fc.isNull(user) ? StringPool.EMPTY : user.getLoginId();
-    }
-
-    /**
-     * 获取用户账号
-     *
-     * @param request request
-     * @return userAccount
-     */
-    public static String getUserAccount(HttpServletRequest request) {
-        UserInfo user = getUser(request);
         return Fc.isNull(user) ? StringPool.EMPTY : user.getLoginId();
     }
 
@@ -152,33 +140,12 @@ public class SecureUtil {
     }
 
     /**
-     * 获取用户名
-     *
-     * @param request request
-     * @return userName
-     */
-    public static String getUserName(HttpServletRequest request) {
-        UserInfo user = getUser(request);
-        return Fc.isNull(user) ? StringPool.EMPTY : user.getUserName();
-    }
-
-    /**
-     * 获取用户角色
+     * 获取用角色
      *
      * @return userName
      */
     public static List<String> getUserRole() {
-        return getUserRole(WebUtil.getRequest());
-    }
-
-    /**
-     * 获取用角色
-     *
-     * @param request request
-     * @return userName
-     */
-    public static List<String> getUserRole(HttpServletRequest request) {
-        UserInfo user = getUser(request);
+        UserInfo user = getUser();
         if (Fc.isNull(user)) {
             List<String> list = new ArrayList<>();
             list.add(RoleConstant.ANONYMOUS_ID);
@@ -219,23 +186,26 @@ public class SecureUtil {
     }
 
     /**
+     * 获取租户ID
+     *
+     * @param request request
+     * @return tenantId
+     */
+    public static String getTenantCode(FullHttpRequest request) {
+        if (!TENANT_MODE) {
+            return StringPool.EMPTY;
+        }
+        UserInfo user = getUser(request);
+        return Fc.isNull(user) ? StringPool.EMPTY : user.getTenantCode();
+    }
+
+    /**
      * 获取客户端id
      *
      * @return tenantId
      */
     public static String getClientCode() {
         UserInfo user = getUser();
-        return Fc.isNull(user) ? StringPool.EMPTY : user.getClientCode();
-    }
-
-    /**
-     * 获取客户端id
-     *
-     * @param request request
-     * @return tenantId
-     */
-    public static String getClientCode(HttpServletRequest request) {
-        UserInfo user = getUser(request);
         return Fc.isNull(user) ? StringPool.EMPTY : user.getClientCode();
     }
 
@@ -252,30 +222,11 @@ public class SecureUtil {
     /**
      * 获取Claims
      *
-     * @param fullHttpRequest
+     * @param request
      * @return Claims
      */
-    public static Claims getClaims(FullHttpRequest fullHttpRequest) {
-        return JwtUtil.parseJWT(JwtUtil.getToken(fullHttpRequest));
-    }
-
-    /**
-     * 获取请求头
-     *
-     * @return header
-     */
-    public static String getHeader() {
-        return getHeader(Objects.requireNonNull(WebUtil.getRequest()));
-    }
-
-    /**
-     * 获取请求头
-     *
-     * @param request request
-     * @return header
-     */
-    public static String getHeader(HttpServletRequest request) {
-        return request.getHeader(HEADER);
+    public static Claims getClaims(FullHttpRequest request) {
+        return JwtUtil.parseJWT(JwtUtil.getToken(request));
     }
 
     /**
