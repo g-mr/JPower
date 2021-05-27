@@ -19,65 +19,33 @@
             <groupId>com.wlcb</groupId>
             <artifactId>system-server</artifactId>
             <version>${com.jpower.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.wlcb</groupId>
-                    <artifactId>system-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.wlcb</groupId>
-                    <artifactId>user-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.wlcb</groupId>
-                    <artifactId>common-sentinel</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.wlcb</groupId>
             <artifactId>user-server</artifactId>
             <version>${com.jpower.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.wlcb</groupId>
-                    <artifactId>system-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.wlcb</groupId>
-                    <artifactId>user-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.wlcb</groupId>
             <artifactId>file-server</artifactId>
             <version>${com.jpower.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.wlcb</groupId>
-                    <artifactId>file-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.wlcb</groupId>
             <artifactId>jpower-core-login</artifactId>
+            <version>${com.jpower.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wlcb</groupId>
+            <artifactId>common-deploy</artifactId>
+            <version>${com.jpower.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>com.wlcb</groupId>
-                    <artifactId>common-nacos</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>org.springframework.cloud</groupId>
-                    <artifactId>spring-cloud-commons</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.wlcb</groupId>
-                    <artifactId>common-transaction</artifactId>
+                    <artifactId>spring-cloud-starter-bootstrap</artifactId>
                 </exclusion>
             </exclusions>
-            <version>${com.jpower.version}</version>
         </dependency>
 
         <dependency>
@@ -128,7 +96,7 @@
                             <!--是否检查传递性依赖(间接依赖)-->
                             <searchTransitive>true</searchTransitive>
                             <excludes>
-                                <exclude>com.wlcb:common-sentinel</exclude>
+                                <exclude>com.wlcb:common-feign</exclude>
                                 <exclude>com.wlcb:common-nacos</exclude>
                                 <exclude>org.springframework.cloud:spring-cloud-commons</exclude>
 

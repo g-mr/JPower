@@ -137,7 +137,7 @@ JPower
 ├    ├── common-log -- Log Toolkit 
 ├    ├── common-nacos -- Nacos Toolkit
 ├    ├── common-redis -- Cache Toolkit 
-├    ├── common-sentinel -- The sentinel toolkit also integrates feign
+├    ├── common-feign -- The feign toolkit also integrates sentinel
 ├    ├── common-swagger -- Swagger Toolkit
 ├    ├── common-tool -- Basic Configuration Toolkit 
 ├    ├── common-transaction -- Distributed Transaction Toolkit 

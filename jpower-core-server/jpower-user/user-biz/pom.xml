@@ -24,12 +24,14 @@
             <groupId>com.wlcb</groupId>
             <artifactId>user-api</artifactId>
             <version>${com.jpower.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>com.wlcb</groupId>
             <artifactId>system-api</artifactId>
             <version>${com.jpower.version}</version>
+            <optional>true</optional>
         </dependency>
 
     </dependencies>

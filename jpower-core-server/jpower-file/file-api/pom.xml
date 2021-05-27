@@ -20,5 +20,11 @@
             <artifactId>file-entity</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.wlcb</groupId>
+            <artifactId>common-feign</artifactId>
+            <version>${com.jpower.version}</version>
+        </dependency>
     </dependencies>
 </project>

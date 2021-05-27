@@ -13,7 +13,7 @@
         <module>common-transaction</module>
         <module>common-exception</module>
         <module>common-tool</module>
-        <module>common-sentinel</module>
+        <module>common-feign</module>
         <module>common-log</module>
     </modules>
     <parent>

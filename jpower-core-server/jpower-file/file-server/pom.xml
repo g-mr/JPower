@@ -24,14 +24,14 @@
             <groupId>com.wlcb</groupId>
             <artifactId>file-api-biz</artifactId>
             <version>${com.jpower.version}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>com.wlcb</groupId>
             <artifactId>common-deploy</artifactId>
             <version>${com.jpower.version}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 

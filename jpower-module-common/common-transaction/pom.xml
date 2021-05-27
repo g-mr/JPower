@@ -20,10 +20,9 @@
             <scope>provided</scope>
         </dependency>
 
-        <!--Feign-->
         <dependency>
             <groupId>com.wlcb</groupId>
-            <artifactId>common-sentinel</artifactId>
+            <artifactId>common-feign</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
 
