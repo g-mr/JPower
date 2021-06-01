@@ -7,6 +7,7 @@
 
 
 ### QQ群号 : 860452768
+> tip: 加群后凭Star截图可免费获取代码生成器一份
 -------
 
 #### JPower只是刚起步，很多功能还在开发中敬请期待......
@@ -30,6 +31,8 @@
 注册中心、配置中心选型Nacos，为工程瘦身的同时加强各模块之间的联动。
 
 集成Sentinel从流量控制、熔断降级等多个维度保护服务的稳定性。
+
+基于MybatisPlus-generator实现了代码生成器。
 
 ## 分支介绍
 1. master 分支为最新的稳定版本，每次提交都会升级一个版本号
@@ -67,7 +70,7 @@
 
 4. **熔断机制：**
 
-    因为采取了服务的分布，为了避免服务之间的调用“雪崩”，采用了Hystrix的作为熔断器，避免了服务之间的“雪崩”。
+    因为采取了服务的分布，为了避免服务之间的调用“雪崩”，采用了Sentinel的作为熔断器，避免了服务之间的“雪崩”。
 
 5. **监控：**
 
@@ -202,4 +205,3 @@ JPower
 * jpower-ui：[https://gitee.com/gdzWork/jpower-ui](https://gitee.com/gdzWork/jpower-ui)
 * Avue：[https://gitee.com/smallweigit/avue](https://www.avuejs.com/)
 * JWchat：[https://gitee.com/CodeGI/chat](https://gitee.com/CodeGI/chat)
-* [SpringBlade](https://gitee.com/smallc/SpringBlade) 本代码借鉴项目

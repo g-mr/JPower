@@ -6,7 +6,7 @@
 [![Gitter](https://img.shields.io/badge/Copyright%20-@Jpower-%23ff3f59.svg)](https://gitee.com/gdzWork/JPower)
 
 ### QQ Number : 860452768
-
+> tip: After joining the group, you can get a free code generator with the screenshot of Star
 -------
 
 #### JPower is just getting started, many features are still under development, so stay tuned...
@@ -30,6 +30,8 @@ Using JWT for Token authentication can expand and integrate Redis and other fine
 The registration center and configuration center select Nacos to strengthen the linkage between the modules while reducing the weight of the project.
 
 The integration of Sentinel protects the stability of services from multiple dimensions such as flow control and fuse degradation.
+
+The code generator is implemented based on MybatisPlus-generator.
 
 ## Branch introduction
 1. master The branch is the latest stable version, and each commit will be upgraded with a version number
@@ -67,7 +69,7 @@ The integration of Sentinel protects the stability of services from multiple dim
 
 4. **Fuse mechanism：**
 
-    Because of the distribution of services, in order to avoid the "avalanche" of calls between services, Hystrix is ​​used as a fuse to avoid the "avalanche" between services.
+    Because of the distribution of services, in order to avoid the "avalanche" of calls between services, Sentinel is ​​used as a fuse to avoid the "avalanche" between services.
 
 5. **Monitor：**
 
