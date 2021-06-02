@@ -12,6 +12,7 @@ file/
 *.log
 out
 .DS_Store
+sql/mysql_core_city_data.sql
 
 ### STS ###
 .apt_generated
