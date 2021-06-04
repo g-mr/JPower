@@ -206,4 +206,3 @@ JPower
 * jpower-ui：[https://gitee.com/gdzWork/jpower-ui](https://gitee.com/gdzWork/jpower-ui)
 * Avue：[https://gitee.com/smallweigit/avue](https://www.avuejs.com/)
 * JWchat：[https://gitee.com/CodeGI/chat](https://gitee.com/CodeGI/chat)
-* SpringBlade [https://gitee.com/smallc/SpringBlade](https://gitee.com/smallc/SpringBlade)
