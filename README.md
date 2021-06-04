@@ -197,6 +197,7 @@ JPower
 4. 新建 Pull Request
 
 # 感谢 JetBrains 提供的免费开源 License：
+
 [![JetBrains](docs/image/jetbrains.png)](https://www.jetbrains.com/?from=lamp-cloud)
 
 # 友情链接 & 特别鸣谢
