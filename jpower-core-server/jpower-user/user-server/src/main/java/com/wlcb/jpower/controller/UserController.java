@@ -43,6 +43,15 @@ public class UserController extends BaseController {
 
     private CoreUserService coreUserService;
 
+    @ApiOperation("查询当前登录用户信息")
+    @GetMapping(value = "/getLoginInfo", produces = "application/json")
+    public ResponseData<UserVo> getLoginInfo() {
+        String id = SecureUtil.getUserId();
+        JpowerAssert.notEmpty(id,JpowerError.Arg,"用户未登录");
+        TbCoreUser user = coreUserService.getById(id);
+        return ReturnJsonUtil.ok("获取成功", UserWrapper.builder().entityVO(user));
+    }
+
     @ApiOperation("查询用户分页列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum", value = "第几页", defaultValue = "1", paramType = "query", dataType = "int", required = true),
