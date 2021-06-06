@@ -30,7 +30,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.net.InetSocketAddress;
 import java.net.URI;
 
 import static com.wlcb.jpower.module.common.utils.constants.StringPool.*;
@@ -42,7 +41,7 @@ import static com.wlcb.jpower.module.common.utils.constants.StringPool.*;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@ConditionalOnProperty(value = "jpower.gateway.log", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(value = "jpower.gateway.log", havingValue = "true", matchIfMissing = false)
 public class AccessLogGlobalFilter implements GlobalFilter, Ordered {
 
     private final WebEndpointProperties endpointProperties;
@@ -72,7 +71,6 @@ public class AccessLogGlobalFilter implements GlobalFilter, Ordered {
 
         Route route = (Route) exchange.getAttributes().get(ServerWebExchangeUtils.GATEWAY_ROUTE_ATTR);
         RecorderServerHttpRequestDecorator requestDecorator = new RecorderServerHttpRequestDecorator(request);
-        InetSocketAddress address = requestDecorator.getRemoteAddress();
         HttpMethod method = requestDecorator.getMethod();
         URI url = requestDecorator.getURI();
         HttpHeaders headers = requestDecorator.getHeaders();
@@ -90,15 +88,12 @@ public class AccessLogGlobalFilter implements GlobalFilter, Ordered {
         builder.append("-->")
                 .append(route.getId()).append(SPACE)
                 .append(method.name()).append(SPACE)
-//                .append(url.getScheme()).append("://").append(address.getHostName()).append(COLON).append(address.getPort()).append(getOriginalRequestUrl(requestDecorator)).append(SPACE)
                 .append(url.getScheme()).append(":/").append(getOriginalRequestUrl(requestDecorator)).append(SPACE)
                 .append(NEWLINE);
 
 
         builder.append("request headers: ").append(NEWLINE);
         headers.forEach((name,value)-> builder.append(TAB).append(name).append(SPACE).append(EQUALS).append(SPACE).append(value).append(NEWLINE));
-
-//        builder.append("request body: ").append(requestParams).append(NEWLINE);
 
         builder.append("--> end request").append(NEWLINE);
         builder.append(NEWLINE);
@@ -112,11 +107,12 @@ public class AccessLogGlobalFilter implements GlobalFilter, Ordered {
                 if (body instanceof Flux) {
                     Flux<? extends DataBuffer> fluxBody = (Flux<? extends DataBuffer>) body;
                     return super.writeWith(fluxBody.map(dataBuffer -> {
-                        // probably should reuse buffers
+
                         byte[] content = new byte[dataBuffer.readableByteCount()];
                         dataBuffer.read(content);
-                        DataBufferUtils.release(dataBuffer);
                         String responseResult = readBody(content);
+                        // 释放资源
+                        DataBufferUtils.release(dataBuffer);
 
                         builder.append("<--")
                                 .append(url.getScheme()).append(SPACE)
@@ -138,13 +134,13 @@ public class AccessLogGlobalFilter implements GlobalFilter, Ordered {
                         }
 
                         builder.append("<-- end response").append(LEFT_BRACKET).append(responseResult.getBytes().length).append("-byte body").append(RIGHT_BRACKET).append(NEWLINE);
-                        builder.append("============end gateway http=============");
+                        builder.append("============end gateway http=============").append(NEWLINE);
 
                         log.info(builder.toString());
                         return bufferFactory.wrap(content);
                     }));
                 }
-                return super.writeWith(body); // if body is not a flux. never got there.
+                return super.writeWith(body);
             }
         };
 
