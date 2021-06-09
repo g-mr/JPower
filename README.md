@@ -6,7 +6,7 @@
 [![Gitter](https://img.shields.io/badge/Copyright%20-@Jpower-%23ff3f59.svg)](https://gitee.com/gdzWork/JPower)
 
 
-### QQ群号 : 860452768
+### QQ群 : ![预览.png](docs/image/qrcode.jpg) 
 > tip: 加群后凭Star截图可免费获取代码生成器一份
 -------
 
