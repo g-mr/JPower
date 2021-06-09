@@ -6,7 +6,7 @@
 [![Gitter](https://img.shields.io/badge/Copyright%20-@Jpower-%23ff3f59.svg)](https://gitee.com/gdzWork/JPower)
 
 
-### QQ群 : <img src="docs/image/qrcode.jpg" width="30%" syt height="5%" /> 
+### QQ群 : <img src="docs/image/qrcode.jpg" width="5%" syt height="5%" /> 
  > tip: 加群后凭Star截图可免费获取代码生成器一份
 -------
 
