@@ -4,4 +4,4 @@ spring:
 #    location:
 #    additional-location:
   config:
-    import: "file:./conf/test.yml"
+    import: "classpath:./test.yml"
