@@ -8,7 +8,7 @@ import java.lang.annotation.*;
 
 /**
  * Cloud启动注解配置
- * @author goo
+ * @author mr.g
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
@@ -17,5 +17,6 @@ import java.lang.annotation.*;
 @EnableDiscoveryClient
 @EnableTransactionManagement
 @SpringBootApplication(excludeName = "org.springframework.cloud.netflix.ribbon.RibbonAutoConfiguration")
+//@PropertySource(value = "/Users/mr.gmac/IdeaProjects/JPower",factory = YamlAndPropertySourceFactory.class)
 public @interface JpowerCloudApplication {
 }
