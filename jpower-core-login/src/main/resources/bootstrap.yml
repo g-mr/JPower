@@ -1,7 +1,6 @@
 #redis配置
 spring:
-#  config:
-#    location:
-#    additional-location:
   config:
-    import: "classpath:./test.yml"
+    import:
+      - "optional:classpath:./test.yml"
+      - "optional:file:./conf/test.yml"
