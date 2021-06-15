@@ -17,7 +17,7 @@ jpower:
   dev:
     nacos:
       #      配置中心地址。 如果nacos配置没有配置注册中心地址，则注册中心默认走这里的地址
-      server-addr: localhost:18848
+      server-addr: localhost:8848
     sentinel:
       #      sentinel流控组件地址
       dashboard: 192.168.0.8:8857
