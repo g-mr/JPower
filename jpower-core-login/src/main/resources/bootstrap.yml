@@ -1,9 +1,0 @@
-server:
-  port: 82
-
-jpower:
-  #  开发环境
-  dev:
-    nacos:
-      #      配置中心地址。 如果nacos配置没有配置注册中心地址，则注册中心默认走这里的地址
-      server-addr: localhost:28848

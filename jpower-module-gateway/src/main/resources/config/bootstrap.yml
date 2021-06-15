@@ -1,0 +1,14 @@
+server:
+  port: 80
+
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          #启用自动根据服务ID建立路由
+          enabled: true
+    loadbalancer:
+      #开启重试机制
+        retry:
+          enabled: true

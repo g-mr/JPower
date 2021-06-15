@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.injector.ISqlInjector;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
+import com.wlcb.jpower.module.common.deploy.property.YamlAndPropertySourceFactory;
+import com.wlcb.jpower.module.common.support.EnvBeanUtil;
 import com.wlcb.jpower.module.config.interceptor.DemoInterceptor;
 import com.wlcb.jpower.module.config.interceptor.MybatisSqlPrintInterceptor;
 import com.wlcb.jpower.module.config.properties.DemoProperties;
@@ -20,6 +22,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -36,6 +39,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @MapperScan("com.wlcb.**.dbs.dao.**")
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties({DemoProperties.class, MybatisProperties.class})
+@PropertySource(value = "classpath:./jpower-db.yml",factory = YamlAndPropertySourceFactory.class)
 public class MybatisPlusConfig {
 
     /**
@@ -43,6 +47,9 @@ public class MybatisPlusConfig {
      **/
     @Bean
     public GlobalConfig globalConfig() {
+
+        System.out.println(EnvBeanUtil.getString("env.datasource"));
+
         GlobalConfig globalConfig = new GlobalConfig();
         globalConfig.setMetaObjectHandler(new UpdateRelatedFieldsMetaHandler());
         return globalConfig;

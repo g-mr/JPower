@@ -17,6 +17,5 @@ import java.lang.annotation.*;
 @EnableDiscoveryClient
 @EnableTransactionManagement
 @SpringBootApplication(excludeName = "org.springframework.cloud.netflix.ribbon.RibbonAutoConfiguration")
-//@PropertySource(value = "/Users/mr.gmac/IdeaProjects/JPower",factory = YamlAndPropertySourceFactory.class)
 public @interface JpowerCloudApplication {
 }
