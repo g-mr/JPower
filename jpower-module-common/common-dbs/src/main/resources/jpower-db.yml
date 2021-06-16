@@ -1,13 +1,10 @@
-env:
-  datasource: ${jpower.${jpower.env}.datasource.driver-class-name}
-
 spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
-    driver-class-name: ${jpower.dev.datasource.driver-class-name}
-    url: ${jpower.dev.datasource.url}
-    username: ${jpower.dev.datasource.username}
-    password: ${jpower.dev.datasource.password}
+    driver-class-name: ${jpower.${jpower.env}.datasource.driver-class-name}
+    url: ${jpower.${jpower.env}.datasource.url}
+    username: ${jpower.${jpower.env}.datasource.username}
+    password: ${jpower.${jpower.env}.datasource.password}
     # 下面为连接池的补充设置
     druid:
       initialSize: 10   #初始化连接个数

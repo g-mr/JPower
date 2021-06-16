@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
 import com.wlcb.jpower.module.common.deploy.property.YamlAndPropertySourceFactory;
-import com.wlcb.jpower.module.common.support.EnvBeanUtil;
 import com.wlcb.jpower.module.config.interceptor.DemoInterceptor;
 import com.wlcb.jpower.module.config.interceptor.MybatisSqlPrintInterceptor;
 import com.wlcb.jpower.module.config.properties.DemoProperties;
@@ -47,9 +46,6 @@ public class MybatisPlusConfig {
      **/
     @Bean
     public GlobalConfig globalConfig() {
-
-        System.out.println(EnvBeanUtil.getString("env.datasource"));
-
         GlobalConfig globalConfig = new GlobalConfig();
         globalConfig.setMetaObjectHandler(new UpdateRelatedFieldsMetaHandler());
         return globalConfig;
