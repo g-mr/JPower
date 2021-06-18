@@ -15,14 +15,12 @@ import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.SecureUtil;
 import com.wlcb.jpower.module.common.utils.StrUtil;
 import com.wlcb.jpower.module.mp.support.Condition;
-import com.wlcb.jpower.module.tenant.TenantConstant;
 import com.wlcb.jpower.service.tenant.TenantService;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -39,31 +37,6 @@ import static com.wlcb.jpower.module.base.annotation.OperateLog.BusinessType.DEL
 public class TenantController extends BaseController {
 
     private TenantService tenantService;
-
-    @GetMapping("/test")
-    public ResponseData test(String type){
-
-        if (Fc.equalsValue(type,"1")){
-            System.out.println("执行查询");
-            tenantService.getById("1");
-        }else if (Fc.equalsValue(type,"2")){
-            System.out.println("执行修改");
-            TbCoreTenant tenant = new TbCoreTenant();
-            tenant.setId("1");
-            tenantService.updateById(tenant);
-        }else if (Fc.equalsValue(type,"3")){
-            System.out.println("执行新增");
-            TbCoreTenant tenant = new TbCoreTenant();
-            tenant.setId("1");
-            tenant.setTenantCode(TenantConstant.tenantCode(new ArrayList<>()));
-            tenantService.save(tenant);
-        }else if (Fc.equalsValue(type,"4")){
-            System.out.println("执行删除");
-            tenantService.removeById("1");
-        }
-
-        return ReturnJsonUtil.ok("查询成功");
-    }
 
     @ApiOperation("租户分页列表")
     @ApiImplicitParams({
