@@ -110,6 +110,7 @@ The code generator is implemented based on MybatisPlus-generator.
 ## 工程结构：
 ~~~
 JPower
+├── conf -- Configuration file directory
 ├── jpower-boot -- Boot project implementation
 ├── jpower-core-login -- Authorized login module
 ├── jpower-core-server -- Core business module

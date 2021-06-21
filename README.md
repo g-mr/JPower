@@ -111,6 +111,7 @@
 ## 工程结构：
 ~~~
 JPower
+├── conf -- 配置文件目录
 ├── jpower-boot -- boot项目实现
 ├── jpower-core-login -- 授权登录模块
 ├── jpower-core-server -- 核心业务模块
@@ -206,4 +207,4 @@ JPower
 * jpower-ui：[https://gitee.com/gdzWork/jpower-ui](https://gitee.com/gdzWork/jpower-ui)
 * Avue：[https://gitee.com/smallweigit/avue](https://www.avuejs.com/)
 * JWchat：[https://gitee.com/CodeGI/chat](https://gitee.com/CodeGI/chat)
-* SpringBlade [](https://gitee.com/smallc/SpringBlade)
+* SpringBlade [https://gitee.com/CodeGI/chat](https://gitee.com/smallc/SpringBlade)
