@@ -2,7 +2,7 @@
 
 # JPower: A rapid development platform for microservices
 
-[![Gitter](https://img.shields.io/badge/Release-V2.0.2-green.svg)](https://gitee.com/gdzWork/JPower)   [![License](https://img.shields.io/badge/Author-mr.g-orange.svg)](https://gitee.com/gdzWork/JPower)
+[![Gitter](https://img.shields.io/badge/Release-V2.0.3-green.svg)](https://gitee.com/gdzWork/JPower)   [![License](https://img.shields.io/badge/Author-mr.g-orange.svg)](https://gitee.com/gdzWork/JPower)
 [![Gitter](https://img.shields.io/badge/Copyright%20-@Jpower-%23ff3f59.svg)](https://gitee.com/gdzWork/JPower)
 
 ### QQ Number : 860452768
