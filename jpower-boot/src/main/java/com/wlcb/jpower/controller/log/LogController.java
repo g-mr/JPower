@@ -15,6 +15,7 @@ import com.wlcb.jpower.wrapper.BaseDictWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +39,7 @@ public class LogController extends BaseController {
     private final ErrorLogService errorLogService;
     private final OperateLogService operateLogService;
 
+    @ApiOperation("操作日志列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum",value = "第几页",defaultValue = "1",paramType = "query",dataType = "int",required = true),
             @ApiImplicitParam(name = "pageSize",value = "每页长度",defaultValue = "10",paramType = "query",dataType = "int",required = true),
@@ -56,6 +58,7 @@ public class LogController extends BaseController {
         return ReturnJsonUtil.ok("请求成功", BaseDictWrapper.<TbLogOperate,TbLogOperate>builder().pageVo(operate));
     }
 
+    @ApiOperation("错误日志列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum",value = "第几页",defaultValue = "1",paramType = "query",dataType = "int",required = true),
             @ApiImplicitParam(name = "pageSize",value = "每页长度",defaultValue = "10",paramType = "query",dataType = "int",required = true),

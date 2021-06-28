@@ -3,6 +3,7 @@ package com.wlcb.jpower.module.common.controller;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.utils.DateUtil;
+import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.FileUtil;
 import com.wlcb.jpower.module.common.utils.WebUtil;
 import com.wlcb.jpower.module.common.utils.constants.ImportExportConstants;
@@ -37,15 +38,16 @@ public class BaseController
      * 将前台传递过来的日期格式的字符串，自动转化为Date类型
      */
     @InitBinder
-    public void initBinder(WebDataBinder binder)
-    {
-        // Date 类型转换
+    public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(Date.class, new PropertyEditorSupport()
         {
             @Override
-            public void setAsText(String text)
-            {
-                setValue(DateUtil.parseDate(text));
+            public void setAsText(String text){
+                if (Fc.isBlank(text)) {
+                    setValue(null);
+                }else {
+                    setValue(DateUtil.parseDate(text));
+                }
             }
         });
     }
