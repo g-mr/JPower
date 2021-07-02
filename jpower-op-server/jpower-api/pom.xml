@@ -15,6 +15,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.wlcb</groupId>
+            <artifactId>common-exception</artifactId>
+            <version>${com.jpower.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-aggregation-spring-boot-starter</artifactId>
             <version>${knife4j.version}</version>

@@ -6,3 +6,7 @@ spring:
     import:
       - "optional:classpath:./bootstrap.yml"
       - "optional:file:./conf/bootstrap.yml"
+  mvc:
+    throw-exception-if-no-handler-found: true
+  resources:
+    add-mappings: false

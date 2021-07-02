@@ -9,11 +9,14 @@ import com.wlcb.jpower.module.base.utils.FieldCompletionUtil;
 import com.wlcb.jpower.module.base.vo.ErrorReturnJson;
 import com.wlcb.jpower.module.common.utils.ExceptionsUtil;
 import com.wlcb.jpower.module.common.utils.SpringUtil;
+import com.wlcb.jpower.module.common.utils.WebUtil;
 import com.wlcb.jpower.module.dbs.config.LoginUserContext;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,6 +34,28 @@ public class GlobalExceptionHandler {
     private final String JPOWER_PACKAGE = "com.wlcb.jpower";
 
     /**
+     * 404-NOT_FOUND
+     * @param e
+     * @return
+     */
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ErrorReturnJson handlerNotFoundException(NoHandlerFoundException e)
+    {String currentPath = WebUtil.getRequest().getServletPath();
+        ErrorReturnJson r = new ErrorReturnJson();
+        r.setMessage(e.getMessage());
+        if("/".equals(currentPath)){
+            r.setCode(HttpStatus.OK.value());
+            r.setStatus(true);
+            r.setMessage(HttpStatus.OK.name());
+            return r;
+        }
+        r.setCode(HttpStatus.NOT_FOUND.value());
+        r.setStatus(false);
+        return r;
+    }
+
+    /**
      * 系统异常处理，比如：404,500
      * @param request
      * @param e
@@ -40,23 +65,10 @@ public class GlobalExceptionHandler {
     @SneakyThrows
     @ExceptionHandler(value = Exception.class)
     public ErrorReturnJson defaultErrorHandler(HttpServletRequest request, HttpServletResponse response, Exception e){
-        String currentPath = request.getServletPath();
 
         ErrorReturnJson r = new ErrorReturnJson();
         r.setMessage(e.getMessage());
-        if (e instanceof org.springframework.web.servlet.NoHandlerFoundException) {
-
-            if("/".equals(currentPath)){
-                r.setCode(HttpStatus.OK.value());
-                r.setStatus(true);
-                r.setMessage(HttpStatus.OK.name());
-                return r;
-            }
-
-            r.setCode(HttpStatus.NOT_FOUND.value());
-            //标记返回为404错误
-            response.setStatus(HttpStatus.NOT_FOUND.value());
-        }else if (e instanceof BusinessException) {
+        if (e instanceof BusinessException) {
             r.setCode(HttpStatus.NOT_IMPLEMENTED.value());
             //标记返回为501错误
             response.setStatus(HttpStatus.NOT_IMPLEMENTED.value());
