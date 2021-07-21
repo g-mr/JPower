@@ -5,6 +5,7 @@ import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
 import com.wlcb.jpower.dbs.entity.function.TbCoreDataScope;
 import com.wlcb.jpower.dbs.entity.function.TbCoreFunction;
 import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
+import com.wlcb.jpower.dbs.entity.role.TbCoreRole;
 import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.utils.CacheUtil;
@@ -20,6 +21,7 @@ import com.wlcb.jpower.service.org.CoreOrgService;
 import com.wlcb.jpower.service.org.impl.CoreOrgServiceImpl;
 import com.wlcb.jpower.service.role.CoreDataScopeService;
 import com.wlcb.jpower.service.role.CoreFunctionService;
+import com.wlcb.jpower.service.role.CoreRoleService;
 import com.wlcb.jpower.service.role.impl.CoreDataScopeServiceImpl;
 import com.wlcb.jpower.service.role.impl.CoreFunctionServiceImpl;
 import com.wlcb.jpower.service.tenant.TenantService;
@@ -41,6 +43,7 @@ public class SystemCache {
     private static CoreFunctionService coreFunctionService;
     private static TenantService tenantService;
     private static CoreDataScopeService coreDataScopeService;
+    private static CoreRoleService coreRoleService;
     private static CoreCityService coreCityService;
 
     static {
@@ -50,6 +53,7 @@ public class SystemCache {
         tenantService = SpringUtil.getBean(TenantServiceImpl.class);
         coreDataScopeService = SpringUtil.getBean(CoreDataScopeServiceImpl.class);
         coreCityService = SpringUtil.getBean(CoreCityServiceImpl.class);
+        coreRoleService = SpringUtil.getBean(CoreRoleService.class);
     }
 
     /**
@@ -138,6 +142,22 @@ public class SystemCache {
     public static List<TbCoreFunction> getMenuListByRole(List<String> roleIds) {
         return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_MENU_ROLES_KEY,roleIds,() -> {
             List<TbCoreFunction> responseData = coreFunctionService.listMenuByRoleId(roleIds);
+            return responseData;
+        });
+    }
+
+    /**
+     * 通过角色ID获取角色名称
+     *
+     * @author 郭丁志
+     * @date 23:38 2020/11/5 0005
+     * @param roleIds  角色ID
+     * @return java.util.List<com.wlcb.jpower.dbs.entity.function.TbCoreDataScope>
+     */
+    public static List<String> getRoleNameByIds(List<String> roleIds) {
+        return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_ROLES_NAME_KEY,roleIds,() -> {
+            List<String> responseData = coreRoleService.listObjs(Condition.<TbCoreRole>getQueryWrapper()
+                    .lambda().select(TbCoreRole::getName).in(TbCoreRole::getId,roleIds), Fc::toStr);
             return responseData;
         });
     }
