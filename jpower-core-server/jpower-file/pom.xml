@@ -20,4 +20,11 @@
         <module>file-api-biz</module>
     </modules>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.github.tobato</groupId>
+            <artifactId>fastdfs-client</artifactId>
+            <version>${fastdfs.version}</version>
+        </dependency>
+    </dependencies>
 </project>

@@ -267,4 +267,39 @@ public class ConstantsEnum {
         }
     }
 
+    /**
+     * 文件存储位置
+     * @Author mr.g
+     **/
+    public static enum FILE_STORAGE_TYPE {
+
+        SERVER("SERVER", "服务器"), FASTDFS("FASTDFS", "fastdfs"), DATABASE("DATABASE", "数据库");
+
+        private FILE_STORAGE_TYPE(String value, String name) {
+            this.value = value;
+            this.name = name;
+        }
+
+        private final String value;
+        private final String name;
+
+        public String getValue() {
+            return value;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public static String getName(String value) {
+            FILE_STORAGE_TYPE[] businessModeEnums = values();
+            for (FILE_STORAGE_TYPE businessModeEnum : businessModeEnums) {
+                if (businessModeEnum.value.equals(value)) {
+                    return businessModeEnum.name;
+                }
+            }
+            return null;
+        }
+    }
+
 }

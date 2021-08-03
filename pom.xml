@@ -31,6 +31,7 @@
         <pagehelper-spring.version>1.3.0</pagehelper-spring.version>
         <javax.mail.version>1.6.2</javax.mail.version>
         <jwt.version>0.6.0</jwt.version>
+        <fastdfs.version>1.27.2</fastdfs.version>
         <httpclient.version>4.5.3</httpclient.version>
         <commons-httpclient.version>3.1</commons-httpclient.version>
         <dom4j.version>1.6.1</dom4j.version>

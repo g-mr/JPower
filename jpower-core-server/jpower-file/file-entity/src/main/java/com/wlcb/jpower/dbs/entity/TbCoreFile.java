@@ -30,6 +30,8 @@ public class TbCoreFile extends BaseEntity {
     private byte[] content;
     @ApiModelProperty("文件标识")
     private String mark;
+    @ApiModelProperty("存储类型 字典FILE_STORAGE_TYPE")
+    private String storageType;
     @ApiModelProperty("备注")
     private String note;
 }

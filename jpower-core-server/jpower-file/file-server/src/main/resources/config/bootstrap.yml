@@ -1,2 +1,14 @@
 server:
   port: 84
+
+fdfs:
+  # 链接超时
+  connect-timeout: 1800
+  # 读取时间
+  so-timeout: 1800
+  # 生成缩略图参数
+  thumb-image:
+    width: 150
+    height: 150
+  tracker-list:
+    - 219.148.186.235:22122

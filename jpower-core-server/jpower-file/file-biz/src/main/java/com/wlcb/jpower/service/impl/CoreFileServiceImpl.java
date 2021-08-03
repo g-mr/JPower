@@ -20,6 +20,7 @@ public class CoreFileServiceImpl extends BaseServiceImpl<TbCoreFileMapper, TbCor
     @Autowired
     private TbCoreFileDao coreFileDao;
 
+
     @Override
     public Boolean add(TbCoreFile coreFile) {
         return coreFileDao.save(coreFile);

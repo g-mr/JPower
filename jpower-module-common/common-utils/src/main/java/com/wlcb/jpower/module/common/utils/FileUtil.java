@@ -143,6 +143,26 @@ public class FileUtil extends org.apache.commons.io.FileUtils {
         }
     }
 
+    public static Boolean download(byte[] bytes, HttpServletResponse response,String filename) throws UnsupportedEncodingException {
+        if (Fc.isNotEmpty(bytes)){
+            response.setHeader("content-type", "application/octet-stream");
+            response.setContentType("application/octet-stream");
+            // 下载文件能正常显示中文
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(filename, "UTF-8"));
+            try {
+                OutputStream os = response.getOutputStream();
+                os.write(bytes);
+                Fc.closeQuietly(os);
+                return true;
+            } catch (IOException e) {
+                log.error("下载byte文件错误，error={}",e.getMessage());
+            }finally {
+
+            }
+        }
+        return false;
+    }
+
     /**
      * @Author 郭丁志
      * @Description // 下载文件
@@ -173,7 +193,6 @@ public class FileUtil extends org.apache.commons.io.FileUtils {
                         i = bis.read(buffer);
                     }
                     return 0;
-
                 } catch (Exception e) {
                     log.error("下载文件错误，error={}",e.getMessage());
                 } finally {

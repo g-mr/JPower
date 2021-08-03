@@ -44,19 +44,19 @@ public class MultipartFileUtil{
             throw new IllegalStateException("不支持的后缀类型");
         }
 
-        String imgPath = DateUtil.getDate(new Date(), DateUtil.PATTERN_DATE) + File.separator + fileName + "." + suffixName;
+        String path = DateUtil.getDate(new Date(), DateUtil.PATTERN_DATE) + File.separator + fileName + "." + suffixName;
 
-        File imgFile = new File(savePath+File.separator+imgPath);
+        File nFile = new File(savePath+File.separator+path);
 
-        if(!imgFile.getParentFile().exists()){
-            imgFile.getParentFile().mkdirs();
+        if(!nFile.getParentFile().exists()){
+            nFile.getParentFile().mkdirs();
         }
 
-        file.transferTo(imgFile);
+        file.transferTo(nFile);
 
-        logger.info("文件保存成功，文件路径={}",imgFile.getAbsolutePath());
+        logger.info("文件保存成功，文件路径={}",nFile.getAbsolutePath());
 
-        return imgPath;
+        return path;
     }
 
     /**

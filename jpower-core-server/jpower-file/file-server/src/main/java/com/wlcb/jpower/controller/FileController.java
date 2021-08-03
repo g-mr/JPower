@@ -5,18 +5,21 @@ import com.wlcb.jpower.dbs.entity.TbCoreFile;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
+import com.wlcb.jpower.module.base.exception.JpowerException;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.page.PaginationContext;
-import com.wlcb.jpower.module.common.utils.*;
+import com.wlcb.jpower.module.common.utils.DESUtil;
+import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.FileUtil;
+import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
 import com.wlcb.jpower.module.mp.support.Condition;
+import com.wlcb.jpower.operate.FileOperateBuilder;
 import com.wlcb.jpower.service.CoreFileService;
 import io.swagger.annotations.*;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
@@ -25,6 +28,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,48 +38,33 @@ import java.util.Map;
  * @Version 1.0
  */
 @Api(tags = "文件管理")
-@RefreshScope
 @RestController
 @RequestMapping("/core/file")
 public class FileController extends BaseController {
 
-    @Value("${jpower.fileParentPath:}")
-    private String fileParentPath;
     @Value("${jpower.downloadPath:}")
     private String downloadPath;
 
     @Resource
     private CoreFileService coreFileService;
+    @Resource
+    private FileOperateBuilder operateBuilder;
 
     @ApiOperation("上传文件")
     @PostMapping(value = "/upload",produces="application/json")
-    public ResponseData upload(@ApiParam("文件") @RequestParam(required = false) MultipartFile file){
-
+    public ResponseData upload(@ApiParam("文件") @RequestParam(required = false) MultipartFile file,
+                               @ApiParam(value = "存储类型 字典FILE_STORAGE_TYPE",defaultValue = "SERVER") @RequestParam(required = false,defaultValue = "SERVER") String storageType){
         JpowerAssert.notTrue(file == null || file.isEmpty(),JpowerError.Arg,"文件不可为空");
-        JpowerAssert.notEmpty(fileParentPath,JpowerError.Unknown,"未配置文件保存路径");
-
         try {
-            String path = MultipartFileUtil.saveFile(file,fileParentPath + File.separator +"file");
-
-            File saveFile = new File(fileParentPath + File.separator +"file"+path);
-
-            TbCoreFile coreFile = new TbCoreFile();
-            coreFile.setPath("file" + File.separator +path);
-            coreFile.setFileType(file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1));
-            coreFile.setFileSize(file.getSize());
-            coreFile.setName(saveFile.getName());
-            coreFile.setId(UUIDUtil.getUUID());
-            coreFile.setMark(DESUtil.encrypt(coreFile.getId(), ConstantsUtils.FILE_DES_KEY));
-
-            Boolean is = coreFileService.add(coreFile);
-
-            if (is){
+            TbCoreFile coreFile = operateBuilder.getBuilder(storageType).upload(file);
+            if (Fc.notNull(coreFile)){
                 return ReturnJsonUtil.ok("上传成功", coreFile.getMark());
             }else {
-                FileUtil.deleteFile(saveFile);
                 return ReturnJsonUtil.fail("文件保存失败");
             }
-        }catch (Exception e){
+        } catch (JpowerException je){
+            throw je;
+        } catch (Exception e){
             e.printStackTrace();
             logger.error("文件上传失败，e={}",e.getMessage());
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_ERROR,"文件上传失败", false);
@@ -86,30 +75,16 @@ public class FileController extends BaseController {
     @GetMapping(value = "/download",produces="application/json")
     public void download(@ApiParam(value = "文件标识",required = true) @RequestParam String base){
         JpowerAssert.notEmpty(base,JpowerError.Arg,"文件标识不可为空");
-
         String id = DESUtil.decrypt(base,ConstantsUtils.FILE_DES_KEY);
-
         JpowerAssert.notEmpty(id,JpowerError.Arg,"文件标识不合法");
 
-        String path = coreFileService.getPathById(id);
-        if(StringUtils.isBlank(path)){
-            throw new BusinessException("文件不存在，无法下载");
-        }
-
-        File file = new File(fileParentPath+File.separator+path);
-        if (!file.exists()){
-            throw new BusinessException(file.getName()+"文件不存在，无法下载");
-        }
-
+        TbCoreFile coreFile = coreFileService.getById(id);
         try {
-            Integer is = FileUtil.download(file,getResponse(),file.getName());
-            if (is != 0){
-                throw new BusinessException(file.getName()+"文件下载失败");
-            }
+            operateBuilder.getBuilder(coreFile.getStorageType()).download(coreFile);
         } catch (IOException e) {
             e.printStackTrace();
             logger.error("文件下载失败，e={}",e.getMessage());
-            throw new BusinessException(file.getName()+"文件下载失败");
+            throw new BusinessException(coreFile.getName()+"文件下载失败");
         }
     }
 
@@ -118,6 +93,7 @@ public class FileController extends BaseController {
             @ApiImplicitParam(name = "pageNum",value = "第几页",defaultValue = "1",paramType = "query",dataType = "int",required = true),
             @ApiImplicitParam(name = "pageSize",value = "每页长度",defaultValue = "10",paramType = "query",dataType = "int",required = true),
             @ApiImplicitParam(name = "name",value = "文件名称",paramType = "query",required = false),
+            @ApiImplicitParam(name = "storageType_eq",value = "存储位置 字典FILE_STORAGE_TYPE",paramType = "query",required = false),
             @ApiImplicitParam(name = "fileType_eq",value = "文件类型",paramType = "query",required = false),
             @ApiImplicitParam(name = "fileSize_gt",value = "文件大小最大值",paramType = "query",required = false),
             @ApiImplicitParam(name = "fileSize_lt",value = "文件大小最小值",paramType = "query",required = false),
@@ -142,12 +118,10 @@ public class FileController extends BaseController {
     public ResponseData delete(@RequestParam String ids){
         JpowerAssert.notEmpty(ids,JpowerError.Arg,"主键不可为空");
 
-        coreFileService.listByIds(Fc.toStrList(ids)).forEach(tbCoreFile -> {
-            File file = new File(fileParentPath+File.separator+tbCoreFile.getPath());
-            FileUtil.deleteFile(file);
-        });
+        List<String> idList = Fc.toStrList(ids);
 
-        return ReturnJsonUtil.status(coreFileService.removeRealByIds(Fc.toStrList(ids)));
+        coreFileService.listByIds(idList).forEach(tbCoreFile -> operateBuilder.getBuilder(tbCoreFile.getStorageType()).deleteFile(tbCoreFile));
+        return ReturnJsonUtil.status(coreFileService.removeRealByIds(idList));
     }
 
     @ApiOperation("修改文件")
@@ -160,6 +134,12 @@ public class FileController extends BaseController {
     @PutMapping(value = "/update",produces="application/json")
     public ResponseData update(@ApiIgnore TbCoreFile file){
         JpowerAssert.notEmpty(file.getId(),JpowerError.Arg,"主键不可为空");
+
+        //不可修改项
+        file.setContent(null);
+        file.setStorageType(null);
+        file.setPath(null);
+
         return ReturnJsonUtil.status(coreFileService.updateById(file));
     }
 
