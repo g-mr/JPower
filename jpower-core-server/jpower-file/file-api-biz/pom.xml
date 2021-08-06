@@ -17,5 +17,12 @@
             <artifactId>file-api</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.wlcb</groupId>
+            <artifactId>file-biz</artifactId>
+            <version>${com.jpower.version}</version>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 </project>

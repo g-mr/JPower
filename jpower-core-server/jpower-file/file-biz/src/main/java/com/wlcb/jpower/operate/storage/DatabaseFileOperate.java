@@ -31,7 +31,7 @@ public class DatabaseFileOperate implements FileOperate {
 
 
 	@Override
-	public TbCoreFile upload(MultipartFile file) throws Exception {
+	public TbCoreFile upload(MultipartFile file) throws IOException {
 
 		String originalFileName = file.getOriginalFilename();
 
@@ -52,6 +52,11 @@ public class DatabaseFileOperate implements FileOperate {
 	@Override
 	public Boolean download(TbCoreFile coreFile) throws IOException {
 		return FileUtil.download(coreFile.getContent(), WebUtil.getResponse(), coreFile.getName());
+	}
+
+	@Override
+	public byte[] getByte(TbCoreFile coreFile) {
+		return coreFile.getContent();
 	}
 
 	@Override

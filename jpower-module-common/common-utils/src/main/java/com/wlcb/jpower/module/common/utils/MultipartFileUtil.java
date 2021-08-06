@@ -29,7 +29,7 @@ public class MultipartFileUtil{
      * @Param [file, fileSuffixName 支持的文件后缀名 多个,分割, savePath]
      * @return java.lang.String
      **/
-    public static String saveFile(MultipartFile file,String savePath) throws Exception{
+    public static String saveFile(MultipartFile file,String savePath) throws IOException{
 
         return saveFile(file,null,savePath);
     }

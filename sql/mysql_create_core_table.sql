@@ -156,6 +156,7 @@ CREATE TABLE `tb_core_file` (
   `path` varchar(255) DEFAULT NULL COMMENT '文件路径',
   `content` longblob COMMENT '文件内容',
   `mark` varchar(156) DEFAULT NULL COMMENT '文件标识',
+  `storage_type` varchar(20) DEFAULT 'SERVER' COMMENT '存储类型 字典FILE_STORAGE_TYPE',
   `note` varchar(255) DEFAULT NULL COMMENT '备注',
   `create_user` varchar(32) NOT NULL DEFAULT 'root' COMMENT '创建人',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

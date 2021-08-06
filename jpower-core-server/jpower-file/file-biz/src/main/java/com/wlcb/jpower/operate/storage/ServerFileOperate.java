@@ -36,11 +36,11 @@ public class ServerFileOperate implements FileOperate {
 
 	private final String pathPrefix = "file";
 	@Override
-	public TbCoreFile upload(MultipartFile file) throws Exception {
+	public TbCoreFile upload(MultipartFile file) throws IOException {
 		JpowerAssert.notEmpty(fileParentPath, JpowerError.Unknown,"未配置文件保存路径");
 
 		String path = MultipartFileUtil.saveFile(file,fileParentPath + File.separator + pathPrefix);
-		File saveFile = new File(fileParentPath + File.separator +pathPrefix+path);
+		File saveFile = new File(fileParentPath + File.separator +pathPrefix+File.separator+path);
 
 		TbCoreFile coreFile = new TbCoreFile();
 		coreFile.setPath(pathPrefix + File.separator +path);
@@ -51,10 +51,16 @@ public class ServerFileOperate implements FileOperate {
 		coreFile.setId(UUIDUtil.getUUID());
 		coreFile.setMark(DESUtil.encrypt(coreFile.getId(), ConstantsUtils.FILE_DES_KEY));
 
-		if (!coreFileService.add(coreFile)){
+		try {
+			if (!coreFileService.add(coreFile)){
+				FileUtil.deleteFile(saveFile);
+				return null;
+			}
+		}catch (Exception e){
 			FileUtil.deleteFile(saveFile);
 			return null;
 		}
+
 
 		return coreFile;
 	}
@@ -73,6 +79,19 @@ public class ServerFileOperate implements FileOperate {
 		Integer is = FileUtil.download(file, WebUtil.getResponse(),file.getName());
 
 		return is == 0;
+	}
+
+	@Override
+	public byte[] getByte(TbCoreFile coreFile){
+		String path = coreFile.getPath();
+		JpowerAssert.notEmpty(path,JpowerError.Parser,"文件路径不存在");
+
+		File file = new File(fileParentPath+File.separator+path);
+		if (!file.exists()){
+			throw new BusinessException(file.getName()+"文件不存在，无法下载");
+		}
+
+		return cn.hutool.core.io.FileUtil.readBytes(file);
 	}
 
 	@Override

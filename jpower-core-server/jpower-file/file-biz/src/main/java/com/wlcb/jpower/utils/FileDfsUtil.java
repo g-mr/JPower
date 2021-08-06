@@ -63,7 +63,7 @@ public class FileDfsUtil {
      * @return 文件字节
      * @throws IOException
      */
-    public static byte[] downloadFile(String fileUrl) throws IOException {
+    public static byte[] downloadFile(String fileUrl){
         String group = fileUrl.substring(0, fileUrl.indexOf("/"));
         String path = fileUrl.substring(fileUrl.indexOf("/") + 1);
         DownloadByteArray downloadByteArray = new DownloadByteArray();

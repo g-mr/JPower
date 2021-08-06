@@ -1,0 +1,1 @@
+alter table tb_core_file add `storage_type` varchar(20) DEFAULT 'SERVER' COMMENT '存储类型 字典FILE_STORAGE_TYPE';

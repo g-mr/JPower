@@ -34,7 +34,7 @@ public class FastDfsFileOperate implements FileOperate {
 
 
 	@Override
-	public TbCoreFile upload(MultipartFile file) throws Exception {
+	public TbCoreFile upload(MultipartFile file) throws IOException {
 
 		String originalFileName = file.getOriginalFilename();
 		String dfsPath = FileDfsUtil.upload(file.getBytes(),file.getSize(),originalFileName.substring(originalFileName.lastIndexOf(StringPool.DOT)));
@@ -48,7 +48,12 @@ public class FastDfsFileOperate implements FileOperate {
 		coreFile.setPath(dfsPath);
 		coreFile.setName(UUIDUtil.getUUID()+StringPool.DOT+coreFile.getFileType());
 
-		if (!coreFileService.add(coreFile)){
+		try {
+			if (!coreFileService.add(coreFile)){
+				FileDfsUtil.deleteFile(dfsPath);
+				return null;
+			}
+		}catch (Exception e){
 			FileDfsUtil.deleteFile(dfsPath);
 			return null;
 		}
@@ -61,6 +66,12 @@ public class FastDfsFileOperate implements FileOperate {
 		JpowerAssert.notEmpty(coreFile.getPath(), JpowerError.Parser, "文件不存在");
 		byte[] bytes = FileDfsUtil.downloadFile(coreFile.getPath());
 		return FileUtil.download(bytes, WebUtil.getResponse(), coreFile.getName());
+	}
+
+	@Override
+	public byte[] getByte(TbCoreFile coreFile) {
+		JpowerAssert.notEmpty(coreFile.getPath(), JpowerError.Parser, "文件不存在");
+		return FileDfsUtil.downloadFile(coreFile.getPath());
 	}
 
 	@Override

@@ -28,6 +28,8 @@ public interface CacheNames {
     String SYSTEM_REDIS_CACHE = "jpower:system";
     /** 用户缓存 **/
     String USER_REDIS_CACHE = "jpower:user";
+    /** 用户缓存 **/
+    String FILE_REDIS_CACHE = "jpower:file";
     /** 数据权限缓存 **/
     String DATASCOPE_REDIS_CACHE = "jpower:dataScope";
 
@@ -72,5 +74,8 @@ public interface CacheNames {
     String USER_OTHERCODE_KEY = "user:otherCode:";
     /** 字典列表 key(dictType) **/
     String DICT_TYPE_KEY = "dict:type:";
+
+    /** 文件详情 key(base) **/
+    String FILE_BASE_KEY = "base:detail:";
 
 }

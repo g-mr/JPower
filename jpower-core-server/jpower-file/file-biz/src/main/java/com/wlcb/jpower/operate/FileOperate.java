@@ -17,7 +17,7 @@ public interface FileOperate {
 	 * @param file 上传文件
 	 * @return TbCoreFile
 	 */
-	TbCoreFile upload(MultipartFile file) throws Exception;
+	TbCoreFile upload(MultipartFile file) throws IOException;
 
 	/**
 	 * 下载文件
@@ -26,6 +26,14 @@ public interface FileOperate {
 	 * @return java.lang.Boolean
 	 **/
 	Boolean download(TbCoreFile coreFile) throws IOException;
+
+	/**
+	 * 获取文件字节
+	 * @Author mr.g
+	 * @param coreFile
+	 * @return byte[]
+	 **/
+	byte[] getByte(TbCoreFile coreFile);
 
 	/**
 	 * 删除文件
