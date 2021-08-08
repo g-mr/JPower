@@ -1,5 +1,6 @@
 package com.wlcb.jpower.module.common.utils;
 
+import cn.hutool.core.util.URLUtil;
 import com.google.common.base.Splitter;
 import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
@@ -111,7 +112,7 @@ public class JwtUtil {
             return parsingToken(auth);
         }
         String parameter = "";
-        String uri = UrlUtil.decodeURL(fullHttpRequest.uri(), Charset.defaultCharset());
+        String uri = URLUtil.decode(fullHttpRequest.uri(), Charset.defaultCharset());
         String params = uri.substring(uri.indexOf("?") + 1, uri.length());
         parameter = Splitter.on("&").withKeyValueSeparator("=").split(params).get(HEADER);
         if (StringUtil.isNotBlank(parameter)) {

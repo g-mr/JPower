@@ -17,6 +17,7 @@ package com.wlcb.jpower.module.common.utils;
 
 import com.wlcb.jpower.module.common.support.StrFormatter;
 import com.wlcb.jpower.module.common.support.StrSpliter;
+import com.wlcb.jpower.module.common.utils.constants.CharPool;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.HtmlUtils;
@@ -879,9 +880,9 @@ public class StringUtil extends StringUtils {
         }
 
         char firstChar = str.charAt(0);
-        if (firstChar >= StringPool.U_A && firstChar <= StringPool.U_Z) {
+        if (firstChar >= CharPool.U_A && firstChar <= CharPool.U_Z) {
             char[] arr = str.toCharArray();
-            arr[0] += (StringPool.L_A - StringPool.U_A);
+            arr[0] += (CharPool.L_A - CharPool.U_A);
             return new String(arr);
         }
         return str;
@@ -895,9 +896,9 @@ public class StringUtil extends StringUtils {
      */
     public static String upperFirst(String str) {
         char firstChar = str.charAt(0);
-        if (firstChar >= StringPool.L_A && firstChar <= StringPool.L_Z) {
+        if (firstChar >= CharPool.L_A && firstChar <= CharPool.L_Z) {
             char[] arr = str.toCharArray();
-            arr[0] -= (StringPool.L_A - StringPool.U_A);
+            arr[0] -= (CharPool.L_A - CharPool.U_A);
             return new String(arr);
         }
         return str;

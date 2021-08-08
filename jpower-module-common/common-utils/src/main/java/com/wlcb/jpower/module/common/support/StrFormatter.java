@@ -15,6 +15,7 @@
  */
 package com.wlcb.jpower.module.common.support;
 
+import cn.hutool.core.text.CharPool;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 
@@ -77,11 +78,11 @@ public class StrFormatter {
                 /**
                  * 转义符
                  */
-                if (delimIndex > 0 && strPattern.charAt(delimIndex - 1) == StringPool.BACK_SLASH) {
+                if (delimIndex > 0 && strPattern.charAt(delimIndex - 1) == CharPool.BACKSLASH) {
                     /**
                      * 双转义符
                      */
-                    if (delimIndex > 1 && strPattern.charAt(delimIndex - 2) == StringPool.BACK_SLASH) {
+                    if (delimIndex > 1 && strPattern.charAt(delimIndex - 2) == CharPool.BACKSLASH) {
                         //转义符之前还有一个转义符，占位符依旧有效
                         sbuf.append(strPattern, handledPosition, delimIndex - 1);
                         sbuf.append(Fc.toStr(argArray[argIndex]));

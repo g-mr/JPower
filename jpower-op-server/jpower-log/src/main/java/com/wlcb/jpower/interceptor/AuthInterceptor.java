@@ -1,5 +1,6 @@
 package com.wlcb.jpower.interceptor;
 
+import cn.hutool.core.util.URLUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Splitter;
@@ -133,9 +134,9 @@ public final class AuthInterceptor implements Interceptor {
 
         //对转换后的参数需要进行一次解码
         Map<String, String> headers = Fc.isBlank(authInfo.getHeaders())?null:Splitter.on(StringPool.AMPERSAND).withKeyValueSeparator(StringPool.EQUALS).split(authInfo.getHeaders())
-                .entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> UrlUtil.decodeURL(entry.getValue(),Charset.defaultCharset())));
+                .entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> URLUtil.decode(entry.getValue(),Charset.defaultCharset())));
         Map<String, String> forms = Fc.isBlank(authInfo.getParams())?null:Splitter.on(StringPool.AMPERSAND).withKeyValueSeparator(StringPool.EQUALS).split(authInfo.getParams())
-                .entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> UrlUtil.decodeURL(entry.getValue(),Charset.defaultCharset())));
+                .entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> URLUtil.decode(entry.getValue(),Charset.defaultCharset())));
 
         OkHttp okHttp;
         switch (authInfo.getMethod()) {

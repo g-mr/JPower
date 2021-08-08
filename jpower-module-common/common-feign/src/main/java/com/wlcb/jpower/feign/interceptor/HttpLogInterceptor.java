@@ -2,7 +2,7 @@ package com.wlcb.jpower.feign.interceptor;
 
 import com.wlcb.jpower.module.common.utils.ExceptionsUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.IoUtil;
+import com.wlcb.jpower.module.common.utils.OkhttpUtil;
 import feign.Logger;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -86,7 +86,7 @@ public class HttpLogInterceptor implements Interceptor, Ordered {
                         .append(SPACE).append(requestBody.contentType())
                         .append(NEWLINE);
 
-                rqBody = IoUtil.readRequestBody(requestBody);
+                rqBody = OkhttpUtil.readRequestBody(requestBody);
                 builder.append(TAB)
                         .append(rqBody)
                         .append(NEWLINE);
@@ -124,7 +124,7 @@ public class HttpLogInterceptor implements Interceptor, Ordered {
                         .append(SPACE).append(responseBody.contentType())
                         .append(NEWLINE);
 
-                rpBody = IoUtil.readResponseBody(responseBody);
+                rpBody = OkhttpUtil.readResponseBody(responseBody);
 
                 builder.append(TAB)
                         .append(rpBody)

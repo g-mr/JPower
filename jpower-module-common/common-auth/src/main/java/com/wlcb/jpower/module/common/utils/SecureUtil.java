@@ -1,7 +1,11 @@
 package com.wlcb.jpower.module.common.utils;
 
 
-import com.wlcb.jpower.module.common.auth.*;
+import cn.hutool.core.codec.Base64Decoder;
+import com.wlcb.jpower.module.common.auth.RoleConstant;
+import com.wlcb.jpower.module.common.auth.SecureConstant;
+import com.wlcb.jpower.module.common.auth.TokenInfo;
+import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.support.EnvBeanUtil;
 import com.wlcb.jpower.module.common.utils.constants.CharPool;
 import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
@@ -293,7 +297,7 @@ public class SecureUtil {
 
     @SneakyThrows
     public static String base64Decoder(String header) {
-        return new String(Base64Util.decode(header.getBytes(CharsetKit.UTF_8)), CharsetKit.UTF_8);
+        return new String(Base64Decoder.decode(header.getBytes(CharsetKit.UTF_8)), CharsetKit.UTF_8);
     }
 
     /**

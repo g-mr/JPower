@@ -1,6 +1,8 @@
 package com.wlcb.jpower.module.common.utils;
 
+import cn.hutool.core.codec.Base64Encoder;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.Base64Utils;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -81,7 +83,7 @@ public class AESUtils {
      * @throws Exception
      */
     public static String aesEncrypt(String content, String encryptKey) throws Exception {
-        return Base64Util.encodeToString(aesEncryptToBytes(content, encryptKey));
+        return Base64Encoder.encode(aesEncryptToBytes(content, encryptKey));
     }
 
     /**
@@ -111,7 +113,7 @@ public class AESUtils {
      * @throws Exception
      */
     public static String aesDecrypt(String encryptStr, String decryptKey) throws Exception {
-        return StringUtils.isEmpty(encryptStr) ? null : aesDecryptByBytes(Base64Util.decodeFromString(encryptStr), decryptKey);
+        return StringUtils.isEmpty(encryptStr) ? null : aesDecryptByBytes(Base64Utils.decodeFromString(encryptStr), decryptKey);
     }
 
 }

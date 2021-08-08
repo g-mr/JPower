@@ -15,6 +15,7 @@
  */
 package com.wlcb.jpower.module.common.utils;
 
+import cn.hutool.core.io.IoUtil;
 import org.springframework.lang.Nullable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -77,7 +78,7 @@ public class XmlUtil {
         StringReader sr = new StringReader(xmlStr.trim());
         InputSource inputSource = new InputSource(sr);
         XmlUtil xmlUtil = create(inputSource);
-        IoUtil.closeQuietly(sr);
+        IoUtil.close(sr);
         return xmlUtil;
     }
 

@@ -2,7 +2,7 @@ package com.wlcb.jpower.interceptor;
 
 import com.wlcb.jpower.module.common.utils.ExceptionsUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.IoUtil;
+import com.wlcb.jpower.module.common.utils.OkhttpUtil;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import okhttp3.internal.http.HttpHeaders;
@@ -34,7 +34,7 @@ public class LogInterceptor implements Interceptor {
             RequestBody requestBody = request.body();
             if (Fc.isNull(requestBody)){
                 builder.append("  TEST REST PARAMS BODYS: {}").append(NEWLINE);
-                args.add(IoUtil.readRequestBody(requestBody));
+                args.add(OkhttpUtil.readRequestBody(requestBody));
             }
 
 
@@ -69,7 +69,7 @@ public class LogInterceptor implements Interceptor {
                     builder.append("  RESULT: {}-byte body  {}").append(NEWLINE).append("    {}");
                     args.add(bodySize);
                     args.add(responseBody.contentLength());
-                    args.add(IoUtil.readResponseBody(responseBody));
+                    args.add(OkhttpUtil.readResponseBody(responseBody));
                 }
 
 

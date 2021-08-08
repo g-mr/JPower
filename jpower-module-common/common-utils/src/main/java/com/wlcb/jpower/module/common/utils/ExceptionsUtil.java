@@ -15,7 +15,8 @@
  */
 package com.wlcb.jpower.module.common.utils;
 
-import com.wlcb.jpower.module.common.support.FastStringWriter;
+
+import cn.hutool.core.io.FastStringWriter;
 
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
@@ -76,6 +77,10 @@ public class ExceptionsUtil {
         FastStringWriter stringWriter = new FastStringWriter();
         ex.printStackTrace(new PrintWriter(stringWriter));
         return stringWriter.toString();
+    }
+
+    public static void main(String[] args) {
+        System.out.println(getStackTraceAsString(new ClassNotFoundException()));
     }
 
 }

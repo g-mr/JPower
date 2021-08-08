@@ -1,8 +1,8 @@
 package com.wlcb.jpower.gateway.config;
 
 import com.wlcb.jpower.gateway.reactive.RecorderServerHttpRequestDecorator;
+import com.wlcb.jpower.module.common.utils.BufferUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.IoUtil;
 import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -156,7 +156,7 @@ public class AccessLogGlobalFilter implements GlobalFilter, Ordered {
         try(Buffer buffer = new Buffer()){
             buffer.write(content);
 
-            if (IoUtil.isReadable(buffer)){
+            if (BufferUtil.isReadable(buffer)){
                 return buffer.readString(CharsetKit.CHARSET_UTF_8);
             }
             return "omit bodyContent";

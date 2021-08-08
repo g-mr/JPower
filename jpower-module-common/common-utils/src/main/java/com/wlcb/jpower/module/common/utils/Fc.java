@@ -15,6 +15,9 @@
  */
 package com.wlcb.jpower.module.common.utils;
 
+import cn.hutool.core.codec.Base64Decoder;
+import cn.hutool.core.codec.Base64Encoder;
+import cn.hutool.core.util.URLUtil;
 import com.wlcb.jpower.module.common.enums.RandomType;
 import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
 import org.apache.tomcat.util.http.ConcurrentDateFormat;
@@ -999,7 +1002,7 @@ public class Fc {
      * @return {String}
      */
     public static String encodeBase64(String value) {
-        return Base64Util.encode(value);
+        return Base64Encoder.encode(value);
     }
 
     /**
@@ -1010,7 +1013,7 @@ public class Fc {
      * @return {String}
      */
     public static String encodeBase64(String value, Charset charset) {
-        return Base64Util.encode(value, charset);
+        return Base64Encoder.encode(value, charset);
     }
 
     /**
@@ -1020,7 +1023,7 @@ public class Fc {
      * @return {String}
      */
     public static String encodeBase64UrlSafe(String value) {
-        return Base64Util.encodeUrlSafe(value);
+        return Base64Encoder.encodeUrlSafe(value);
     }
 
     /**
@@ -1031,7 +1034,7 @@ public class Fc {
      * @return {String}
      */
     public static String encodeBase64UrlSafe(String value, Charset charset) {
-        return Base64Util.encodeUrlSafe(value, charset);
+        return Base64Encoder.encodeUrlSafe(value, charset);
     }
 
     /**
@@ -1041,7 +1044,7 @@ public class Fc {
      * @return {String}
      */
     public static String decodeBase64(String value) {
-        return Base64Util.decode(value);
+        return Base64Decoder.decodeStr(value);
     }
 
     /**
@@ -1052,28 +1055,7 @@ public class Fc {
      * @return {String}
      */
     public static String decodeBase64(String value, Charset charset) {
-        return Base64Util.decode(value, charset);
-    }
-
-    /**
-     * 解码URL安全
-     *
-     * @param value 字符串
-     * @return {String}
-     */
-    public static String decodeBase64UrlSafe(String value) {
-        return Base64Util.decodeUrlSafe(value);
-    }
-
-    /**
-     * 解码URL安全
-     *
-     * @param value   字符串
-     * @param charset 字符集
-     * @return {String}
-     */
-    public static String decodeBase64UrlSafe(String value, Charset charset) {
-        return Base64Util.decodeUrlSafe(value, charset);
+        return Base64Decoder.decodeStr(value, charset);
     }
 
     /**
@@ -1082,7 +1064,7 @@ public class Fc {
      * @param closeable 自动关闭
      */
     public static void closeQuietly(@Nullable Closeable closeable) {
-        IoUtil.closeQuietly(closeable);
+        cn.hutool.core.io.IoUtil.close(closeable);
     }
 
     /**
@@ -1093,7 +1075,7 @@ public class Fc {
      * @throws NullPointerException if the input is null
      */
     public static String toString(InputStream input) {
-        return IoUtil.toString(input);
+        return cn.hutool.core.io.IoUtil.readUtf8(input);
     }
 
     /**
@@ -1105,11 +1087,11 @@ public class Fc {
      * @throws NullPointerException if the input is null
      */
     public static String toString(@Nullable InputStream input, Charset charset) {
-        return IoUtil.toString(input, charset);
+        return cn.hutool.core.io.IoUtil.read(input, charset);
     }
 
     public static byte[] toByteArray(@Nullable InputStream input) {
-        return IoUtil.toByteArray(input);
+        return cn.hutool.core.io.IoUtil.readBytes(input);
     }
 
 
@@ -1124,7 +1106,7 @@ public class Fc {
      * @return the encoded String
      */
     public static String encode(String source) {
-        return UrlUtil.encode(source, CharsetKit.CHARSET_UTF_8);
+        return URLUtil.encode(source, CharsetKit.CHARSET_UTF_8);
     }
 
     /**
@@ -1139,7 +1121,7 @@ public class Fc {
      * @return the encoded String
      */
     public static String encode(String source, Charset charset) {
-        return UrlUtil.encode(source, charset);
+        return URLUtil.encode(source, charset);
     }
 
     /**
