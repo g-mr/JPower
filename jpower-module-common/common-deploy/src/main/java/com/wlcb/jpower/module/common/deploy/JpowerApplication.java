@@ -1,7 +1,6 @@
 package com.wlcb.jpower.module.common.deploy;
 
 import com.wlcb.jpower.module.common.deploy.service.DeployService;
-import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import lombok.extern.slf4j.Slf4j;
@@ -105,6 +104,6 @@ public class JpowerApplication {
      **/
     public static boolean isLocalDev() {
         String osName = System.getProperty("os.name");
-        return StringUtil.hasText(osName) && !(AppConstant.OS_NAME_LINUX.equals(osName.toUpperCase()));
+        return StringUtils.hasText(osName) && !(AppConstant.OS_NAME_LINUX.equals(osName.toUpperCase()));
     }
 }

@@ -7,6 +7,7 @@ import com.wlcb.jpower.module.common.utils.WebUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
 import com.wlcb.jpower.module.datascope.DataScope;
+import org.springframework.util.StringUtils;
 
 import static com.wlcb.jpower.module.common.utils.constants.StringPool.COMMA;
 import static com.wlcb.jpower.module.common.utils.constants.StringPool.SINGLE_QUOTE;
@@ -41,7 +42,7 @@ public class DataScopeHandler {
             if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.CUSTOM.getValue())){
                 sqlCondition = StringUtil.format(sqlCondition + dataScope.getScopeValue(), Fc.toStr(dataScope.getScopeField(), "*"), originalSql);
             }else {
-                sqlCondition = StringUtil.format(sqlCondition + " scope.{} in ({})", Fc.toStr(dataScope.getScopeField(), "*"), originalSql, dataScope.getScopeColumn(), StringUtil.collectionToDelimitedString(dataScope.getIds(), COMMA,SINGLE_QUOTE,SINGLE_QUOTE));
+                sqlCondition = StringUtil.format(sqlCondition + " scope.{} in ({})", Fc.toStr(dataScope.getScopeField(), "*"), originalSql, dataScope.getScopeColumn(), StringUtils.collectionToDelimitedString(dataScope.getIds(), COMMA,SINGLE_QUOTE,SINGLE_QUOTE));
             }
             return sqlCondition;
         }

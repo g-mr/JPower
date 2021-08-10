@@ -130,7 +130,7 @@ public final class AuthInterceptor implements Interceptor {
     @SneakyThrows
     private String requestToken(String domain) throws NullArgumentException {
 
-        String httpUrl = StringUtil.startsWithIgnoreCase(authInfo.getUrl(),"http")?authInfo.getUrl():domain.concat(authInfo.getUrl());
+        String httpUrl = StringUtil.startWithIgnoreCase(authInfo.getUrl(),"http")?authInfo.getUrl():domain.concat(authInfo.getUrl());
 
         //对转换后的参数需要进行一次解码
         Map<String, String> headers = Fc.isBlank(authInfo.getHeaders())?null:Splitter.on(StringPool.AMPERSAND).withKeyValueSeparator(StringPool.EQUALS).split(authInfo.getHeaders())

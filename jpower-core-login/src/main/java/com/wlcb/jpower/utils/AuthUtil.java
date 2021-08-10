@@ -17,6 +17,7 @@ import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.datascope.DataScope;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -89,7 +90,7 @@ public class AuthUtil {
             //自定义
             if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.CUSTOM.getValue())){
                 Map<String,Object> userMap = BeanUtil.getFieldValueMap(authInfo.getUser());
-                userMap.put("roleIds",StringUtil.collectionToDelimitedString(authInfo.getUser().getRoleIds(), StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE));
+                userMap.put("roleIds", StringUtils.collectionToDelimitedString(authInfo.getUser().getRoleIds(), StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE));
                 dataScope.setScopeValue(StringUtil.format(dataScope.getScopeValue(),userMap));
             }
 

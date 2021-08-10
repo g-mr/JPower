@@ -16,6 +16,7 @@ import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.role.CoreDataScopeService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +69,7 @@ public class CoreDataScopeServiceImpl extends BaseServiceImpl<TbCoreDataScopeMap
 
     @Override
     public List<TbCoreDataScope> getDataScopeByRole(List<String> roleIds) {
-        String inSql = StringUtil.collectionToDelimitedString(roleIds, StringPool.COMMA, StringPool.SINGLE_QUOTE, StringPool.SINGLE_QUOTE);
+        String inSql = StringUtils.collectionToDelimitedString(roleIds, StringPool.COMMA, StringPool.SINGLE_QUOTE, StringPool.SINGLE_QUOTE);
         return dataScopeDao.list(Condition.<TbCoreDataScope>getQueryWrapper().lambda()
                 .inSql(TbCoreDataScope::getId, StringUtil.format(sql,inSql)));
     }

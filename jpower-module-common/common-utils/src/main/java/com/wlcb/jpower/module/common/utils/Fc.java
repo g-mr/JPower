@@ -18,6 +18,8 @@ package com.wlcb.jpower.module.common.utils;
 import cn.hutool.core.codec.Base64Decoder;
 import cn.hutool.core.codec.Base64Encoder;
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.util.EscapeUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.URLUtil;
 import com.wlcb.jpower.module.common.enums.RandomType;
 import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
@@ -188,7 +190,7 @@ public class Fc {
      * @return boolean
      */
     public static boolean isNoneBlank(final CharSequence... css) {
-        return StringUtil.isNoneBlank(css);
+        return StringUtil.isAllNotBlank(css);
     }
 
     /**
@@ -371,8 +373,8 @@ public class Fc {
      * @param cs the CharSequence to check, may be null
      * @return {boolean}
      */
-    public static boolean isNumeric(final CharSequence cs) {
-        return StringUtil.isNumeric(cs);
+    public static boolean isNumeric(final String cs) {
+        return NumberUtil.isInteger(cs);
     }
 
     /**
@@ -739,7 +741,7 @@ public class Fc {
      * @return {String}
      */
     public static String escapeHtml(String html) {
-        return StringUtil.escapeHtml(html);
+        return EscapeUtil.escapeHtml4(html);
     }
 
     /**

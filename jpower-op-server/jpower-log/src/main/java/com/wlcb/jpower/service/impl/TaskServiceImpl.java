@@ -262,7 +262,7 @@ public class TaskServiceImpl implements TaskService {
                     Map.Entry<String, String> body = bodys.entrySet().iterator().next();
                     //获取Body请求数据类型
                     String dataType = HttpInfoBuilder.getHandler(url).getBodyDataType(method);
-                    if(StringUtil.startsWithIgnoreCase(dataType, ContentType.APPLICATION_XML.getMimeType())){
+                    if(StringUtil.startWithIgnoreCase(dataType, ContentType.APPLICATION_XML.getMimeType())){
                         String clz = HttpInfoBuilder.getHandler(url).getBodyClass(method,body.getKey());
                         okHttp = OkHttp.content(httpUrl,method,headers, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<" + clz + ">" + JsonUtil.json2xml(body.getValue()) + "</" + clz + ">",OkHttp.XML);
                     }else {
