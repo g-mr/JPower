@@ -17,6 +17,7 @@ package com.wlcb.jpower.module.common.utils;
 
 import cn.hutool.core.codec.Base64Decoder;
 import cn.hutool.core.codec.Base64Encoder;
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.URLUtil;
 import com.wlcb.jpower.module.common.enums.RandomType;
 import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
@@ -375,197 +376,70 @@ public class Fc {
     }
 
     /**
-     * <p>Convert a <code>String</code> to an <code>int</code>, returning
-     * <code>zero</code> if the conversion fails.</p>
-     *
-     * <p>If the string is <code>null</code>, <code>zero</code> is returned.</p>
-     *
-     * <pre>
-     *   $.toInt(null) = 0
-     *   $.toInt("")   = 0
-     *   $.toInt("1")  = 1
-     * </pre>
-     *
-     * @param value the string to convert, may be null
-     * @return the int represented by the string, or <code>zero</code> if
-     * conversion fails
+     * 转换成数字
      */
     public static int toInt(final Object value) {
-        return NumberUtil.toInt(String.valueOf(value));
+        return Convert.toInt(value,-1);
     }
 
     /**
-     * <p>Convert a <code>String</code> to an <code>int</code>, returning a
-     * default value if the conversion fails.</p>
-     *
-     * <p>If the string is <code>null</code>, the default value is returned.</p>
-     *
-     * <pre>
-     *   $.toInt(null, 1) = 1
-     *   $.toInt("", 1)   = 1
-     *   $.toInt("1", 0)  = 1
-     * </pre>
-     *
-     * @param value        the string to convert, may be null
-     * @param defaultValue the default value
-     * @return the int represented by the string, or the default if conversion fails
+     * 转换成数字
      */
     public static int toInt(final Object value, final int defaultValue) {
-        return NumberUtil.toInt(String.valueOf(value), defaultValue);
+        return Convert.toInt(value,defaultValue);
     }
 
     /**
-     * <p>Convert a <code>String</code> to a <code>long</code>, returning
-     * <code>zero</code> if the conversion fails.</p>
-     *
-     * <p>If the string is <code>null</code>, <code>zero</code> is returned.</p>
-     *
-     * <pre>
-     *   $.toLong(null) = 0L
-     *   $.toLong("")   = 0L
-     *   $.toLong("1")  = 1L
-     * </pre>
-     *
-     * @param value the string to convert, may be null
-     * @return the long represented by the string, or <code>0</code> if
-     * conversion fails
+     * 转换成Long
      */
     public static long toLong(final Object value) {
-        return NumberUtil.toLong(String.valueOf(value));
+        return Convert.toLong(value);
     }
 
     /**
-     * <p>Convert a <code>String</code> to a <code>long</code>, returning a
-     * default value if the conversion fails.</p>
-     *
-     * <p>If the string is <code>null</code>, the default value is returned.</p>
-     *
-     * <pre>
-     *   $.toLong(null, 1L) = 1L
-     *   $.toLong("", 1L)   = 1L
-     *   $.toLong("1", 0L)  = 1L
-     * </pre>
-     *
-     * @param value        the string to convert, may be null
-     * @param defaultValue the default value
-     * @return the long represented by the string, or the default if conversion fails
+     * 转换成Long
      */
     public static long toLong(final Object value, final long defaultValue) {
-        return NumberUtil.toLong(String.valueOf(value), defaultValue);
+        return Convert.toLong(value, defaultValue);
     }
 
     /**
-     * <p>Convert a <code>String</code> to an <code>Double</code>, returning a
-     * default value if the conversion fails.</p>
-     *
-     * <p>If the string is <code>null</code>, the default value is returned.</p>
-     *
-     * <pre>
-     *   $.toDouble(null, 1) = 1.0
-     *   $.toDouble("", 1)   = 1.0
-     *   $.toDouble("1", 0)  = 1.0
-     * </pre>
-     *
-     * @param value the string to convert, may be null
-     * @return the int represented by the string, or the default if conversion fails
+     * 转换成Double
      */
     public static Double toDouble(Object value) {
-        return toDouble(String.valueOf(value), -1.00);
+        return Convert.toDouble(value);
     }
 
     /**
-     * <p>Convert a <code>String</code> to an <code>Double</code>, returning a
-     * default value if the conversion fails.</p>
-     *
-     * <p>If the string is <code>null</code>, the default value is returned.</p>
-     *
-     * <pre>
-     *   $.toDouble(null, 1) = 1.0
-     *   $.toDouble("", 1)   = 1.0
-     *   $.toDouble("1", 0)  = 1.0
-     * </pre>
-     *
-     * @param value        the string to convert, may be null
-     * @param defaultValue the default value
-     * @return the int represented by the string, or the default if conversion fails
+     * 转换成Double
      */
     public static Double toDouble(Object value, Double defaultValue) {
-        return NumberUtil.toDouble(String.valueOf(value), defaultValue);
+        return Convert.toDouble(value, defaultValue);
     }
 
     /**
-     * <p>Convert a <code>String</code> to an <code>Float</code>, returning a
-     * default value if the conversion fails.</p>
-     *
-     * <p>If the string is <code>null</code>, the default value is returned.</p>
-     *
-     * <pre>
-     *   $.toFloat(null, 1) = 1.00f
-     *   $.toFloat("", 1)   = 1.00f
-     *   $.toFloat("1", 0)  = 1.00f
-     * </pre>
-     *
-     * @param value the string to convert, may be null
-     * @return the int represented by the string, or the default if conversion fails
+     * 转换成Float
      */
     public static Float toFloat(Object value) {
-        return toFloat(String.valueOf(value), -1.0f);
+        return Convert.toFloat(value);
     }
 
     /**
-     * <p>Convert a <code>String</code> to an <code>Float</code>, returning a
-     * default value if the conversion fails.</p>
-     *
-     * <p>If the string is <code>null</code>, the default value is returned.</p>
-     *
-     * <pre>
-     *   $.toFloat(null, 1) = 1.00f
-     *   $.toFloat("", 1)   = 1.00f
-     *   $.toFloat("1", 0)  = 1.00f
-     * </pre>
-     *
-     * @param value        the string to convert, may be null
-     * @param defaultValue the default value
-     * @return the int represented by the string, or the default if conversion fails
+     * 转换成Float
      */
     public static Float toFloat(Object value, Float defaultValue) {
-        return NumberUtil.toFloat(String.valueOf(value), defaultValue);
+        return Convert.toFloat(value, defaultValue);
     }
 
     /**
-     * <p>Convert a <code>String</code> to an <code>Boolean</code>, returning a
-     * default value if the conversion fails.</p>
-     *
-     * <p>If the string is <code>null</code>, the default value is returned.</p>
-     *
-     * <pre>
-     *   $.toBoolean("true", true)  = true
-     *   $.toBoolean("false")   	= false
-     *   $.toBoolean("", false)  	= false
-     * </pre>
-     *
-     * @param value the string to convert, may be null
-     * @return the int represented by the string, or the default if conversion fails
+     * 转换成Boolean
      */
     public static Boolean toBoolean(Object value) {
         return toBoolean(value, null);
     }
 
     /**
-     * <p>Convert a <code>String</code> to an <code>Boolean</code>, returning a
-     * default value if the conversion fails.</p>
-     *
-     * <p>If the string is <code>null</code>, the default value is returned.</p>
-     *
-     * <pre>
-     *   $.toBoolean("true", true)  = true
-     *   $.toBoolean("false")   	= false
-     *   $.toBoolean("", false)  	= false
-     * </pre>
-     *
-     * @param value        the string to convert, may be null
-     * @param defaultValue the default value
-     * @return the int represented by the string, or the default if conversion fails
+     * 转换成Boolean
      */
     public static Boolean toBoolean(Object value, Boolean defaultValue) {
         if (value != null) {
@@ -580,58 +454,17 @@ public class Fc {
      * 转换为boolean<br>
      * String支持的值为：true、false、yes、ok、no，1,0 如果给定的值为空，或者转换失败，返回默认值<br>
      * 转换失败不会报错
-     *
-     * @param value 被转换的值
-     * @param defaultValue 转换错误时的默认值
-     * @return 结果
      */
-    public static Boolean toBool(Object value, Boolean defaultValue)
-    {
-        if (value == null)
-        {
-            return defaultValue;
-        }
-        if (value instanceof Boolean)
-        {
-            return (Boolean) value;
-        }
-        String valueStr = toStr(value, null);
-        if (StringUtils.isEmpty(valueStr))
-        {
-            return defaultValue;
-        }
-        valueStr = valueStr.trim().toLowerCase();
-        switch (valueStr)
-        {
-            case "true":
-                return true;
-            case "false":
-                return false;
-            case "yes":
-                return true;
-            case "ok":
-                return true;
-            case "no":
-                return false;
-            case "1":
-                return true;
-            case "0":
-                return false;
-            default:
-                return defaultValue;
-        }
+    public static Boolean toBool(Object value, Boolean defaultValue) {
+        return Convert.toBool(value, defaultValue);
     }
 
     /**
      * 转换为boolean<br>
      * 如果给定的值为空，或者转换失败，返回默认值<code>null</code><br>
      * 转换失败不会报错
-     *
-     * @param value 被转换的值
-     * @return 结果
      */
-    public static Boolean toBool(Object value)
-    {
+    public static Boolean toBool(Object value) {
         return toBool(value, null);
     }
 
@@ -782,15 +615,6 @@ public class Fc {
         return Arrays.asList(toStrArray(split, str));
     }
 
-    /**
-     * 将 long 转短字符串 为 62 进制
-     *
-     * @param num 数字
-     * @return 短字符串
-     */
-    public static String to62String(long num) {
-        return NumberUtil.to62String(num);
-    }
 
 
     /**
@@ -802,9 +626,8 @@ public class Fc {
      * @param defaultValue 转换错误时的默认值
      * @return 结果
      */
-    public static BigInteger toBigInteger(Object value, BigInteger defaultValue)
-    {
-        return NumberUtil.toBigInteger(value,defaultValue);
+    public static BigInteger toBigInteger(Object value, BigInteger defaultValue) {
+        return Convert.toBigInteger(value,defaultValue);
     }
 
     /**
@@ -815,9 +638,8 @@ public class Fc {
      * @param value 被转换的值
      * @return 结果
      */
-    public static BigInteger toBigInteger(Object value)
-    {
-        return toBigInteger(value, null);
+    public static BigInteger toBigInteger(Object value){
+        return Convert.toBigInteger(value);
     }
 
     /**
@@ -829,9 +651,8 @@ public class Fc {
      * @param defaultValue 转换错误时的默认值
      * @return 结果
      */
-    public static BigDecimal toBigDecimal(Object value, BigDecimal defaultValue)
-    {
-        return toBigDecimal(value,defaultValue);
+    public static BigDecimal toBigDecimal(Object value, BigDecimal defaultValue) {
+        return Convert.toBigDecimal(value,defaultValue);
     }
 
     /**
@@ -842,9 +663,8 @@ public class Fc {
      * @param value 被转换的值
      * @return 结果
      */
-    public static BigDecimal toBigDecimal(Object value)
-    {
-        return toBigDecimal(value, null);
+    public static BigDecimal toBigDecimal(Object value) {
+        return Convert.toBigDecimal(value);
     }
 
     /**
@@ -941,7 +761,7 @@ public class Fc {
      */
     public static String random(int count, RandomType randomType) {
         if (RandomType.INT == randomType) {
-            return RandomUtil.randomNum(count);
+            return RandomUtil.randomNumbers(count);
         }else if (RandomType.STRING == randomType){
             return RandomUtil.randomString(count);
         }else {
@@ -955,8 +775,8 @@ public class Fc {
      * @param data Data to digest
      * @return MD5 digest as a hexg string
      */
-    public static String md5Hex(final String data) {
-        return DigestUtil.md5Hex(data);
+    public static String md5(final String data) {
+        return MD5.parseStrToMd5L32(data);
     }
 
     /**
@@ -965,24 +785,8 @@ public class Fc {
      * @param bytes the bytes to calculate the digest over
      * @return a hexadecimal digest string
      */
-    public static String md5Hex(final byte[] bytes) {
-        return DigestUtil.md5Hex(bytes);
-    }
-
-    public static String sha1(String srcStr) {
-        return DigestUtil.sha1(srcStr);
-    }
-
-    public static String sha256(String srcStr) {
-        return DigestUtil.sha256(srcStr);
-    }
-
-    public static String sha384(String srcStr) {
-        return DigestUtil.sha384(srcStr);
-    }
-
-    public static String sha512(String srcStr) {
-        return DigestUtil.sha512(srcStr);
+    public static String md5(final byte[] bytes) {
+        return MD5.md5Hex(bytes);
     }
 
     /**

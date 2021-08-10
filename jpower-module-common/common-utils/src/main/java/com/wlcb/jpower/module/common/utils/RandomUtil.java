@@ -2,8 +2,6 @@ package com.wlcb.jpower.module.common.utils;
 
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 
-import java.util.Random;
-
 /**
  * @ClassName RandomUtil
  * @Description TODO 随机数工具类
@@ -11,11 +9,10 @@ import java.util.Random;
  * @Date 2020-03-28 22:58
  * @Version 1.0
  */
-public class RandomUtil {
+public class RandomUtil extends cn.hutool.core.util.RandomUtil {
 
-    private static final String S_INT = "0123456789";
     private static final String S_STR = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private static final String S_ALL = S_STR+S_INT;
+    private static final String S_ALL = S_STR+BASE_NUMBER;
 
     /**
      * @Author 郭丁志
@@ -25,7 +22,7 @@ public class RandomUtil {
      * @return java.lang.String
      **/
     public static String random6Num(){
-        return randomNum(6);
+        return randomNumbers(6);
     }
 
     /**
@@ -36,30 +33,7 @@ public class RandomUtil {
      * @return java.lang.String
      **/
     public static String random(int length){
-        Random random = new Random();
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < length; i++) {
-            int number = random.nextInt(S_ALL.length());
-            sb.append(S_ALL.charAt(number));
-        }
-        return sb.toString();
-    }
-
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 随机数
-     * @Date 14:51 2020-07-31
-     * @Param []
-     * @return java.lang.String
-     **/
-    public static String randomNum(int length){
-        Random random = new Random();
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < length; i++) {
-            int number = random.nextInt(S_INT.length());
-            sb.append(S_INT.charAt(number));
-        }
-        return sb.toString();
+        return randomString(S_ALL, length);
     }
 
     /**
@@ -70,13 +44,7 @@ public class RandomUtil {
      * @return java.lang.String
      **/
     public static String randomString(int length) {
-        Random random = new Random();
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < length; i++) {
-            int number = random.nextInt(S_STR.length());
-            sb.append(S_STR.charAt(number));
-        }
-        return sb.toString();
+        return randomString(S_STR, length);
     }
 
     /**

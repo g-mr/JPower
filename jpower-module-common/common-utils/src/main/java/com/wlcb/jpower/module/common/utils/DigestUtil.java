@@ -1,93 +1,52 @@
-/**
- * Copyright (c) 2018-2028, DreamLu 卢春梦 (qq596392912@gmail.com).
- * <p>
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE 3.0;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.gnu.org/licenses/lgpl.html
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.wlcb.jpower.module.common.utils;
 
+import cn.hutool.core.util.HexUtil;
 import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
-import org.springframework.lang.Nullable;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+
 /**
- * 加密相关工具类直接使用Spring util封装，减少jar依赖
- *
- * @author L.cm
+ * 加密相关工具类
  */
 public class DigestUtil extends org.springframework.util.DigestUtils {
 
-    /**
-     * 计算MD5摘要，并以32个字符的十六进制字符串形式返回值。
-     * @param data 数据
-     * @return MD5 作为十六进制字符串
-     */
-    public static String md5Hex(final String data) {
-        return DigestUtil.md5DigestAsHex(data.getBytes(CharsetKit.CHARSET_UTF_8));
-    }
-
-    /**
-     * 返回给定字节的MD5摘要的十六进制字符串表示形式。
-     * @param bytes 计算的字节
-     * @return 十六进制字符串
-     */
-    public static String md5Hex(final byte[] bytes) {
-        return DigestUtil.md5DigestAsHex(bytes);
-    }
-
-    private static final char[] HEX_DIGITS = "0123456789abcdef".toCharArray();
-
     public static String sha1(String srcStr) {
-        return hash("SHA-1", srcStr);
-    }
-
-    public static String sha256(String srcStr) {
-        return hash("SHA-256", srcStr);
-    }
-
-    public static String sha384(String srcStr) {
-        return hash("SHA-384", srcStr);
-    }
-
-    public static String sha512(String srcStr) {
-        return hash("SHA-512", srcStr);
-    }
-
-    public static String hash(String algorithm, String srcStr) {
         try {
-            MessageDigest md = MessageDigest.getInstance(algorithm);
-            byte[] bytes = md.digest(srcStr.getBytes(CharsetKit.CHARSET_UTF_8));
-            return toHex(bytes);
+            return hash(MessageDigest.getInstance("SHA-1"), srcStr);
         } catch (NoSuchAlgorithmException e) {
             throw ExceptionsUtil.unchecked(e);
         }
     }
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 把二进制转换成十六进制
-     * @Date 00:06 2020-07-24
-     * @Param [bytes]
-     * @return java.lang.String
-     **/
-    public static String toHex(byte[] bytes) {
-        StringBuilder ret = new StringBuilder(bytes.length * 2);
-        for (int i = 0; i < bytes.length; i++) {
-            ret.append(HEX_DIGITS[(bytes[i] >> 4) & 0x0f]);
-            ret.append(HEX_DIGITS[bytes[i] & 0x0f]);
+    public static String sha256(String srcStr) {
+        try {
+            return hash(MessageDigest.getInstance("SHA-256"), srcStr);
+        } catch (NoSuchAlgorithmException e) {
+            throw ExceptionsUtil.unchecked(e);
         }
-        return ret.toString();
+    }
+
+    public static String sha384(String srcStr) {
+        try {
+            return hash(MessageDigest.getInstance("SHA-384"), srcStr);
+        } catch (NoSuchAlgorithmException e) {
+            throw ExceptionsUtil.unchecked(e);
+        }
+    }
+
+    public static String sha512(String srcStr) {
+        try {
+            return hash(MessageDigest.getInstance("SHA-512"), srcStr);
+        } catch (NoSuchAlgorithmException e) {
+            throw ExceptionsUtil.unchecked(e);
+        }
+    }
+
+    public static String hash(MessageDigest digest, String srcStr) {
+        byte[] bytes = digest.digest(srcStr.getBytes(CharsetKit.CHARSET_UTF_8));
+        return HexUtil.encodeHexStr(bytes);
     }
 
     /**
@@ -98,41 +57,7 @@ public class DigestUtil extends org.springframework.util.DigestUtils {
      * @return byte[]
      **/
     public static byte[] hex2Bytes(String hex) {
-        if ((hex.length() % 2) != 0) {
-            String errMsg = "hex.length()=" + hex.length() + ", not an even number";
-            throw new IllegalArgumentException(errMsg);
-        }
-
-        final byte[] result = new byte[hex.length() / 2];
-        final char[] enc = hex.toCharArray();
-        StringBuilder sb = new StringBuilder(2);
-        for (int i = 0; i < enc.length; i += 2) {
-            sb.delete(0, sb.length());
-            sb.append(enc[i]).append(enc[i + 1]);
-            result[i / 2] = (byte) Integer.parseInt(sb.toString(), 16);
-        }
-        return result;
-    }
-
-    public static boolean slowEquals(@Nullable String a, @Nullable String b) {
-        if (a == null || b == null) {
-            return false;
-        }
-        return slowEquals(a.getBytes(CharsetKit.CHARSET_UTF_8), b.getBytes(CharsetKit.CHARSET_UTF_8));
-    }
-
-    public static boolean slowEquals(@Nullable byte[] a, @Nullable byte[] b) {
-        if (a == null || b == null) {
-            return false;
-        }
-        if (a.length != b.length) {
-            return false;
-        }
-        int diff = a.length ^ b.length;
-        for (int i = 0; i < a.length && i < b.length; i++) {
-            diff |= a[i] ^ b[i];
-        }
-        return diff == 0;
+        return HexUtil.decodeHex(hex);
     }
 
     /**
@@ -142,13 +67,12 @@ public class DigestUtil extends org.springframework.util.DigestUtils {
      * @return String
      */
     public static String encrypt(String data) {
-        return sha1(md5Hex(data));
+        return sha1(MD5.parseStrToMd5L32(data));
     }
 
-
     public static void main(String[] args) {
-        System.out.println(md5Hex("123456").toUpperCase());
-        System.out.println(encrypt(md5Hex("123456").toUpperCase()));
+        System.out.println(MD5.parseStrToMd5L32("123456").toUpperCase());
+        System.out.println(encrypt(MD5.parseStrToMd5L32("123456").toUpperCase()));
     }
 
 }

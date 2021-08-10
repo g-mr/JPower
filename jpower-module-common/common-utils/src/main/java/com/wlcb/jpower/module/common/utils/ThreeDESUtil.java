@@ -1,5 +1,6 @@
 package com.wlcb.jpower.module.common.utils;
 
+import cn.hutool.core.util.HexUtil;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +25,7 @@ public class ThreeDESUtil {
 
     // 下发给省分的3DES密钥样例 (24字节转为48位hex串)
     private static final String SECRET = "0E7C141F55AC24A709D4DBDF609830262CC2B89A719F1411";
-    //  87F87B2496D7D4B29F89A58ADDF4D593BB5F730821AD8CE8 联调
-    //  0E7C141F55AC24A709D4DBDF609830262CC2B89A719F1411 生产
+
     public static byte[] encryptMode(byte[] src) {
         try {
             byte[] bytesSecret = DigestUtil.hex2Bytes(SECRET);
@@ -45,7 +45,7 @@ public class ThreeDESUtil {
         if (Fc.isNull(data)){
             return StringPool.EMPTY;
         }
-        return DigestUtil.toHex(encryptMode(data.getBytes(StandardCharsets.UTF_8)));
+        return HexUtil.encodeHexStr(encryptMode(data.getBytes(StandardCharsets.UTF_8)));
     }
 
     // keybyte为加密密钥，长度为24字节

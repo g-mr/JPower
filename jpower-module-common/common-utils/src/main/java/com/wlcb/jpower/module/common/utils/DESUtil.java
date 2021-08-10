@@ -1,4 +1,5 @@
 package com.wlcb.jpower.module.common.utils;
+import cn.hutool.core.util.HexUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +78,7 @@ public class DESUtil {
         // 通过BASE64位编码成字符创形式
 //        String base64Str = new BASE64Encoder().encode(encryptedData);
 
-        return DigestUtil.toHex(encryptedData);
+        return HexUtil.encodeHexStr(encryptedData);
     }
 
     private static String decryptByDes(final String souce, final String key) throws InvalidKeyException,
