@@ -1,25 +1,10 @@
-/**
- * Copyright (c) 2018-2028, DreamLu 卢春梦 (qq596392912@gmail.com).
- * <p>
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE 3.0;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.gnu.org/licenses/lgpl.html
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.wlcb.jpower.module.common.utils;
 
+import cn.hutool.core.util.StrUtil;
 import com.wlcb.jpower.module.common.support.StrFormatter;
 import com.wlcb.jpower.module.common.support.StrSpliter;
 import com.wlcb.jpower.module.common.utils.constants.CharPool;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
-import org.springframework.util.StringUtils;
 import org.springframework.web.util.HtmlUtils;
 
 import java.io.StringReader;
@@ -31,11 +16,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * 继承自Spring util的工具类，减少jar依赖
- *
- * @author L.cm
+ * 字符串工具类
  */
-public class StringUtil extends StringUtils {
+public class StringUtil extends StrUtil {
 
     /**普通的英文半角空格Unicode编码*/
     private static final int SPACE_32 = 32;
@@ -60,47 +43,6 @@ public class StringUtil extends StringUtils {
 
 
     public static final int INDEX_NOT_FOUND = -1;
-
-    /**
-     * Check whether the given {@code CharSequence} contains actual <em>text</em>.
-     * <p>More specifically, this method returns {@code true} if the
-     * {@code CharSequence} is not {@code null}, its length is greater than
-     * 0, and it contains at least one non-whitespace character.
-     * <pre class="code">
-     * StringUtil.isBlank(null) = true
-     * StringUtil.isBlank("") = true
-     * StringUtil.isBlank(" ") = true
-     * StringUtil.isBlank("12345") = false
-     * StringUtil.isBlank(" 12345 ") = false
-     * </pre>
-     *
-     * @param cs the {@code CharSequence} to check (may be {@code null})
-     * @return {@code true} if the {@code CharSequence} is not {@code null},
-     * its length is greater than 0, and it does not contain whitespace only
-     * @see Character#isWhitespace
-     */
-    public static boolean isBlank(final CharSequence cs) {
-        return !StringUtil.hasText(cs);
-    }
-
-    /**
-     * <p>Checks if a CharSequence is not empty (""), not null and not whitespace only.</p>
-     * <pre>
-     * StringUtil.isNotBlank(null)	  = false
-     * StringUtil.isNotBlank("")		= false
-     * StringUtil.isNotBlank(" ")	   = false
-     * StringUtil.isNotBlank("bob")	 = true
-     * StringUtil.isNotBlank("  bob  ") = true
-     * </pre>
-     *
-     * @param cs the CharSequence to check, may be null
-     * @return {@code true} if the CharSequence is
-     * not empty and not null and not whitespace
-     * @see Character#isWhitespace
-     */
-    public static boolean isNotBlank(final CharSequence cs) {
-        return StringUtil.hasText(cs);
-    }
 
     /**
      * 有 任意 一个 Blank
@@ -148,50 +90,31 @@ public class StringUtil extends StringUtils {
     }
 
     /**
-     * Convert a {@code Collection} into a delimited {@code String} (e.g., CSV).
-     * <p>Useful for {@code toString()} implementations.
-     *
-     * @param coll the {@code Collection} to convert
-     * @return the delimited {@code String}
+     * 将 {@code Collection} 转换为带分隔符(,)的 {@code String}
      */
     public static String join(Collection<?> coll) {
-        return StringUtil.collectionToCommaDelimitedString(coll);
+        return join(StringPool.COMMA, coll);
     }
 
     /**
-     * Convert a {@code Collection} into a delimited {@code String} (e.g. CSV).
-     * <p>Useful for {@code toString()} implementations.
-     *
-     * @param coll  the {@code Collection} to convert
-     * @param delim the delimiter to use (typically a ",")
-     * @return the delimited {@code String}
+     * 将 {@code Collection} 转换为带分隔符的 {@code String}
      */
     public static String join(Collection<?> coll, String delim) {
-        return StringUtil.collectionToDelimitedString(coll, delim);
+        return join(delim, coll);
     }
 
     /**
-     * Convert a {@code String} array into a comma delimited {@code String}
-     * (i.e., CSV).
-     * <p>Useful for {@code toString()} implementations.
-     *
-     * @param arr the array to display
-     * @return the delimited {@code String}
+     * 将 {@code String} 数组转换为逗号分隔的数组
      */
     public static String join(Object[] arr) {
-        return StringUtil.arrayToCommaDelimitedString(arr);
+        return join(StringPool.COMMA, arr);
     }
 
     /**
-     * Convert a {@code String} array into a delimited {@code String} (e.g. CSV).
-     * <p>Useful for {@code toString()} implementations.
-     *
-     * @param arr   the array to display
-     * @param delim the delimiter to use (typically a ",")
-     * @return the delimited {@code String}
+     * 将 {@code String} 数组转换为带分隔符的 {@code String}
      */
     public static String join(Object[] arr, String delim) {
-        return StringUtil.arrayToDelimitedString(arr, delim);
+        return join(delim, arr);
     }
 
     /**
@@ -213,11 +136,6 @@ public class StringUtil extends StringUtils {
     public static String cleanChars(String txt) {
         return txt.replaceAll("[ 　`·•�\\f\\t\\v\\s]", "");
     }
-
-
-    private static final String S_INT = "0123456789";
-    private static final String S_STR = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-    private static final String S_ALL = S_INT + S_STR;
 
     /**
      * 格式化文本, {} 表示占位符<br>

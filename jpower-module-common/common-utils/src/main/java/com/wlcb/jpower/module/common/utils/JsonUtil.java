@@ -182,7 +182,7 @@ public class JsonUtil {
     public static <T> List<T> parseArray(String content, Class<T> valueTypeRef) {
         try {
 
-            if (!StringUtil.startsWithIgnoreCase(content, StringPool.LEFT_SQ_BRACKET)) {
+            if (!StringUtil.startWithIgnoreCase(content, StringPool.LEFT_SQ_BRACKET)) {
                 content = StringPool.LEFT_SQ_BRACKET + content + StringPool.RIGHT_SQ_BRACKET;
             }
 

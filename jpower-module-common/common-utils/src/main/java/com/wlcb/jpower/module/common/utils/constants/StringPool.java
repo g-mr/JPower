@@ -4,6 +4,7 @@ import cn.hutool.core.text.StrPool;
 
 /**
  * 静态 String 池
+ * @author mr.g
  */
 public interface StringPool extends StrPool {
 

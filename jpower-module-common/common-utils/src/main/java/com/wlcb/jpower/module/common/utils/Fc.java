@@ -939,7 +939,7 @@ public class Fc {
      * @see java.net.URLDecoder#decode(String, String)
      */
     public static String decode(String source) {
-        return StringUtil.uriDecode(source, CharsetKit.CHARSET_UTF_8);
+        return StringUtils.uriDecode(source, CharsetKit.CHARSET_UTF_8);
     }
 
     /**
@@ -954,7 +954,7 @@ public class Fc {
      * @see java.net.URLDecoder#decode(String, String)
      */
     public static String decode(String source, Charset charset) {
-        return StringUtil.uriDecode(source, charset);
+        return StringUtils.uriDecode(source, charset);
     }
 
     /**

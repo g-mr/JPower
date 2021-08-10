@@ -55,6 +55,7 @@ public class WebUtil extends org.springframework.web.util.WebUtils {
      * spring ajax 返回含有 ResponseBody 或者 RestController注解
      *
      * @param handlerMethod HandlerMethod
+     *
      * @return 是否ajax请求
      */
     public static boolean isBody(HandlerMethod handlerMethod) {
