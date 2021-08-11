@@ -1,33 +1,19 @@
-/**
- * Copyright (c) 2018-2028, DreamLu 卢春梦 (qq596392912@gmail.com).
- * <p>
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE 3.0;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.gnu.org/licenses/lgpl.html
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.wlcb.jpower.module.common.utils;
 
 
+import cn.hutool.core.io.IORuntimeException;
+import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.net.NetUtil;
+import cn.hutool.core.util.ArrayUtil;
 import com.alibaba.fastjson.JSON;
 import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.method.HandlerMethod;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -37,31 +23,15 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Enumeration;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+
 
 /**
- * Miscellaneous utilities for web applications.
- *
- * @author L.cm
+ * Web 工具类
+ * @author mr.g
  */
 @Slf4j
 public class WebUtil extends org.springframework.web.util.WebUtils {
-
-    public static final String USER_AGENT_HEADER = "user-agent";
-
-    public static final String UN_KNOWN = "unknown";
-
-    /**
-     * 判断是否ajax请求
-     * spring ajax 返回含有 ResponseBody 或者 RestController注解
-     *
-     * @param handlerMethod HandlerMethod
-     *
-     * @return 是否ajax请求
-     */
-    public static boolean isBody(HandlerMethod handlerMethod) {
-        ResponseBody responseBody = ClassUtil.getAnnotation(handlerMethod, ResponseBody.class);
-        return responseBody != null;
-    }
 
     /**
      * 读取cookie
@@ -71,7 +41,7 @@ public class WebUtil extends org.springframework.web.util.WebUtils {
      */
     @Nullable
     public static String getCookieVal(String name) {
-        HttpServletRequest request = WebUtil.getRequest();
+        HttpServletRequest request = getRequest();
         Assert.notNull(request, "request from RequestContextHolder is null");
         return getCookieVal(request, name);
     }
@@ -86,33 +56,72 @@ public class WebUtil extends org.springframework.web.util.WebUtils {
     @Nullable
     public static String getCookieVal(HttpServletRequest request, String name) {
         Cookie cookie = getCookie(request, name);
-        return cookie != null ? cookie.getValue() : null;
+        return Fc.notNull(cookie) ? cookie.getValue() : null;
     }
 
     /**
      * 清除 某个指定的cookie
      *
      * @param response HttpServletResponse
-     * @param key      cookie key
+     * @param name     cookie name
      */
-    public static void removeCookie(HttpServletResponse response, String key) {
-        setCookie(response, key, null, 0);
+    public static void removeCookie(HttpServletResponse response, String name) {
+        addCookie(response, name, null, 0);
+    }
+
+    /**
+     * 设定返回给客户端的Cookie
+     *
+     * @param response 响应对象{@link HttpServletResponse}
+     * @param cookie Servlet Cookie对象
+     */
+    public static void addCookie(HttpServletResponse response, Cookie cookie) {
+        response.addCookie(cookie);
+    }
+
+    /**
+     * 设定返回给客户端的Cookie
+     *
+     * @param response 响应对象{@link HttpServletResponse}
+     * @param name Cookie名
+     * @param value Cookie值
+     */
+    public static void addCookie(HttpServletResponse response, String name, String value) {
+        response.addCookie(new Cookie(name, value));
+    }
+
+    /**
+     * 设定返回给客户端的Cookie<br>
+     * Path: "/"<br>
+     * No Domain
+     *
+     * @param response 响应对象{@link HttpServletResponse}
+     * @param name cookie名
+     * @param value cookie值
+     * @param maxAgeInSeconds -1: 关闭浏览器清除Cookie. 0: 立即清除Cookie. &gt;0 : Cookie存在的秒数.
+     */
+    public static void addCookie(HttpServletResponse response, String name, String value, int maxAgeInSeconds) {
+        addCookie(response, name, value, maxAgeInSeconds, "/", null);
     }
 
     /**
      * 设置cookie
      *
-     * @param response        HttpServletResponse
-     * @param name            cookie name
-     * @param value           cookie value
-     * @param maxAgeInSeconds maxage
+     * @param response 响应对象{@link HttpServletResponse}
+     * @param name cookie名
+     * @param value cookie值
+     * @param maxAgeInSeconds -1: 关闭浏览器清除Cookie. 0: 立即清除Cookie. &gt;0 : Cookie存在的秒数.
+     * @param path Cookie的有效路径
+     * @param domain the domain name within which this cookie is visible; form is according to RFC 2109
      */
-    public static void setCookie(HttpServletResponse response, String name, @Nullable String value, int maxAgeInSeconds) {
+    public static void addCookie(HttpServletResponse response, String name, String value, int maxAgeInSeconds, String path, String domain) {
         Cookie cookie = new Cookie(name, value);
-        cookie.setPath("/");
+        if (domain != null) {
+            cookie.setDomain(domain);
+        }
         cookie.setMaxAge(maxAgeInSeconds);
-        cookie.setHttpOnly(true);
-        response.addCookie(cookie);
+        cookie.setPath(path);
+        addCookie(response, cookie);
     }
 
     /**
@@ -121,30 +130,27 @@ public class WebUtil extends org.springframework.web.util.WebUtils {
      * @return {HttpServletRequest}
      */
     public static HttpServletRequest getRequest() {
-        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        return (requestAttributes == null) ? null : ((ServletRequestAttributes) requestAttributes).getRequest();
+        ServletRequestAttributes requestAttributes = getRequestAttributes();
+        return Fc.isNull(requestAttributes) ? null : requestAttributes.getRequest();
     }
 
     /**
      * 获取response
      */
-    public static HttpServletResponse getResponse()
-    {
+    public static HttpServletResponse getResponse(){
         return getRequestAttributes().getResponse();
     }
 
     /**
      * 获取session
      */
-    public static HttpSession getSession()
-    {
+    public static HttpSession getSession() {
         return getRequest().getSession();
     }
 
-    public static ServletRequestAttributes getRequestAttributes()
-    {
+    public static ServletRequestAttributes getRequestAttributes() {
         RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
-        return (ServletRequestAttributes) attributes;
+        return Fc.isNull(attributes) ? null : (ServletRequestAttributes) attributes;
     }
 
     /**
@@ -154,7 +160,7 @@ public class WebUtil extends org.springframework.web.util.WebUtils {
      * @param result   结果对象
      */
     public static void renderJson(HttpServletResponse response, Object result) {
-        renderJson(response, result, MediaType.APPLICATION_JSON_UTF8_VALUE);
+        renderJson(response, result, APPLICATION_JSON_UTF8_VALUE);
     }
 
     /**
@@ -165,7 +171,7 @@ public class WebUtil extends org.springframework.web.util.WebUtils {
      * @param contentType contentType
      */
     public static void renderJson(HttpServletResponse response, Object result, String contentType) {
-        response.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding(StringPool.UTF_8);
         response.setContentType(contentType);
         try (PrintWriter out = response.getWriter()) {
             out.append(JSON.toJSONString(result));
@@ -190,28 +196,38 @@ public class WebUtil extends org.springframework.web.util.WebUtils {
      * @return {String}
      */
     @Nullable
-    public static String getIP(HttpServletRequest request) {
+    public static String getIP(HttpServletRequest request, String... otherHeaderNames) {
         Assert.notNull(request, "HttpServletRequest is null");
-        String ip = request.getHeader("X-Requested-For");
-        if (StringUtil.isBlank(ip) || UN_KNOWN.equalsIgnoreCase(ip)) {
-            ip = request.getHeader("X-Forwarded-For");
+        String[] headers = { "X-Forwarded-For", "X-Real-IP", "Proxy-Client-IP", "WL-Proxy-Client-IP", "HTTP_CLIENT_IP", "HTTP_X_FORWARDED_FOR" };
+        if (ArrayUtil.isNotEmpty(otherHeaderNames)) {
+            headers = ArrayUtil.addAll(headers, otherHeaderNames);
         }
-        if (StringUtil.isBlank(ip) || UN_KNOWN.equalsIgnoreCase(ip)) {
-            ip = request.getHeader("Proxy-Client-IP");
+        return getClientIPByHeader(request, headers);
+    }
+
+    /**
+     * 获取客户端IP
+     *
+     * <p>
+     * headerNames参数用于自定义检测的Header<br>
+     * 需要注意的是，使用此方法获取的客户IP地址必须在Http服务器（例如Nginx）中配置头信息，否则容易造成IP伪造。
+     * </p>
+     *
+     * @param request 请求对象{@link HttpServletRequest}
+     * @param headerNames 自定义头，通常在Http服务器（例如Nginx）中配置
+     * @return IP地址
+     */
+    public static String getClientIPByHeader(HttpServletRequest request, String... headerNames) {
+        String ip;
+        for (String header : headerNames) {
+            ip = request.getHeader(header);
+            if (false == NetUtil.isUnknown(ip)) {
+                return NetUtil.getMultistageReverseProxyIp(ip);
+            }
         }
-        if (StringUtil.isBlank(ip) || UN_KNOWN.equalsIgnoreCase(ip)) {
-            ip = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (StringUtil.isBlank(ip) || UN_KNOWN.equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_CLIENT_IP");
-        }
-        if (StringUtil.isBlank(ip) || UN_KNOWN.equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
-        }
-        if (StringUtil.isBlank(ip) || UN_KNOWN.equalsIgnoreCase(ip)) {
-            ip = request.getRemoteAddr();
-        }
-        return StringUtil.isBlank(ip) ? null : ip.split(",")[0];
+
+        ip = request.getRemoteAddr();
+        return NetUtil.getMultistageReverseProxyIp(ip);
     }
 
     /***
@@ -250,21 +266,12 @@ public class WebUtil extends org.springframework.web.util.WebUtils {
      * @return byte[]
      * @throws IOException IOException
      */
-    public static byte[] getRequestBytes(HttpServletRequest request) throws IOException {
-        int contentLength = request.getContentLength();
-        if (contentLength < 0) {
-            return null;
+    public static byte[] getRequestBytes(HttpServletRequest request) {
+        try {
+            return IoUtil.readBytes(request.getInputStream());
+        } catch (IOException e) {
+            throw new IORuntimeException(e);
         }
-        byte[] buffer = new byte[contentLength];
-        for (int i = 0; i < contentLength; ) {
-
-            int readlen = request.getInputStream().read(buffer, i, contentLength - i);
-            if (readlen == -1) {
-                break;
-            }
-            i += readlen;
-        }
-        return buffer;
     }
 
     /**
