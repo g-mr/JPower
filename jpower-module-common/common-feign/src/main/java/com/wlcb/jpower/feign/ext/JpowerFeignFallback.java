@@ -1,11 +1,12 @@
 package com.wlcb.jpower.feign.ext;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.utils.JsonUtil;
 import com.wlcb.jpower.module.common.utils.ObjectUtil;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import feign.FeignException;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cglib.proxy.MethodInterceptor;
 import org.springframework.cglib.proxy.MethodProxy;
@@ -21,21 +22,21 @@ import java.util.Objects;
  * @author mr.g
  */
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class JpowerFeignFallback<T> implements MethodInterceptor {
+
     private final Class<T> targetType;
     private final String targetName;
     private final Throwable cause;
-    private final static String CODE = "code";
 
     @Nullable
     @Override
-    public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
+    public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) {
         String errorMessage = cause.getMessage();
-        log.error("JpowerFeignFallback:[{}.{}] serviceId:[{}] message:[{}]", targetType.getName(), method.getName(), targetName, errorMessage);
+        log.error("JpowerFeignFallback 错误信息:[{}.{}] serviceId:[{}] message:[{}]", targetType.getName(), method.getName(), targetName, errorMessage);
         Class<?> returnType = method.getReturnType();
         // 暂时不支持 flux，rx，异步等，不是自定义的，直接返回 null。
-        if (ReturnJsonUtil.class != returnType) {
+        if (ResponseData.class != returnType) {
             return null;
         }
         // 非 FeignException
@@ -49,7 +50,7 @@ public class JpowerFeignFallback<T> implements MethodInterceptor {
             return ReturnJsonUtil.printJson(HttpStatus.INTERNAL_SERVER_ERROR.value(), errorMessage,false);
         }
         JsonNode resultNode = JsonUtil.readTree(content);
-        if (resultNode.has(CODE)) {
+        if (resultNode.has("code")) {
             return JsonUtil.getInstance().convertValue(resultNode, ReturnJsonUtil.class);
         }
         return ReturnJsonUtil.fail(resultNode.toString());
