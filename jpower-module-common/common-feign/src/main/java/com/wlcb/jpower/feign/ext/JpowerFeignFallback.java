@@ -28,6 +28,7 @@ public class JpowerFeignFallback<T> implements MethodInterceptor {
     private final Class<T> targetType;
     private final String targetName;
     private final Throwable cause;
+    private final static String CODE = "code";
 
     @Nullable
     @Override
@@ -50,7 +51,7 @@ public class JpowerFeignFallback<T> implements MethodInterceptor {
             return ReturnJsonUtil.printJson(HttpStatus.INTERNAL_SERVER_ERROR.value(), errorMessage,false);
         }
         JsonNode resultNode = JsonUtil.readTree(content);
-        if (resultNode.has("code")) {
+        if (resultNode.has(CODE)) {
             return JsonUtil.getInstance().convertValue(resultNode, ReturnJsonUtil.class);
         }
         return ReturnJsonUtil.fail(resultNode.toString());
