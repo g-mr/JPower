@@ -392,6 +392,10 @@ public class FileUtil extends org.apache.commons.io.FileUtils {
         }
         if (path.startsWith("file:")) {
             int i = path.indexOf(".jar!");
+            if(i<=0){
+                // 如果未找到jar包则尝试找war包
+                i = path.indexOf(".war!");
+            }
             path = path.substring(0, i);
             path = path.replaceFirst("file:", "");
             path = new File(path).getParentFile().getAbsolutePath();
