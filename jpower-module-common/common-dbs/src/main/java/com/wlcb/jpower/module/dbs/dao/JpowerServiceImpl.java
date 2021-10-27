@@ -1,5 +1,6 @@
 package com.wlcb.jpower.module.dbs.dao;
 
+import cn.hutool.core.bean.NullWrapperBean;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Assert;
@@ -61,7 +62,7 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> ex
                 ReflectUtil.invokeSetter(entity,TENANT_CODE,Fc.isBlank(tenantCode)?DEFAULT_TENANT_CODE:tenantCode);
             }else if (!SecureUtil.isRoot()){
                 //如果不是超级用户，则不能传租户编码
-                ReflectUtil.invokeSetter(entity,TENANT_CODE,null);
+                ReflectUtil.invokeSetter(entity,TENANT_CODE,new NullWrapperBean(String.class));
             }
         }
     }

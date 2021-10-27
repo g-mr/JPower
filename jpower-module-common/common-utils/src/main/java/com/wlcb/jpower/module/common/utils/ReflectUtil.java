@@ -1,5 +1,6 @@
 package com.wlcb.jpower.module.common.utils;
 
+import cn.hutool.core.bean.NullWrapperBean;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -32,8 +33,10 @@ public class ReflectUtil extends cn.hutool.core.util.ReflectUtil{
     }
 
     /**
-     * 调用Setter方法, 仅匹配方法名。
+     * 调用Setter方法。
+     * 如果需要传递的参数为null,请使用NullWrapperBean来传递,不然会丢失类型信息
      * 支持多级，如：对象名.对象名.方法
+     * @see NullWrapperBean
      */
     public static <E> void invokeSetter(Object obj, String propertyName, E value) {
         Object object = obj;
