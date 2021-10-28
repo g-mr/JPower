@@ -1,5 +1,6 @@
 package com.wlcb.jpower.dbs.entity;
 
+import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -30,7 +31,8 @@ public class TbCoreFile extends BaseEntity {
     private byte[] content;
     @ApiModelProperty("文件标识")
     private String mark;
-    @ApiModelProperty("存储类型 字典FILE_STORAGE_TYPE")
+    @ApiModelProperty("存储类型")
+    @Dict(name = "FILE_STORAGE_TYPE")
     private String storageType;
     @ApiModelProperty("备注")
     private String note;

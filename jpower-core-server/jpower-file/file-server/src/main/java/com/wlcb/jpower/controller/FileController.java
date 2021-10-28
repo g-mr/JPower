@@ -18,6 +18,7 @@ import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.operate.FileOperateBuilder;
 import com.wlcb.jpower.service.CoreFileService;
+import com.wlcb.jpower.wrapper.BaseDictWrapper;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -103,7 +104,7 @@ public class FileController extends BaseController {
     @GetMapping(value = "/listPage",produces="application/json")
     public ResponseData<Page<TbCoreFile>> listPage(@ApiIgnore @RequestParam Map<String,Object> map){
         Page<TbCoreFile> page = coreFileService.page(PaginationContext.getMpPage(), Condition.getQueryWrapper(map,TbCoreFile.class).lambda().orderByDesc(TbCoreFile::getCreateTime));
-        return ReturnJsonUtil.ok("获取成功",page);
+        return ReturnJsonUtil.ok("获取成功", BaseDictWrapper.<TbCoreFile,TbCoreFile>builder().pageVo(page));
     }
 
     @ApiOperation("详情")
