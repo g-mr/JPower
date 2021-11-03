@@ -21,9 +21,9 @@ public class MybatisProperties {
      */
     private boolean overflow = false;
     /**
-     * 单页分页条数限制
+     * 单页分页条数最高限制
      */
-    private Long maxLimit = 10L;
+    private Long maxLimit = 5000L;
     /**
      * 生成 countSql 优化掉 join
      * 现在只支持 left join
