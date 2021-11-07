@@ -1,17 +1,21 @@
 package com.wlcb.jpower.feign.interceptor;
 
+import com.wlcb.jpower.module.common.utils.BufferUtil;
 import com.wlcb.jpower.module.common.utils.ExceptionsUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.OkhttpUtil;
+import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
 import feign.Logger;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import okhttp3.internal.http.HttpHeaders;
+import okio.Buffer;
+import okio.BufferedSource;
 import org.springframework.core.Ordered;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 import static com.wlcb.jpower.module.common.utils.constants.StringPool.*;
 
@@ -86,7 +90,7 @@ public class HttpLogInterceptor implements Interceptor, Ordered {
                         .append(SPACE).append(requestBody.contentType())
                         .append(NEWLINE);
 
-                rqBody = OkhttpUtil.readRequestBody(requestBody);
+                rqBody = readRequestBody(requestBody);
                 builder.append(TAB)
                         .append(rqBody)
                         .append(NEWLINE);
@@ -124,7 +128,7 @@ public class HttpLogInterceptor implements Interceptor, Ordered {
                         .append(SPACE).append(responseBody.contentType())
                         .append(NEWLINE);
 
-                rpBody = OkhttpUtil.readResponseBody(responseBody);
+                rpBody = readResponseBody(responseBody);
 
                 builder.append(TAB)
                         .append(rpBody)
@@ -137,6 +141,52 @@ public class HttpLogInterceptor implements Interceptor, Ordered {
         builder.append("<-- end response").append(LEFT_BRACKET).append(rpBody.getBytes().length).append("-byte body").append(RIGHT_BRACKET).append(NEWLINE);
         builder.append("============end feign http=============");
         log.info(builder.toString());
+    }
+
+    private String readResponseBody(ResponseBody responseBody) {
+        if (Fc.notNull(responseBody)){
+            try {
+                BufferedSource source = responseBody.source();
+                //缺这行会拿到一个空的Buffer
+                source.request(Long.MAX_VALUE);
+                Buffer buffer = source.getBuffer();
+
+                if (BufferUtil.isReadable(buffer)){
+
+                    Charset charset = CharsetKit.CHARSET_UTF_8;
+                    if (responseBody.contentType() != null){
+                        charset = responseBody.contentType().charset(CharsetKit.CHARSET_UTF_8);
+                    }
+
+                    return buffer.clone().readString(charset);
+                }
+                return "omit bodyContent";
+            } catch (IOException e) {
+                return "(unknown bodyContent)";
+            }
+        }else {
+            return "responseBody is null";
+        }
+    }
+
+    private String readRequestBody(RequestBody requestBody) {
+        try(Buffer buffer = new Buffer()){
+            if (Fc.notNull(requestBody)){
+                requestBody.writeTo(buffer);
+                if (BufferUtil.isReadable(buffer)){
+                    Charset charset = CharsetKit.CHARSET_UTF_8;
+                    if (requestBody.contentType() != null){
+                        charset = requestBody.contentType().charset(CharsetKit.CHARSET_UTF_8);
+                    }
+
+                    return buffer.readString(charset);
+                }
+                return "omit bodyContent";
+            }
+            return "requestBody is null";
+        }catch (IOException e){
+            return "(unknown bodyContent)";
+        }
     }
 
     @Override

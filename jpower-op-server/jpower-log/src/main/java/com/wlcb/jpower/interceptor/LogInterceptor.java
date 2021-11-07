@@ -1,13 +1,18 @@
 package com.wlcb.jpower.interceptor;
 
+import com.wlcb.jpower.module.common.utils.BufferUtil;
 import com.wlcb.jpower.module.common.utils.ExceptionsUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.OkhttpUtil;
+import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import okhttp3.internal.http.HttpHeaders;
+import okio.Buffer;
+import okio.BufferedSource;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +39,7 @@ public class LogInterceptor implements Interceptor {
             RequestBody requestBody = request.body();
             if (Fc.isNull(requestBody)){
                 builder.append("  TEST REST PARAMS BODYS: {}").append(NEWLINE);
-                args.add(OkhttpUtil.readRequestBody(requestBody));
+                args.add(readRequestBody(requestBody));
             }
 
 
@@ -69,7 +74,7 @@ public class LogInterceptor implements Interceptor {
                     builder.append("  RESULT: {}-byte body  {}").append(NEWLINE).append("    {}");
                     args.add(bodySize);
                     args.add(responseBody.contentLength());
-                    args.add(OkhttpUtil.readResponseBody(responseBody));
+                    args.add(readResponseBody(responseBody));
                 }
 
 
@@ -82,6 +87,52 @@ public class LogInterceptor implements Interceptor {
         }
 
         return response;
+    }
+
+    private String readResponseBody(ResponseBody responseBody) {
+        if (Fc.notNull(responseBody)){
+            try {
+                BufferedSource source = responseBody.source();
+                //缺这行会拿到一个空的Buffer
+                source.request(Long.MAX_VALUE);
+                Buffer buffer = source.getBuffer();
+
+                if (BufferUtil.isReadable(buffer)){
+
+                    Charset charset = StandardCharsets.UTF_8;
+                    if (Fc.notNull(responseBody.contentType())){
+                        charset = responseBody.contentType().charset(charset);
+                    }
+
+                    return buffer.clone().readString(charset);
+                }
+                return "bodyContent 省略";
+            } catch (IOException e) {
+                return "读取 bodyContent 出错";
+            }
+        }else {
+            return "responseBody is null";
+        }
+    }
+
+    private String readRequestBody(RequestBody requestBody) {
+        try(Buffer buffer = new Buffer()){
+            if (Fc.notNull(requestBody)){
+                requestBody.writeTo(buffer);
+                if (BufferUtil.isReadable(buffer)){
+                    Charset charset = CharsetKit.CHARSET_UTF_8;
+                    if (requestBody.contentType() != null){
+                        charset = requestBody.contentType().charset(charset);
+                    }
+
+                    return buffer.readString(charset);
+                }
+                return "省略 bodyContent";
+            }
+            return "requestBody is null";
+        }catch (IOException e){
+            return "读取 bodyContent 出错";
+        }
     }
 
 }
