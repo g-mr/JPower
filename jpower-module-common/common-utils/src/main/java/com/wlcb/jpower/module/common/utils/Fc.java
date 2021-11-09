@@ -12,7 +12,6 @@ import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import org.apache.tomcat.util.http.ConcurrentDateFormat;
 import org.springframework.beans.BeansException;
 import org.springframework.cglib.beans.BeanMap;
-import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
@@ -23,7 +22,6 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -994,28 +992,6 @@ public class Fc {
      */
     public static Duration between(Temporal startInclusive, Temporal endExclusive) {
         return Duration.between(startInclusive, endExclusive);
-    }
-
-    /**
-     * 获取方法参数信息
-     *
-     * @param constructor    构造器
-     * @param parameterIndex 参数序号
-     * @return {MethodParameter}
-     */
-    public static MethodParameter getMethodParameter(Constructor<?> constructor, int parameterIndex) {
-        return ClassUtil.getMethodParameter(constructor, parameterIndex);
-    }
-
-    /**
-     * 获取方法参数信息
-     *
-     * @param method         方法
-     * @param parameterIndex 参数序号
-     * @return {MethodParameter}
-     */
-    public static MethodParameter getMethodParameter(Method method, int parameterIndex) {
-        return ClassUtil.getMethodParameter(method, parameterIndex);
     }
 
     /**

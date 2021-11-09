@@ -1,7 +1,10 @@
 package com.wlcb.jpower.module.common.utils;
 
 import cn.hutool.core.util.HexUtil;
+import cn.hutool.core.util.StrUtil;
+import com.wlcb.jpower.module.common.enums.DigestAlgorithm;
 import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
+import org.springframework.util.DigestUtils;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -10,43 +13,30 @@ import java.security.NoSuchAlgorithmException;
 /**
  * 加密相关工具类
  */
-public class DigestUtil extends org.springframework.util.DigestUtils {
+public class DigestUtil extends DigestUtils {
 
     public static String sha1(String srcStr) {
-        try {
-            return hash(MessageDigest.getInstance("SHA-1"), srcStr);
-        } catch (NoSuchAlgorithmException e) {
-            throw ExceptionsUtil.unchecked(e);
-        }
+        return HexUtil.encodeHexStr(digest(DigestAlgorithm.SHA1).digest(StrUtil.bytes(srcStr, CharsetKit.CHARSET_UTF_8)));
     }
 
     public static String sha256(String srcStr) {
-        try {
-            return hash(MessageDigest.getInstance("SHA-256"), srcStr);
-        } catch (NoSuchAlgorithmException e) {
-            throw ExceptionsUtil.unchecked(e);
-        }
+        return HexUtil.encodeHexStr(digest(DigestAlgorithm.SHA256).digest(StrUtil.bytes(srcStr, CharsetKit.CHARSET_UTF_8)));
     }
 
     public static String sha384(String srcStr) {
-        try {
-            return hash(MessageDigest.getInstance("SHA-384"), srcStr);
-        } catch (NoSuchAlgorithmException e) {
-            throw ExceptionsUtil.unchecked(e);
-        }
+        return HexUtil.encodeHexStr(digest(DigestAlgorithm.SHA384).digest(StrUtil.bytes(srcStr, CharsetKit.CHARSET_UTF_8)));
     }
 
     public static String sha512(String srcStr) {
+        return HexUtil.encodeHexStr(digest(DigestAlgorithm.SHA512).digest(StrUtil.bytes(srcStr, CharsetKit.CHARSET_UTF_8)));
+    }
+
+    public static MessageDigest digest(DigestAlgorithm algorithm) {
         try {
-            return hash(MessageDigest.getInstance("SHA-512"), srcStr);
+            return MessageDigest.getInstance(algorithm.getValue());
         } catch (NoSuchAlgorithmException e) {
             throw ExceptionsUtil.unchecked(e);
         }
-    }
-
-    public static String hash(MessageDigest digest, String srcStr) {
-        byte[] bytes = digest.digest(srcStr.getBytes(CharsetKit.CHARSET_UTF_8));
-        return HexUtil.encodeHexStr(bytes);
     }
 
     /**
@@ -71,7 +61,6 @@ public class DigestUtil extends org.springframework.util.DigestUtils {
     }
 
     public static void main(String[] args) {
-        System.out.println(MD5.parseStrToMd5L32("123456").toUpperCase());
         System.out.println(encrypt(MD5.parseStrToMd5L32("123456").toUpperCase()));
     }
 

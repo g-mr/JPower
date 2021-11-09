@@ -60,7 +60,7 @@ public class SwaggerConfiguration {
     }
 
     private Function<Class<?>, Boolean> handlerPackage(final List<String> basePackage) {
-        return input -> basePackage.stream().anyMatch(ClassUtil.getPackageName(input)::startsWith);
+        return input -> basePackage.stream().anyMatch(ClassUtil.getPackage(input)::startsWith);
     }
 
     private Optional<? extends Class<?>> declaringClass(RequestHandler input) {

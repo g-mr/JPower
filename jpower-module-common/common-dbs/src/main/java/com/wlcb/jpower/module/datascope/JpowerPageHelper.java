@@ -44,7 +44,7 @@ public class JpowerPageHelper extends PageHelper {
         return !(Fc.isNotBlank(msId) &&
                 ms.getId().startsWith(msId) &&
                 ms.getId().endsWith(MSUtils.COUNT) &&
-                Fc.equals(ClassUtil.getQualifiedName(ms.getResultMaps().get(0).getType()),ClassUtil.getQualifiedName(Long.class)) &&
+                Fc.equals(ClassUtil.getClassName(ms.getResultMaps().get(0).getType(),false),ClassUtil.getClassName(Long.class,false)) &&
                 !SecureUtil.isRoot()
                 && Fc.notNull(SecureUtil.getUser())
                 );
