@@ -138,7 +138,7 @@
                         <warName>${project.build.finalName}</warName>
                         <webResources>
                             <resource>
-                                <directory>${root.basedir}/conf</directory>
+                                <directory>${root.basedir}/config</directory>
                                 <targetPath>WEB-INF/classes</targetPath>
                                 <filtering>false</filtering>
                                 <includes>
@@ -237,7 +237,7 @@
                             <resources>
                                 <resource>
                                     <!-- 资源目录 -->
-                                    <directory>${root.basedir}/conf</directory>
+                                    <directory>${root.basedir}/config</directory>
                                     <includes>
                                         <include>*.yml</include>
                                         <include>*.properties</include>
@@ -265,7 +265,7 @@
 <!--                        <configuration>-->
 <!--                            <tasks>-->
 <!--                                <copy overwrite="true" tofile="${project.build.outputDirectory}/test.yml"-->
-<!--                                      file="${root.basedir}/conf/test.yml"/>-->
+<!--                                      file="${root.basedir}/config/test.yml"/>-->
 <!--                            </tasks>-->
 <!--                        </configuration>-->
 <!--                    </execution>-->
@@ -287,8 +287,8 @@
                 <directory>src/main/resources</directory>
             </resource>
             <resource>
-<!--                <directory>/Users/mr.gmac/IdeaProjects/JPower/conf</directory>-->
-                <directory>conf</directory>
+<!--                <directory>/Users/mr.gmac/IdeaProjects/JPower/config</directory>-->
+                <directory>config</directory>
                 <includes>
                     <include>*.properties</include>
                     <include>*.yml</include>
