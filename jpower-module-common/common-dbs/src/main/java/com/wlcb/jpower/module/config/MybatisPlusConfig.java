@@ -41,13 +41,21 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @PropertySource(value = "classpath:./jpower-db.yml",factory = YamlAndPropertySourceFactory.class)
 public class MybatisPlusConfig {
 
+    @Bean
+    @ConditionalOnMissingBean
+    public ISqlInjector sqlInjector() {
+        return new CustomSqlInjector();
+    }
+
     /**
-     * 配置公用字段
+     * 全局配置
      **/
     @Bean
-    public GlobalConfig globalConfig() {
+    public GlobalConfig globalConfig(UpdateRelatedFieldsMetaHandler metaHandler,
+                                     ISqlInjector sqlInjector) {
         GlobalConfig globalConfig = new GlobalConfig();
-        globalConfig.setMetaObjectHandler(new UpdateRelatedFieldsMetaHandler());
+        globalConfig.setMetaObjectHandler(metaHandler);
+        globalConfig.setSqlInjector(sqlInjector);
         return globalConfig;
     }
 
@@ -81,17 +89,13 @@ public class MybatisPlusConfig {
 
     /**
      * 该属性会在旧插件移除后一同移除
+     *  避免缓存出现问题
      */
     @Bean
     public ConfigurationCustomizer configurationCustomizer() {
         return configuration -> configuration.setUseDeprecatedExecutor(false);
     }
 
-    @Bean
-    @ConditionalOnMissingBean
-    public ISqlInjector sqlInjector() {
-        return new CustomSqlInjector();
-    }
 
     /**
      * sql打印
