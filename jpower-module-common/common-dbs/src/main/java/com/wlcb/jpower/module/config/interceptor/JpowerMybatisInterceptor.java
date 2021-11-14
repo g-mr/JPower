@@ -1,6 +1,9 @@
 package com.wlcb.jpower.module.config.interceptor;
 
 
+import com.wlcb.jpower.module.config.interceptor.chain.ChainFilter;
+import com.wlcb.jpower.module.config.interceptor.chain.MybatisInterceptor;
+import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
@@ -8,11 +11,14 @@ import org.apache.ibatis.executor.resultset.ResultSetHandler;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.*;
+import org.apache.ibatis.reflection.DefaultReflectorFactory;
+import org.apache.ibatis.reflection.MetaObject;
+import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
+import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,18 +34,20 @@ import java.util.List;
         @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class}),
     }
 )
+@AllArgsConstructor
 public class JpowerMybatisInterceptor implements Interceptor {
 
-    List<MybatisInterceptor> interceptors = new ArrayList<>();
+    List<MybatisInterceptor> interceptors;
 
     @Override
     @SneakyThrows
     public Object intercept(Invocation invocation) {
         Object target = invocation.getTarget();
         if (target instanceof Executor){
-            final Executor executor = (Executor) target;
-            // TODO: 2021/11/13 0013 这里得问题是在环绕拦截多个实现得情况下 如何处理返回值
-            // TODO: 2021/11/13 0013 第二个问题是 这里如果执行多个 invocation.proceed() 是否会执行多次sql
+            return new ChainFilter(interceptors.iterator(),invocation).proceed();
+        }else if (target instanceof ResultSetHandler){
+            MetaObject metaObject = MetaObject.forObject(invocation.proceed(),new DefaultObjectFactory(),new DefaultObjectWrapperFactory(),new DefaultReflectorFactory());
+            return metaObject.getOriginalObject();
         }
         return invocation.proceed();
     }
@@ -50,10 +58,6 @@ public class JpowerMybatisInterceptor implements Interceptor {
             return Plugin.wrap(target, this);
         }
         return target;
-    }
-
-    public void addInterceptors(MybatisInterceptor mybatisInterceptor){
-        interceptors.add(mybatisInterceptor);
     }
 
 }

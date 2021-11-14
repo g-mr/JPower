@@ -7,8 +7,8 @@ import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
 import com.wlcb.jpower.module.common.deploy.property.YamlAndPropertySourceFactory;
-import com.wlcb.jpower.module.config.interceptor.DemoInterceptor;
-import com.wlcb.jpower.module.config.interceptor.MybatisSqlPrintInterceptor;
+import com.wlcb.jpower.module.config.interceptor.*;
+import com.wlcb.jpower.module.config.interceptor.chain.MybatisInterceptor;
 import com.wlcb.jpower.module.config.properties.DemoProperties;
 import com.wlcb.jpower.module.config.properties.MybatisProperties;
 import com.wlcb.jpower.module.datascope.interceptor.DataScopeInterceptor;
@@ -16,6 +16,7 @@ import com.wlcb.jpower.module.mp.CustomSqlInjector;
 import com.wlcb.jpower.module.tenant.JpowerTenantProperties;
 import lombok.AllArgsConstructor;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -25,6 +26,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import java.util.stream.Collectors;
 
 /**
  * @ClassName MybatisPlusConfig
@@ -85,6 +88,12 @@ public class MybatisPlusConfig {
             interceptor.addInnerInterceptor(new DemoInterceptor(demoProperties));
         }
         return interceptor;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean({JpowerMybatisInterceptor.class})
+    public JpowerMybatisInterceptor jpowerMybatisInterceptor(ObjectProvider<MybatisInterceptor> mybatisInterceptors) {
+        return new JpowerMybatisInterceptor(mybatisInterceptors.orderedStream().collect(Collectors.toList()));
     }
 
     /**
