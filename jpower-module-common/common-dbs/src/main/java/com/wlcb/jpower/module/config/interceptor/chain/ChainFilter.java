@@ -36,7 +36,9 @@ public class ChainFilter {
         this.ms = (MappedStatement) args[0];
         this.parameter = args[1];
         this.isUpdate = args.length == 2;
-        if (!isUpdate){
+        if (isUpdate) {
+            boundSql = ms.getBoundSql(parameter);
+        }else{
             rowBounds = (RowBounds) args[2];
             resultHandler = (ResultHandler) args[3];
             if (args.length == 4) {
@@ -52,7 +54,7 @@ public class ChainFilter {
     public Object proceed(){
         if (interceptors.hasNext()){
             if (isUpdate){
-                return interceptors.next().aroundUpdate(this, executor, ms, parameter);
+                return interceptors.next().aroundUpdate(this, executor, ms, parameter, boundSql);
             }else if (ms.getSqlCommandType() == SqlCommandType.SELECT){
                 return interceptors.next().aroundQuery(this, executor, ms, parameter, rowBounds, resultHandler, boundSql);
             }

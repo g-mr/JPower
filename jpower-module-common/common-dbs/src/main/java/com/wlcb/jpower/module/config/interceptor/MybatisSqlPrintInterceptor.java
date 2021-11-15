@@ -1,24 +1,21 @@
 package com.wlcb.jpower.module.config.interceptor;
 
 
+import com.wlcb.jpower.module.common.utils.ClassUtil;
 import com.wlcb.jpower.module.common.utils.DateUtil;
 import com.wlcb.jpower.module.common.utils.ExceptionsUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
+import com.wlcb.jpower.module.config.interceptor.chain.ChainFilter;
+import com.wlcb.jpower.module.config.interceptor.chain.MybatisInterceptor;
 import com.wlcb.jpower.module.config.properties.MybatisProperties;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.mapping.ParameterMode;
-import org.apache.ibatis.plugin.Interceptor;
-import org.apache.ibatis.plugin.Intercepts;
-import org.apache.ibatis.plugin.Invocation;
-import org.apache.ibatis.plugin.Signature;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
@@ -37,44 +34,29 @@ import static com.wlcb.jpower.module.common.utils.constants.StringPool.TAB;
  * @date 2021-05-20 17:00
  */
 @Slf4j
-@Intercepts(
-    {
-        @Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class}),
-        @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class}),
-        @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class}),
-    }
-)
 @RequiredArgsConstructor
-public class MybatisSqlPrintInterceptor implements Interceptor {
-
+public class MybatisSqlPrintInterceptor implements MybatisInterceptor {
 
     private final MybatisProperties.Sql sqlProperties;
 
     @Override
-    @SneakyThrows
-    public Object intercept(Invocation invocation) {
+    public Object aroundUpdate(ChainFilter chainFilter, final Executor executor, MappedStatement ms, Object parameter, BoundSql boundSql){
+        return printSql(chainFilter, ms.getConfiguration(), ms.getId(), boundSql, true);
+    }
+
+    @Override
+    public Object aroundQuery(ChainFilter chainFilter, final Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql){
+        return printSql(chainFilter, ms.getConfiguration(), ms.getId(), boundSql, false);
+    }
+
+    public Object printSql(ChainFilter chainFilter, Configuration configuration,String mpId, BoundSql boundSql, boolean isUpdate) {
         long startTime = System.currentTimeMillis();
-        Object rest = invocation.proceed();
+        Object rest = chainFilter.proceed();
         try {
             long time = System.currentTimeMillis() - startTime;
             // 超过超时时长则打印
             if(time >= sqlProperties.getPrintTimeout()) {
-                Object[] args = invocation.getArgs();
-                MappedStatement ms = (MappedStatement) args[0];
-                boolean isUpdate = args.length == 2;
-                BoundSql boundSql;
-                if (isUpdate){
-                    boundSql = ms.getBoundSql(args[1]);
-                }else {
-                    if (args.length == 4) {
-                        boundSql = ms.getBoundSql(args[1]);
-                    } else {
-                        // 使用Executor的代理对象调用query(args[6])
-                        boundSql = (BoundSql) args[5];
-                    }
-                }
-
-                printSql(boundSql,ms.getConfiguration(),ms.getId(),time,rest);
+                printSql(boundSql,configuration,mpId,time,rest,isUpdate);
             }
         } catch (Exception e) {
             log.error("==> 打印sql 日志异常 {}", NEWLINE+ExceptionsUtil.getStackTraceAsString(e));
@@ -82,7 +64,7 @@ public class MybatisSqlPrintInterceptor implements Interceptor {
         return rest;
     }
 
-    public void printSql(BoundSql boundSql,Configuration configuration,String sqlId,long time,Object rest) {
+    public void printSql(BoundSql boundSql,Configuration configuration,String sqlId,long time,Object rest, boolean isUpdate) {
         // 替换参数格式化Sql语句，去除换行符
         String sql = formatSql(boundSql, configuration).concat(";");
 
@@ -94,10 +76,19 @@ public class MybatisSqlPrintInterceptor implements Interceptor {
                 .append(TAB).append("==> Execute SQL：").append(sql).append(StringPool.NEWLINE)
                 .append(TAB).append("<== Time：").append(time).append(" ms ").append(StringPool.NEWLINE);
 
-        if (rest instanceof List){
-            sb.append(TAB).append("<== Total: ").append(((List) rest).size()).append(StringPool.NEWLINE);
-        }else {
+        if (isUpdate){
             sb.append(TAB).append("<== Updates: ").append(rest).append(StringPool.NEWLINE);
+        }else {
+            if (rest instanceof List){
+                List list = (List) rest;
+                if (list.size() == 1 && ClassUtil.isPrimitiveWrapper(list.get(0).getClass())){
+                    sb.append(TAB).append("<== Result: ").append(list.get(0)).append(StringPool.NEWLINE);
+                }else {
+                    sb.append(TAB).append("<== Total: ").append(((List) rest).size()).append(StringPool.NEWLINE);
+                }
+            }else {
+                sb.append(TAB).append("<== Result: ").append(rest).append(StringPool.NEWLINE);
+            }
         }
         log.info(sb.toString());
     }

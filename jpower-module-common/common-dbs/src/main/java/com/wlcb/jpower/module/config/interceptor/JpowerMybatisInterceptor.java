@@ -1,6 +1,7 @@
 package com.wlcb.jpower.module.config.interceptor;
 
 
+import com.wlcb.jpower.module.common.utils.ClassUtil;
 import com.wlcb.jpower.module.config.interceptor.chain.ChainFilter;
 import com.wlcb.jpower.module.config.interceptor.chain.MybatisInterceptor;
 import lombok.AllArgsConstructor;
@@ -11,15 +12,12 @@ import org.apache.ibatis.executor.resultset.ResultSetHandler;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.*;
-import org.apache.ibatis.reflection.DefaultReflectorFactory;
-import org.apache.ibatis.reflection.MetaObject;
-import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
-import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
 import java.sql.Statement;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * mybatis拦截器
@@ -46,8 +44,21 @@ public class JpowerMybatisInterceptor implements Interceptor {
         if (target instanceof Executor){
             return new ChainFilter(interceptors.iterator(),invocation).proceed();
         }else if (target instanceof ResultSetHandler){
-            MetaObject metaObject = MetaObject.forObject(invocation.proceed(),new DefaultObjectFactory(),new DefaultObjectWrapperFactory(),new DefaultReflectorFactory());
-            return metaObject.getOriginalObject();
+//            MetaObject metaObject = MetaObject.forObject(invocation.proceed(),new DefaultObjectFactory(),new DefaultObjectWrapperFactory(),new DefaultReflectorFactory());
+            Object rest = invocation.proceed();
+            if (rest instanceof List){
+                List list = (List) rest;
+                // 不拦截count,sum等只返回一个数字得结果
+                if (!(list.size() == 1 && ClassUtil.isPrimitiveWrapper(list.get(0).getClass()))){
+                    Statement statement = (Statement) invocation.getArgs()[0];
+                    ResultSetHandler resultSetHandler = (ResultSetHandler) target;
+                    AtomicReference<Object> atomicReference = new AtomicReference<>(rest);
+                    interceptors.forEach( interceptor -> atomicReference.set(interceptor.result(atomicReference.get(),resultSetHandler,statement)));
+                    return atomicReference.get();
+                }
+            }
+
+            return rest;
         }
         return invocation.proceed();
     }
