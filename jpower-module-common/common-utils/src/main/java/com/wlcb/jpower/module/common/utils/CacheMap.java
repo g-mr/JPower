@@ -17,7 +17,7 @@ public class CacheMap<K, V> extends ConcurrentHashMap<K, V> {
 
     private static final long serialVersionUID = -3618727678077606892L;
 
-    private static Map<String,CacheMap> cacheMaps = new HashMap<>();
+    private static Map<String,CacheMap> cacheMaps = new ConcurrentHashMap<>();
 
     public static <K, V> CacheMap<K, V> getInstance(String cacheName){
         if (cacheMaps.get(cacheName) == null){
