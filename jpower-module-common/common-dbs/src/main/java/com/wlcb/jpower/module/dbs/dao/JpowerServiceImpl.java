@@ -183,7 +183,7 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> ex
      * @return java.util.List<V>
      **/
     public <V extends Node> List<V> listTree(Wrapper<T> queryWrapper,Class<V> clz) {
-        return ForestNodeMerger.merge(listConver(queryWrapper,t -> BeanUtil.copyProperties(t, clz)));
+        return ForestNodeMerger.merge(listConver(queryWrapper,t -> BeanUtil.copy(t, clz)));
     }
 
 }

@@ -29,12 +29,16 @@ public class DictWrapper implements IDictBindHandler {
      */
     @Override
     public void setMetaObject(Dict dict, Object fieldValue, MetaObject metaObject){
-        GuavaCache guavaCache = GuavaCache.getInstance(EXPIRE_TIME, TimeUnit.SECONDS);
-        Object value = guavaCache.get(dict.name() + StringPool.COLON + fieldValue);
-        if (Fc.isNull(value)){
-            value = DictCache.getDictByTypeAndCode(dict.name(), Fc.toStr(fieldValue));
-            guavaCache.put(dict.name() + StringPool.COLON + fieldValue,value);
+        if (Fc.isNotEmpty(fieldValue)){
+            GuavaCache guavaCache = GuavaCache.getInstance(EXPIRE_TIME, TimeUnit.SECONDS);
+            Object value = guavaCache.get(dict.name() + StringPool.COLON + fieldValue);
+            if (Fc.isEmpty(value)){
+                value = DictCache.getDictByTypeAndCode(dict.name(), Fc.toStr(fieldValue));
+                if (Fc.isNotEmpty(value)){
+                    guavaCache.put(dict.name() + StringPool.COLON + fieldValue,value);
+                }
+            }
+            metaObject.setValue(dict.attributes(),value);
         }
-        metaObject.setValue(dict.attributes(),value);
     }
 }

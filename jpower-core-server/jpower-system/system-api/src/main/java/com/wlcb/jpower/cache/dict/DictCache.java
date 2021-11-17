@@ -1,16 +1,15 @@
 package com.wlcb.jpower.cache.dict;
 
-import com.wlcb.jpower.dbs.entity.dict.TbCoreDict;
+import cn.hutool.core.map.MapUtil;
 import com.wlcb.jpower.feign.DictClient;
 import com.wlcb.jpower.module.base.vo.ResponseData;
-import com.wlcb.jpower.module.common.cache.CacheNames;
-import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SpringUtil;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -35,9 +34,9 @@ public class DictCache {
      * @Param [dictTypeCode, code]
      **/
     public static String getDictByTypeAndCode(String dictTypeCode, String code) {
-        List<TbCoreDict> list = getDictByType(dictTypeCode);
+        List<Map<String, Object>> list = getDictByType(dictTypeCode);
         list = Fc.isNull(list)?new ArrayList<>():list;
-        return list.stream().map(t -> Fc.equals(t.getCode(),code)?t.getName(): StringPool.EMPTY).collect(Collectors.joining());
+        return list.stream().map(t -> Fc.equals(t.get("code"),code)? MapUtil.getStr(t,"name") : StringPool.EMPTY).collect(Collectors.joining());
     }
 
     /**
@@ -46,10 +45,10 @@ public class DictCache {
      * @Date 17:29 2020-10-22
      * @Param [dictTypeCode]
      **/
-    public static List<TbCoreDict> getDictByType(String dictTypeCode) {
-        return CacheUtil.get(CacheNames.DICT_REDIS_CACHE,CacheNames.DICT_TYPE_KEY,dictTypeCode,() -> {
-            ResponseData<List<TbCoreDict>> responseData = dictClient.queryDictByType(dictTypeCode);
+    public static List<Map<String, Object>> getDictByType(String dictTypeCode) {
+//        return CacheUtil.get(CacheNames.DICT_REDIS_CACHE,CacheNames.DICT_TYPE_KEY,dictTypeCode,() -> {
+            ResponseData<List<Map<String, Object>>> responseData = dictClient.queryDictByType(dictTypeCode);
             return responseData.getData();
-        });
+//        });
     }
 }

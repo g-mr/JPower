@@ -3,6 +3,7 @@ package com.wlcb.jpower.module.common.utils;
 import cn.hutool.core.util.ReflectUtil;
 import com.wlcb.jpower.module.common.support.BeanProperty;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.cglib.beans.BeanGenerator;
 
 import java.io.Serializable;
@@ -12,6 +13,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 /**
  * 实体工具类
@@ -67,6 +69,78 @@ public class BeanUtil  extends cn.hutool.core.bean.BeanUtil {
             generator.addProperty(prop.getName(), prop.getType());
         }
         return generator.create();
+    }
+
+    /**
+     * 使用 {@link BeanUtils#copyProperties(Object, Object, String[])} 拷贝Bean
+     * <p>Note: 比hutool的 {@link #copyProperties(Object, Object, String[])} 方法好处是可以把动态增加的属性也可以拷贝过去
+     * @author mr.g
+     * @param source           源Bean对象
+     * @param clz              目标Bean对象
+     * @param ignoreProperties 不拷贝的的属性列表
+     * @return 目标对象
+     */
+    public static <T> T copy(Object source, Class<T> clz, String... ignoreProperties) {
+        T target = ReflectUtil.newInstanceIfPossible(clz);
+        copy(source, target, ignoreProperties);
+        return target;
+    }
+
+    /**
+     * 使用 {@link BeanUtils#copyProperties(Object, Object, Class)} 拷贝Bean
+     * <p>Note: 比hutool的 {@link #copyProperties(Object, Object, String[])} 方法好处是可以把动态增加的属性也可以拷贝过去
+     * @author mr.g
+     * @param source           源Bean对象
+     * @param clz              目标Bean对象
+     * @param editable         要将属性设置限制为的类(或接口)
+     * @return 目标对象
+     */
+    public static <T> T copy(Object source, Class<T> clz, Class<?> editable) {
+        T target = ReflectUtil.newInstanceIfPossible(clz);
+        copy(source, target, editable);
+        return target;
+    }
+
+    /**
+     * 使用 {@link BeanUtils#copyProperties(Object, Object, String[])} 拷贝Bean
+     * <p>Note: 比hutool的 {@link #copyProperties(Object, Object, String[])} 方法好处是可以把动态增加的属性也可以拷贝过去
+     * @author mr.g
+     * @param source           源Bean对象
+     * @param target           目标Bean对象
+     * @param ignoreProperties 不拷贝的的属性列表
+     */
+    public static void copy(Object source, Object target, String... ignoreProperties) {
+        BeanUtils.copyProperties(source, target, ignoreProperties);
+    }
+
+    /**
+     * 使用 {@link BeanUtils#copyProperties(Object, Object, Class)} 拷贝Bean
+     * <p>Note: 比hutool的 {@link #copyProperties(Object, Object, String[])} 方法好处是可以把动态增加的属性也可以拷贝过去
+     * @author mr.g
+     * @param source           源Bean对象
+     * @param target           目标Bean对象
+     * @param editable         要将属性设置限制为的类(或接口)
+     */
+    public static void copy(Object source, Object target, Class<?> editable) {
+        BeanUtils.copyProperties(source, target, editable);
+    }
+
+    /**
+     * 使用 {@link BeanUtils#copyProperties(Object, Object, Class)} 拷贝集合中的Bean属性<br>
+     * 此方法遍历集合中每个Bean，复制其属性后加入一个新的{@link List}中。
+     * <p>Note: 比hutool的 {@link #copyProperties(Object, Object, String[])} 方法好处是可以把动态增加的属性也可以拷贝过去.
+     * @param collection 原Bean集合
+     * @param targetType 目标Bean类型
+     * @param <T> Bean类型
+     * @return 复制后的List
+     * @since 5.6.4
+     */
+    public static <T> List<T> copyToList(Collection<?> collection, Class<T> targetType){
+        return collection.stream().map((source)->{
+            final T target = ReflectUtil.newInstanceIfPossible(targetType);
+            copy(source, target);
+            return target;
+        }).collect(Collectors.toList());
     }
 
     /**

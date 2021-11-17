@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.wlcb.jpower.module.common.utils.constants.JpowerConstants.TOP_CODE;
 import static com.wlcb.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
@@ -67,13 +68,15 @@ public class CoreDictServiceImpl extends BaseServiceImpl<TbCoreDictMapper, TbCor
     }
 
     @Override
-    public List<TbCoreDict> listByTypeCode(String dictTypeCode) {
+    public List<Map<String, Object>> listByTypeCode(String dictTypeCode) {
         LambdaQueryWrapper<TbCoreDict> queryWrapper = Condition.<TbCoreDict>getQueryWrapper().lambda()
+                .select(TbCoreDict::getCode,TbCoreDict::getName)
                 .eq(TbCoreDict::getDictTypeCode,dictTypeCode);
         if (SecureUtil.isRoot()){
             queryWrapper.eq(TbCoreDict::getTenantCode,DEFAULT_TENANT_CODE);
         }
-        return dictDao.list(queryWrapper);
+        //这里不能返回实体类，不然会造成字典回写的死循环
+        return dictDao.listMaps(queryWrapper);
     }
 
 }

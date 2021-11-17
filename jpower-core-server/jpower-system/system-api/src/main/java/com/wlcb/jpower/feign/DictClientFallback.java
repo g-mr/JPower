@@ -1,11 +1,11 @@
 package com.wlcb.jpower.feign;
 
-import com.wlcb.jpower.dbs.entity.dict.TbCoreDict;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName ParamsClientFallback
@@ -18,7 +18,7 @@ import java.util.List;
 public class DictClientFallback implements DictClient {
 
     @Override
-    public ResponseData<List<TbCoreDict>> queryDictByType(String dictTypeCode) {
+    public ResponseData<List<Map<String,Object>>> queryDictByType(String dictTypeCode) {
         return ReturnJsonUtil.fail("查询失败");
     }
 }

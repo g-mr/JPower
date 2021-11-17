@@ -6,6 +6,7 @@ import com.wlcb.jpower.module.common.service.BaseService;
 import com.wlcb.jpower.vo.DictVo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author mr.gmac
@@ -45,5 +46,5 @@ public interface CoreDictService extends BaseService<TbCoreDict> {
      * @Date 17:34 2020-10-22
      * @Param [dictTypeCode]
      **/
-    List<TbCoreDict> listByTypeCode(String dictTypeCode);
+    List<Map<String, Object>> listByTypeCode(String dictTypeCode);
 }

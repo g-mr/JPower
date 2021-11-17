@@ -15,6 +15,7 @@ import okio.BufferedSource;
 import org.springframework.core.Ordered;
 
 import java.io.IOException;
+import java.net.SocketException;
 import java.nio.charset.Charset;
 
 import static com.wlcb.jpower.module.common.utils.constants.StringPool.*;
@@ -42,10 +43,14 @@ public class HttpLogInterceptor implements Interceptor, Ordered {
             response = chain.proceed(request);
             time = System.currentTimeMillis() - startTime;
             return response;
+        } catch (SocketException e){
+            // feign socket连接经常会出现不稳定情况,okhttp的重试机制会再次请求并通过
+            log.warn("【feign】{} {} request fail:{}",request.method(),request.url(), e.getMessage());
+            throw e;
         } catch (Exception e) {
             log.error("【feign】{} {} request fail:{}",request.method(),request.url(), NEWLINE + ExceptionsUtil.getStackTraceAsString(e));
             throw e;
-        }finally {
+        } finally {
             if (level != Logger.Level.NONE && Fc.notNull(response)){
                 try {
                     printLog(request,response,connection,time);
