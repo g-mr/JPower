@@ -11,7 +11,6 @@ import com.wlcb.jpower.module.common.utils.constants.ImportExportConstants;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.module.mp.support.SqlKeyword;
 import com.wlcb.jpower.service.MonitorResultService;
-import com.wlcb.jpower.wrapper.BaseDictWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -50,7 +49,7 @@ public class MonitorController extends BaseController {
     })
     @GetMapping(value = "/list",produces="application/json")
     public ResponseData<Page<TbLogMonitorResult>> list(@ApiIgnore @RequestParam Map<String,Object> map){
-        return ReturnJsonUtil.ok("获取成功",BaseDictWrapper.<TbLogMonitorResult,TbLogMonitorResult>builder().pageVo(monitorResultService.pageList(initMap(map))));
+        return ReturnJsonUtil.ok("获取成功",monitorResultService.pageList(initMap(map)));
     }
 
     private Map<String,Object> initMap(Map<String,Object> map){

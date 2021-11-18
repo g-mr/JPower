@@ -17,7 +17,6 @@ import com.wlcb.jpower.service.dict.CoreDictService;
 import com.wlcb.jpower.service.dict.CoreDictTypeService;
 import com.wlcb.jpower.vo.DictTypeVo;
 import com.wlcb.jpower.vo.DictVo;
-import com.wlcb.jpower.wrapper.BaseDictWrapper;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -83,7 +82,7 @@ public class DictController extends BaseController {
     @RequestMapping(value = "/getDictType",method = RequestMethod.GET,produces="application/json")
     public ResponseData<TbCoreDictType> getDictType(@ApiParam(value = "主键",required = true) @RequestParam String id){
         JpowerAssert.notEmpty(id, JpowerError.Arg,"主键不可为空");
-        return ReturnJsonUtil.ok("查询成功", BaseDictWrapper.dict(coreDictTypeService.getById(id)));
+        return ReturnJsonUtil.ok("查询成功", coreDictTypeService.getById(id));
     }
 
     @ApiOperation("通过字典类型分页查询字典")
@@ -103,7 +102,7 @@ public class DictController extends BaseController {
 
         PaginationContext.startPage();
         List<DictVo> list = coreDictService.listByType(dict);
-        return ReturnJsonUtil.ok("查询成功", BaseDictWrapper.<DictVo,DictVo>builder().pageVo(list));
+        return ReturnJsonUtil.ok("查询成功", new PageInfo<>(list));
     }
 
     @ApiOperation("通过字典类型查询字典列表")
@@ -178,7 +177,7 @@ public class DictController extends BaseController {
     @RequestMapping(value = "/getDict",method = RequestMethod.GET,produces="application/json")
     public ResponseData<TbCoreDict> getDict(@ApiParam(value = "字典ID",required = true) @RequestParam(required = false) String id){
         JpowerAssert.notEmpty(id, JpowerError.Arg,"字典ID不可为空");
-        return ReturnJsonUtil.ok("查询成功", BaseDictWrapper.dict(coreDictService.getById(id)));
+        return ReturnJsonUtil.ok("查询成功", coreDictService.getById(id));
     }
 
 }

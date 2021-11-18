@@ -3,6 +3,8 @@ package com.wlcb.jpower.cache.dict;
 import cn.hutool.core.map.MapUtil;
 import com.wlcb.jpower.feign.DictClient;
 import com.wlcb.jpower.module.base.vo.ResponseData;
+import com.wlcb.jpower.module.common.cache.CacheNames;
+import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SpringUtil;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
@@ -46,9 +48,9 @@ public class DictCache {
      * @Param [dictTypeCode]
      **/
     public static List<Map<String, Object>> getDictByType(String dictTypeCode) {
-//        return CacheUtil.get(CacheNames.DICT_REDIS_CACHE,CacheNames.DICT_TYPE_KEY,dictTypeCode,() -> {
+        return CacheUtil.get(CacheNames.DICT_REDIS_CACHE,CacheNames.DICT_TYPE_KEY,dictTypeCode,() -> {
             ResponseData<List<Map<String, Object>>> responseData = dictClient.queryDictByType(dictTypeCode);
             return responseData.getData();
-//        });
+        });
     }
 }

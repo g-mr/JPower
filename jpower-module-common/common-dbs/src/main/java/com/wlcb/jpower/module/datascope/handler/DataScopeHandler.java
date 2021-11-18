@@ -1,52 +1,62 @@
 package com.wlcb.jpower.module.datascope.handler;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.extension.plugins.handler.DataPermissionHandler;
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.WebUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
 import com.wlcb.jpower.module.datascope.DataScope;
-import org.springframework.util.StringUtils;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.expression.StringValue;
+import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
+import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
+import net.sf.jsqlparser.expression.operators.relational.InExpression;
+import net.sf.jsqlparser.expression.operators.relational.ItemsList;
+import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.schema.Column;
 
-import static com.wlcb.jpower.module.common.utils.constants.StringPool.COMMA;
-import static com.wlcb.jpower.module.common.utils.constants.StringPool.SINGLE_QUOTE;
+import java.util.stream.Collectors;
 
 /**
  * @Author mr.g
  * @Date 2021/4/23 0023 22:25
  */
-public class DataScopeHandler {
+@Slf4j
+public class DataScopeHandler implements DataPermissionHandler {
 
 
-    /**
-     * 生成sql
-     * @author mr.g
-     * @param mapperId
-     * @param originalSql
-     * @return java.lang.String
-     */
-    public String sql(String mapperId, String originalSql) {
+    @SneakyThrows
+    @Override
+    public Expression getSqlSegment(Expression where, String mapperId) {
         DataScope dataScope = this.findDataScope();
         if (Fc.isNull(dataScope)) {
-            return null;
+            return where;
         }
 
         if (Fc.equalsValue(mapperId,dataScope.getScopeClass())){
             // 查询全部
             if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.ALL.getValue())){
-                return null;
+                return where;
             }
 
-            String sqlCondition = " select {} from ({}) scope where ";
+            Expression andWhere;
             if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.CUSTOM.getValue())){
-                sqlCondition = StringUtil.format(sqlCondition + dataScope.getScopeValue(), Fc.toStr(dataScope.getScopeField(), "*"), originalSql);
+                andWhere = CCJSqlParserUtil.parseCondExpression(Fc.toStr(dataScope.getScopeValue(),"1=1"));
             }else {
-                sqlCondition = StringUtil.format(sqlCondition + " scope.{} in ({})", Fc.toStr(dataScope.getScopeField(), "*"), originalSql, dataScope.getScopeColumn(), StringUtils.collectionToDelimitedString(dataScope.getIds(), COMMA,SINGLE_QUOTE,SINGLE_QUOTE));
+                if (dataScope.getIds().size() > 0){
+                    ItemsList itemsList = new ExpressionList(dataScope.getIds().stream().map(StringValue::new).collect(Collectors.toList()));
+                    andWhere = new InExpression(new Column(dataScope.getScopeColumn()),itemsList);
+                }else {
+                    return where;
+                }
             }
-            return sqlCondition;
+            log.debug("DATASCOPE WHERE : {}",andWhere.toString());
+            return where==null?andWhere:new AndExpression(where,andWhere);
         }
-        return null;
+        return where;
     }
 
     /**
@@ -66,5 +76,7 @@ public class DataScopeHandler {
         }
 
         return null;
+
     }
+
 }

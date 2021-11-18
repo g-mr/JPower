@@ -1,6 +1,6 @@
 package com.wlcb.jpower.cache.dict;
 
-import com.wlcb.jpower.dbs.entity.dict.TbCoreDict;
+import cn.hutool.core.map.MapUtil;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
@@ -9,6 +9,7 @@ import com.wlcb.jpower.service.dict.CoreDictService;
 import com.wlcb.jpower.service.dict.impl.CoreDictServiceImpl;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -33,10 +34,10 @@ public class DictCache {
      * @Param [dictTypeCode, code]
      **/
     public static String getDictByTypeAndCode(String dictTypeCode, String code) {
-        List<TbCoreDict> list = getDictByType(dictTypeCode);
+        List<Map<String, Object>> list = getDictByType(dictTypeCode);
         String value = list.stream().map(t -> {
-            if (Fc.equals(t.getCode(),code)){
-                return t.getName();
+            if (Fc.equals(MapUtil.getStr(t,"code"),code)){
+                return MapUtil.getStr(t,"name");
             }
             return null;
         }).collect(Collectors.joining());
@@ -49,9 +50,9 @@ public class DictCache {
      * @Date 17:29 2020-10-22
      * @Param [dictTypeCode]
      **/
-    public static List<TbCoreDict> getDictByType(String dictTypeCode) {
+    public static List<Map<String, Object>> getDictByType(String dictTypeCode) {
         return CacheUtil.get(CacheNames.DICT_REDIS_CACHE,CacheNames.DICT_TYPE_KEY,dictTypeCode,() -> {
-            List<TbCoreDict> responseData = dictClient.listByTypeCode(dictTypeCode);
+            List<Map<String, Object>> responseData = dictClient.listByTypeCode(dictTypeCode);
             return responseData;
         });
     }

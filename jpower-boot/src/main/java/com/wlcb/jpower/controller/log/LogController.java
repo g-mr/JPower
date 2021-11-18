@@ -11,7 +11,6 @@ import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.module.mp.support.SqlKeyword;
 import com.wlcb.jpower.service.ErrorLogService;
 import com.wlcb.jpower.service.OperateLogService;
-import com.wlcb.jpower.wrapper.BaseDictWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -55,7 +54,7 @@ public class LogController extends BaseController {
     public ResponseData<Page<TbLogOperate>> listOperateLog(@ApiIgnore @RequestParam Map<String,Object> operateLog){
         Page<TbLogOperate> operate = operateLogService.page(PaginationContext.getMpPage(),
                 Condition.getQueryWrapper(operateLog,TbLogOperate.class).lambda().orderByDesc(TbLogOperate::getCreateTime));
-        return ReturnJsonUtil.ok("请求成功", BaseDictWrapper.<TbLogOperate,TbLogOperate>builder().pageVo(operate));
+        return ReturnJsonUtil.ok("请求成功", operate);
     }
 
     @ApiOperation("错误日志列表")

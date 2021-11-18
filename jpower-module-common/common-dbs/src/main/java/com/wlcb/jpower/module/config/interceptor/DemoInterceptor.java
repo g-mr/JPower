@@ -27,14 +27,17 @@ public class DemoInterceptor implements InnerInterceptor {
     @Override
     public boolean willDoUpdate(Executor executor, MappedStatement ms, Object parameter) {
 
-        String path = Fc.notNull(WebUtil.getRequest()) ? WebUtil.getRequest().getServletPath() : null;
+        if (properties.getEnable()){
+            String path = Fc.notNull(WebUtil.getRequest()) ? WebUtil.getRequest().getServletPath() : null;
 
-        // 匹配的接口进行放行
-        if (Fc.notNull(path) && properties.getSkipUrl().stream().anyMatch(pattern -> antPathMatcher.match(pattern, path))){
-            return true;
+            // 匹配的接口进行放行
+            if (Fc.notNull(path) && properties.getSkipUrl().stream().anyMatch(pattern -> antPathMatcher.match(pattern, path))){
+                return true;
+            }
+
+            log.warn("拦截到操作数据得SQL,演示环境不可操作数据");
+            return false;
         }
-
-        log.warn("拦截到操作数据得SQL,演示环境不可操作数据");
-        return false;
+        return true;
     }
 }

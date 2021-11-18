@@ -1,6 +1,5 @@
 package com.wlcb.jpower.module.datascope.interceptor;
 
-import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SecureUtil;
 import com.wlcb.jpower.module.datascope.handler.DataScopeHandler;
@@ -36,11 +35,11 @@ public class DataScopeInterceptor implements Ordered {
         String mapperId = ms.getId();
 
 
-        String sqlCondition = dataScopeHandler.sql(mapperId,originalSql);
-        if (Fc.isNotBlank(sqlCondition)){
-            PluginUtils.MPBoundSql mpBoundSql = PluginUtils.mpBoundSql(boundSql);
-            mpBoundSql.sql(sqlCondition);
-        }
+//        String sqlCondition = dataScopeHandler.sql(mapperId,originalSql);
+//        if (Fc.isNotBlank(sqlCondition)){
+//            PluginUtils.MPBoundSql mpBoundSql = PluginUtils.mpBoundSql(boundSql);
+//            mpBoundSql.sql(sqlCondition);
+//        }
     }
 
     @Override

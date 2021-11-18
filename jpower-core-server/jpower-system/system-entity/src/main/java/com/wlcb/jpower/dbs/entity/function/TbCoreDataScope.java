@@ -22,11 +22,11 @@ public class TbCoreDataScope extends BaseEntity {
     private String scopeCode;
     @ApiModelProperty("数据权限名称")
     private String scopeName;
-    @ApiModelProperty("数据权限字段")
+    @ApiModelProperty("数据可见字段")
     private String scopeField;
     @ApiModelProperty("数据权限类名")
     private String scopeClass;
-    @ApiModelProperty("数据可见字段")
+    @ApiModelProperty("数据权限字段")
     private String scopeColumn;
     @Dict(name = "DATA_SCOPE_TYPE")
     @ApiModelProperty("数据权限类型 字典：DATA_SCOPE_TYPE")

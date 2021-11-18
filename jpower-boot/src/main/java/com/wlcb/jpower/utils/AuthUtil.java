@@ -1,5 +1,6 @@
 package com.wlcb.jpower.utils;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.wlcb.jpower.cache.SystemCache;
 import com.wlcb.jpower.cache.UserCache;
@@ -72,16 +73,15 @@ public class AuthUtil {
             DataScope dataScope = map.get(key);
             //本人可见
             if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.OWN.getValue())){
-                dataScope.setIds(Collections.singletonList  (authInfo.getUser().getUserId()));
+                dataScope.setIds(Collections.singleton(authInfo.getUser().getUserId()));
             }
             //本级可见
             if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.OWN_ORG.getValue())){
-                dataScope.setIds(Collections.singletonList(authInfo.getUser().getOrgId()));
+                dataScope.setIds(Collections.singleton(authInfo.getUser().getOrgId()));
             }
             //本级以及子级可见
             if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.OWN_ORG_CHILD.getValue())){
-                List<String> listOrgId = SystemCache.getChildIdOrgById(authInfo.getUser().getOrgId());
-                listOrgId = Fc.isNull(listOrgId)? new ArrayList<>() : listOrgId;
+                Set<String> listOrgId = CollectionUtil.newHashSet(SystemCache.getChildIdOrgById(authInfo.getUser().getOrgId()));
                 if (Fc.isNotBlank(authInfo.getUser().getOrgId())){
                     listOrgId.add(authInfo.getUser().getOrgId());
                 }

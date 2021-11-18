@@ -15,7 +15,6 @@ import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.role.CoreFunctionService;
 import com.wlcb.jpower.vo.FunctionVo;
-import com.wlcb.jpower.wrapper.BaseDictWrapper;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -65,9 +64,9 @@ public class FunctionController extends BaseController {
 
         List<FunctionVo> list = coreFunctionService.listFunction(coreFunction);
         if (coreFunction.containsKey("parentId_eq")){
-            return ReturnJsonUtil.ok("获取成功", BaseDictWrapper.dict(list));
+            return ReturnJsonUtil.ok("获取成功", list);
         }else {
-            return ReturnJsonUtil.ok("获取成功", ForestNodeMerger.merge(BaseDictWrapper.dict(list)));
+            return ReturnJsonUtil.ok("获取成功", ForestNodeMerger.merge(list));
         }
     }
 
@@ -170,7 +169,7 @@ public class FunctionController extends BaseController {
                 .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.Y.getValue())
                 .orderByAsc(TbCoreFunction::getSort)):
                 coreFunctionService.listMenuByRoleId(roleIds);
-        return ReturnJsonUtil.ok("查询成功", ForestNodeMerger.merge(BaseDictWrapper.<TbCoreFunction,FunctionVo>builder().dict(list,FunctionVo.class)));
+        return ReturnJsonUtil.ok("查询成功", BeanUtil.copyToList(list,FunctionVo.class));
     }
 
     @ApiOperation(value = "（用于页面权限）查询登录用户一个菜单下的所有按钮接口资源", notes = "用于页面权限判断，会把顶级按钮一起返回，顶级按钮代表所有菜单都可拥有权限")

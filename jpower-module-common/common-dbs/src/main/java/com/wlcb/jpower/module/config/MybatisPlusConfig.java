@@ -4,19 +4,19 @@ import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.core.injector.ISqlInjector;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.*;
 import com.wlcb.jpower.module.common.deploy.property.YamlAndPropertySourceFactory;
-import com.wlcb.jpower.module.config.interceptor.*;
+import com.wlcb.jpower.module.config.interceptor.DemoInterceptor;
+import com.wlcb.jpower.module.config.interceptor.JpowerMybatisInterceptor;
+import com.wlcb.jpower.module.config.interceptor.MybatisSqlPrintInterceptor;
 import com.wlcb.jpower.module.config.interceptor.chain.MybatisInterceptor;
 import com.wlcb.jpower.module.config.properties.DemoProperties;
 import com.wlcb.jpower.module.config.properties.MybatisProperties;
-import com.wlcb.jpower.module.datascope.interceptor.DataScopeInterceptor;
 import com.wlcb.jpower.module.mp.CustomSqlInjector;
-import com.wlcb.jpower.module.tenant.JpowerTenantProperties;
 import lombok.AllArgsConstructor;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -64,29 +64,38 @@ public class MybatisPlusConfig {
 
     @Bean
     @ConditionalOnMissingBean({MybatisPlusInterceptor.class})
-    public MybatisPlusInterceptor mybatisPlusInterceptor(DataScopeInterceptor dataScopeInterceptor,
-                                                         TenantLineInnerInterceptor tenantLineInnerInterceptor,
-                                                         JpowerTenantProperties tenantProperties,
+    public MybatisPlusInterceptor mybatisPlusInterceptor(@Autowired(required = false) DataPermissionInterceptor dataScopeInterceptor,
+                                                         @Autowired(required = false) TenantLineInnerInterceptor tenantLineInnerInterceptor,
+//                                                         ObjectProvider<InnerInterceptor> innerInterceptors,
                                                          DemoProperties demoProperties,
                                                          MybatisProperties mybatisProperties) {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         // 乐观锁插件
         interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
-        // 分页插件
-        JpowerPaginationInterceptor paginationInterceptor = new JpowerPaginationInterceptor();
-        paginationInterceptor.setQueryInterceptor(dataScopeInterceptor);
-        paginationInterceptor.setOverflow(mybatisProperties.isOverflow());
-        paginationInterceptor.setMaxLimit(mybatisProperties.getMaxLimit());
-        paginationInterceptor.setOptimizeJoin(mybatisProperties.isOptimizeJoin());
-        interceptor.addInnerInterceptor(paginationInterceptor);
+
         // 多租户插件
-        if (tenantProperties.getEnable()){
+        if (tenantLineInnerInterceptor != null){
             interceptor.addInnerInterceptor(tenantLineInnerInterceptor);
         }
+
+        //数据权限插件
+        if (dataScopeInterceptor != null){
+            //数据权限要放在分页插件之前，否则count数量不准
+            interceptor.addInnerInterceptor(dataScopeInterceptor);
+        }
+
+
         //演示环境
         if (demoProperties.getEnable()){
             interceptor.addInnerInterceptor(new DemoInterceptor(demoProperties));
         }
+
+        // 分页插件
+        PaginationInnerInterceptor paginationInterceptor = new PaginationInnerInterceptor();
+        paginationInterceptor.setOverflow(mybatisProperties.isOverflow());
+        paginationInterceptor.setMaxLimit(mybatisProperties.getMaxLimit());
+        paginationInterceptor.setOptimizeJoin(mybatisProperties.isOptimizeJoin());
+        interceptor.addInnerInterceptor(paginationInterceptor);
         return interceptor;
     }
 

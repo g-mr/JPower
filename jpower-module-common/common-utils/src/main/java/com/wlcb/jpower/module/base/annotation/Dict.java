@@ -20,7 +20,9 @@ public @interface Dict {
     /**
      * 字典名称
      */
-    String name();
+    String name() default StringPool.EMPTY;
+
+    Class<?> type() default Object.class;
 
     /**
      * 赋值的属性名称
