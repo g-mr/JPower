@@ -42,6 +42,8 @@ public class GuavaCache {
     }
 
     public void put(String key, Object value) {
-        CACHE.put(key, value);
+        if (Fc.notNull(value)){
+            CACHE.put(key, value);
+        }
     }
 }
