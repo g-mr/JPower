@@ -23,7 +23,7 @@
         <spring-test.version>5.2.6.RELEASE</spring-test.version>
 
         <springboot.data.redis.version>1.5.8.RELEASE</springboot.data.redis.version>
-        <mybatis-plus.version>3.4.2</mybatis-plus.version>
+        <mybatis-plus.version>3.4.3.4</mybatis-plus.version>
         <easy-captcha.version>1.6.2</easy-captcha.version>
         <druid-spring.version>1.2.5</druid-spring.version>
         <spring.context.version>5.2.5.RELEASE</spring.context.version>

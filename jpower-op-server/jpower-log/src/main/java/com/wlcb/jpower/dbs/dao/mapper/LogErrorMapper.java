@@ -1,7 +1,7 @@
 package com.wlcb.jpower.dbs.dao.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.wlcb.jpower.dbs.entity.TbLogError;
+import com.wlcb.jpower.module.dbs.dao.mapper.base.JpowerBaseMapper;
 import org.springframework.stereotype.Component;
 
 /**
@@ -9,5 +9,5 @@ import org.springframework.stereotype.Component;
  * @Date 2021/5/1 0001 19:39
  */
 @Component
-public interface LogErrorMapper extends BaseMapper<TbLogError> {
+public interface LogErrorMapper extends JpowerBaseMapper<TbLogError> {
 }

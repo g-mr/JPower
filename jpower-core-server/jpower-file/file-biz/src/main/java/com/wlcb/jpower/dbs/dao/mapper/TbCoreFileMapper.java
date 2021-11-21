@@ -1,7 +1,7 @@
 package com.wlcb.jpower.dbs.dao.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.wlcb.jpower.dbs.entity.TbCoreFile;
+import com.wlcb.jpower.module.dbs.dao.mapper.base.JpowerBaseMapper;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,6 +12,6 @@ import org.springframework.stereotype.Component;
  * @Version 1.0
  */
 @Component("tbCoreFileMapper")
-public interface TbCoreFileMapper extends BaseMapper<TbCoreFile> {
+public interface TbCoreFileMapper extends JpowerBaseMapper<TbCoreFile> {
 
 }

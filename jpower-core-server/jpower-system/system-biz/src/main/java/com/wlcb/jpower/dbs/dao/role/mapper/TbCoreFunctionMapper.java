@@ -1,9 +1,9 @@
 package com.wlcb.jpower.dbs.dao.role.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.wlcb.jpower.dbs.entity.function.TbCoreFunction;
+import com.wlcb.jpower.module.dbs.dao.mapper.base.JpowerBaseMapper;
 import com.wlcb.jpower.vo.FunctionVo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
@@ -14,7 +14,7 @@ import java.util.List;
  * @author mr.gmac
  */
 @Component("tbCoreFunctionMapper")
-public interface TbCoreFunctionMapper extends BaseMapper<TbCoreFunction> {
+public interface TbCoreFunctionMapper extends JpowerBaseMapper<TbCoreFunction> {
 
     /**
      * 查功能列表

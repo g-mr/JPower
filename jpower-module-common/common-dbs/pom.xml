@@ -49,7 +49,12 @@
             <groupId>com.wlcb</groupId>
             <artifactId>common-utils</artifactId>
             <version>${com.jpower.version}</version>
-            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.github.jsqlparser</groupId>
+                    <artifactId>jsqlparser</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.wlcb</groupId>

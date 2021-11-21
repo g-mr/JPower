@@ -1,7 +1,7 @@
 package com.wlcb.jpower.dbs.dao.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.wlcb.jpower.dbs.entity.TbCoreUserRole;
+import com.wlcb.jpower.module.dbs.dao.mapper.base.JpowerBaseMapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +11,7 @@ import java.util.List;
  * @author mr.gmac
  */
 @Component("tbCoreUserRoleMapper")
-public interface TbCoreUserRoleMapper extends BaseMapper<TbCoreUserRole> {
+public interface TbCoreUserRoleMapper extends JpowerBaseMapper<TbCoreUserRole> {
 
     /**
      * @author 郭丁志

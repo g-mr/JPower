@@ -1,8 +1,8 @@
 package com.wlcb.jpower.dbs.dao.org.mapper;
 
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
+import com.wlcb.jpower.module.dbs.dao.mapper.base.JpowerBaseMapper;
 import com.wlcb.jpower.vo.OrgVo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,7 @@ import java.util.List;
  * @author mr.gmac
  */
 @Component("tbCoreOrgMapper")
-public interface TbCoreOrgMapper extends BaseMapper<TbCoreOrg> {
+public interface TbCoreOrgMapper extends JpowerBaseMapper<TbCoreOrg> {
 
     /**
      * @author 郭丁志

@@ -72,7 +72,7 @@ public class AuthUtil {
             DataScope dataScope = map.get(key);
             //本人可见
             if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.OWN.getValue())){
-                dataScope.setIds(Collections.singletonList  (authInfo.getUser().getUserId()));
+                dataScope.setIds(Collections.singletonList(authInfo.getUser().getUserId()));
             }
             //本级可见
             if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.OWN_ORG.getValue())){

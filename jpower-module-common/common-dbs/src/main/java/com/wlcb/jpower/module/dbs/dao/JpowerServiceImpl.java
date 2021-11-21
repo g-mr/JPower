@@ -2,15 +2,18 @@ package com.wlcb.jpower.module.dbs.dao;
 
 import cn.hutool.core.bean.NullWrapperBean;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Assert;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.wlcb.jpower.module.common.node.ForestNodeMerger;
 import com.wlcb.jpower.module.common.node.Node;
-import com.wlcb.jpower.module.common.utils.*;
+import com.wlcb.jpower.module.common.utils.BeanUtil;
+import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.ReflectUtil;
+import com.wlcb.jpower.module.common.utils.SecureUtil;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
+import com.wlcb.jpower.module.dbs.dao.mapper.base.JpowerBaseMapper;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import com.wlcb.jpower.module.mp.support.Condition;
 
@@ -20,7 +23,8 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.wlcb.jpower.module.tenant.TenantConstant.*;
+import static com.wlcb.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
+import static com.wlcb.jpower.module.tenant.TenantConstant.TENANT_CODE;
 
 /**
  * @ClassName JpowerServiceImpl
@@ -29,7 +33,7 @@ import static com.wlcb.jpower.module.tenant.TenantConstant.*;
  * @Date 2020-07-03 14:02
  * @Version 1.0
  */
-public class JpowerServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> extends ServiceImpl<M, T> {
+public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEntity> extends ServiceImpl<M, T> {
 
     /**
      * @author 郭丁志
@@ -150,6 +154,26 @@ public class JpowerServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> ex
     public boolean removeRealByMap(Map<String, Object> columnMap) {
         Assert.notEmpty(columnMap, "error: columnMap must not be empty");
         return SqlHelper.retBool(getBaseMapper().deleteRealByMap(columnMap));
+    }
+
+    /**
+     * 根据 ID 更新所有列
+     *
+     * @param entity 实体
+     */
+    public boolean updateAllById(T entity) {
+        resolveEntity(entity,false);
+        return SqlHelper.retBool(getBaseMapper().updateAllById(entity));
+    }
+
+    /**
+     * 根据 ID 更新所有列
+     *
+     * @param entityList 实体列表
+     */
+    public boolean addBatchSomeColumn(List<T> entityList) {
+        entityList.forEach(e -> this.resolveEntity(e,true));
+        return SqlHelper.retBool(getBaseMapper().insertBatchSomeColumn(entityList));
     }
 
     /**

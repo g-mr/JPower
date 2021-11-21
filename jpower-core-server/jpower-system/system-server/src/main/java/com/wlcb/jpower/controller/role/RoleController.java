@@ -75,7 +75,7 @@ public class RoleController extends BaseController {
         JpowerAssert.notEmpty(ids, JpowerError.Arg,"ids不可为空");
 
         List<String> tenants = coreRoleService.listObjs(Condition.<TbCoreRole>getQueryWrapper().lambda().select(TbCoreRole::getTenantCode).in(TbCoreRole::getId,Fc.toStrList(ids)),Fc::toStr);
-        Integer c = coreRoleService.listByPids(ids);
+        long c = coreRoleService.listByPids(ids);
         if (c > 0){
             return ReturnJsonUtil.busFail("该角色存在下级角色，请先删除下级角色");
         }

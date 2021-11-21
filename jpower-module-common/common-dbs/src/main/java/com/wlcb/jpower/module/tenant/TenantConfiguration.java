@@ -29,7 +29,7 @@ public class TenantConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(value = {"jpower.datascope.enable"}, matchIfMissing = true)
+    @ConditionalOnProperty(value = {"jpower.tenant.enable"}, matchIfMissing = true)
     @ConditionalOnMissingBean({TenantLineInnerInterceptor.class})
     public TenantLineInnerInterceptor tenantSqlParser(TenantLineHandler tenantHandler) {
         TenantLineInnerInterceptor innerInterceptor = new TenantLineInnerInterceptor();

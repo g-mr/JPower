@@ -1,7 +1,7 @@
 package com.wlcb.jpower.dbs.dao.dict.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.wlcb.jpower.dbs.entity.dict.TbCoreDict;
+import com.wlcb.jpower.module.dbs.dao.mapper.base.JpowerBaseMapper;
 import com.wlcb.jpower.vo.DictVo;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +15,7 @@ import java.util.List;
  * @Version 1.0
  */
 @Component("tbCoreDictMapper")
-public interface TbCoreDictMapper extends BaseMapper<TbCoreDict> {
+public interface TbCoreDictMapper extends JpowerBaseMapper<TbCoreDict> {
 
     /**
      * @author 郭丁志

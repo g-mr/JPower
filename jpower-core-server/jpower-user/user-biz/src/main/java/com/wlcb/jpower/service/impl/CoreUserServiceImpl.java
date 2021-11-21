@@ -247,9 +247,9 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
             if (Fc.isNull(tenant)){
                 throw new BusinessException(tenantCode+"租户不存在");
             }
-            Integer accountNumber = getAccountNumber(tenant.getLicenseKey());
+            long accountNumber = getAccountNumber(tenant.getLicenseKey());
             if (!Fc.equals(accountNumber, TENANT_ACCOUNT_NUMBER)){
-                Integer count = coreUserDao.count(Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getTenantCode,tenantCode));
+                long count = coreUserDao.count(Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getTenantCode,tenantCode));
                 if (count >= accountNumber){
                     throw new BusinessException(tenant.getTenantName()+"租户账号额度不足");
                 }

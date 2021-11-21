@@ -24,7 +24,7 @@ public interface CoreRoleService extends BaseService<TbCoreRole> {
      * @Param [ids]
      * @return java.lang.Integer
      **/
-    Integer listByPids(String ids);
+    long listByPids(String ids);
 
     /**
      * @Author 郭丁志

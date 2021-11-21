@@ -38,7 +38,7 @@ public interface CoreOrgService extends BaseService<TbCoreOrg> {
      * @Param [ids]
      * @return java.lang.Integer
      **/
-    Integer listOrgByPids(String ids);
+    long listOrgByPids(String ids);
 
     /**
      * @author 郭丁志

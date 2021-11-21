@@ -56,7 +56,7 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @Param [ids]
      * @return java.lang.Integer
      **/
-    Integer listByPids(String ids);
+    long listByPids(String ids);
 
     /**
      * @Author 郭丁志
@@ -122,7 +122,7 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      **/
     List<FunctionVo> listTreeByRoleId(List<String> roleIds);
 
-    Integer queryRoleByUrl(String url);
+    long queryRoleByUrl(String url);
 
     List<Object> getUrlsByRoleIds(List<String> roleIds);
 

@@ -63,7 +63,7 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper, TbCoreO
     }
 
     @Override
-    public Integer listOrgByPids(String ids) {
+    public long listOrgByPids(String ids) {
         return coreOrgDao.count(new QueryWrapper<TbCoreOrg>()
                 .lambda().in(TbCoreOrg::getParentId, Fc.toStrList(ids)).notIn(TbCoreOrg::getId,Fc.toStrList(ids)));
     }

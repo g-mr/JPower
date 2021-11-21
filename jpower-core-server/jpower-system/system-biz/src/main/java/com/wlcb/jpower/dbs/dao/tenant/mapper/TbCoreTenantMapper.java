@@ -1,9 +1,9 @@
 package com.wlcb.jpower.dbs.dao.tenant.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
+import com.wlcb.jpower.module.dbs.dao.mapper.base.JpowerBaseMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public interface TbCoreTenantMapper extends BaseMapper<TbCoreTenant> {
+public interface TbCoreTenantMapper extends JpowerBaseMapper<TbCoreTenant> {
 }

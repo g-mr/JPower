@@ -1,7 +1,7 @@
 package com.wlcb.jpower.dbs.dao.role.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.wlcb.jpower.dbs.entity.role.TbCoreRoleData;
+import com.wlcb.jpower.module.dbs.dao.mapper.base.JpowerBaseMapper;
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,5 +10,5 @@ import org.springframework.stereotype.Component;
  * @date 2020-11-03 14:58
  */
 @Component
-public interface TbCoreRoleDataMapper extends BaseMapper<TbCoreRoleData> {
+public interface TbCoreRoleDataMapper extends JpowerBaseMapper<TbCoreRoleData> {
 }

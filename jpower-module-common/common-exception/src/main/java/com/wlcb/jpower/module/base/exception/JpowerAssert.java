@@ -376,7 +376,7 @@ public class JpowerAssert {
      * @param i
      * @param err
      */
-    public static void geZero(Integer i, JpowerError err, Object... args) {
+    public static void geZero(long i, JpowerError err, Object... args) {
         if (i > 0) {
             createException(err,args);
         }
@@ -388,9 +388,11 @@ public class JpowerAssert {
      * @param i
      * @param err
      */
-    public static void notGeZero(Integer i, JpowerError err, Object... args) {
+    public static void notGeZero(long i, JpowerError err, Object... args) {
         if (i <= 0) {
             createException(err,args);
         }
     }
+
+
 }

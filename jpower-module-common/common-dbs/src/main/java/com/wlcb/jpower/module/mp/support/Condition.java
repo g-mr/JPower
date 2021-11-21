@@ -96,7 +96,7 @@ public class Condition<T> {
         }
 
         public TreeWrapper(SFunction<T, ?> code,SFunction<T, ?> parentCode,SFunction<T, ?> title,SFunction<T, ?> key,SFunction<T, ?> value){
-            TableInfo tableInfo = TableInfoHelper.getTableInfo(LambdaUtils.resolve(title).getImplClass());
+            TableInfo tableInfo = TableInfoHelper.getTableInfo(LambdaUtils.extract(title).getInstantiatedClass());
             this.tableName = tableInfo.getTableName();
 
             this.id = tableInfo.getKeyColumn() + " AS id";
@@ -165,7 +165,7 @@ public class Condition<T> {
         }
 
         private String columnsToString(SFunction<T, ?> column) {
-            return PropertyNamer.methodToProperty(LambdaUtils.resolve(column).getImplMethodName());
+            return PropertyNamer.methodToProperty(LambdaUtils.extract(column).getImplMethodName());
         }
 
         /**

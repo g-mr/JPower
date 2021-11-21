@@ -1,7 +1,7 @@
 package com.wlcb.jpower.dbs.dao.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.wlcb.jpower.dbs.entity.TbLogMonitorSetting;
+import com.wlcb.jpower.module.dbs.dao.mapper.base.JpowerBaseMapper;
 import org.springframework.stereotype.Component;
 
 /**
@@ -9,5 +9,5 @@ import org.springframework.stereotype.Component;
  * @Date 2021/4/19 0019 18:46
  */
 @Component("logMonitorSettingMapper")
-public interface LogMonitorSettingMapper extends BaseMapper<TbLogMonitorSetting> {
+public interface LogMonitorSettingMapper extends JpowerBaseMapper<TbLogMonitorSetting> {
 }

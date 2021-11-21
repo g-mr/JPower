@@ -103,7 +103,7 @@ public class FunctionController extends BaseController {
 
         JpowerAssert.notEmpty(ids, JpowerError.Arg, "ids不可为空");
 
-        Integer c = coreFunctionService.listByPids(ids);
+        long c = coreFunctionService.listByPids(ids);
         if (c > 0){
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该菜单存在下级菜单，请先删除下级菜单", false);
         }

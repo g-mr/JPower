@@ -70,7 +70,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     }
 
     @Override
-    public Integer listByPids(String ids) {
+    public long listByPids(String ids) {
         return coreFunctionDao.count(Condition.<TbCoreFunction>getQueryWrapper()
                 .lambda()
                 .in(TbCoreFunction::getParentId,Fc.toStrList(ids)));
@@ -176,10 +176,10 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     }
 
     @Override
-    public Integer queryRoleByUrl(String url) {
+    public long queryRoleByUrl(String url) {
         TbCoreFunction function = selectFunctionByUrl(url);
         if (!Fc.isNull(function)){
-            Integer roleCount = coreRoleFunctionDao.count(Condition.<TbCoreRoleFunction>getQueryWrapper().lambda()
+            long roleCount = coreRoleFunctionDao.count(Condition.<TbCoreRoleFunction>getQueryWrapper().lambda()
                     .eq(TbCoreRoleFunction::getRoleId, RoleConstant.ANONYMOUS_ID)
                     .eq(TbCoreRoleFunction::getFunctionId,function.getId()));
             return roleCount;

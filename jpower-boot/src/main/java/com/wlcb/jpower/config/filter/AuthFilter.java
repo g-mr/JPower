@@ -104,7 +104,7 @@ public class AuthFilter implements Filter {
                 }
 
                 //匿名用户
-                Integer roleCount = coreFunctionService.queryRoleByUrl(currentPath);
+                long roleCount = coreFunctionService.queryRoleByUrl(currentPath);
                 if(roleCount>0){
                     chain.doFilter(addHeader(httpRequest, RoleConstant.ANONYMOUS,StringPool.EMPTY), response);
                     return;

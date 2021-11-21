@@ -19,7 +19,7 @@ import java.util.List;
 public class DemoProperties {
 
     /** 是否开启 **/
-    private Boolean enable = false;
+    private boolean enable = false;
 
     /** 不拦截的接口 **/
     private List<String> skipUrl = new ArrayList<>();

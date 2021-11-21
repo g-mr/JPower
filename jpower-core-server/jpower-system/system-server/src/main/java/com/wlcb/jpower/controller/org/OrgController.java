@@ -68,7 +68,7 @@ public class OrgController extends BaseController {
 
         JpowerAssert.notEmpty(ids, JpowerError.Arg,"ids不可为空");
 
-        Integer c = coreOrgService.listOrgByPids(ids);
+        long c = coreOrgService.listOrgByPids(ids);
         if (c > 0){
             return ReturnJsonUtil.busFail("您选中的组织机构存在下级机构，请先删除下级机构");
         }

@@ -34,7 +34,7 @@ public class DataScopeConfig {
      * 配置数据权限拦截器
      **/
     @Bean
-    @ConditionalOnProperty(value = {"jpower.tenant.enable"}, matchIfMissing = true)
+    @ConditionalOnProperty(value = {"jpower.mybatis.dataScope"}, matchIfMissing = true)
     @ConditionalOnBean(DataPermissionHandler.class)
     @ConditionalOnMissingBean({DataPermissionInterceptor.class})
     public DataPermissionInterceptor dataScopeQueryInterceptor(PageHelperProperties properties, DataPermissionHandler dataPermissionHandler) {

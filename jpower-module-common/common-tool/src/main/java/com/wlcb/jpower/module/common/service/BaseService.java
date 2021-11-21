@@ -66,4 +66,16 @@ public interface BaseService<T> extends IService<T> {
      */
     boolean removeRealByMap(Map<String, Object> columnMap);
 
+    /**
+     * 批量新增指定列
+     * @param entityList 实体列表
+     */
+    boolean addBatchSomeColumn(List<T> entityList);
+
+    /**
+     * 根据 ID 更新所有列
+     * @param entity 实体
+     */
+    boolean updateAllById(T entity);
+
 }

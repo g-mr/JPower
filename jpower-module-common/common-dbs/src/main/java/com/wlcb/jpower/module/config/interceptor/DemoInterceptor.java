@@ -27,7 +27,7 @@ public class DemoInterceptor implements InnerInterceptor {
     @Override
     public boolean willDoUpdate(Executor executor, MappedStatement ms, Object parameter) {
 
-        if (properties.getEnable()){
+        if (properties.isEnable()){
             String path = Fc.notNull(WebUtil.getRequest()) ? WebUtil.getRequest().getServletPath() : null;
 
             // 匹配的接口进行放行

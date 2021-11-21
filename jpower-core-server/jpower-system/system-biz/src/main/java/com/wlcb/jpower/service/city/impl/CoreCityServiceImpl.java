@@ -88,8 +88,8 @@ public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper, TbCor
 
         List<Object> listCode = coreCityDao.listObjs(Condition.<TbCoreCity>getQueryWrapper().lambda().select(TbCoreCity::getCode).in(TbCoreCity::getId,ids));
         if(listCode.size()>0){
-            Integer count = coreCityDao.count(Condition.<TbCoreCity>getQueryWrapper().lambda().in(TbCoreCity::getPcode,listCode));
-            JpowerAssert.notTrue(count>0,JpowerError.BUSINESS,"请先删除子区域");
+            long count = coreCityDao.count(Condition.<TbCoreCity>getQueryWrapper().lambda().in(TbCoreCity::getPcode,listCode));
+            JpowerAssert.geZero(count,JpowerError.BUSINESS,"请先删除子区域");
         }
 
         CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE,Boolean.FALSE);

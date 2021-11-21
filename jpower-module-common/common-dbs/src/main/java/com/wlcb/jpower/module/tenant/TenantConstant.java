@@ -56,9 +56,9 @@ public interface TenantConstant {
      * @Description // 获取授权码中的账号额度
      * @date 22:18 2020/10/24 0024
      */
-    static Integer getAccountNumber(String encrypt){
+    static long getAccountNumber(String encrypt){
         encrypt = ThreeDESUtil.decrypt(encrypt);
-        return Fc.toInt(StringUtil.split(encrypt, StringPool.SEMICOLON)[0]);
+        return Fc.toLong(StringUtil.split(encrypt, StringPool.SEMICOLON)[0]);
     }
 
     /**
