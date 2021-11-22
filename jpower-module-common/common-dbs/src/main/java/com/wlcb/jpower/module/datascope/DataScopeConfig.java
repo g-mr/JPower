@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * @ClassName MybatisPlusConfig
+ * @ClassName 数据权限配置
  * @Description TODO mybatis配置
  * @Author 郭丁志
  * @Date 2020-07-03 11:47
@@ -34,7 +34,7 @@ public class DataScopeConfig {
      * 配置数据权限拦截器
      **/
     @Bean
-    @ConditionalOnProperty(value = {"jpower.mybatis.dataScope"}, matchIfMissing = true)
+    @ConditionalOnProperty(value = {"jpower.datascope.enable"}, matchIfMissing = true)
     @ConditionalOnBean(DataPermissionHandler.class)
     @ConditionalOnMissingBean({DataPermissionInterceptor.class})
     public DataPermissionInterceptor dataScopeQueryInterceptor(PageHelperProperties properties, DataPermissionHandler dataPermissionHandler) {

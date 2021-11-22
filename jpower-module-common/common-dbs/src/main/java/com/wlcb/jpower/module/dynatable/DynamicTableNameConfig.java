@@ -22,12 +22,12 @@ public class DynamicTableNameConfig {
 
     @Bean
     @ConditionalOnMissingBean({TableNameHandler.class})
-    public TableNameHandler dataScopeHandler() {
+    public TableNameHandler tableNameHandler() {
         return new DynamicTableNameHandler();
     }
 
     /**
-     * 配置数据权限拦截器
+     * 配置动态表名拦截器
      **/
     @Bean
     @ConditionalOnProperty(value = {"jpower.mybatis.dynamicTableName"}, matchIfMissing = false)

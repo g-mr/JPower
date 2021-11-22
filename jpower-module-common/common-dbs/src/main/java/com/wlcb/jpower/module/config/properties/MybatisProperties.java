@@ -17,11 +17,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class MybatisProperties {
 
     /**
-     * 是否开启数据权限
-     **/
-    private boolean dataScope = true;
-
-    /**
      * 是否开启动态表名
      */
     private boolean dynamicTableName = false;
