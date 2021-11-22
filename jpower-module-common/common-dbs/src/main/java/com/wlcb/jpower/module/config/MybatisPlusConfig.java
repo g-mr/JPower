@@ -71,6 +71,8 @@ public class MybatisPlusConfig {
                                                          DemoProperties demoProperties,
                                                          MybatisProperties mybatisProperties) {
 
+        // TODO: 2021/11/22 0022 拦截器顺序最好不要改变
+
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
 
         // 多租户插件
