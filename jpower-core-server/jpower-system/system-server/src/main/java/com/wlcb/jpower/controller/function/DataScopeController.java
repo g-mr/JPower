@@ -47,7 +47,6 @@ public class DataScopeController {
         JpowerAssert.notEmpty(dataScope.getMenuId(), JpowerError.Arg,"菜单ID不可为空");
         JpowerAssert.notEmpty(dataScope.getScopeCode(), JpowerError.Arg,"编号不可为空");
         JpowerAssert.notEmpty(dataScope.getScopeName(), JpowerError.Arg,"名称不可为空");
-        JpowerAssert.notEmpty(dataScope.getScopeField(), JpowerError.Arg,"权限字段不可为空");
         JpowerAssert.notEmpty(dataScope.getScopeClass(), JpowerError.Arg,"权限类名不可为空");
         if (Fc.isBlank(dataScope.getScopeColumn())){
             dataScope.setScopeColumn(StringPool.ASTERISK);

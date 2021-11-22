@@ -20,8 +20,6 @@ public class DataScope {
 
     private String scopeColumn;
 
-    private String scopeField;
-
     /** 自定义值域 **/
     private String scopeValue;
 
