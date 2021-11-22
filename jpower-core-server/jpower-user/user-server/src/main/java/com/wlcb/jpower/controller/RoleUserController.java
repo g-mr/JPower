@@ -16,7 +16,6 @@ import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.CoreUserRoleService;
 import com.wlcb.jpower.service.CoreUserService;
 import com.wlcb.jpower.vo.UserVo;
-import com.wlcb.jpower.wrapper.UserWrapper;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -114,7 +113,6 @@ public class RoleUserController extends BaseController {
             wrapper.inSql(TbCoreUser::getId,buffer.toString());
         }
 
-        Page<TbCoreUser> userPage = coreUserService.page(PaginationContext.getMpPage(), wrapper);
-        return ReturnJsonUtil.ok("查询成功", UserWrapper.builder().pageVo(userPage));
+        return ReturnJsonUtil.ok("查询成功", coreUserService.page(PaginationContext.getMpPage(), wrapper));
     }
 }

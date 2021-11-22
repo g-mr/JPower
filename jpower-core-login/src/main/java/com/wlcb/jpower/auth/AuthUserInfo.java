@@ -1,14 +1,12 @@
 package com.wlcb.jpower.auth;
 
-import com.wlcb.jpower.dto.TokenParameter;
-import com.wlcb.jpower.utils.AuthUtil;
 import com.wlcb.jpower.cache.UserCache;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
+import com.wlcb.jpower.dto.TokenParameter;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.common.auth.UserInfo;
-import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.tenant.TenantConstant;
+import com.wlcb.jpower.utils.AuthUtil;
 import org.springframework.context.annotation.Configuration;
 
 /**

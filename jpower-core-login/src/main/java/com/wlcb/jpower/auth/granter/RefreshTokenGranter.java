@@ -2,17 +2,17 @@ package com.wlcb.jpower.auth.granter;
 
 import com.wlcb.jpower.auth.AuthUserInfo;
 import com.wlcb.jpower.auth.TokenGranter;
-import com.wlcb.jpower.dto.TokenParameter;
-import com.wlcb.jpower.utils.AuthUtil;
-import com.wlcb.jpower.utils.TokenUtil;
 import com.wlcb.jpower.cache.UserCache;
-import com.wlcb.jpower.dbs.entity.TbCoreUser;
+import com.wlcb.jpower.dto.TokenParameter;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.JwtUtil;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
+import com.wlcb.jpower.utils.AuthUtil;
+import com.wlcb.jpower.utils.TokenUtil;
+import com.wlcb.jpower.vo.UserVo;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -50,11 +50,12 @@ public class RefreshTokenGranter implements TokenGranter {
 				if (!Fc.isNull(authUserInfo)){
 					return authUserInfo.getRefreshUserInfo(userType,userId);
 				}else {
-					TbCoreUser result = UserCache.getById(userId);
+					UserVo result = UserCache.getById(userId);
 					return AuthUtil.toUserInfo(result);
 				}
 			}
 		}
 		return null;
 	}
+
 }

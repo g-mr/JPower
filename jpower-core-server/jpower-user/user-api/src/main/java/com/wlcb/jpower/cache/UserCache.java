@@ -8,6 +8,7 @@ import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.DigestUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SpringUtil;
+import com.wlcb.jpower.vo.UserVo;
 
 import java.util.List;
 
@@ -65,9 +66,9 @@ public class UserCache {
         });
     }
 
-    public static TbCoreUser getById(String userId) {
+    public static UserVo getById(String userId) {
         return CacheUtil.get(CacheNames.USER_REDIS_CACHE,CacheNames.USER_OTHERCODE_KEY,userId,() -> {
-            ResponseData<TbCoreUser> responseData = userClient.get(userId);
+            ResponseData<UserVo> responseData = userClient.get(userId);
             return responseData.getData();
         });
     }

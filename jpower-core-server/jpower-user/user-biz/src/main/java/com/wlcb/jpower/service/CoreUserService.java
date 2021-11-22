@@ -1,5 +1,7 @@
 package com.wlcb.jpower.service;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.module.common.service.BaseService;
@@ -65,7 +67,7 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
      * @param id 用户id
      * @return com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser
      */
-    TbCoreUser selectUserById(String id);
+    UserVo selectUserById(String id);
 
     /**
      * @author 郭丁志
@@ -142,4 +144,8 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
     boolean addRoleUsers(String roleId, List<String> userIds);
 
     boolean deleteRoleUsers(String roleId, List<String> toStrList);
+
+    UserVo getById(String id);
+
+    Page<UserVo> page(Page<TbCoreUser> page, Wrapper<TbCoreUser> queryWrapper);
 }

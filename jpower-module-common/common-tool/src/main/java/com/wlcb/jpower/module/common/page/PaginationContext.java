@@ -59,8 +59,8 @@ public class PaginationContext {
      * @Description //TODO 获取MP的分页类
      * @date 1:14 2020/8/9 0009
      */
-    public static Page getMpPage() {
-        Page page = new Page(PaginationContext.getPageNum(),PaginationContext.getPageSize());
+    public static <T> Page<T> getMpPage() {
+        Page<T> page = new Page<T>(PaginationContext.getPageNum(),PaginationContext.getPageSize());
 
         String asc = PaginationContext.getAsc();
         if (StringUtils.isNotBlank(asc)){

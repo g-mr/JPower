@@ -8,6 +8,7 @@ import com.wlcb.jpower.service.CoreUserRoleService;
 import com.wlcb.jpower.service.CoreUserService;
 import com.wlcb.jpower.service.impl.CoreUserRoleServiceImpl;
 import com.wlcb.jpower.service.impl.CoreUserServiceImpl;
+import com.wlcb.jpower.vo.UserVo;
 
 import java.util.List;
 
@@ -67,10 +68,7 @@ public class UserCache {
         });
     }
 
-    public static TbCoreUser getById(String userId) {
-        return CacheUtil.get(CacheNames.USER_REDIS_CACHE,CacheNames.USER_OTHERCODE_KEY,userId,() -> {
-            TbCoreUser user = userService.selectUserById(userId);
-            return user;
-        });
+    public static UserVo getById(String userId) {
+        return CacheUtil.get(CacheNames.USER_REDIS_CACHE,CacheNames.USER_OTHERCODE_KEY,userId,() -> userService.selectUserById(userId));
     }
 }

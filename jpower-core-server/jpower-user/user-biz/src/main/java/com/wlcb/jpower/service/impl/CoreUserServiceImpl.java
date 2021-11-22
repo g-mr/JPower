@@ -1,9 +1,11 @@
 package com.wlcb.jpower.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.cache.SystemCache;
 import com.wlcb.jpower.cache.UserCache;
@@ -25,7 +27,6 @@ import com.wlcb.jpower.module.common.utils.constants.ParamsConstants;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.CoreUserService;
 import com.wlcb.jpower.vo.UserVo;
-import com.wlcb.jpower.wrapper.UserWrapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -54,23 +55,12 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     @Override
     public PageInfo<UserVo> listPage(TbCoreUser coreUser) {
         PaginationContext.startPage();
-        List<TbCoreUser> list = coreUserDao.getBaseMapper().selectUserList(coreUser,getChildOrg(coreUser.getOrgId()));
-        return UserWrapper.builder().pageVo(list);
+        return new PageInfo<>(coreUserDao.listVo(coreUser));
     }
 
     @Override
     public List<UserVo> list(TbCoreUser coreUser) {
-        List<TbCoreUser> list = coreUserDao.getBaseMapper().selectUserList(coreUser,getChildOrg(coreUser.getOrgId()));
-        return UserWrapper.builder().listVO(list);
-    }
-
-    private List<String> getChildOrg(String orgId){
-        List<String> listOrgId = Fc.isNotBlank(orgId)?SystemCache.getChildIdOrgById(orgId):null;
-        listOrgId = Fc.isNull(listOrgId)?new ArrayList<>():listOrgId;
-        if(Fc.isNotBlank(orgId)){
-            listOrgId.add(orgId);
-        }
-        return listOrgId;
+        return coreUserDao.listVo(coreUser);
     }
 
     @Override
@@ -132,8 +122,18 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     }
 
     @Override
-    public TbCoreUser selectUserById(String id) {
-        return coreUserDao.getBaseMapper().selectAllById(id);
+    public UserVo selectUserById(String id) {
+        return coreUserDao.conver(getBaseMapper().selectAllById(id));
+    }
+
+    @Override
+    public UserVo getById(String id) {
+        return coreUserDao.conver(super.getById(id));
+    }
+
+    @Override
+    public Page<UserVo> page(Page<TbCoreUser> page, Wrapper<TbCoreUser> queryWrapper) {
+        return coreUserDao.pageConver(super.page(page,queryWrapper));
     }
 
     @Override

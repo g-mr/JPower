@@ -7,6 +7,7 @@ import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.CoreUserRoleService;
 import com.wlcb.jpower.service.CoreUserService;
+import com.wlcb.jpower.vo.UserVo;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
@@ -62,9 +63,8 @@ public class UserClientController implements UserClient {
     @ApiOperation("查询用户详情")
     @Override
     @GetMapping(value = "/get")
-    public ResponseData<TbCoreUser> get(@RequestParam String id){
-        TbCoreUser user = coreUserService.selectUserById(id);
-        return ReturnJsonUtil.ok("查询成功", user);
+    public ResponseData<UserVo> get(@RequestParam String id){
+        return ReturnJsonUtil.ok("查询成功", coreUserService.selectUserById(id));
     }
 
     @ApiOperation(value = "通过手机号查询用户")

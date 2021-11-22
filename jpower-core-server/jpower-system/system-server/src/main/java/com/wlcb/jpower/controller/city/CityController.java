@@ -14,7 +14,6 @@ import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.mp.support.SqlKeyword;
 import com.wlcb.jpower.service.city.CoreCityService;
 import com.wlcb.jpower.vo.CityVo;
-import com.wlcb.jpower.wrapper.CityWrapper;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
@@ -78,7 +77,7 @@ public class CityController extends BaseController {
     @ApiOperation("查询行政区域详情")
     @GetMapping(value = "/get", produces="application/json")
     public ResponseData<CityVo> get(@ApiParam(value = "主键",required = true) @RequestParam String id){
-        return ReturnJsonUtil.ok("成功", CityWrapper.builder().entityVO(coreCityService.getById(id)));
+        return ReturnJsonUtil.ok("成功", coreCityService.getById(id));
     }
 
     @ApiOperation("懒加载树形菜单")

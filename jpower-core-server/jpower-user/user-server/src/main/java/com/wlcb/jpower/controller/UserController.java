@@ -19,7 +19,6 @@ import com.wlcb.jpower.module.common.utils.constants.*;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.CoreUserService;
 import com.wlcb.jpower.vo.UserVo;
-import com.wlcb.jpower.wrapper.UserWrapper;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -32,7 +31,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import static com.wlcb.jpower.module.base.annotation.OperateLog.BusinessType.*;
+import static com.wlcb.jpower.module.base.annotation.OperateLog.BusinessType.DELETE;
+import static com.wlcb.jpower.module.base.annotation.OperateLog.BusinessType.UPDATE;
 import static com.wlcb.jpower.module.tenant.TenantConstant.*;
 
 @Api(tags = "用户管理")
@@ -48,8 +48,7 @@ public class UserController extends BaseController {
     public ResponseData<UserVo> getLoginInfo() {
         String id = SecureUtil.getUserId();
         JpowerAssert.notEmpty(id,JpowerError.Arg,"用户未登录");
-        TbCoreUser user = coreUserService.getById(id);
-        return ReturnJsonUtil.ok("获取成功", UserWrapper.builder().entityVO(user));
+        return ReturnJsonUtil.ok("获取成功", coreUserService.getById(id));
     }
 
     @ApiOperation("查询用户分页列表")
@@ -94,8 +93,8 @@ public class UserController extends BaseController {
     public ResponseData<UserVo> getById(@ApiParam(value = "主键", required = true) @RequestParam @NotBlank(message = "主键不可为空") String id) {
         JpowerAssert.notEmpty(id, JpowerError.Arg, "id不可为空");
 
-        TbCoreUser user = coreUserService.selectUserById(id);
-        return ReturnJsonUtil.ok("查询成功", UserWrapper.builder().entityVO(user));
+        UserVo user = coreUserService.selectUserById(id);
+        return ReturnJsonUtil.ok("查询成功", user);
     }
 
     @ApiOperation(value = "新增", notes = "主键不用传")

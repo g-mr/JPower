@@ -16,6 +16,7 @@ import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.city.CoreCityService;
+import com.wlcb.jpower.vo.CityVo;
 import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -122,6 +123,11 @@ public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper, TbCor
 
         CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE,Boolean.FALSE);
         return is;
+    }
+
+    @Override
+    public CityVo getById(String id) {
+        return coreCityDao.conver(super.getById(id));
     }
 
 }

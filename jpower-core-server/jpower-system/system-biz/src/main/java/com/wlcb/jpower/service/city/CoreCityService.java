@@ -4,6 +4,7 @@ package com.wlcb.jpower.service.city;
 import com.wlcb.jpower.dbs.entity.city.TbCoreCity;
 import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.service.BaseService;
+import com.wlcb.jpower.vo.CityVo;
 
 import java.util.List;
 import java.util.Map;
@@ -68,4 +69,6 @@ public interface CoreCityService extends BaseService<TbCoreCity> {
     List<Node> lazyTree(String pcode);
 
     Boolean update(TbCoreCity coreCity);
+
+    CityVo getById(String id);
 }
