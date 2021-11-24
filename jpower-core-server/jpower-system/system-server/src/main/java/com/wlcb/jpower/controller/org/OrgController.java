@@ -1,5 +1,6 @@
 package com.wlcb.jpower.controller.org;
 
+import cn.hutool.core.lang.tree.Tree;
 import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
 import com.wlcb.jpower.module.base.enums.JpowerError;
@@ -141,4 +142,10 @@ public class OrgController extends BaseController {
         return ReturnJsonUtil.ok("查询成功",list);
     }
 
+
+    @RequestMapping(value = "/treeH",method = {RequestMethod.GET},produces="application/json")
+    public ResponseData<List<Tree<String>>> treeH(@ApiIgnore @RequestParam Map<String,Object> coreOrg){
+        List<Tree<String>> list = coreOrgService.treeH(coreOrg);
+        return ReturnJsonUtil.ok("查询成功",list);
+    }
 }

@@ -1,5 +1,6 @@
 package com.wlcb.jpower.service.org.impl;
 
+import cn.hutool.core.lang.tree.Tree;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wlcb.jpower.dbs.dao.org.TbCoreOrgDao;
@@ -93,6 +94,11 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper, TbCoreO
     @Override
     public List<Node> tree(Map<String, Object> coreOrg) {
         return coreOrgDao.tree(Condition.getTreeWrapper(TbCoreOrg::getId,TbCoreOrg::getParentId,TbCoreOrg::getName).map(coreOrg).lambda().orderByAsc(TbCoreOrg::getSort));
+    }
+
+    @Override
+    public List<Tree<String>> treeH(Map<String, Object> coreOrg) {
+        return coreOrgDao.treeHutool(Condition.getQueryWrapper(coreOrg,TbCoreOrg.class).lambda().select(TbCoreOrg::getId,TbCoreOrg::getParentId,TbCoreOrg::getName));
     }
 
     @Override

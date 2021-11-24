@@ -16,7 +16,6 @@ public interface StringPool extends StrPool {
     String DASH				= "-";
     String DOT				= ".";
     String EMPTY			= "";
-    String EMPTY_JSON 		= "{}";
     String EQUALS			= "=";
     String LEFT_BRACE		= "{";
     String LEFT_BRACKET		= "(";
@@ -41,5 +40,7 @@ public interface StringPool extends StrPool {
     String DELETE		    = "DELETE";
     String DESC				= "DESC";
     String ASC				= "ASC";
+    String SORT				= "sort";
+    String SORTNUM			= "sortNum";
 
 }

@@ -1,6 +1,7 @@
 package com.wlcb.jpower.module.dbs.dao;
 
 import cn.hutool.core.bean.NullWrapperBean;
+import cn.hutool.core.lang.tree.Tree;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.toolkit.Assert;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
@@ -177,6 +178,17 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
     }
 
     /**
+     * @Author 郭丁志
+     * @Description //TODO 把查询结果转换成任何类型
+     * @Date 21:22 2020-07-30
+     * @Param [queryWrapper, mapper]
+     * @return java.util.List<V>
+     **/
+    public <V> List<V> listConver(Wrapper<T> queryWrapper, Function<T, V> function) {
+        return list(queryWrapper).stream().filter(Objects::nonNull).map(function).collect(Collectors.toList());
+    }
+
+    /**
      * 加载树形节点
      *
      * @param treeWrapper
@@ -189,25 +201,26 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
 
     /**
      * @Author 郭丁志
-     * @Description //TODO 把查询结果转换成任何类型
-     * @Date 21:22 2020-07-30
-     * @Param [queryWrapper, mapper]
-     * @return java.util.List<V>
-     **/
-    public <V> List<V> listConver(Wrapper<T> queryWrapper, Function<T, V> function) {
-        return list(queryWrapper).stream().filter(Objects::nonNull).map(function).collect(Collectors.toList());
-    }
-
-    /**
-     * @Author 郭丁志
      * @Description //TODO 查询树形结构list
-     *                  查询字段中必须包含code和parentCode字段，否则无法形成tree列表
+     *                  查询字段中必须包含id和parentId字段，否则无法形成tree列表
      * @Date 21:51 2020-07-30
      * @Param [queryWrapper, clz]
      * @return java.util.List<V>
      **/
     public <V extends Node> List<V> listTree(Wrapper<T> queryWrapper,Class<V> clz) {
         return ForestNodeMerger.merge(listConver(queryWrapper,t -> BeanUtil.copy(t, clz)));
+    }
+
+
+    // TODO: 2021/11/24 0024 测试
+
+    public List<Tree<String>> treeHutool(Wrapper<T> treeWrapper) {
+        List<Map<String,Object>> list = listMaps(treeWrapper);
+        return ForestNodeMerger.mergeTree(list);
+    }
+
+    public <V extends Node> List<Tree<String>> listTreeHutool(Wrapper<T> queryWrapper,Class<V> clz) {
+        return ForestNodeMerger.mergeTree(listConver(queryWrapper,t -> BeanUtil.copy(t, clz)));
     }
 
 }

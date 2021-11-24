@@ -15,17 +15,24 @@
  */
 package com.wlcb.jpower.module.common.node;
 
+import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.lang.tree.TreeNodeConfig;
+import cn.hutool.core.lang.tree.TreeUtil;
+import cn.hutool.core.map.MapUtil;
+import com.wlcb.jpower.module.common.utils.BeanUtil;
 import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 
 import java.util.List;
+import java.util.Map;
+
+import static com.wlcb.jpower.module.common.utils.constants.StringPool.SORT;
+import static com.wlcb.jpower.module.common.utils.constants.StringPool.SORTNUM;
 
 /**
- * @ClassName ForestNodeMerger
- * @Description TODO 森林节点归并类
- * @Author Chill
+ * @author mr.g
+ * @Desc TODO 森林节点归并类
  * @Date 2020-07-25 22:45
- * @Version 1.0
  */
 public class ForestNodeMerger {
 
@@ -46,5 +53,31 @@ public class ForestNodeMerger {
             }
         });
         return forestNodeManager.getRoot();
+    }
+
+    private static final TreeNodeConfig CONFIG = new TreeNodeConfig();
+
+    static {
+        CONFIG.setWeightKey(SORT);
+    }
+
+    public static <T> List<Tree<String>> mergeTree(List<T> list) {
+        return TreeUtil.build( list, JpowerConstants.TOP_CODE, CONFIG,  (bean, tree) -> {
+            Map<String, Object> extra;
+            if (bean instanceof Map){
+                extra = (Map<String, Object>) bean;
+            }else {
+                extra = BeanUtil.beanToMap(bean);
+            }
+
+            if (extra.containsKey(SORTNUM)){
+                extra.put(SORT,extra.get(SORTNUM));
+                extra.remove(SORTNUM);
+            }
+
+            if(MapUtil.isNotEmpty(extra)){
+                extra.forEach((k,v) -> tree.putExtra(StringUtil.underlineToHump(k),v));
+            }
+        });
     }
 }
