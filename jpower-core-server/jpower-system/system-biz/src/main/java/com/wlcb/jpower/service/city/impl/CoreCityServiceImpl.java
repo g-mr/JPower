@@ -1,5 +1,6 @@
 package com.wlcb.jpower.service.city.impl;
 
+import cn.hutool.core.lang.tree.Tree;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.wlcb.jpower.dbs.dao.city.TbCoreCityDao;
 import com.wlcb.jpower.dbs.dao.city.mapper.TbCoreCityMapper;
@@ -7,7 +8,6 @@ import com.wlcb.jpower.dbs.entity.city.TbCoreCity;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.common.cache.CacheNames;
-import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.Cm;
@@ -99,10 +99,13 @@ public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper, TbCor
 
     @Override
     @Cacheable(value = CacheNames.CITY_PARENT_REDIS_KEY,key = "#pcode ?: '-1'")
-    public List<Node> lazyTree(String pcode) {
-        return coreCityDao.tree(Condition.getTreeWrapper(TbCoreCity::getCode,TbCoreCity::getPcode,TbCoreCity::getName)
-                .lazy(pcode).lambda()
-                .orderByAsc(TbCoreCity::getSortNum));
+    public List<Tree<String>> lazyTree(String pcode) {
+//        return coreCityDao.tree(Condition.getTreeWrapper(TbCoreCity::getCode,TbCoreCity::getPcode,TbCoreCity::getName)
+//                .lazy(pcode).lambda()
+//                .orderByAsc(TbCoreCity::getSortNum));
+        return coreCityDao.tree(Condition.getLambdaTreeWrapper(TbCoreCity.class,TbCoreCity::getCode,TbCoreCity::getPcode)
+                .lazy(pcode)
+                .orderByAsc(TbCoreCity::getSortNum).unLambda().select("name","id AS `key`"));
     }
 
     @Override

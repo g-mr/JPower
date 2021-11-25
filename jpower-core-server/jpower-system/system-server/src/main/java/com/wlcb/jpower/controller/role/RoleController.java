@@ -1,5 +1,6 @@
 package com.wlcb.jpower.controller.role;
 
+import cn.hutool.core.lang.tree.Tree;
 import com.wlcb.jpower.dbs.entity.role.TbCoreRole;
 import com.wlcb.jpower.module.base.annotation.OperateLog;
 import com.wlcb.jpower.module.base.enums.JpowerError;
@@ -13,10 +14,8 @@ import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.mp.support.Condition;
-import com.wlcb.jpower.service.role.CoreFunctionService;
 import com.wlcb.jpower.service.role.CoreRoleService;
 import com.wlcb.jpower.service.role.CoreRolefunctionService;
-import com.wlcb.jpower.vo.RoleVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -40,14 +39,15 @@ public class RoleController extends BaseController {
 
     private CoreRoleService coreRoleService;
     private CoreRolefunctionService coreRolefunctionService;
-    private CoreFunctionService coreFunctionService;
 
     @ApiOperation("查询角色树结构列表")
     @RequestMapping(value = "/listTree",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
-    public ResponseData<List<RoleVo>> listTree(TbCoreRole coreRole){
-        List<RoleVo> list = coreRoleService.listTree(Condition.getQueryWrapper(coreRole)
-                .lambda().orderByAsc(TbCoreRole::getCreateTime)
-                , RoleVo.class);
+    public ResponseData<List<Tree<String>>> listTree(TbCoreRole coreRole){
+//        List<RoleVo> list = coreRoleService.listTree(Condition.getQueryWrapper(coreRole)
+//                .lambda().orderByAsc(TbCoreRole::getCreateTime)
+//                , RoleVo.class);
+        List<Tree<String>> list = coreRoleService.tree(Condition.getLambdaTreeWrapper(coreRole,TbCoreRole::getId,TbCoreRole::getParentId)
+                        .orderByAsc(TbCoreRole::getCreateTime));
         return ReturnJsonUtil.ok("获取成功", list);
     }
 

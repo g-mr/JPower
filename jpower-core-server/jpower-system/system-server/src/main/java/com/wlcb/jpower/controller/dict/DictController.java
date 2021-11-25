@@ -1,5 +1,6 @@
 package com.wlcb.jpower.controller.dict;
 
+import cn.hutool.core.lang.tree.Tree;
 import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.dbs.entity.dict.TbCoreDict;
 import com.wlcb.jpower.dbs.entity.dict.TbCoreDictType;
@@ -7,7 +8,6 @@ import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
-import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
@@ -15,7 +15,6 @@ import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.dict.CoreDictService;
 import com.wlcb.jpower.service.dict.CoreDictTypeService;
-import com.wlcb.jpower.vo.DictTypeVo;
 import com.wlcb.jpower.vo.DictVo;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
@@ -45,13 +44,13 @@ public class DictController extends BaseController {
 
     @ApiOperation("查询所有字典类型树形结构")
     @RequestMapping(value = "/dictTypeTree",method = RequestMethod.GET,produces="application/json")
-    public ResponseData<List<Node>> dictTypeTree(){
+    public ResponseData<List<Tree<String>>> dictTypeTree(){
         return ReturnJsonUtil.ok("查询成功",coreDictTypeService.tree());
     }
 
     @ApiOperation("查询所有字典类型树形列表结构")
     @RequestMapping(value = "/dictTypeListTree",method = RequestMethod.GET,produces="application/json")
-    public ResponseData<List<DictTypeVo>> dictTypeListTree(TbCoreDictType dictType){
+    public ResponseData<List<Tree<String>>> dictTypeListTree(TbCoreDictType dictType){
         return ReturnJsonUtil.ok("查询成功",coreDictTypeService.listTree(dictType));
     }
 

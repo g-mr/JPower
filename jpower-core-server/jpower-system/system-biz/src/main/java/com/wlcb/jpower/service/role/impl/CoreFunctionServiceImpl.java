@@ -1,5 +1,6 @@
 package com.wlcb.jpower.service.role.impl;
 
+import cn.hutool.core.lang.tree.Tree;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wlcb.jpower.dbs.dao.role.TbCoreFunctionDao;
@@ -8,7 +9,6 @@ import com.wlcb.jpower.dbs.dao.role.mapper.TbCoreFunctionMapper;
 import com.wlcb.jpower.dbs.entity.function.TbCoreFunction;
 import com.wlcb.jpower.dbs.entity.role.TbCoreRoleFunction;
 import com.wlcb.jpower.module.common.auth.RoleConstant;
-import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SecureUtil;
@@ -16,6 +16,7 @@ import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.mp.support.Condition;
+import com.wlcb.jpower.module.mp.support.LambdaTreeWrapper;
 import com.wlcb.jpower.service.role.CoreFunctionService;
 import com.wlcb.jpower.vo.FunctionVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,12 +105,16 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     }
 
     @Override
-    public List<Node> lazyTreeByRole(String parentId, List<String> roleIds) {
+    public List<Tree<String>> lazyTreeByRole(String parentId, List<String> roleIds) {
         String inSql = StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE);
-        return coreFunctionDao.tree(Condition.getTreeWrapper(TbCoreFunction::getId,TbCoreFunction::getParentId,TbCoreFunction::getFunctionName,TbCoreFunction::getUrl)
-                .lazy(parentId).lambda()
-                .inSql(TbCoreFunction::getId, StringUtil.format(sql,inSql))
-                .orderByAsc(TbCoreFunction::getSort));
+//        return coreFunctionDao.tree(Condition.getTreeWrapper(TbCoreFunction::getId,TbCoreFunction::getParentId,TbCoreFunction::getFunctionName,TbCoreFunction::getUrl)
+//                .lazy(parentId).lambda()
+//                .inSql(TbCoreFunction::getId, StringUtil.format(sql,inSql))
+//                .orderByAsc(TbCoreFunction::getSort));
+        return coreFunctionDao.tree(Condition.getLambdaTreeWrapper(TbCoreFunction.class,TbCoreFunction::getId,TbCoreFunction::getParentId)
+                .lazy(parentId)
+                .select(TbCoreFunction::getFunctionName,TbCoreFunction::getUrl,TbCoreFunction::getSort)
+                .inSql(TbCoreFunction::getId, StringUtil.format(sql,inSql)));
     }
 
     @Override
@@ -130,9 +135,18 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     }
 
     @Override
-    public List<Node> menuTreeByRoleIds(List<String> roleIds) {
-        LambdaQueryWrapper<TbCoreFunction> wrapper = Condition.getTreeWrapper(TbCoreFunction::getId,TbCoreFunction::getParentId,TbCoreFunction::getFunctionName,TbCoreFunction::getCode,TbCoreFunction::getUrl)
-                .lambda()
+    public List<Tree<String>> menuTreeByRoleIds(List<String> roleIds) {
+//        LambdaQueryWrapper<TbCoreFunction> wrapper = Condition.getTreeWrapper(TbCoreFunction::getId,TbCoreFunction::getParentId,TbCoreFunction::getFunctionName,TbCoreFunction::getCode,TbCoreFunction::getUrl)
+//                .lambda()
+//                .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.Y.getValue());
+//
+//        if (!SecureUtil.isRoot()){
+//            // 如果不是超级用户，则查出自己权限的菜单
+//            wrapper.inSql(TbCoreFunction::getId,StringUtil.format(sql,StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE)));
+//        }
+//        return coreFunctionDao.tree(wrapper.orderByAsc(TbCoreFunction::getSort));
+        LambdaTreeWrapper<TbCoreFunction> wrapper = Condition.getLambdaTreeWrapper(TbCoreFunction.class,TbCoreFunction::getId,TbCoreFunction::getParentId)
+                .select(TbCoreFunction::getFunctionName,TbCoreFunction::getCode,TbCoreFunction::getUrl)
                 .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.Y.getValue());
 
         if (!SecureUtil.isRoot()){
@@ -168,10 +182,13 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     }
 
     @Override
-    public List<FunctionVo> listTreeByRoleId(List<String> roleIds) {
+    public List<Tree<String>> listTreeByRoleId(List<String> roleIds) {
+//        String inSql = StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE);
+//        List<FunctionVo> list = coreFunctionDao.listTree(Condition.<TbCoreFunction>getQueryWrapper().lambda()
+//                .inSql(TbCoreFunction::getId, StringUtil.format(sql, inSql)).orderByAsc(TbCoreFunction::getSort),FunctionVo.class);
         String inSql = StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE);
-        List<FunctionVo> list = coreFunctionDao.listTree(Condition.<TbCoreFunction>getQueryWrapper().lambda()
-                .inSql(TbCoreFunction::getId, StringUtil.format(sql, inSql)).orderByAsc(TbCoreFunction::getSort),FunctionVo.class);
+        List<Tree<String>> list = coreFunctionDao.tree(Condition.getLambdaTreeWrapper(TbCoreFunction.class,TbCoreFunction::getId,TbCoreFunction::getParentId)
+                .inSql(TbCoreFunction::getId, StringUtil.format(sql, inSql)).orderByAsc(TbCoreFunction::getSort));
         return list;
     }
 

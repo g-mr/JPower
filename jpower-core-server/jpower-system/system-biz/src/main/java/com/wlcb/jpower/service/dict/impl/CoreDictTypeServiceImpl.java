@@ -1,5 +1,6 @@
 package com.wlcb.jpower.service.dict.impl;
 
+import cn.hutool.core.lang.tree.Tree;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
@@ -9,16 +10,15 @@ import com.wlcb.jpower.dbs.entity.dict.TbCoreDict;
 import com.wlcb.jpower.dbs.entity.dict.TbCoreDictType;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
-import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SecureUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.mp.support.Condition;
+import com.wlcb.jpower.module.mp.support.LambdaTreeWrapper;
 import com.wlcb.jpower.service.dict.CoreDictService;
 import com.wlcb.jpower.service.dict.CoreDictTypeService;
-import com.wlcb.jpower.vo.DictTypeVo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -37,13 +37,22 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
     private CoreDictService coreDictService;
 
     @Override
-    public List<Node> tree() {
-        LambdaQueryWrapper<TbCoreDictType> queryWrapper = Condition.getTreeWrapper(TbCoreDictType::getId,
-                TbCoreDictType::getParentId,
-                TbCoreDictType::getDictTypeName,
-                TbCoreDictType::getDictTypeCode,
-                TbCoreDictType::getIsTree)
-                .lambda();
+    public List<Tree<String>> tree() {
+//        LambdaQueryWrapper<TbCoreDictType> queryWrapper = Condition.getTreeWrapper(TbCoreDictType::getId,
+//                TbCoreDictType::getParentId,
+//                TbCoreDictType::getDictTypeName,
+//                TbCoreDictType::getDictTypeCode,
+//                TbCoreDictType::getIsTree)
+//                .lambda();
+//        if (SecureUtil.isRoot()){
+//            queryWrapper.eq(TbCoreDictType::getTenantCode,DEFAULT_TENANT_CODE);
+//        }
+//        return coreDictTypeDao.tree(queryWrapper.orderByAsc(TbCoreDictType::getSortNum));
+        LambdaTreeWrapper<TbCoreDictType> queryWrapper = Condition.getLambdaTreeWrapper(TbCoreDictType.class,TbCoreDictType::getId,
+                TbCoreDictType::getParentId)
+                .select(TbCoreDictType::getDictTypeName,
+                        TbCoreDictType::getDictTypeCode,
+                        TbCoreDictType::getIsTree);
         if (SecureUtil.isRoot()){
             queryWrapper.eq(TbCoreDictType::getTenantCode,DEFAULT_TENANT_CODE);
         }
@@ -51,12 +60,17 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
     }
 
     @Override
-    public List<DictTypeVo> listTree(TbCoreDictType dictType) {
-        LambdaQueryWrapper<TbCoreDictType> queryWrapper =
+    public List<Tree<String>> listTree(TbCoreDictType dictType) {
+//        LambdaQueryWrapper<TbCoreDictType> queryWrapper =
+//                SecureUtil.isRoot()
+//                ? Condition.getQueryWrapper(dictType).lambda().eq(TbCoreDictType::getTenantCode,DEFAULT_TENANT_CODE).orderByAsc(TbCoreDictType::getSortNum)
+//                : Condition.getQueryWrapper(dictType).lambda().orderByAsc(TbCoreDictType::getSortNum);
+//        return coreDictTypeDao.listTree(queryWrapper, DictTypeVo.class);
+        LambdaTreeWrapper<TbCoreDictType> queryWrapper =
                 SecureUtil.isRoot()
-                ? Condition.getQueryWrapper(dictType).lambda().eq(TbCoreDictType::getTenantCode,DEFAULT_TENANT_CODE).orderByAsc(TbCoreDictType::getSortNum)
-                : Condition.getQueryWrapper(dictType).lambda().orderByAsc(TbCoreDictType::getSortNum);
-        return coreDictTypeDao.listTree(queryWrapper, DictTypeVo.class);
+                        ? Condition.getLambdaTreeWrapper(dictType,TbCoreDictType::getId,TbCoreDictType::getParentId).eq(TbCoreDictType::getTenantCode,DEFAULT_TENANT_CODE).orderByAsc(TbCoreDictType::getSortNum)
+                        : Condition.getLambdaTreeWrapper(dictType,TbCoreDictType::getId,TbCoreDictType::getParentId).orderByAsc(TbCoreDictType::getSortNum);
+        return coreDictTypeDao.tree(queryWrapper);
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.wlcb.jpower.module.mp.support;
 
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.ArrayUtil;
-import com.baomidou.mybatisplus.core.conditions.AbstractWrapper;
+import com.baomidou.mybatisplus.core.conditions.AbstractLambdaWrapper;
 import com.baomidou.mybatisplus.core.conditions.SharedString;
 import com.baomidou.mybatisplus.core.conditions.query.Query;
 import com.baomidou.mybatisplus.core.conditions.segments.MergeSegments;
@@ -10,7 +10,7 @@ import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.ArrayUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.wlcb.jpower.module.common.node.ForestNodeMerger;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.StringUtil;
@@ -23,32 +23,36 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 
 /**
- * 树形条件构造器
- *
- * @author mr.g
- **/
+ * Lambda 语法使用 Wrapper
+ * @author mr.gmac
+ */
 @SuppressWarnings("serial")
-public class TreeWrapper<T> extends AbstractWrapper<T, String, TreeWrapper<T>>
-        implements Query<TreeWrapper<T>, T, String> {
+public class LambdaTreeWrapper<T> extends AbstractLambdaWrapper<T, LambdaTreeWrapper<T>>
+    implements Query<LambdaTreeWrapper<T>, T, SFunction<T, ?>> {
 
-    private String id;
-    private String parentId;
+    private SFunction<T, ?> id;
+    private SFunction<T, ?> parentId;
 
     private final String idAlias = ForestNodeMerger.CONFIG.getIdKey();
     private final String parentIdAlias = ForestNodeMerger.CONFIG.getParentIdKey();
 
     private String hasChildren;
+
     /**
      * 查询字段
      */
-    private final SharedString sqlSelect = new SharedString();
+    private SharedString sqlSelect = new SharedString();
 
     /**
      * 存储用户的查询字段
      **/
     private List<String> list = new ArrayList<>();
 
-    public TreeWrapper(T entity,String id,String parentId) {
+//    public LambdaTreeWrapper() {
+//        this((T) null);
+//    }
+
+    public LambdaTreeWrapper(T entity,SFunction<T, ?> id,SFunction<T, ?> parentId) {
         super.setEntity(entity);
         this.id = id;
         this.parentId = parentId;
@@ -56,7 +60,8 @@ public class TreeWrapper<T> extends AbstractWrapper<T, String, TreeWrapper<T>>
         this.select(StringUtil.split(TableInfoHelper.getTableInfo(getEntityClass()).getAllSqlSelect(),StringPool.COMMA));
     }
 
-    public TreeWrapper(Class<T> entityClass,String id,String parentId) {
+    public LambdaTreeWrapper(Class<T> entityClass,SFunction<T, ?> id,SFunction<T, ?> parentId) {
+
         super.setEntityClass(entityClass);
         this.id = id;
         this.parentId = parentId;
@@ -64,28 +69,16 @@ public class TreeWrapper<T> extends AbstractWrapper<T, String, TreeWrapper<T>>
         this.select(StringUtil.split(TableInfoHelper.getTableInfo(getEntityClass()).getAllSqlSelect(),StringPool.COMMA));
     }
 
-    public TreeWrapper(T entity,String id,String parentId, String... columns) {
-        super.setEntity(entity);
-        this.id = id;
-        this.parentId = parentId;
-        super.initNeed();
-        this.select(columns);
-    }
-
-    /**
-     * 非对外公开的构造方法,只用于生产嵌套 sql
-     *
-     * @param entityClass 本不应该需要的
-     */
-    TreeWrapper(T entity, Class<T> entityClass, AtomicInteger paramNameSeq,
-                         Map<String, Object> paramNameValuePairs, MergeSegments mergeSegments, SharedString paramAlias,
-                         SharedString lastSql, SharedString sqlComment, SharedString sqlFirst,
-                         String id,String parentId,String hasChildren,List<String> list) {
+    private LambdaTreeWrapper(T entity, Class<T> entityClass, SharedString sqlSelect, AtomicInteger paramNameSeq,
+                      Map<String, Object> paramNameValuePairs, MergeSegments mergeSegments, SharedString paramAlias,
+                      SharedString lastSql, SharedString sqlComment, SharedString sqlFirst,
+                      SFunction<T, ?> id,SFunction<T, ?> parentId,String hasChildren,List<String> list) {
         super.setEntity(entity);
         super.setEntityClass(entityClass);
         this.paramNameSeq = paramNameSeq;
         this.paramNameValuePairs = paramNameValuePairs;
         this.expression = mergeSegments;
+        this.sqlSelect = sqlSelect;
         this.paramAlias = paramAlias;
         this.lastSql = lastSql;
         this.sqlComment = sqlComment;
@@ -96,11 +89,13 @@ public class TreeWrapper<T> extends AbstractWrapper<T, String, TreeWrapper<T>>
         this.list = list;
     }
 
-    @Override
-    public TreeWrapper<T> select(String... columns) {
+    private LambdaTreeWrapper<T> select(String... columns) {
         if (ArrayUtils.isNotEmpty(columns)) {
             this.list = ListUtil.toList(columns);
         }
+
+        String id = columnToString(this.id,false);
+        String parentId = columnToString(this.parentId,false);
 
         List<String> list = ListUtil.toCopyOnWriteArrayList(this.list);
         if (Fc.isNoneBlank(id,parentId)){
@@ -121,8 +116,32 @@ public class TreeWrapper<T> extends AbstractWrapper<T, String, TreeWrapper<T>>
         return typedThis;
     }
 
+    /**
+     * SELECT 部分 SQL 设置
+     *
+     * @param columns 查询字段
+     */
+    @SafeVarargs
     @Override
-    public TreeWrapper<T> select(Class<T> entityClass, Predicate<TableFieldInfo> predicate) {
+    public final LambdaTreeWrapper<T> select(SFunction<T, ?>... columns) {
+        String select = columnsToString(false, columns);
+        select(StringUtil.split(select,StringPool.COMMA));
+        return typedThis;
+    }
+
+    /**
+     * 过滤查询的字段信息(主键除外!)
+     * <p>例1: 只要 java 字段名以 "test" 开头的             -> select(i -&gt; i.getProperty().startsWith("test"))</p>
+     * <p>例2: 只要 java 字段属性是 CharSequence 类型的     -> select(TableFieldInfo::isCharSequence)</p>
+     * <p>例3: 只要 java 字段没有填充策略的                 -> select(i -&gt; i.getFieldFill() == FieldFill.DEFAULT)</p>
+     * <p>例4: 要全部字段                                   -> select(i -&gt; true)</p>
+     * <p>例5: 只要主键字段                                 -> select(i -&gt; false)</p>
+     *
+     * @param predicate 过滤方式
+     * @return this
+     */
+    @Override
+    public LambdaTreeWrapper<T> select(Class<T> entityClass, Predicate<TableFieldInfo> predicate) {
         if (entityClass == null) {
             entityClass = getEntityClass();
         } else {
@@ -133,24 +152,12 @@ public class TreeWrapper<T> extends AbstractWrapper<T, String, TreeWrapper<T>>
         return typedThis;
     }
 
-    /**
-     * 懒加载
-     * @Author mr.g
-     **/
-    public TreeWrapper<T> lazy(String parentIdValue){
+    public LambdaTreeWrapper<T> lazy(String parentIdValue){
         String tableName = TableInfoHelper.getTableInfo(getEntityClass()).getTableName();
-        this.hasChildren = "( SELECT CASE WHEN count( 1 ) > 0 THEN 1 ELSE 0 END FROM "+tableName+" as c WHERE "+this.parentId+" = "+tableName+"."+this.id+" ) AS "+ForestNodeMerger.HAS_CHILDREN;
+
+        this.hasChildren = "( SELECT CASE WHEN count( 1 ) > 0 THEN 1 ELSE 0 END FROM "+tableName+" as c WHERE "+columnToString(this.parentId,false)+" = "+tableName+"."+columnToString(this.id,false)+" ) AS "+ForestNodeMerger.HAS_CHILDREN;
         select(ArrayUtil.toArray(this.list,String.class));
         eq(this.parentId,StringUtil.isBlank(parentIdValue)? JpowerConstants.TOP_CODE:parentIdValue);
-        return typedThis;
-    }
-
-    /**
-     * Map条件增强
-     * @Author mr.g
-     **/
-    public TreeWrapper<T> map(Map<String,Object> query){
-        SqlKeyword.buildCondition(query, this);
         return typedThis;
     }
 
@@ -159,22 +166,28 @@ public class TreeWrapper<T> extends AbstractWrapper<T, String, TreeWrapper<T>>
         return sqlSelect.getStringValue();
     }
 
+    /**
+     * 用于生成嵌套 sql
+     * <p>故 sqlSelect 不向下传递</p>
+     */
     @Override
-    protected String columnSqlInjectFilter(String column) {
-        return StringUtils.sqlInjectionReplaceBlank(column);
+    protected LambdaTreeWrapper<T> instance() {
+        return new LambdaTreeWrapper<>(getEntity(), getEntityClass(), null, paramNameSeq, paramNameValuePairs,
+            new MergeSegments(), paramAlias, SharedString.emptyString(), SharedString.emptyString(), SharedString.emptyString(),
+                id,parentId,hasChildren,list);
     }
 
     /**
-     * 用于生成嵌套 sql
-     * <p>
-     * 故 sqlSelect 不向下传递
-     * </p>
+     * 返回一个不是 lambda 函数写法的 wrapper
      */
-    @Override
-    protected TreeWrapper<T> instance() {
-        return new TreeWrapper<>(getEntity(), getEntityClass(), paramNameSeq, paramNameValuePairs, new MergeSegments(),
-                paramAlias, SharedString.emptyString(), SharedString.emptyString(), SharedString.emptyString(),
-                id, parentId,hasChildren,list);
+    public TreeWrapper<T> unLambda() {
+        String id = columnToString(this.id,false);
+        String parentId = columnToString(this.parentId,false);
+
+        return new TreeWrapper<T>(getEntity(), getEntityClass(), paramNameSeq,
+                paramNameValuePairs, expression, paramAlias,
+                lastSql, sqlComment, sqlFirst,
+                id,parentId,hasChildren,list);
     }
 
     @Override
@@ -187,6 +200,6 @@ public class TreeWrapper<T> extends AbstractWrapper<T, String, TreeWrapper<T>>
         sqlFirst.toEmpty();
         this.hasChildren = null;
         this.list.clear();
-        this.select(StringUtil.split(TableInfoHelper.getTableInfo(getEntityClass()).getAllSqlSelect(),StringPool.COMMA));
+        this.select(StringUtil.split(TableInfoHelper.getTableInfo(getEntityClass()).getAllSqlSelect(), StringPool.COMMA));
     }
 }

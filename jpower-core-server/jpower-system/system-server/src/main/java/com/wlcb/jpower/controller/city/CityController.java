@@ -1,12 +1,12 @@
 package com.wlcb.jpower.controller.city;
 
+import cn.hutool.core.lang.tree.Tree;
 import com.wlcb.jpower.dbs.entity.city.TbCoreCity;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.controller.BaseController;
-import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
@@ -82,8 +82,8 @@ public class CityController extends BaseController {
 
     @ApiOperation("懒加载树形菜单")
     @RequestMapping(value = "/lazyTree",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData<List<Node>> lazyTree(@ApiParam(value = "父级编码",required = true) @RequestParam String pcode){
-        List<Node> nodeList = coreCityService.lazyTree(pcode);
+    public ResponseData<List<Tree<String>>> lazyTree(@ApiParam(value = "父级编码",required = true) @RequestParam String pcode){
+        List<Tree<String>> nodeList = coreCityService.lazyTree(pcode);
         return ReturnJsonUtil.ok("查询成功",nodeList);
     }
 }

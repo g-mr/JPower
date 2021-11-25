@@ -2,7 +2,6 @@ package com.wlcb.jpower.service.org;
 
 import cn.hutool.core.lang.tree.Tree;
 import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
-import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.service.BaseService;
 import com.wlcb.jpower.vo.OrgVo;
 
@@ -57,7 +56,7 @@ public interface CoreOrgService extends BaseService<TbCoreOrg> {
      * @param coreOrg
      * @return java.util.List<com.wlcb.jpower.module.common.node.Node>
      */
-    List<Node> tree(Map<String, Object> coreOrg);
+    List<Tree<String>> tree(Map<String, Object> coreOrg);
 
     /**
      * @author 郭丁志
@@ -67,7 +66,7 @@ public interface CoreOrgService extends BaseService<TbCoreOrg> {
      * @param coreOrg
      * @return java.util.List<com.wlcb.jpower.module.common.node.Node>
      */
-    List<Node> tree(String parentCode, Map<String, Object> coreOrg);
+    List<Tree<String>> tree(String parentCode, Map<String, Object> coreOrg);
 
     /**
      * @author 郭丁志
@@ -78,5 +77,4 @@ public interface CoreOrgService extends BaseService<TbCoreOrg> {
      */
     List<String> queryChildById(String id);
 
-    List<Tree<String>> treeH(Map<String, Object> coreOrg);
 }

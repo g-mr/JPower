@@ -8,7 +8,6 @@ import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.controller.BaseController;
-import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
@@ -115,8 +114,8 @@ public class OrgController extends BaseController {
             @ApiImplicitParam(name = "isVirtual",value = "是否虚拟机构 字典YN01",paramType = "query"),
     })
     @RequestMapping(value = "/tree",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData<List<Node>> tree(@ApiIgnore @RequestParam Map<String,Object> coreOrg){
-        List<Node> list = coreOrgService.tree(coreOrg);
+    public ResponseData<List<Tree<String>>> tree(@ApiIgnore @RequestParam Map<String,Object> coreOrg){
+        List<Tree<String>> list = coreOrgService.tree(coreOrg);
         return ReturnJsonUtil.ok("查询成功",list);
     }
 
@@ -135,17 +134,11 @@ public class OrgController extends BaseController {
 
     })
     @RequestMapping(value = "/lazyTree",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData<List<Node>> lazyTree(@ApiParam(value = "父级ID",defaultValue = JpowerConstants.TOP_CODE,required = true) @RequestParam(defaultValue = JpowerConstants.TOP_CODE)  String parentId,
+    public ResponseData<List<Tree<String>>> lazyTree(@ApiParam(value = "父级ID",defaultValue = JpowerConstants.TOP_CODE,required = true) @RequestParam(defaultValue = JpowerConstants.TOP_CODE)  String parentId,
                                  @ApiIgnore @RequestParam Map<String,Object> coreOrg){
         coreOrg.remove("parentId");
-        List<Node> list = coreOrgService.tree(parentId,coreOrg);
+        List<Tree<String>> list = coreOrgService.tree(parentId,coreOrg);
         return ReturnJsonUtil.ok("查询成功",list);
     }
 
-
-    @RequestMapping(value = "/treeH",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData<List<Tree<String>>> treeH(@ApiIgnore @RequestParam Map<String,Object> coreOrg){
-        List<Tree<String>> list = coreOrgService.treeH(coreOrg);
-        return ReturnJsonUtil.ok("查询成功",list);
-    }
 }

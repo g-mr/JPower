@@ -2,12 +2,8 @@ package com.wlcb.jpower.vo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.wlcb.jpower.dbs.entity.function.TbCoreFunction;
-import com.wlcb.jpower.module.common.node.Node;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @ClassName Function
@@ -17,7 +13,7 @@ import java.util.List;
  * @Version 1.0
  */
 @Data
-public class FunctionVo extends TbCoreFunction implements Node {
+public class FunctionVo extends TbCoreFunction{
 
     @ApiModelProperty("是否菜单")
     private String isMenuStr;
@@ -25,33 +21,7 @@ public class FunctionVo extends TbCoreFunction implements Node {
     @ApiModelProperty("页面打开方式")
     private String targetStr;
 
-    /**
-     * 子孙节点
-     */
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private List<Node> children;
-
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Boolean hasChildren;
-
-    @Override
-    public List<Node> getChildren() {
-        if (this.children == null) {
-            this.children = new ArrayList<>();
-        }
-        return this.children;
-    }
-
-    /**
-     * 是否有子孙节点
-     */
-    @Override
-    public Boolean getHasChildren() {
-        if (children.size() > 0) {
-            return true;
-        } else {
-            return this.hasChildren;
-        }
-    }
 
 }

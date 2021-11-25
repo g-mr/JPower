@@ -31,6 +31,7 @@ public interface StringPool extends StrPool {
     String SPACE			= " ";
     String LEFT_SQ_BRACKET	= "[";
     String RIGHT_SQ_BRACKET	= "]";
+    String SPILT	= "|";
     String TRUE				= "true";
     String UTF_8			= "UTF-8";
     String GBK				= "GBK";

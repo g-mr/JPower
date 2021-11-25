@@ -9,7 +9,6 @@ import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
-import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SecureUtil;
@@ -92,21 +91,25 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper, TbCoreO
     }
 
     @Override
-    public List<Node> tree(Map<String, Object> coreOrg) {
-        return coreOrgDao.tree(Condition.getTreeWrapper(TbCoreOrg::getId,TbCoreOrg::getParentId,TbCoreOrg::getName).map(coreOrg).lambda().orderByAsc(TbCoreOrg::getSort));
+    public List<Tree<String>> tree(Map<String, Object> coreOrg) {
+//        return coreOrgDao.tree(Condition.getTreeWrapper(TbCoreOrg::getId,TbCoreOrg::getParentId,TbCoreOrg::getName).map(coreOrg).lambda().orderByAsc(TbCoreOrg::getSort));
+        return coreOrgDao.tree(Condition.getLambdaTreeWrapper(TbCoreOrg.class,TbCoreOrg::getId,TbCoreOrg::getParentId)
+                .select(TbCoreOrg::getName)
+                .orderByAsc(TbCoreOrg::getSort)
+                .unLambda()
+                .map(coreOrg));
     }
 
     @Override
-    public List<Tree<String>> treeH(Map<String, Object> coreOrg) {
-        return coreOrgDao.treeHutool(Condition.getQueryWrapper(coreOrg,TbCoreOrg.class).lambda().select(TbCoreOrg::getId,TbCoreOrg::getParentId,TbCoreOrg::getName));
-    }
-
-    @Override
-    public List<Node> tree(String parentId, Map<String, Object> coreOrg) {
-        return coreOrgDao.tree(Condition.getTreeWrapper(TbCoreOrg::getId,TbCoreOrg::getParentId,TbCoreOrg::getName,TbCoreOrg::getCode)
-                .lazy(parentId).map(coreOrg)
-                .lambda()
-                .orderByAsc(TbCoreOrg::getSort));
+    public List<Tree<String>> tree(String parentId, Map<String, Object> coreOrg) {
+//        return coreOrgDao.tree(Condition.getTreeWrapper(TbCoreOrg::getId,TbCoreOrg::getParentId,TbCoreOrg::getName,TbCoreOrg::getCode)
+//                .lazy(parentId).map(coreOrg)
+//                .lambda()
+//                .orderByAsc(TbCoreOrg::getSort));
+        return coreOrgDao.tree(Condition.getLambdaTreeWrapper(TbCoreOrg.class,TbCoreOrg::getId,TbCoreOrg::getParentId)
+                .lazy(parentId)
+                .select(TbCoreOrg::getName,TbCoreOrg::getCode)
+                .orderByAsc(TbCoreOrg::getSort).unLambda().map(coreOrg));
     }
 
     @Override

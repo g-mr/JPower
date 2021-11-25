@@ -1,8 +1,8 @@
 package com.wlcb.jpower.service.city;
 
 
+import cn.hutool.core.lang.tree.Tree;
 import com.wlcb.jpower.dbs.entity.city.TbCoreCity;
-import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.service.BaseService;
 import com.wlcb.jpower.vo.CityVo;
 
@@ -66,7 +66,7 @@ public interface CoreCityService extends BaseService<TbCoreCity> {
      * @Param [pcode]
      * @return java.util.List<com.wlcb.jpower.module.common.node.Node>
      **/
-    List<Node> lazyTree(String pcode);
+    List<Tree<String>> lazyTree(String pcode);
 
     Boolean update(TbCoreCity coreCity);
 

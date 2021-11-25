@@ -1,7 +1,7 @@
 package com.wlcb.jpower.service.role;
 
+import cn.hutool.core.lang.tree.Tree;
 import com.wlcb.jpower.dbs.entity.function.TbCoreFunction;
-import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.service.BaseService;
 import com.wlcb.jpower.vo.FunctionVo;
 
@@ -93,7 +93,7 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @param roleIds
      * @return java.util.List<com.wlcb.jpower.module.common.node.Node>
      */
-    List<Node> lazyTreeByRole(String parentId, List<String> roleIds);
+    List<Tree<String>> lazyTreeByRole(String parentId, List<String> roleIds);
 
     /**
      * @Author 郭丁志
@@ -120,7 +120,7 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @Param [roleIds, functionVoClass]
      * @return java.util.List<com.wlcb.jpower.module.dbs.vo.FunctionVo>
      **/
-    List<FunctionVo> listTreeByRoleId(List<String> roleIds);
+    List<Tree<String>> listTreeByRoleId(List<String> roleIds);
 
     long queryRoleByUrl(String url);
 
@@ -133,7 +133,7 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @param roleIds 角色ID
      * @return java.util.List<com.wlcb.jpower.module.common.node.Node>
      **/
-    List<Node> menuTreeByRoleIds(List<String> roleIds);
+    List<Tree<String>> menuTreeByRoleIds(List<String> roleIds);
 
     /**
      * 查询资源

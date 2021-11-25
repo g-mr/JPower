@@ -1,5 +1,6 @@
 package com.wlcb.jpower.controller.function;
 
+import cn.hutool.core.lang.tree.Tree;
 import com.wlcb.jpower.dbs.entity.function.TbCoreFunction;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
@@ -7,7 +8,6 @@ import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.node.ForestNodeMerger;
-import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
@@ -45,7 +45,7 @@ public class FunctionController extends BaseController {
             @ApiImplicitParam(name = "url",value = "功能URL",paramType = "query")
     })
     @RequestMapping(value = "/listByParent",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
-    public ResponseData<List<FunctionVo>> list(@ApiIgnore @RequestParam Map<String,Object> coreFunction){
+    public ResponseData<List<?>> list(@ApiIgnore @RequestParam Map<String,Object> coreFunction){
         coreFunction.remove("parentId");
 
         int size = coreFunction.size();
@@ -66,7 +66,7 @@ public class FunctionController extends BaseController {
         if (coreFunction.containsKey("parentId_eq")){
             return ReturnJsonUtil.ok("获取成功", list);
         }else {
-            return ReturnJsonUtil.ok("获取成功", ForestNodeMerger.merge(list));
+            return ReturnJsonUtil.ok("获取成功", ForestNodeMerger.mergeTree(list));
         }
     }
 
@@ -150,11 +150,16 @@ public class FunctionController extends BaseController {
 
     @ApiOperation("懒加载登录用户所有功能树形结构")
     @RequestMapping(value = "/lazyTree",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData<List<Node>> lazyTree(@ApiParam(value = "父级编码",defaultValue = JpowerConstants.TOP_CODE,required = true) @RequestParam(defaultValue = JpowerConstants.TOP_CODE) String parentId){
+    public ResponseData<List<Tree<String>>> lazyTree(@ApiParam(value = "父级编码",defaultValue = JpowerConstants.TOP_CODE,required = true) @RequestParam(defaultValue = JpowerConstants.TOP_CODE) String parentId){
         List<String> roleIds = SecureUtil.getUserRole();
 
-        List<Node> list = SecureUtil.isRoot()?coreFunctionService.tree(Condition.getTreeWrapper(TbCoreFunction::getId,TbCoreFunction::getParentId,TbCoreFunction::getFunctionName,TbCoreFunction::getUrl)
-                .lazy(parentId).lambda()
+//        List<Tree<String>> list = SecureUtil.isRoot()?coreFunctionService.tree(Condition.getTreeWrapper(TbCoreFunction::getId,TbCoreFunction::getParentId,TbCoreFunction::getFunctionName,TbCoreFunction::getUrl)
+//                .lazy(parentId).lambda()
+//                .orderByAsc(TbCoreFunction::getSort)):
+//                coreFunctionService.lazyTreeByRole(parentId,roleIds);
+        List<Tree<String>> list = SecureUtil.isRoot()?coreFunctionService.tree(Condition.getLambdaTreeWrapper(TbCoreFunction.class,TbCoreFunction::getId,TbCoreFunction::getParentId)
+                .lazy(parentId)
+                .select(TbCoreFunction::getFunctionName,TbCoreFunction::getUrl)
                 .orderByAsc(TbCoreFunction::getSort)):
                 coreFunctionService.lazyTreeByRole(parentId,roleIds);
         return ReturnJsonUtil.ok("查询成功",list);
@@ -182,16 +187,16 @@ public class FunctionController extends BaseController {
 
     @ApiOperation("查询登录用户所有功能的树形列表")
     @GetMapping(value = "/listTree", produces="application/json")
-    public ResponseData<List<FunctionVo>> listTree(){
-        List<FunctionVo> list = SecureUtil.isRoot()?
-                coreFunctionService.listTree(Condition.getQueryWrapper(),FunctionVo.class):
+    public ResponseData<List<Tree<String>>> listTree(){
+        List<Tree<String>> list = SecureUtil.isRoot()?
+                coreFunctionService.tree(Condition.getLambdaTreeWrapper(TbCoreFunction.class,TbCoreFunction::getId,TbCoreFunction::getParentId)):
                 coreFunctionService.listTreeByRoleId(SecureUtil.getUserRole());
         return ReturnJsonUtil.ok("查询成功", list);
     }
 
     @ApiOperation("查询登录用户所有菜单树形结构")
     @GetMapping(value = "/menuTree", produces="application/json")
-    public ResponseData<List<Node>> menuTree(){
+    public ResponseData<List<Tree<String>>> menuTree(){
         return ReturnJsonUtil.ok("查询成功", coreFunctionService.menuTreeByRoleIds(SecureUtil.getUserRole()));
     }
 

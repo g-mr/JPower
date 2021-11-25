@@ -15,7 +15,7 @@
  */
 package com.wlcb.jpower.module.mp.support;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.AbstractWrapper;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
@@ -50,7 +50,7 @@ public class SqlKeyword {
      * @param query 查询字段
      * @param wrapper    查询包装类
      */
-    public static void buildCondition(Map<String, Object> query, QueryWrapper<?> wrapper) {
+    public static void buildCondition(Map<String, Object> query, AbstractWrapper<?,String,?> wrapper) {
         if (Fc.isEmpty(query)) {
             return;
         }

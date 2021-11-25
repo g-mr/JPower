@@ -2,12 +2,8 @@ package com.wlcb.jpower.vo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
-import com.wlcb.jpower.module.common.node.Node;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @ClassName OrgVo
@@ -17,35 +13,12 @@ import java.util.List;
  * @Version 1.0
  */
 @Data
-public class OrgVo extends TbCoreOrg implements Node {
+public class OrgVo extends TbCoreOrg{
 
     @ApiModelProperty("是否虚拟机构")
     private String isVirtualStr;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private List<Node> children;
-
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Boolean hasChildren;
-
-    @Override
-    public List<Node> getChildren() {
-        if (this.children == null) {
-            this.children = new ArrayList<>();
-        }
-        return this.children;
-    }
-
-    /**
-     * 是否有子孙节点
-     */
-    @Override
-    public Boolean getHasChildren() {
-        if (children.size() > 0) {
-            return true;
-        } else {
-            return this.hasChildren;
-        }
-    }
 
 }

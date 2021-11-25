@@ -2,12 +2,8 @@ package com.wlcb.jpower.vo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.wlcb.jpower.dbs.entity.city.TbCoreCity;
-import com.wlcb.jpower.module.common.node.Node;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @ClassName CityVo
@@ -17,7 +13,7 @@ import java.util.List;
  * @Version 1.0
  */
 @Data
-public class CityVo extends TbCoreCity implements Node {
+public class CityVo extends TbCoreCity{
 
     private static final long serialVersionUID = 3438947425188438375L;
 
@@ -27,35 +23,8 @@ public class CityVo extends TbCoreCity implements Node {
     @ApiModelProperty("上级地区")
     private String pname;
 
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private List<Node> children;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Boolean hasChildren;
-
-    @Override
-    public String getParentId() {
-        return getPcode();
-    }
-
-    @Override
-    public List<Node> getChildren() {
-        if (this.children == null) {
-            this.children = new ArrayList<>();
-        }
-        return this.children;
-    }
-
-    /**
-     * 是否有子孙节点
-     */
-    @Override
-    public Boolean getHasChildren() {
-        if (children.size() > 0) {
-            return true;
-        } else {
-            return this.hasChildren;
-        }
-    }
 
 }

@@ -1,9 +1,8 @@
 package com.wlcb.jpower.service.dict;
 
+import cn.hutool.core.lang.tree.Tree;
 import com.wlcb.jpower.dbs.entity.dict.TbCoreDictType;
-import com.wlcb.jpower.module.common.node.Node;
 import com.wlcb.jpower.module.common.service.BaseService;
-import com.wlcb.jpower.vo.DictTypeVo;
 
 import java.util.List;
 
@@ -19,14 +18,14 @@ public interface CoreDictTypeService extends BaseService<TbCoreDictType> {
      * @param
      * @return java.util.List<com.wlcb.jpower.module.common.node.Node>
      */
-    List<Node> tree();
+    List<Tree<String>> tree();
 
     /**
      * @author 郭丁志
      * @Description //TODO 查询字典类型树形列表结构
      * @date 18:24 2020/7/26 0026
      */
-    List<DictTypeVo> listTree(TbCoreDictType dictType);
+    List<Tree<String>> listTree(TbCoreDictType dictType);
 
     /**
      * @author 郭丁志
