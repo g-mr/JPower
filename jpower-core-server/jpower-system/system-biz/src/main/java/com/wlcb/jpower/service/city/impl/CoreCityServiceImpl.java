@@ -100,12 +100,8 @@ public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper, TbCor
     @Override
     @Cacheable(value = CacheNames.CITY_PARENT_REDIS_KEY,key = "#pcode ?: '-1'")
     public List<Tree<String>> lazyTree(String pcode) {
-//        return coreCityDao.tree(Condition.getTreeWrapper(TbCoreCity::getCode,TbCoreCity::getPcode,TbCoreCity::getName)
-//                .lazy(pcode).lambda()
-//                .orderByAsc(TbCoreCity::getSortNum));
         return coreCityDao.tree(Condition.getLambdaTreeWrapper(TbCoreCity.class,TbCoreCity::getCode,TbCoreCity::getPcode)
-                .lazy(pcode)
-                .orderByAsc(TbCoreCity::getSortNum).unLambda().select("name","id AS `key`"));
+                .lazy(pcode).unLambda().select("sort_num AS sort","name","id AS `key`"));
     }
 
     @Override

@@ -152,11 +152,6 @@ public class FunctionController extends BaseController {
     @RequestMapping(value = "/lazyTree",method = {RequestMethod.GET},produces="application/json")
     public ResponseData<List<Tree<String>>> lazyTree(@ApiParam(value = "父级编码",defaultValue = JpowerConstants.TOP_CODE,required = true) @RequestParam(defaultValue = JpowerConstants.TOP_CODE) String parentId){
         List<String> roleIds = SecureUtil.getUserRole();
-
-//        List<Tree<String>> list = SecureUtil.isRoot()?coreFunctionService.tree(Condition.getTreeWrapper(TbCoreFunction::getId,TbCoreFunction::getParentId,TbCoreFunction::getFunctionName,TbCoreFunction::getUrl)
-//                .lazy(parentId).lambda()
-//                .orderByAsc(TbCoreFunction::getSort)):
-//                coreFunctionService.lazyTreeByRole(parentId,roleIds);
         List<Tree<String>> list = SecureUtil.isRoot()?coreFunctionService.tree(Condition.getLambdaTreeWrapper(TbCoreFunction.class,TbCoreFunction::getId,TbCoreFunction::getParentId)
                 .lazy(parentId)
                 .select(TbCoreFunction::getFunctionName,TbCoreFunction::getUrl)
@@ -167,14 +162,17 @@ public class FunctionController extends BaseController {
 
     @ApiOperation("页面菜单获取")
     @GetMapping(value = "/listMenuTree", produces="application/json")
-    public ResponseData<List<FunctionVo>> listMenuTree(){
+    public ResponseData<List<Tree<String>>> listMenuTree(){
         List<String> roleIds = SecureUtil.getUserRole();
 
-        List<TbCoreFunction> list = SecureUtil.isRoot()?coreFunctionService.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
+        List<TbCoreFunction> list = SecureUtil.isRoot()
+                ?
+                coreFunctionService.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                 .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.Y.getValue())
-                .orderByAsc(TbCoreFunction::getSort)):
+                .orderByAsc(TbCoreFunction::getSort))
+                :
                 coreFunctionService.listMenuByRoleId(roleIds);
-        return ReturnJsonUtil.ok("查询成功", BeanUtil.copyToList(list,FunctionVo.class));
+        return ReturnJsonUtil.ok("查询成功", ForestNodeMerger.mergeTree(BeanUtil.copyToList(list,FunctionVo.class)));
     }
 
     @ApiOperation(value = "（用于页面权限）查询登录用户一个菜单下的所有按钮接口资源", notes = "用于页面权限判断，会把顶级按钮一起返回，顶级按钮代表所有菜单都可拥有权限")

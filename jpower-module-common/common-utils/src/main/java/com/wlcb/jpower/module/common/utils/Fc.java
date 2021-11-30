@@ -289,19 +289,8 @@ public class Fc {
      * @param element 要查找的元素
      * @return {@code true} if found, {@code false} otherwise
      */
-    public static boolean contains(@Nullable Iterator<?> iterator, Object element) {
+    public static boolean contains(@Nullable Collection<?> iterator, Object element) {
         return CollectionUtil.contains(iterator, element);
-    }
-
-    /**
-     * 检查给定的 Enumeration 是否包含给定的元素。
-     *
-     * @param enumeration 要检查的枚举
-     * @param element     要查找的元素
-     * @return {@code true} if found, {@code false} otherwise
-     */
-    public static boolean contains(@Nullable Enumeration<?> enumeration, Object element) {
-        return CollectionUtil.contains(enumeration, element);
     }
 
     /**

@@ -81,7 +81,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
             }
             Object o = redisUtil.get(CacheNames.TOKEN_URL_KEY + token);
             List<String> listUrl = Fc.isNull(o)?new ArrayList<>():(List<String>) o;
-            if (Fc.isNull(claims) || !Fc.contains(listUrl.iterator(), currentPath)) {
+            if (Fc.isNull(claims) || !Fc.contains(listUrl, currentPath)) {
                 return unAuth(exchange.getResponse(), "请求未授权");
             }
 
@@ -91,7 +91,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
         }else {
             //白名单
             String ip = IpUtil.getIP(exchange.getRequest());
-            if (Fc.contains(authProperties.getWhileIp().iterator(),ip)){
+            if (Fc.contains(authProperties.getWhileIp(),ip)){
                 return chain.filter(addHeader(exchange,ip,StringPool.EMPTY));
             }
 
@@ -111,7 +111,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
     private boolean getIsAnonymous(String currentPath){
         Object o = redisUtil.get(CacheNames.TOKEN_URL_KEY+ RoleConstant.ANONYMOUS);
         List<String> listUrl = Fc.isNull(o)?new ArrayList<>():(List<String>) o;
-        return Fc.contains(listUrl.iterator(),currentPath);
+        return Fc.contains(listUrl,currentPath);
     }
 
     private ServerWebExchange addHeader(ServerWebExchange exchange,String otherAuth, String dataScope) {

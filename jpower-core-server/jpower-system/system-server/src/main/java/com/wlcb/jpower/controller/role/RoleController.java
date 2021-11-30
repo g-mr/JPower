@@ -43,9 +43,6 @@ public class RoleController extends BaseController {
     @ApiOperation("查询角色树结构列表")
     @RequestMapping(value = "/listTree",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
     public ResponseData<List<Tree<String>>> listTree(TbCoreRole coreRole){
-//        List<RoleVo> list = coreRoleService.listTree(Condition.getQueryWrapper(coreRole)
-//                .lambda().orderByAsc(TbCoreRole::getCreateTime)
-//                , RoleVo.class);
         List<Tree<String>> list = coreRoleService.tree(Condition.getLambdaTreeWrapper(coreRole,TbCoreRole::getId,TbCoreRole::getParentId)
                         .orderByAsc(TbCoreRole::getCreateTime));
         return ReturnJsonUtil.ok("获取成功", list);

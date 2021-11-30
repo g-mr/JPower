@@ -7,6 +7,7 @@ import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 import com.wlcb.jpower.module.common.utils.constants.CharPool;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
+import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -178,7 +179,7 @@ public class DeepJson {
      * @return java.lang.Object
      */
     private static Object queryEndKey(String keys) {
-        String key = CollectionUtil.lastElement(Splitter.on(StringPool.DOT).omitEmptyStrings().trimResults().splitToList(keys));
+        String key = CollectionUtils.lastElement(Splitter.on(StringPool.DOT).omitEmptyStrings().trimResults().splitToList(keys));
         if (CharMatcher.inRange(CharPool.NUMBER_0, CharPool.NUMBER_9).removeFrom(key).endsWith(StringPool.LEFT_SQ_BRACKET+StringPool.RIGHT_SQ_BRACKET)){
             return Fc.toInt(StringUtil.subBetween(key,StringPool.LEFT_SQ_BRACKET,StringPool.RIGHT_SQ_BRACKET,true));
         }

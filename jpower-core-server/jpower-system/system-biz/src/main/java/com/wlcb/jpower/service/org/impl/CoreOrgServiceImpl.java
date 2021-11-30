@@ -92,7 +92,6 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper, TbCoreO
 
     @Override
     public List<Tree<String>> tree(Map<String, Object> coreOrg) {
-//        return coreOrgDao.tree(Condition.getTreeWrapper(TbCoreOrg::getId,TbCoreOrg::getParentId,TbCoreOrg::getName).map(coreOrg).lambda().orderByAsc(TbCoreOrg::getSort));
         return coreOrgDao.tree(Condition.getLambdaTreeWrapper(TbCoreOrg.class,TbCoreOrg::getId,TbCoreOrg::getParentId)
                 .select(TbCoreOrg::getName)
                 .orderByAsc(TbCoreOrg::getSort)
@@ -102,10 +101,6 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper, TbCoreO
 
     @Override
     public List<Tree<String>> tree(String parentId, Map<String, Object> coreOrg) {
-//        return coreOrgDao.tree(Condition.getTreeWrapper(TbCoreOrg::getId,TbCoreOrg::getParentId,TbCoreOrg::getName,TbCoreOrg::getCode)
-//                .lazy(parentId).map(coreOrg)
-//                .lambda()
-//                .orderByAsc(TbCoreOrg::getSort));
         return coreOrgDao.tree(Condition.getLambdaTreeWrapper(TbCoreOrg.class,TbCoreOrg::getId,TbCoreOrg::getParentId)
                 .lazy(parentId)
                 .select(TbCoreOrg::getName,TbCoreOrg::getCode)

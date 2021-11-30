@@ -28,9 +28,11 @@ mybatis-plus:
   global-config:
     db-config:
       id-type: ASSIGN_UUID
-      field-strategy: not_empty
-      #驼峰下划线转换
-      column-underline: true
+      where-strategy: NOT_EMPTY
+      update-strategy: NOT_EMPTY
+      insert-strategy: NOT_EMPTY
+      #表名驼峰下划线转换
+      table-underline: true
       #逻辑删除配置
       logic-delete-value: 1
       logic-not-delete-value: 0

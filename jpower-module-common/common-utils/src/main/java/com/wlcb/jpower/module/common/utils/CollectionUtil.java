@@ -1,9 +1,9 @@
 package com.wlcb.jpower.module.common.utils;
 
+import cn.hutool.core.collection.CollUtil;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.Nullable;
-import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 
@@ -14,7 +14,18 @@ import java.util.*;
  * @Date 2020-07-23 15:15
  * @Version 1.0
  */
-public class CollectionUtil extends CollectionUtils{
+public class CollectionUtil extends CollUtil {
+
+    /**
+     * 新建一个HashSet
+     *
+     * @param <T>        集合元素类型
+     * @param collection 集合
+     * @return HashSet对象
+     */
+    public static <T> HashSet<T> newHashSet(Collection<T> collection) {
+        return isEmpty(collection) ? newHashSet() : newHashSet(false, collection);
+    }
 
     /**
      * 判断给定的数组是否包含指定的元素

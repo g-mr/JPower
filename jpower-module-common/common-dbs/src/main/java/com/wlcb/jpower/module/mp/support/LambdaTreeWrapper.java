@@ -41,23 +41,19 @@ public class LambdaTreeWrapper<T> extends AbstractLambdaWrapper<T, LambdaTreeWra
     /**
      * 查询字段
      */
-    private SharedString sqlSelect = new SharedString();
+    private final SharedString sqlSelect = new SharedString();
 
     /**
      * 存储用户的查询字段
      **/
     private List<String> list = new ArrayList<>();
 
-//    public LambdaTreeWrapper() {
-//        this((T) null);
-//    }
-
     public LambdaTreeWrapper(T entity,SFunction<T, ?> id,SFunction<T, ?> parentId) {
         super.setEntity(entity);
         this.id = id;
         this.parentId = parentId;
         super.initNeed();
-        this.select(StringUtil.split(TableInfoHelper.getTableInfo(getEntityClass()).getAllSqlSelect(),StringPool.COMMA));
+        this.select(Fc.toStrArray(TableInfoHelper.getTableInfo(getEntityClass()).getAllSqlSelect()));
     }
 
     public LambdaTreeWrapper(Class<T> entityClass,SFunction<T, ?> id,SFunction<T, ?> parentId) {
@@ -66,10 +62,10 @@ public class LambdaTreeWrapper<T> extends AbstractLambdaWrapper<T, LambdaTreeWra
         this.id = id;
         this.parentId = parentId;
         super.initNeed();
-        this.select(StringUtil.split(TableInfoHelper.getTableInfo(getEntityClass()).getAllSqlSelect(),StringPool.COMMA));
+        this.select(Fc.toStrArray(TableInfoHelper.getTableInfo(getEntityClass()).getAllSqlSelect()));
     }
 
-    private LambdaTreeWrapper(T entity, Class<T> entityClass, SharedString sqlSelect, AtomicInteger paramNameSeq,
+    private LambdaTreeWrapper(T entity, Class<T> entityClass, AtomicInteger paramNameSeq,
                       Map<String, Object> paramNameValuePairs, MergeSegments mergeSegments, SharedString paramAlias,
                       SharedString lastSql, SharedString sqlComment, SharedString sqlFirst,
                       SFunction<T, ?> id,SFunction<T, ?> parentId,String hasChildren,List<String> list) {
@@ -78,7 +74,6 @@ public class LambdaTreeWrapper<T> extends AbstractLambdaWrapper<T, LambdaTreeWra
         this.paramNameSeq = paramNameSeq;
         this.paramNameValuePairs = paramNameValuePairs;
         this.expression = mergeSegments;
-        this.sqlSelect = sqlSelect;
         this.paramAlias = paramAlias;
         this.lastSql = lastSql;
         this.sqlComment = sqlComment;
@@ -125,7 +120,7 @@ public class LambdaTreeWrapper<T> extends AbstractLambdaWrapper<T, LambdaTreeWra
     @Override
     public final LambdaTreeWrapper<T> select(SFunction<T, ?>... columns) {
         String select = columnsToString(false, columns);
-        select(StringUtil.split(select,StringPool.COMMA));
+        select(Fc.toStrArray(select));
         return typedThis;
     }
 
@@ -148,7 +143,7 @@ public class LambdaTreeWrapper<T> extends AbstractLambdaWrapper<T, LambdaTreeWra
             setEntityClass(entityClass);
         }
         String select = TableInfoHelper.getTableInfo(entityClass).chooseSelect(predicate);
-        select(StringUtil.split(select,StringPool.COMMA));
+        select(Fc.toStrArray(select));
         return typedThis;
     }
 
@@ -172,7 +167,7 @@ public class LambdaTreeWrapper<T> extends AbstractLambdaWrapper<T, LambdaTreeWra
      */
     @Override
     protected LambdaTreeWrapper<T> instance() {
-        return new LambdaTreeWrapper<>(getEntity(), getEntityClass(), null, paramNameSeq, paramNameValuePairs,
+        return new LambdaTreeWrapper<>(getEntity(), getEntityClass(),  paramNameSeq, paramNameValuePairs,
             new MergeSegments(), paramAlias, SharedString.emptyString(), SharedString.emptyString(), SharedString.emptyString(),
                 id,parentId,hasChildren,list);
     }
@@ -184,7 +179,7 @@ public class LambdaTreeWrapper<T> extends AbstractLambdaWrapper<T, LambdaTreeWra
         String id = columnToString(this.id,false);
         String parentId = columnToString(this.parentId,false);
 
-        return new TreeWrapper<T>(getEntity(), getEntityClass(), paramNameSeq,
+        return new TreeWrapper<>(getEntity(), getEntityClass(), paramNameSeq, sqlSelect,
                 paramNameValuePairs, expression, paramAlias,
                 lastSql, sqlComment, sqlFirst,
                 id,parentId,hasChildren,list);
@@ -200,6 +195,6 @@ public class LambdaTreeWrapper<T> extends AbstractLambdaWrapper<T, LambdaTreeWra
         sqlFirst.toEmpty();
         this.hasChildren = null;
         this.list.clear();
-        this.select(StringUtil.split(TableInfoHelper.getTableInfo(getEntityClass()).getAllSqlSelect(), StringPool.COMMA));
+        this.select(Fc.toStrArray(TableInfoHelper.getTableInfo(getEntityClass()).getAllSqlSelect()));
     }
 }

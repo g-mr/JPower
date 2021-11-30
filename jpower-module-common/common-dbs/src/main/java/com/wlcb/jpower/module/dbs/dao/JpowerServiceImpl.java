@@ -166,7 +166,7 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
     }
 
     /**
-     * 根据 ID 更新所有列
+     * 批量新增指定列
      *
      * @param entityList 实体列表
      */
@@ -186,43 +186,9 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
         return list(queryWrapper).stream().filter(Objects::nonNull).map(function).collect(Collectors.toList());
     }
 
-//    /**
-//     * 加载树形节点
-//     *
-//     * @param treeWrapper
-//     * @return
-//     */
-//    public List<Node> tree(Wrapper<T> treeWrapper) {
-//        List<Map<String,Object>> list = listMaps(treeWrapper);
-//        return ForestNodeMerger.merge(list.stream().filter(Objects::nonNull).map(Condition.TreeWrapper::createNode).collect(Collectors.toList()));
-//    }
-//
-//    /**
-//     * @Author 郭丁志
-//     * @Description //TODO 查询树形结构list
-//     *                  查询字段中必须包含id和parentId字段，否则无法形成tree列表
-//     * @Date 21:51 2020-07-30
-//     * @Param [queryWrapper, clz]
-//     * @return java.util.List<V>
-//     **/
-//    public <V extends Node> List<V> listTree(Wrapper<T> queryWrapper,Class<V> clz) {
-//        return ForestNodeMerger.merge(listConver(queryWrapper,t -> BeanUtil.copy(t, clz)));
-//    }
-
-
-    // TODO: 2021/11/24 0024 测试
-
     public List<Tree<String>> tree(Wrapper<T> treeWrapper) {
         List<Map<String,Object>> list = listMaps(treeWrapper);
         return ForestNodeMerger.mergeTree(list);
     }
-
-//    public <V> List<Tree<String>> listTree(Wrapper<T> queryWrapper,Class<V> clz) {
-//        return ForestNodeMerger.mergeTree(listConver(queryWrapper,t -> BeanUtil.copy(t, clz)));
-//    }
-//
-//    public List<Tree<String>> listTree(Wrapper<T> queryWrapper) {
-//        return ForestNodeMerger.mergeTree(list(queryWrapper));
-//    }
 
 }

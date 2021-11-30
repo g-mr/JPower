@@ -1,6 +1,5 @@
 package com.wlcb.jpower.utils;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.wlcb.jpower.cache.SystemCache;
 import com.wlcb.jpower.cache.UserCache;

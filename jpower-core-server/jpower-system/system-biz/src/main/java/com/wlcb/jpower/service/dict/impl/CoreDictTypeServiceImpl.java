@@ -38,16 +38,6 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
 
     @Override
     public List<Tree<String>> tree() {
-//        LambdaQueryWrapper<TbCoreDictType> queryWrapper = Condition.getTreeWrapper(TbCoreDictType::getId,
-//                TbCoreDictType::getParentId,
-//                TbCoreDictType::getDictTypeName,
-//                TbCoreDictType::getDictTypeCode,
-//                TbCoreDictType::getIsTree)
-//                .lambda();
-//        if (SecureUtil.isRoot()){
-//            queryWrapper.eq(TbCoreDictType::getTenantCode,DEFAULT_TENANT_CODE);
-//        }
-//        return coreDictTypeDao.tree(queryWrapper.orderByAsc(TbCoreDictType::getSortNum));
         LambdaTreeWrapper<TbCoreDictType> queryWrapper = Condition.getLambdaTreeWrapper(TbCoreDictType.class,TbCoreDictType::getId,
                 TbCoreDictType::getParentId)
                 .select(TbCoreDictType::getDictTypeName,
@@ -61,11 +51,6 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
 
     @Override
     public List<Tree<String>> listTree(TbCoreDictType dictType) {
-//        LambdaQueryWrapper<TbCoreDictType> queryWrapper =
-//                SecureUtil.isRoot()
-//                ? Condition.getQueryWrapper(dictType).lambda().eq(TbCoreDictType::getTenantCode,DEFAULT_TENANT_CODE).orderByAsc(TbCoreDictType::getSortNum)
-//                : Condition.getQueryWrapper(dictType).lambda().orderByAsc(TbCoreDictType::getSortNum);
-//        return coreDictTypeDao.listTree(queryWrapper, DictTypeVo.class);
         LambdaTreeWrapper<TbCoreDictType> queryWrapper =
                 SecureUtil.isRoot()
                         ? Condition.getLambdaTreeWrapper(dictType,TbCoreDictType::getId,TbCoreDictType::getParentId).eq(TbCoreDictType::getTenantCode,DEFAULT_TENANT_CODE).orderByAsc(TbCoreDictType::getSortNum)

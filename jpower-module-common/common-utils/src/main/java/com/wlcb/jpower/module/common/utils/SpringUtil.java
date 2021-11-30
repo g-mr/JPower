@@ -5,6 +5,9 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEvent;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
 /**
  * spring 工具类
@@ -12,6 +15,8 @@ import org.springframework.context.ApplicationEvent;
  * @author Chill
  */
 @Slf4j
+@Component
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class SpringUtil implements ApplicationContextAware {
 
     private static ApplicationContext context;

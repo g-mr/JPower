@@ -108,12 +108,6 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
             }
             roleDao.save(role);
             //创建租户初始权限
-//            LambdaQueryWrapper<TbCoreFunction> queryWrapper = Condition.<TbCoreFunction>getQueryWrapper().lambda().select(TbCoreFunction::getId);
-//            if (Fc.isNotEmpty(functionCodes)){
-//                queryWrapper.in(TbCoreFunction::getCode,functionCodes);
-//            }
-//            queryWrapper.or(c -> c.eq(TbCoreFunction::getParentId,TOP_CODE).eq(TbCoreFunction::getIsMenu,ConstantsEnum.YN01.N.getValue()));
-//            List<String> functionIds = functionDao.listObjs(queryWrapper,Fc::toStr);
 
             List<String> functionIds = functionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                     .select(TbCoreFunction::getId)
@@ -198,14 +192,6 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
             getDicts(type.getDictTypeCode(),TOP_CODE,TOP_CODE,tenantCode,dicts);
             getDictTypes(oldId,type.getId(),tenantCode,dictTypes,dicts);
         });
-//        dictTypeDao.saveBatch(dictTypeList);
-//        dictTypeList.forEach(type -> {
-//            saveDictType(type.getOldId(),type.getId(),tenantCode);
-//
-//            saveDict(type.getDictTypeCode(),TOP_CODE,TOP_CODE,tenantCode);
-//        });
-
-
     }
 
     /**
@@ -228,9 +214,6 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
             dicts.add(dict);
             getDicts(typeCode,oldId,dict.getId(),tenantCode,dicts);
         });
-//        dictDao.saveBatch(dictList);
-
-//        dictList.forEach(dict -> saveDict(typeCode,dict.getOldId(),dict.getId(),tenantCode));
     }
 
     @Override

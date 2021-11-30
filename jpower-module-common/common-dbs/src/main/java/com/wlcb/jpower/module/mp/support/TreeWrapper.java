@@ -41,7 +41,7 @@ public class TreeWrapper<T> extends AbstractWrapper<T, String, TreeWrapper<T>>
     /**
      * 查询字段
      */
-    private final SharedString sqlSelect = new SharedString();
+    private SharedString sqlSelect = new SharedString();
 
     /**
      * 存储用户的查询字段
@@ -53,7 +53,8 @@ public class TreeWrapper<T> extends AbstractWrapper<T, String, TreeWrapper<T>>
         this.id = id;
         this.parentId = parentId;
         super.initNeed();
-        this.select(StringUtil.split(TableInfoHelper.getTableInfo(getEntityClass()).getAllSqlSelect(),StringPool.COMMA));
+
+        this.select(Fc.toStrArray(TableInfoHelper.getTableInfo(getEntityClass()).getAllSqlSelect()));
     }
 
     public TreeWrapper(Class<T> entityClass,String id,String parentId) {
@@ -61,7 +62,7 @@ public class TreeWrapper<T> extends AbstractWrapper<T, String, TreeWrapper<T>>
         this.id = id;
         this.parentId = parentId;
         super.initNeed();
-        this.select(StringUtil.split(TableInfoHelper.getTableInfo(getEntityClass()).getAllSqlSelect(),StringPool.COMMA));
+        this.select(Fc.toStrArray(TableInfoHelper.getTableInfo(getEntityClass()).getAllSqlSelect()));
     }
 
     public TreeWrapper(T entity,String id,String parentId, String... columns) {
@@ -77,7 +78,7 @@ public class TreeWrapper<T> extends AbstractWrapper<T, String, TreeWrapper<T>>
      *
      * @param entityClass 本不应该需要的
      */
-    TreeWrapper(T entity, Class<T> entityClass, AtomicInteger paramNameSeq,
+    TreeWrapper(T entity, Class<T> entityClass, AtomicInteger paramNameSeq,SharedString sqlSelect,
                          Map<String, Object> paramNameValuePairs, MergeSegments mergeSegments, SharedString paramAlias,
                          SharedString lastSql, SharedString sqlComment, SharedString sqlFirst,
                          String id,String parentId,String hasChildren,List<String> list) {
@@ -90,6 +91,7 @@ public class TreeWrapper<T> extends AbstractWrapper<T, String, TreeWrapper<T>>
         this.lastSql = lastSql;
         this.sqlComment = sqlComment;
         this.sqlFirst = sqlFirst;
+        this.sqlSelect = sqlSelect;
         this.id = id;
         this.parentId = parentId;
         this.hasChildren = hasChildren;
@@ -129,7 +131,7 @@ public class TreeWrapper<T> extends AbstractWrapper<T, String, TreeWrapper<T>>
             setEntityClass(entityClass);
         }
         String select = TableInfoHelper.getTableInfo(entityClass).chooseSelect(predicate);
-        select(StringUtil.split(select,StringPool.COMMA));
+        select(Fc.toStrArray(select));
         return typedThis;
     }
 
@@ -172,7 +174,7 @@ public class TreeWrapper<T> extends AbstractWrapper<T, String, TreeWrapper<T>>
      */
     @Override
     protected TreeWrapper<T> instance() {
-        return new TreeWrapper<>(getEntity(), getEntityClass(), paramNameSeq, paramNameValuePairs, new MergeSegments(),
+        return new TreeWrapper<>(getEntity(), getEntityClass(), paramNameSeq, sqlSelect, paramNameValuePairs, new MergeSegments(),
                 paramAlias, SharedString.emptyString(), SharedString.emptyString(), SharedString.emptyString(),
                 id, parentId,hasChildren,list);
     }
@@ -187,6 +189,6 @@ public class TreeWrapper<T> extends AbstractWrapper<T, String, TreeWrapper<T>>
         sqlFirst.toEmpty();
         this.hasChildren = null;
         this.list.clear();
-        this.select(StringUtil.split(TableInfoHelper.getTableInfo(getEntityClass()).getAllSqlSelect(),StringPool.COMMA));
+        this.select(Fc.toStrArray(TableInfoHelper.getTableInfo(getEntityClass()).getAllSqlSelect()));
     }
 }

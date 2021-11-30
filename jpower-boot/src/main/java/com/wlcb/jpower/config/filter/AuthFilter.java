@@ -83,7 +83,7 @@ public class AuthFilter implements Filter {
             if (Fc.isNotBlank(token)){
                 UserInfo user = SecureUtil.getUser();
                 List<String> listUrl = (List<String>) redisUtil.get(CacheNames.TOKEN_URL_KEY + token);
-                if (!Fc.isNull(user) && Fc.contains(listUrl.iterator(), currentPath)) {
+                if (!Fc.isNull(user) && Fc.contains(listUrl, currentPath)) {
 
                     Object dataAuth = redisUtil.get(CacheNames.TOKEN_DATA_SCOPE_KEY + token);
                     Map<String,String> map = Fc.isNull(dataAuth) ? ChainMap.newMap() : (Map<String, String>) dataAuth;
@@ -98,7 +98,7 @@ public class AuthFilter implements Filter {
             }else {
                 //白名单
                 String ip = WebUtil.getIP();
-                if (Fc.contains(authProperties.getWhileIp().iterator(),ip)){
+                if (Fc.contains(authProperties.getWhileIp(),ip)){
                     chain.doFilter(addHeader(httpRequest,ip,StringPool.EMPTY), response);
                     return;
                 }

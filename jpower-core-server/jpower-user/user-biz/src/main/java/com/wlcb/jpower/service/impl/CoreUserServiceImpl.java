@@ -86,7 +86,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     public Boolean delete(String ids) {
         List<String> list = new ArrayList<>(Fc.toStrList(ids));
 
-        if(Fc.contains(list.iterator(), RoleConstant.ROOT_ID) || Fc.contains(list.iterator(), RoleConstant.ANONYMOUS_ID)){
+        if(Fc.contains(list, RoleConstant.ROOT_ID) || Fc.contains(list, RoleConstant.ANONYMOUS_ID)){
             list.removeIf(obj -> StringUtil.equals(obj,RoleConstant.ROOT_ID) || StringUtil.equals(obj,RoleConstant.ANONYMOUS_ID));
 
             if (list.size() <= 0){
@@ -282,14 +282,14 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
             }
 
             //如果修改超级用户，并且角色不包含超级用户角色，则给超级用户添加超级用户角色
-            if (Fc.contains(uIds.iterator(),RoleConstant.ROOT_ID) && !Fc.contains(rIds.iterator(),RoleConstant.ROOT_ID)){
+            if (Fc.contains(uIds,RoleConstant.ROOT_ID) && !Fc.contains(rIds,RoleConstant.ROOT_ID)){
                 TbCoreUserRole userRole = new TbCoreUserRole();
                 userRole.setUserId(RoleConstant.ROOT_ID);
                 userRole.setRoleId(RoleConstant.ROOT_ID);
                 userRoles.add(userRole);
             }
             //如果修改匿名用户，并且角色不包含匿名用户角色，则给匿名用户添加匿名用户角色
-            if (Fc.contains(uIds.iterator(),RoleConstant.ANONYMOUS_ID) && !Fc.contains(rIds.iterator(),RoleConstant.ANONYMOUS_ID)){
+            if (Fc.contains(uIds,RoleConstant.ANONYMOUS_ID) && !Fc.contains(rIds,RoleConstant.ANONYMOUS_ID)){
                 TbCoreUserRole userRole = new TbCoreUserRole();
                 userRole.setUserId(RoleConstant.ANONYMOUS_ID);
                 userRole.setRoleId(RoleConstant.ANONYMOUS_ID);

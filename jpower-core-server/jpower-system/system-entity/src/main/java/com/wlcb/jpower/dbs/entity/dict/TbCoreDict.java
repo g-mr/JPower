@@ -34,14 +34,4 @@ public class TbCoreDict extends TenantEntity {
     @ApiModelProperty("级别")
     private Integer dictLevel;
 
-//    /**
-//     * @author 郭丁志
-//     * @Description //TODO 旧ID，新增租户字典的时候需要用来存一下，无其他作用
-//     * @date 16:41 2020/10/25 0025
-//     */
-//    @ApiModelProperty(hidden = true)
-//    @JSONField(serialize = false)
-//    @TableField(exist = false)
-//    @JsonIgnore
-//    private String oldId;
 }

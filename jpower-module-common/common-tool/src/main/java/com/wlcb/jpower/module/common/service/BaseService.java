@@ -33,23 +33,6 @@ public interface BaseService<T> extends IService<T> {
      */
     <V> List<V> listConver(Wrapper<T> queryWrapper, Function<T, V> function);
 
-//    /**
-//     * @author 郭丁志
-//     * @Description 查询树形列表
-//     * @date 23:20 2020/10/21 0021
-//     * @param queryWrapper 查询条件
-//     * @param clz 返回类型
-//     */
-//    <V> List<Tree<String>> listTree(Wrapper<T> queryWrapper,Class<V> clz);
-//
-//    /**
-//     * @author 郭丁志
-//     * @Description 查询树形列表
-//     * @date 23:20 2020/10/21 0021
-//     * @param queryWrapper 查询条件
-//     */
-//    List<Tree<String>> listTree(Wrapper<T> queryWrapper);
-
     /**
      * 根据 ID 真实删除
      * @param id 主键ID

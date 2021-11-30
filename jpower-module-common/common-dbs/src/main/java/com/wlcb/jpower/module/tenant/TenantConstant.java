@@ -1,7 +1,6 @@
 package com.wlcb.jpower.module.tenant;
 
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.ThreeDESUtil;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
@@ -58,7 +57,7 @@ public interface TenantConstant {
      */
     static long getAccountNumber(String encrypt){
         encrypt = ThreeDESUtil.decrypt(encrypt);
-        return Fc.toLong(StringUtil.split(encrypt, StringPool.SEMICOLON)[0]);
+        return Fc.toLong(Fc.toStrArray(StringPool.SEMICOLON, encrypt)[0]);
     }
 
     /**
@@ -68,7 +67,7 @@ public interface TenantConstant {
      */
     static Date getExpireTime(String encrypt){
         encrypt = ThreeDESUtil.decrypt(encrypt);
-        String expireTime = StringUtil.split(encrypt,StringPool.SEMICOLON)[1];
+        String expireTime = Fc.toStrArray(StringPool.SEMICOLON, encrypt)[1];
         if (Fc.equalsValue(expireTime,StringPool.NULL)){
             return null;
         }

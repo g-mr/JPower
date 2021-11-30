@@ -44,7 +44,6 @@ public class JpowerMybatisInterceptor implements Interceptor {
         if (target instanceof Executor){
             return new ChainFilter(interceptors.iterator(),invocation).proceed();
         }else if (target instanceof ResultSetHandler){
-//            MetaObject metaObject = MetaObject.forObject(invocation.proceed(),new DefaultObjectFactory(),new DefaultObjectWrapperFactory(),new DefaultReflectorFactory());
             Object rest = invocation.proceed();
             if (rest instanceof List){
                 List list = (List) rest;
