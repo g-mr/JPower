@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.RequestMethod;
+import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.RequestHandler;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -41,7 +42,7 @@ import static com.google.common.collect.Lists.newArrayList;
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties({SwaggerProperties.class})
 @ConditionalOnProperty(prefix = "knife4j", name = "enable", havingValue = "true", matchIfMissing = false)
-@Import({Swagger2Configuration.class})
+@Import({BeanValidatorPluginsConfiguration.class})
 @AllArgsConstructor
 public class SwaggerConfiguration {
 

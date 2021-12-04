@@ -3,7 +3,6 @@ package com.wlcb.jpower.web;
 import io.swagger.models.Swagger;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,6 +17,7 @@ import springfox.documentation.spring.web.PropertySourcedMapping;
 import springfox.documentation.spring.web.json.Json;
 import springfox.documentation.spring.web.json.JsonSerializer;
 import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 import springfox.documentation.swagger2.mappers.ServiceModelToSwagger2Mapper;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,7 +32,7 @@ import static springfox.documentation.swagger.common.HostNameProvider.components
  * @date 2021-03-31 15:38
  */
 @Controller
-@ConditionalOnProperty(prefix = "knife4j", name = "enable", havingValue = "true", matchIfMissing = false)
+@EnableSwagger2WebMvc
 @ConditionalOnClass(name = "javax.servlet.http.HttpServletRequest")
 @ApiIgnore
 @AllArgsConstructor

@@ -1,4 +1,4 @@
-package com.wlcb.jpower.module.common.swagger;
+package com.wlcb.jpower.config;
 
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
