@@ -4,8 +4,7 @@ import com.wlcb.jpower.module.base.feign.LogClient;
 import com.wlcb.jpower.module.base.model.OperateLogDto;
 import com.wlcb.jpower.module.base.utils.FieldCompletionUtil;
 import com.wlcb.jpower.module.common.deploy.props.JpowerProperties;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 
@@ -15,8 +14,7 @@ import org.springframework.scheduling.annotation.Async;
  * @Author mr.g
  * @Date 2021/5/1 0001 1:01
  */
-@Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class OperateLogListener {
 
     private final LogClient logService;
