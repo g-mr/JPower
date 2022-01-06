@@ -15,7 +15,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.netty.handler.codec.http.FullHttpRequest;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -81,16 +80,6 @@ public class SecureUtil {
      * @return UserInfo
      */
     public static UserInfo getUser(HttpServletRequest request) {
-        return getUser(getClaims(request));
-    }
-
-    /**
-     * 获取用户信息
-     *
-     * @param request request
-     * @return UserInfo
-     */
-    public static UserInfo getUser(FullHttpRequest request) {
         return getUser(getClaims(request));
     }
 
@@ -190,20 +179,6 @@ public class SecureUtil {
     }
 
     /**
-     * 获取租户ID
-     *
-     * @param request request
-     * @return tenantId
-     */
-    public static String getTenantCode(FullHttpRequest request) {
-        if (!TENANT_MODE) {
-            return StringPool.EMPTY;
-        }
-        UserInfo user = getUser(request);
-        return Fc.isNull(user) ? StringPool.EMPTY : user.getTenantCode();
-    }
-
-    /**
      * 获取客户端id
      *
      * @return tenantId
@@ -220,16 +195,6 @@ public class SecureUtil {
      * @return Claims
      */
     public static Claims getClaims(HttpServletRequest request) {
-        return JwtUtil.parseJWT(JwtUtil.getToken(request));
-    }
-
-    /**
-     * 获取Claims
-     *
-     * @param request
-     * @return Claims
-     */
-    public static Claims getClaims(FullHttpRequest request) {
         return JwtUtil.parseJWT(JwtUtil.getToken(request));
     }
 

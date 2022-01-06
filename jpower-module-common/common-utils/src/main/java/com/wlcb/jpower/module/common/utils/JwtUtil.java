@@ -1,17 +1,13 @@
 package com.wlcb.jpower.module.common.utils;
 
-import cn.hutool.core.util.URLUtil;
-import com.google.common.base.Splitter;
 import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.netty.handler.codec.http.FullHttpRequest;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import java.nio.charset.Charset;
 import java.util.Base64;
 
 /**
@@ -89,32 +85,6 @@ public class JwtUtil {
         }
 
         String parameter = request.getParameter(HEADER);
-        if (StringUtil.isNotBlank(parameter)) {
-            auth = parameter;
-            return auth;
-        }
-        return null;
-    }
-
-    /**
-     * uri 与 headers取token
-     *
-     * @param fullHttpRequest
-     * @return String
-     */
-    public static String getToken(FullHttpRequest fullHttpRequest) {
-        if (Fc.isNull(fullHttpRequest)) {
-            return null;
-        }
-
-        String auth = fullHttpRequest.headers().get(HEADER);
-        if (StringUtil.isNotBlank(auth)) {
-            return parsingToken(auth);
-        }
-        String parameter = "";
-        String uri = URLUtil.decode(fullHttpRequest.uri(), Charset.defaultCharset());
-        String params = uri.substring(uri.indexOf("?") + 1, uri.length());
-        parameter = Splitter.on("&").withKeyValueSeparator("=").split(params).get(HEADER);
         if (StringUtil.isNotBlank(parameter)) {
             auth = parameter;
             return auth;

@@ -3,7 +3,6 @@ package com.wlcb.jpower.gateway.dynamic;
 import com.alibaba.nacos.common.utils.CollectionUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.event.RefreshRoutesEvent;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinitionLocator;
@@ -51,9 +50,9 @@ public class DynamicRouteService implements ApplicationEventPublisherAware {
     public String delete(String id) {
         try {
             log.info("gateway delete route id {}",id);
-            this.routeDefinitionWriter.delete(Mono.just(id)).subscribe();
             list.remove(id);
             this.publisher.publishEvent(new RefreshRoutesEvent(this));
+            this.routeDefinitionWriter.delete(Mono.just(id)).subscribe();
             return "delete success";
         } catch (Exception e) {
             return "delete fail";
@@ -77,9 +76,7 @@ public class DynamicRouteService implements ApplicationEventPublisherAware {
                 }
             });
         }
-        definitions.forEach(definition -> {
-            updateById(definition);
-        });
+        definitions.forEach(this::updateById);
         return "success";
     }
 
@@ -93,6 +90,7 @@ public class DynamicRouteService implements ApplicationEventPublisherAware {
             log.info("gateway update route {}",definition);
             this.routeDefinitionWriter.delete(Mono.just(definition.getId()));
         } catch (Exception e) {
+            log.warn("update fail,not find route  routeId: "+definition.getId());
             return "update fail,not find route  routeId: "+definition.getId();
         }
         try {
@@ -112,13 +110,9 @@ public class DynamicRouteService implements ApplicationEventPublisherAware {
      */
     public String add(RouteDefinition definition) {
         log.info("gateway add route {}",definition);
-        routeDefinitionWriter.save(Mono.just(definition)).subscribe();
         list.add(definition.getId());
-        /*
-         TODO: 2021-05-12 当多次执行👇这行时会报错：java.util.ConcurrentModificationException: null
-         TODO: 2021-05-12 但是目前测试不影响使用，可能是nacos+gateway问题，后续看看会不会修复
-         */
         this.publisher.publishEvent(new RefreshRoutesEvent(this));
+        routeDefinitionWriter.save(Mono.just(definition)).subscribe();
         return "success";
     }
 }
