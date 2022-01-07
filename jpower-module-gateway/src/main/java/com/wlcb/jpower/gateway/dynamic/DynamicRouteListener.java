@@ -55,6 +55,7 @@ public class DynamicRouteListener {
             String configInfo = configService.getConfig(NacosUtils.getRouteDataId(), nacosConfigProperties.getGroup(), 3000);
             log.info("获取网关当前配置:\r\n{}",configInfo);
             List<RouteDefinition> definitionList = JSON.parseArray(configInfo, RouteDefinition.class);
+            dynamicRouteService.refresh();
             for(RouteDefinition definition : definitionList){
                 log.info("add route : {}",definition.toString());
                 dynamicRouteService.add(definition);
@@ -79,6 +80,7 @@ public class DynamicRouteListener {
                     log.info("进行网关更新:\n\r{}",configInfo);
                     List<RouteDefinition> definitionList = JSON.parseArray(configInfo, RouteDefinition.class);
                     log.info("update route : {}",definitionList.toString());
+                    dynamicRouteService.refresh();
                     dynamicRouteService.updateList(definitionList);
                 }
                 @Override

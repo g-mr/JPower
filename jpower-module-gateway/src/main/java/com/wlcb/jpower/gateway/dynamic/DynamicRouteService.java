@@ -1,6 +1,7 @@
 package com.wlcb.jpower.gateway.dynamic;
 
 import com.alibaba.nacos.common.utils.CollectionUtils;
+import com.wlcb.jpower.module.common.utils.Fc;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.event.RefreshRoutesEvent;
@@ -45,26 +46,26 @@ public class DynamicRouteService implements ApplicationEventPublisherAware {
     /**
      * 删除路由
      * @param id
-     * @return
      */
-    public String delete(String id) {
+    public void delete(String id) {
         try {
             log.info("gateway delete route id {}",id);
             list.remove(id);
-            this.publisher.publishEvent(new RefreshRoutesEvent(this));
-            this.routeDefinitionWriter.delete(Mono.just(id)).subscribe();
-            return "delete success";
+            //如果存在就删除
+            if (isExist(id)){
+                routeDefinitionWriter.delete(Mono.just(id)).subscribe();
+                log.info("delete success");
+            }
         } catch (Exception e) {
-            return "delete fail";
+            log.warn("delete fail");
         }
     }
 
     /**
      * 更新路由
      * @param definitions
-     * @return
      */
-    public String updateList(List<RouteDefinition> definitions) {
+    public void updateList(List<RouteDefinition> definitions) {
         log.info("gateway update route {}",definitions);
         // 删除缓存routerDefinition
         List<RouteDefinition> routeDefinitionsExits =  routeDefinitionLocator.getRouteDefinitions().buffer().blockFirst();
@@ -77,42 +78,46 @@ public class DynamicRouteService implements ApplicationEventPublisherAware {
             });
         }
         definitions.forEach(this::updateById);
-        return "success";
     }
+
+    public boolean isExist(String id){
+        return routeDefinitionLocator.getRouteDefinitions().any(r-> Fc.equalsValue(r.getId(),id)).blockOptional().orElse(false);
+    }
+
 
     /**
      * 更新路由
      * @param definition
-     * @return
      */
-    public String updateById(RouteDefinition definition) {
+    public void updateById(RouteDefinition definition) {
+        log.info("gateway update route {}",definition);
         try {
-            log.info("gateway update route {}",definition);
-            this.routeDefinitionWriter.delete(Mono.just(definition.getId()));
+            delete(definition.getId());
         } catch (Exception e) {
             log.warn("update fail,not find route  routeId: "+definition.getId());
-            return "update fail,not find route  routeId: "+definition.getId();
         }
         try {
             routeDefinitionWriter.save(Mono.just(definition)).subscribe();
             list.add(definition.getId());
-            this.publisher.publishEvent(new RefreshRoutesEvent(this));
-            return "success";
         } catch (Exception e) {
-            return "update route fail";
+            log.warn("update route fail");
         }
     }
 
     /**
      * 增加路由
      * @param definition
-     * @return
      */
-    public String add(RouteDefinition definition) {
+    public void add(RouteDefinition definition) {
         log.info("gateway add route {}",definition);
         list.add(definition.getId());
-        this.publisher.publishEvent(new RefreshRoutesEvent(this));
         routeDefinitionWriter.save(Mono.just(definition)).subscribe();
-        return "success";
+    }
+
+    /**
+     * 刷新路由
+     */
+    public void refresh() {
+        this.publisher.publishEvent(new RefreshRoutesEvent(this));
     }
 }
