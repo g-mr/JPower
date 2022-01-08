@@ -3,7 +3,6 @@ package com.wlcb.jpower.sentinel.handler;
 import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.UrlCleaner;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
-import org.springframework.stereotype.Component;
 
 /**
  * @ClassName UrlCleanerHandler
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Component;
  * @Date 2020/9/13 0013 0:17
  * @Version 1.0
  */
-@Component
 public class UrlCleanerHandler implements UrlCleaner {
 
     @Override

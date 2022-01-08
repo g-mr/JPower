@@ -156,7 +156,6 @@ public class SnowFlakeIdUtil {
      */
     protected long timeGen() {
         return System.currentTimeMillis();
-//        return SystemClock.now();
     }
 
 

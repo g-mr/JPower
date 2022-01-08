@@ -16,7 +16,6 @@ import java.lang.annotation.*;
 @Inherited
 @EnableDiscoveryClient
 @EnableTransactionManagement
-//@SpringBootApplication(excludeName = "org.springframework.cloud.netflix.ribbon.RibbonAutoConfiguration")
 @SpringBootApplication
 public @interface JpowerCloudApplication {
 }

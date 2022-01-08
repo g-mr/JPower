@@ -2,7 +2,6 @@ package com.wlcb.jpower.sentinel.handler;
 
 import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.RequestOriginParser;
 import com.wlcb.jpower.module.common.utils.SecureUtil;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
  * @Date 2020/9/13 0013 0:09
  * @Version 1.0
  */
-@Component
 public class OriginParserHandler implements RequestOriginParser {
     @Override
     public String parseOrigin(HttpServletRequest request) {
