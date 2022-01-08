@@ -32,7 +32,6 @@ public class PaginationContext {
      * @Description //TODO 分页工具分页
      * @date 1:13 2020/8/9 0009
      */
-    @Deprecated
     public static void startPage() {
         PageHelper.startPage(PaginationContext.getPageNum(), PaginationContext.getPageSize());
 

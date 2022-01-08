@@ -39,7 +39,7 @@ public class DataScopeConfig {
     @ConditionalOnMissingBean({DataPermissionInterceptor.class})
     public DataPermissionInterceptor dataScopeQueryInterceptor(PageHelperProperties properties, DataPermissionHandler dataPermissionHandler) {
         properties.setDialect(JpowerPageHelper.class.getName());
-        properties.getProperties().put("dataScopeHandler",dataPermissionHandler);
+        properties.put("dataScopeHandler",dataPermissionHandler);
         return new DataPermissionInterceptor(dataPermissionHandler);
     }
 }
