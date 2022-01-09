@@ -1,17 +1,15 @@
 package com.wlcb.jpower.module.common.utils;
 
+import com.wlcb.jpower.module.common.utils.constants.AppConstant;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.EntityBuilder;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
@@ -22,13 +20,10 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
@@ -36,7 +31,10 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.security.KeyStore;
 import java.security.SecureRandom;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @ClassName HttpClient
@@ -45,9 +43,19 @@ import java.util.*;
  * @Date 2020-01-29 02:20
  * @Version 1.0
  */
+@Slf4j
 public class HttpClient {
 
-    private static final Logger logger = LoggerFactory.getLogger(HttpClient.class);
+    private static RequestConfig requestConfig(){
+        return RequestConfig.custom()
+                // 连接主机服务超时时间
+                .setConnectTimeout(35000)
+                // 请求超时时间
+                .setConnectionRequestTimeout(35000)
+                // 数据读取超时时间
+                .setSocketTimeout(60000)
+                .build();
+    }
 
     /**
      * @return java.lang.String
@@ -72,7 +80,7 @@ public class HttpClient {
         try {
 
             URIBuilder builder = new URIBuilder(url);
-            builder.setParameter("clientCode", "jpower");
+            builder.setParameter("clientCode", AppConstant.JPOWER);
             if (params != null && params.keySet().size() > 0) {
                 params.forEach((param, value) -> builder.setParameter(param, Fc.toStr(value)));
             }
@@ -86,24 +94,15 @@ public class HttpClient {
             if (Fc.isNotEmpty(headers)) {
                 headers.forEach(httpGet::addHeader);
             }
-            // 设置配置请求参数
-            RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(35000)// 连接主机服务超时时间
-                    .setConnectionRequestTimeout(35000)// 请求超时时间
-                    .setSocketTimeout(60000)// 数据读取超时时间
-                    .build();
             // 为httpGet实例设置配置
-            httpGet.setConfig(requestConfig);
+            httpGet.setConfig(requestConfig());
 
             // 执行get请求得到返回对象
             response = httpClient.execute(httpGet);
-            System.out.println(response.getStatusLine().getStatusCode());
             // 通过返回对象获取返回数据
             HttpEntity entity = response.getEntity();
             // 通过EntityUtils中的toString方法将结果转换为字符串
             result = EntityUtils.toString(entity);
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e.getMessage());
@@ -124,7 +123,7 @@ public class HttpClient {
      * @Date 01:37 2020-04-30
      * @Param [requestUrl, path]
      **/
-    public static void doGetDowload(String requestUrl, String path) {
+    public static File doGetDowload(String requestUrl, String path) {
         InputStream is = null;
         BufferedOutputStream bos = null;
         FileOutputStream fos = null;
@@ -149,14 +148,16 @@ public class HttpClient {
                 bos.write(buff, 0, len);
             }
 
+            return file;
         } catch (IOException e) {
-            logger.error("文件下载失败：{}", e.getMessage());
-            e.printStackTrace();
+            log.error("文件下载失败：{}", ExceptionsUtil.getStackTraceAsString(e));
         } finally {
             Fc.closeQuietly(is);
             Fc.closeQuietly(bos);
             Fc.closeQuietly(fos);
         }
+
+        return null;
     }
 
     /**
@@ -171,58 +172,7 @@ public class HttpClient {
     }
 
     public static String doPost(String url, Map<String, String> headers, Map<String, Object> paramMap) {
-        CloseableHttpClient httpClient = null;
-        CloseableHttpResponse httpResponse = null;
-        String result = "";
-        // 创建httpClient实例
-        httpClient = HttpClients.createDefault();
-        // 创建httpPost远程连接实例
-        HttpPost httpPost = new HttpPost(url);
-        // 配置请求参数实例
-        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(35000)// 设置连接主机服务超时时间
-                .setConnectionRequestTimeout(35000)// 设置连接请求超时时间
-                .setSocketTimeout(60000)// 设置读取数据连接超时时间
-                .build();
-        // 为httpPost实例设置配置
-        httpPost.setConfig(requestConfig);
-        // 设置请求头
-        httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
-        if (Fc.isNotEmpty(headers)) {
-            headers.forEach(httpPost::addHeader);
-        }
-        // 封装post请求参数
-        if (null != paramMap && paramMap.size() > 0) {
-            List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-
-            paramMap.forEach((k, v) -> {
-                nvps.add(new BasicNameValuePair(k, Fc.toStr(v)));
-            });
-
-            // 为httpPost设置封装好的请求参数
-            try {
-                httpPost.setEntity(new UrlEncodedFormEntity(nvps, "UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                logger.error(e.getMessage());
-            }
-        }
-        try {
-            // httpClient对象执行post请求,并返回响应参数对象
-            httpResponse = httpClient.execute(httpPost);
-            // 从响应对象中获取响应内容
-            HttpEntity entity = httpResponse.getEntity();
-            result = EntityUtils.toString(entity);
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-            logger.error("post请求失败：{}", e.getMessage());
-        } catch (IOException e) {
-            e.printStackTrace();
-            logger.error("post请求失败：{}", e.getMessage());
-        } finally {
-            // 关闭资源
-            Fc.closeQuietly(httpResponse);
-            Fc.closeQuietly(httpClient);
-        }
-        return result;
+        return doEntityRequest(new HttpPost(url),headers,paramMap);
     }
 
 
@@ -242,52 +192,50 @@ public class HttpClient {
      * @Param [url, headers, paramMap]
      **/
     public static String doPut(String url, Map<String, String> headers, Map<String, Object> paramMap) {
-        CloseableHttpClient httpClient = null;
+        return doEntityRequest(new HttpPut(url),headers,paramMap);
+    }
+
+    /**
+     * body请求
+     * @Author mr.g
+     * @param http
+     * @param headers
+     * @param paramMap
+     * @return java.lang.String
+     **/
+    private static String doEntityRequest(HttpEntityEnclosingRequestBase http, Map<String, String> headers, Map<String, Object> paramMap) {
         CloseableHttpResponse httpResponse = null;
         String result = "";
         // 创建httpClient实例
-        httpClient = HttpClients.createDefault();
-        // 创建httpPost远程连接实例
-        HttpPut httpPut = new HttpPut(url);
-        // 配置请求参数实例
-        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(35000)// 设置连接主机服务超时时间
-                .setConnectionRequestTimeout(35000)// 设置连接请求超时时间
-                .setSocketTimeout(60000)// 设置读取数据连接超时时间
-                .build();
+        CloseableHttpClient httpClient = HttpClients.createDefault();
         // 为httpPost实例设置配置
-        httpPut.setConfig(requestConfig);
+        http.setConfig(requestConfig());
         // 设置请求头
-        httpPut.addHeader("Content-Type", "application/x-www-form-urlencoded");
+        http.addHeader("Content-Type", "application/x-www-form-urlencoded");
         if (Fc.isNotEmpty(headers)) {
-            headers.forEach(httpPut::addHeader);
+            headers.forEach(http::addHeader);
         }
-        // 封装post请求参数
+        // 封装请求参数
         if (null != paramMap && paramMap.size() > 0) {
             List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 
-            paramMap.forEach((k, v) -> {
-                nvps.add(new BasicNameValuePair(k, Fc.toStr(v)));
-            });
+            paramMap.forEach((k, v) -> nvps.add(new BasicNameValuePair(k, Fc.toStr(v))));
 
             // 为httpPost设置封装好的请求参数
             try {
-                httpPut.setEntity(new UrlEncodedFormEntity(nvps, "UTF-8"));
+                http.setEntity(new UrlEncodedFormEntity(nvps, "UTF-8"));
             } catch (UnsupportedEncodingException e) {
-                logger.error(e.getMessage());
+                log.error(e.getMessage());
             }
         }
         try {
             // httpClient对象执行post请求,并返回响应参数对象
-            httpResponse = httpClient.execute(httpPut);
+            httpResponse = httpClient.execute(http);
             // 从响应对象中获取响应内容
             HttpEntity entity = httpResponse.getEntity();
             result = EntityUtils.toString(entity);
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-            logger.error("post请求失败：{}", e.getMessage());
         } catch (IOException e) {
-            e.printStackTrace();
-            logger.error("post请求失败：{}", e.getMessage());
+            log.error("请求失败：{}", ExceptionsUtil.getStackTraceAsString(e));
         } finally {
             // 关闭资源
             Fc.closeQuietly(httpResponse);
@@ -296,10 +244,19 @@ public class HttpClient {
         return result;
     }
 
+    /**
+     * https请求
+     * @Author mr.g
+     * @param strUrl 请求地址
+     * @param reqBody body
+     * @param cerPath 密钥
+     * @param cerPassword 密钥密码
+     * @return java.lang.String
+     **/
     public static String requestWithCert(String strUrl, String reqBody, String cerPath, String cerPassword) {
         String UTF8 = "UTF-8";
         String resp = null;
-        StringBuffer stringBuffer = new StringBuffer();
+        StringBuilder builder = new StringBuilder();
         BufferedReader bufferedReader = null;
         InputStream inputStream = null;
         OutputStream outputStream = null;
@@ -313,7 +270,7 @@ public class HttpClient {
             KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
             kmf.init(ks, password);
             SSLContext sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(kmf.getKeyManagers(), (TrustManager[]) null, new SecureRandom());
+            sslContext.init(kmf.getKeyManagers(), null, new SecureRandom());
             HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
             HttpURLConnection httpURLConnection = (HttpURLConnection) httpUrl.openConnection();
             httpURLConnection.setDoOutput(true);
@@ -328,12 +285,12 @@ public class HttpClient {
             String line = null;
 
             while ((line = bufferedReader.readLine()) != null) {
-                stringBuffer.append(line);
+                builder.append(line);
             }
 
-            resp = stringBuffer.toString();
+            resp = builder.toString();
         } catch (Exception e) {
-            logger.info("请求接口{}失败，error={}", strUrl, e.getMessage());
+            log.info("请求接口{}失败，error={}", strUrl, ExceptionsUtil.getStackTraceAsString(e));
         } finally {
             Fc.closeQuietly(bufferedReader);
             Fc.closeQuietly(inputStream);
@@ -346,50 +303,15 @@ public class HttpClient {
 
 
     public static String doPostJson(String url, String param) {
-        String result = "";
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpPost post = new HttpPost(url);
-
-        //配置超时时间
-        RequestConfig requestConfig = RequestConfig.custom().
-                setConnectTimeout(30000).setConnectionRequestTimeout(30000)
-                .setSocketTimeout(30000).setRedirectsEnabled(true).build();
-
-        post.setConfig(requestConfig);
-
-        HttpEntity entity = EntityBuilder.create().setText(param).setContentType(ContentType.APPLICATION_JSON).build();
-        post.setEntity(entity);
-        post.setHeader("Content-Type", "application/json");
-
-        CloseableHttpResponse execute = null;
-        try {
-            // httpClient对象执行post请求,并返回响应参数对象
-            execute = httpClient.execute(post);
-            // 从响应对象中获取响应内容
-            entity = execute.getEntity();
-            result = EntityUtils.toString(entity);
-        } catch (ClientProtocolException e) {
-            logger.error("{}接口调用失败", e.getMessage());
-        } catch (IOException e) {
-            logger.error("{}接口调用失败", e.getMessage());
-        } finally {
-            Fc.closeQuietly(execute);
-            Fc.closeQuietly(httpClient);
-            // 关闭资源
-        }
-        return result;
+        return doPostJson(url,null,param);
     }
 
     public static String doPostJson(String url, Map<String, String> headers, String param) {
         String result = "";
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost post = new HttpPost(url);
-        //配置超时时间
-        RequestConfig requestConfig = RequestConfig.custom().
-                setConnectTimeout(30000).setConnectionRequestTimeout(30000)
-                .setSocketTimeout(30000).setRedirectsEnabled(true).build();
 
-        post.setConfig(requestConfig);
+        post.setConfig(requestConfig());
 
         HttpEntity entity = EntityBuilder.create().setText(param).setContentType(ContentType.APPLICATION_JSON).build();
         post.setEntity(entity);
@@ -404,10 +326,8 @@ public class HttpClient {
             // 从响应对象中获取响应内容
             entity = execute.getEntity();
             result = EntityUtils.toString(entity);
-        } catch (ClientProtocolException e) {
-            logger.error("{}接口调用失败", e.getMessage());
         } catch (IOException e) {
-            logger.error("{}接口调用失败", e.getMessage());
+            log.error("{}接口调用失败=>{}",url, ExceptionsUtil.getStackTraceAsString(e));
         } finally {
             Fc.closeQuietly(execute);
             Fc.closeQuietly(httpClient);
@@ -453,15 +373,13 @@ public class HttpClient {
                 HttpEntity entity = response.getEntity();
                 result = EntityUtils.toString(entity);
             } catch (Exception e) {
-                logger.error("{}接口调用失败", e.getMessage());
+                log.error("{}接口调用失败=>{}",url, ExceptionsUtil.getStackTraceAsString(e));
             } finally {
                 response.close();
                 // 关闭资源
             }
-        } catch (ClientProtocolException e) {
-            logger.error("{}接口调用失败", e.getMessage());
         } catch (IOException e) {
-            logger.error("{}接口调用失败", e.getMessage());
+            log.error("{}接口调用失败=>{}",url, ExceptionsUtil.getStackTraceAsString(e));
         } finally {
             Fc.closeQuietly(httpClient);
             // 关闭资源
@@ -494,37 +412,24 @@ public class HttpClient {
                 httpEntity = response.getEntity();
                 result =EntityUtils.toString(httpEntity);
             }
-        } catch (ClientProtocolException e) {
-            logger.error(ExceptionsUtil.getStackTraceAsString(e));
         } catch (IOException e) {
-            logger.error(ExceptionsUtil.getStackTraceAsString(e));
+            log.error(ExceptionsUtil.getStackTraceAsString(e));
         } finally {
             // 释放资源
             try {
                 if( null != httpEntity ) {
                     EntityUtils.consume(httpEntity);
                 }
-                if( null != response ) {
-                    response.close();
-                }
+                Fc.closeQuietly(response);
+                Fc.closeQuietly(httpClient);
                 if( null != httpPost ){
                     httpPost.releaseConnection();
                 }
-                if( null != httpClient ){
-                    httpClient.close();
-                }
             } catch (IOException e) {
-                logger.error(ExceptionsUtil.getStackTraceAsString(e));
+                log.error(ExceptionsUtil.getStackTraceAsString(e));
             }
         }
         return result;
     }
 
-    public static void main(String[] args) {
-//        File file = new File("C:\\Users\\Administrator\\Pictures\\Saved Pictures\\1.png");
-//        Map<String, String> map = new HashMap<>();
-//        map.put("act", "upload_files");
-//        String s = uploadFile(file,  "http://47.104.96.84:8001/api/web.php","file[]", map);
-//        System.out.println(s);
-    }
 }
