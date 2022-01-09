@@ -75,12 +75,6 @@
             <dependencies>
 
                 <dependency>
-                    <groupId>dom4j</groupId>
-                    <artifactId>dom4j</artifactId>
-                    <version>${dom4j.version}</version>
-                </dependency>
-
-                <dependency>
                     <groupId>commons-io</groupId>
                     <artifactId>commons-io</artifactId>
                     <version>${common-io.version}</version>
@@ -166,12 +160,6 @@
                     <groupId>com.baomidou</groupId>
                     <artifactId>mybatis-plus-boot-starter</artifactId>
                     <version>${mybatis-plus.version}</version>
-                </dependency>
-
-                <dependency>
-                    <groupId>com.alibaba</groupId>
-                    <artifactId>fastjson</artifactId>
-                    <version>${fastjson.version}</version>
                 </dependency>
 
                 <dependency>
