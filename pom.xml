@@ -20,7 +20,6 @@
     <properties>
         <java.version>1.8</java.version>
         <com.jpower.version>2.1.0</com.jpower.version>
-        <spring-test.version>5.2.6.RELEASE</spring-test.version>
 
         <springboot.data.redis.version>1.5.8.RELEASE</springboot.data.redis.version>
         <mybatis-plus.version>3.4.3.4</mybatis-plus.version>
@@ -37,9 +36,12 @@
         <knife4j.version>2.0.9</knife4j.version>
         <swagger-annotations.version>1.6.2</swagger-annotations.version>
         <common-io.version>2.8.0</common-io.version>
-        <skywalking.version>8.1.0</skywalking.version>
+<!--        <skywalking.version>8.1.0</skywalking.version>-->
+        <skywalking.version>8.8.0</skywalking.version>
         <spring-boot-admin.version>2.4.0</spring-boot-admin.version>
+<!--        <spring-boot-admin.version>2.6.0</spring-boot-admin.version>-->
         <logstash.version>6.2</logstash.version>
+<!--        <logstash.version>7.0.1</logstash.version>-->
         <hutool.version>5.7.16</hutool.version>
         <srping-alibaba.version>2021.1</srping-alibaba.version>
         <srping-cloud.version>2020.0.4</srping-cloud.version>
