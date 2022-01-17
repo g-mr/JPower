@@ -1,13 +1,7 @@
 package com.wlcb.jpower.module.common.deploy.props;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.lang.Nullable;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 配置文件
@@ -18,7 +12,7 @@ import java.util.Map;
 public class JpowerProperties {
 
 	/**
-	 * 开发环境
+	 * 运行环境
 	 */
 	private String env;
 

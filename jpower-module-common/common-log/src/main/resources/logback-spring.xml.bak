@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="false" scan="true" scanPeriod="60 seconds">
 
-    <springProperty scope="context" type="xsd:object" name="log" source="jpower"/>
-
-    <property scope="context" name="guodingzhisa" value="./logs" />
-
     <!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径-->
-    <!--<property name="log.base" value="./logs" />
+    <property name="log.base" value="./logs" />
 
     <springProperty scope="local" name="SKYWALKING-LOG" source="jpower.skywalking.log" defaultValue="true" />
 
@@ -18,9 +14,9 @@
     </springProfile>
     <springProfile name="prod">
         <springProperty scope="local" name="DESTINATION" source="jpower.prod.elk.destination"/>
-    </springProfile>-->
+    </springProfile>
 
-    <!--<if condition='isNull("DESTINATION") || property("DESTINATION").equals("")'>
+    <if condition='isNull("DESTINATION") || property("DESTINATION").equals("")'>
         <then>
             <property name="ELK_MODE" value="FALSE" />
             <property name="LOG_APPENDER" value="log" />
@@ -31,9 +27,7 @@
             <property name="LOG_APPENDER" value="log_logstash" />
             <property name="ERROR_APPENDER" value="error_logstash" />
         </else>
-    </if>-->
-
-    <contextListener class="com.wlcb.jpower.log.listener.LoggerStartupListener"/>
+    </if>
 
     <!-- 彩色日志 -->
     <!-- 彩色日志依赖的渲染类 -->
@@ -44,7 +38,7 @@
     <property name="CONSOLE_LOG_PATTERN" value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){blue} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(%tid){red} %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
 
     <!-- 文件日志格式-->
-<!--    <property name="patternAsyn" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%tid] [%thread] [%logger] - %msg%n" />-->
+    <property name="patternAsyn" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%tid] [%thread] [%logger] - %msg%n" />
 
     <!--控制台日志， 控制台输出 -->
     <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
@@ -58,18 +52,18 @@
     </appender>
 
     <!--  日志文件输出  -->
-    <appender name="log_file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${log.file.base}/log/log.log</file>
+    <appender name="log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.base}/log/log.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--日志文件输出的文件名-->
-            <FileNamePattern>${log.file.base}/log/log-%d{yyyyMMdd}.log</FileNamePattern>
+            <FileNamePattern>${log.base}/log/log-%d{yyyyMMdd}.log</FileNamePattern>
             <!--日志文件保留天数-->
-            <MaxHistory>${log.file.historyDay}</MaxHistory>
+            <MaxHistory>30</MaxHistory>
         </rollingPolicy>
         <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
             <layout class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
                 <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
-                <pattern>${log.file.pattern}</pattern>
+                <pattern>${patternAsyn}</pattern>
             </layout>
             <charset>UTF-8</charset>
         </encoder>
@@ -80,13 +74,14 @@
             <onMismatch>DENY</onMismatch>
         </filter>
     </appender>
-    <appender name="error_file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${log.file.base}/error/error.log</file>
+
+    <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.base}/error/error.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--日志文件输出的文件名-->
-            <FileNamePattern>${log.file.base}/error/error-%d{yyyyMMdd}.log</FileNamePattern>
+            <FileNamePattern>${log.base}/error/error-%d{yyyyMMdd}.log</FileNamePattern>
             <!--日志文件保留天数-->
-            <MaxHistory>${log.file.historyDay}</MaxHistory>
+            <MaxHistory>30</MaxHistory>
         </rollingPolicy>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>ERROR</level>
@@ -96,35 +91,59 @@
         <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
             <layout class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
                 <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
-                <pattern>${log.file.pattern}</pattern>
+                <pattern>${patternAsyn}</pattern>
             </layout>
             <charset>UTF-8</charset>
         </encoder>
     </appender>
 
     <!--  skywalking日志输出  -->
-    <appender name="log_skywalking" class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.log.GRPCLogClientAppender">
+    <appender name="skywalking_log" class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.log.GRPCLogClientAppender">
         <!-- 日志输出编码 -->
         <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
             <layout class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
                 <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
-                <pattern>${log.skywalking.pattern}</pattern>
+                <pattern>${patternAsyn}</pattern>
             </layout>
             <charset>UTF-8</charset>
         </encoder>
     </appender>
 
     <!--  ELK日志输出  -->
-    <if condition='property("genre").contains("elk")'>
+    <if condition='property("ELK_MODE").toUpperCase().contains("TRUE")'>
         <then>
+            <!-- 推送日志至elk -->
             <appender name="log_logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-                <destination>${log.elk.destination}</destination>
+                <destination>${DESTINATION}</destination>
                 <!-- 日志输出编码 -->
                 <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder">
                     <provider class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.logstash.TraceIdJsonProvider">
                     </provider>
                     <customFields>{"pid":"${PID}"}</customFields>
                 </encoder>
+                <!-- 打印日志级别 -->
+                <filter class="ch.qos.logback.classic.filter.LevelFilter">
+                    <level>INFO</level>
+                    <onMatch>ACCEPT</onMatch>
+                    <onMismatch>DENY</onMismatch>
+                </filter>
+            </appender>
+
+            <!-- 推送日志至elk -->
+            <appender name="error_logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+                <destination>${DESTINATION}</destination>
+                <!-- 日志输出编码 -->
+                <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder">
+                    <provider class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.logstash.TraceIdJsonProvider">
+                    </provider>
+                    <customFields>{"pid":"${PID}"}</customFields>
+                </encoder>
+                <!-- 打印日志级别 -->
+                <filter class="ch.qos.logback.classic.filter.LevelFilter">
+                    <level>ERROR</level>
+                    <onMatch>ACCEPT</onMatch>
+                    <onMismatch>DENY</onMismatch>
+                </filter>
             </appender>
         </then>
     </if>
@@ -152,37 +171,7 @@
     <logger name="com.wlcb.jpower.dbs.dao" level="info" />
 
     <!-- 日志输出级别 -->
-    <root level="${level}">
-        <appender-ref ref="log_file"/>
-        <if condition='property("genre").contains("file")'>
-            <then>
-                <appender-ref ref="log_file"/>
-                <appender-ref ref="error_file"/>
-            </then>
-        </if>
-        <if condition='property("genre").contains("skywalking")'>
-            <then>
-                <appender-ref ref="log_skywalking"/>
-            </then>
-        </if>
-        <if condition='property("genre").contains("elk")'>
-            <then>
-                <appender-ref ref="log_logstash"/>
-            </then>
-        </if>
-        <springProfile name="dev">
-            <appender-ref ref="stdout" />
-        </springProfile>
-<!--        <appender-ref ref="${LOG_APPENDER}"/>-->
-<!--        <appender-ref ref="${ERROR_APPENDER}"/>-->
-<!--        <if condition='property("SKYWALKING-LOG").toUpperCase().contains("TRUE")'>-->
-<!--            <then>-->
-<!--                <appender-ref ref="skywalking_log"/>-->
-<!--            </then>-->
-<!--        </if>-->
-<!--        <appender-ref ref="stdout" />-->
-    </root>
-    <!--<springProfile name="dev">
+    <springProfile name="dev">
         <root level="DEBUG">
             <appender-ref ref="${LOG_APPENDER}"/>
             <appender-ref ref="${ERROR_APPENDER}"/>
@@ -204,5 +193,5 @@
                 </then>
             </if>
         </root>
-    </springProfile>-->
+    </springProfile>
 </configuration>
