@@ -13,6 +13,10 @@ spring:
     #  commandTimeout: 5000
 
 jpower:
+  log:
+    mode: elk
+    elk:
+      destination: 219.148.186.236:9000
   #  开发环境
   dev:
     nacos:

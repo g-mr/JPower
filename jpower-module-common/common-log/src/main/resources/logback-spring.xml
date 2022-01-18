@@ -36,10 +36,18 @@
     </appender>
 
     <!--  日志文件输出  -->
-    <include resource="logback-file.xml" />
+    <if condition='property("mode").contains("file")'>
+        <then>
+            <include resource="logback-file.xml" />
+        </then>
+    </if>
 
     <!--  skywalking日志输出  -->
-    <include resource="logback-skywalking.xml" />
+    <if condition='property("mode").contains("skywalking")'>
+        <then>
+            <include resource="logback-skywalking.xml" />
+        </then>
+    </if>
 
     <!--  ELK日志输出  -->
     <if condition='property("mode").contains("elk")'>
@@ -72,7 +80,6 @@
 
     <!-- 日志输出级别 -->
     <root level="${level}">
-        <appender-ref ref="log_file"/>
         <if condition='property("mode").contains("file")'>
             <then>
                 <appender-ref ref="log_file"/>
