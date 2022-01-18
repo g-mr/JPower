@@ -9,12 +9,10 @@ import ch.qos.logback.core.LogbackException;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.LifeCycle;
 import com.wlcb.jpower.log.property.LogProperties;
-import com.wlcb.jpower.module.common.deploy.props.JpowerProperties;
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.SpringUtil;
-import com.wlcb.jpower.module.common.utils.constants.AppConstant;
+import com.wlcb.jpower.module.common.utils.StringUtil;
 
-import java.util.stream.Collectors;
+import java.util.Properties;
 
 /**
  * @Author mr.g
@@ -56,17 +54,13 @@ public class LoggerStartupListener extends ContextAwareBase
         }
 
         Context context = getContext();
-
-        LogProperties log = SpringUtil.getBean(LogProperties.class);
-        JpowerProperties jpower = SpringUtil.getBean(JpowerProperties.class);
-
-        if (log.getMode().contains(LogProperties.LogGenre.elk) && Fc.isBlank(log.getElk().getDestination())){
-            throw new LogbackException("jpower.log.elk.destination配置为空");
+        if (StringUtil.contains(context.getProperty("mode"),LogProperties.LogGenre.elk.name()) && Fc.isBlank(context.getProperty("log.elk.destination"))){
+            throw new LogbackException("jpower.log.elk.destination 配置为空");
         }
 
-        context.putProperty("genre",log.getMode().stream().map(Enum::name).distinct().collect(Collectors.joining(",")));
-        context.putObject("log",log);
-        context.putProperty("level", Fc.equalsValue(jpower.getEnv(), AppConstant.DEV_CODE)?"DEBUG":"INFO");
+        Properties props = System.getProperties();
+        context.putProperty("appName",props.getProperty("jpower.name"));
+        context.putProperty("version",props.getProperty("jpower.version"));
 
         started = true;
     }

@@ -75,7 +75,6 @@ public class JpowerApplication {
         props.setProperty("jpower.is-local", String.valueOf(isLocalDev()));
         props.setProperty("spring.application.name", appName);
         props.setProperty("spring.profiles.active", profile);
-        props.setProperty("logging.config", "classpath:logback-spring.xml");
         props.setProperty("spring.main.allow-bean-definition-overriding", "true");
         //nacos配置
         props.setProperty("spring.cloud.nacos.discovery.server-addr", "${jpower.".concat(profile).concat(".nacos.server-addr:}"));

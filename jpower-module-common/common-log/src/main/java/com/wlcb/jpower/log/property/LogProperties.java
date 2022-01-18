@@ -1,11 +1,8 @@
 package com.wlcb.jpower.log.property;
 
-import cn.hutool.core.collection.ListUtil;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 /**
  * @Author mr.g
@@ -19,8 +16,7 @@ public class LogProperties {
     /**
      * 日志输出方式
      */
-    //Collections.singletonList(LogGenre.file);
-    private List<LogGenre> mode = ListUtil.of(LogGenre.file,LogGenre.skywalking);
+    private String mode = "file,skywalking";
 
     /**
      * ELK配置
