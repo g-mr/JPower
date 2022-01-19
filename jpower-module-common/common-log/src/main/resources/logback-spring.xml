@@ -22,7 +22,7 @@
     <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
     <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
     <!-- 彩色日志格式 -->
-    <property name="CONSOLE_LOG_PATTERN" value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){blue} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(%tid){red} %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%replace(%caller{1}){'\t|Caller.{1}0|\r\n', ''}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+    <property name="CONSOLE_LOG_PATTERN" value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){blue} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(%tid){red} %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%replace(%caller{1}){'\t|Caller.{1}0|\r\n|\r|\n', ''}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
 
     <!--控制台日志， 控制台输出 -->
     <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
@@ -61,6 +61,9 @@
     <logger name="org.jboss.logging" level="info" />
     <logger name="org.springframework.core.env" level="info" />
     <logger name="org.springframework.beans.factory.support" level="info" />
+    <logger name="com.alibaba.druid" level="INFO"/>
+    <logger name="springfox.documentation" level="info"/>
+    <logger name="org.springframework.data.convert" level="info"/>
     <!-- 去掉自动装配信息，需要的自行打开 -->
     <logger name="org.springframework.boot.autoconfigure.logging" level="info" additivity="false" />
     <!--myibatis log configure-->
