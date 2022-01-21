@@ -42,6 +42,7 @@
         <hutool.version>5.7.16</hutool.version>
         <srping-alibaba.version>2021.1</srping-alibaba.version>
         <nacos.version>2.0.4</nacos.version>
+        <seata.version>1.4.2</seata.version>
         <srping-cloud.version>2020.0.4</srping-cloud.version>
 
         <dockerfile-maven-plugin.version>1.4.13</dockerfile-maven-plugin.version>
