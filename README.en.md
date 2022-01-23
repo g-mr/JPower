@@ -2,7 +2,7 @@
 
 # JPower: A rapid development platform for microservices
 
-[![Gitter](https://img.shields.io/badge/Release-V2.1.0-green.svg)](https://gitee.com/gdzWork/JPower)   [![License](https://img.shields.io/badge/Author-mr.g-orange.svg)](https://gitee.com/gdzWork/JPower)
+[![Gitter](https://img.shields.io/badge/Release-V2.1.1-green.svg)](https://gitee.com/gdzWork/JPower)   [![License](https://img.shields.io/badge/Author-mr.g-orange.svg)](https://gitee.com/gdzWork/JPower)
 [![Gitter](https://img.shields.io/badge/Copyright%20-@Jpower-%23ff3f59.svg)](https://gitee.com/gdzWork/JPower)
 
 ### QQ Number : 860452768
@@ -101,7 +101,7 @@ The code generator is implemented based on MybatisPlus-generator.
 
 12. **Grayscale release**
   
-    In order to solve frequent service updates and launches, version rollbacks, rapid iteration, and collaborative development within the company, this project uses a modified ribbon load balancing strategy to achieve gray release.
+    In order to solve frequent service updates and launches, version rollbacks, rapid iteration, and collaborative development within the company, this project uses a modified spring-load-balancing load balancing strategy to achieve gray release.
    
 13. **Interface monitoring**
   
@@ -110,7 +110,7 @@ The code generator is implemented based on MybatisPlus-generator.
 ## 工程结构：
 ~~~
 JPower
-├── conf -- Configuration file directory
+├── config -- Configuration file directory
 ├── jpower-boot -- Boot project implementation
 ├── jpower-core-login -- Authorized login module
 ├── jpower-core-server -- Core business module
@@ -160,7 +160,7 @@ JPower
     *  API Gateway：Gateway
     *  Service registration and discovery: Nacos
     *  Service consumption：OpenFeign
-    *  Load balancing：Ribbon
+    *  Load balancing：spring load balancing
     *  Configuration Center：Nacos
     *  Service fusing：Sentinel
     *  Project construction：Maven 3.3

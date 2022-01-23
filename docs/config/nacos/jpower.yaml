@@ -83,7 +83,7 @@ knife4j:
 swagger:
   title: JPower 接口文档系统
   description: JPower 接口文档系统
-  version: 2.1.0
+  version: 2.1.1
   license: Powered By JPower
   license-url: https://gitee.com/gdzWork/JPower
   terms-of-service-url: http://jpower.top

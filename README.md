@@ -2,7 +2,7 @@
 
 # JPower：微服务快速开发平台
 
-[![Gitter](https://img.shields.io/badge/Release-V2.1.0-green.svg)](https://gitee.com/gdzWork/JPower)   [![License](https://img.shields.io/badge/Author-mr.g-orange.svg)](https://gitee.com/gdzWork/JPower)
+[![Gitter](https://img.shields.io/badge/Release-V2.1.1-green.svg)](https://gitee.com/gdzWork/JPower)   [![License](https://img.shields.io/badge/Author-mr.g-orange.svg)](https://gitee.com/gdzWork/JPower)
 [![Gitter](https://img.shields.io/badge/Copyright%20-@Jpower-%23ff3f59.svg)](https://gitee.com/gdzWork/JPower)
 
 
@@ -57,7 +57,7 @@
 4. 权限设置：数据权限、角色管理、给角色绑定用户、给角色授权菜单和资源
 6. 系统设置：菜单功能、附件管理、字典、行政地区、系统参数、应用管理等
 7. 网关管理：限流和阻止访问、注册中心
-8. 系统监控：接口文档、服务监控、SkyWalking监控等
+8. 系统监控：接口文档、服务监控、SkyWalking监控、ELK日志等
 
 ## 项目亮点功能介绍:
 1. **服务注册&发现与调用：**
@@ -74,7 +74,7 @@
 
 5. **监控：**
 
-    利用Spring Boot Admin 来监控各个独立Service的运行状态；通过SkyWalking来查看各个服务之间的调用链等。
+    利用Spring Boot Admin 来监控各个独立Service的运行状态；通过SkyWalking来查看各个服务之间的调用链、堆栈等。
 
 6. **链路调用监控：**
 
@@ -102,7 +102,7 @@
 
 12. **灰度发布**
   
-    为了解决频繁的服务更新上线，版本回退，快速迭代，公司内部协同开发，本项目采用修改ribbon的负载均衡策略来实现来灰度发布。
+    为了解决频繁的服务更新上线，版本回退，快速迭代，公司内部协同开发，本项目采用修改spring load balancing的负载均衡策略来实现来灰度发布。
     
 13. **接口监控**
   
@@ -111,7 +111,7 @@
 ## 工程结构：
 ~~~
 JPower
-├── conf -- 配置文件目录
+├── config -- 配置文件目录
 ├── jpower-boot -- boot项目实现
 ├── jpower-core-login -- 授权登录模块
 ├── jpower-core-server -- 核心业务模块
@@ -161,7 +161,7 @@ JPower
     *  API网关：Gateway
     *  服务注册与发现: Nacos
     *  服务消费：OpenFeign
-    *  负载均衡：Ribbon
+    *  负载均衡：spring load balancing
     *  配置中心：Nacos
     *  服务熔断：Sentinel
     *  项目构建：Maven 3.3
