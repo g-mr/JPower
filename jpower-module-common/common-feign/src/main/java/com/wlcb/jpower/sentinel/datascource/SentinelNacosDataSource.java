@@ -30,7 +30,7 @@ import java.util.Properties;
  * @Version 1.0
  */
 @Component
-public class SentinelNacosDataSource {
+public class SentinelNacosDataSource {//implements InitFunc {
 
     @Value("${spring.cloud.nacos.config.server-addr}")
     private String remoteAddress;
@@ -51,6 +51,12 @@ public class SentinelNacosDataSource {
                 source -> JSON.parseObject(source, new TypeReference<List<FlowRule>>() {
                 }));
         FlowRuleManager.register2Property(flowRuleDataSource.getProperty());
+
+//        WritableDataSource<List<FlowRule>> wds = new FileWritableDataSource<>("", JSON::toJSONString);
+//        // 将可写数据源注册至 transport 模块的 WritableDataSourceRegistry 中.
+//        // 这样收到控制台推送的规则时，Sentinel 会先更新到内存，然后将规则写入到文件中.
+//        WritableDataSourceRegistry.registerFlowDataSource(wds);
+
 
         //降级
         ReadableDataSource<String, List<DegradeRule>> degradeRuleDataSource = new NacosDataSource<>(properties, groupId, dataId.concat("-degrade"),

@@ -78,7 +78,7 @@ services:
         ipv4_address: 172.16.238.50
 
   sentinel:
-    image: "jpowerplus/sentinel-dashboard:1.8.0"
+    image: "jpowerplus/sentinel-dashboard:1.8.3"
     hostname: "sentinel-standalone"
     privileged: true
     volumes:

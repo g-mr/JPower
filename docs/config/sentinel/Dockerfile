@@ -15,6 +15,6 @@ EXPOSE 8858
 
 EXPOSE 8719
 
-ADD ./sentinel-dashboard-1.8.0.jar ./app.jar
+ADD ./sentinel-dashboard-1.8.3.jar ./app.jar
 
 CMD java -Dsentinel.dashboard.auth.username=${AUTH_USERNAME} -Dsentinel.dashboard.auth.password=${AUTH_PASSWORD} -Djava.security.egd=file:/dev/./urandom -Dserver.port=8858 -Dcsp.sentinel.dashboard.server=localhost:8858 -Dproject.name=sentinel-dashboard -jar app.jar
