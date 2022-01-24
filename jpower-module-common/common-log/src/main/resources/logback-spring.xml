@@ -4,8 +4,8 @@
     <springProperty scope="context" name="mode" source="jpower.log.mode" defaultValue="file,skywalking"/>
     <springProperty scope="context" name="log.file.base" source="jpower.log.file.base" defaultValue="./logs"/>
     <springProperty scope="context" name="log.file.historyDay" source="jpower.log.file.historyDay" defaultValue="30"/>
-    <springProperty scope="context" name="log.file.pattern" source="jpower.log.file.pattern" defaultValue="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%tid] [%thread] [%logger{39}.%M:%L] - %msg%n"/>
-    <springProperty scope="context" name="log.skywalking.pattern" source="jpower.log.skywalking.pattern" defaultValue="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%tid] [%thread] [%logger{39}.%M:%L] - %msg%n"/>
+    <springProperty scope="context" name="log.file.pattern" source="jpower.log.file.pattern" defaultValue="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [${appName}-${version}] [%tid] [%thread] [%logger{39}.%M:%L] - %msg%n"/>
+    <springProperty scope="context" name="log.skywalking.pattern" source="jpower.log.skywalking.pattern" defaultValue="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [${appName}] [%tid] [%thread] [%logger{39}.%M:%L] - %msg%n"/>
     <springProperty scope="context" name="log.elk.destination" source="jpower.log.elk.destination"/>
     <springProfile name="dev">
         <property scope="context" name="level" value="DEBUG" />

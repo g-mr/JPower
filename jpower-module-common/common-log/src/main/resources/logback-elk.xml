@@ -5,9 +5,17 @@
         <destination>${log.elk.destination}</destination>
         <!-- 日志输出编码 -->
         <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder">
-            <provider class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.logstash.TraceIdJsonProvider">
-            </provider>
-            <customFields>{"pid":"${PID}"}</customFields>
+            <includeContext>false</includeContext>
+            <timestampPattern>yyyy-MM-dd HH:mm:ss.SSS</timestampPattern>
+            <writeVersionAsInteger>false</writeVersionAsInteger>
+            <version>${version}</version>
+            <provider class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.logstash.TraceIdJsonProvider" />
+            <customFields>
+                {
+                    "pid":"${PID:-}",
+                    "serviceName":"${appName:-JPowerApp}"
+                }
+            </customFields>
         </encoder>
     </appender>
 </included>

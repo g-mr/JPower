@@ -13,6 +13,10 @@ spring:
     #  commandTimeout: 5000
 
 jpower:
+#  log:
+#    mode: elk
+#    elk:
+#      destination: localhost:9000
   #  开发环境
   dev:
     nacos:
