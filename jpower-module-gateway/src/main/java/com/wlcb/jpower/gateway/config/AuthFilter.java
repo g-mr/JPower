@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wlcb.jpower.gateway.utils.ExculdesUrl;
 import com.wlcb.jpower.gateway.utils.IpUtil;
 import com.wlcb.jpower.gateway.utils.TokenUtil;
-import com.wlcb.jpower.module.common.auth.RoleConstant;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.support.ChainMap;
@@ -40,6 +39,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.wlcb.jpower.module.common.auth.RoleConstant.ANONYMOUS;
+
 /**
  * @ClassName AuthFilter
  * @Description TODO 鉴权
@@ -63,8 +64,8 @@ public class AuthFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         Route route = (Route) exchange.getAttributes().get(ServerWebExchangeUtils.GATEWAY_ROUTE_ATTR);
         String currentPath = exchange.getRequest().getURI().getPath();
-        if (currentPath.startsWith("/"+route.getId())){
-            currentPath = currentPath.replace("/"+route.getId(),"");
+        if (currentPath.startsWith(StringPool.SLASH+route.getId())){
+            currentPath = currentPath.replace(StringPool.SLASH+route.getId(),StringPool.EMPTY);
         }
 
         //不鉴权得URL
@@ -79,9 +80,8 @@ public class AuthFilter implements GlobalFilter, Ordered {
             if (!redisUtil.exists(CacheNames.TOKEN_URL_KEY + token)){
                 return proxyAuthenticationRequired(exchange.getResponse(), "令牌已过期，请重新登陆");
             }
-            Object o = redisUtil.get(CacheNames.TOKEN_URL_KEY + token);
-            List<String> listUrl = Fc.isNull(o)?new ArrayList<>():(List<String>) o;
-            if (Fc.isNull(claims) || !Fc.contains(listUrl, currentPath)) {
+
+            if (Fc.isNull(claims) || !isAuth(token, currentPath)) {
                 return unAuth(exchange.getResponse(), "请求未授权");
             }
 
@@ -97,19 +97,38 @@ public class AuthFilter implements GlobalFilter, Ordered {
 
             //匿名用户
             if (getIsAnonymous(currentPath)){
-                return chain.filter(addHeader(exchange,"anonymous",StringPool.EMPTY));
+                return chain.filter(addHeader(exchange,ANONYMOUS,StringPool.EMPTY));
             }
             return proxyAuthenticationRequired(exchange.getResponse(), "缺失令牌，鉴权失败");
         }
     }
 
+    /**
+     * 是否拥有权限
+     * @Author mr.g
+     * @param token TOKEN
+     * @param currentPath 请求地址
+     * @return boolean
+     **/
+    private boolean isAuth(String token,String currentPath){
+        Object o = redisUtil.get(CacheNames.TOKEN_URL_KEY + token);
+        List<String> listUrl = Fc.isNull(o)?new ArrayList<>():(List<String>) o;
+        return listUrl.stream().anyMatch(pattern -> antPathMatcher.match(pattern, currentPath));
+    }
+
+    /**
+     * 是否不过滤权限
+     * @Author mr.g
+     * @param path 请求地址
+     * @return boolean
+     **/
     private boolean isSkip(String path) {
         return ExculdesUrl.getExculudesUrl().stream().anyMatch(pattern -> antPathMatcher.match(pattern, path))
                 || authProperties.getSkipUrl().stream().anyMatch(pattern -> antPathMatcher.match(pattern, path));
     }
 
     private boolean getIsAnonymous(String currentPath){
-        Object o = redisUtil.get(CacheNames.TOKEN_URL_KEY+ RoleConstant.ANONYMOUS);
+        Object o = redisUtil.get(CacheNames.TOKEN_URL_KEY+ ANONYMOUS);
         List<String> listUrl = Fc.isNull(o)?new ArrayList<>():(List<String>) o;
         return Fc.contains(listUrl,currentPath);
     }
