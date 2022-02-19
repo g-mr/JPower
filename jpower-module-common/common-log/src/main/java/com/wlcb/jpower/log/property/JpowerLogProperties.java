@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 @ConfigurationProperties(prefix = "jpower.log")
-public class LogProperties {
+public class JpowerLogProperties {
 
     /**
      * 日志输出方式

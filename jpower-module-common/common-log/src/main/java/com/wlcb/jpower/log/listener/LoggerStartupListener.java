@@ -8,7 +8,7 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.LogbackException;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.LifeCycle;
-import com.wlcb.jpower.log.property.LogProperties;
+import com.wlcb.jpower.log.property.JpowerLogProperties;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.StringUtil;
 
@@ -54,7 +54,7 @@ public class LoggerStartupListener extends ContextAwareBase
         }
 
         Context context = getContext();
-        if (StringUtil.contains(context.getProperty("mode"),LogProperties.LogGenre.elk.name()) && Fc.isBlank(context.getProperty("log.elk.destination"))){
+        if (StringUtil.contains(context.getProperty("mode"), JpowerLogProperties.LogGenre.elk.name()) && Fc.isBlank(context.getProperty("log.elk.destination"))){
             throw new LogbackException("jpower.log.elk.destination 配置为空");
         }
 
