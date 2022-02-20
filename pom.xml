@@ -47,7 +47,7 @@
 
         <dockerfile-maven-plugin.version>1.4.13</dockerfile-maven-plugin.version>
         <docker.image.prefix>jpower</docker.image.prefix>
-        <docker.registry>219.148.186.235:99</docker.registry>
+        <docker.registry>118.31.115.232:5000</docker.registry>
 
     </properties>
 
