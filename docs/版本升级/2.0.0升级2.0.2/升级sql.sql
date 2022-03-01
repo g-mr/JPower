@@ -139,7 +139,7 @@ INSERT INTO `tb_core_role_function`(`id`, `role_id`, `function_id`, `create_user
 VALUES ('0477329c9f6c46a593985tujmf4bbb53', '1', '30b4baffc04b4850fgtb79a25f307462', '1', sysdate(), '1', sysdate(), 1, 0, '');
 INSERT INTO `tb_core_role_function`(`id`, `role_id`, `function_id`, `create_user`, `create_time`, `update_user`, `update_time`, `status`, `is_deleted`, `create_org`)
 VALUES ('0477329c9f6c5tf593985th8cf4bbb53', '1', '30b4baffc04b6260fgtb79a26f307462', '1', sysdate(), '1', sysdate(), 1, 0, '');
-INSERT INTO `jpower`.`tb_core_role_function`(`id`, `role_id`, `function_id`, `create_user`, `create_time`, `update_user`, `update_time`, `status`, `is_deleted`, `create_org`)
+INSERT INTO `tb_core_role_function`(`id`, `role_id`, `function_id`, `create_user`, `create_time`, `update_user`, `update_time`, `status`, `is_deleted`, `create_org`)
 VALUES ('0477329c9f6c5tdfv3985th8cf4bbb53', '1', '30b4baffc0487960fgtb79a26f307462', '1', sysdate(), '1', sysdate(), 1, 0, '');
-INSERT INTO `jpower`.`tb_core_role_function`(`id`, `role_id`, `function_id`, `create_user`, `create_time`, `update_user`, `update_time`, `status`, `is_deleted`, `create_org`)
+INSERT INTO `tb_core_role_function`(`id`, `role_id`, `function_id`, `create_user`, `create_time`, `update_user`, `update_time`, `status`, `is_deleted`, `create_org`)
 VALUES ('0477329c9f6c5tghn3985th8cf4bbb53', '1', '30b4baffc0yjm960fgtb79a26f307462', '1', sysdate(), '1', sysdate(), 1, 0, '');
