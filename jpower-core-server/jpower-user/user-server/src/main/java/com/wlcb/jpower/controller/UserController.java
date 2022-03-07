@@ -126,7 +126,7 @@ public class UserController extends BaseController {
             return ReturnJsonUtil.fail("租户不存在");
         }
         long accountNumber = getAccountNumber(tenant.getLicenseKey());
-        if (!Fc.equals(accountNumber, TENANT_ACCOUNT_NUMBER)) {
+        if (!Fc.equalsValue(accountNumber, TENANT_ACCOUNT_NUMBER)) {
             long count = coreUserService.count(Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getTenantCode, tenantCode));
             if (count >= accountNumber) {
                 return ReturnJsonUtil.busFail("账号额度已不足");
