@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.wlcb.jpower.module.common.auth.RoleConstant.ANONYMOUS;
+import static com.wlcb.jpower.module.common.auth.RoleConstant.ROOT_ID;
 
 /**
  * @ClassName AuthFilter
@@ -81,7 +82,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
                 return proxyAuthenticationRequired(exchange.getResponse(), "令牌已过期，请重新登陆");
             }
 
-            if (Fc.isNull(claims) || !isAuth(token, currentPath)) {
+            if (Fc.isNull(claims) || !isAuth(claims, token, currentPath)) {
                 return unAuth(exchange.getResponse(), "请求未授权");
             }
 
@@ -110,7 +111,12 @@ public class AuthFilter implements GlobalFilter, Ordered {
      * @param currentPath 请求地址
      * @return boolean
      **/
-    private boolean isAuth(String token,String currentPath){
+    private boolean isAuth(Claims claims, String token,String currentPath){
+        List roleIds = claims.get("roleIds",List.class);
+        if (Fc.isNotEmpty(roleIds) && roleIds.contains(ROOT_ID)){
+            return true;
+        }
+
         Object o = redisUtil.get(CacheNames.TOKEN_URL_KEY + token);
         List<String> listUrl = Fc.isNull(o)?new ArrayList<>():(List<String>) o;
         return listUrl.stream().anyMatch(pattern -> antPathMatcher.match(pattern, currentPath));
@@ -130,7 +136,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
     private boolean getIsAnonymous(String currentPath){
         Object o = redisUtil.get(CacheNames.TOKEN_URL_KEY+ ANONYMOUS);
         List<String> listUrl = Fc.isNull(o)?new ArrayList<>():(List<String>) o;
-        return Fc.contains(listUrl,currentPath);
+        return listUrl.stream().anyMatch(pattern -> antPathMatcher.match(pattern, currentPath));
     }
 
     private ServerWebExchange addHeader(ServerWebExchange exchange,String otherAuth, String dataScope) {
