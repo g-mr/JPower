@@ -1,4 +1,4 @@
-package controller;
+package com.wlcb.jpower.controller;
 
 import com.wlcb.jpower.dbs.entity.TbCoreFile;
 import com.wlcb.jpower.feign.FileClient;
