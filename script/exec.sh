@@ -1,8 +1,10 @@
 #!/bin/bash
 
-PROG=jpower-auth-exec
-SERVER_NAME=jpower-auth
-PIDFILE=/root/data/app/jpower-auth/${PROG}.pid
+# 【xxx】要修改成自己的项目名称
+
+PROG=【xxx】-exec
+SERVER_NAME=【xxx】
+PIDFILE=/root/data/app/【xxx】/${PROG}.pid
 
 export JAVA_HOME=/data/jdk1.8.0_231
 export JRE_HOME=$JAVA_HOME/jre

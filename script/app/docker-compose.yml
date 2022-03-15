@@ -193,9 +193,6 @@ services:
 
   jpower-api:
     image: "219.148.186.235:99/jpower/api-server:2.1.1"
-    volumes:
-      #      系统文件映射路径
-      - /docker/api/:/root/file
     ports:
       - 18000:18000
     privileged: true
