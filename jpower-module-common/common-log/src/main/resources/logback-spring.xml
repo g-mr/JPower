@@ -56,31 +56,29 @@
         </then>
     </if>
 
-    <logger name="io.netty.util.internal" level="info" />
-    <logger name="org.hibernate" level="info" />
-    <logger name="org.jboss.logging" level="info" />
-    <logger name="org.springframework.core.env" level="info" />
-    <logger name="org.springframework.beans.factory.support" level="info" />
-    <logger name="com.alibaba.druid" level="INFO"/>
-    <logger name="com.alibaba.druid.pool.DruidAbstractDataSource" level="info"/>
-    <logger name="springfox.documentation" level="info"/>
-    <logger name="org.springframework.data.convert" level="info"/>
-    <!-- 去掉自动装配信息，需要的自行打开 -->
-    <logger name="org.springframework.boot.autoconfigure.logging" level="info" additivity="false" />
+    <logger name="io.netty.util.internal" level="info" additivity="false" />
+    <logger name="org.hibernate" level="info" additivity="false" />
+    <logger name="org.reflections" level="info" additivity="false" />
+    <!-- Spring日志级别控制  -->
+    <logger name="org.springframework" level="warn" />
+    <logger name="org.jboss.logging" level="info" additivity="false"/>
+    <logger name="com.alibaba.druid" level="INFO" additivity="false"/>
+    <logger name="com.alibaba.druid.pool.DruidAbstractDataSource" level="info" additivity="false"/>
+    <logger name="springfox.documentation" level="info" additivity="false"/>
     <!--myibatis log configure-->
-    <logger name="com.apache.ibatis" level="info"/>
-    <logger name="com.ibatis" level="info" />
-    <logger name="org.apache.ibatis.jdbc.ScriptRunner" level="info" />
-    <logger name="java.sql.Connection" level="info" />
-    <logger name="java.sql.Statement" level="info" />
-    <logger name="java.sql.PreparedStatement" level="info" />
-    <logger name="com.baomidou.mybatisplus" level="WARN"/>
+    <logger name="com.apache.ibatis" level="info" additivity="false"/>
+    <logger name="com.ibatis" level="info" additivity="false"/>
+    <logger name="org.apache.ibatis.jdbc.ScriptRunner" level="info" additivity="false"/>
+    <logger name="java.sql.Connection" level="info" additivity="false"/>
+    <logger name="java.sql.Statement" level="info" additivity="false"/>
+    <logger name="java.sql.PreparedStatement" level="info" additivity="false"/>
+    <logger name="com.baomidou.mybatisplus" level="WARN" additivity="false"/>
     <!-- 减少nacos日志 -->
-    <logger name="com.alibaba.nacos" level="ERROR"/>
+    <logger name="com.alibaba.nacos" level="ERROR" additivity="false"/>
     <!-- 不打印SQL信息 -->
-    <logger name="com.wlcb.jpower.dbs.dao" level="info" />
+    <logger name="com.wlcb.jpower.dbs.dao" level="info" additivity="false"/>
     <!-- 不打印swagger提示信息 -->
-    <logger name="springfox.documentation.spring.web.readers.operation.CachingOperationNameGenerator" level="ERROR" />
+    <logger name="springfox.documentation.spring.web.readers.operation.CachingOperationNameGenerator" level="ERROR" additivity="false"/>
 
     <!-- 日志输出级别 -->
     <root level="${level}">
