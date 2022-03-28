@@ -7,6 +7,7 @@ import com.wlcb.jpower.module.common.support.EnvBeanUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
@@ -25,7 +26,7 @@ public class ReturnJsonUtil {
      * @param responseData
      * @throws Exception
      */
-    public static void sendJsonMessage(HttpServletResponse response, ResponseData responseData) throws Exception {
+    public static void sendJsonMessage(HttpServletResponse response, ResponseData responseData) throws IOException {
         response.setContentType("application/json; charset=utf-8");
         PrintWriter writer = response.getWriter();
         writer.print(JSONObject.toJSONString(responseData, SerializerFeature.WriteMapNullValue,
