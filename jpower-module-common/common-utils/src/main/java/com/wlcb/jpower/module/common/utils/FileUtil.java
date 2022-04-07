@@ -1,5 +1,8 @@
 package com.wlcb.jpower.module.common.utils;
 
+import cn.hutool.core.io.file.FileNameUtil;
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.NumberUtil;
 import com.wlcb.jpower.module.common.support.NamedThreadFactory;
 import com.wlcb.jpower.module.common.utils.constants.CharPool;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
@@ -11,6 +14,7 @@ import java.io.*;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 import java.util.concurrent.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -404,4 +408,34 @@ public class FileUtil extends org.apache.commons.io.FileUtils {
         // 项目所在的目录
         return new File(path).getAbsolutePath();
     }
+
+    /**
+     * 修改文件名称，检测目录下是否有同名，有则改名没有则返回
+     * @Author mr.g
+     * @param file
+     * @return java.io.File
+     **/
+    public static File rename(File file) {
+
+        if (Fc.isNull(file)) {
+            return null;
+        }
+
+        File parentDir = file.getParentFile();
+        if (ArrayUtil.isEmpty(parentDir.listFiles((dir, name) -> Fc.equalsValue(name,file.getName())))){
+            return file;
+        }else {
+            String fileNamePrefix = FileNameUtil.getPrefix(file);
+
+            String num = StringUtil.subBetween(fileNamePrefix,StringPool.LEFT_BRACKET,StringPool.RIGHT_BRACKET,true);
+            if (Fc.isBlank(num) || !NumberUtil.isInteger(num)){
+                fileNamePrefix = fileNamePrefix + StringPool.LEFT_BRACKET + "0" + StringPool.RIGHT_BRACKET;
+            }else {
+                fileNamePrefix = StringUtil.replace(fileNamePrefix,StringPool.LEFT_BRACKET + num + StringPool.RIGHT_BRACKET,StringPool.LEFT_BRACKET + Fc.toStr(NumberUtil.add(num,"1")) + StringPool.RIGHT_BRACKET);
+            }
+
+            return rename(new File(parentDir.getAbsolutePath() + File.separator + fileNamePrefix));
+        }
+    }
+
 }

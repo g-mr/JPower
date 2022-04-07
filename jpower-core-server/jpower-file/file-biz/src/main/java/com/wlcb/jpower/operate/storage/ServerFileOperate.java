@@ -1,5 +1,7 @@
 package com.wlcb.jpower.operate.storage;
 
+import cn.hutool.core.io.FileTypeUtil;
+import cn.hutool.core.io.file.FileNameUtil;
 import com.wlcb.jpower.dbs.entity.TbCoreFile;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.BusinessException;
@@ -35,6 +37,7 @@ public class ServerFileOperate implements FileOperate {
 	private CoreFileService coreFileService;
 
 	private final String pathPrefix = "file";
+
 	@Override
 	public TbCoreFile upload(MultipartFile file) throws IOException {
 		JpowerAssert.notEmpty(fileParentPath, JpowerError.Unknown,"未配置文件保存路径");
@@ -46,7 +49,7 @@ public class ServerFileOperate implements FileOperate {
 		coreFile.setPath(pathPrefix + File.separator +path);
 		coreFile.setName(saveFile.getName());
 		coreFile.setStorageType(SERVER.getValue());
-		coreFile.setFileType(file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(StringPool.DOT) + 1));
+		coreFile.setFileType(FileTypeUtil.getType(saveFile));
 		coreFile.setFileSize(file.getSize());
 		coreFile.setId(UUIDUtil.getUUID());
 		coreFile.setMark(DESUtil.encrypt(coreFile.getId(), ConstantsUtils.FILE_DES_KEY));

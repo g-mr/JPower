@@ -1,5 +1,6 @@
 package com.wlcb.jpower.module.common.utils;
 
+import cn.hutool.core.io.file.FileNameUtil;
 import com.wlcb.jpower.module.common.support.FileType;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -35,18 +36,21 @@ public class MultipartFileUtil{
     }
 
     public static String saveFile(MultipartFile file,String fileSuffixName,String savePath) throws IOException {
+        return saveFile(file, fileSuffixName, savePath,null);
+    }
 
-        String fileName = UUIDUtil.getUUID();
+    public static String saveFile(MultipartFile file,String fileSuffixName,String savePath,String fileName) throws IOException {
+
+        if (Fc.isBlank(fileName)){
+            fileName = file.getName();
+        }
         //获得文件后缀名
-        String suffixName=file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1);
-
+        String suffixName=FileNameUtil.getSuffix(file.getOriginalFilename());
         if (StringUtils.isNotBlank(fileSuffixName) && !StringUtils.containsIgnoreCase(fileSuffixName,suffixName) && !StringUtils.containsIgnoreCase(fileSuffixName, FileType.getFileType(file.getInputStream()))){
             throw new IllegalStateException("不支持的后缀类型");
         }
-
         String path = DateUtil.getDate(new Date(), DateUtil.PATTERN_DATE) + File.separator + fileName + "." + suffixName;
-
-        File nFile = new File(savePath+File.separator+path);
+        File nFile = FileUtil.rename(new File(savePath+File.separator+path));
 
         if(!nFile.getParentFile().exists()){
             nFile.getParentFile().mkdirs();

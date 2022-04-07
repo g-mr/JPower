@@ -1,5 +1,6 @@
 package com.wlcb.jpower.operate.storage;
 
+import cn.hutool.core.io.FileTypeUtil;
 import com.wlcb.jpower.dbs.entity.TbCoreFile;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
@@ -40,13 +41,13 @@ public class FastDfsFileOperate implements FileOperate {
 		String dfsPath = FileDfsUtil.upload(file.getBytes(),file.getSize(),originalFileName.substring(originalFileName.lastIndexOf(StringPool.DOT)));
 
 		TbCoreFile coreFile = new TbCoreFile();
-		coreFile.setFileType(originalFileName.substring(originalFileName.lastIndexOf(StringPool.DOT) + 1));
+		coreFile.setFileType(FileTypeUtil.getType(file.getInputStream(),originalFileName));
 		coreFile.setFileSize(file.getSize());
 		coreFile.setId(UUIDUtil.getUUID());
 		coreFile.setMark(DESUtil.encrypt(coreFile.getId(), ConstantsUtils.FILE_DES_KEY));
 		coreFile.setStorageType(FASTDFS.getValue());
 		coreFile.setPath(dfsPath);
-		coreFile.setName(UUIDUtil.getUUID()+StringPool.DOT+coreFile.getFileType());
+		coreFile.setName(originalFileName);
 
 		try {
 			if (!coreFileService.add(coreFile)){
