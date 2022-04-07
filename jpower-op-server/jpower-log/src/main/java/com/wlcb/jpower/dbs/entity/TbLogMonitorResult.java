@@ -1,5 +1,6 @@
 package com.wlcb.jpower.dbs.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.base.annotation.Excel;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
@@ -56,4 +57,7 @@ public class TbLogMonitorResult extends BaseEntity {
     @ApiModelProperty("响应时长 单位毫秒")
     @Excel(name = "响应时长",suffix="毫秒")
     private Long responseTime;
+
+    @TableField(exist = false)
+    private String isSuccessStr;
 }

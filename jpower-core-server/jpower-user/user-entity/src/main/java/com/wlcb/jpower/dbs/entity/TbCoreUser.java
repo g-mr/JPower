@@ -90,4 +90,11 @@ public class TbCoreUser extends TenantEntity implements Serializable {
     @TableField(exist = false)
     private String roleIds;
 
+    @TableField(exist = false)
+    private String activationStatusStr;
+    @TableField(exist = false)
+    private String userTypeStr;
+    @TableField(exist = false)
+    private String idTypeStr;
+
 }

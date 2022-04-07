@@ -1,5 +1,6 @@
 package com.wlcb.jpower.dbs.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
@@ -32,8 +33,11 @@ public class TbCoreFile extends BaseEntity {
     @ApiModelProperty("文件标识")
     private String mark;
     @ApiModelProperty("存储类型")
-    @Dict(name = "FILE_STORAGE_TYPE")
+    @Dict(name = "FILE_STORAGE_TYPE",attributes = "storageTypeStr")
     private String storageType;
     @ApiModelProperty("备注")
     private String note;
+
+    @TableField(exist = false)
+    private String storageTypeStr;
 }

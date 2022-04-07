@@ -55,7 +55,6 @@
         <module>jpower-module-common</module>
         <module>jpower-core-login</module>
         <module>jpower-module-gateway</module>
-        <module>jpower-boot</module>
         <module>jpower-core-server</module>
         <module>jpower-op-server</module>
     </modules>

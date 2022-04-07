@@ -54,14 +54,19 @@ public class DictBindInterceptor implements MybatisInterceptor {
                 if (ClassUtil.isAssignable(BaseEntity.class, object.getClass())){
                     List newList = new ArrayList(list.size());
                     list.forEach(bean -> {
-                        bean = createField(bean);
+                        /* TODO: 2022-04-07 这样会造成产生的新BEAN缓存到redis后，重启项目会报找不到类的错误，后头有更好的替代办法再实现吧。（该错误不是每次都报，目前不知道为什么是偶发）
+                        bean = createField(bean);*/
                         MetaObject metaObject = MetaObject.forObject(bean,new DefaultObjectFactory(),new DefaultObjectWrapperFactory(),new DefaultReflectorFactory());
                         BeanUtil.getFiledByAnnotation(bean.getClass(), Dict.class).forEach(field -> {
                             Dict dict = field.getAnnotation(Dict.class);
-                            if (Fc.isBlank(dict.attributes())){
-                                setAttributesDefaultValue(dict,field.getName());
+//                            if (Fc.isBlank(dict.attributes())){
+//                                setAttributesDefaultValue(dict,field.getName());
+//                            }
+                            //判断需要赋值的字段是否存在于bean
+                            if (Fc.isNoneBlank(dict.name(),dict.attributes()) && ReflectUtil.hasField(bean.getClass(),dict.attributes())){
+                                dictBindHandler.setMetaObject(dict, metaObject.getValue(field.getName()), metaObject);
                             }
-                            dictBindHandler.setMetaObject(dict, metaObject.getValue(field.getName()), metaObject);
+
                         });
                         newList.add(metaObject.getOriginalObject());
                     });
@@ -95,7 +100,7 @@ public class DictBindInterceptor implements MybatisInterceptor {
     }
 
     /**
-     * 设置默认值
+     * 设置注解默认值
      * @author mr.g
      * @return void
      */

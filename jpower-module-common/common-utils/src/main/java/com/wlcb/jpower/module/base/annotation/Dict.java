@@ -20,15 +20,18 @@ public @interface Dict {
     /**
      * 字典名称
      */
-    String name() default StringPool.EMPTY;
+    String name();
 
+    /**
+     * 该属性暂时没用
+     **/
     Class<?> type() default Object.class;
 
     /**
      * 赋值的属性名称
-     * @Desc 在 {@link IDictBindHandler#setMetaObject(Dict, Object, MetaObject)}中的dict参数默认值为字段名加Str
+     * @Desc 在 {@link IDictBindHandler#setMetaObject(Dict, Object, MetaObject)}中的dict参数
      */
-    String attributes() default StringPool.EMPTY;
+    String attributes();
 
 
 }

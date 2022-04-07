@@ -1,5 +1,6 @@
 package com.wlcb.jpower.dbs.entity.city;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
@@ -34,10 +35,13 @@ public class TbCoreCity extends BaseEntity {
     @ApiModelProperty("国家编码")
     private String countryCode;
     @ApiModelProperty("城市类型 字典CITY_TYPE")
-    @Dict(name = "CITY_TYPE")
+    @Dict(name = "CITY_TYPE",attributes = "cityTypeStr")
     private String cityType;
     @ApiModelProperty("备注")
     private String note;
     @ApiModelProperty("排序")
     private Integer sortNum;
+
+    @TableField(exist = false)
+    private String cityTypeStr;
 }

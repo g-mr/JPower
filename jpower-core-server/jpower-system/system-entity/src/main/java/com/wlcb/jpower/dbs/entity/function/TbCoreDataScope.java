@@ -1,5 +1,6 @@
 package com.wlcb.jpower.dbs.entity.function;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
@@ -26,7 +27,7 @@ public class TbCoreDataScope extends BaseEntity {
     private String scopeClass;
     @ApiModelProperty("数据权限字段")
     private String scopeColumn;
-    @Dict(name = "DATA_SCOPE_TYPE")
+    @Dict(name = "DATA_SCOPE_TYPE",attributes = "scopeTypeStr")
     @ApiModelProperty("数据权限类型 字典：DATA_SCOPE_TYPE")
     private Integer scopeType;
     @ApiModelProperty("数据权限值域")
@@ -36,5 +37,6 @@ public class TbCoreDataScope extends BaseEntity {
     @ApiModelProperty("备注")
     private String note;
 
-
+    @TableField(exist = false)
+    private String scopeTypeStr;
 }

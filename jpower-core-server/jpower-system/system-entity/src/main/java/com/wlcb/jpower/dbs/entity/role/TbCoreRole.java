@@ -1,5 +1,6 @@
 package com.wlcb.jpower.dbs.entity.role;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.tenant.entity.TenantEntity;
 import io.swagger.annotations.ApiModelProperty;
@@ -25,8 +26,6 @@ public class TbCoreRole extends TenantEntity implements Serializable {
     private String name;
     @ApiModelProperty("角色父级ID")
     private String parentId;
-//    @ApiModelProperty("图标")
-//    private String iconUrl;
     @ApiModelProperty("是否系统角色 字典YN01")
     @Dict(name = "YN01",attributes = "isSysRoleStr")
     private Integer isSysRole;
@@ -34,4 +33,7 @@ public class TbCoreRole extends TenantEntity implements Serializable {
     private String remark;
     @ApiModelProperty("排序")
     private Integer sort;
+
+    @TableField(exist = false)
+    private String isSysRoleStr;
 }

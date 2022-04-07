@@ -1,5 +1,6 @@
 package com.wlcb.jpower.dbs.entity.org;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.tenant.entity.TenantEntity;
 import io.swagger.annotations.ApiModelProperty;
@@ -48,4 +49,7 @@ public class TbCoreOrg extends TenantEntity {
     private Integer isVirtual;
     @ApiModelProperty("备注说明")
     private String remark;
+
+    @TableField(exist = false)
+    private String isVirtualStr;
 }

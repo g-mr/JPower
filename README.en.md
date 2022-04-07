@@ -111,7 +111,6 @@ The code generator is implemented based on MybatisPlus-generator.
 ~~~
 JPower
 ├── config -- Configuration file directory
-├── jpower-boot -- Boot project implementation
 ├── jpower-core-login -- Authorized login module
 ├── jpower-core-server -- Core business module
 ├    ├── jpower-file -- File module

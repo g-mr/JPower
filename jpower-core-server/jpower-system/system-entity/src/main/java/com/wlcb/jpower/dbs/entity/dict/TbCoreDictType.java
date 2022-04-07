@@ -1,5 +1,6 @@
 package com.wlcb.jpower.dbs.entity.dict;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.tenant.entity.TenantEntity;
 import io.swagger.annotations.ApiModelProperty;
@@ -24,14 +25,19 @@ public class TbCoreDictType extends TenantEntity {
     @ApiModelProperty("备注")
     private String note;
     @ApiModelProperty("是否允许删除 字典YN")
-    @Dict(name = "YN")
+    @Dict(name = "YN",attributes = "delEnabledStr")
     private String delEnabled;
     @ApiModelProperty("排序")
     private Integer sortNum;
     @ApiModelProperty("父级ID")
     private String parentId;
     @ApiModelProperty("是否树形结构 字典YN01")
-    @Dict(name = "YN01")
+    @Dict(name = "YN01",attributes = "isTreeStr")
     private Integer isTree;
+
+    @TableField(exist = false)
+    private String delEnabledStr;
+    @TableField(exist = false)
+    private String isTreeStr;
 
 }

@@ -112,7 +112,6 @@
 ~~~
 JPower
 ├── config -- 配置文件目录
-├── jpower-boot -- boot项目实现
 ├── jpower-core-login -- 授权登录模块
 ├── jpower-core-server -- 核心业务模块
 ├    ├── jpower-file -- 文件模块

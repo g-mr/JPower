@@ -1,5 +1,6 @@
 package com.wlcb.jpower.dbs.entity.dict;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.tenant.entity.TenantEntity;
 import io.swagger.annotations.ApiModelProperty;
@@ -33,5 +34,8 @@ public class TbCoreDict extends TenantEntity {
     private String parentId;
     @ApiModelProperty("级别")
     private Integer dictLevel;
+
+    @TableField(exist = false)
+    private String localeStr;
 
 }

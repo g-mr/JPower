@@ -1,5 +1,6 @@
 package com.wlcb.jpower.dbs.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.wlcb.jpower.module.base.annotation.Dict;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -16,13 +17,18 @@ public class TbLogOperate extends TbLogBase {
     @ApiModelProperty("操作标题")
     private String title;
     @ApiModelProperty("业务类型（OTHER=其它,INSERT=新增,UPDATE=修改,DELETE=删除,GRANT=授权,EXPORT=导出,IMPORT=导入,FORCE=强退,GENCODE=生成代码,CLEAN=清空数据,REVIEW=审核）")
-    @Dict(name = "BUSINESS_TYPE")
+    @Dict(name = "BUSINESS_TYPE",attributes = "businessTypeStr")
     private String businessType;
     @ApiModelProperty("返回内容")
     private String returnContent;
     @ApiModelProperty("操作状态（0正常 1异常）")
-    @Dict(name = "OPERATE_STATUS")
+    @Dict(name = "OPERATE_STATUS",attributes = "statusStr")
     private Integer status;
     @ApiModelProperty("错误消息")
     private String errorMsg;
+
+    @TableField(exist = false)
+    private String statusStr;
+    @TableField(exist = false)
+    private String businessTypeStr;
 }
