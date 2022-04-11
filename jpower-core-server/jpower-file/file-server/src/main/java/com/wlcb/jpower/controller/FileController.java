@@ -79,6 +79,8 @@ public class FileController extends BaseController {
         JpowerAssert.notEmpty(id,JpowerError.Arg,"文件标识不合法");
 
         TbCoreFile coreFile = coreFileService.getById(id);
+        JpowerAssert.notNull(coreFile,JpowerError.Unknown,"未查到文件数据");
+
         try {
             operateBuilder.getBuilder(coreFile.getStorageType()).download(coreFile);
         } catch (IOException e) {

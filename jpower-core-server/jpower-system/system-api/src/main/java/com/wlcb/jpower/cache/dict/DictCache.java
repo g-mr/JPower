@@ -38,7 +38,10 @@ public class DictCache {
     public static String getDictByTypeAndCode(String dictTypeCode, String code) {
         List<Map<String, Object>> list = getDictByType(dictTypeCode);
         list = Fc.isNull(list)?new ArrayList<>():list;
-        return list.stream().filter(t -> Fc.equalsValue(t.get("code"),code)).map(t->MapUtil.getStr(t,"name")).collect(Collectors.joining(StringPool.SPILT));
+        return list.stream()
+                .filter(map -> Fc.equalsValue(MapUtil.getStr(map,"code"),code))
+                .map(map->MapUtil.getStr(map,"name"))
+                .collect(Collectors.joining(StringPool.SPILT));
     }
 
     /**
