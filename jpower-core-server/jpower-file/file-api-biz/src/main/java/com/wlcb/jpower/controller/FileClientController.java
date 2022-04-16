@@ -64,7 +64,7 @@ public class FileClientController implements FileClient {
     }
 
     @Override
-    @PostMapping(value = "/serverUpload",produces="application/json")
+    @PostMapping(value = "/getFileDetail",produces="application/json")
     public ResponseData<TbCoreFile> getFileDetail(@RequestParam String base) {
         String id = DESUtil.decrypt(base, ConstantsUtils.FILE_DES_KEY);
         JpowerAssert.notEmpty(id, JpowerError.Arg,"文件标识不合法");
