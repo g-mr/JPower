@@ -8,7 +8,6 @@ import org.springframework.web.method.HandlerMethod;
 
 import java.lang.annotation.Annotation;
 import java.lang.invoke.SerializedLambda;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -34,7 +33,7 @@ public class ClassUtil  extends cn.hutool.core.util.ClassUtil {
         specificMethod = BridgeMethodResolver.findBridgedMethod(specificMethod);
         // 先找方法，再找方法上的类
         A annotation = AnnotatedElementUtils.findMergedAnnotation(specificMethod, annotationType);
-        ;
+
         if (Fc.isNull(annotation)) {
             annotation = AnnotatedElementUtils.findMergedAnnotation(specificMethod.getDeclaringClass(), annotationType);
         }
@@ -88,12 +87,6 @@ public class ClassUtil  extends cn.hutool.core.util.ClassUtil {
         // 从lambda信息取出method、field、class等
         String fieldName = serializedLambda.getImplMethodName().substring("get".length());
         fieldName = fieldName.replaceFirst(fieldName.charAt(0) + "", (fieldName.charAt(0) + "").toLowerCase());
-        Field field;
-        try {
-            field = Class.forName(serializedLambda.getImplClass().replace("/", ".")).getDeclaredField(fieldName);
-        } catch (ClassNotFoundException | NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        }
 
         return fieldName;
     }

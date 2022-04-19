@@ -1,7 +1,9 @@
 package com.wlcb.jpower.module.common.utils;
 
+import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.collection.CollUtil;
 import com.google.common.collect.Lists;
+import com.wlcb.jpower.module.common.utils.constants.CharPool;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.Nullable;
 

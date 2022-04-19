@@ -1,9 +1,11 @@
 package com.wlcb.jpower.module.datascope.handler;
 
+import cn.hutool.core.annotation.AnnotationUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.plugins.handler.DataPermissionHandler;
-import com.sun.org.apache.xpath.internal.operations.Equals;
+import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.utils.*;
+import com.wlcb.jpower.module.common.utils.constants.CharPool;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
@@ -19,11 +21,10 @@ import net.sf.jsqlparser.expression.operators.relational.InExpression;
 import net.sf.jsqlparser.expression.operators.relational.ItemsList;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Column;
-import org.apache.xmlbeans.impl.common.SystemCache;
-import org.springframework.cache.CacheManager;
 import org.springframework.util.StringUtils;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -51,13 +52,13 @@ public class DataScopeHandler implements DataPermissionHandler {
 
             Expression andWhere;
             if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.CUSTOM.getValue())){
-                Map<String,Object> userMap = BeanUtil.getFieldValueMap(SecureUtil.getUser());
+                Map<String,Object> userMap = BeanUtil.getFieldValueMap(Optional.ofNullable(SecureUtil.getUser()).orElse(new UserInfo()));
 
-                userMap.put("roleIds", StringUtils.collectionToDelimitedString(SecureUtil.getUserRole(), StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE));
+                userMap.put(ClassUtil.getFiledName(UserInfo::getRoleIds), StringUtils.collectionToDelimitedString(SecureUtil.getUserRole(), StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE));
 
                 Set<String> listOrgId = CollectionUtil.newHashSet(SecureUtil.getUser().getChildOrgId());
                 listOrgId.add(SecureUtil.getOrgId());
-                userMap.put("childOrgId", StringUtils.collectionToDelimitedString(listOrgId, StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE));
+                userMap.put(ClassUtil.getFiledName(UserInfo::getChildOrgId), StringUtils.collectionToDelimitedString(listOrgId, StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE));
 
                 andWhere = CCJSqlParserUtil.parseCondExpression(StringUtil.format(Fc.toStr(dataScope.getScopeValue(),"1=1"),userMap));
             }else if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.OWN.getValue())){
@@ -65,7 +66,7 @@ public class DataScopeHandler implements DataPermissionHandler {
             }else if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.OWN_ORG.getValue())){
                 andWhere = new EqualsTo().withLeftExpression(new Column(dataScope.getScopeColumn())).withRightExpression(new StringValue(SecureUtil.getOrgId()));
             }else if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.OWN_ORG_CHILD.getValue())){
-                Set<String> listOrgId = CollectionUtil.newHashSet(SecureUtil.getUser().getChildOrgId());
+                Set<String> listOrgId = CollectionUtil.newHashSet(Optional.ofNullable(SecureUtil.getUser()).orElse(new UserInfo()).getChildOrgId());
                 listOrgId.add(SecureUtil.getOrgId());
                 ItemsList itemsList = new ExpressionList(listOrgId.stream().map(StringValue::new).collect(Collectors.toList()));
                 andWhere = new InExpression(new Column(dataScope.getScopeColumn()),itemsList);
@@ -97,7 +98,21 @@ public class DataScopeHandler implements DataPermissionHandler {
         }
 
         //从注解获取数据权限
-
+        try {
+            String methodName = StringUtil.subAfter(mapperId, CharPool.DOT, Boolean.TRUE);
+            String className = StringUtil.subBefore(mapperId, CharPool.DOT, Boolean.TRUE);
+            com.wlcb.jpower.module.datascope.annotation.DataScope dataScopeAnnotation = AnnotationUtil.getAnnotation(ReflectUtil.getMethodByName(Class.forName(className),methodName), com.wlcb.jpower.module.datascope.annotation.DataScope.class);
+            if (Fc.notNull(dataScopeAnnotation)){
+                DataScope dataScope = new DataScope();
+                dataScope.setScopeType(dataScopeAnnotation.type().getValue());
+                dataScope.setScopeColumn(dataScopeAnnotation.column());
+                dataScope.setScopeClass(mapperId);
+                dataScope.setScopeValue(dataScopeAnnotation.sql());
+                return dataScope;
+            }
+        } catch (ClassNotFoundException e) {
+            log.warn("未找到类={}",mapperId);
+        }
 
         return null;
 

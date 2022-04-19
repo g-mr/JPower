@@ -59,18 +59,7 @@ public class SecureUtil {
     public static UserInfo getUser(Claims claims) {
         UserInfo user = new UserInfo();
         if (Fc.notNull(claims)) {
-            user.setUserId(Fc.toStr(claims.get(ClassUtil.getFiledName(UserInfo::getUserId))));
-            user.setTenantCode(Fc.toStr(claims.get(ClassUtil.getFiledName(UserInfo::getTenantCode))));
-            user.setLoginId(Fc.toStr(claims.get(ClassUtil.getFiledName(UserInfo::getLoginId))));
-            user.setRoleIds(claims.get(ClassUtil.getFiledName(UserInfo::getRoleIds),List.class));
-            user.setUserName(Fc.toStr(claims.get(ClassUtil.getFiledName(UserInfo::getUserName))));
-            user.setTelephone(Fc.toStr(claims.get(ClassUtil.getFiledName(UserInfo::getTelephone))));
-            user.setUserType(Fc.toInt(claims.get(ClassUtil.getFiledName(UserInfo::getUserType))));
-            user.setOrgId(Fc.toStr(claims.get(ClassUtil.getFiledName(UserInfo::getOrgId))));
-            user.setIsSysUser(Fc.toInt(claims.get(ClassUtil.getFiledName(UserInfo::getIsSysUser))));
-
-            // TODO: 2022-04-19 这里实现获取UserInfo所有字段循环从Claims里获取值
-
+            BeanUtil.getFieldList(UserInfo.class).forEach(field -> BeanUtil.setFieldValue(user,field.getName(),claims.get(field.getName(),field.getType())));
             user.setClientCode(Fc.toStr(claims.get(TokenConstant.CLIENT_CODE)));
         }
         return user.isEmpty()?null:user;
