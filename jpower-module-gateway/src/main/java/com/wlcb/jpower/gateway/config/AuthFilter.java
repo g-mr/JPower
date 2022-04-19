@@ -1,5 +1,6 @@
 package com.wlcb.jpower.gateway.config;
 
+import cn.hutool.core.collection.ListUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wlcb.jpower.gateway.utils.ExculdesUrl;
@@ -118,7 +119,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
         }
 
         Object o = redisUtil.get(CacheNames.TOKEN_URL_KEY + token);
-        List<String> listUrl = Fc.isNull(o)?new ArrayList<>():(List<String>) o;
+        List<String> listUrl = Fc.isNull(o)? ListUtil.empty() :(List<String>) o;
         return listUrl.stream().anyMatch(pattern -> antPathMatcher.match(pattern, currentPath));
     }
 

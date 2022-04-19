@@ -97,6 +97,9 @@ public class UserInfo implements Serializable {
     @ApiModelProperty("角色集合")
     private List<String> roleIds;
 
+    @ApiModelProperty("子级部门ID")
+    private List<String> childOrgId;
+
     @ApiModelProperty("用来表示是core_user表数据还是其他表映射的数据 0core_user系统表 1业务表 2白名单")
     private Integer isSysUser = TBALE_USER_TYPE_CORE;
 

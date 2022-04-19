@@ -67,36 +67,7 @@ public class AuthUtil {
             });
         }
 
-        Map<String,String> redisMap = ChainMap.newMap();
-        for (String key : map.keySet()) {
-            DataScope dataScope = map.get(key);
-            //本人可见
-            if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.OWN.getValue())){
-                dataScope.setIds(Collections.singleton(authInfo.getUser().getUserId()));
-            }
-            //本级可见
-            if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.OWN_ORG.getValue())){
-                dataScope.setIds(Collections.singleton(authInfo.getUser().getOrgId()));
-            }
-            //本级以及子级可见
-            if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.OWN_ORG_CHILD.getValue())){
-                Set<String> listOrgId = CollectionUtil.newHashSet(SystemCache.getChildIdOrgById(authInfo.getUser().getOrgId()));
-                if (Fc.isNotBlank(authInfo.getUser().getOrgId())){
-                    listOrgId.add(authInfo.getUser().getOrgId());
-                }
-                dataScope.setIds(listOrgId);
-            }
-            //自定义
-            if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.CUSTOM.getValue())){
-                Map<String,Object> userMap = BeanUtil.getFieldValueMap(authInfo.getUser());
-                userMap.put("roleIds", StringUtils.collectionToDelimitedString(authInfo.getUser().getRoleIds(), StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE));
-                dataScope.setScopeValue(StringUtil.format(dataScope.getScopeValue(),userMap));
-            }
-
-            redisMap.put(key, JSON.toJSONString(dataScope));
-        }
-
-        redisUtil.set(CacheNames.TOKEN_DATA_SCOPE_KEY+authInfo.getAccessToken(),redisMap , authInfo.getExpiresIn(), TimeUnit.SECONDS);
+        redisUtil.set(CacheNames.TOKEN_DATA_SCOPE_KEY+authInfo.getAccessToken(),map , authInfo.getExpiresIn(), TimeUnit.SECONDS);
 
         List<Object> list = SystemCache.getUrlsByRoleIds(authInfo.getUser().getRoleIds());
         redisUtil.set(CacheNames.TOKEN_URL_KEY+authInfo.getAccessToken(),list , authInfo.getExpiresIn(), TimeUnit.SECONDS);
@@ -153,6 +124,7 @@ public class AuthUtil {
             userInfo.setIdNo(result.getIdNo());
             userInfo.setLastLoginTime(result.getLastLoginTime());
             userInfo.setLoginCount(result.getLoginCount());
+            userInfo.setChildOrgId(SystemCache.getChildIdOrgById(result.getOrgId()));
             // TODO: 2020-07-28 登录成功要刷新用户登录数据
             result.setLastLoginTime(new Date());
             result.setLoginCount((result.getLoginCount()==null?0:result.getLoginCount())+1);
