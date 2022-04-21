@@ -1,14 +1,12 @@
 package com.wlcb.jpower.operate.storage;
 
 import cn.hutool.core.io.FileTypeUtil;
-import cn.hutool.core.io.file.FileNameUtil;
 import com.wlcb.jpower.dbs.entity.TbCoreFile;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
-import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.operate.FileOperate;
 import com.wlcb.jpower.service.CoreFileService;
 import org.apache.commons.lang3.StringUtils;
@@ -79,7 +77,7 @@ public class ServerFileOperate implements FileOperate {
 		if (!file.exists()){
 			throw new BusinessException(file.getName()+"文件不存在，无法下载");
 		}
-		Integer is = FileUtil.download(file, WebUtil.getResponse(),file.getName());
+		Integer is = FileUtil.download(file, WebUtil.getResponse(),coreFile.getName());
 
 		return is == 0;
 	}

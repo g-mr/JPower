@@ -104,6 +104,7 @@ public class LoginController extends BaseController {
         JpowerAssert.notEmpty(userId, JpowerError.Arg,"用户ID不可为空");
         UserInfo user = SecureUtil.getUser();
         if(Fc.notNull(user) && Fc.equals(userId,user.getUserId())){
+            getRequest().getSession().invalidate();
             redisUtil.remove(CacheNames.TOKEN_URL_KEY+JwtUtil.getToken(getRequest()));
             return ReturnJsonUtil.ok("退出成功");
         }else{

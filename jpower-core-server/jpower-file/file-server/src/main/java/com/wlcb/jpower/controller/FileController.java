@@ -78,7 +78,9 @@ public class FileController extends BaseController {
         String id = DESUtil.decrypt(base,ConstantsUtils.FILE_DES_KEY);
         JpowerAssert.notEmpty(id,JpowerError.Arg,"文件标识不合法");
 
-        TbCoreFile coreFile = coreFileService.getById(id);
+        TbCoreFile coreFile = coreFileService.getOne(Condition.<TbCoreFile>getQueryWrapper().lambda()
+                .select(TbCoreFile::getPath,TbCoreFile::getContent,TbCoreFile::getName,TbCoreFile::getStorageType)
+                .eq(TbCoreFile::getId,id));
         JpowerAssert.notNull(coreFile,JpowerError.Unknown,"未查到文件数据");
 
         try {

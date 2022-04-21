@@ -5,8 +5,11 @@ import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SecureUtil;
 import com.wlcb.jpower.module.common.utils.WebUtil;
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Collections;
 
 /**
  * @ClassName LoginUserContext
@@ -28,7 +31,7 @@ public class LoginUserContext {
     public static String getLoginId() {
         UserInfo user = get();
         if (user == null){
-            return null;
+            return StringPool.EMPTY;
         }
         return user.getLoginId();
     }
@@ -43,7 +46,7 @@ public class LoginUserContext {
     public static String getUserId() {
         UserInfo user = get();
         if (user == null){
-            return null;
+            return StringPool.EMPTY;
         }
         return user.getUserId();
     }
@@ -58,7 +61,7 @@ public class LoginUserContext {
     public static String getOrgId() {
         UserInfo user = get();
         if (user == null){
-            return null;
+            return StringPool.EMPTY;
         }
         return user.getOrgId();
     }
@@ -73,7 +76,7 @@ public class LoginUserContext {
     public static String getUserName() {
         UserInfo user = get();
         if (user == null){
-            return null;
+            return StringPool.EMPTY;
         }
         return user.getUserName();
     }
@@ -101,6 +104,7 @@ public class LoginUserContext {
                         user.setUserId(RoleConstant.ANONYMOUS_ID);
                         user.setIsSysUser(UserInfo.TBALE_USER_TYPE_CORE);
                         user.setUserName(RoleConstant.ANONYMOUS_NAME);
+                        user.setRoleIds(Collections.singletonList(RoleConstant.ANONYMOUS_ID));
                     }else {
                         user.setUserId(header);
                         user.setIsSysUser(UserInfo.TBALE_USER_TYPE_WHILT);

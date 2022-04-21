@@ -64,7 +64,7 @@ public class BaseEntity implements Serializable {
     @TableLogic
     @JsonIgnore
     @JSONField(serialize = false)
-    private Integer isDeleted;
+    private Boolean isDeleted;
 
     @ApiModelProperty(hidden = true)
     @JSONField(serialize = false)

@@ -29,6 +29,7 @@ public class TbCoreFile extends BaseEntity {
     @ApiModelProperty("文件路径")
     private String path;
     @ApiModelProperty("文件内容")
+    @TableField(select = false)
     private byte[] content;
     @ApiModelProperty("文件标识")
     private String mark;

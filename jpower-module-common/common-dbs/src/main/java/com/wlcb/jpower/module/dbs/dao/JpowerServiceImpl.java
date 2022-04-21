@@ -12,7 +12,6 @@ import com.wlcb.jpower.module.common.utils.BeanUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReflectUtil;
 import com.wlcb.jpower.module.common.utils.SecureUtil;
-import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.dbs.dao.mapper.base.JpowerBaseMapper;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 
@@ -50,7 +49,7 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
             entity.setCreateTime(now);
             entity.setCreateUser(userId);
             entity.setCreateOrg(orgId);
-            entity.setIsDeleted(JpowerConstants.DB_NOT_DELETE);
+            entity.setIsDeleted(Boolean.FALSE);
         }
 
         entity.setUpdateUser(userId);

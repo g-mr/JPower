@@ -10,6 +10,7 @@ import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
 import com.wlcb.jpower.module.datascope.DataScope;
+import com.wlcb.jpower.module.dbs.config.LoginUserContext;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.expression.Expression;
@@ -24,7 +25,6 @@ import net.sf.jsqlparser.schema.Column;
 import org.springframework.util.StringUtils;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -40,11 +40,18 @@ public class DataScopeHandler implements DataPermissionHandler {
     @Override
     public Expression getSqlSegment(Expression where, String mapperId) {
         DataScope dataScope = this.findDataScope(mapperId);
-        if (Fc.isNull(dataScope)) {
+        //超级管理员不判断数据权限
+        if (Fc.isNull(dataScope) || SecureUtil.isRoot()) {
             return where;
         }
 
         if (Fc.equalsValue(mapperId,dataScope.getScopeClass())){
+
+            if (Fc.isNull(LoginUserContext.get())){
+                log.warn("未获取到用户，无法进行数据权限过滤");
+                return where;
+            }
+
             // 查询全部
             if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.ALL.getValue())){
                 return where;
@@ -52,22 +59,22 @@ public class DataScopeHandler implements DataPermissionHandler {
 
             Expression andWhere;
             if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.CUSTOM.getValue())){
-                Map<String,Object> userMap = BeanUtil.getFieldValueMap(Optional.ofNullable(SecureUtil.getUser()).orElse(new UserInfo()));
+                Map<String,Object> userMap = BeanUtil.getFieldValueMap(LoginUserContext.get());
 
-                userMap.put(ClassUtil.getFiledName(UserInfo::getRoleIds), StringUtils.collectionToDelimitedString(SecureUtil.getUserRole(), StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE));
+                userMap.put(ClassUtil.getFiledName(UserInfo::getRoleIds), StringUtils.collectionToDelimitedString(LoginUserContext.get().getRoleIds(), StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE));
 
-                Set<String> listOrgId = CollectionUtil.newHashSet(SecureUtil.getUser().getChildOrgId());
-                listOrgId.add(SecureUtil.getOrgId());
+                Set<String> listOrgId = CollectionUtil.newHashSet(LoginUserContext.get().getChildOrgId());
+                listOrgId.add(LoginUserContext.getOrgId());
                 userMap.put(ClassUtil.getFiledName(UserInfo::getChildOrgId), StringUtils.collectionToDelimitedString(listOrgId, StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE));
 
                 andWhere = CCJSqlParserUtil.parseCondExpression(StringUtil.format(Fc.toStr(dataScope.getScopeValue(),"1=1"),userMap));
             }else if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.OWN.getValue())){
-                andWhere = new EqualsTo().withLeftExpression(new Column(dataScope.getScopeColumn())).withRightExpression(new StringValue(SecureUtil.getUserId()));
+                andWhere = new EqualsTo().withLeftExpression(new Column(dataScope.getScopeColumn())).withRightExpression(new StringValue(LoginUserContext.getUserId()));
             }else if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.OWN_ORG.getValue())){
-                andWhere = new EqualsTo().withLeftExpression(new Column(dataScope.getScopeColumn())).withRightExpression(new StringValue(SecureUtil.getOrgId()));
+                andWhere = new EqualsTo().withLeftExpression(new Column(dataScope.getScopeColumn())).withRightExpression(new StringValue(LoginUserContext.getOrgId()));
             }else if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.OWN_ORG_CHILD.getValue())){
-                Set<String> listOrgId = CollectionUtil.newHashSet(Optional.ofNullable(SecureUtil.getUser()).orElse(new UserInfo()).getChildOrgId());
-                listOrgId.add(SecureUtil.getOrgId());
+                Set<String> listOrgId = CollectionUtil.newHashSet(LoginUserContext.get().getChildOrgId());
+                listOrgId.add(LoginUserContext.getOrgId());
                 ItemsList itemsList = new ExpressionList(listOrgId.stream().map(StringValue::new).collect(Collectors.toList()));
                 andWhere = new InExpression(new Column(dataScope.getScopeColumn()),itemsList);
             }else {

@@ -2,6 +2,7 @@ package com.wlcb.jpower.module.common.utils;
 
 
 import cn.hutool.core.codec.Base64Decoder;
+import cn.hutool.core.date.DateUnit;
 import com.wlcb.jpower.module.common.auth.RoleConstant;
 import com.wlcb.jpower.module.common.auth.SecureConstant;
 import com.wlcb.jpower.module.common.auth.TokenInfo;
@@ -50,7 +51,13 @@ public class SecureUtil {
         UserInfo userInfo = (UserInfo) request.getSession().getAttribute(REQUEST_JPOWER_USER);
         if (Fc.isNull(userInfo)) {
             userInfo = getUser(request);
-            request.getSession().setAttribute(REQUEST_JPOWER_USER, userInfo);
+            if (Fc.notNull(userInfo)){
+                long bet = DateUtil.between(DateUtil.date(),getClaims(request).getExpiration(), DateUnit.SECOND, false);
+                if (bet > 0){
+                    request.getSession().setMaxInactiveInterval((int) bet);
+                    request.getSession().setAttribute(REQUEST_JPOWER_USER, userInfo);
+                }
+            }
         }
 
         return userInfo;

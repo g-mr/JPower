@@ -5,7 +5,7 @@
     <select id="listLazyByParent" resultType="com.wlcb.jpower.vo.OrgVo">
         SELECT
         *,
-        ( SELECT CASE WHEN count( 1 ) > 0 THEN 1 ELSE 0 END FROM tb_core_org WHERE parent_id = org.id ) AS "has_children"
+        ( SELECT CASE WHEN count( 1 ) > 0 THEN 1 ELSE 0 END FROM tb_core_org WHERE parent_id = org.id and is_deleted = 0) AS "has_children"
         FROM
         tb_core_org org
         <where>
