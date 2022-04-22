@@ -14,7 +14,6 @@ import java.io.*;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Optional;
 import java.util.concurrent.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -159,7 +158,7 @@ public class FileUtil extends org.apache.commons.io.FileUtils {
                 Fc.closeQuietly(os);
                 return true;
             } catch (IOException e) {
-                log.error("下载byte文件错误，error={}",e.getMessage());
+                log.error("下载byte文件错误，{}error={}",StringPool.NEWLINE,ExceptionsUtil.getStackTraceAsString(e));
             }finally {
 
             }
@@ -198,7 +197,7 @@ public class FileUtil extends org.apache.commons.io.FileUtils {
                     }
                     return 0;
                 } catch (Exception e) {
-                    log.error("下载文件错误，error={}",e.getMessage());
+                    log.error("下载文件错误，{}error={}",StringPool.NEWLINE,ExceptionsUtil.getStackTraceAsString(e));
                 } finally {
                     Fc.closeQuietly(bis);
                     Fc.closeQuietly(fis);
@@ -434,7 +433,7 @@ public class FileUtil extends org.apache.commons.io.FileUtils {
                 fileNamePrefix = StringUtil.replace(fileNamePrefix,StringPool.LEFT_BRACKET + num + StringPool.RIGHT_BRACKET,StringPool.LEFT_BRACKET + Fc.toStr(NumberUtil.add(num,"1")) + StringPool.RIGHT_BRACKET);
             }
 
-            return rename(new File(parentDir.getAbsolutePath() + File.separator + fileNamePrefix));
+            return rename(new File(parentDir.getAbsolutePath() + File.separator + fileNamePrefix + StringPool.DOT + FileNameUtil.getSuffix(file)));
         }
     }
 

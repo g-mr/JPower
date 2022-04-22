@@ -9,6 +9,7 @@ import com.wlcb.jpower.dbs.entity.role.TbCoreRole;
 import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
 import com.wlcb.jpower.feign.SystemClient;
 import com.wlcb.jpower.module.base.vo.ResponseData;
+import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.mp.support.Condition;
@@ -35,7 +36,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/core")
 @AllArgsConstructor
-public class SystemClientController implements SystemClient {
+public class SystemClientController extends BaseController implements SystemClient {
 
     private CoreOrgService coreOrgService;
     private CoreClientService coreClientService;

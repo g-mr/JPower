@@ -42,13 +42,16 @@ public class MultipartFileUtil{
     public static String saveFile(MultipartFile file,String fileSuffixName,String savePath,String fileName) throws IOException {
 
         if (Fc.isBlank(fileName)){
-            fileName = file.getName();
+            fileName = FileNameUtil.getPrefix(file.getOriginalFilename());
         }
         //获得文件后缀名
         String suffixName=FileNameUtil.getSuffix(file.getOriginalFilename());
         if (StringUtils.isNotBlank(fileSuffixName) && !StringUtils.containsIgnoreCase(fileSuffixName,suffixName) && !StringUtils.containsIgnoreCase(fileSuffixName, FileType.getFileType(file.getInputStream()))){
             throw new IllegalStateException("不支持的后缀类型");
         }
+
+
+
         String path = DateUtil.getDate(new Date(), DateUtil.PATTERN_DATE) + File.separator + fileName + "." + suffixName;
         File nFile = FileUtil.rename(new File(savePath+File.separator+path));
 
@@ -60,7 +63,7 @@ public class MultipartFileUtil{
 
         logger.info("文件保存成功，文件路径={}",nFile.getAbsolutePath());
 
-        return path;
+        return DateUtil.getDate(new Date(), DateUtil.PATTERN_DATE) + File.separator + nFile.getName();
     }
 
     /**

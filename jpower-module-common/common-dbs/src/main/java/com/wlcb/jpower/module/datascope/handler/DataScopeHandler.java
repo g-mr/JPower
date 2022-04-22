@@ -10,6 +10,7 @@ import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
 import com.wlcb.jpower.module.datascope.DataScope;
+import com.wlcb.jpower.module.datascope.rest.SystemOrgRest;
 import com.wlcb.jpower.module.dbs.config.LoginUserContext;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -73,7 +74,7 @@ public class DataScopeHandler implements DataPermissionHandler {
             }else if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.OWN_ORG.getValue())){
                 andWhere = new EqualsTo().withLeftExpression(new Column(dataScope.getScopeColumn())).withRightExpression(new StringValue(LoginUserContext.getOrgId()));
             }else if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.OWN_ORG_CHILD.getValue())){
-                Set<String> listOrgId = CollectionUtil.newHashSet(LoginUserContext.get().getChildOrgId());
+                Set<String> listOrgId = CollectionUtil.newHashSet(SystemOrgRest.getChildIdOrgById(LoginUserContext.getOrgId()));
                 listOrgId.add(LoginUserContext.getOrgId());
                 ItemsList itemsList = new ExpressionList(listOrgId.stream().map(StringValue::new).collect(Collectors.toList()));
                 andWhere = new InExpression(new Column(dataScope.getScopeColumn()),itemsList);
