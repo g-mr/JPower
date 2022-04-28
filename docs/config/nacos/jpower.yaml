@@ -1,5 +1,10 @@
 #通用配置
 server:
+  tomcat:
+    accept-count: 600
+    max-connections: 10000
+    threads:
+      max: 500
   undertow:
     # 设置IO线程数, 它主要执行非阻塞的任务,它们会负责多个连接, 默认设置每个CPU核心一个线程
     threads:

@@ -4,7 +4,6 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.wlcb.jpower.module.base.annotation.Excel;
 import com.wlcb.jpower.module.common.utils.DateUtil;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -34,14 +33,12 @@ public class BaseEntity implements Serializable {
     private String createOrg;
 
     @ApiModelProperty(value = "创建人",hidden=true)
-    @Excel(name = "创建人", type = Excel.Type.EXPORT)
     @TableField(value = "create_user", fill = FieldFill.INSERT)
     private String createUser;
 
     @ApiModelProperty(value = "创建时间",hidden=true)
     @JSONField(format=DateUtil.PATTERN_DATETIME)
     @JsonFormat(shape = JsonFormat.Shape.STRING,timezone = "GMT+8", pattern = DateUtil.PATTERN_DATETIME,locale = "zh_CN")
-    @Excel(name = "创建时间",width = 30, dateFormat = DateUtil.PATTERN_DATETIME, type = Excel.Type.EXPORT)
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     private Date createTime;
 
