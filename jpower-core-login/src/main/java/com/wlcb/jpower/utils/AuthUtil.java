@@ -1,6 +1,5 @@
 package com.wlcb.jpower.utils;
 
-import com.alibaba.fastjson.JSON;
 import com.wlcb.jpower.cache.SystemCache;
 import com.wlcb.jpower.cache.UserCache;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
@@ -13,13 +12,17 @@ import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.support.ChainMap;
-import com.wlcb.jpower.module.common.utils.*;
+import com.wlcb.jpower.module.common.utils.BeanUtil;
+import com.wlcb.jpower.module.common.utils.CacheUtil;
+import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.SpringUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
-import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.datascope.DataScope;
-import org.springframework.util.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -45,24 +48,30 @@ public class AuthUtil {
      */
     public static void cacheAuth(AuthInfo authInfo) {
         List<TbCoreDataScope> dataScopeRoleList = SystemCache.getDataScopeByRole(authInfo.getUser().getRoleIds());
-        List<TbCoreDataScope> dataScopeList = SystemCache.getAllRoleDataScope();
         List<TbCoreFunction> menuList = SystemCache.getMenuListByRole(authInfo.getUser().getRoleIds());
 
-        Map<String,DataScope> map = ChainMap.newMap();
-        if (Fc.notNull(dataScopeList)){
-            dataScopeList.forEach(dataScope -> {
-                String url = getUrl(menuList,dataScope.getMenuId());
-                if (Fc.isNotBlank(url)){
-                    map.put(url,BeanUtil.copyProperties(dataScope, DataScope.class));
-                }
-            });
-        }
-
-        if (Fc.notNull(dataScopeRoleList)){
+        Map<String,List<DataScope>> map = ChainMap.newMap();
+        if (Fc.isNotEmpty(dataScopeRoleList)){
             dataScopeRoleList.forEach(dataScope -> {
                 String url = getUrl(menuList,dataScope.getMenuId());
                 if (Fc.isNotBlank(url)){
-                    map.put(url,BeanUtil.copyProperties(dataScope, DataScope.class));
+
+                    boolean is = false;
+                    //角色配置的数据权限比所有角色可执行的权限优先级要高，所以判断有自己的权限的时候就不要全角色执行的权限了
+                    if (Fc.equalsValue(dataScope.getAllRole(), ConstantsEnum.YN01.Y.getValue())){
+                        is = dataScopeRoleList.stream().noneMatch(scope-> Fc.equalsValue(scope.getAllRole(), ConstantsEnum.YN01.N.getValue()) && Fc.equalsValue(dataScope.getScopeClass(), scope.getScopeClass()));
+                    }
+
+                    if (is){
+                        List<DataScope> dataScopeList = map.get(url);
+                        if (Fc.isEmpty(dataScopeList)){
+                            dataScopeList = new ArrayList<>();
+                        }
+                        dataScopeList.add(BeanUtil.copyProperties(dataScope, DataScope.class));
+
+                        map.put(url,dataScopeList);
+                    }
+
                 }
             });
         }

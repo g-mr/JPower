@@ -25,6 +25,7 @@ import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Column;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -102,7 +103,8 @@ public class DataScopeHandler implements DataPermissionHandler {
         //从WEB获取数据权限
         String data = WebUtil.getRequest().getHeader(TokenConstant.DATA_SCOPE_NAME);
         if (Fc.isNotBlank(data)){
-            return JSON.parseObject(data,DataScope.class);
+            List<DataScope> dataScopeList = JSON.parseArray(data,DataScope.class);
+            return dataScopeList.stream().filter(dataScope -> Fc.equalsValue(dataScope.getScopeClass(),mapperId)).findFirst().orElse(null);
         }
 
         //从注解获取数据权限

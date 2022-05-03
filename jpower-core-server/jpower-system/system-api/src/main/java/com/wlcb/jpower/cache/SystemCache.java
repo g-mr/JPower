@@ -138,7 +138,7 @@ public class SystemCache {
     }
 
     /**
-     * 根据角色ID获取数据权限
+     * 根据角色ID获取所有指定角色拥有的数据权限
      *
      * @author 郭丁志
      * @date 23:38 2020/11/5 0005

@@ -41,7 +41,7 @@ public interface CoreDataScopeService extends BaseService<TbCoreDataScope> {
     List<TbCoreDataScope> getAllRoleDataScope();
 
     /**
-     * 根据角色ID查询数据权限
+     * 根据角色ID查询所有拥有权限的数据权限
      *
      * @author 郭丁志
      * @date 23:42 2020/11/5 0005
