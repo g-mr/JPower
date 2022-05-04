@@ -167,14 +167,17 @@ public class SecureUtil {
         }
         UserInfo user = getUser(request);
 
-        String tenantCode = StringPool.EMPTY;
-        if (Fc.notNull(request)) {
-            String code = request.getParameter(TokenConstant.TENANT_CODE);
-            tenantCode = Fc.isBlank(code) ? request.getHeader(TokenConstant.HEADER_TENANT) : code;
-        }
-
         //先从当前登陆用户中获取租户编码，如果当前用户没有登陆则去参数里获取租户编码如果还没有则去header里去取
-        return Fc.isNull(user) ? Fc.isNull(request) ? StringPool.EMPTY : tenantCode : user.getTenantCode();
+        if (Fc.isNull(user)){
+            String tenantCode = StringPool.EMPTY;
+            if (Fc.notNull(request)) {
+                String code = request.getParameter(TokenConstant.TENANT_CODE);
+                tenantCode = Fc.isBlank(code) ? request.getHeader(TokenConstant.HEADER_TENANT) : code;
+            }
+            return tenantCode;
+        }else {
+            return user.getTenantCode();
+        }
     }
 
     /**

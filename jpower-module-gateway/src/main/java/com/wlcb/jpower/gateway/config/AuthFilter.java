@@ -42,6 +42,7 @@ import java.util.Map;
 
 import static com.wlcb.jpower.module.common.auth.RoleConstant.ANONYMOUS;
 import static com.wlcb.jpower.module.common.auth.RoleConstant.ROOT_ID;
+import static com.wlcb.jpower.module.common.utils.constants.TokenConstant.HEADER_MENU;
 
 /**
  * @ClassName AuthFilter
@@ -89,7 +90,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
 
             Object dataAuth = redisUtil.get(CacheNames.TOKEN_DATA_SCOPE_KEY + token);
             Map<String,String> map = Fc.isNull(dataAuth) ? ChainMap.newMap() : (Map<String, String>) dataAuth;
-            return chain.filter(addHeader(exchange, StringPool.EMPTY, map.get(currentPath)));
+            return chain.filter(addHeader(exchange, StringPool.EMPTY, map.get(exchange.getRequest().getHeaders().getFirst(HEADER_MENU))));
         }else {
             //白名单
             String ip = IpUtil.getIP(exchange.getRequest());

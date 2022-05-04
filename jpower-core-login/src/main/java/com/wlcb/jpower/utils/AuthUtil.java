@@ -19,12 +19,8 @@ import com.wlcb.jpower.module.common.utils.SpringUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.datascope.DataScope;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * @author mr.g
@@ -53,8 +49,8 @@ public class AuthUtil {
         Map<String,List<DataScope>> map = ChainMap.newMap();
         if (Fc.isNotEmpty(dataScopeRoleList)){
             dataScopeRoleList.forEach(dataScope -> {
-                String url = getUrl(menuList,dataScope.getMenuId());
-                if (Fc.isNotBlank(url)){
+                String code = getCode(menuList,dataScope.getMenuId());
+                if (Fc.isNotBlank(code)){
 
                     boolean is = false;
                     //角色配置的数据权限比所有角色可执行的权限优先级要高，所以判断有自己的权限的时候就不要全角色执行的权限了
@@ -63,23 +59,23 @@ public class AuthUtil {
                     }
 
                     if (is){
-                        List<DataScope> dataScopeList = map.get(url);
+                        List<DataScope> dataScopeList = map.get(code);
                         if (Fc.isEmpty(dataScopeList)){
                             dataScopeList = new ArrayList<>();
                         }
                         dataScopeList.add(BeanUtil.copyProperties(dataScope, DataScope.class));
 
-                        map.put(url,dataScopeList);
+                        map.put(code,dataScopeList);
                     }
 
                 }
             });
         }
 
-        redisUtil.set(CacheNames.TOKEN_DATA_SCOPE_KEY+authInfo.getAccessToken(),map , authInfo.getExpiresIn(), TimeUnit.SECONDS);
+        redisUtil.set(CacheNames.TOKEN_DATA_SCOPE_KEY+authInfo.getAccessToken(), map , authInfo.getExpiresIn(), TimeUnit.SECONDS);
 
         List<Object> list = SystemCache.getUrlsByRoleIds(authInfo.getUser().getRoleIds());
-        redisUtil.set(CacheNames.TOKEN_URL_KEY+authInfo.getAccessToken(),list , authInfo.getExpiresIn(), TimeUnit.SECONDS);
+        redisUtil.set(CacheNames.TOKEN_URL_KEY+authInfo.getAccessToken(), list , authInfo.getExpiresIn(), TimeUnit.SECONDS);
 
     }
 
@@ -92,12 +88,9 @@ public class AuthUtil {
      * @param menuId 要获取得菜单ID
      * @return java.lang.String
      */
-    private static String getUrl(List<TbCoreFunction> menuList,String menuId) {
-        if (Fc.notNull(menuList)){
-            menuList = menuList.stream().filter(menu -> Fc.equals(menu.getId(),menuId)).collect(Collectors.toList());
-            if (menuList.size() > 0){
-                return menuList.get(0).getUrl();
-            }
+    private static String getCode(List<TbCoreFunction> menuList,String menuId) {
+        if (Fc.isNotEmpty(menuList)){
+            return menuList.stream().filter(menu -> Fc.equals(menu.getId(),menuId)).map(TbCoreFunction::getCode).findFirst().orElse(null);
         }
         return null;
     }
