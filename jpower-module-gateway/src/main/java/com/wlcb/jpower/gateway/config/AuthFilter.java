@@ -1,6 +1,7 @@
 package com.wlcb.jpower.gateway.config;
 
 import cn.hutool.core.collection.ListUtil;
+import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wlcb.jpower.gateway.utils.ExculdesUrl;
@@ -89,8 +90,8 @@ public class AuthFilter implements GlobalFilter, Ordered {
             }
 
             Object dataAuth = redisUtil.get(CacheNames.TOKEN_DATA_SCOPE_KEY + token);
-            Map<String,String> map = Fc.isNull(dataAuth) ? ChainMap.newMap() : (Map<String, String>) dataAuth;
-            return chain.filter(addHeader(exchange, StringPool.EMPTY, map.get(exchange.getRequest().getHeaders().getFirst(HEADER_MENU))));
+            Map<String,List> map = Fc.isNull(dataAuth) ? ChainMap.newMap() : (Map<String, List>) dataAuth;
+            return chain.filter(addHeader(exchange, StringPool.EMPTY, JSON.toJSONString(map.getOrDefault(exchange.getRequest().getHeaders().getFirst(HEADER_MENU),ListUtil.empty()))));
         }else {
             //白名单
             String ip = IpUtil.getIP(exchange.getRequest());

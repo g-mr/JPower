@@ -2,8 +2,6 @@ package com.wlcb.jpower.module.datascope;
 
 import lombok.Data;
 
-import java.util.Set;
-
 /**
  * @ClassName DataAuth
  * @Description TODO
@@ -22,7 +20,5 @@ public class DataScope {
 
     /** 自定义值域 **/
     private String scopeValue;
-
-    private Set<String> ids;
 
 }
