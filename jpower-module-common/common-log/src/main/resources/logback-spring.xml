@@ -22,7 +22,7 @@
     <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
     <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
     <!-- 彩色日志格式 -->
-    <property name="CONSOLE_LOG_PATTERN" value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){blue} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(%tid){red} %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%replace(%caller{1}){'\t|Caller.{1}0|\r\n|\r|\n', ''}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+    <property name="CONSOLE_LOG_PATTERN" value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){blue} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(%tid){red} %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%logger){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
 
     <!--控制台日志， 控制台输出 -->
     <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
@@ -56,29 +56,16 @@
         </then>
     </if>
 
-    <logger name="io.netty.util.internal" level="info" additivity="false" />
-    <logger name="org.hibernate" level="info" additivity="false" />
-    <logger name="org.reflections" level="info" additivity="false" />
-    <!-- Spring日志级别控制  -->
-    <logger name="org.springframework" level="warn" />
-    <logger name="org.jboss.logging" level="info" additivity="false"/>
-    <logger name="com.alibaba.druid" level="INFO" additivity="false"/>
-    <logger name="com.alibaba.druid.pool.DruidAbstractDataSource" level="info" additivity="false"/>
-    <logger name="springfox.documentation" level="info" additivity="false"/>
-    <!--myibatis log configure-->
-    <logger name="com.apache.ibatis" level="info" additivity="false"/>
-    <logger name="com.ibatis" level="info" additivity="false"/>
-    <logger name="org.apache.ibatis.jdbc.ScriptRunner" level="info" additivity="false"/>
-    <logger name="java.sql.Connection" level="info" additivity="false"/>
-    <logger name="java.sql.Statement" level="info" additivity="false"/>
-    <logger name="java.sql.PreparedStatement" level="info" additivity="false"/>
-    <logger name="com.baomidou.mybatisplus" level="WARN" additivity="false"/>
-    <!-- 减少nacos日志 -->
-    <logger name="com.alibaba.nacos" level="ERROR" additivity="false"/>
-    <!-- 不打印SQL信息 -->
+
+    <logger name="org.apache" level="info"/>
+    <logger name="com.baomidou.mybatisplus" level="info"/>
+    <logger name="org.springframework" level="info"/>
+    <logger name="druid.sql" level="info"/>
+    <logger name="com.springboot" level="info"/>
+    <logger name="com.alibaba" level="info"/>
+    <logger name="springfox.documentation" level="info" />
+    <logger name="_org.springframework.web.servlet.HandlerMapping.Mappings" level="info" />
     <logger name="com.wlcb.jpower.dbs.dao" level="info" additivity="false"/>
-    <!-- 不打印swagger提示信息 -->
-    <logger name="springfox.documentation.spring.web.readers.operation.CachingOperationNameGenerator" level="ERROR" additivity="false"/>
 
     <!-- 日志输出级别 -->
     <root level="${level}">
