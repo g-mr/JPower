@@ -1,10 +1,10 @@
 package com.wlcb.jpower.module.config.interceptor;
 
 
-import com.wlcb.jpower.module.common.utils.ClassUtil;
-import com.wlcb.jpower.module.common.utils.DateUtil;
-import com.wlcb.jpower.module.common.utils.ExceptionsUtil;
-import com.wlcb.jpower.module.common.utils.Fc;
+import cn.hutool.core.annotation.AnnotationUtil;
+import com.wlcb.jpower.module.annotation.NoSqlLog;
+import com.wlcb.jpower.module.common.utils.*;
+import com.wlcb.jpower.module.common.utils.constants.CharPool;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.config.interceptor.chain.ChainFilter;
 import com.wlcb.jpower.module.config.interceptor.chain.MybatisInterceptor;
@@ -50,18 +50,23 @@ public class MybatisSqlPrintInterceptor implements MybatisInterceptor {
     }
 
     public Object printSql(ChainFilter chainFilter, Configuration configuration,String mpId, BoundSql boundSql, boolean isUpdate) {
-        long startTime = System.currentTimeMillis();
-        Object rest = chainFilter.proceed();
-        try {
-            long time = System.currentTimeMillis() - startTime;
-            // 超过超时时长则打印
-            if(time >= sqlProperties.getPrintTimeout()) {
-                printSql(boundSql,configuration,mpId,time,rest,isUpdate);
+
+        if (isLog(mpId)){
+            long startTime = System.currentTimeMillis();
+            Object rest = chainFilter.proceed();
+            try {
+                long time = System.currentTimeMillis() - startTime;
+                // 超过超时时长则打印
+                if(time >= sqlProperties.getPrintTimeout()) {
+                    printSql(boundSql,configuration,mpId,time,rest,isUpdate);
+                }
+            } catch (Exception e) {
+                log.error("==> 打印sql 日志异常 {}", NEWLINE+ExceptionsUtil.getStackTraceAsString(e));
             }
-        } catch (Exception e) {
-            log.error("==> 打印sql 日志异常 {}", NEWLINE+ExceptionsUtil.getStackTraceAsString(e));
+            return rest;
         }
-        return rest;
+
+        return chainFilter.proceed();
     }
 
     public void printSql(BoundSql boundSql,Configuration configuration,String sqlId,long time,Object rest, boolean isUpdate) {
@@ -94,16 +99,32 @@ public class MybatisSqlPrintInterceptor implements MybatisInterceptor {
     }
 
     /**
+     * 是否打印日志
+     * @Author mr.g
+     * @param mpId
+     * @return boolean
+     **/
+    private boolean isLog(String mpId) {
+        String[] mappers =  getMapper(mpId);
+        NoSqlLog noSqlLog = null;
+        try {
+            noSqlLog = AnnotationUtil.getAnnotation(ReflectUtil.getMethodByName(Class.forName(mappers[0]),mappers[1]), NoSqlLog.class);
+        } catch (ClassNotFoundException e) {
+            return true;
+        }
+        return Fc.isNull(noSqlLog);
+    }
+
+    /**
      * 根据节点id获取执行的Mapper name和Mapper method
      *
-     * @param sqlId 节点id
+     * @param mapperId 节点id
      * @return
      */
-    public static String[] getMapper(String sqlId) {
-        int index = sqlId.lastIndexOf(".");
-        String mapper = sqlId.substring(0, index);
-        String method = sqlId.substring(index + 1);
-        return new String[]{mapper, method};
+    private static String[] getMapper(String mapperId) {
+        String methodName = StringUtil.subAfter(mapperId, CharPool.DOT, Boolean.TRUE);
+        String className = StringUtil.subBefore(mapperId, CharPool.DOT, Boolean.TRUE);
+        return new String[]{className, methodName};
     }
 
     /**

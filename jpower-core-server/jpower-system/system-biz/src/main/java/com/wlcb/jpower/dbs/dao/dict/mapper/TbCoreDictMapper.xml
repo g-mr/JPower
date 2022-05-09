@@ -12,7 +12,7 @@
         FROM
         tb_core_dict dict
         <where>
-            dict.is_deleted = 0
+            and dict.is_deleted = 0
             <if test="dictTypeCode!=null and dictTypeCode != ''">
                 and dict.dict_type_code = #{dictTypeCode}
             </if>

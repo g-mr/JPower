@@ -56,7 +56,6 @@
         </then>
     </if>
 
-
     <logger name="org.apache" level="info"/>
     <logger name="com.baomidou.mybatisplus" level="info"/>
     <logger name="org.springframework" level="info"/>
