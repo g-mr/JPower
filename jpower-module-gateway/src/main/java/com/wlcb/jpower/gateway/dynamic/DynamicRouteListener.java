@@ -9,6 +9,7 @@ import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.config.listener.Listener;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.wlcb.jpower.gateway.utils.NacosUtils;
+import com.wlcb.jpower.module.common.utils.Fc;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.route.RouteDefinition;
@@ -55,9 +56,11 @@ public class DynamicRouteListener {
             String configInfo = configService.getConfig(NacosUtils.getRouteDataId(), nacosConfigProperties.getGroup(), 3000);
             log.info("获取网关当前配置:\r\n{}",configInfo);
             List<RouteDefinition> definitionList = JSON.parseArray(configInfo, RouteDefinition.class);
-            for(RouteDefinition definition : definitionList){
-                log.info("add route : {}",definition.toString());
-                dynamicRouteService.add(definition);
+            if (Fc.isNotEmpty(definitionList)){
+                for(RouteDefinition definition : definitionList){
+                    log.info("add route : {}",definition.toString());
+                    dynamicRouteService.add(definition);
+                }
             }
         } catch (Exception e) {
             log.error("初始化网关路由时发生错误",e);
