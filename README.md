@@ -17,6 +17,8 @@
 
 采用前后端分离的模式，前端开源项目：[jpower-ui](https://gitee.com/gdzWork/jpower-ui) (基于 AVue、Vue、Element-UI)、[JPowerWeb](https://gitee.com/deep_letters/jpower)(基于 Vue、Element-UI)
 
+Boot版本：[JPowerBoot](https://gitee.com/gdzWork/JPowerBoot)
+
 `JPower` 基于`SpringCloud(2020.0.1)`  + `SpringBoot(2.4.2)` 的微服务快速开发平台.
 具备网关统一鉴权、Xss防跨站攻击、分布式事务等多个模块，支持多业务系统并行开发，
 支持多服务并行开发，可以作为后端服务的开发脚手架。代码简洁，注释齐全，架构清晰，非常适合学习和作为基础框架使用。
