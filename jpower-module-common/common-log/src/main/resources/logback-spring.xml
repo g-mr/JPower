@@ -64,6 +64,7 @@
     <logger name="com.alibaba" level="info"/>
     <logger name="springfox.documentation" level="info" />
     <logger name="_org.springframework.web.servlet.HandlerMapping.Mappings" level="info" />
+    <logger name="_org.springframework.web.reactive.HandlerMapping.Mappings" level="info" />
     <logger name="com.wlcb.jpower.dbs.dao" level="info" additivity="false"/>
 
     <!-- 日志输出级别 -->
