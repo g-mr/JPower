@@ -29,7 +29,7 @@ services:
       start_period: 40s
     environment:
       SW_STORAGE: mysql
-      SW_JDBC_URL: jdbc:mysql://192.169.0.8:3306/sky_walking?rewriteBatchedStatements=true
+      SW_JDBC_URL: jdbc:mysql://192.169.0.8:3306/sky_walking?rewriteBatchedStatements=true&characterEncoding=utf-8&useSSL=false
       SW_DATA_SOURCE_USER: root
       SW_DATA_SOURCE_PASSWORD: 12345678
       TZ: Asia/Shanghai
