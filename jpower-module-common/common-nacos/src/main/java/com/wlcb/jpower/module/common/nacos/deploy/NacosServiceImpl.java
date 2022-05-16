@@ -20,7 +20,7 @@ public class NacosServiceImpl implements DeployService {
     public void launcher(SpringApplicationBuilder builder, String appName, String profile) {
         Properties props = System.getProperties();
         props.setProperty("spring.cloud.nacos.config.file-extension", NacosConstants.FILE_EXTENSION);
-        props.setProperty("spring.cloud.nacos.config.shared-configs[0].data-id", NacosConstants.DATA_ID);
+        props.setProperty("spring.cloud.nacos.config.shared-configs[0].data-id", NacosConstants.nacosDataId());
         props.setProperty("spring.cloud.nacos.config.shared-configs[0].refresh", NacosConstants.CONFIG_REFRESH);
         props.setProperty("spring.cloud.nacos.config.shared-configs[0].group", NacosConstants.CONFIG_GROUP);
 
