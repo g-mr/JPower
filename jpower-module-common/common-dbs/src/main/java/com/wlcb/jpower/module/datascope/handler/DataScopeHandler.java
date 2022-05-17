@@ -82,6 +82,8 @@ public class DataScopeHandler implements DataPermissionHandler {
             }else {
                 return where;
             }
+
+            andWhere = CCJSqlParserUtil.parseCondExpression(StringPool.LEFT_BRACKET+andWhere.toString()+ StringPool.RIGHT_BRACKET);
             log.debug("DATASCOPE WHERE : {}",andWhere.toString());
             return where==null?andWhere:new AndExpression(where,andWhere);
         }
