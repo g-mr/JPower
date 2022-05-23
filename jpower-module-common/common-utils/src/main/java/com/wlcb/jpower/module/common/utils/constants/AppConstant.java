@@ -31,27 +31,27 @@ public interface AppConstant {
     String JPOWER = "jpower";
 
     /** spring boot admin **/
-    String JPOWER_ADMIN = JPOWER.concat("-admin");
+    String JPOWER_ADMIN = "jpower-admin";
 
     /** swagger聚合文档 **/
-    String JPOWER_API = JPOWER.concat("-api");
+    String JPOWER_API = "jpower-api";
 
     /** 日志服务 **/
-    String JPOWER_LOG = JPOWER.concat("-log");
+    String JPOWER_LOG = "jpower-log";
 
     /** 网关模块名称 **/
-    String JPOWER_GATEWAY = JPOWER.concat("-gateway");
+    String JPOWER_GATEWAY = "jpower-gateway";
 
     /** 系统模块名称 **/
-    String JPOWER_SYSTEM = JPOWER.concat("-system");
+    String JPOWER_SYSTEM = "jpower-system";
 
     /** 鉴权模块 **/
-    String JPOWER_AUTH = JPOWER.concat("-auth");
+    String JPOWER_AUTH = "jpower-auth";
 
     /** 用户模块 **/
-    String JPOWER_USER = JPOWER.concat("-user");
+    String JPOWER_USER = "jpower-user";
 
     /** 文件模块名称 **/
-    String JPOWER_FILE = JPOWER.concat("-file");
+    String JPOWER_FILE = "jpower-file";
 
 }
