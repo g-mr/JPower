@@ -37,9 +37,13 @@ public class SqlKeyword {
     public static final String NOT_LIKE = "_notlike";
     public static final String GT = "_gt";
     public static final String LT = "_lt";
+    public static final String GE = "_ge";
+    public static final String LE = "_le";
     public static final String DATE_GT = "_dategt";
     public static final String DATE_EQUAL = "_dateeq";
     public static final String DATE_LT = "_datelt";
+    public static final String DATE_GE = "_datege";
+    public static final String DATE_LE = "_datele";
     public static final String IS_NULL = "_null";
     public static final String NOT_NULL = "_notnull";
     public static final String IGNORE = "_ignore";
@@ -68,12 +72,20 @@ public class SqlKeyword {
                 wrapper.gt(getColumn(k, GT), v);
             } else if (k.endsWith(LT)) {
                 wrapper.lt(getColumn(k, LT), v);
+            } else if (k.endsWith(GE)) {
+                wrapper.ge(getColumn(k, GE), v);
+            } else if (k.endsWith(LE)) {
+                wrapper.le(getColumn(k, LE), v);
             } else if (k.endsWith(DATE_GT)) {
                 wrapper.gt(getColumn(k, DATE_GT), v);
             } else if (k.endsWith(DATE_EQUAL)) {
                 wrapper.eq(getColumn(k, DATE_EQUAL), v);
             } else if (k.endsWith(DATE_LT)) {
                 wrapper.lt(getColumn(k, DATE_LT), v);
+            } else if (k.endsWith(DATE_LE)) {
+                wrapper.le(getColumn(k, DATE_LE), v);
+            } else if (k.endsWith(DATE_GE)) {
+                wrapper.ge(getColumn(k, DATE_GE), v);
             } else if (k.endsWith(IS_NULL)) {
                 wrapper.isNull(getColumn(k, IS_NULL));
             } else if (k.endsWith(NOT_NULL)) {
