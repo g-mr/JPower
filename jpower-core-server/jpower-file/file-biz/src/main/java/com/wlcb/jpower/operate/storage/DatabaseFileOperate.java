@@ -7,7 +7,7 @@ import com.wlcb.jpower.module.common.utils.FileUtil;
 import com.wlcb.jpower.module.common.utils.UUIDUtil;
 import com.wlcb.jpower.module.common.utils.WebUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
-import com.wlcb.jpower.module.common.utils.constants.StringPool;
+import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.operate.FileOperate;
 import com.wlcb.jpower.service.CoreFileService;
 import lombok.AllArgsConstructor;
@@ -57,7 +57,10 @@ public class DatabaseFileOperate implements FileOperate {
 
 	@Override
 	public byte[] getByte(TbCoreFile coreFile) {
-		return coreFile.getContent();
+		return coreFileService.getOne(Condition.<TbCoreFile>getQueryWrapper()
+				.lambda()
+				.select(TbCoreFile::getContent)
+				.eq(TbCoreFile::getId,coreFile.getId())).getContent();
 	}
 
 	@Override

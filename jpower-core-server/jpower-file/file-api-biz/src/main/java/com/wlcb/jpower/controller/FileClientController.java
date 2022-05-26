@@ -13,6 +13,7 @@ import com.wlcb.jpower.operate.FileOperateBuilder;
 import com.wlcb.jpower.service.CoreFileService;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,7 +36,7 @@ public class FileClientController implements FileClient {
 
     @Override
     @SneakyThrows
-    @PostMapping(value = "/serverUpload",produces="application/json")
+    @PostMapping(value = "/serverUpload",consumes = MediaType.MULTIPART_FORM_DATA_VALUE,produces =  MediaType.APPLICATION_PROBLEM_JSON_VALUE)
     public ResponseData serverUpload(@RequestParam("file") MultipartFile file){
         TbCoreFile coreFile = operateBuilder
                 .getBuilder(ConstantsEnum.FILE_STORAGE_TYPE.SERVER.getValue())
@@ -45,7 +46,7 @@ public class FileClientController implements FileClient {
 
     @Override
     @SneakyThrows
-    @PostMapping(value = "/fastDfsUpload",produces="application/json")
+    @PostMapping(value = "/fastDfsUpload",consumes = MediaType.MULTIPART_FORM_DATA_VALUE,produces =  MediaType.APPLICATION_PROBLEM_JSON_VALUE)
     public ResponseData fastDfsUpload(@RequestParam("file") MultipartFile file) {
         TbCoreFile coreFile = operateBuilder
                 .getBuilder(ConstantsEnum.FILE_STORAGE_TYPE.FASTDFS.getValue())
@@ -55,7 +56,7 @@ public class FileClientController implements FileClient {
 
     @Override
     @SneakyThrows
-    @PostMapping(value = "/databaseUpload",produces="application/json")
+    @PostMapping(value = "/databaseUpload",consumes = MediaType.MULTIPART_FORM_DATA_VALUE,produces =  MediaType.APPLICATION_PROBLEM_JSON_VALUE)
     public ResponseData databaseUpload(@RequestParam("file") MultipartFile file) {
         TbCoreFile coreFile = operateBuilder
                 .getBuilder(ConstantsEnum.FILE_STORAGE_TYPE.DATABASE.getValue())

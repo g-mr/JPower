@@ -139,7 +139,9 @@ public class UserController extends BaseController {
         JpowerAssert.isNull(coreUserService.selectUserLoginId(coreUser.getLoginId(), coreUser.getTenantCode()), JpowerError.BUSINESS, "当前登陆名已存在");
 
         coreUser.setPassword(DigestUtil.encrypt(MD5.parseStrToMd5U32(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD, ConstantsUtils.DEFAULT_USER_PASSWORD))));
-        coreUser.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_SYSTEM.getValue());
+        if (Fc.isNull(coreUser.getUserType())){
+            coreUser.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_SYSTEM.getValue());
+        }
         CacheUtil.clear(CacheNames.USER_REDIS_CACHE);
         return ReturnJsonUtil.status(coreUserService.save(coreUser));
     }
