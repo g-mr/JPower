@@ -19,10 +19,6 @@ class RedisAdvice extends AspectBase {
 
     // 如果是getConnection方法，把返回结果进行代理包装
     Object interceptorRedisFactory(MethodInvocation invocation) throws Throwable {
-        if (!log.isDebugEnabled()) {
-            return invocation.proceed();
-        }
-
         Object ret = invocation.proceed();
         String methodName = invocation.getMethod().getName();
         if (methodName.equals("getConnection")) {
