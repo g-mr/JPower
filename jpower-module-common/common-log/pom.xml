@@ -32,6 +32,12 @@
             <artifactId>common-deploy</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.skywalking</groupId>
+            <artifactId>apm-toolkit-trace</artifactId>
+            <version>8.7.0</version>
+        </dependency>
     </dependencies>
 
 </project>
