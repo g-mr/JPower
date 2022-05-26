@@ -67,7 +67,7 @@ public class GlobalExceptionHandler {
     public ErrorReturnJson defaultErrorHandler(HttpServletRequest request, HttpServletResponse response, Exception e){
 
         ErrorReturnJson r = new ErrorReturnJson();
-        r.setMessage(e.getMessage());
+        r.setMessage(ExceptionsUtil.unwrap(e).getMessage());
         if (e instanceof BusinessException) {
             r.setCode(HttpStatus.NOT_IMPLEMENTED.value());
             //标记返回为501错误
