@@ -46,7 +46,7 @@ public class BaseController
                 if (Fc.isBlank(text)) {
                     setValue(null);
                 }else {
-                    setValue(DateUtil.parseDate(text));
+                    setValue(DateUtil.parse(text));
                 }
             }
         });

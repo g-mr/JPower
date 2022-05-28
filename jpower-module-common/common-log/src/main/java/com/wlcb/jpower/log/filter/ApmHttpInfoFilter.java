@@ -59,8 +59,7 @@ public class ApmHttpInfoFilter extends HttpFilter {
             filterChain.doFilter(requestWrapper, responseWrapper);
         } finally {
             try {
-                //构造请求信息: 比如 curl -X GET http://localhost:18080/getPerson?id=1 -H 'token: me-token' -d '{ "name": "hello" }'
-                //构造请求的方法&URL&参数
+                //构造请求的HEADER
                 StringBuilder sbHeader = new StringBuilder("");
 
                 //构造header
@@ -74,6 +73,7 @@ public class ApmHttpInfoFilter extends HttpFilter {
 
                 ActiveSpan.tag("请求HEADER", sbHeader.toString());
 
+                //构造请求的参数
                 StringBuilder sbParam = new StringBuilder("");
 
                 request.getParameterMap().forEach((k,v)-> sbParam.append(" -P ").append(k).append(": ").append(Arrays.toString(v)).append(" | "));
