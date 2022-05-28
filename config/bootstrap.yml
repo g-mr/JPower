@@ -36,7 +36,7 @@ jpower:
   test:
     nacos:
       #      注册中心地址
-      server-addr: 192.168.0.4:82
+      server-addr: localhost:8848
     sentinel:
       #      sentinel流控组件地址
       dashboard: 192.168.0.4:84
