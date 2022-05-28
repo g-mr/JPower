@@ -1,5 +1,6 @@
 package com.wlcb.jpower.module.common.utils;
 
+import com.wlcb.jpower.module.common.support.EnvBeanUtil;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -10,7 +11,7 @@ import org.springframework.cache.CacheManager;
  */
 public class Cm {
 
-    public static final Boolean TENANT_MODE = Boolean.TRUE;
+    public static final Boolean TENANT_MODE = EnvBeanUtil.get("jpower.tenant.enable", Boolean.class, true);
 
     private CacheManager cacheManager;
 

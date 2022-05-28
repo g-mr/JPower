@@ -106,7 +106,10 @@ public class DataScopeHandler implements DataPermissionHandler {
         String data = WebUtil.getRequest().getHeader(TokenConstant.DATA_SCOPE_NAME);
         if (Fc.isNotBlank(data)){
             List<DataScope> dataScopeList = JSON.parseArray(data,DataScope.class);
-            return dataScopeList.stream().filter(dataScope -> Fc.equalsValue(dataScope.getScopeClass(),mapperId)).findFirst().orElse(null);
+            DataScope dataScope =  dataScopeList.stream().filter(d -> Fc.equalsValue(d.getScopeClass(),mapperId)).findFirst().orElse(null);
+            if (Fc.notNull(dataScope) && Fc.isNotBlank(dataScope.getScopeClass())){
+                return dataScope;
+            }
         }
 
         //从注解获取数据权限
