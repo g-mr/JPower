@@ -1,9 +1,10 @@
-package com.wlcb.jpower.log.filter;
+package com.wlcb.jpower.module.base.filter;
 
 import com.google.common.collect.ImmutableSet;
 import com.wlcb.jpower.module.common.utils.Fc;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.skywalking.apm.toolkit.trace.ActiveSpan;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Component
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 public class ApmHttpInfoFilter extends HttpFilter {
 
     private static final ImmutableSet<String> IGNORED_HEADERS;
@@ -71,7 +73,7 @@ public class ApmHttpInfoFilter extends HttpFilter {
                     }
                 }
 
-                ActiveSpan.tag("请求HEADER", sbHeader.toString());
+                ActiveSpan.tag("请求头", sbHeader.toString());
 
                 //构造请求的参数
                 StringBuilder sbParam = new StringBuilder("");

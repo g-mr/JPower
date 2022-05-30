@@ -25,5 +25,11 @@
             <version>${com.jpower.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.skywalking</groupId>
+            <artifactId>apm-toolkit-trace</artifactId>
+            <version>${skywalking.version}</version>
+        </dependency>
+
     </dependencies>
 </project>

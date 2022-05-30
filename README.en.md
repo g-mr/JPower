@@ -148,7 +148,7 @@ JPower
 ├    └── common-utils -- Tools 
 ├── jpower-module-gateway -- Gateway module
 ├── jpower-op-server -- Operation and maintenance module
-├    ├── jpower-api -- Swagger Page
+├    ├── jpower-doc -- Swagger Page
 ├    ├── jpower-log -- Log Service
 └──  └── jpower-admin -- SpringBootAdmin 
 ~~~

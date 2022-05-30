@@ -62,7 +62,7 @@ public class ErrorExceptionHandler implements ErrorWebExceptionHandler {
 
         String uri = request.getURI().toString();
         if (uri.endsWith(API_PATH)) {
-            return ReturnJsonUtil.fail(HttpStatus.NOT_FOUND.value(),"接口文档已迁移到【jpower-api】服务,请联系开发人员索要请求地址");
+            return ReturnJsonUtil.fail(HttpStatus.NOT_FOUND.value(),"接口文档已迁移到【jpower-doc】服务,请联系开发人员索要请求地址");
         }
 
         StringBuilder message = new StringBuilder("请求[");

@@ -12,10 +12,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @Version 1.0
  */
 @SpringBootApplication
-public class ApiStartApplication {
+public class DocStartApplication {
 
     public static void main(String[] args) {
-        JpowerApplication.run(AppConstant.JPOWER_API,ApiStartApplication.class,args);
+        JpowerApplication.run(AppConstant.JPOWER_DOC,DocStartApplication.class,args);
     }
 
 }

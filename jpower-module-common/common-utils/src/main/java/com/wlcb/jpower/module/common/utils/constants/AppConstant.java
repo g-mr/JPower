@@ -34,7 +34,7 @@ public interface AppConstant {
     String JPOWER_ADMIN = "jpower-admin";
 
     /** swagger聚合文档 **/
-    String JPOWER_API = "jpower-api";
+    String JPOWER_DOC = "jpower-doc";
 
     /** 日志服务 **/
     String JPOWER_LOG = "jpower-log";

@@ -149,7 +149,7 @@ JPower
 ├    └── common-utils -- 工具类 
 ├── jpower-module-gateway -- 网关模块
 ├── jpower-op-server -- 运维模块
-├    ├── jpower-api -- swagger聚合文档
+├    ├── jpower-doc -- swagger聚合文档
 ├    ├── jpower-log -- 日志服务
 └──  └── jpower-admin -- SpringBootAdmin 
 ~~~

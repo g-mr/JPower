@@ -15,7 +15,7 @@
 
     <modules>
         <module>jpower-admin</module>
-        <module>jpower-api</module>
+        <module>jpower-doc</module>
         <module>jpower-log</module>
     </modules>
 

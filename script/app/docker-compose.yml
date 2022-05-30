@@ -191,7 +191,7 @@ services:
     networks:
       - jpower_net
 
-  jpower-api:
+  jpower-doc:
     image: "219.148.186.235:99/jpower/api-server:2.1.3"
     ports:
       - 18000:18000
