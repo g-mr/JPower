@@ -10,6 +10,7 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName UserInfo
@@ -102,6 +103,9 @@ public class UserInfo implements Serializable {
 
     @ApiModelProperty("用来表示是core_user表数据还是其他表映射的数据 0core_user系统表 1业务表 2白名单")
     private Integer isSysUser = TBALE_USER_TYPE_CORE;
+
+    @ApiModelProperty("扩展属性")
+    private Map<String,Object> info;
 
     public boolean isEmpty(){
         return Fc.allEmpty(userId,loginId);
