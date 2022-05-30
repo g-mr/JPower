@@ -32,7 +32,9 @@ public class JpowerApplication {
      **/
     public static ConfigurableApplicationContext run(String appName, Class source, String... args) {
         SpringApplicationBuilder builder = springApplicationBuilder(appName, source, args);
-        return builder.run(args);
+        ConfigurableApplicationContext context = builder.run(args);
+        log.info("启动成功：appName={}，profiles={}，port={}",appName,context.getEnvironment().getActiveProfiles(),context.getEnvironment().getProperty("server.port"));
+        return context;
     }
 
     private static SpringApplicationBuilder springApplicationBuilder(String appName, Class source, String[] args) {

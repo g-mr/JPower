@@ -1,6 +1,7 @@
 package com.wlcb.jpower.module.base.error;
 
 import cn.hutool.core.util.StrUtil;
+import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.base.exception.JpowerException;
 import com.wlcb.jpower.module.base.listener.ErrorLogEvent;
@@ -8,11 +9,14 @@ import com.wlcb.jpower.module.base.model.ErrorLogDto;
 import com.wlcb.jpower.module.base.utils.FieldCompletionUtil;
 import com.wlcb.jpower.module.base.vo.ErrorReturnJson;
 import com.wlcb.jpower.module.common.utils.ExceptionsUtil;
+import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SpringUtil;
 import com.wlcb.jpower.module.common.utils.WebUtil;
 import com.wlcb.jpower.module.dbs.config.LoginUserContext;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -55,6 +59,20 @@ public class GlobalExceptionHandler {
         return r;
     }
 
+    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+    public ErrorReturnJson methodArgumentNotValidHandler(MethodArgumentNotValidException e){
+
+        ErrorReturnJson r = new ErrorReturnJson();
+        FieldError fieldError = e.getBindingResult().getFieldError();
+        if (Fc.notNull(fieldError)){
+            r.setMessage(fieldError.getDefaultMessage());
+        }
+        r.setCode(JpowerError.Arg.getCode());
+        r.setStatus(false);
+
+        return r;
+    }
+
     /**
      * 系统异常处理，比如：404,500
      * @param request
@@ -70,12 +88,8 @@ public class GlobalExceptionHandler {
         r.setMessage(ExceptionsUtil.unwrap(e).getMessage());
         if (e instanceof BusinessException) {
             r.setCode(HttpStatus.NOT_IMPLEMENTED.value());
-            //标记返回为501错误
-            response.setStatus(HttpStatus.NOT_IMPLEMENTED.value());
         }else if (e instanceof JpowerException) {
             r.setCode(((JpowerException) e).getCode());
-            //标记返回为指定错误
-            response.setStatus(((JpowerException) e).getCode());
         } else {
             r.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
             //标记返回为500错误
