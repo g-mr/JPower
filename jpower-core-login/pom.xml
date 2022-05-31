@@ -15,14 +15,14 @@
 
         <dependency>
             <groupId>com.wlcb</groupId>
-            <artifactId>user-api</artifactId>
+            <artifactId>jpower-user-api</artifactId>
             <version>${com.jpower.version}</version>
             <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>com.wlcb</groupId>
-            <artifactId>system-api</artifactId>
+            <artifactId>jpower-system-api</artifactId>
             <version>${com.jpower.version}</version>
             <optional>true</optional>
         </dependency>
@@ -30,6 +30,12 @@
         <dependency>
             <groupId>com.wlcb</groupId>
             <artifactId>common-tool</artifactId>
+            <version>${com.jpower.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wlcb</groupId>
+            <artifactId>common-swagger</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
 
@@ -43,7 +49,6 @@
             <groupId>com.wlcb</groupId>
             <artifactId>common-deploy</artifactId>
             <version>${com.jpower.version}</version>
-            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -56,14 +61,12 @@
             <groupId>com.wlcb</groupId>
             <artifactId>common-feign</artifactId>
             <version>${com.jpower.version}</version>
-            <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>com.wlcb</groupId>
             <artifactId>common-nacos</artifactId>
             <version>${com.jpower.version}</version>
-            <optional>true</optional>
         </dependency>
     </dependencies>
 

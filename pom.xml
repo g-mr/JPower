@@ -53,8 +53,9 @@
 
     <modules>
         <module>jpower-module-common</module>
-        <module>jpower-core-login</module>
         <module>jpower-module-gateway</module>
+        <module>jpower-feign-api</module>
+        <module>jpower-core-login</module>
         <module>jpower-core-server</module>
         <module>jpower-op-server</module>
     </modules>
@@ -246,26 +247,6 @@
                     <useDefaultDelimiters>false</useDefaultDelimiters>
                 </configuration>
             </plugin>
-            <!-- copy文件 -->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-antrun-plugin</artifactId>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <phase>compile</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>run</goal>-->
-<!--                        </goals>-->
-<!--                        <configuration>-->
-<!--                            <tasks>-->
-<!--                                <copy overwrite="true" tofile="${project.build.outputDirectory}/test.yml"-->
-<!--                                      file="${root.basedir}/config/test.yml"/>-->
-<!--                            </tasks>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
-
         </plugins>
         <resources>
             <!-- 编译 src/main/java 目录下的 mapper 文件 -->

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>jpower</artifactId>
+        <groupId>com.wlcb</groupId>
+        <version>2.1.3</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>jpower-feign-api</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>jpower-file-api</module>
+        <module>jpower-system-api</module>
+        <module>jpower-user-api</module>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.wlcb</groupId>
+            <artifactId>common-feign</artifactId>
+            <version>${com.jpower.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wlcb</groupId>
+            <artifactId>common-dbs</artifactId>
+            <version>${com.jpower.version}</version>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wlcb</groupId>
+            <artifactId>common-redis</artifactId>
+            <version>${com.jpower.version}</version>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+
+</project>

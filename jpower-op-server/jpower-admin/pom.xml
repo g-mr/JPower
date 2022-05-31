@@ -40,7 +40,6 @@
                 <groupId>com.spotify</groupId>
                 <artifactId>dockerfile-maven-plugin</artifactId>
                 <configuration>
-                    <repository>${docker.registry}/${docker.image.prefix}/admin-server</repository>
                     <skip>false</skip>
                 </configuration>
             </plugin>

@@ -39,11 +39,14 @@
             <artifactId>common-transaction</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
+
         <dependency>
             <groupId>com.wlcb</groupId>
-            <artifactId>system-api</artifactId>
+            <artifactId>jpower-system-api</artifactId>
             <version>${com.jpower.version}</version>
+            <optional>true</optional>
         </dependency>
+
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
@@ -66,7 +69,6 @@
                 <groupId>com.spotify</groupId>
                 <artifactId>dockerfile-maven-plugin</artifactId>
                 <configuration>
-                    <repository>${docker.registry}/${docker.image.prefix}/log-server</repository>
                     <skip>false</skip>
                 </configuration>
             </plugin>
