@@ -11,8 +11,9 @@ import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
+import com.wlcb.jpower.module.common.utils.SecureUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
-import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.role.CoreRoleService;
 import com.wlcb.jpower.service.role.CoreRolefunctionService;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.wlcb.jpower.module.common.cache.CacheNames.SYSTEM_REDIS_CACHE;
+import static com.wlcb.jpower.module.common.utils.constants.JpowerConstants.TOP_CODE;
 
 @Api(tags = "角色管理")
 @RestController
@@ -44,6 +46,14 @@ public class RoleController extends BaseController {
     @RequestMapping(value = "/listTree",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
     public ResponseData<List<Tree<String>>> listTree(TbCoreRole coreRole){
         List<Tree<String>> list = coreRoleService.tree(Condition.getLambdaTreeWrapper(coreRole,TbCoreRole::getId,TbCoreRole::getParentId)
+                        .func(q->{
+                            if (!SecureUtil.isRoot()){
+                                List<String> roleId = SecureUtil.getUserRole();
+                                q.apply("ancestor_id regexp '"+Fc.join(roleId, StringPool.SPILT)+"'")
+                                        .or()
+                                        .in(TbCoreRole::getId,roleId);
+                            }
+                        })
                         .orderByAsc(TbCoreRole::getCreateTime));
         return ReturnJsonUtil.ok("获取成功", list);
     }
@@ -54,12 +64,19 @@ public class RoleController extends BaseController {
         JpowerAssert.notEmpty(coreRole.getName(),JpowerError.Arg,"名称不可为空");
 
         if (StringUtils.isBlank(coreRole.getParentId())){
-            coreRole.setParentId(JpowerConstants.TOP_CODE);
+            coreRole.setParentId(TOP_CODE);
         }
 
         if (Fc.isNull(coreRole.getIsSysRole())){
             coreRole.setIsSysRole(ConstantsEnum.YN01.N.getValue());
         }
+
+        String ancestorId = TOP_CODE;
+        if (!Fc.equalsValue(coreRole.getParentId(),TOP_CODE)){
+            ancestorId = coreRoleService.getObj(Condition.<TbCoreRole>getQueryWrapper().lambda().select(TbCoreRole::getAncestorId).eq(TbCoreRole::getId,coreRole.getParentId()),Fc::toStr);
+            ancestorId = ancestorId + StringPool.COMMA + coreRole.getParentId();
+        }
+        coreRole.setAncestorId(ancestorId);
 
         CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE,coreRole.getTenantCode());
         return ReturnJsonUtil.status(coreRoleService.add(coreRole));
@@ -88,6 +105,15 @@ public class RoleController extends BaseController {
     public ResponseData update(TbCoreRole coreRole){
 
         JpowerAssert.notEmpty(coreRole.getId(), JpowerError.Arg,"id不可为空");
+
+        if (Fc.isNotBlank(coreRole.getParentId())){
+            String ancestorId = TOP_CODE;
+            if (!Fc.equalsValue(coreRole.getParentId(),TOP_CODE)){
+                ancestorId = coreRoleService.getObj(Condition.<TbCoreRole>getQueryWrapper().lambda().select(TbCoreRole::getAncestorId).eq(TbCoreRole::getId,coreRole.getParentId()),Fc::toStr);
+                ancestorId = ancestorId + StringPool.COMMA + coreRole.getParentId();
+            }
+            coreRole.setAncestorId(ancestorId);
+        }
 
         CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE,coreRole.getTenantCode());
         return ReturnJsonUtil.status(coreRoleService.update(coreRole));
