@@ -31,7 +31,11 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import static com.wlcb.jpower.gateway.config.CachePostBodyFilter.CACHED_REQUEST_BODY;
 import static com.wlcb.jpower.module.common.utils.constants.StringPool.*;
 
 /**
@@ -74,15 +78,6 @@ public class AccessLogGlobalFilter implements GlobalFilter, Ordered {
         HttpMethod method = requestDecorator.getMethod();
         URI url = requestDecorator.getURI();
         HttpHeaders headers = requestDecorator.getHeaders();
-//        Flux<DataBuffer> body = requestDecorator.getBody();
-        //读取requestBody传参
-        // TODO: 2021-05-25 这里试了很多方法都拿不到完整的requestBody，各位有什么办法能拿到可以提供一下 ！！！感谢🙏🙏🙏
-//        AtomicReference<String> requestBody = new AtomicReference<>("");
-//        body.subscribe(buffer -> {
-//            CharBuffer charBuffer = StandardCharsets.UTF_8.decode(buffer.asByteBuffer());
-//            requestBody.set(charBuffer.toString());
-//        });
-//        String requestParams = requestBody.get();
 
         StringBuilder builder = new StringBuilder(NEWLINE+"============start gateway http=============").append(NEWLINE);
         builder.append("-->")
@@ -94,6 +89,14 @@ public class AccessLogGlobalFilter implements GlobalFilter, Ordered {
 
         builder.append("request headers: ").append(NEWLINE);
         headers.forEach((name,value)-> builder.append(TAB).append(name).append(SPACE).append(EQUALS).append(SPACE).append(value).append(NEWLINE));
+
+        if (Fc.isNotBlank(exchange.getAttributeOrDefault(CACHED_REQUEST_BODY,EMPTY))){
+            builder.append("request body: ").append(NEWLINE);
+            builder.append(TAB)
+                    .append(exchange.getAttributeOrDefault(CACHED_REQUEST_BODY,EMPTY))
+                    .append(NEWLINE);
+            exchange.getAttributes().remove(CACHED_REQUEST_BODY);
+        }
 
         builder.append("--> end request").append(NEWLINE);
         builder.append(NEWLINE);
@@ -149,7 +152,7 @@ public class AccessLogGlobalFilter implements GlobalFilter, Ordered {
 
     @Override
     public int getOrder() {
-        return Ordered.HIGHEST_PRECEDENCE;
+        return Ordered.HIGHEST_PRECEDENCE+1;
     }
 
     private String readBody(byte[] content){
@@ -163,6 +166,16 @@ public class AccessLogGlobalFilter implements GlobalFilter, Ordered {
         }catch (Exception e){
             return "(unknown bodyContent)";
         }
+    }
+
+    private Map<String, Object> decodeBody(String body) {
+        return Arrays.stream(body.split("&"))
+                .map(s -> s.split("="))
+                .collect(Collectors.toMap(arr -> arr[0], arr -> arr[1]));
+    }
+
+    private String encodeBody(Map<String, Object> map) {
+        return map.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.joining("&"));
     }
 
 }

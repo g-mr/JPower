@@ -30,11 +30,6 @@ public class CityController extends BaseController {
 
     private final CoreCityService coreCityService;
 
-    @RequestMapping(value = "/test",method = {RequestMethod.GET},produces="application/json")
-    public void test(){
-        Integer a = Integer.parseInt("测试");
-    }
-
     @ApiOperation("查询下级列表")
     @ApiResponses({
             @ApiResponse(code = 200,message = "ResponseData => 'data':[{'code':'string','name':'string'}]")
