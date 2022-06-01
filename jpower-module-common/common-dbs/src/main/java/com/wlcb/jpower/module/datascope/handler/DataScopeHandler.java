@@ -1,9 +1,11 @@
 package com.wlcb.jpower.module.datascope.handler;
 
 import cn.hutool.core.annotation.AnnotationUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.plugins.handler.DataPermissionHandler;
 import com.wlcb.jpower.module.common.auth.UserInfo;
+import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.CharPool;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
@@ -24,6 +26,7 @@ import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Column;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -60,7 +63,34 @@ public class DataScopeHandler implements DataPermissionHandler {
 
             Expression andWhere;
             if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.CUSTOM.getValue())){
-                Map<String,Object> userMap = BeanUtil.getFieldValueMap(LoginUserContext.get());
+                Map<String,Object> userMap = ChainMap.init();
+
+                BeanUtil.beanToMap(LoginUserContext.get(),userMap,new CopyOptions(){
+                    @Override
+                    protected Object editFieldValue(String fieldName, Object fieldValue) {
+
+                        switch (fieldName){
+                            case "birthday":
+                            case "lastLoginTime":
+                                fieldValue = Fc.isNull(fieldValue) ? DateUtil.now() : fieldValue;
+                                break;
+                            case "idType":
+                            case "loginCount":
+                            case "userType":
+                                fieldValue = Fc.isNull(fieldValue) ? -999 : fieldValue;
+                                break;
+                            case "roleIds":
+                            case "childOrgId":
+                                fieldValue = Fc.isNull(fieldValue) ? new ArrayList<>() : fieldValue;
+                                break;
+                            default:
+                                fieldValue = Fc.isNull(fieldValue) ? StringPool.EMPTY : fieldValue;
+                                break;
+                        }
+
+                        return fieldValue;
+                    }
+                });
 
                 userMap.put(ClassUtil.getFiledName(UserInfo::getRoleIds), StringUtils.collectionToDelimitedString(LoginUserContext.get().getRoleIds(), StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE));
 

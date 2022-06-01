@@ -5,6 +5,7 @@ import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SecureUtil;
 import com.wlcb.jpower.module.common.utils.WebUtil;
+import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
 import lombok.extern.slf4j.Slf4j;
@@ -100,6 +101,7 @@ public class LoginUserContext {
                     try { user.setClientCode(SecureUtil.getClientCodeFromHeader()); }catch (Exception ignored){}
                     user.setLoginId(header);
                     user.setNickName(header);
+                    user.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_ANONYMOUS.getValue());
                     if (Fc.equals(header, RoleConstant.ANONYMOUS)){
                         user.setUserId(RoleConstant.ANONYMOUS_ID);
                         user.setIsSysUser(UserInfo.TBALE_USER_TYPE_CORE);
