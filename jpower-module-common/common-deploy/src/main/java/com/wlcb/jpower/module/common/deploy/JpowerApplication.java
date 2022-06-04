@@ -3,6 +3,7 @@ package com.wlcb.jpower.module.common.deploy;
 import com.wlcb.jpower.module.common.deploy.service.DeployService;
 import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -30,9 +31,34 @@ public class JpowerApplication {
      * @Param appName 项目模块名称，必须与client表的code值相同
      * @return org.springframework.context.ConfigurableApplicationContext
      **/
+    @SneakyThrows
     public static ConfigurableApplicationContext run(String appName, Class source, String... args) {
         SpringApplicationBuilder builder = springApplicationBuilder(appName, source, args);
         ConfigurableApplicationContext context = builder.run(args);
+
+        /*
+        todo 这是一段会报错的代码，回头想办法让他不报错
+        String projectName = EnvBeanUtil.get("jpower.name",String.class);
+        if (Fc.isNotBlank(projectName)){
+            Field[] fields = AppConstant.class.getDeclaredFields();
+            for (Field field : fields) {
+                //这里进行了约定，只修改JPOWER开头的字段值
+                if (StringUtil.equalsIgnoreCase(field.getName(),"JPOWER")){
+                    String value = Fc.toStr(ReflectUtil.getStaticFieldValue(field));
+
+                    field.setAccessible(true);
+
+                    Field modifiersField = Field.class.getDeclaredField("modifiers");
+
+                    modifiersField.setAccessible(true);
+
+                    modifiersField.setInt(field,field.getModifiers() & ~Modifier.FINAL);
+                    field.set(AppConstant.class,projectName+"-"+value);
+                }
+            }
+        }
+        System.out.println(AppConstant.JPOWER_SYSTEM);*/
+
         log.info("启动成功：appName={}，profiles={}，port={}",appName,context.getEnvironment().getActiveProfiles(),context.getEnvironment().getProperty("server.port"));
         return context;
     }
@@ -71,7 +97,7 @@ public class JpowerApplication {
         }
 
         Properties props = System.getProperties();
-        props.setProperty("jpower.name", appName);
+        props.setProperty("jpower.applicationName", appName);
         props.setProperty("jpower.env", profile);
         props.setProperty("jpower.version", JpowerConstants.JPOWER_VESION);
         props.setProperty("jpower.is-local", String.valueOf(isLocalDev()));

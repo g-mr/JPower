@@ -98,7 +98,7 @@ public class SwaggerConfiguration {
                 .build()
                 .securitySchemes(securitySchemes(swaggerProperties))
                 .securityContexts(Lists.newArrayList(securityContexts(swaggerProperties)))
-                .extensions(openApiExtensionResolver.buildExtensions(Fc.isBlank(swaggerProperties.getGroupName())?properties.getName():swaggerProperties.getGroupName()))
+                .extensions(openApiExtensionResolver.buildExtensions(Fc.isBlank(swaggerProperties.getGroupName())?properties.getApplicationName():swaggerProperties.getGroupName()))
                 .pathMapping("/");
     }
 

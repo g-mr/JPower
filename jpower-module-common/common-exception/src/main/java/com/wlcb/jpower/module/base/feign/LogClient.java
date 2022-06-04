@@ -56,10 +56,10 @@ public class LogClient {
 		try{
 			ResponseData responseData = restTemplate.postForObject("http://"+ AppConstant.JPOWER_LOG+"/log/saveErrorLog",errorLog,ResponseData.class);
 			if (Fc.isNull(responseData) || !responseData.isStatus()){
-				log.error("操作日志保存失败={}",responseData);
+				log.error("错误日志保存失败={}",responseData);
 			}
-		}catch (Exception e){
-			log.error("操作日志保存失败={}", e.getMessage());
+		} catch (Exception e){
+			log.error("错误日志保存失败={}", e.getMessage());
 		}
 	}
 }

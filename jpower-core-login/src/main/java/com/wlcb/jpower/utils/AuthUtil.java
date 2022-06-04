@@ -115,7 +115,7 @@ public class AuthUtil {
             userInfo.setLoginId(result.getLoginId());
             userInfo.setUserName(result.getUserName());
             userInfo.setNickName(result.getNickName());
-//            userInfo.setOtherCode(result.getOtherCode());
+            userInfo.setOtherCode(result.getOtherCode());
             userInfo.setTenantCode(result.getTenantCode());
             userInfo.setRoleIds(list);
             userInfo.setPostCode(result.getPostCode());

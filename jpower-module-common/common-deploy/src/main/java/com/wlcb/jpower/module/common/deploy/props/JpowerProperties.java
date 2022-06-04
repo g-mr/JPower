@@ -22,6 +22,11 @@ public class JpowerProperties {
 	private String name;
 
 	/**
+	 * 服务名
+	 */
+	private String applicationName;
+
+	/**
 	 * 判断是否为 本地开发环境
 	 */
 	private Boolean isLocal = Boolean.FALSE;

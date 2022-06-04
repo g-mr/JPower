@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="false" scan="true" scanPeriod="60 seconds">
 
-    <springProperty scope="context" name="mode" source="com.wlcb.jpower.log.mode" defaultValue="file,skywalking"/>
-    <springProperty scope="context" name="log.file.base" source="com.wlcb.jpower.log.file.base" defaultValue="./logs"/>
-    <springProperty scope="context" name="log.file.historyDay" source="com.wlcb.jpower.log.file.historyDay" defaultValue="30"/>
-    <springProperty scope="context" name="log.file.pattern" source="com.wlcb.jpower.log.file.pattern" defaultValue="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [${appName}-${version}] [%tid] [%thread] [%logger{39}.%M:%L] - %msg%n"/>
-    <springProperty scope="context" name="log.skywalking.pattern" source="com.wlcb.jpower.log.skywalking.pattern" defaultValue="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [${appName}] [%tid] [%thread] [%logger{39}.%M:%L] - %msg%n"/>
-    <springProperty scope="context" name="log.elk.destination" source="com.wlcb.jpower.log.elk.destination"/>
+    <springProperty scope="context" name="mode" source="jpower.log.mode" defaultValue="file,skywalking"/>
+    <springProperty scope="context" name="log.file.base" source="jpower.log.file.base" defaultValue="./logs"/>
+    <springProperty scope="context" name="log.file.historyDay" source="jpower.log.file.historyDay" defaultValue="30"/>
+    <springProperty scope="context" name="log.file.pattern" source="jpower.log.file.pattern" defaultValue="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [${appName}-${version}] [%tid] [%thread] [%logger{39}.%M:%L] - %msg%n"/>
+    <springProperty scope="context" name="log.skywalking.pattern" source="jpower.log.skywalking.pattern" defaultValue="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [${appName}] [%tid] [%thread] [%logger{39}.%M:%L] - %msg%n"/>
+    <springProperty scope="context" name="log.elk.destination" source="jpower.log.elk.destination"/>
     <springProfile name="dev">
         <property scope="context" name="level" value="DEBUG" />
     </springProfile>

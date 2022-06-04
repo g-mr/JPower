@@ -43,7 +43,7 @@ public class FieldCompletionUtil {
 
     public static void serverInfo(LogDto operateLog, JpowerProperties properties) {
         operateLog.setEnv(properties.getEnv());
-        operateLog.setServerName(properties.getName());
+        operateLog.setServerName(properties.getApplicationName());
         operateLog.setServerHost(properties.getHostName());
         operateLog.setServerIp(properties.getIp());
     }

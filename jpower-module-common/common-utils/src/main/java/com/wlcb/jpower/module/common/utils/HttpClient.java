@@ -1,6 +1,5 @@
 package com.wlcb.jpower.module.common.utils;
 
-import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
@@ -80,7 +79,6 @@ public class HttpClient {
         try {
 
             URIBuilder builder = new URIBuilder(url);
-            builder.setParameter("clientCode", AppConstant.JPOWER);
             if (params != null && params.keySet().size() > 0) {
                 params.forEach((param, value) -> builder.setParameter(param, Fc.toStr(value)));
             }
