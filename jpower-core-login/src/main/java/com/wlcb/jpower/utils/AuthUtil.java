@@ -52,7 +52,7 @@ public class AuthUtil {
                 String code = getCode(menuList,dataScope.getMenuId());
                 if (Fc.isNotBlank(code)){
 
-                    boolean is = false;
+                    boolean is = true;
                     //角色配置的数据权限比所有角色可执行的权限优先级要高，所以判断有自己的权限的时候就不要全角色执行的权限了
                     if (Fc.equalsValue(dataScope.getAllRole(), ConstantsEnum.YN01.Y.getValue())){
                         is = dataScopeRoleList.stream().noneMatch(scope-> Fc.equalsValue(scope.getAllRole(), ConstantsEnum.YN01.N.getValue()) && Fc.equalsValue(dataScope.getScopeClass(), scope.getScopeClass()));
