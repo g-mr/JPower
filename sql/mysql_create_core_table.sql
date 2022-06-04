@@ -257,25 +257,26 @@ CREATE TABLE `tb_core_param` (
 -- Table structure for tb_core_role
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_role`;
-CREATE TABLE `tb_core_role` (
-  `id` varchar(32) NOT NULL COMMENT '主建',
-  `alias` varchar(30) DEFAULT NULL COMMENT '角色别名',
-  `name` varchar(50) NOT NULL COMMENT '角色名称',
-  `parent_id` varchar(32) DEFAULT NULL COMMENT '上级ID',
-  `icon_url` varchar(100) DEFAULT NULL COMMENT '图标地址',
-  `is_sys_role` int(1) DEFAULT 1 COMMENT '是否系统角色 0:否 1:是',
-  `remark` varchar(255) DEFAULT NULL COMMENT '备注',
-  `sort` int(5) DEFAULT NULL COMMENT '排序',
-  `create_user` varchar(32) NOT NULL DEFAULT 'root' COMMENT '创建人',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_user` varchar(32) NOT NULL DEFAULT 'root' COMMENT '更新人',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `status` int(1) DEFAULT 1 COMMENT '状态',
-  `is_deleted` tinyint(1) DEFAULT '0' COMMENT '是否删除 0否 1是',
-  `tenant_code` varchar(6) NOT NULL DEFAULT '000000' COMMENT '租户编码',
-  `create_org` varchar(32) DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色表';
+CREATE TABLE `tb_core_role`  (
+    `id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '主建',
+    `alias` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '角色别名',
+    `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '角色名称',
+    `parent_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '上级ID',
+    `icon_url` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '图标地址',
+    `is_sys_role` int(1) NULL DEFAULT 1 COMMENT '是否系统角色 0:否 1:是',
+    `ancestor_id` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '祖级ID',
+    `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
+    `sort` int(5) NULL DEFAULT NULL COMMENT '排序',
+    `create_user` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'root' COMMENT '创建人',
+    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_user` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'root' COMMENT '更新人',
+    `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `status` int(1) NULL DEFAULT 1 COMMENT '状态',
+    `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+    `tenant_code` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '000000' COMMENT '租户编码',
+    `create_org` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB COMMENT = '角色表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for tb_core_role_data

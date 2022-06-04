@@ -351,8 +351,8 @@ INSERT INTO `tb_core_role_function`(`id`, `role_id`, `function_id`, `create_user
 
 -- tb_core_role
 
-INSERT INTO `tb_core_role`(`id`, `alias`, `name`, `parent_id`, `icon_url`, `is_sys_role`, `remark`, `sort`, `create_user`, `create_time`, `update_user`, `update_time`, `status`, `is_deleted`, `tenant_code`, `create_org`) VALUES ('1', 'root', '超级管理员', '-1', NULL, 1, '这是系统内置角色，不要删除，会影响功能', 1, '1', '2021-03-03 22:34:00', '1', '2021-03-03 22:34:00', 1, 0, '000000', '6836de3b179d11eb8189fa163e5c4fd4');
-INSERT INTO `tb_core_role`(`id`, `alias`, `name`, `parent_id`, `icon_url`, `is_sys_role`, `remark`, `sort`, `create_user`, `create_time`, `update_user`, `update_time`, `status`, `is_deleted`, `tenant_code`, `create_org`) VALUES ('2', 'anonymous', '匿名用户', '-1', NULL, 1, '这是系统内置角色，不要删除，会影响功能', 1, '1', '2021-03-03 22:34:00', '1', '2021-03-03 22:34:00', 1, 0, '000000', '6836de3b179d11eb8189fa163e5c4fd4');
+INSERT INTO `tb_core_role` (`id`, `alias`, `name`, `parent_id`, `icon_url`, `is_sys_role`, `ancestor_id`, `remark`, `sort`, `create_user`, `create_time`, `update_user`, `update_time`, `status`, `is_deleted`, `tenant_code`, `create_org`) VALUES ('1', 'root', '超级管理员', '-1', NULL, 1, '-1', '这是系统内置角色，不要删除，会影响功能', 1, '1', '2021-03-03 22:34:00', '1', '2022-06-01 01:56:22', 1, 0, '000000', '6836de3b179d11eb8189fa163e5c4fd4');
+INSERT INTO `tb_core_role` (`id`, `alias`, `name`, `parent_id`, `icon_url`, `is_sys_role`, `ancestor_id`, `remark`, `sort`, `create_user`, `create_time`, `update_user`, `update_time`, `status`, `is_deleted`, `tenant_code`, `create_org`) VALUES ('2', 'anonymous', '匿名用户', '-1', NULL, 1, '-1', '这是系统内置角色，不要删除，会影响功能', 1, '1', '2021-03-03 22:34:00', '1', '2022-06-01 01:56:22', 1, 0, '000000', '6836de3b179d11eb8189fa163e5c4fd4');
 
 -- tb_core_tenant
 
