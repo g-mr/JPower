@@ -157,7 +157,7 @@ public class DataScopeHandler implements DataPermissionHandler {
                 return dataScope;
             }
         } catch (ClassNotFoundException e) {
-            log.warn("未找到类={}",mapperId);
+            log.warn("数据权限未找到类={}",mapperId);
         }
 
         return null;
