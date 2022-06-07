@@ -33,7 +33,7 @@ public class UpdateRelatedFieldsMetaHandler implements MetaObjectHandler {
         this.strictInsertFill(metaObject, "updateTime", Date.class, new Date());
         this.strictInsertFill(metaObject, "createOrg", String.class, getOrg());
         this.strictInsertFill(metaObject, "status", Integer.class, JpowerConstants.DB_STATUS_NORMAL);
-        this.strictInsertFill(metaObject, "isDeleted", Integer.class, JpowerConstants.DB_NOT_DELETE);
+        this.strictInsertFill(metaObject, "isDeleted", Boolean.class, Boolean.FALSE);
     }
 
     /**
