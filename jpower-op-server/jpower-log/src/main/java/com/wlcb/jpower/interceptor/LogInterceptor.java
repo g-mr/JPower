@@ -97,16 +97,11 @@ public class LogInterceptor implements Interceptor {
                 source.request(Long.MAX_VALUE);
                 Buffer buffer = source.getBuffer();
 
-                if (BufferUtil.isReadable(buffer)){
-
-                    Charset charset = StandardCharsets.UTF_8;
-                    if (Fc.notNull(responseBody.contentType())){
-                        charset = responseBody.contentType().charset(charset);
-                    }
-
-                    return buffer.clone().readString(charset);
+                Charset charset = StandardCharsets.UTF_8;
+                if (Fc.notNull(responseBody.contentType())){
+                    charset = responseBody.contentType().charset(charset);
                 }
-                return "bodyContent 省略";
+                return BufferUtil.cloneRead(buffer,charset);
             } catch (IOException e) {
                 return "读取 bodyContent 出错";
             }
@@ -119,15 +114,13 @@ public class LogInterceptor implements Interceptor {
         try(Buffer buffer = new Buffer()){
             if (Fc.notNull(requestBody)){
                 requestBody.writeTo(buffer);
-                if (BufferUtil.isReadable(buffer)){
-                    Charset charset = CharsetKit.CHARSET_UTF_8;
-                    if (requestBody.contentType() != null){
-                        charset = requestBody.contentType().charset(charset);
-                    }
 
-                    return buffer.readString(charset);
+                Charset charset = CharsetKit.CHARSET_UTF_8;
+                if (requestBody.contentType() != null){
+                    charset = requestBody.contentType().charset(charset);
                 }
-                return "省略 bodyContent";
+
+                return BufferUtil.read(buffer,charset);
             }
             return "requestBody is null";
         }catch (IOException e){

@@ -25,7 +25,7 @@ public class Condition<T> {
 
     public static <T> QueryWrapper<T> getQueryWrapper(Class<T> clz) {
         QueryWrapper<T> qw = new QueryWrapper();
-        qw.setEntity(BeanUtil.newInstance(clz));
+        qw.setEntity(BeanUtil.newBean(clz));
         return qw;
     }
 
@@ -43,14 +43,14 @@ public class Condition<T> {
             query.remove(k);
         });
         QueryWrapper<T> qw = new QueryWrapper();
-        qw.setEntity(BeanUtil.newInstance(clazz));
+        qw.setEntity(BeanUtil.newBean(clazz));
         SqlKeyword.buildCondition(query, qw);
         return qw;
     }
 
     public static <T> TreeWrapper<T> getTreeWrapper(Class<T> clz,String id,String parentId) {
         TreeWrapper<T> qw = new TreeWrapper(clz,id,parentId);
-        qw.setEntity(BeanUtil.newInstance(clz));
+        qw.setEntity(BeanUtil.newBean(clz));
         return qw;
     }
 
@@ -60,7 +60,7 @@ public class Condition<T> {
 
     public static <T> LambdaTreeWrapper<T> getLambdaTreeWrapper(Class<T> clz,SFunction<T, ?> id,SFunction<T, ?> parentId) {
         LambdaTreeWrapper<T> qw = new LambdaTreeWrapper(clz,id,parentId);
-        qw.setEntity(BeanUtil.newInstance(clz));
+        qw.setEntity(BeanUtil.newBean(clz));
         return qw;
     }
 

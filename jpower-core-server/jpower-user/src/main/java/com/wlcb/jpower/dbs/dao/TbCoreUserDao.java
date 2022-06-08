@@ -26,7 +26,7 @@ public class TbCoreUserDao extends JpowerServiceImpl<TbCoreUserMapper, TbCoreUse
         if (Fc.isNull(user)){
             return null;
         }
-        UserVo userVo = Objects.requireNonNull(BeanUtil.copy(user, UserVo.class));
+        UserVo userVo = Objects.requireNonNull(BeanUtil.copyProperties(user, UserVo.class));
         userVo.setOrgName(SystemCache.getOrgName(userVo.getOrgId()));
         userVo.setRoleName(Fc.join(SystemCache.getRoleNameByIds(Fc.toStrList(user.getRoleIds()))," | "));
         return userVo;

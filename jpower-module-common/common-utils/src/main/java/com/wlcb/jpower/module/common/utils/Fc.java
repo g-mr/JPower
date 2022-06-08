@@ -1030,18 +1030,7 @@ public class Fc {
      * @return 对象
      */
     public static <T> T newInstance(Class<?> clazz) {
-        return BeanUtil.newInstance(clazz);
-    }
-
-    /**
-     * 实例化对象
-     *
-     * @param clazzStr 类名
-     * @param <T>      泛型标记
-     * @return 对象
-     */
-    public static <T> T newInstance(String clazzStr) {
-        return BeanUtil.newInstance(clazzStr);
+        return BeanUtil.newBean(clazz);
     }
 
     /**
@@ -1142,7 +1131,7 @@ public class Fc {
      * @return {T}
      */
     public static <T> T toBean(Map<String, Object> beanMap, Class<T> valueType) {
-        T bean = BeanUtil.newInstance(valueType);
+        T bean = BeanUtil.newBean(valueType);
         BeanMap.create(bean).putAll(beanMap);
         return bean;
     }

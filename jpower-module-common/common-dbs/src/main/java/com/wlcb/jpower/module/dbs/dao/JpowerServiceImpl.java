@@ -108,7 +108,7 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
     @Override
     public boolean update(T entity, Wrapper<T> updateWrapper) {
         if (Fc.isNull(entity)){
-            entity = BeanUtil.newInstance(ReflectUtil.getClassGenricType(this.getClass(),1));
+            entity = BeanUtil.newBean(ReflectUtil.getClassGenricType(this.getClass(),1));
         }
         resolveEntity(entity,false);
         return super.update(entity,updateWrapper);

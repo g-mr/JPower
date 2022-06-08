@@ -156,16 +156,11 @@ public class HttpLogInterceptor implements Interceptor, Ordered {
                 source.request(Long.MAX_VALUE);
                 Buffer buffer = source.getBuffer();
 
-                if (BufferUtil.isReadable(buffer)){
-
-                    Charset charset = CharsetKit.CHARSET_UTF_8;
-                    if (responseBody.contentType() != null){
-                        charset = responseBody.contentType().charset(CharsetKit.CHARSET_UTF_8);
-                    }
-
-                    return buffer.clone().readString(charset);
+                Charset charset = CharsetKit.CHARSET_UTF_8;
+                if (responseBody.contentType() != null){
+                    charset = responseBody.contentType().charset(CharsetKit.CHARSET_UTF_8);
                 }
-                return "omit bodyContent";
+                return BufferUtil.cloneRead(buffer,charset);
             } catch (IOException e) {
                 return "(unknown bodyContent)";
             }
@@ -178,15 +173,12 @@ public class HttpLogInterceptor implements Interceptor, Ordered {
         try(Buffer buffer = new Buffer()){
             if (Fc.notNull(requestBody)){
                 requestBody.writeTo(buffer);
-                if (BufferUtil.isReadable(buffer)){
-                    Charset charset = CharsetKit.CHARSET_UTF_8;
-                    if (requestBody.contentType() != null){
-                        charset = requestBody.contentType().charset(CharsetKit.CHARSET_UTF_8);
-                    }
 
-                    return buffer.readString(charset);
+                Charset charset = CharsetKit.CHARSET_UTF_8;
+                if (requestBody.contentType() != null){
+                    charset = requestBody.contentType().charset(CharsetKit.CHARSET_UTF_8);
                 }
-                return "omit bodyContent";
+                return BufferUtil.read(buffer,charset);
             }
             return "requestBody is null";
         }catch (IOException e){

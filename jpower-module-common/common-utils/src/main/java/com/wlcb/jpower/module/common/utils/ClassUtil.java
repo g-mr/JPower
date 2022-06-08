@@ -12,11 +12,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * @ClassName ClassUtil
- * @Description TODO 类工具类
+ * 类工具类
+ *
  * @Author 郭丁志
  * @Date 2020-07-23 16:36
- * @Version 1.0
  */
 public class ClassUtil  extends cn.hutool.core.util.ClassUtil {
 
@@ -90,6 +89,5 @@ public class ClassUtil  extends cn.hutool.core.util.ClassUtil {
 
         return fieldName;
     }
-
 
 }

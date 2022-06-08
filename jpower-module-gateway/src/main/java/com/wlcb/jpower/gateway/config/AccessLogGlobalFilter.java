@@ -158,11 +158,7 @@ public class AccessLogGlobalFilter implements GlobalFilter, Ordered {
     private String readBody(byte[] content){
         try(Buffer buffer = new Buffer()){
             buffer.write(content);
-
-            if (BufferUtil.isReadable(buffer)){
-                return buffer.readString(CharsetKit.CHARSET_UTF_8);
-            }
-            return "omit bodyContent";
+            return BufferUtil.read(buffer,CharsetKit.CHARSET_UTF_8);
         }catch (Exception e){
             return "(unknown bodyContent)";
         }

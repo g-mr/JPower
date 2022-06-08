@@ -23,7 +23,7 @@ public class TbCoreCityDao extends JpowerServiceImpl<TbCoreCityMapper, TbCoreCit
 
     @Override
     public CityVo conver(TbCoreCity city) {
-        CityVo cityVo = Objects.requireNonNull(BeanUtil.copy(city, CityVo.class));
+        CityVo cityVo = Objects.requireNonNull(BeanUtil.copyProperties(city, CityVo.class));
         cityVo.setPname(SystemCache.getCityName(city.getPcode()));
         return cityVo;
     }
