@@ -13,12 +13,9 @@ public class ParamsConstants {
     public static final String USER_DEFAULT_PASSWORD = "JPOWER_USER_DEFAULT_PASSWORD";
     /** 新增用户默认是否激活 **/
     public static final String IS_ACTIVATION = "JPOWER_IS_ACTIVATION";
-    /** 白名单地址 **/
-    public static final String IP_LIST = "JPOWER_IP_LIST";
-
-    /** 文件存储路径（存储方式为服务器存储） **/
-    public static final String FILE_SAVE_PATH = "FILE_SAVE_PATH";
-    /** 文件默认存储方式 **/
-    public static final String FILE_STORAGE_TYPE = "FILE_STORAGE_TYPE";
+    /** 是否开启注册 **/
+    public static final String IS_REGISTER = "JPOWER_IS_REGISTER";
+    /** 注册用户默认角色 **/
+    public static final String REGISTER_ROLE_ID = "REGISTER_ROLE";
 
 }

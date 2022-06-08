@@ -58,8 +58,8 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
             }
 
             @Override
-            public ResponseData saveAdmin(TbCoreUser user, String roleId) {
-                log.error("调用saveAdmin失败，参数：user={}，roleId={} ，e={}", user, roleId, cause);
+            public ResponseData saveUser(TbCoreUser user, String roleId) {
+                log.error("调用saveUser失败，参数：user={}，roleId={} ，e={}", user, roleId, cause);
                 return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_API, cause.getMessage(), false);
             }
 

@@ -3,6 +3,7 @@ package com.wlcb.jpower.cache.param;
 import com.wlcb.jpower.feign.ParamsClient;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.utils.CacheUtil;
+import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SpringUtil;
 import org.apache.commons.lang3.StringUtils;
 
@@ -119,6 +120,29 @@ public class ParamConfig {
      **/
     public static Long getLong(String code,Long defaultValue){
         Long vlaue = getLong(code);
+        return vlaue==null?defaultValue:vlaue;
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 获取Long类型参数值
+     * @Date 16:27 2020-05-06
+     * @Param [code]
+     * @return java.lang.Integer
+     **/
+    public static Boolean getBoolean(String code){
+        return Fc.toBool(getString(code));
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 获取Long类型参数值，并给一个默认值
+     * @Date 16:29 2020-05-06
+     * @Param [code, defaultValue]
+     * @return java.lang.Integer
+     **/
+    public static Boolean getBoolean(String code, boolean defaultValue){
+        Boolean vlaue = getBoolean(code);
         return vlaue==null?defaultValue:vlaue;
     }
 }

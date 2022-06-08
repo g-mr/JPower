@@ -26,10 +26,6 @@ public class UserCache {
         userClient = SpringUtil.getBean(UserClient.class);
     }
 
-    public static ResponseData saveAdmin(TbCoreUser user, String roleId) {
-        return userClient.saveAdmin(user,roleId);
-    }
-
     public static TbCoreUser getUserByPhone(String telephone, String tenantCode) {
         return CacheUtil.get(CacheNames.USER_REDIS_CACHE,CacheNames.USER_PHPNE_KEY,telephone,() -> {
             ResponseData<TbCoreUser> responseData = userClient.queryUserByPhone(telephone,tenantCode);

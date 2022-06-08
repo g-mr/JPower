@@ -37,8 +37,8 @@ public interface UserClient {
     @GetMapping("/queryUserByPhone")
     ResponseData<TbCoreUser> queryUserByPhone(@RequestParam String phone, @RequestParam String tenantCode);
 
-    @PostMapping("/saveAdmin")
-    ResponseData saveAdmin(@RequestBody TbCoreUser user, @RequestParam String roleId);
+    @PostMapping("/saveUser")
+    ResponseData saveUser(@RequestBody TbCoreUser user, @RequestParam String roleId);
 
     @GetMapping("/listByUserType")
     ResponseData<List<TbCoreUser>> listByUserType(@RequestParam Integer userType);

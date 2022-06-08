@@ -1,6 +1,5 @@
 package com.wlcb.jpower.service.tenant.impl;
 
-import com.wlcb.jpower.cache.UserCache;
 import com.wlcb.jpower.cache.param.ParamConfig;
 import com.wlcb.jpower.dbs.dao.dict.TbCoreDictDao;
 import com.wlcb.jpower.dbs.dao.dict.TbCoreDictTypeDao;
@@ -18,6 +17,7 @@ import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
 import com.wlcb.jpower.dbs.entity.role.TbCoreRole;
 import com.wlcb.jpower.dbs.entity.role.TbCoreRoleFunction;
 import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
+import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
@@ -34,10 +34,16 @@ import com.wlcb.jpower.service.tenant.TenantService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import static com.wlcb.jpower.module.common.utils.constants.JpowerConstants.TOP_CODE;
-import static com.wlcb.jpower.module.tenant.TenantConstant.*;
+import static com.wlcb.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
+import static com.wlcb.jpower.module.tenant.TenantConstant.TENANT_ACCOUNT_NUMBER;
+import static com.wlcb.jpower.module.tenant.TenantConstant.getLicenseKey;
+import static com.wlcb.jpower.module.tenant.TenantConstant.tenantCode;
 
 /**
  * @ClassName TenantServiceImpl
@@ -57,6 +63,7 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
     private TbCoreRoleFunctionDao roleFunctionDao;
     private TbCoreDictTypeDao dictTypeDao;
     private TbCoreDictDao dictDao;
+    private UserClient userClient;
 
     @Override
     public boolean updateById(TbCoreTenant tenant){
@@ -146,7 +153,7 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
             if (SecureUtil.isRoot()){
                 user.setTenantCode(tenant.getTenantCode());
             }
-            ResponseData data = UserCache.saveAdmin(user,role.getId());
+            ResponseData data = userClient.saveUser(user,role.getId());
             JpowerAssert.isTrue(data.isStatus(), JpowerError.Rpc, data.getCode(), data.getMessage());
             return true;
         }

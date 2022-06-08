@@ -2,26 +2,30 @@ package com.wlcb.jpower.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.wf.captcha.SpecCaptcha;
-import com.wlcb.jpower.dto.AuthInfo;
 import com.wlcb.jpower.auth.TokenGranterBuilder;
-import com.wlcb.jpower.dto.TokenParameter;
-import com.wlcb.jpower.module.common.auth.SecureConstant;
-import com.wlcb.jpower.utils.TokenUtil;
 import com.wlcb.jpower.cache.SystemCache;
 import com.wlcb.jpower.cache.UserCache;
+import com.wlcb.jpower.cache.param.ParamConfig;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
+import com.wlcb.jpower.dto.AuthInfo;
+import com.wlcb.jpower.dto.TokenParameter;
+import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
+import com.wlcb.jpower.module.common.auth.SecureConstant;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.*;
+import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
+import com.wlcb.jpower.module.common.utils.constants.ParamsConstants;
 import com.wlcb.jpower.module.tenant.JpowerTenantProperties;
 import com.wlcb.jpower.utils.SmsUtil;
+import com.wlcb.jpower.utils.TokenUtil;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -51,6 +55,7 @@ public class LoginController extends BaseController {
     private RedisUtil redisUtil;
     private JpowerTenantProperties tenantProperties;
     private TokenGranterBuilder granterBuilder;
+    private UserClient userClient;
 
     @ApiOperation(value = "用户登录",notes = "Authorization（客户端识别码）：由clientCode+\":\"+clientSecret组成字符串后用base64编码后获得值，再由Basic +base64编码后的值组成客户端识别码； <br/>" +
             "&nbsp;&nbsp;&nbsp;clientCode和clientSecret的值由后端统一提供，不同的登录客户端值也不一样。<br/>" +
@@ -126,7 +131,8 @@ public class LoginController extends BaseController {
 
     @ApiOperation(value = "发送手机登录验证码")
     @RequestMapping(value = "/phoneCaptcha",method = RequestMethod.GET,produces="application/json")
-    public ResponseData<String> loginVercode(@ApiParam(value = "租户编号",required = false) @RequestParam(required = false) String tenantCode, @ApiParam(value = "手机号",required = true) @RequestParam String phone) {
+    public ResponseData<String> loginVercode(@ApiParam(value = "租户编号",required = false) @RequestParam(required = false) String tenantCode,
+                                             @ApiParam(value = "手机号",required = true) @RequestParam String phone) {
         if (tenantProperties.getEnable()){
             JpowerAssert.notNull(tenantCode,JpowerError.Arg,"租户编码不可为空");
         }
@@ -153,9 +159,24 @@ public class LoginController extends BaseController {
         if (json.getBoolean("isSuccess")){
             redisUtil.set(CacheNames.PHONE_KEY+phone+tenantCode,code,5L, TimeUnit.MINUTES);
             return ReturnJsonUtil.ok(user.getLoginId()+"的验证码发送成功");
-        }else {
+        } else {
             return ReturnJsonUtil.fail("验证码发送失败");
         }
     }
 
+    @ApiOperation(value = "用户注册")
+    @PostMapping(value = "/register")
+    public ResponseData register(TbCoreUser coreUser) {
+
+        if (ParamConfig.getBoolean(ParamsConstants.IS_REGISTER,Boolean.FALSE)){
+            return ReturnJsonUtil.fail("未开启注册功能");
+        }
+
+        JpowerAssert.notEmpty(coreUser.getLoginId(),JpowerError.Arg,"用户名不可为空");
+        JpowerAssert.notEmpty(coreUser.getPassword(),JpowerError.Arg,"密码不可为空");
+        JpowerAssert.notEmpty(coreUser.getNickName(),JpowerError.Arg,"昵称不可为空");
+        coreUser.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_GENERAL.getValue());
+
+        return userClient.saveUser(coreUser, ParamConfig.getString(ParamsConstants.REGISTER_ROLE_ID));
+    }
 }
