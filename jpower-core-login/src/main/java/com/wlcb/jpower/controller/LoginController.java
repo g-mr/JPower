@@ -37,6 +37,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static com.wlcb.jpower.module.common.utils.constants.TokenConstant.HEADER_TENANT;
 import static com.wlcb.jpower.module.tenant.TenantConstant.getExpireTime;
 
 /**
@@ -166,16 +167,22 @@ public class LoginController extends BaseController {
 
     @ApiOperation(value = "用户注册")
     @PostMapping(value = "/register")
-    public ResponseData register(TbCoreUser coreUser) {
+    public ResponseData register(TbCoreUser coreUser,@RequestHeader(HEADER_TENANT) String tenantCode) {
 
-        if (ParamConfig.getBoolean(ParamsConstants.IS_REGISTER,Boolean.FALSE)){
+        if (!ParamConfig.getBoolean(ParamsConstants.IS_REGISTER,Boolean.FALSE)){
             return ReturnJsonUtil.fail("未开启注册功能");
         }
 
         JpowerAssert.notEmpty(coreUser.getLoginId(),JpowerError.Arg,"用户名不可为空");
         JpowerAssert.notEmpty(coreUser.getPassword(),JpowerError.Arg,"密码不可为空");
         JpowerAssert.notEmpty(coreUser.getNickName(),JpowerError.Arg,"昵称不可为空");
+        JpowerAssert.notEmpty(tenantCode,JpowerError.Arg,"租户不可为空");
         coreUser.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_GENERAL.getValue());
+
+        TbCoreUser user = UserCache.getUserByLoginId(coreUser.getLoginId(),tenantCode);
+        if (Fc.notNull(user)){
+            return ReturnJsonUtil.fail("该用户已注册");
+        }
 
         return userClient.saveUser(coreUser, ParamConfig.getString(ParamsConstants.REGISTER_ROLE_ID));
     }
