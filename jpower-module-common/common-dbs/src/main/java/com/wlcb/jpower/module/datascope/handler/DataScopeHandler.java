@@ -53,7 +53,7 @@ public class DataScopeHandler implements DataPermissionHandler {
 
             if (Fc.isNull(LoginUserContext.get())){
                 log.warn("未获取到用户，无法进行数据权限过滤");
-                return where;
+                return CCJSqlParserUtil.parseCondExpression("1 = 2");
             }
 
             // 查询全部
