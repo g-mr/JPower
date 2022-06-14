@@ -72,6 +72,17 @@ public class ReturnJsonUtil {
      * @Param [msg, data]
      * @return ResponseData
      **/
+    public static <T> ResponseData<T> ok(T data){
+        return printJson(ConstantsReturn.RECODE_SUCCESS, "查询成功", data, true);
+    }
+
+    /**
+     * @Author 郭丁志
+     * @Description //TODO 成功的情况
+     * @Date 00:29 2020-03-06
+     * @Param [msg, data]
+     * @return ResponseData
+     **/
     public static <T> ResponseData<T> ok(String msg, T data){
         return printJson(ConstantsReturn.RECODE_SUCCESS, msg, data, true);
     }
@@ -118,9 +129,6 @@ public class ReturnJsonUtil {
      **/
     public static <T> ResponseData<T> fail(Integer code, String msg){
         return printJson(code, msg, null, false);
-    }
-
-    public static void main(String[] args) {
     }
 
     public static <T> ResponseData<T> status(Boolean is) {

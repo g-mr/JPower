@@ -12,15 +12,15 @@ import java.util.stream.Collectors;
  */
 public interface BaseDaoWrapper<T,V> {
 
-    V conver(T user);
+    V conver(T entity);
 
     default List<V> listConver(List<T> list){
         return list.stream().filter(Objects::nonNull).map(this::conver).collect(Collectors.toList());
     }
 
-    default Page<V> pageConver(Page<T> userPage){
-        List<V> list = listConver(userPage.getRecords());
-        Page<V> pageVo = new Page<>(userPage.getCurrent(),userPage.getSize(),userPage.getTotal());
+    default Page<V> pageConver(Page<T> page){
+        List<V> list = listConver(page.getRecords());
+        Page<V> pageVo = new Page<>(page.getCurrent(),page.getSize(),page.getTotal());
         pageVo.setRecords(list);
         return pageVo;
     }
