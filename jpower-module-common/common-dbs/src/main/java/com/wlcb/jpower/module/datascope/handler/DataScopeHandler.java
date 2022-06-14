@@ -3,6 +3,7 @@ package com.wlcb.jpower.module.datascope.handler;
 import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.toolkit.LambdaUtils;
 import com.baomidou.mybatisplus.extension.plugins.handler.DataPermissionHandler;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.support.ChainMap;
@@ -24,6 +25,7 @@ import net.sf.jsqlparser.expression.operators.relational.InExpression;
 import net.sf.jsqlparser.expression.operators.relational.ItemsList;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Column;
+import org.apache.ibatis.reflection.property.PropertyNamer;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -92,11 +94,11 @@ public class DataScopeHandler implements DataPermissionHandler {
                     }
                 });
 
-                userMap.put(ClassUtil.getFiledName(UserInfo::getRoleIds), StringUtils.collectionToDelimitedString(LoginUserContext.get().getRoleIds(), StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE));
+                userMap.put(PropertyNamer.methodToProperty(LambdaUtils.extract(UserInfo::getRoleIds).getImplMethodName()), StringUtils.collectionToDelimitedString(LoginUserContext.get().getRoleIds(), StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE));
 
                 Set<String> listOrgId = CollectionUtil.newHashSet(LoginUserContext.get().getChildOrgId());
                 listOrgId.add(LoginUserContext.getOrgId());
-                userMap.put(ClassUtil.getFiledName(UserInfo::getChildOrgId), StringUtils.collectionToDelimitedString(listOrgId, StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE));
+                userMap.put(PropertyNamer.methodToProperty(LambdaUtils.extract(UserInfo::getChildOrgId).getImplMethodName()), StringUtils.collectionToDelimitedString(listOrgId, StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE));
 
                 andWhere = CCJSqlParserUtil.parseCondExpression(StringUtil.format(Fc.toStr(dataScope.getScopeValue(),"1=1"),userMap));
             }else if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.OWN.getValue())){

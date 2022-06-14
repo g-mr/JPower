@@ -19,6 +19,7 @@ import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.core.annotation.AnnotationUtils;
 
 import java.lang.reflect.Method;
 
@@ -124,7 +125,7 @@ public class OperateLogAspect
         Method method = methodSignature.getMethod();
 
         if (method != null) {
-            return Fc.getAnnotation(method,OperateLog.class);
+            return AnnotationUtils.getAnnotation(method,OperateLog.class);
         }
         return null;
     }

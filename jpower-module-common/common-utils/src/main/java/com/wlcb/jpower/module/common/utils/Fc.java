@@ -9,26 +9,16 @@ import cn.hutool.core.util.URLUtil;
 import com.wlcb.jpower.module.common.enums.RandomType;
 import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
-import org.apache.tomcat.util.http.ConcurrentDateFormat;
-import org.springframework.beans.BeansException;
 import org.springframework.cglib.beans.BeanMap;
-import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
-import org.springframework.web.method.HandlerMethod;
 
 import java.io.Closeable;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
-import java.text.ParseException;
-import java.time.Duration;
-import java.time.temporal.Temporal;
 import java.util.*;
 
 /**
@@ -958,82 +948,6 @@ public class Fc {
     }
 
     /**
-     * 将字符串转换为时间
-     *
-     * @param dateStr 时间字符串
-     * @param format  ConcurrentDateFormat
-     * @return 时间
-     */
-    public static Date parse(String dateStr, ConcurrentDateFormat format) {
-        try {
-            return format.parse(dateStr);
-        } catch (ParseException e) {
-            throw ExceptionsUtil.unchecked(e);
-        }
-    }
-
-    /**
-     * 时间比较
-     *
-     * @param startInclusive the start instant, inclusive, not null
-     * @param endExclusive   the end instant, exclusive, not null
-     * @return a {@code Duration}, not null
-     */
-    public static Duration between(Temporal startInclusive, Temporal endExclusive) {
-        return Duration.between(startInclusive, endExclusive);
-    }
-
-    /**
-     * 获取Annotation
-     *      Spring方法获取
-     * @param annotatedElement AnnotatedElement
-     * @param annotationType   注解类
-     * @param <A>              泛型标记
-     * @return {Annotation}
-     */
-    @Nullable
-    public static <A extends Annotation> A getAnnotation(AnnotatedElement annotatedElement, Class<A> annotationType) {
-        return AnnotatedElementUtils.findMergedAnnotation(annotatedElement, annotationType);
-    }
-
-    /**
-     * 获取Annotation
-     *      Spring方法获取
-     * @param method         Method
-     * @param annotationType 注解类
-     * @param <A>            泛型标记
-     * @return {Annotation}
-     */
-    @Nullable
-    public static <A extends Annotation> A getAnnotation(Method method, Class<A> annotationType) {
-        return ClassUtil.getAnnotation(method, annotationType);
-    }
-
-    /**
-     * 获取Annotation
-     *      Spring方法获取
-     * @param handlerMethod  HandlerMethod
-     * @param annotationType 注解类
-     * @param <A>            泛型标记
-     * @return {Annotation}
-     */
-    @Nullable
-    public static <A extends Annotation> A getAnnotation(HandlerMethod handlerMethod, Class<A> annotationType) {
-        return ClassUtil.getAnnotation(handlerMethod, annotationType);
-    }
-
-    /**
-     * 实例化对象
-     *
-     * @param clazz 类
-     * @param <T>   泛型标记
-     * @return 对象
-     */
-    public static <T> T newInstance(Class<?> clazz) {
-        return BeanUtil.newBean(clazz);
-    }
-
-    /**
      * 获取Bean的属性
      *
      * @param bean         bean
@@ -1092,24 +1006,6 @@ public class Fc {
      */
     public static void copy(Object source, Object targetBean) {
         BeanUtil.copyProperties(source, targetBean);
-    }
-
-    /**
-     * 将给定源 bean 的属性值复制到目标类中。
-     * <p>注意：源类和目标类不必匹配甚至派生
-     * 彼此之间，只要属性匹配。任何 bean 属性
-     * 源 bean 公开但目标 bean 不会被忽略。
-     * <p>这只是一种方便的方法。对于更复杂的传输需求，
-     *
-     * @param source 源
-     * @param target  目标 bean 类
-     * @param <T>    泛型标记
-     * @return T
-     */
-    public static <T> T copyProperties(Object source, Class<T> target) throws BeansException {
-        T to = newInstance(target);
-        BeanUtil.copyProperties(source, to);
-        return to;
     }
 
     /**
