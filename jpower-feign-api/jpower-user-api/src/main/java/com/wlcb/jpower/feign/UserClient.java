@@ -26,7 +26,7 @@ public interface UserClient {
     ResponseData<List<String>> getRoleIds(@RequestParam String userId);
 
     @PutMapping("/updateUserLoginInfo")
-    ResponseData updateUserLoginInfo(@RequestBody TbCoreUser user);
+    ResponseData updateUserLoginInfo(@RequestParam String userId);
 
     @GetMapping("/queryUserByCode")
     ResponseData<TbCoreUser> queryUserByCode(@RequestParam String otherCode, @RequestParam String tenantCode);

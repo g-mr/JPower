@@ -3,8 +3,8 @@ package com.wlcb.jpower.service.impl;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.cache.SystemCache;
@@ -32,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,7 +40,9 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static com.wlcb.jpower.module.tenant.TenantConstant.*;
+import static com.wlcb.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
+import static com.wlcb.jpower.module.tenant.TenantConstant.TENANT_ACCOUNT_NUMBER;
+import static com.wlcb.jpower.module.tenant.TenantConstant.getAccountNumber;
 
 /**
  * @author mr.gmac
@@ -348,12 +351,11 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     }
 
     @Override
-    public Boolean updateLoginInfo(TbCoreUser user) {
-        LambdaUpdateWrapper<TbCoreUser> wrapper = new UpdateWrapper<TbCoreUser>().lambda()
-        .set(TbCoreUser::getLoginCount,user.getLoginCount())
-        .set(TbCoreUser::getLastLoginTime,user.getLastLoginTime())
-        .eq(TbCoreUser::getId,user.getId());
-        return coreUserDao.update(wrapper);
+    public Boolean updateLoginInfo(String id) {
+        return coreUserDao.update(Wrappers.<TbCoreUser>lambdaUpdate()
+                .setSql("login_count = ifnull(login_count,0)+1")
+                .set(TbCoreUser::getLastLoginTime,new Date())
+                .eq(TbCoreUser::getId,id));
     }
 
 }

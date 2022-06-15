@@ -111,9 +111,9 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
      * @author 郭丁志
      * @Description //TODO 更新用户登陆信息
      * @date 0:02 2020/10/21 0021
-     * @param user
+     * @param id
      */
-    Boolean updateLoginInfo(TbCoreUser user);
+    Boolean updateLoginInfo(String id);
 
     /**
      * @Author 郭丁志

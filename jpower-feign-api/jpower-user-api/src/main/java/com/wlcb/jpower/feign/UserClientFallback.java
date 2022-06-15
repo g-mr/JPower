@@ -9,6 +9,7 @@ import com.wlcb.jpower.vo.UserVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -37,8 +38,8 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
             }
 
             @Override
-            public ResponseData updateUserLoginInfo(TbCoreUser user) {
-                log.error("调用updateUserLoginInfo失败，参数：{}，e={}", JSON.toJSONString(user), cause);
+            public ResponseData updateUserLoginInfo(@RequestParam String userId) {
+                log.error("调用updateUserLoginInfo失败，参数：{}，e={}", userId, cause);
                 return ReturnJsonUtil.fail("更新失败");
             }
 

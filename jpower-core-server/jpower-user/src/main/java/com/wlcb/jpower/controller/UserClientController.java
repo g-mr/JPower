@@ -49,8 +49,8 @@ public class UserClientController implements UserClient {
     @ApiOperation(value = "更新用户登陆信息")
     @Override
     @PutMapping("/updateUserLoginInfo")
-    public ResponseData updateUserLoginInfo(@RequestBody TbCoreUser user){
-        return ReturnJsonUtil.status(coreUserService.updateLoginInfo(user));
+    public ResponseData updateUserLoginInfo(@RequestParam String userId){
+        return ReturnJsonUtil.status(coreUserService.updateLoginInfo(userId));
     }
 
     @ApiOperation(value = "通过第三方CODE查询")

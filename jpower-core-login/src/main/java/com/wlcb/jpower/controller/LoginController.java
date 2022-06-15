@@ -3,6 +3,7 @@ package com.wlcb.jpower.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.wf.captcha.SpecCaptcha;
 import com.wlcb.jpower.auth.TokenGranterBuilder;
+import com.wlcb.jpower.auth.granter.RefreshTokenGranter;
 import com.wlcb.jpower.cache.SystemCache;
 import com.wlcb.jpower.cache.UserCache;
 import com.wlcb.jpower.cache.param.ParamConfig;
@@ -101,6 +102,12 @@ public class LoginController extends BaseController {
         if (Fc.isNull(userInfo) || Fc.isBlank(userInfo.getUserId())) {
             return ReturnJsonUtil.fail(TokenUtil.USER_NOT_FOUND);
         }
+
+        if (!Fc.equalsValue(parameter.getGrantType(), RefreshTokenGranter.GRANT_TYPE)){
+            // 登录成功要刷新用户登录数据
+            userClient.updateUserLoginInfo(userInfo.getUserId());
+        }
+
         return ReturnJsonUtil.ok("登录成功",TokenUtil.createAuthInfo(userInfo));
     }
 
@@ -176,7 +183,9 @@ public class LoginController extends BaseController {
         JpowerAssert.notEmpty(coreUser.getLoginId(),JpowerError.Arg,"用户名不可为空");
         JpowerAssert.notEmpty(coreUser.getPassword(),JpowerError.Arg,"密码不可为空");
         JpowerAssert.notEmpty(coreUser.getNickName(),JpowerError.Arg,"昵称不可为空");
-        JpowerAssert.notEmpty(tenantCode,JpowerError.Arg,"租户不可为空");
+        if (tenantProperties.getEnable()){
+            JpowerAssert.notEmpty(tenantCode,JpowerError.Arg,"租户不可为空");
+        }
         coreUser.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_GENERAL.getValue());
 
         TbCoreUser user = UserCache.getUserByLoginId(coreUser.getLoginId(),tenantCode);

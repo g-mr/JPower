@@ -6,7 +6,6 @@ import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.dbs.entity.function.TbCoreDataScope;
 import com.wlcb.jpower.dbs.entity.function.TbCoreFunction;
 import com.wlcb.jpower.dto.AuthInfo;
-import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.cache.CacheNames;
@@ -19,7 +18,9 @@ import com.wlcb.jpower.module.common.utils.SpringUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.datascope.DataScope;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -29,11 +30,9 @@ import java.util.concurrent.TimeUnit;
 public class AuthUtil {
 
     private static RedisUtil redisUtil;
-    private static UserClient userClient;
 
     static {
         redisUtil = SpringUtil.getBean(RedisUtil.class);
-        userClient = SpringUtil.getBean(UserClient.class);
     }
 
     /**
@@ -127,10 +126,6 @@ public class AuthUtil {
             userInfo.setLastLoginTime(result.getLastLoginTime());
             userInfo.setLoginCount(result.getLoginCount());
             userInfo.setChildOrgId(SystemCache.getChildIdOrgById(result.getOrgId()));
-            // TODO: 2020-07-28 登录成功要刷新用户登录数据
-            result.setLastLoginTime(new Date());
-            result.setLoginCount((result.getLoginCount()==null?0:result.getLoginCount())+1);
-            userClient.updateUserLoginInfo(result);
             CacheUtil.clear(CacheNames.USER_REDIS_CACHE);
         }
         return userInfo;
