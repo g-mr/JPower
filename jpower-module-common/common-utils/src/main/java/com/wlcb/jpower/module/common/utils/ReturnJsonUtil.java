@@ -2,6 +2,7 @@ package com.wlcb.jpower.module.common.utils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.wlcb.jpower.module.base.vo.Pg;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.support.EnvBeanUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
@@ -13,7 +14,7 @@ import java.io.PrintWriter;
 /**
  * @ClassName ReturnJsonUtil
  * @Description TODO 返回实体
- * @Author 郭丁志
+ * @Author mr.g
  * @Date 2020-01-28 00:24
  * @Version 1.0
  */
@@ -56,7 +57,7 @@ public class ReturnJsonUtil {
     }
 
     /**
-     * @author 郭丁志
+     * @author mr.g
      * @Description //TODO 没找到
      * @date 21:43 2020/7/26 0026
      * @return com.wlcb.jpower.module.base.vo.ResponseData
@@ -66,40 +67,49 @@ public class ReturnJsonUtil {
     }
 
     /**
-     * @Author 郭丁志
+     * @Author mr.g
      * @Description //TODO 成功的情况
      * @Date 00:29 2020-03-06
      * @Param [msg, data]
      * @return ResponseData
      **/
-    public static <T> ResponseData<T> ok(T data){
-        return printJson(ConstantsReturn.RECODE_SUCCESS, "查询成功", data, true);
+    public static <T> ResponseData ok(T data){
+        return ok("查询成功", data);
     }
 
     /**
-     * @Author 郭丁志
+     * @Author mr.g
      * @Description //TODO 成功的情况
      * @Date 00:29 2020-03-06
      * @Param [msg, data]
      * @return ResponseData
      **/
-    public static <T> ResponseData<T> ok(String msg, T data){
+    public static <T> ResponseData ok(String msg, T data){
+
+        if (StringUtil.startWith(data.getClass().getName(),"com.baomidou.mybatisplus")){
+            return printJson(ConstantsReturn.RECODE_SUCCESS, msg, new Pg<>(ReflectUtil.invoke(data,"getTotal"),ReflectUtil.invoke(data,"getRecords")), true);
+        }
+
+        if (StringUtil.startWith(data.getClass().getName(),"com.github.pagehelper")){
+            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS, msg, new Pg<>(ReflectUtil.invoke(data,"getTotal"),ReflectUtil.invoke(data,"getList")), true);
+        }
+
         return printJson(ConstantsReturn.RECODE_SUCCESS, msg, data, true);
     }
 
     /**
-     * @Author 郭丁志
+     * @Author mr.g
      * @Description //TODO 成功的通知
      * @Date 00:29 2020-03-06
      * @Param [msg, data]
      * @return ResponseData
      **/
     public static <T> ResponseData<T> ok(String msg){
-        return ok( msg, null);
+        return printJson(ConstantsReturn.RECODE_SUCCESS, msg, null, true);
     }
 
     /**
-     * @Author 郭丁志
+     * @Author mr.g
      * @Description //TODO 失败的情况
      * @Date 00:29 2020-03-06
      * @Param [msg, data]
@@ -110,7 +120,7 @@ public class ReturnJsonUtil {
     }
 
     /**
-     * @Author 郭丁志
+     * @Author mr.g
      * @Description //TODO 失败的通知
      * @Date 00:29 2020-03-06
      * @Param [msg, data]
@@ -121,7 +131,7 @@ public class ReturnJsonUtil {
     }
 
     /**
-     * @Author 郭丁志
+     * @Author mr.g
      * @Description //TODO 自定义状态失败的通知
      * @Date 00:29 2020-03-06
      * @Param [msg, data]
@@ -144,7 +154,7 @@ public class ReturnJsonUtil {
     }
 
     /**
-     * @Author 郭丁志
+     * @Author mr.g
      * @Description //TODO 业务失败
      * @Date 15:16 2020-07-31
      * @Param [该客户端已存在]

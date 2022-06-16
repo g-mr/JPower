@@ -1,11 +1,11 @@
 package com.wlcb.jpower.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.dbs.entity.TbCoreUserRole;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
+import com.wlcb.jpower.module.base.vo.Pg;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.page.PaginationContext;
@@ -92,9 +92,9 @@ public class RoleUserController extends BaseController {
             @ApiImplicitParam(name = "telephone", value = "电话", paramType = "query", required = false)
     })
     @GetMapping(value = "/listByRole", produces = "application/json")
-    public ResponseData<Page<UserVo>> listByRole(@ApiParam(value = "角色主键", required = true) @RequestParam String roleId,
-                                                     @ApiParam(value = "是否查询相等该角色", required = false) @RequestParam(required = false, defaultValue = "Y") String isEq,
-                                                     @ApiIgnore @RequestParam Map<String,Object> map) {
+    public ResponseData<Pg<UserVo>> listByRole(@ApiParam(value = "角色主键", required = true) @RequestParam String roleId,
+                                               @ApiParam(value = "是否查询相等该角色", required = false) @RequestParam(required = false, defaultValue = "Y") String isEq,
+                                               @ApiIgnore @RequestParam Map<String,Object> map) {
         map.remove("roleId");
         map.remove("isEq");
         JpowerAssert.notEmpty(roleId, JpowerError.Arg, "角色ID不可为空");
@@ -109,7 +109,7 @@ public class RoleUserController extends BaseController {
 
         if (Fc.equalsValue(isEq, ConstantsEnum.YN.N.getValue())){
             wrapper.notInSql(TbCoreUser::getId,buffer.toString());
-        }else {
+        } else {
             wrapper.inSql(TbCoreUser::getId,buffer.toString());
         }
 

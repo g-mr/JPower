@@ -1,10 +1,10 @@
 package com.wlcb.jpower.controller.function;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wlcb.jpower.dbs.entity.function.TbCoreDataScope;
 import com.wlcb.jpower.dbs.entity.role.TbCoreRoleData;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
+import com.wlcb.jpower.module.base.vo.Pg;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.page.PaginationContext;
@@ -104,7 +104,7 @@ public class DataScopeController {
             @ApiImplicitParam(name = "allRole_eq",value = "是否所有角色都执行",dataType="integer",paramType = "query")
     })
     @GetMapping(value = "/listPage",produces="application/json")
-    public ResponseData<Page<TbCoreDataScope>> listPage(@ApiIgnore @RequestParam Map<String,Object> map){
+    public ResponseData<Pg<TbCoreDataScope>> listPage(@ApiIgnore @RequestParam Map<String,Object> map){
         JpowerAssert.notEmpty(Fc.toStr(map.get("menuId_eq")), JpowerError.Arg,"菜单ID不可为空");
         return ReturnJsonUtil.ok("查询成功",dataScopeService.page(PaginationContext.getMpPage(),Condition.getQueryWrapper(map,TbCoreDataScope.class)));
     }

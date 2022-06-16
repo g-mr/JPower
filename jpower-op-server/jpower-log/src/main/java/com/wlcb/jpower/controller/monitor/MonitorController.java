@@ -1,7 +1,7 @@
 package com.wlcb.jpower.controller.monitor;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wlcb.jpower.dbs.entity.TbLogMonitorResult;
+import com.wlcb.jpower.module.base.vo.Pg;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.support.BeanExcelUtil;
@@ -48,8 +48,9 @@ public class MonitorController extends BaseController {
         @ApiImplicitParam(name = "createTime" + SqlKeyword.DATE_LT,value = "结束时间",paramType = "query", dataTypeClass = Date.class)
     })
     @GetMapping(value = "/list",produces="application/json")
-    public ResponseData<Page<TbLogMonitorResult>> list(@ApiIgnore @RequestParam Map<String,Object> map){
-        return ReturnJsonUtil.ok("获取成功",monitorResultService.pageList(initMap(map)));
+    public ResponseData<Pg<TbLogMonitorResult>> list(@ApiIgnore @RequestParam Map<String,Object> map){
+        return ReturnJsonUtil.ok
+                ("获取成功",monitorResultService.pageList(initMap(map)));
     }
 
     private Map<String,Object> initMap(Map<String,Object> map){

@@ -39,7 +39,7 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
      * @date 2:47 2020/10/18 0018
      */
     private void resolveEntity(T entity,boolean isSave){
-        // todo start 这里获取实际登陆人，如果是匿名用户或者其他接口调用方，交给 mp来赋值（可应用于未登录状态，根据具体业务，接口调用方可控制这些字段来保存更加符合的值）
+        //  这里获取实际登陆人，如果是匿名用户或者其他接口调用方，交给 mp来赋值（可应用于未登录状态，根据具体业务，接口调用方可控制这些字段来保存更加符合的值）
         String userId = SecureUtil.getUserId();
         String orgId = SecureUtil.getOrgId();
         userId = Fc.isBlank(userId)?null:userId;

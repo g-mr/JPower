@@ -1,11 +1,11 @@
 package com.wlcb.jpower.controller.tenant;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
 import com.wlcb.jpower.module.base.annotation.OperateLog;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
+import com.wlcb.jpower.module.base.vo.Pg;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.page.PaginationContext;
@@ -49,7 +49,7 @@ public class TenantController extends BaseController {
             @ApiImplicitParam(name = "contactNumber",value = "联系电话",paramType = "query")
     })
     @GetMapping("/list")
-    public ResponseData<Page<TbCoreTenant>> list(@ApiIgnore @RequestParam Map<String, Object> map){
+    public ResponseData<Pg<TbCoreTenant>> list(@ApiIgnore @RequestParam Map<String, Object> map){
         LambdaQueryWrapper<TbCoreTenant> queryWrapper = Condition.getQueryWrapper(map,TbCoreTenant.class).lambda();
         if (!SecureUtil.isRoot()){
             queryWrapper.eq(TbCoreTenant::getTenantCode,SecureUtil.getTenantCode());

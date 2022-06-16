@@ -6,6 +6,7 @@ import com.wlcb.jpower.dbs.entity.dict.TbCoreDict;
 import com.wlcb.jpower.dbs.entity.dict.TbCoreDictType;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
+import com.wlcb.jpower.module.base.vo.Pg;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.page.PaginationContext;
@@ -93,7 +94,7 @@ public class DictController extends BaseController {
             @ApiImplicitParam(name = "name",value = "字典名称",paramType = "query")
     })
     @RequestMapping(value = "/listByType",method = RequestMethod.GET,produces="application/json")
-    public ResponseData<PageInfo<DictVo>> listByType(@ApiIgnore TbCoreDict dict){
+    public ResponseData<Pg<DictVo>> listByType(@ApiIgnore TbCoreDict dict){
         JpowerAssert.notEmpty(dict.getDictTypeCode(), JpowerError.Arg,"字典类型不可为空");
         if (Fc.isBlank(dict.getParentId())){
             dict.setParentId(TOP_CODE);

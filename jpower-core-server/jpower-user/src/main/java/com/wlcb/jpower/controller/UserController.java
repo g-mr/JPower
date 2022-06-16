@@ -9,6 +9,7 @@ import com.wlcb.jpower.module.base.annotation.OperateLog;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
+import com.wlcb.jpower.module.base.vo.Pg;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.cache.CacheNames;
@@ -33,7 +34,9 @@ import java.util.List;
 
 import static com.wlcb.jpower.module.base.annotation.OperateLog.BusinessType.DELETE;
 import static com.wlcb.jpower.module.base.annotation.OperateLog.BusinessType.UPDATE;
-import static com.wlcb.jpower.module.tenant.TenantConstant.*;
+import static com.wlcb.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
+import static com.wlcb.jpower.module.tenant.TenantConstant.TENANT_ACCOUNT_NUMBER;
+import static com.wlcb.jpower.module.tenant.TenantConstant.getAccountNumber;
 
 @Api(tags = "用户管理")
 @RestController
@@ -64,7 +67,7 @@ public class UserController extends BaseController {
             @ApiImplicitParam(name = "telephone", value = "电话", paramType = "query", required = false)
     })
     @GetMapping(value = "/list", produces = "application/json")
-    public ResponseData<PageInfo<UserVo>> list(@ApiIgnore TbCoreUser coreUser) {
+    public ResponseData<Pg<UserVo>> list(@ApiIgnore TbCoreUser coreUser) {
         PageInfo<UserVo> list = coreUserService.listPage(coreUser);
         return ReturnJsonUtil.ok("获取成功", list);
     }

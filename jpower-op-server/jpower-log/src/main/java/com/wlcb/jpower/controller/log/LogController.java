@@ -3,6 +3,7 @@ package com.wlcb.jpower.controller.log;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wlcb.jpower.dbs.entity.TbLogError;
 import com.wlcb.jpower.dbs.entity.TbLogOperate;
+import com.wlcb.jpower.module.base.vo.Pg;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.page.PaginationContext;
@@ -51,7 +52,7 @@ public class LogController extends BaseController {
             @ApiImplicitParam(name = "createTime" + SqlKeyword.DATE_LT,value = "结束时间",paramType = "query", dataTypeClass = Date.class)
     })
     @GetMapping("/operate/list")
-    public ResponseData<Page<TbLogOperate>> listOperateLog(@ApiIgnore @RequestParam Map<String,Object> operateLog){
+    public ResponseData<Pg<TbLogOperate>> listOperateLog(@ApiIgnore @RequestParam Map<String,Object> operateLog){
         Page<TbLogOperate> operate = operateLogService.page(PaginationContext.getMpPage(),
                 Condition.getQueryWrapper(operateLog,TbLogOperate.class).lambda().orderByDesc(TbLogOperate::getCreateTime));
         return ReturnJsonUtil.ok("请求成功", operate);
@@ -69,7 +70,7 @@ public class LogController extends BaseController {
             @ApiImplicitParam(name = "createTime" + SqlKeyword.DATE_LT,value = "结束时间",paramType = "query", dataTypeClass = Date.class)
     })
     @GetMapping("/error/list")
-    public ResponseData<Page<TbLogError>> listErrorLog(@ApiIgnore @RequestParam Map<String,Object> errorLog){
+    public ResponseData<Pg<TbLogError>> listErrorLog(@ApiIgnore @RequestParam Map<String,Object> errorLog){
         Page<TbLogError> errorPage = errorLogService.page(PaginationContext.getMpPage(),
                 Condition.getQueryWrapper(errorLog,TbLogError.class).lambda().orderByDesc(TbLogError::getCreateTime));
         return ReturnJsonUtil.ok("请求成功",errorPage);

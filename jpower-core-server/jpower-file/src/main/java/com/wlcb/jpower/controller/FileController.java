@@ -6,6 +6,7 @@ import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.exception.JpowerException;
+import com.wlcb.jpower.module.base.vo.Pg;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.page.PaginationContext;
@@ -105,7 +106,7 @@ public class FileController extends BaseController {
             @ApiImplicitParam(name = "createTime_datelt",value = "上传时间最大值",paramType = "query",required = false)
     })
     @GetMapping(value = "/listPage",produces="application/json")
-    public ResponseData<Page<TbCoreFile>> listPage(@ApiIgnore @RequestParam Map<String,Object> map){
+    public ResponseData<Pg<TbCoreFile>> listPage(@ApiIgnore @RequestParam Map<String,Object> map){
         Page<TbCoreFile> page = coreFileService.page(PaginationContext.getMpPage(), Condition.getQueryWrapper(map,TbCoreFile.class).lambda().orderByDesc(TbCoreFile::getCreateTime));
         return ReturnJsonUtil.ok("获取成功", page);
     }

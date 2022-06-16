@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.dbs.entity.params.TbCoreParam;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
+import com.wlcb.jpower.module.base.vo.Pg;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.controller.BaseController;
@@ -39,7 +40,7 @@ public class ParamsController extends BaseController {
             @ApiImplicitParam(name = "value",value = "值",paramType = "query")
     })
     @GetMapping(value = "/list" , produces="application/json")
-    public ResponseData<PageInfo<TbCoreParam>> list(@ApiIgnore @RequestParam Map<String,Object> coreParam){
+    public ResponseData<Pg<TbCoreParam>> list(@ApiIgnore @RequestParam Map<String,Object> coreParam){
         PaginationContext.startPage();
         List<TbCoreParam> list = paramService.list(Condition.getQueryWrapper(coreParam,TbCoreParam.class).lambda().orderByDesc(TbCoreParam::getCreateTime));
         return ReturnJsonUtil.ok("获取成功", new PageInfo<>(list));

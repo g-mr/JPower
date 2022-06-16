@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
+import com.wlcb.jpower.module.base.vo.Pg;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.controller.BaseController;
@@ -83,10 +84,9 @@ public class ClientController extends BaseController {
             @ApiImplicitParam(name = "clientCode",value = "客户端编码",paramType = "query")
     })
     @GetMapping("list")
-    public ResponseData<PageInfo<TbCoreClient>> list(@ApiIgnore @RequestParam Map<String,Object> coreClient){
+    public ResponseData<Pg<TbCoreClient>> list(@ApiIgnore @RequestParam Map<String,Object> coreClient){
         PaginationContext.startPage();
         List<TbCoreClient> list = coreClientService.list(Condition.getQueryWrapper(coreClient,TbCoreClient.class).lambda().orderByAsc(TbCoreClient::getSortNum));
         return ReturnJsonUtil.ok("查询成功",new PageInfo<>(list));
     }
-
 }

@@ -52,7 +52,7 @@ import static com.wlcb.jpower.module.tenant.TenantConstant.getExpireTime;
 @RestController
 @RequestMapping("/auth")
 @AllArgsConstructor
-public class LoginController extends BaseController {
+public class AuthController extends BaseController {
 
     private RedisUtil redisUtil;
     private JpowerTenantProperties tenantProperties;

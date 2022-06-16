@@ -1,9 +1,8 @@
 package com.wlcb.jpower.gateway.handler;
 
 import com.alibaba.fastjson.JSON;
-import com.wlcb.jpower.module.base.vo.ResponseData;
+import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
 import org.springframework.cloud.gateway.support.NotFoundException;
@@ -42,10 +41,10 @@ public class ErrorExceptionHandler implements ErrorWebExceptionHandler {
 
         ServerHttpResponse response = exchange.getResponse();
 
-        ResponseData data = message(exchange.getRequest(),ex);
-        response.setRawStatusCode(data.getCode());
+        ChainMap map = message(exchange.getRequest(),ex);
+        response.setRawStatusCode(map.getInt("code"));
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
-        return response.writeWith(Flux.just(response.bufferFactory().wrap(JSON.toJSONBytes(data))));
+        return response.writeWith(Flux.just(response.bufferFactory().wrap(JSON.toJSONBytes(map))));
     }
 
     /**
@@ -55,14 +54,14 @@ public class ErrorExceptionHandler implements ErrorWebExceptionHandler {
      * @param ex
      * @return
      */
-    private ResponseData message(ServerHttpRequest request, Throwable ex) {
+    private ChainMap message(ServerHttpRequest request, Throwable ex) {
         if (Fc.isNull(ex)){
-            return ReturnJsonUtil.fail(HttpStatus.INTERNAL_SERVER_ERROR.value(),"系统异常,请联系管理员");
+            return ChainMap.init().set("code",HttpStatus.INTERNAL_SERVER_ERROR.value()).set("message","系统异常,请联系管理员");
         }
 
         String uri = request.getURI().toString();
         if (uri.endsWith(API_PATH)) {
-            return ReturnJsonUtil.fail(HttpStatus.NOT_FOUND.value(),"接口文档已迁移到【jpower-doc】服务,请联系开发人员索要请求地址");
+            return ChainMap.init().set("code",HttpStatus.NOT_FOUND.value()).set("message","接口文档已迁移到【jpower-doc】服务,请联系开发人员索要请求地址");
         }
 
         StringBuilder message = new StringBuilder("请求[");
@@ -88,8 +87,7 @@ public class ErrorExceptionHandler implements ErrorWebExceptionHandler {
         }else {
             message.append(ex.getMessage());
         }
-
-        return ReturnJsonUtil.fail(httpStatus,message.toString());
+        return ChainMap.init().set("code",httpStatus).set("message",message.toString());
     }
 
 }

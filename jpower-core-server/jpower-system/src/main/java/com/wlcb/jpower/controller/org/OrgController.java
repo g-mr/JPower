@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
+import com.wlcb.jpower.module.base.vo.Pg;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.controller.BaseController;
@@ -40,7 +41,7 @@ public class OrgController extends BaseController {
 
     @ApiOperation("分页懒加载组织机构树形列表")
     @GetMapping(value = "/listLazy",produces="application/json")
-    public ResponseData<PageInfo<OrgVo>> listLazy(TbCoreOrg coreOrg){
+    public ResponseData<Pg<OrgVo>> listLazy(TbCoreOrg coreOrg){
         PaginationContext.startPage();
         PageInfo<OrgVo> pageInfo = new PageInfo<>(coreOrgService.listLazyByParent(coreOrg));
         return ReturnJsonUtil.ok("获取成功", pageInfo);
