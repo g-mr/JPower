@@ -67,8 +67,4 @@ public class RandomUtil extends cn.hutool.core.util.RandomUtil {
         return code;
     }
 
-    public static void main(String[] args) {
-        System.out.println(random(6));
-    }
-
 }
