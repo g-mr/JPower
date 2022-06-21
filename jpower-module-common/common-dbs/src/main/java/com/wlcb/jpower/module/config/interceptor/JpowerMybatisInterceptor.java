@@ -2,6 +2,7 @@ package com.wlcb.jpower.module.config.interceptor;
 
 
 import com.wlcb.jpower.module.common.utils.ClassUtil;
+import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.config.interceptor.chain.ChainFilter;
 import com.wlcb.jpower.module.config.interceptor.chain.MybatisInterceptor;
 import lombok.AllArgsConstructor;
@@ -47,8 +48,8 @@ public class JpowerMybatisInterceptor implements Interceptor {
             Object rest = invocation.proceed();
             if (rest instanceof List){
                 List list = (List) rest;
-                // 不拦截count,sum等只返回一个数字得结果
-                if (!(list.size() == 1 && ClassUtil.isPrimitiveWrapper(list.get(0).getClass()))){
+                // 不拦截count,sum等只返回一个值得结果
+                if (!(list.size() == 1 && Fc.notNull(list.get(0)) && ClassUtil.isSimpleValueType(ClassUtil.getClass(list.get(0))))){
                     Statement statement = (Statement) invocation.getArgs()[0];
                     ResultSetHandler resultSetHandler = (ResultSetHandler) target;
                     AtomicReference<Object> atomicReference = new AtomicReference<>(rest);
