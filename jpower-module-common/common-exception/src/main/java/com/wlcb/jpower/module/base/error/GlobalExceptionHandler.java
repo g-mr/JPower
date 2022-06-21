@@ -15,6 +15,7 @@ import com.wlcb.jpower.module.common.utils.WebUtil;
 import com.wlcb.jpower.module.dbs.config.LoginUserContext;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -59,8 +60,8 @@ public class GlobalExceptionHandler {
         return r;
     }
 
-    @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public ErrorReturnJson methodArgumentNotValidHandler(MethodArgumentNotValidException e){
+    @ExceptionHandler(value = {MethodArgumentNotValidException.class, BindException.class})
+    public ErrorReturnJson methodArgumentNotValidHandler(BindException e){
 
         ErrorReturnJson r = new ErrorReturnJson();
         FieldError fieldError = e.getBindingResult().getFieldError();
