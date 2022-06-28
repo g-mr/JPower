@@ -1,8 +1,8 @@
 package com.wlcb.jpower.module.common.auth;
 
+import cn.hutool.core.date.DatePattern;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.wlcb.jpower.module.common.utils.DateUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -78,7 +78,7 @@ public class UserInfo implements Serializable {
 
     @ApiModelProperty("出生日期")
     @JSONField(format="yyyy-MM-dd")
-    @JsonFormat(shape = JsonFormat.Shape.STRING,timezone = "GMT+8", pattern = DateUtil.PATTERN_DATE,locale = "zh_CN")
+    @JsonFormat(shape = JsonFormat.Shape.STRING,timezone = "GMT+8", pattern = DatePattern.NORM_DATE_PATTERN,locale = "zh_CN")
     private Date birthday;
 
     @ApiModelProperty("证件类型")
@@ -92,7 +92,7 @@ public class UserInfo implements Serializable {
 
     @ApiModelProperty("最后登录时间")
     @JSONField(format="yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(shape = JsonFormat.Shape.STRING,timezone = "GMT+8", pattern = DateUtil.PATTERN_DATETIME,locale = "zh_CN")
+    @JsonFormat(shape = JsonFormat.Shape.STRING,timezone = "GMT+8", pattern = DatePattern.NORM_DATETIME_PATTERN,locale = "zh_CN")
     private Date lastLoginTime;
 
     @ApiModelProperty("角色集合")

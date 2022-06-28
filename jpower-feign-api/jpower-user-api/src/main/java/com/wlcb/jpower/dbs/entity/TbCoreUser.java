@@ -1,11 +1,11 @@
 package com.wlcb.jpower.dbs.entity;
 
+import cn.hutool.core.date.DatePattern;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.base.annotation.Excel;
-import com.wlcb.jpower.module.common.utils.DateUtil;
 import com.wlcb.jpower.module.tenant.entity.TenantEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -52,7 +52,7 @@ public class TbCoreUser extends TenantEntity implements Serializable {
     @ApiModelProperty("出生日期")
     @Excel(name ="出生日期")
     @JSONField(format="yyyy-MM-dd")
-    @JsonFormat(shape = JsonFormat.Shape.STRING,timezone = "GMT+8", pattern = DateUtil.PATTERN_DATE,locale = "zh_CN")
+    @JsonFormat(shape = JsonFormat.Shape.STRING,timezone = "GMT+8", pattern = DatePattern.NORM_DATE_PATTERN,locale = "zh_CN")
     private Date birthday;
     @ApiModelProperty("邮箱")
     @Excel(name ="邮箱")
@@ -71,7 +71,7 @@ public class TbCoreUser extends TenantEntity implements Serializable {
     @ApiModelProperty("最后登录日期")
     @Excel(name ="最后登录日期",dateFormat = "yyyy-MM-dd HH:mm:ss",type = Excel.Type.EXPORT)
     @JSONField(format="yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(shape = JsonFormat.Shape.STRING,timezone = "GMT+8", pattern = DateUtil.PATTERN_DATETIME,locale = "zh_CN")
+    @JsonFormat(shape = JsonFormat.Shape.STRING,timezone = "GMT+8", pattern = DatePattern.NORM_DATETIME_PATTERN,locale = "zh_CN")
     private Date lastLoginTime;
     @ApiModelProperty("登录次数")
     @Excel(name ="登录次数",type = Excel.Type.EXPORT)

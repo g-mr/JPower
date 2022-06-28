@@ -238,11 +238,11 @@ public class HttpInfoHandler {
             case JSON_CONSTANT_VALUE.STRING :
                 String format =  param.getString(JSON_CONSTANT_KEY.FORMAT);
                 if (StringUtil.equalsIgnoreCase(format,JSON_CONSTANT_VALUE.DATE)){
-                    return DateUtil.getDate(DateUtil.PATTERN_DATE);
+                    return DateUtil.today();
                 } else if (StringUtil.equalsIgnoreCase(format,JSON_CONSTANT_VALUE.DATE_TIME)){
-                    return DateUtil.getDate(DateUtil.PATTERN_DATETIME);
+                    return DateUtil.now();
                 } else if (StringUtil.equalsIgnoreCase(format,JSON_CONSTANT_VALUE.TIME)){
-                    return DateUtil.getDate(DateUtil.PATTERN_TIME);
+                    return DateUtil.time();
                 }
                 return STRING_DEFAULT_VAL;
             case JSON_CONSTANT_VALUE.BOOLEAN :

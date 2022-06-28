@@ -9,7 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -52,7 +51,7 @@ public class MultipartFileUtil{
 
 
 
-        String path = DateUtil.getDate(new Date(), DateUtil.PATTERN_DATE) + File.separator + fileName + "." + suffixName;
+        String path = DateUtil.today() + File.separator + fileName + "." + suffixName;
         File nFile = FileUtil.rename(new File(savePath+File.separator+path));
 
         if(!nFile.getParentFile().exists()){
@@ -63,7 +62,7 @@ public class MultipartFileUtil{
 
         logger.info("文件保存成功，文件路径={}",nFile.getAbsolutePath());
 
-        return DateUtil.getDate(new Date(), DateUtil.PATTERN_DATE) + File.separator + nFile.getName();
+        return DateUtil.today() + File.separator + nFile.getName();
     }
 
     /**

@@ -1,10 +1,10 @@
 package com.wlcb.jpower.module.dbs.entity.base;
 
+import cn.hutool.core.date.DatePattern;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.wlcb.jpower.module.common.utils.DateUtil;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -37,8 +37,8 @@ public class BaseEntity implements Serializable {
     private String createUser;
 
     @ApiModelProperty(value = "创建时间",hidden=true)
-    @JSONField(format=DateUtil.PATTERN_DATETIME)
-    @JsonFormat(shape = JsonFormat.Shape.STRING,timezone = "GMT+8", pattern = DateUtil.PATTERN_DATETIME,locale = "zh_CN")
+    @JSONField(format= DatePattern.NORM_DATETIME_PATTERN)
+    @JsonFormat(shape = JsonFormat.Shape.STRING,timezone = "GMT+8", pattern = DatePattern.NORM_DATETIME_PATTERN,locale = "zh_CN")
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     private Date createTime;
 
@@ -47,8 +47,8 @@ public class BaseEntity implements Serializable {
     private String updateUser;
 
     @ApiModelProperty(value = "修改时间",hidden=true)
-    @JsonFormat(shape = JsonFormat.Shape.STRING,timezone = "GMT+8", pattern = DateUtil.PATTERN_DATETIME,locale = "zh_CN")
-    @JSONField(format= DateUtil.PATTERN_DATETIME)
+    @JsonFormat(shape = JsonFormat.Shape.STRING,timezone = "GMT+8", pattern = DatePattern.NORM_DATETIME_PATTERN,locale = "zh_CN")
+    @JSONField(format= DatePattern.NORM_DATETIME_PATTERN)
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
 

@@ -78,9 +78,9 @@ public class TokenUtil {
      * @return long
      **/
     private static long getExpire(Long tokenValidity) {
-        // 默认时间为1天
+        // 默认时间为明天
         return Fc.isNull(tokenValidity) || tokenValidity == 0 ?
-                DateUtil.getDate(1).getTime() - System.currentTimeMillis() :
+                DateUtil.tomorrow().getTime() - System.currentTimeMillis() :
                 tokenValidity;
     }
 

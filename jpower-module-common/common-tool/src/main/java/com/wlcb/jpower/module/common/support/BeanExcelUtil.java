@@ -383,7 +383,7 @@ public class BeanExcelUtil<T> {
                         String readConverterExp = attr.readConverterExp();
                         if (StringUtils.isNotEmpty(dateFormat) && value != null)
                         {
-                            cell.setCellValue(Fc.format((Date) value,dateFormat));
+                            cell.setCellValue(com.wlcb.jpower.module.common.utils.DateUtil.format((Date) value,dateFormat));
                         }
                         else if (StringUtils.isNotEmpty(readConverterExp) && value != null)
                         {
@@ -701,7 +701,7 @@ public class BeanExcelUtil<T> {
                         {
                             if (val instanceof String)
                             {
-                                val = com.wlcb.jpower.module.common.utils.DateUtil.parseDate(val);
+                                val = com.wlcb.jpower.module.common.utils.DateUtil.parse((String) val, com.wlcb.jpower.module.common.utils.DateUtil.PARSE_PATTERNS);
                             }
                             else if (val instanceof Double)
                             {

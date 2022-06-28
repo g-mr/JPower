@@ -1,10 +1,10 @@
 package com.wlcb.jpower.dbs.entity.tenant;
 
+import cn.hutool.core.date.DatePattern;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.wlcb.jpower.module.common.utils.DateUtil;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -40,9 +40,9 @@ public class TbCoreTenant extends BaseEntity {
     private String address;
     @ApiModelProperty(value = "账号额度")
     private Integer accountNumber;
-    @DateTimeFormat(pattern = DateUtil.PATTERN_DATETIME)
-    @JsonFormat(shape = JsonFormat.Shape.STRING,timezone = "GMT+8", pattern = DateUtil.PATTERN_DATETIME,locale = "zh_CN")
-    @JSONField(format= DateUtil.PATTERN_DATETIME)
+    @DateTimeFormat(pattern = DatePattern.NORM_DATETIME_PATTERN)
+    @JsonFormat(shape = JsonFormat.Shape.STRING,timezone = "GMT+8", pattern = DatePattern.NORM_DATETIME_PATTERN,locale = "zh_CN")
+    @JSONField(format= DatePattern.NORM_DATETIME_PATTERN)
     @ApiModelProperty(value = "过期时间")
     @TableField(updateStrategy = FieldStrategy.IGNORED)
     private Date expireTime;

@@ -9,7 +9,6 @@ import java.nio.charset.Charset;
  * okio - Buffer
  *
  * @author mr.g
- * @date 2021-08-07 23:18
  */
 public class BufferUtil extends cn.hutool.core.io.BufferUtil {
 

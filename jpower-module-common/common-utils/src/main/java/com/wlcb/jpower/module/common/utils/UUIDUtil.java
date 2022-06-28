@@ -1,5 +1,6 @@
 package com.wlcb.jpower.module.common.utils;
 
+import cn.hutool.core.date.DatePattern;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import org.apache.commons.lang3.StringUtils;
 
@@ -260,7 +261,7 @@ public class UUIDUtil {
     public static String createOrderId(String mchid) {
         StringBuffer buffer = new StringBuffer();
         buffer.append(mchid);
-        buffer.append(Fc.format(new Date(),DateUtil.DATE_FORMAT));
+        buffer.append(DateUtil.format(new Date(), DatePattern.PURE_DATE_PATTERN));
         buffer.append(create10UUidNum());
         return buffer.toString();
     }

@@ -3,6 +3,7 @@ package com.wlcb.jpower.module.common.utils;
 import cn.hutool.core.codec.Base64Decoder;
 import cn.hutool.core.codec.Base64Encoder;
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.EscapeUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.URLUtil;
@@ -269,7 +270,7 @@ public class Fc {
      * @return {@code true} if found, {@code false} else
      */
     public static <T> boolean contains(@Nullable T[] array, final T element) {
-        return CollectionUtil.contains(array, element);
+        return ArrayUtil.contains(array, element);
     }
 
     /**
@@ -897,44 +898,25 @@ public class Fc {
     }
 
     /**
-     * 日期时间格式化
+     * 日期时间格式化<br>
+     * 格式 yyyy-MM-dd HH:mm:ss
      *
      * @param date 时间
      * @return 格式化后的时间
      */
     public static String formatDateTime(Date date) {
-        return DateUtil.getDate(date, DateUtil.PATTERN_DATETIME);
+        return DateUtil.formatDateTime(date);
     }
 
     /**
-     * 日期格式化
+     * 日期格式化<br>
+     * yyyy-MM-dd
      *
      * @param date 时间
      * @return 格式化后的时间
      */
     public static String formatDate(Date date) {
-        return DateUtil.getDate(date,DateUtil.PATTERN_DATE);
-    }
-
-    /**
-     * 时间格式化
-     *
-     * @param date 时间
-     * @return 格式化后的时间
-     */
-    public static String formatTime(Date date) {
-        return DateUtil.getDate(date,DateUtil.PATTERN_TIME);
-    }
-
-    /**
-     * 日期格式化
-     *
-     * @param date    时间
-     * @param pattern 表达式
-     * @return 格式化后的时间
-     */
-    public static String format(Date date, String pattern) {
-        return DateUtil.getDate(date, pattern);
+        return DateUtil.formatDate(date);
     }
 
     /**

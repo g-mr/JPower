@@ -1,5 +1,6 @@
 package com.wlcb.jpower.module.common.utils;
 
+import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.util.ReflectUtil;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
@@ -67,6 +68,19 @@ public class BeanUtil extends cn.hutool.core.bean.BeanUtil {
             }
         }
         return fieldList;
+    }
+
+    /**
+     * 合并俩个Bean值
+     *
+     * @author mr.g
+     * @param source 源对象
+     * @param target 目标对象
+     * @return java.lang.Object
+     **/
+    private Object merge(Object source, Object target){
+        copyProperties(source, target, CopyOptions.create().setIgnoreNullValue(Boolean.TRUE));
+        return target;
     }
 
 }
