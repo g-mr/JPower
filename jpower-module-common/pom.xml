@@ -163,12 +163,6 @@
                 </dependency>
 
                 <dependency>
-                    <groupId>com.sun.mail</groupId>
-                    <artifactId>javax.mail</artifactId>
-                    <version>${javax.mail.version}</version>
-                </dependency>
-
-                <dependency>
                     <groupId>org.apache.skywalking</groupId>
                     <artifactId>apm-toolkit-logback-1.x</artifactId>
                     <version>${skywalking.version}</version>
@@ -182,7 +176,7 @@
 
                 <dependency>
                     <groupId>cn.hutool</groupId>
-                    <artifactId>hutool-core</artifactId>
+                    <artifactId>hutool-crypto</artifactId>
                     <version>${hutool.version}</version>
                 </dependency>
             </dependencies>

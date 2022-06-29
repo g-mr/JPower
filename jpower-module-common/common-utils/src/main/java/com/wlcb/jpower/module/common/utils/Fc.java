@@ -732,16 +732,6 @@ public class Fc {
     }
 
     /**
-     * 自定义加密 先MD5再SHA1
-     *
-     * @param data 字符串
-     * @return String
-     */
-    public static String encrypt(String data) {
-        return DigestUtil.encrypt(data);
-    }
-
-    /**
      * 编码
      *
      * @param value 字符串

@@ -28,7 +28,7 @@ public class ThreeDESUtil {
 
     public static byte[] encryptMode(byte[] src) {
         try {
-            byte[] bytesSecret = DigestUtil.hex2Bytes(SECRET);
+            byte[] bytesSecret = HexUtil.decodeHex(SECRET);
             // 生成密钥
             SecretKey deskey = new SecretKeySpec(bytesSecret, Algorithm);
             // 加密
@@ -52,7 +52,7 @@ public class ThreeDESUtil {
     // src为加密后的缓冲区
     public static byte[] decryptMode(byte[] src) {
         try {
-            byte[] bytesSecret = DigestUtil.hex2Bytes(SECRET);
+            byte[] bytesSecret = HexUtil.decodeHex(SECRET);
             // 生成密钥
             SecretKey deskey = new SecretKeySpec(bytesSecret, Algorithm);
             // 解密
@@ -66,7 +66,7 @@ public class ThreeDESUtil {
     }
 
     public static String decrypt(String data) {
-        return new String(decryptMode(DigestUtil.hex2Bytes(data)), StandardCharsets.UTF_8);
+        return new String(decryptMode(HexUtil.decodeHex(data)), StandardCharsets.UTF_8);
     }
 
 

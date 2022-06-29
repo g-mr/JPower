@@ -1,8 +1,6 @@
 package com.wlcb.jpower.module.common.utils;
 
-import cn.hutool.core.util.HexUtil;
 import cn.hutool.core.util.StrUtil;
-import com.wlcb.jpower.module.common.enums.DigestAlgorithm;
 import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
 
 /**
@@ -17,7 +15,7 @@ public class MD5 {
      * @return 十六进制字符串
      */
     public static String md5Hex(final byte[] bytes) {
-        return HexUtil.encodeHexStr(DigestUtil.digest(DigestAlgorithm.MD5).digest(bytes));
+        return DigestUtil.md5Hex(bytes);
     }
 
     /**
@@ -50,10 +48,10 @@ public class MD5 {
 //    	map.put("customerName", "测试验证5");
 //    	System.out.println(sign(map,"icloudsystem").toLowerCase());
 
-        String keyBeforeMd5 = "123456";
+        byte[] keyBeforeMd5 = "123456".getBytes();
 //        String keyBeforeMd5 = "123456";
-        System.out.println(parseStrToMd5U32(keyBeforeMd5));
-        System.out.println(Fc.md5(keyBeforeMd5));
+        System.out.println(DigestUtil.md5Hex(keyBeforeMd5));
+        System.out.println(md5Hex(keyBeforeMd5));
 	}
     
 }

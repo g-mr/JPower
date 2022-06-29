@@ -5,7 +5,7 @@ import com.wlcb.jpower.feign.FileClient;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
-import com.wlcb.jpower.module.common.utils.DESUtil;
+import com.wlcb.jpower.module.common.utils.DesUtil;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
@@ -67,7 +67,7 @@ public class FileClientController implements FileClient {
     @Override
     @PostMapping(value = "/getFileDetail",produces="application/json")
     public ResponseData<TbCoreFile> getFileDetail(@RequestParam String base) {
-        String id = DESUtil.decrypt(base, ConstantsUtils.FILE_DES_KEY);
+        String id = DesUtil.decrypt(base, ConstantsUtils.FILE_DES_KEY);
         JpowerAssert.notEmpty(id, JpowerError.Arg,"文件标识不合法");
 
         TbCoreFile coreFile = coreFileService.getById(id);

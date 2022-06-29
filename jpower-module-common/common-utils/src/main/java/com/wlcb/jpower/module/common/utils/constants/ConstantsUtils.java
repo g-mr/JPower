@@ -9,11 +9,11 @@ package com.wlcb.jpower.module.common.utils.constants;
  */
 public class ConstantsUtils {
 
-    /** 默認文件加密key **/
+    /** 默认文件加密key **/
     public static final String FILE_DES_KEY = "COREFILEENCRYPTKEY20200720";
-    /** 用戶默認密碼。這裏的優先級最低 **/
+    /** 用户默认密码。这里的优先级最低 **/
     public static final String DEFAULT_USER_PASSWORD = "123456";
-    /** 用戶默認是否激活。這裏的優先級最低 **/
+    /** 用户默认是否激活。这里的优先级最低 **/
     public static final Integer DEFAULT_USER_ACTIVATION = ConstantsEnum.YN01.N.getValue();
 
 }

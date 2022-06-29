@@ -76,7 +76,7 @@
 
         <dependency>
             <groupId>cn.hutool</groupId>
-            <artifactId>hutool-core</artifactId>
+            <artifactId>hutool-crypto</artifactId>
         </dependency>
 
         <dependency>

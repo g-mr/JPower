@@ -10,7 +10,7 @@ import com.wlcb.jpower.module.base.vo.Pg;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.page.PaginationContext;
-import com.wlcb.jpower.module.common.utils.DESUtil;
+import com.wlcb.jpower.module.common.utils.DesUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.FileUtil;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
@@ -76,7 +76,7 @@ public class FileController extends BaseController {
     @GetMapping(value = "/download",produces="application/json")
     public void download(@ApiParam(value = "文件标识",required = true) @RequestParam String base){
         JpowerAssert.notEmpty(base,JpowerError.Arg,"文件标识不可为空");
-        String id = DESUtil.decrypt(base,ConstantsUtils.FILE_DES_KEY);
+        String id = DesUtil.decrypt(base,ConstantsUtils.FILE_DES_KEY);
         JpowerAssert.notEmpty(id,JpowerError.Arg,"文件标识不合法");
 
         TbCoreFile coreFile = coreFileService.getOne(Condition.<TbCoreFile>getQueryWrapper().lambda()

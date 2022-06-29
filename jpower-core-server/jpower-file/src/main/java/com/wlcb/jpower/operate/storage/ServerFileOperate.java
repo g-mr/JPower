@@ -50,7 +50,7 @@ public class ServerFileOperate implements FileOperate {
 		coreFile.setFileType(FileTypeUtil.getType(saveFile));
 		coreFile.setFileSize(file.getSize());
 		coreFile.setId(UUIDUtil.getUUID());
-		coreFile.setMark(DESUtil.encrypt(coreFile.getId(), ConstantsUtils.FILE_DES_KEY));
+		coreFile.setMark(DesUtil.encrypt(coreFile.getId(), ConstantsUtils.FILE_DES_KEY));
 
 		try {
 			if (!coreFileService.add(coreFile)){
