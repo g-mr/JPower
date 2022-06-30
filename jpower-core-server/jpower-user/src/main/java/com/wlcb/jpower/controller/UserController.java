@@ -141,7 +141,7 @@ public class UserController extends BaseController {
         }
         JpowerAssert.isNull(coreUserService.selectUserLoginId(coreUser.getLoginId(), coreUser.getTenantCode()), JpowerError.BUSINESS, "当前登陆名已存在");
 
-        coreUser.setPassword(DigestUtil.encrypt(MD5.parseStrToMd5U32(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD, ConstantsUtils.DEFAULT_USER_PASSWORD))));
+        coreUser.setPassword(DigestUtil.pwdEncrypt(MD5.md5HexToUpperCase(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD, ConstantsUtils.DEFAULT_USER_PASSWORD))));
         if (Fc.isNull(coreUser.getUserType())){
             coreUser.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_SYSTEM.getValue());
         }
@@ -239,7 +239,7 @@ public class UserController extends BaseController {
     @PutMapping(value = "/resetPassword", produces = "application/json")
     public ResponseData resetPassword(@ApiParam(value = "主键 多个逗号分割", required = true) @RequestParam String ids) {
 
-        String pass = DigestUtil.encrypt(MD5.parseStrToMd5U32(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD, ConstantsUtils.DEFAULT_USER_PASSWORD)));
+        String pass = DigestUtil.pwdEncrypt(MD5.md5HexToUpperCase(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD, ConstantsUtils.DEFAULT_USER_PASSWORD)));
 
         JpowerAssert.notEmpty(ids, JpowerError.Arg, "用户ids不可为空");
 
@@ -318,10 +318,11 @@ public class UserController extends BaseController {
         JpowerAssert.notNull(userInfo, JpowerError.BUSINESS, "用户未登录");
 
         TbCoreUser user = coreUserService.getById(userInfo.getUserId());
-        if (Fc.isNull(user) || !Fc.equals(user.getPassword(), DigestUtil.encrypt(oldPw))) {
+
+        if (Fc.isNull(user) || !DigestUtil.checkPwd(oldPw,user.getPassword())) {
             return ReturnJsonUtil.fail("原密码错误");
         }
         CacheUtil.clear(CacheNames.USER_REDIS_CACHE);
-        return ReturnJsonUtil.status(coreUserService.updateUserPassword(user.getId(), DigestUtil.encrypt(newPw)));
+        return ReturnJsonUtil.status(coreUserService.updateUserPassword(user.getId(), DigestUtil.pwdEncrypt(newPw)));
     }
 }

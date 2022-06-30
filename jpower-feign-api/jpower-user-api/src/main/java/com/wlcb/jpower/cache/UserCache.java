@@ -42,7 +42,7 @@ public class UserCache {
 
     public static TbCoreUser queryUserByLoginIdPwd(String loginId,String password, String tenantCode) {
         TbCoreUser user = getUserByLoginId(loginId,tenantCode);
-        if (Fc.notNull(user) && Fc.equals(DigestUtil.encrypt(password),user.getPassword())){
+        if (Fc.notNull(user) && DigestUtil.checkPwd(password,user.getPassword())){
             return user;
         }
         return null;

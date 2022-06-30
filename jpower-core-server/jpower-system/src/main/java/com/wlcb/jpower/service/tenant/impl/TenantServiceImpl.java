@@ -143,7 +143,7 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
             //创建租户默认用户 (必须放到最后创建，因为没有启动分布式事务)
             TbCoreUser user = new TbCoreUser();
             user.setLoginId("admin");
-            user.setPassword(DigestUtil.encrypt(MD5.parseStrToMd5U32(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD, ConstantsUtils.DEFAULT_USER_PASSWORD))));
+            user.setPassword(DigestUtil.pwdEncrypt(MD5.md5HexToUpperCase(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD, ConstantsUtils.DEFAULT_USER_PASSWORD))));
             user.setNickName("管理员");
             user.setUserName("管理员");
             user.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_SYSTEM.getValue());

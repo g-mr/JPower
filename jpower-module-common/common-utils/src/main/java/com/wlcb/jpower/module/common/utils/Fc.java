@@ -718,17 +718,7 @@ public class Fc {
      * @return MD5 digest as a hexg string
      */
     public static String md5(final String data) {
-        return MD5.parseStrToMd5L32(data);
-    }
-
-    /**
-     * Return a hexadecimal string representation of the MD5 digest of the given bytes.
-     *
-     * @param bytes the bytes to calculate the digest over
-     * @return a hexadecimal digest string
-     */
-    public static String md5(final byte[] bytes) {
-        return MD5.md5Hex(bytes);
+        return MD5.md5Hex(data);
     }
 
     /**

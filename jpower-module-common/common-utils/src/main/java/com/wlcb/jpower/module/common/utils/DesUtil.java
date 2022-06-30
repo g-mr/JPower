@@ -12,7 +12,7 @@ import cn.hutool.crypto.symmetric.DES;
 public class DesUtil {
 
     /**
-     * 默认的KEY
+     * 默认的密钥
      **/
     private static final String KEY = "JPOWER_DES_DEFAULT_KEY";
 

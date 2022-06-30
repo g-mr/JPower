@@ -1,7 +1,7 @@
 package com.wlcb.jpower.module.tenant;
 
+import com.wlcb.jpower.module.common.utils.DesedeUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.ThreeDESUtil;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
 
@@ -18,14 +18,6 @@ public interface TenantConstant {
 
     /** 租户额度默认值为不限制 **/
     Integer TENANT_ACCOUNT_NUMBER = -1;
-
-
-    /**
-     * 生成自定义租户id
-     *
-     * @return string
-     */
-    String generate();
 
     /**
      * @author 郭丁志
@@ -47,7 +39,7 @@ public interface TenantConstant {
      */
     static String getLicenseKey(Integer accountNumber, Date expireTime){
         String et = Fc.isNull(expireTime)?StringPool.NULL:Fc.formatDateTime(expireTime);
-        return ThreeDESUtil.encrypt(accountNumber + StringPool.SEMICOLON + et);
+        return DesedeUtil.encrypt(accountNumber + StringPool.SEMICOLON + et);
     }
 
     /**
@@ -56,7 +48,7 @@ public interface TenantConstant {
      * @date 22:18 2020/10/24 0024
      */
     static long getAccountNumber(String encrypt){
-        encrypt = ThreeDESUtil.decrypt(encrypt);
+        encrypt = DesedeUtil.decrypt(encrypt);
         return Fc.toLong(Fc.toStrArray(StringPool.SEMICOLON, encrypt)[0]);
     }
 
@@ -66,7 +58,7 @@ public interface TenantConstant {
      * @date 22:18 2020/10/24 0024
      */
     static Date getExpireTime(String encrypt){
-        encrypt = ThreeDESUtil.decrypt(encrypt);
+        encrypt = DesedeUtil.decrypt(encrypt);
         String expireTime = Fc.toStrArray(StringPool.SEMICOLON, encrypt)[1];
         if (Fc.equalsValue(expireTime,StringPool.NULL)){
             return null;

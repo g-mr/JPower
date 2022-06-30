@@ -73,8 +73,8 @@ public class ReturnJsonUtil {
      * @Param [msg, data]
      * @return ResponseData
      **/
-    public static <T> ResponseData ok(T data){
-        return ok("查询成功", data);
+    public static <T> ResponseData data(T data){
+        return ok("成功", data);
     }
 
     /**
