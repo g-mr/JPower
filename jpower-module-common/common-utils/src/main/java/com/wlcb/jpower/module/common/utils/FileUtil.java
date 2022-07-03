@@ -5,26 +5,20 @@ import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ZipUtil;
-import com.wlcb.jpower.module.common.support.NamedThreadFactory;
-import com.wlcb.jpower.module.common.utils.constants.CharPool;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.Assert;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.*;
 
 /**
- * @ClassName FileUtils
- * @Description TODO 文件工具
- * @Author 郭丁志
- * @Date 2020-02-05 00:57
- * @Version 1.0
- */
+ * 文件工具类
+ *
+ * @author mr.g
+ **/
 @Slf4j
 public class FileUtil extends cn.hutool.core.io.FileUtil {
 
@@ -171,117 +165,15 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
     }
 
 
-
-
-
-
-
-
-
     /**
-     * @Author 郭丁志
-     * @Description //TODO 追加内容到一个文件中 多线程
-     * @Date 17:44 2020-06-28
-     * @Param [content, filePath]
-     * @return boolean
+     * 如果已打成jar包，则返回jar包所在目录;如果未打成jar，则返回resources所在目录
+     *
+     * @author mr.g
+     * @return 目录
      **/
-    public static boolean saveSendMobileFileTemp(final String content, final String filePath)throws Exception{
-        boolean flag = false;
-        ExecutorService executorService = new ThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(1024),new NamedThreadFactory("FileUtil"));
-        FutureTask<Boolean> futureTask = new FutureTask<Boolean>(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                boolean b = saveSendMobileFile(content, filePath);
-                return b;
-            }
-        });
-        executorService.execute(futureTask);
-        try {
-            //设置超时时间
-            flag = futureTask.get(10, TimeUnit.SECONDS);
-        } catch (Exception e) {
-            futureTask.cancel(true);
-            throw e;
-        }finally {
-            executorService.shutdown();
-        }
-        return flag;
-    }
-
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 追加内容到一个文件中
-     * @Date 17:43 2020-06-28
-     * @Param [content, filePath]
-     * @return boolean
-     **/
-    public static boolean saveSendMobileFile(String content,String filePath)throws Exception{
-        boolean flag = false;
-        FileOutputStream fos = null;
-        OutputStreamWriter osw = null;
-        BufferedWriter bw = null;
-        try{
-            //判断根目录是否存在
-            File synMobileFile = new File(filePath);
-            File fileParent = synMobileFile.getParentFile();
-            //如果目录不存在则创建
-            if(!fileParent.exists()){
-                fileParent.mkdirs();
-            }
-            if(!synMobileFile.exists()){
-                synMobileFile.createNewFile();
-            }
-            fos = new FileOutputStream(synMobileFile,true);
-            osw = new OutputStreamWriter(fos, "UTF-8");
-            bw = new BufferedWriter(osw);
-            bw.write(content);
-            bw.newLine();
-            bw.flush();
-            flag = true;
-            log.info( "{}文件写入成功！", filePath);
-        }catch(Exception e){
-            log.error( "{}文件写入出现异常，异常原因：{} ", filePath,e);
-            throw new IOException();
-        }finally {
-            Fc.closeQuietly(bw);
-            Fc.closeQuietly(osw);
-            Fc.closeQuietly(fos);
-        }
-        return flag;
-    }
-
-    /**
-     * 获取文件后缀名
-     * @param fullName 文件全名
-     * @return {String}
-     */
-    public static String getFileExtension(String fullName) {
-        Assert.notNull(fullName, "file fullName is null.");
-        String fileName = new File(fullName).getName();
-        int dotIndex = fileName.lastIndexOf('.');
-        return (dotIndex == -1) ? "" : fileName.substring(dotIndex + 1);
-    }
-
-    /**
-     * 获取文件名，去除后缀名
-     * @param file 文件
-     * @return {String}
-     */
-    public static String getNameWithoutExtension(String file) {
-        Assert.notNull(file, "file is null.");
-        String fileName = new File(file).getName();
-        int dotIndex = fileName.lastIndexOf(CharPool.DOT);
-        return (dotIndex == -1) ? fileName : fileName.substring(0, dotIndex);
-    }
-
-    /**
-     * 如果已打成jar包，则返回jar包所在目录
-     * 如果未打成jar，则返回resources所在目录
-     * @return
-     */
     public static String getSysRootPath() {
         // 项目的编译文件的根目录
-        String path = null;
+        String path;
         try {
             path = URLDecoder.decode(FileUtil.class.getResource(StringPool.SLASH).getPath(), String.valueOf(StandardCharsets.UTF_8));
         } catch (UnsupportedEncodingException e) {
@@ -304,9 +196,10 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
 
     /**
      * 修改文件名称，检测目录下是否有同名，有则改名没有则返回
-     * @Author mr.g
-     * @param file
-     * @return java.io.File
+     *
+     * @author mr.g
+     * @param file 文件
+     * @return 文件
      **/
     public static File rename(File file) {
 
