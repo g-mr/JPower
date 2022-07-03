@@ -370,7 +370,7 @@ public class OkHttp {
             responseTime = (System.currentTimeMillis() - startTime);
         } catch (Exception e) {
             error = e.getMessage();
-            log.error("OkHttp3 execute error >> ex = {}", ExceptionsUtil.getStackTraceAsString(e));
+            log.error("OkHttp3 execute error >> ex = {}", ExceptionUtil.getStackTraceAsString(e));
             throw new HttpException("OkHttp3 execute error >> ex = " + e.getMessage());
         }
 

@@ -71,7 +71,7 @@ public class JsonUtil {
         try {
             return getInstance().writeValueAsBytes(object);
         } catch (JsonProcessingException e) {
-            throw ExceptionsUtil.unchecked(e);
+            throw ExceptionUtil.wrapRuntime(e);
         }
     }
 
@@ -104,7 +104,7 @@ public class JsonUtil {
         try {
             return getInstance().readValue(content, typeReference);
         } catch (IOException e) {
-            throw ExceptionsUtil.unchecked(e);
+            throw ExceptionUtil.wrapRuntime(e);
         }
     }
 
@@ -120,7 +120,7 @@ public class JsonUtil {
         try {
             return getInstance().readValue(bytes, valueType);
         } catch (IOException e) {
-            throw ExceptionsUtil.unchecked(e);
+            throw ExceptionUtil.wrapRuntime(e);
         }
     }
 
@@ -137,7 +137,7 @@ public class JsonUtil {
         try {
             return getInstance().readValue(bytes, typeReference);
         } catch (IOException e) {
-            throw ExceptionsUtil.unchecked(e);
+            throw ExceptionUtil.wrapRuntime(e);
         }
     }
 
@@ -153,7 +153,7 @@ public class JsonUtil {
         try {
             return getInstance().readValue(in, valueType);
         } catch (IOException e) {
-            throw ExceptionsUtil.unchecked(e);
+            throw ExceptionUtil.wrapRuntime(e);
         }
     }
 
@@ -169,7 +169,7 @@ public class JsonUtil {
         try {
             return getInstance().readValue(in, typeReference);
         } catch (IOException e) {
-            throw ExceptionsUtil.unchecked(e);
+            throw ExceptionUtil.wrapRuntime(e);
         }
     }
 
@@ -238,7 +238,7 @@ public class JsonUtil {
         try {
             return getInstance().readTree(jsonString);
         } catch (IOException e) {
-            throw ExceptionsUtil.unchecked(e);
+            throw ExceptionUtil.wrapRuntime(e);
         }
     }
 
@@ -252,7 +252,7 @@ public class JsonUtil {
         try {
             return getInstance().readTree(in);
         } catch (IOException e) {
-            throw ExceptionsUtil.unchecked(e);
+            throw ExceptionUtil.wrapRuntime(e);
         }
     }
 
@@ -266,7 +266,7 @@ public class JsonUtil {
         try {
             return getInstance().readTree(content);
         } catch (IOException e) {
-            throw ExceptionsUtil.unchecked(e);
+            throw ExceptionUtil.wrapRuntime(e);
         }
     }
 
@@ -280,7 +280,7 @@ public class JsonUtil {
         try {
             return getInstance().readTree(jsonParser);
         } catch (IOException e) {
-            throw ExceptionsUtil.unchecked(e);
+            throw ExceptionUtil.wrapRuntime(e);
         }
     }
 

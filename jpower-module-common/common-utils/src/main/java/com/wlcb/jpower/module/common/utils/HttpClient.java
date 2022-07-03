@@ -148,7 +148,7 @@ public class HttpClient {
 
             return file;
         } catch (IOException e) {
-            log.error("文件下载失败：{}", ExceptionsUtil.getStackTraceAsString(e));
+            log.error("文件下载失败：{}", ExceptionUtil.getStackTraceAsString(e));
         } finally {
             Fc.closeQuietly(is);
             Fc.closeQuietly(bos);
@@ -233,7 +233,7 @@ public class HttpClient {
             HttpEntity entity = httpResponse.getEntity();
             result = EntityUtils.toString(entity);
         } catch (IOException e) {
-            log.error("请求失败：{}", ExceptionsUtil.getStackTraceAsString(e));
+            log.error("请求失败：{}", ExceptionUtil.getStackTraceAsString(e));
         } finally {
             // 关闭资源
             Fc.closeQuietly(httpResponse);
@@ -288,7 +288,7 @@ public class HttpClient {
 
             resp = builder.toString();
         } catch (Exception e) {
-            log.info("请求接口{}失败，error={}", strUrl, ExceptionsUtil.getStackTraceAsString(e));
+            log.info("请求接口{}失败，error={}", strUrl, ExceptionUtil.getStackTraceAsString(e));
         } finally {
             Fc.closeQuietly(bufferedReader);
             Fc.closeQuietly(inputStream);
@@ -325,7 +325,7 @@ public class HttpClient {
             entity = execute.getEntity();
             result = EntityUtils.toString(entity);
         } catch (IOException e) {
-            log.error("{}接口调用失败=>{}",url, ExceptionsUtil.getStackTraceAsString(e));
+            log.error("{}接口调用失败=>{}",url, ExceptionUtil.getStackTraceAsString(e));
         } finally {
             Fc.closeQuietly(execute);
             Fc.closeQuietly(httpClient);
@@ -371,13 +371,13 @@ public class HttpClient {
                 HttpEntity entity = response.getEntity();
                 result = EntityUtils.toString(entity);
             } catch (Exception e) {
-                log.error("{}接口调用失败=>{}",url, ExceptionsUtil.getStackTraceAsString(e));
+                log.error("{}接口调用失败=>{}",url, ExceptionUtil.getStackTraceAsString(e));
             } finally {
                 response.close();
                 // 关闭资源
             }
         } catch (IOException e) {
-            log.error("{}接口调用失败=>{}",url, ExceptionsUtil.getStackTraceAsString(e));
+            log.error("{}接口调用失败=>{}",url, ExceptionUtil.getStackTraceAsString(e));
         } finally {
             Fc.closeQuietly(httpClient);
             // 关闭资源
@@ -411,7 +411,7 @@ public class HttpClient {
                 result =EntityUtils.toString(httpEntity);
             }
         } catch (IOException e) {
-            log.error(ExceptionsUtil.getStackTraceAsString(e));
+            log.error(ExceptionUtil.getStackTraceAsString(e));
         } finally {
             // 释放资源
             try {
@@ -424,7 +424,7 @@ public class HttpClient {
                     httpPost.releaseConnection();
                 }
             } catch (IOException e) {
-                log.error(ExceptionsUtil.getStackTraceAsString(e));
+                log.error(ExceptionUtil.getStackTraceAsString(e));
             }
         }
         return result;

@@ -279,7 +279,7 @@ public class UserController extends BaseController {
             logger.error("文件上传出错，文件不存在,{}", saveFile.getAbsolutePath());
             return ReturnJsonUtil.fail("上传出错，请稍后重试");
         } catch (Exception e) {
-            logger.error("文件上传出错，error={}", ExceptionsUtil.getStackTraceAsString(e));
+            logger.error("文件上传出错，error={}", ExceptionUtil.getStackTraceAsString(e));
             return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_ERROR, "上传出错，请稍后重试", false);
         }
 

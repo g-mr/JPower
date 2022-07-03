@@ -8,7 +8,7 @@ import com.wlcb.jpower.module.base.listener.ErrorLogEvent;
 import com.wlcb.jpower.module.base.model.ErrorLogDto;
 import com.wlcb.jpower.module.base.utils.FieldCompletionUtil;
 import com.wlcb.jpower.module.base.vo.ErrorReturnJson;
-import com.wlcb.jpower.module.common.utils.ExceptionsUtil;
+import com.wlcb.jpower.module.common.utils.ExceptionUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SpringUtil;
 import com.wlcb.jpower.module.common.utils.WebUtil;
@@ -86,7 +86,7 @@ public class GlobalExceptionHandler {
     public ErrorReturnJson defaultErrorHandler(HttpServletRequest request, HttpServletResponse response, Exception e){
 
         ErrorReturnJson r = new ErrorReturnJson();
-        r.setMessage(ExceptionsUtil.unwrap(e).getMessage());
+        r.setMessage(ExceptionUtil.unwrap(e).getMessage());
         if (e instanceof BusinessException) {
             r.setCode(HttpStatus.NOT_IMPLEMENTED.value());
         }else if (e instanceof JpowerException) {
@@ -119,7 +119,7 @@ public class GlobalExceptionHandler {
         errorLog.setMethodClass(element.getClassName());
         errorLog.setMethodName(element.getMethodName());
         errorLog.setLineNumber(element.getLineNumber());
-        errorLog.setError(ExceptionsUtil.getStackTraceAsString(e));
+        errorLog.setError(ExceptionUtil.getStackTraceAsString(e));
         errorLog.setExceptionName(e.getClass().getName());
         SpringUtil.publishEvent(new ErrorLogEvent(errorLog));
     }

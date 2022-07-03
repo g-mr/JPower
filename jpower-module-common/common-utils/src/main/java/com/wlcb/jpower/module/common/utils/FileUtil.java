@@ -1,8 +1,10 @@
 package com.wlcb.jpower.module.common.utils;
 
+import cn.hutool.core.io.IORuntimeException;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.ZipUtil;
 import com.wlcb.jpower.module.common.support.NamedThreadFactory;
 import com.wlcb.jpower.module.common.utils.constants.CharPool;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
@@ -15,8 +17,6 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 /**
  * @ClassName FileUtils
@@ -26,162 +26,104 @@ import java.util.zip.ZipOutputStream;
  * @Version 1.0
  */
 @Slf4j
-public class FileUtil extends org.apache.commons.io.FileUtils {
-
-    public static String FILENAME_PATTERN = "[a-zA-Z0-9_\\-\\|\\.\\u4e00-\\u9fa5]+";
+public class FileUtil extends cn.hutool.core.io.FileUtil {
 
     /**
-     * 移动文件，未传完用临时文件代替
+     * 创建文件夹，如果文件夹存在则对文件夹重命名后创建，会把新的文件夹返回
      *
-     * @param targetDir
-     *        dest full path
-     * @param target
-     *        target full path
-     * @return
-     */
-    public static File moveFileToDirtmp(File target, File targetDir ) {
-        File fnew = null;
-        String tmpTarget = target.getName( ) + ".tmp";
-        File desfile = new File( targetDir.getPath( ) + "/" + tmpTarget );
-        try {
-            copyFile( target, desfile );
-            if( target.length( ) == desfile.length( ) ) {
-                fnew = new File( targetDir.getPath( ), target.getName( ) );
-
-                if( !fnew.exists( ) ) {
-                    desfile.renameTo( fnew );
-                } else {
-                    desfile.delete( );
-                }
-            }
-            if( target.exists( ) ) {
-                if( !target.delete( ) ) {
-                    log.info( "target canonicalPath {}", target.getCanonicalPath( ) );
-                }
-            }
-        } catch( IOException e ) {
-            log.error( e.getMessage( ) );
-        }
-        return desfile;
-
-    }
-
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 创建文件夹，如果文件夹存在则建立新的名字并返回新文件夹
-     * @Date 00:50 2020-04-30
-     * @Param [dirFile]
-     * @return java.io.File
+     * @author mr.g
+     * @param dir 目录
+     * @return 创建的目录
      **/
-    public static File creatDir(File dirFile) {
-        return creatDir(dirFile,0);
-    }
-    private static File creatDir(File dirFile,int i) {
-        if (dirFile.exists()){
-            String path = dirFile.getAbsolutePath();
-            if (i!=0){
-                path = path.substring(0,path.length()-((i+"").length()+2));
-            }
-            i++;
-            return creatDir(new File(path+"("+i+")"),i);
-        }else {
-            dirFile.mkdirs();
-            return dirFile;
-        }
-    }
-
-    /***
-     * 删除文件夹
-     * @param path 文件夹完整绝对路径
-     * @return
-     */
-    public static  boolean delDirectory(String path) {
-        boolean flag = false;
-        File file = new File(path);
-        if (!file.exists()) {
-            return flag;
-        }
-        if (!file.isDirectory()) {
-            return flag;
-        }
-        String[] tempList = file.list();
-        File temp = null;
-        for (int i = 0; i < tempList.length; i++) {
-            if (path.endsWith(File.separator)) {
-                temp = new File(path + tempList[i]);
-            } else {
-                temp = new File(path + File.separator + tempList[i]);
-            }
-            if (temp.isFile()) {
-                temp.delete();
-            }
-            if (temp.isDirectory()) {
-                // 先删除文件夹里面的文件
-                delDirectory(path + File.separator + tempList[i]);
-                flag = true;
-            }
-        }
-        file.delete();
-        return flag;
+    public static File mkdirCycle(File dir) {
+        return mkdirCycle(dir,0);
     }
 
     /**
-     * @Description: 删除文件
-     * @author: suyutang
-     * @param: [fileName]
-     * @return: void
-     * @Date: 17:06  2019/1/31
-     */
+     * 创建文件夹，如果文件夹存在则对文件夹重命名后创建，会把新的文件夹返回
+     *
+     * @author mr.g
+     * @param dir 目录
+     * @param index 文件重命名后缀下标
+     * @return 创建的目录
+     **/
+    private static File mkdirCycle(File dir,int index) {
+        if (dir.exists()){
+            String path = dir.getAbsolutePath();
+            if (index!=0){
+                path = path.substring(0,path.length()-((index+"").length()+2));
+            }
+            index++;
+            return mkdirCycle(new File(path+"("+index+")"),index);
+        }else {
+            return mkdir(dir);
+        }
+    }
+
+    /**
+     * 文件删除
+     *
+     * @author mr.g
+     * @param file 文件
+     **/
     public static void deleteFile(File file){
         try{
-            if(file.exists()){
-                file.delete();
+            if(del(file)){
                 log.info( "{}文件删除成功！", file.getAbsolutePath());
             }else{
                 log.info( "{}文件不存在！", file.getAbsolutePath());
             }
-        }catch(Exception e){
+        }catch(IORuntimeException e){
             log.error( "{}文件删除失败！失败原因{}", file.getAbsolutePath(),e);
-            e.printStackTrace();
         }
     }
 
-    public static Boolean download(byte[] bytes, HttpServletResponse response,String filename) throws UnsupportedEncodingException {
+    /**
+     * 文件下载
+     *
+     * @author mr.g
+     * @param bytes byte内容
+     * @param response HttpServletResponse
+     * @param fileName 下载后的文件名
+     * @return 是否下载成功
+     **/
+    public static Boolean download(byte[] bytes, HttpServletResponse response,String fileName) throws UnsupportedEncodingException {
+
         if (Fc.isNotEmpty(bytes)){
             response.setHeader("content-type", "application/octet-stream");
             response.setContentType("application/octet-stream");
             // 下载文件能正常显示中文
-            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(filename, "UTF-8"));
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
             try {
                 OutputStream os = response.getOutputStream();
                 os.write(bytes);
                 Fc.closeQuietly(os);
                 return true;
             } catch (IOException e) {
-                log.error("下载byte文件错误，{}error={}",StringPool.NEWLINE,ExceptionsUtil.getStackTraceAsString(e));
-            }finally {
-
+                log.error("下载byte文件错误，{}error={}",StringPool.NEWLINE,ExceptionUtil.getStackTraceAsString(e));
             }
         }
         return false;
     }
 
     /**
-     * @Author 郭丁志
-     * @Description // 下载文件
-     * @Date 01:59 2020-04-06
-     * @Param [file, res]
-     * @return void
+     * 文件下载
+     *
+     * @author mr.g
+     * @param file 文件
+     * @param response HttpServletResponse
+     * @param fileName 下载后的文件名
+     * @return 是否下载成功
      **/
-    public static Integer download(File file, HttpServletResponse response,String filename) throws IOException {
-        if (filename != null) {
+    public static boolean download(File file, HttpServletResponse response,String fileName) throws IOException {
+        if (fileName != null) {
             // 如果文件存在，则进行下载
             if (file.exists()) {
                 // 配置文件下载
                 response.setHeader("content-type", "application/octet-stream");
                 response.setContentType("application/octet-stream");
                 // 下载文件能正常显示中文
-                response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(filename, "UTF-8"));
+                response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
                 // 实现文件下载
                 byte[] buffer = new byte[1024];
                 FileInputStream fis = null;
@@ -195,94 +137,46 @@ public class FileUtil extends org.apache.commons.io.FileUtils {
                         os.write(buffer, 0, i);
                         i = bis.read(buffer);
                     }
-                    return 0;
+                    return true;
                 } catch (Exception e) {
-                    log.error("下载文件错误，{}error={}",StringPool.NEWLINE,ExceptionsUtil.getStackTraceAsString(e));
+                    log.error("下载文件错误，{}error={}",StringPool.NEWLINE,ExceptionUtil.getStackTraceAsString(e));
                 } finally {
                     Fc.closeQuietly(bis);
                     Fc.closeQuietly(fis);
                 }
             }
         }
-        return -1;
+        return false;
     }
 
     /**
-     * @Author 郭丁志
-     * @Description //TODO 压缩文件夹
-     * @Date 02:09 2020-04-30
-     * @Param [srcDir :压缩文件夹全路径, file ：压缩文件, keepDirStructure：是否保留原文件夹格式]
-     * @return void
+     * 压缩文件
+     *
+     * @author mr.g
+     * @param srcFile 原文件夹
+     * @param zipFile 压缩文件
      **/
-    public static void toZip(String srcDir,File file,boolean keepDirStructure){
-
-        ZipOutputStream zos = null ;
-        try {
-            FileOutputStream out= new FileOutputStream(file);
-            zos = new ZipOutputStream(out);
-            File sourceFile = new File(srcDir);
-            compress(sourceFile,zos,sourceFile.getName(),keepDirStructure);
-            long end = System.currentTimeMillis();
-        } catch (Exception e) {
-            log.error("压缩出错：{}",e.getMessage());
-        }finally{
-            Fc.closeQuietly(zos);
-        }
-
-    }
-
-    private static void compress(File sourceFile, ZipOutputStream zos, String name,
-                                 boolean KeepDirStructure) throws Exception{
-        byte[] buf = new byte[1024*2];
-        if(sourceFile.isFile()){
-            // 向zip输出流中添加一个zip实体，构造器中name为zip实体的文件的名字
-            zos.putNextEntry(new ZipEntry(name));
-            // copy文件到zip输出流中
-            int len;
-            FileInputStream in = new FileInputStream(sourceFile);
-            while ((len = in.read(buf)) != -1){
-                zos.write(buf, 0, len);
-            }
-            // Complete the entry
-            zos.closeEntry();
-            in.close();
-        } else {
-            //是文件夹
-            File[] listFiles = sourceFile.listFiles();
-            if(listFiles == null || listFiles.length == 0){
-                // 需要保留原来的文件结构时,需要对空文件夹进行处理
-                if(KeepDirStructure){
-                    // 空文件夹的处理
-                    zos.putNextEntry(new ZipEntry(name + File.separator));
-                    // 没有文件，不需要文件的copy
-                    zos.closeEntry();
-                }
-
-            }else {
-                for (File file : listFiles) {
-                    // 判断是否需要保留原来的文件结构
-                    if (KeepDirStructure) {
-                        // 注意：file.getName()前面需要带上父文件夹的名字加一斜杠,
-                        // 不然最后压缩包中就不能保留原来的文件结构,即：所有文件都跑到压缩包根目录下了
-                        compress(file, zos, name + File.separator + file.getName(),KeepDirStructure);
-                    } else {
-                        compress(file, zos, file.getName(),KeepDirStructure);
-                    }
-
-                }
-            }
-        }
+    public static void toZip(File srcFile,File zipFile){
+        ZipUtil.zip(srcFile.getAbsolutePath(),zipFile.getAbsolutePath());
     }
 
     /**
      * 文件名称验证
      *
-     * @param filename 文件名称
+     * @param fileName 文件名称
      * @return true 正常 false 非法
      */
-    public static boolean isValidFilename(String filename){
-        return filename.matches(FILENAME_PATTERN);
+    public static boolean isValidFilename(String fileName){
+        return !FileNameUtil.containsInvalid(fileName);
     }
+
+
+
+
+
+
+
+
 
     /**
      * @Author 郭丁志

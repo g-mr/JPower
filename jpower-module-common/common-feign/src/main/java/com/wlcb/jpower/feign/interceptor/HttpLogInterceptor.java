@@ -1,7 +1,7 @@
 package com.wlcb.jpower.feign.interceptor;
 
 import com.wlcb.jpower.module.common.utils.BufferUtil;
-import com.wlcb.jpower.module.common.utils.ExceptionsUtil;
+import com.wlcb.jpower.module.common.utils.ExceptionUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
 import feign.Logger;
@@ -48,14 +48,14 @@ public class HttpLogInterceptor implements Interceptor, Ordered {
             log.warn("【feign】{} {} request fail:{}",request.method(),request.url(), e.getMessage());
             throw e;
         } catch (Exception e) {
-            log.error("【feign】{} {} request fail:{}",request.method(),request.url(), NEWLINE + ExceptionsUtil.getStackTraceAsString(e));
+            log.error("【feign】{} {} request fail:{}",request.method(),request.url(), NEWLINE + ExceptionUtil.getStackTraceAsString(e));
             throw e;
         } finally {
             if (level != Logger.Level.NONE && Fc.notNull(response)){
                 try {
                     printLog(request,response,connection,time);
                 }catch (Exception e){
-                    log.error("【feign】 Error printing request log:{}", NEWLINE+ExceptionsUtil.getStackTraceAsString(e));
+                    log.error("【feign】 Error printing request log:{}", NEWLINE+ExceptionUtil.getStackTraceAsString(e));
                 }
             }
         }

@@ -88,7 +88,7 @@ public class MultipartFileUtil{
                 }
             }
         }catch (Exception e){
-            logger.info("上传文件读取失败,error={}",ExceptionsUtil.getStackTraceAsString(e));
+            logger.info("上传文件读取失败,error={}",ExceptionUtil.getStackTraceAsString(e));
         } finally {
             Fc.closeQuietly(reader);
         }
@@ -120,7 +120,7 @@ public class MultipartFileUtil{
                 break;
             }
         }catch (Exception e){
-            logger.info("上传文件读取失败,error={}",ExceptionsUtil.getStackTraceAsString(e));
+            logger.info("上传文件读取失败,error={}",ExceptionUtil.getStackTraceAsString(e));
         } finally {
             Fc.closeQuietly(reader);
         }

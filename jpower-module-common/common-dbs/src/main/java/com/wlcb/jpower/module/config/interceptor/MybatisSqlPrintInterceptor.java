@@ -61,7 +61,7 @@ public class MybatisSqlPrintInterceptor implements MybatisInterceptor {
                     printSql(boundSql,configuration,mpId,time,rest,isUpdate);
                 }
             } catch (Exception e) {
-                log.error("==> 打印sql 日志异常 {}", NEWLINE+ExceptionsUtil.getStackTraceAsString(e));
+                log.error("==> 打印sql 日志异常 {}", NEWLINE+ExceptionUtil.getStackTraceAsString(e));
             }
             return rest;
         }

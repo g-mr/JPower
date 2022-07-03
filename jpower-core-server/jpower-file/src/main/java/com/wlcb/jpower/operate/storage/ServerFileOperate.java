@@ -77,9 +77,7 @@ public class ServerFileOperate implements FileOperate {
 		if (!file.exists()){
 			throw new BusinessException(file.getName()+"文件不存在，无法下载");
 		}
-		Integer is = FileUtil.download(file, WebUtil.getResponse(),coreFile.getName());
-
-		return is == 0;
+		return FileUtil.download(file, WebUtil.getResponse(),coreFile.getName());
 	}
 
 	@Override

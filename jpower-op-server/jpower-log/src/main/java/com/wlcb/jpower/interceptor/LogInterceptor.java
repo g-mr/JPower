@@ -1,7 +1,7 @@
 package com.wlcb.jpower.interceptor;
 
 import com.wlcb.jpower.module.common.utils.BufferUtil;
-import com.wlcb.jpower.module.common.utils.ExceptionsUtil;
+import com.wlcb.jpower.module.common.utils.ExceptionUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
 import lombok.extern.slf4j.Slf4j;
@@ -64,7 +64,7 @@ public class LogInterceptor implements Interceptor {
             if (Fc.isNull(response)){
                 builder.append("<==END TEST FAILED ({}ms) : {}");
                 args.add(System.currentTimeMillis() - startTime);
-                args.add(ExceptionsUtil.getStackTraceAsString(exception));
+                args.add(ExceptionUtil.getStackTraceAsString(exception));
             }else {
                 if (HttpHeaders.hasBody(response)){
                     ResponseBody responseBody = response.body();
