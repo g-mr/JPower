@@ -9,18 +9,26 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 本地Guava缓存
- * @Author mr.g
- * @Date 2021/11/16 0016 23:36
- */
+ *
+ * @author mr.g
+ **/
 public class GuavaCache {
 
-    private final static Map<Long,GuavaCache> cacheMaps = new ConcurrentHashMap<>();
-    private Cache<String, Object> CACHE;
+    private final static Map<Long,GuavaCache> CACHE_MAP = new ConcurrentHashMap<>();
+    private Cache<String, Object> cache;
 
+    /**
+     * 缓存实例
+     *
+     * @author mr.g
+     * @param expireTime 过期时间
+     * @param unit 时间单位
+     * @return 缓存
+     **/
     public static GuavaCache getInstance(Long expireTime,TimeUnit unit){
         Long key = unit.toNanos(expireTime);
 
-        if (cacheMaps.get(key) == null){
+        if (CACHE_MAP.get(key) == null){
             Cache<String, Object> cache = CacheBuilder.newBuilder()
                     .initialCapacity(1000)
                     // 设置缓存在写入一天后失效
@@ -30,20 +38,34 @@ public class GuavaCache {
                     .build();
 
             GuavaCache guavaCache = new GuavaCache();
-            guavaCache.CACHE = cache;
-            cacheMaps.put(key,guavaCache);
+            guavaCache.cache = cache;
+            CACHE_MAP.put(key,guavaCache);
         }
 
-        return cacheMaps.get(key);
+        return CACHE_MAP.get(key);
     }
 
+    /**
+     * 获取缓存值
+     *
+     * @author mr.g
+     * @param key 键
+     * @return 值
+     **/
     public Object get(String key) {
-        return CACHE.getIfPresent(key);
+        return cache.getIfPresent(key);
     }
 
+    /**
+     * 设置一个缓存值
+     *
+     * @author mr.g
+     * @param key 键
+     * @param value 值
+     **/
     public void put(String key, Object value) {
         if (Fc.notNull(value)){
-            CACHE.put(key, value);
+            cache.put(key, value);
         }
     }
 }
