@@ -14,7 +14,14 @@ import java.util.concurrent.TimeUnit;
  **/
 public class GuavaCache {
 
+    /**
+     * 存储所有缓存
+     **/
     private final static Map<Long,GuavaCache> CACHE_MAP = new ConcurrentHashMap<>();
+
+    /**
+     * 当前缓存
+     **/
     private Cache<String, Object> cache;
 
     /**

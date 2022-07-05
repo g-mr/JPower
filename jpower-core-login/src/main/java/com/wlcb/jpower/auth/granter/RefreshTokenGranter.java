@@ -41,7 +41,7 @@ public class RefreshTokenGranter implements TokenGranter {
 		//业务扩展字段
 		String userType = tokenParameter.getUserType();
 		if (Fc.isNoneBlank(grantType, refreshToken) && grantType.equals(TokenConstant.REFRESH_TOKEN)) {
-			Claims claims = JwtUtil.parseJWT(refreshToken);
+			Claims claims = JwtUtil.parseJwt(refreshToken);
 			if (Fc.isNull(claims)){
 				throw new JpowerException(HttpStatus.PROXY_AUTHENTICATION_REQUIRED.value(),TokenUtil.TOKEN_EXPIRED);
 			}

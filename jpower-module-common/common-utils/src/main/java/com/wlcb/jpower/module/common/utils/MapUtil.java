@@ -8,9 +8,7 @@ import java.util.Map;
 /**
  * Map工具类
  *
- * @Author mr.g
- * @Date 2022/6/28 22:17
- * @Description
+ * @author mr.g
  */
 public class MapUtil extends cn.hutool.core.map.MapUtil {
 

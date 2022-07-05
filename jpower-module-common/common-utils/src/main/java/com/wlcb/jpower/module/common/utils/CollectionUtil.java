@@ -8,7 +8,7 @@ import java.util.HashSet;
 /**
  * 集合工具类
  *
- * @author 郭丁志
+ * @author mr.g
  */
 public class CollectionUtil extends CollUtil {
 

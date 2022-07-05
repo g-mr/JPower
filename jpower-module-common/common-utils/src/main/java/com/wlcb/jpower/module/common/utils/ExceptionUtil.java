@@ -2,14 +2,14 @@ package com.wlcb.jpower.module.common.utils;
 
 
 /**
- * Utility methods for terminal atomics with Throwables.
+ * 异常工具
  *
- * @since 1.1.2
- */
+ * @author mr.g
+ **/
 public class ExceptionUtil extends cn.hutool.core.exceptions.ExceptionUtil {
 
     /**
-     * 堆栈转为完整字符串.
+     * 堆栈转为完整字符串.<br/>
      * 不限制输出长度
      *
      * @param ex 异常

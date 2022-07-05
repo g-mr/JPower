@@ -1,6 +1,8 @@
 package com.wlcb.jpower.module.common.utils.constants;
 
 
+import java.util.Base64;
+
 /**
  * @ClassName TokenConstant
  * @Description TODO Token配置常量
@@ -20,9 +22,13 @@ public interface TokenConstant {
     String USER_ID = "userId";
     String TENANT_CODE = "tenantCode";
     String CLIENT_CODE = "clientCode";
-    Integer AUTH_LENGTH = 7;
     /** 匿名用户和白名单的HEADER **/
     String PASS_HEADER_NAME = "jpower-auth-pass";
     /** 数据权限的HEADER **/
     String DATA_SCOPE_NAME = "data-scope";
+
+    /**
+     * JWT密钥
+     **/
+    byte[] JWT_BASE64_SECURITY = Base64.getDecoder().decode(Base64.getEncoder().encodeToString(SIGN_KEY.getBytes(CharsetKit.CHARSET_UTF_8)));
 }

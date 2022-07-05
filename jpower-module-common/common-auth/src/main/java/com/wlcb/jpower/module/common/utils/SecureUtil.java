@@ -5,7 +5,6 @@ import cn.hutool.core.codec.Base64Decoder;
 import cn.hutool.core.date.DateUnit;
 import com.wlcb.jpower.module.common.auth.RoleConstant;
 import com.wlcb.jpower.module.common.auth.SecureConstant;
-import com.wlcb.jpower.module.common.auth.TokenInfo;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.support.EnvBeanUtil;
 import com.wlcb.jpower.module.common.utils.constants.CharPool;
@@ -13,16 +12,14 @@ import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
-import java.security.Key;
-import java.util.*;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import static com.wlcb.jpower.module.common.auth.SecureConstant.BASIC_HEADER_PREFIX;
 
@@ -32,9 +29,7 @@ import static com.wlcb.jpower.module.common.auth.SecureConstant.BASIC_HEADER_PRE
  **/
 @Slf4j
 public class SecureUtil {
-    private static final String REQUEST_JPOWER_USER = "REQUEST_JPOWER_USER";
-    private final static String HEADER = TokenConstant.HEADER;
-    private static final String BASE64_SECURITY = Base64.getEncoder().encodeToString(TokenConstant.SIGN_KEY.getBytes(CharsetKit.CHARSET_UTF_8));
+    private static final String REQUEST_USER_SESSION = "REQUEST_USER_SESSION";
     private static final boolean TENANT_MODE = EnvBeanUtil.get("jpower.tenant.enable", Boolean.class, true);
 
     /**
@@ -48,14 +43,14 @@ public class SecureUtil {
             return null;
         }
 
-        UserInfo userInfo = (UserInfo) request.getSession().getAttribute(REQUEST_JPOWER_USER);
+        UserInfo userInfo = (UserInfo) request.getSession().getAttribute(REQUEST_USER_SESSION);
         if (Fc.isNull(userInfo)) {
             userInfo = getUser(request);
             if (Fc.notNull(userInfo)){
                 long bet = DateUtil.between(DateUtil.date(),getClaims(request).getExpiration(), DateUnit.SECOND, false);
                 if (bet > 0){
                     request.getSession().setMaxInactiveInterval((int) bet);
-                    request.getSession().setAttribute(REQUEST_JPOWER_USER, userInfo);
+                    request.getSession().setAttribute(REQUEST_USER_SESSION, userInfo);
                 }
             }
         }
@@ -197,43 +192,7 @@ public class SecureUtil {
      * @return Claims
      */
     public static Claims getClaims(HttpServletRequest request) {
-        return JwtUtil.parseJWT(JwtUtil.getToken(request));
-    }
-
-    /**
-     * 创建令牌
-     *
-     * @param param      param
-     * @param expire     expire
-     * @return jwt
-     */
-    public static TokenInfo createJWT(Map<String, Object> param, long expire) {
-
-        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
-
-        long nowMillis = System.currentTimeMillis();
-        Date now = new Date(nowMillis);
-
-        //生成签名密钥
-        byte[] apiKeySecretBytes = Base64.getDecoder().decode(BASE64_SECURITY);
-        Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
-
-        //添加构成JWT的类
-        JwtBuilder builder = Jwts.builder().setHeaderParam("Type", "JsonWebToken")
-                .signWith(signatureAlgorithm, signingKey);
-
-        //设置JWT参数
-        param.forEach(builder::claim);
-
-        Date exp = new Date(nowMillis + expire * 1000);
-        builder.setExpiration(exp).setNotBefore(now);
-
-        // 组装Token信息
-        TokenInfo tokenInfo = new TokenInfo();
-        tokenInfo.setToken(builder.compact());
-        tokenInfo.setExpire(expire);
-
-        return tokenInfo;
+        return JwtUtil.parseJwt(JwtUtil.getToken(request));
     }
 
     /**
@@ -251,8 +210,9 @@ public class SecureUtil {
         return extractClient(decodeBasic);
     }
 
+    @SneakyThrows(UnsupportedEncodingException.class)
     private static String[] extractClient(String decodeBasic) {
-        String token = base64Decoder(decodeBasic);
+        String token = new String(Base64Decoder.decode(decodeBasic.getBytes(CharsetKit.UTF_8)), CharsetKit.UTF_8);
         if (StringUtil.contains(token, CharPool.COLON)) {
             return new String[]{
                     StringUtil.subBefore(token,StringPool.COLON,false),
@@ -260,11 +220,6 @@ public class SecureUtil {
         } else {
             throw new RuntimeException("无效的基本身份验证令牌");
         }
-    }
-
-    @SneakyThrows
-    public static String base64Decoder(String header) {
-        return new String(Base64Decoder.decode(header.getBytes(CharsetKit.UTF_8)), CharsetKit.UTF_8);
     }
 
     /**

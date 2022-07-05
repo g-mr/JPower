@@ -5,6 +5,7 @@ package com.wlcb.jpower.module.common.utils;
  *
  * @author mr.g
  **/
+@SuppressWarnings("AlibabaClassNamingShouldBeCamel")
 public class MD5 extends cn.hutool.crypto.digest.DigestUtil {
 
     /**

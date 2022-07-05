@@ -80,7 +80,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
         String token = TokenUtil.getToken(exchange.getRequest());
         if (Fc.isNotBlank(token)) {
 
-            Claims claims = JwtUtil.parseJWT(token);
+            Claims claims = JwtUtil.parseJwt(token);
             if (!redisUtil.exists(CacheNames.TOKEN_URL_KEY + token)){
                 return proxyAuthenticationRequired(exchange.getResponse(), "令牌已过期，请重新登陆");
             }

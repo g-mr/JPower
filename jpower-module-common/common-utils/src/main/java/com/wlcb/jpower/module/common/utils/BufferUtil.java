@@ -16,7 +16,7 @@ public class BufferUtil extends cn.hutool.core.io.BufferUtil {
      * 判断okio的Buffer是否可读
      *
      * @author mr.g
-     * @param buffer
+     * @param buffer okio.Buffer
      * @return boolean
      **/
     public static boolean isReadable(Buffer buffer) {

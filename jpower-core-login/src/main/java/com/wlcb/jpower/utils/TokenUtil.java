@@ -4,13 +4,9 @@ import com.wlcb.jpower.cache.SystemCache;
 import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
 import com.wlcb.jpower.dto.AuthInfo;
 import com.wlcb.jpower.module.base.exception.BusinessException;
-import com.wlcb.jpower.module.common.auth.TokenInfo;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.support.ChainMap;
-import com.wlcb.jpower.module.common.utils.DateUtil;
-import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.SecureUtil;
-import com.wlcb.jpower.module.common.utils.StringUtil;
+import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
 
 import java.util.Map;
@@ -101,12 +97,14 @@ public class TokenUtil {
         param.put(TokenConstant.TOKEN_TYPE, TokenConstant.ACCESS_TOKEN);
         param.put(TokenConstant.CLIENT_CODE, client.getClientCode());
 
-        TokenInfo accessToken = SecureUtil.createJWT(param, getExpire(client.getAccessTokenValidity()));
+        //token过期时间
+        long expire = getExpire(client.getAccessTokenValidity());
+
         AuthInfo authInfo = new AuthInfo();
         authInfo.setUser(userInfo);
-        authInfo.setAccessToken(accessToken.getToken());
-        authInfo.setExpiresIn(accessToken.getExpire());
-        authInfo.setRefreshToken(createRefreshToken(userInfo,client).getToken());
+        authInfo.setAccessToken(JwtUtil.createJwt(param, expire));
+        authInfo.setExpiresIn(expire);
+        authInfo.setRefreshToken(createRefreshToken(userInfo,client));
         authInfo.setTokenType(TokenConstant.JPOWER);
         AuthUtil.cacheAuth(authInfo);
         return authInfo;
@@ -118,8 +116,8 @@ public class TokenUtil {
      * @param userInfo 用户信息
      * @return refreshToken
      */
-    private static TokenInfo createRefreshToken(UserInfo userInfo,TbCoreClient client) {
-        return SecureUtil.createJWT(ChainMap.init()
+    private static String createRefreshToken(UserInfo userInfo,TbCoreClient client) {
+        return JwtUtil.createJwt(ChainMap.init()
                 .set(TokenConstant.TOKEN_TYPE, TokenConstant.REFRESH_TOKEN)
                 .set(TokenConstant.USER_ID, userInfo.getUserId())
                 .set(TokenConstant.CLIENT_CODE, client.getClientCode())
