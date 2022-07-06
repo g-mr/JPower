@@ -36,6 +36,11 @@ public class JwtUtil {
      * @return 令牌解析结果
      */
     public static Claims parseJwt(@NonNull String token) {
+
+        if(Fc.isBlank(token)){
+            return null;
+        }
+
         try {
             return Jwts.parser()
                     .setSigningKey(JWT_BASE64_SECURITY)

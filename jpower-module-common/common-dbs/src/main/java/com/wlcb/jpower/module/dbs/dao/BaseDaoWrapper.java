@@ -1,6 +1,7 @@
 package com.wlcb.jpower.module.dbs.dao;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wlcb.jpower.module.common.utils.BeanUtil;
 
 import java.util.List;
 import java.util.Objects;
@@ -15,6 +16,13 @@ public interface BaseDaoWrapper<T,V> {
     V conver(T entity);
 
     default List<V> listConver(List<T> list){
+
+        if (list instanceof com.github.pagehelper.Page){
+            com.github.pagehelper.Page<V> page = BeanUtil.copyProperties(list,com.github.pagehelper.Page.class);
+            page.addAll(list.stream().filter(Objects::nonNull).map(this::conver).collect(Collectors.toList()));
+            return page;
+        }
+
         return list.stream().filter(Objects::nonNull).map(this::conver).collect(Collectors.toList());
     }
 
