@@ -259,9 +259,7 @@ public class UserController extends BaseController {
         JpowerAssert.notTrue(file == null || file.isEmpty(), JpowerError.Arg, "文件不可为空");
 
         try {
-            String savePaths = MultipartFileUtil.saveFile(file, "xls,xlsx", ImportExportConstants.IMPORT_PATH);
-
-            File saveFile = new File(ImportExportConstants.IMPORT_PATH + savePaths);
+            File saveFile = FileUtil.saveFile(file, "xls,xlsx", ImportExportConstants.IMPORT_PATH);
 
             if (saveFile.exists()) {
                 BeanExcelUtil<TbCoreUser> beanExcelUtil = new BeanExcelUtil<>(TbCoreUser.class);

@@ -15,6 +15,7 @@ public interface BaseDaoWrapper<T,V> {
 
     V conver(T entity);
 
+    @SuppressWarnings("unchecked")
     default List<V> listConver(List<T> list){
 
         if (list instanceof com.github.pagehelper.Page){

@@ -5,14 +5,21 @@ import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ZipUtil;
+import com.wlcb.jpower.module.common.support.FileType;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
+import lombok.Cleanup;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 文件工具类
@@ -222,6 +229,93 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
 
             return rename(new File(parentDir.getAbsolutePath() + File.separator + fileNamePrefix + StringPool.DOT + FileNameUtil.getSuffix(file)));
         }
+    }
+
+    /**
+     * 保存上传文件
+     *
+     * @author mr.g
+     * @param file 上传文件
+     * @param savePath 保存路径
+     * @return 文件路径
+     **/
+    public static File saveFile(MultipartFile file, String savePath) throws IOException{
+        return saveFile(file,null,savePath);
+    }
+
+    /**
+     * 保存上传文件
+     *
+     * @author mr.g
+     * @param file 上传文件
+     * @param fileSuffixName 支持得文件后缀
+     * @param savePath 保存路径
+     * @return 文件路径
+     **/
+    public static File saveFile(MultipartFile file,String fileSuffixName,String savePath) throws IOException {
+        return saveFile(file, fileSuffixName, savePath,null);
+    }
+
+    /**
+     * 保存上传文件
+     *
+     * @author mr.g
+     * @param multipartFile 上传文件
+     * @param fileSuffixName 支持得文件后缀
+     * @param savePath 保存路径
+     * @param fileName 文件名称
+     * @return 文件路径
+     **/
+    public static File saveFile(MultipartFile multipartFile,String fileSuffixName,String savePath,String fileName) throws IOException {
+
+        if (Fc.isBlank(fileName)){
+            fileName = FileNameUtil.getPrefix(multipartFile.getOriginalFilename());
+        }
+        //获得文件后缀名
+        String suffixName=FileNameUtil.getSuffix(multipartFile.getOriginalFilename());
+        if (StringUtils.isNotBlank(fileSuffixName) && !StringUtils.containsIgnoreCase(fileSuffixName,suffixName) && !StringUtils.containsIgnoreCase(fileSuffixName, FileType.getFileType(multipartFile.getInputStream()))){
+            throw new IllegalArgumentException("不支持的后缀类型");
+        }
+
+        File file = FileUtil.rename(new File(savePath+File.separator+DateUtil.today() + File.separator + fileName + "." + suffixName));
+
+        assert file != null;
+        if(!file.getParentFile().exists()){
+            //noinspection ResultOfMethodCallIgnored
+            file.getParentFile().mkdirs();
+        }
+
+        multipartFile.transferTo(file);
+
+        log.info("文件保存成功，文件路径={}",file.getAbsolutePath());
+
+        return new File(savePath + File.separator + DateUtil.today() + File.separator + file.getName());
+    }
+
+    /**
+     * 读取上传文件内容
+     *
+     * @author mr.g
+     * @param multipartFile 上传文件
+     * @param chares 编码
+     * @return 文件内容
+     **/
+    @SneakyThrows(IOException.class)
+    public static List<String> readContent(MultipartFile multipartFile, String chares){
+
+        List<String> list = new ArrayList<>();
+
+        @Cleanup Reader reader = new InputStreamReader(multipartFile.getInputStream(), chares);
+        BufferedReader br = new BufferedReader( reader);
+        String line;
+        while ((line = br.readLine()) != null) {
+            // 一次读入一行数据
+            if(Fc.isNotBlank(line)){
+                list.add(line);
+            }
+        }
+
+        return list;
     }
 
 }

@@ -34,17 +34,14 @@ public class ServerFileOperate implements FileOperate {
 	@Autowired
 	private CoreFileService coreFileService;
 
-	private final String pathPrefix = "file";
-
 	@Override
 	public TbCoreFile upload(MultipartFile file) throws IOException {
 		JpowerAssert.notEmpty(fileParentPath, JpowerError.Unknown,"未配置文件保存路径");
 
-		String path = MultipartFileUtil.saveFile(file,fileParentPath + File.separator + pathPrefix);
-		File saveFile = new File(fileParentPath + File.separator +pathPrefix+File.separator+path);
+		File saveFile = FileUtil.saveFile(file,fileParentPath);
 
 		TbCoreFile coreFile = new TbCoreFile();
-		coreFile.setPath(pathPrefix + File.separator +path);
+		coreFile.setPath(saveFile.getAbsolutePath());
 		coreFile.setName(saveFile.getName());
 		coreFile.setStorageType(SERVER.getValue());
 		coreFile.setFileType(FileTypeUtil.getType(saveFile));
@@ -73,7 +70,7 @@ public class ServerFileOperate implements FileOperate {
 			throw new BusinessException("文件不存在，无法下载");
 		}
 
-		File file = new File(fileParentPath+File.separator+path);
+		File file = new File(path);
 		if (!file.exists()){
 			throw new BusinessException(file.getName()+"文件不存在，无法下载");
 		}
@@ -85,7 +82,7 @@ public class ServerFileOperate implements FileOperate {
 		String path = coreFile.getPath();
 		JpowerAssert.notEmpty(path,JpowerError.Parser,"文件路径不存在");
 
-		File file = new File(fileParentPath+File.separator+path);
+		File file = new File(path);
 		if (!file.exists()){
 			throw new BusinessException(file.getName()+"文件不存在，无法下载");
 		}
@@ -95,7 +92,7 @@ public class ServerFileOperate implements FileOperate {
 
 	@Override
 	public Boolean deleteFile(TbCoreFile tbCoreFile) {
-		File file = new File(fileParentPath+File.separator+tbCoreFile.getPath());
+		File file = new File(tbCoreFile.getPath());
 		FileUtil.deleteFile(file);
 		return true;
 	}

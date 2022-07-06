@@ -10,6 +10,7 @@ import cn.hutool.core.util.URLUtil;
 import com.wlcb.jpower.module.common.enums.RandomType;
 import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
+import lombok.NonNull;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
@@ -147,7 +148,7 @@ public class Fc {
      * @return 是否数组
      */
     public static boolean isArray(@Nullable Object obj) {
-        return ObjectUtil.isArray(obj);
+        return ArrayUtil.isArray(obj);
     }
 
     /**
@@ -236,19 +237,13 @@ public class Fc {
     }
 
     /**
-     * 确定给定的对象是否相等，如果返回 {@code true}
-     * 如果只有一个是 {@code null}，两者都是 {@code null} 或 {@code false}。
-     * <p>将数组与 {@code Arrays.equals} 进行比较，执行相等
-     * 基于数组元素而不是数组引用进行检查。
-     *
+     * 判断俩个类型的值是否相等
      * @param o1 要比较的第一个对象
      * @param o2 要比较的第二个对象
-     * @return 给定的对象是否相等
-     * @see Object#equals(Object)
-     * @see Arrays#equals
-     */
-    public static boolean equalsSafe(@Nullable Object o1, @Nullable Object o2) {
-        return ObjectUtil.nullSafeEquals(o1, o2);
+     * @return 给定的对象值是否相等
+     **/
+    public static boolean equalsValue(@NonNull Object o1, @NonNull Object o2) {
+        return ObjectUtil.equalsValue(o1, o2);
     }
 
     /**
@@ -257,8 +252,8 @@ public class Fc {
      * @param o2 要比较的第二个对象
      * @return 给定的对象值是否相等
      **/
-    public static boolean equalsValue(@Nullable Object o1, @Nullable Object o2) {
-        return ObjectUtil.equalsValue(o1, o2);
+    public static boolean equalsValue(@Nullable CharSequence o1, @Nullable CharSequence o2) {
+        return StringUtil.equals(o1, o2);
     }
 
     /**
