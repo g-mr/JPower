@@ -85,15 +85,16 @@ public class ReturnJsonUtil {
      * @return ResponseData
      **/
     public static <T> ResponseData ok(String msg, T data){
+        if (!ClassUtil.isSimpleValueType(data.getClass())){
+            if (StringUtil.startWith(data.getClass().getName(),"com.baomidou.mybatisplus")){
+                return printJson(ConstantsReturn.RECODE_SUCCESS, msg, new Pg<>(ReflectUtil.invoke(data,"getTotal"),ReflectUtil.invoke(data,"getRecords")), true);
+            }
 
-        if (StringUtil.startWith(data.getClass().getName(),"com.baomidou.mybatisplus")){
-            return printJson(ConstantsReturn.RECODE_SUCCESS, msg, new Pg<>(ReflectUtil.invoke(data,"getTotal"),ReflectUtil.invoke(data,"getRecords")), true);
+            if (StringUtil.startWith(data.getClass().getName(),"com.github.pagehelper")){
+                return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS, msg, new Pg<>(ReflectUtil.invoke(data,"getTotal"),ReflectUtil.invoke(data,"getList")), true);
+            }
+
         }
-
-        if (StringUtil.startWith(data.getClass().getName(),"com.github.pagehelper")){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS, msg, new Pg<>(ReflectUtil.invoke(data,"getTotal"),ReflectUtil.invoke(data,"getList")), true);
-        }
-
         return printJson(ConstantsReturn.RECODE_SUCCESS, msg, data, true);
     }
 
