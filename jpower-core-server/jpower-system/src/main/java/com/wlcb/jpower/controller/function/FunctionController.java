@@ -84,7 +84,7 @@ public class FunctionController extends BaseController {
 
         TbCoreFunction function = coreFunctionService.selectFunctionByCode(coreFunction.getCode());
         if (function != null){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该菜单已存在", false);
+            return ReturnJsonUtil.print(ConstantsReturn.RECODE_BUSINESS,"该菜单已存在", false);
         }
 
         Boolean is = coreFunctionService.add(coreFunction);
@@ -105,7 +105,7 @@ public class FunctionController extends BaseController {
 
         long c = coreFunctionService.listByPids(ids);
         if (c > 0){
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该菜单存在下级菜单，请先删除下级菜单", false);
+            return ReturnJsonUtil.print(ConstantsReturn.RECODE_BUSINESS,"该菜单存在下级菜单，请先删除下级菜单", false);
         }
 
         Boolean is = coreFunctionService.delete(ids);
@@ -127,7 +127,7 @@ public class FunctionController extends BaseController {
         if (StringUtils.isNotBlank(coreFunction.getCode())){
             TbCoreFunction function = coreFunctionService.selectFunctionByCode(coreFunction.getCode());
             if (function != null && !StringUtils.equals(function.getId(),function.getId())){
-                return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS,"该菜单已存在", false);
+                return ReturnJsonUtil.print(ConstantsReturn.RECODE_BUSINESS,"该菜单已存在", false);
             }
         }
 

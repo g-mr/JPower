@@ -61,13 +61,13 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
             @Override
             public ResponseData saveUser(TbCoreUser user, String roleId) {
                 log.error("调用saveUser失败，参数：user={}，roleId={} ，e={}", user, roleId, cause);
-                return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_API, cause.getMessage(), false);
+                return ReturnJsonUtil.print(ConstantsReturn.RECODE_API, cause.getMessage(), false);
             }
 
             @Override
             public ResponseData<List<TbCoreUser>> listByUserType(Integer userType) {
                 log.error("调用listByUserType失败，参数：userType={}", userType);
-                return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_API, cause.getMessage(), false);
+                return ReturnJsonUtil.print(ConstantsReturn.RECODE_API, cause.getMessage(), false);
             }
         };
     }

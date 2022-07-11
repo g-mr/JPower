@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -34,12 +35,12 @@ public class ClientInterceptor implements HandlerInterceptor {
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(@Nonnull HttpServletRequest request,@Nonnull HttpServletResponse response,@Nonnull Object handler){
         boolean isSkip = clientCodes.stream().filter(client -> isIntercept(client,request)).map(client -> true).findFirst().orElse(false);
 
         if (!isSkip){
             log.warn("客户端认证失败，请求接口：{}，请求IP：{}，请求参数：{}", request.getRequestURI(), WebUtil.getIP(request), JSON.toJSONString(request.getParameterMap()));
-            ReturnJsonUtil.sendJsonMessage(response,ReturnJsonUtil.printJson(HttpStatus.NOT_ACCEPTABLE.value(),"无效的客户端请求",false));
+            WebUtil.renderJson(response,ReturnJsonUtil.print(HttpStatus.NOT_ACCEPTABLE.value(),"无效的客户端请求",false));
         }
         return isSkip;
     }

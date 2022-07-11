@@ -6,6 +6,7 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.util.ArrayUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import lombok.extern.slf4j.Slf4j;
@@ -173,8 +174,9 @@ public class WebUtil extends org.springframework.web.util.WebUtils {
     public static void renderJson(HttpServletResponse response, Object result, String contentType) {
         response.setCharacterEncoding(StringPool.UTF_8);
         response.setContentType(contentType);
-        try (PrintWriter out = response.getWriter()) {
-            out.append(JSON.toJSONString(result));
+        try (PrintWriter writer = response.getWriter()) {
+            writer.append(JSON.toJSONString(result, SerializerFeature.WriteMapNullValue,
+                    SerializerFeature.WriteDateUseDateFormat));
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }

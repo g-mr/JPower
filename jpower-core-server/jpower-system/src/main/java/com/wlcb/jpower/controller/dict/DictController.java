@@ -102,7 +102,7 @@ public class DictController extends BaseController {
 
         PaginationContext.startPage();
         List<DictVo> list = coreDictService.listByType(dict);
-        return ReturnJsonUtil.ok("查询成功", new PageInfo<>(list));
+        return ReturnJsonUtil.data(new PageInfo<>(list));
     }
 
     @ApiOperation("通过字典类型查询字典列表")

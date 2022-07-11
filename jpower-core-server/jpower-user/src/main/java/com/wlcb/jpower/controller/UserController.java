@@ -113,7 +113,7 @@ public class UserController extends BaseController {
         }
 
         if (StringUtils.isNotBlank(coreUser.getTelephone()) && !StrUtil.isPhone(coreUser.getTelephone())) {
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_BUSINESS, "手机号不合法", false);
+            return ReturnJsonUtil.print(ConstantsReturn.RECODE_BUSINESS, "手机号不合法", false);
         }
 
         if (StringUtils.isNotBlank(coreUser.getEmail()) && !StrUtil.isEmail(coreUser.getEmail())) {
@@ -278,7 +278,7 @@ public class UserController extends BaseController {
             return ReturnJsonUtil.fail("上传出错，请稍后重试");
         } catch (Exception e) {
             logger.error("文件上传出错，error={}", ExceptionUtil.getStackTraceAsString(e));
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_ERROR, "上传出错，请稍后重试", false);
+            return ReturnJsonUtil.print(ConstantsReturn.RECODE_ERROR, "上传出错，请稍后重试", false);
         }
 
     }

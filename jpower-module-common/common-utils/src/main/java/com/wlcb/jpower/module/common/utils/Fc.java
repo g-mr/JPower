@@ -665,8 +665,8 @@ public class Fc {
      *
      * @return UUID
      */
-    public static String randomSnowFlakeId() {
-        return Fc.toStr(SnowFlakeIdUtil.getInstance().nextId());
+    public static long randomSnowFlakeId() {
+        return SnowFlakeIdUtil.nextId();
     }
 
     /**

@@ -68,7 +68,7 @@ public class FileController extends BaseController {
         } catch (Exception e){
             e.printStackTrace();
             logger.error("文件上传失败，e={}",e.getMessage());
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_ERROR,"文件上传失败", false);
+            return ReturnJsonUtil.print(ConstantsReturn.RECODE_ERROR,"文件上传失败", false);
         }
     }
 

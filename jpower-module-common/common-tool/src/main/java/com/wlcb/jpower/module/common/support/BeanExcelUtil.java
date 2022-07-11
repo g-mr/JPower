@@ -194,7 +194,7 @@ public class BeanExcelUtil<T> {
             log.info("文件生成路径={}",path);
             out = new FileOutputStream(path);
             wb.write(out);
-            return ReturnJsonUtil.printJson(ConstantsReturn.RECODE_SUCCESS,"生成成功",filename,true);
+            return ReturnJsonUtil.print(ConstantsReturn.RECODE_SUCCESS,"生成成功",filename,Boolean.TRUE);
         }
         catch (Exception e){
             log.error("导出Excel异常{}", e.getMessage());
