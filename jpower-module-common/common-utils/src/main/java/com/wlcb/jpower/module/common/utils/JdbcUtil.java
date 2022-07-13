@@ -33,11 +33,17 @@ public class JdbcUtil {
             config.setContainsHeader(true);
             config.setTrimField(true);
 
-            CsvData data =  CsvUtil.getReader(config).read(new File("C:\\Users\\mr.g\\Desktop\\ok_data_level4.csv"));
+            CsvData data =  CsvUtil.getReader(config).read(new File("/Users/mr.gmac/Desktop/ok_data_level4.csv"));
+
+            File 不对应 = new File("/Users/mr.gmac/Desktop/不对应.txt");
+            FileUtil.touch(不对应);
+            File 没有查到的 = new File("/Users/mr.gmac/Desktop/没有查到的.txt");
+            FileUtil.touch(没有查到的);
 
             for (CsvRow csvRow : data) {
                 String code = csvRow.getByName("ext_id");
                 String name = csvRow.getByName("ext_name");
+                Integer rand = Fc.toInt(csvRow.getByName("deep"))+1;
                 if (!Fc.equalsValue(code,"0")){
 
                     //3.执行sql语句,得到resultSet
@@ -48,13 +54,17 @@ public class JdbcUtil {
                     if (resultSet.next()){
 
                         if (!Fc.equalsValue(resultSet.getString("name"),name)){
-                            System.out.println("查到不对应的数据=>"+code+","+name+","+resultSet.getString("name"));
-                            FileUtil.appendUtf8Lines(CollectionUtil.toList(code+","+name+","+resultSet.getString("name")),"C:\\Users\\mr.g\\Desktop\\不对应.txt");
+                            if (rand <= 3){
+                                System.out.println("查到不对应的数据=>"+code+","+name+","+resultSet.getString("name"));
+                            }
+                            FileUtil.appendUtf8Lines(CollectionUtil.toList(code+","+name+","+rand+","+resultSet.getString("name")+","+resultSet.getInt("rankd")),不对应);
                         }
 
                     }else {
-                        System.out.println("没有查到CODE=>"+code+","+name);
-                        FileUtil.appendUtf8Lines(CollectionUtil.toList(code+","+name),"C:\\Users\\mr.g\\Desktop\\没有查到的.txt");
+                        if (rand <= 3) {
+                            System.out.println("没有查到CODE=>" + code + "," + name);
+                        }
+                        FileUtil.appendUtf8Lines(CollectionUtil.toList(code+","+name+","+rand),没有查到的);
 
                     }
 
@@ -62,7 +72,7 @@ public class JdbcUtil {
             }
 
         } catch (Exception e) {
-            // TODO: handle exception
+            e.printStackTrace();
         }finally {
             JdbcUtil.close(connection, resultSet, statement);
         }
@@ -71,7 +81,7 @@ public class JdbcUtil {
     static String driverClass = "com.mysql.cj.jdbc.Driver";
     static String url = "jdbc:mysql://82.156.227.156:3306/hand-phone?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8";
     static String name = "hand-phone";
-    static String password = "123456";
+    static String password = "hand-phone";
 
     //读取jdbc.properties
     static{
@@ -102,9 +112,6 @@ public class JdbcUtil {
      * 注册驱动 建立参数
      * <p>Title: close</p>
      * <p>Description: </p>
-     * @param connection
-     * @param resultSet
-     * @param statement
      */
 
     public static Connection getConn(){
