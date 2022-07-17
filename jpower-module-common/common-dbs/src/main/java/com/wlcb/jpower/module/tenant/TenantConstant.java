@@ -39,7 +39,7 @@ public interface TenantConstant {
      * @date 22:18 2020/10/24 0024
      */
     static String getLicenseKey(Integer accountNumber, Date expireTime){
-        String et = Fc.isNull(expireTime)?StringPool.NULL:Fc.formatDateTime(expireTime);
+        String et = Fc.isNull(expireTime)?StringPool.NULL:DateUtil.formatDateTime(expireTime);
         return DesedeUtil.encrypt(accountNumber + StringPool.SEMICOLON + et);
     }
 

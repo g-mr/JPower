@@ -6,7 +6,6 @@ import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.support.BeanExcelUtil;
 import com.wlcb.jpower.module.common.utils.DateUtil;
-import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.ImportExportConstants;
 import com.wlcb.jpower.module.mp.support.Condition;
@@ -56,7 +55,7 @@ public class MonitorController extends BaseController {
 
     private Map<String,Object> initMap(Map<String,Object> map){
         if (!map.containsKey("createTime" + SqlKeyword.DATE_GT)){
-            map.put("createTime" + SqlKeyword.DATE_GT, Fc.formatDateTime(DateUtil.offsetDay(new Date(), -30)));
+            map.put("createTime" + SqlKeyword.DATE_GT, DateUtil.formatDateTime(DateUtil.offsetDay(new Date(), -30)));
         }
 
         if (!map.containsKey("createTime" + SqlKeyword.DATE_LT)){
