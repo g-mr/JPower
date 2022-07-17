@@ -2,44 +2,24 @@ package com.wlcb.jpower.module.common.utils;
 
 import cn.hutool.core.util.StrUtil;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
+import lombok.NonNull;
 
 import java.util.Collection;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
- * 字符串工具类
+ * 字符串工具
+ *
  * @author mr.g
  */
 public class StringUtil extends StrUtil {
-
-    /**普通的英文半角空格Unicode编码*/
-    private static final int SPACE_32 = 32;
-
-    /**中文全角空格Unicode编码(一个中文宽度)*/
-    private static final int SPACE_12288 = 12288;
-
-    /**普通的英文半角空格但不换行Unicode编码(== &nbsp; == &#xA0; == no-break space)*/
-    private static final int SPACE_160 = 160;
-
-    /**半个中文宽度(== &ensp; == en空格)*/
-    private static final int SPACE_8194 = 8194;
-
-    /**一个中文宽度(== &emsp; == em空格)*/
-    private static final int SPACE_8195 = 8195;
-
-    /**四分之一中文宽度(四分之一em空格)*/
-    private static final int SPACE_8197 = 8197;
-
-    /**窄空格*/
-    private static final int SPACE_8201 = 8201;
-
 
     /**
      * 有 任意 一个 Blank
      *
      * @param css CharSequence
-     * @return boolean
+     * @return 是否有空字符串
      */
     public static boolean isAnyBlank(final CharSequence... css) {
         if (ObjectUtil.isEmpty(css)) {
@@ -50,28 +30,46 @@ public class StringUtil extends StrUtil {
 
     /**
      * 将 {@code Collection} 转换为带分隔符(,)的 {@code String}
-     */
+     *
+     * @author mr.g
+     * @param coll 列表
+     * @return 字符串
+     **/
     public static String join(Collection<?> coll) {
         return join(StringPool.COMMA, coll);
     }
 
     /**
      * 将 {@code Collection} 转换为带分隔符的 {@code String}
-     */
+     *
+     * @author mr.g
+     * @param coll 列表
+     * @param delim 分隔符
+     * @return java.lang.String
+     **/
     public static String join(Collection<?> coll, String delim) {
         return join(delim, coll);
     }
 
     /**
      * 将 {@code String} 数组转换为逗号分隔的数组
-     */
+     *
+     * @author mr.g
+     * @param arr 数组
+     * @return java.lang.String
+     **/
     public static String join(Object[] arr) {
         return join(StringPool.COMMA, arr);
     }
 
     /**
      * 将 {@code String} 数组转换为带分隔符的 {@code String}
-     */
+     *
+     * @author mr.g
+     * @param arr 数组
+     * @param delim 分隔符
+     * @return java.lang.String
+     **/
     public static String join(Object[] arr, String delim) {
         return join(delim, arr);
     }
@@ -83,12 +81,13 @@ public class StringUtil extends StrUtil {
      * @param txt 字符串
      * @return {String}
      */
-    public static String cleanChars(String txt) {
+    public static String cleanChars(@NonNull String txt) {
         return txt.replaceAll("[ 　`·•�\\f\\t\\v\\s]", "");
     }
 
     /**
      * 截取指定字符串中间部分，不包括标识字符串
+     *
      * @param str    被切割的字符串
      * @param before 截取开始的字符串标识
      * @param after  截取到的字符串标识
@@ -116,7 +115,7 @@ public class StringUtil extends StrUtil {
 
     /**
      * 去掉指定的所有前缀
-     * 生成的字符串只要是指定的前缀就一直去除
+     *
      * @param str    字符串
      * @param suffix 前缀
      * @return 切掉后的字符串，若前缀不是 suffix， 返回原字符串
@@ -132,7 +131,7 @@ public class StringUtil extends StrUtil {
 
     /**
      * 去掉指定的所有前缀后缀
-     * todo 生成的字符串只要是指定的前缀后缀就一直去除
+     *
      * @param str    字符串
      * @param suffix 前缀后缀
      * @return 切掉后的字符串，若前缀后缀不是 suffix， 返回原字符串
@@ -144,7 +143,7 @@ public class StringUtil extends StrUtil {
 
     /**
      * 去掉指定的所有前缀后缀,并小写首字母
-     * todo 生成的字符串只要是指定的前缀后缀就一直去除
+     *
      * @param str    字符串
      * @param suffix 前缀后缀
      * @return 切掉后的字符串，若前缀后缀不是 suffix， 返回原字符串
@@ -156,7 +155,7 @@ public class StringUtil extends StrUtil {
 
     /**
      * 去掉指定的所有后缀
-     * todo 生成的字符串只要是指定的后缀就一直去除
+     *
      * @param str    字符串
      * @param suffix 后缀
      * @return 切掉后的字符串，若后缀不是 suffix， 返回原字符串
@@ -174,13 +173,11 @@ public class StringUtil extends StrUtil {
      *
      * @param sb   初始StringBuilder
      * @param strs 初始字符串列表
-     * @return StringBuilder对象
      */
-    public static StringBuilder appendBuilder(StringBuilder sb, CharSequence... strs) {
+    public static void appendBuilder(StringBuilder sb, CharSequence... strs) {
         for (CharSequence str : strs) {
             sb.append(str);
         }
-        return sb;
     }
 
     /**
@@ -246,17 +243,6 @@ public class StringUtil extends StrUtil {
     }
 
     /**
-     * 是否是空格字符
-     * @Author mr.g
-     * @param aChar
-     * @return boolean
-     **/
-    public static boolean isSpace(char aChar) {
-        return aChar == SPACE_32 || aChar == SPACE_12288 || aChar == SPACE_160 || aChar == SPACE_8194
-                || aChar == SPACE_8195 || aChar == SPACE_8197 || aChar == SPACE_8201;
-    }
-
-    /**
      * 字符串连接
      * @Author mr.g
      * @Date 00:21 2021-02-22
@@ -278,34 +264,43 @@ public class StringUtil extends StrUtil {
     }
 
     /**
+     * 把通配符转换成正则表达式
+     *
      * @author mr.g
-     * @Description // 把通配符转换成正则表达式
-     * @param path - 通配符
-     */
+     * @param path 通配符
+     * @return java.lang.String
+     **/
     public static String getRegPath(String path) {
         char[] chars = path.toCharArray();
         int len = chars.length;
         StringBuilder sb = new StringBuilder();
         boolean preX = false;
         for (int i = 0; i < len; i++) {
-            if (chars[i] == '*') {//遇到*字符
-                if (preX) {//如果是第二次遇到*，则将**替换成.*
+            //遇到*字符
+            if (chars[i] == '*') {
+                //如果是第二次遇到*，则将**替换成.*
+                if (preX) {
                     sb.append(".*");
                     preX = false;
-                } else if (i + 1 == len) {//如果是遇到单星，且单星是最后一个字符，则直接将*转成[^/]*
+                //如果是遇到单星，且单星是最后一个字符，则直接将*转成[^/]*
+                } else if (i + 1 == len) {
                     sb.append("[^/]*");
-                } else {//否则单星后面还有字符，则不做任何动作，下一把再做动作
+                //否则单星后面还有字符，则不做任何动作，下一把再做动作
+                } else {
                     preX = true;
-                    continue;
                 }
-            } else {//遇到非*字符
-                if (preX) {//如果上一把是*，则先把上一把的*对应的[^/]*添进来
+            //遇到非*字符
+            } else {
+                //如果上一把是*，则先把上一把的*对应的[^/]*添进来
+                if (preX) {
                     sb.append("[^/]*");
                     preX = false;
                 }
-                if (chars[i] == '?') {//接着判断当前字符是不是?，是的话替换成.
+                //接着判断当前字符是不是?，是的话替换成.
+                if (chars[i] == '?') {
                     sb.append('.');
-                } else {//不是?的话，则就是普通字符，直接添进来
+                    //不是?的话，则就是普通字符，直接添进来
+                } else {
                     sb.append(chars[i]);
                 }
             }
@@ -315,8 +310,9 @@ public class StringUtil extends StrUtil {
 
     /**
      * 小写字符串
-     * @Author mr.g
-     * @param str
+     *
+     * @author mr.g
+     * @param str 字符串
      * @return java.lang.String
      **/
     public static String toLowerCase(String str){

@@ -1,5 +1,6 @@
 package com.wlcb.jpower.controller;
 
+import cn.hutool.core.lang.Validator;
 import com.alibaba.fastjson.JSONObject;
 import com.wf.captcha.SpecCaptcha;
 import com.wlcb.jpower.auth.TokenGranterBuilder;
@@ -127,10 +128,10 @@ public class AuthController extends BaseController {
 
     @ApiOperation(value = "获取验证码")
     @GetMapping("/captcha")
-    public ResponseData<Map> captcha() {
+    public ResponseData<Map<String,Object>> captcha() {
         SpecCaptcha specCaptcha = new SpecCaptcha(130, 48, 4);
         String verCode = specCaptcha.text().toLowerCase();
-        String key = UUIDUtil.getUUID();
+        String key = Fc.randomUUID();
         // 存入redis并设置过期时间为30分钟
         redisUtil.set(CacheNames.CAPTCHA_KEY + key, verCode, 30L, TimeUnit.MINUTES);
         // 将key和base64返回给前端
@@ -145,7 +146,7 @@ public class AuthController extends BaseController {
             JpowerAssert.notNull(tenantCode,JpowerError.Arg,"租户编码不可为空");
         }
 
-        if (StringUtils.isBlank(phone) || !StrUtil.isPhone(phone)){
+        if (StringUtils.isBlank(phone) || !Validator.isMobile(phone)){
             return ReturnJsonUtil.fail("手机号不合法");
         }
 

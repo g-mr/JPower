@@ -1,5 +1,6 @@
 package com.wlcb.jpower.controller.tenant;
 
+import cn.hutool.core.lang.Validator;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
 import com.wlcb.jpower.module.base.annotation.OperateLog;
@@ -13,7 +14,6 @@ import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.SecureUtil;
-import com.wlcb.jpower.module.common.utils.StrUtil;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.tenant.TenantService;
 import io.swagger.annotations.*;
@@ -101,7 +101,7 @@ public class TenantController extends BaseController {
         tenant.setId(null);
         JpowerAssert.isTrue(SecureUtil.isRoot(), JpowerError.Auth,"只可超级管理员增加租户");
         JpowerAssert.notEmpty(tenant.getTenantName(), JpowerError.Arg,"租户名称不可为空");
-        if (Fc.isNotBlank(tenant.getContactPhone()) && !StrUtil.isPhone(tenant.getContactPhone())){
+        if (Fc.isNotBlank(tenant.getContactPhone()) && !Validator.isMobile(tenant.getContactPhone())){
             return ReturnJsonUtil.fail("手机号不合法");
         }
         if (Fc.isNotBlank(tenant.getTenantCode())){

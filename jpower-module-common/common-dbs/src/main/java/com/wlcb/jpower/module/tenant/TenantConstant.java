@@ -1,5 +1,6 @@
 package com.wlcb.jpower.module.tenant;
 
+import com.wlcb.jpower.module.common.utils.DateUtil;
 import com.wlcb.jpower.module.common.utils.DesedeUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
@@ -63,7 +64,7 @@ public interface TenantConstant {
         if (Fc.equalsValue(expireTime,StringPool.NULL)){
             return null;
         }
-        return Fc.parseDate(expireTime);
+        return DateUtil.parseDate(expireTime);
     }
 
 }

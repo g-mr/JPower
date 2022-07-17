@@ -12,17 +12,17 @@ import java.util.concurrent.TimeUnit;
  *
  * @author mr.g
  **/
-public class GuavaCache {
+public class GuavaCache<T> {
 
     /**
      * 存储所有缓存
      **/
-    private final static Map<Long,GuavaCache> CACHE_MAP = new ConcurrentHashMap<>();
+    private static final Map<Long,GuavaCache> CACHE_MAP = new ConcurrentHashMap<>();
 
     /**
      * 当前缓存
      **/
-    private Cache<String, Object> cache;
+    private Cache<String, T> cache;
 
     /**
      * 缓存实例
@@ -32,11 +32,11 @@ public class GuavaCache {
      * @param unit 时间单位
      * @return 缓存
      **/
-    public static GuavaCache getInstance(Long expireTime,TimeUnit unit){
+    public static <T> GuavaCache<T> getInstance(Long expireTime,TimeUnit unit){
         Long key = unit.toNanos(expireTime);
 
         if (CACHE_MAP.get(key) == null){
-            Cache<String, Object> cache = CacheBuilder.newBuilder()
+            Cache<String, T> cache = CacheBuilder.newBuilder()
                     .initialCapacity(1000)
                     // 设置缓存在写入一天后失效
                     .expireAfterWrite(expireTime, unit)
@@ -44,7 +44,7 @@ public class GuavaCache {
                     .concurrencyLevel(Runtime.getRuntime().availableProcessors())
                     .build();
 
-            GuavaCache guavaCache = new GuavaCache();
+            GuavaCache<T> guavaCache = new GuavaCache<>();
             guavaCache.cache = cache;
             CACHE_MAP.put(key,guavaCache);
         }
@@ -59,7 +59,7 @@ public class GuavaCache {
      * @param key 键
      * @return 值
      **/
-    public Object get(String key) {
+    public T get(String key) {
         return cache.getIfPresent(key);
     }
 
@@ -70,7 +70,7 @@ public class GuavaCache {
      * @param key 键
      * @param value 值
      **/
-    public void put(String key, Object value) {
+    public void put(String key, T value) {
         if (Fc.notNull(value)){
             cache.put(key, value);
         }

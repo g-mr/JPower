@@ -9,7 +9,6 @@ import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.UUIDUtil;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.service.role.CoreFunctionService;
 import com.wlcb.jpower.service.role.CoreRolefunctionService;
@@ -46,7 +45,7 @@ public class CoreRolefunctionServiceImpl extends BaseServiceImpl<TbCoreRoleFunct
         if (Fc.isNotBlank(functionIds)){
             for (String fId : functionIds.split(StringPool.COMMA)) {
                 TbCoreRoleFunction roleFunction = new TbCoreRoleFunction();
-                roleFunction.setId(UUIDUtil.getUUID());
+                roleFunction.setId(Fc.randomUUID());
                 roleFunction.setFunctionId(fId);
                 roleFunction.setRoleId(roleId);
                 roleFunctions.add(roleFunction);

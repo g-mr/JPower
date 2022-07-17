@@ -1,5 +1,6 @@
 package com.wlcb.jpower.controller;
 
+import cn.hutool.core.lang.Validator;
 import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.cache.SystemCache;
 import com.wlcb.jpower.cache.param.ParamConfig;
@@ -107,16 +108,15 @@ public class UserController extends BaseController {
         JpowerAssert.notEmpty(coreUser.getLoginId(), JpowerError.Arg, "用户名不可为空");
 
         if (coreUser.getIdType() != null && ConstantsEnum.ID_TYPE.ID_CARD.getValue().equals(coreUser.getIdType())) {
-            if (!StrUtil.cardCodeVerifySimple(coreUser.getIdNo())) {
+            if (!Validator.isCitizenId(coreUser.getIdNo())) {
                 return ReturnJsonUtil.busFail("身份证不合法");
             }
         }
 
-        if (StringUtils.isNotBlank(coreUser.getTelephone()) && !StrUtil.isPhone(coreUser.getTelephone())) {
+        if (StringUtils.isNotBlank(coreUser.getTelephone()) && !Validator.isMobile(coreUser.getTelephone())) {
             return ReturnJsonUtil.print(ConstantsReturn.RECODE_BUSINESS, "手机号不合法", false);
         }
-
-        if (StringUtils.isNotBlank(coreUser.getEmail()) && !StrUtil.isEmail(coreUser.getEmail())) {
+        if (StringUtils.isNotBlank(coreUser.getEmail()) && !Validator.isEmail(coreUser.getEmail())) {
             return ReturnJsonUtil.busFail("邮箱不合法");
         }
 
@@ -172,16 +172,16 @@ public class UserController extends BaseController {
         JpowerAssert.notEmpty(coreUser.getId(), JpowerError.Arg, "用户ID不可为空");
 
         if (Fc.notNull(coreUser.getIdType()) && ConstantsEnum.ID_TYPE.ID_CARD.getValue().equals(coreUser.getIdType())) {
-            if (Fc.isNotBlank(coreUser.getIdNo()) && !StrUtil.cardCodeVerifySimple(coreUser.getIdNo())) {
+            if (Fc.isNotBlank(coreUser.getIdNo()) && !Validator.isCitizenId(coreUser.getIdNo())) {
                 return ReturnJsonUtil.busFail("身份证不合法");
             }
         }
 
-        if (StringUtils.isNotBlank(coreUser.getTelephone()) && !StrUtil.isPhone(coreUser.getTelephone())) {
+        if (StringUtils.isNotBlank(coreUser.getTelephone()) && !Validator.isMobile(coreUser.getTelephone())) {
             return ReturnJsonUtil.busFail("手机号不合法");
         }
 
-        if (StringUtils.isNotBlank(coreUser.getEmail()) && !StrUtil.isEmail(coreUser.getEmail())) {
+        if (StringUtils.isNotBlank(coreUser.getEmail()) && !Validator.isEmail(coreUser.getEmail())) {
             return ReturnJsonUtil.busFail("邮箱不合法");
         }
 
@@ -223,7 +223,7 @@ public class UserController extends BaseController {
         JpowerAssert.notNull(SecureUtil.getUser(), JpowerError.Arg, "用户未登录");
 
         if (coreUser.getIdType() != null && ConstantsEnum.ID_TYPE.ID_CARD.getValue().equals(coreUser.getIdType())) {
-            if (!StrUtil.cardCodeVerifySimple(coreUser.getIdNo())) {
+            if (!Validator.isCitizenId(coreUser.getIdNo())) {
                 return ReturnJsonUtil.busFail("身份证不合法");
             }
         }

@@ -3,8 +3,8 @@ package com.wlcb.jpower.operate.storage;
 import cn.hutool.core.io.FileTypeUtil;
 import com.wlcb.jpower.dbs.entity.TbCoreFile;
 import com.wlcb.jpower.module.common.utils.DesUtil;
+import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.FileUtil;
-import com.wlcb.jpower.module.common.utils.UUIDUtil;
 import com.wlcb.jpower.module.common.utils.WebUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
 import com.wlcb.jpower.module.mp.support.Condition;
@@ -39,7 +39,7 @@ public class DatabaseFileOperate implements FileOperate {
 		TbCoreFile coreFile = new TbCoreFile();
 		coreFile.setFileType(FileTypeUtil.getType(file.getInputStream(),originalFileName));
 		coreFile.setFileSize(file.getSize());
-		coreFile.setId(UUIDUtil.getUUID());
+		coreFile.setId(Fc.randomUUID());
 		coreFile.setMark(DesUtil.encrypt(coreFile.getId(), ConstantsUtils.FILE_DES_KEY));
 		coreFile.setStorageType(DATABASE.getValue());
 		coreFile.setContent(file.getBytes());

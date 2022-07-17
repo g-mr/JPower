@@ -28,7 +28,7 @@ public class FieldCompletionUtil {
         operLog.setUrl(request.getRequestURI());
         operLog.setParam(params);
         operLog.setMethod(request.getMethod());
-        operLog.setOperIp(WebUtil.getIP());
+        operLog.setOperIp(WebUtil.getIp());
     }
 
     public static void userInfo(LogDto operLog, UserInfo currentUser){

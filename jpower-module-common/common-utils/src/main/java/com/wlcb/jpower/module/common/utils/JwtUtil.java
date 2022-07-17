@@ -1,16 +1,14 @@
 package com.wlcb.jpower.module.common.utils;
 
+import cn.hutool.core.util.URLUtil;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
 import io.jsonwebtoken.*;
 import lombok.NonNull;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 
@@ -82,17 +80,14 @@ public class JwtUtil {
             return parsingToken(auth);
         }
 
-        Cookie[] cookies = request.getCookies();
-        if (Fc.isNotEmpty(cookies)) {
-            Cookie cookie = Arrays.stream(cookies).filter(c -> StringUtils.equals(c.getName(), TokenConstant.HEADER) && Fc.isNotBlank(c.getValue())).findFirst().orElse(null);
-            if (Fc.notNull(cookie)){
-                return parsingToken(Fc.decode(cookie.getValue()));
-            }
+        String cookieVal = WebUtil.getCookieVal(request,TokenConstant.HEADER);
+        if (Fc.isNotBlank(cookieVal)){
+            return parsingToken(URLUtil.decode(cookieVal));
         }
 
         String parameter = request.getParameter(TokenConstant.HEADER);
         if (StringUtil.isNotBlank(parameter)) {
-            return Fc.decode(parameter);
+            return URLUtil.decode(parameter);
         }
 
         return StringPool.EMPTY;

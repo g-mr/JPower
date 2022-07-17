@@ -31,11 +31,11 @@ public class DictWrapper implements IDictBindHandler {
     public void setMetaObject(Dict dict, Object fieldValue, MetaObject metaObject){
         if (Fc.isNotEmpty(fieldValue)){
             if (Fc.isNotBlank(dict.name())){
-                GuavaCache guavaCache = GuavaCache.getInstance(EXPIRE_TIME, TimeUnit.SECONDS);
-                Object value = guavaCache.get(dict.name() + StringPool.COLON + fieldValue);
-                if (Fc.isEmpty(value)){
+                GuavaCache<String> guavaCache = GuavaCache.getInstance(EXPIRE_TIME, TimeUnit.SECONDS);
+                String value = guavaCache.get(dict.name() + StringPool.COLON + fieldValue);
+                if (Fc.isBlank(value)){
                     value = DictCache.getDictByTypeAndCode(dict.name(), Fc.toStr(fieldValue));
-                    if (Fc.isNotEmpty(value)){
+                    if (Fc.isNotBlank(value)){
                         guavaCache.put(dict.name() + StringPool.COLON + fieldValue,value);
                     }
                 }

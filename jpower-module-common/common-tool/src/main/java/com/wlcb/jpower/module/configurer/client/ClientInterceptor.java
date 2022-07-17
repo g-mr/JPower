@@ -39,7 +39,7 @@ public class ClientInterceptor implements HandlerInterceptor {
         boolean isSkip = clientCodes.stream().filter(client -> isIntercept(client,request)).map(client -> true).findFirst().orElse(false);
 
         if (!isSkip){
-            log.warn("客户端认证失败，请求接口：{}，请求IP：{}，请求参数：{}", request.getRequestURI(), WebUtil.getIP(request), JSON.toJSONString(request.getParameterMap()));
+            log.warn("客户端认证失败，请求接口：{}，请求IP：{}，请求参数：{}", request.getRequestURI(), WebUtil.getIp(request), JSON.toJSONString(request.getParameterMap()));
             WebUtil.renderJson(response,ReturnJsonUtil.print(HttpStatus.NOT_ACCEPTABLE.value(),"无效的客户端请求",false));
         }
         return isSkip;

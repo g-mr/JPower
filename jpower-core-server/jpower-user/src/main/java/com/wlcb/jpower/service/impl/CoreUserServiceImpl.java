@@ -1,5 +1,6 @@
 package com.wlcb.jpower.service.impl;
 
+import cn.hutool.core.lang.Validator;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -79,7 +80,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
         }
 
         if (!ConstantsEnum.ACTIVATION_STATUS.ACTIVATION_YES.getValue().equals(coreUser.getActivationStatus())){
-            coreUser.setActivationCode(UUIDUtil.create10UUidNum());
+            coreUser.setActivationCode(UuidUtil.create10UUidNum());
             coreUser.setActivationStatus(ConstantsEnum.ACTIVATION_STATUS.ACTIVATION_NO.getValue());
         }
     }
@@ -192,13 +193,13 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
             if (Fc.isBlank(coreUser.getLoginId())){
                 continue;
             }
-            if (Fc.isNotBlank(coreUser.getTelephone()) && !StrUtil.isPhone(coreUser.getTelephone())){
+            if (Fc.isNotBlank(coreUser.getTelephone()) && !Validator.isMobile(coreUser.getTelephone())){
                 continue;
             }
-            if (Fc.isNotBlank(coreUser.getEmail()) && !StrUtil.isEmail(coreUser.getEmail())){
+            if (Fc.isNotBlank(coreUser.getEmail()) && !Validator.isEmail(coreUser.getEmail())){
                 continue;
             }
-            if (Fc.isNotBlank(coreUser.getIdNo()) && ConstantsEnum.ID_TYPE.ID_CARD.getValue().equals(coreUser.getIdType()) && !StrUtil.cardCodeVerifySimple(coreUser.getIdNo())){
+            if (Fc.isNotBlank(coreUser.getIdNo()) && ConstantsEnum.ID_TYPE.ID_CARD.getValue().equals(coreUser.getIdType()) && !Validator.isCitizenId(coreUser.getIdNo())){
                 continue;
             }
 

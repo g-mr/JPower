@@ -5,8 +5,8 @@ import com.wlcb.jpower.dbs.entity.TbCoreFile;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.common.utils.DesUtil;
+import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.FileUtil;
-import com.wlcb.jpower.module.common.utils.UUIDUtil;
 import com.wlcb.jpower.module.common.utils.WebUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
@@ -43,7 +43,7 @@ public class FastDfsFileOperate implements FileOperate {
 		TbCoreFile coreFile = new TbCoreFile();
 		coreFile.setFileType(FileTypeUtil.getType(file.getInputStream(),originalFileName));
 		coreFile.setFileSize(file.getSize());
-		coreFile.setId(UUIDUtil.getUUID());
+		coreFile.setId(Fc.randomUUID());
 		coreFile.setMark(DesUtil.encrypt(coreFile.getId(), ConstantsUtils.FILE_DES_KEY));
 		coreFile.setStorageType(FASTDFS.getValue());
 		coreFile.setPath(dfsPath);

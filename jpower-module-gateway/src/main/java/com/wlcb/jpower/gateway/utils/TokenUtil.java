@@ -1,5 +1,6 @@
 package com.wlcb.jpower.gateway.utils;
 
+import cn.hutool.core.util.URLUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.JwtUtil;
 import com.wlcb.jpower.module.common.utils.StringUtil;
@@ -32,7 +33,7 @@ public class TokenUtil {
             return null;
         }
 
-        String token = Fc.isBlank(header)?Fc.decode(cookies):header;
+        String token = Fc.isBlank(header)? URLUtil.decode(cookies):header;
         if (StringUtil.isNotBlank(token)) {
             return JwtUtil.parsingToken(token);
         }

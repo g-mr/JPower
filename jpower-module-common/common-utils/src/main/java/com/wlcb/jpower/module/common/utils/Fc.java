@@ -1,19 +1,13 @@
 package com.wlcb.jpower.module.common.utils;
 
-import cn.hutool.core.codec.Base64Decoder;
-import cn.hutool.core.codec.Base64Encoder;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.EscapeUtil;
 import cn.hutool.core.util.NumberUtil;
-import cn.hutool.core.util.URLUtil;
-import com.wlcb.jpower.module.common.enums.RandomType;
-import com.wlcb.jpower.module.common.utils.constants.CharsetKit;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import lombok.NonNull;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.lang.Nullable;
-import org.springframework.util.StringUtils;
 
 import java.io.Closeable;
 import java.io.InputStream;
@@ -24,10 +18,19 @@ import java.nio.charset.Charset;
 import java.util.*;
 
 /**
- * 工具包集合，只做简单的调用，不删除原有工具类
+ * 工具包集合
+ *
+ * @author mr.g
  */
 public class Fc {
 
+    /**
+     * 除去字符串头尾部的空白
+     *
+     * @author mr.g
+     * @param str 字符串
+     * @return java.lang.String
+     **/
     public static String trim(String str){
         return StringUtil.trim(str);
     }
@@ -36,12 +39,11 @@ public class Fc {
      * 检查指定的对象引用不是 {@code null} 和
      * 如果是，则抛出自定义的 {@link NullPointerException}。
      * 这种方法主要用于在方法中进行参数验证和具有多个参数的构造函数
-     * @param obj     the object reference to check for nullity
-     * @param message detail message to be used in the event that a {@code
-     *                NullPointerException} is thrown
-     * @param <T>     the type of the reference
+     *
+     * @author mr.g
+     * @param obj     对象
+     * @param message 为空时的错误信息
      * @return {@code obj} if not {@code null}
-     * @throws NullPointerException if {@code obj} is {@code null}
      */
     public static <T> T requireNotNull(T obj, String message) {
         return Objects.requireNonNull(obj, message);
@@ -49,42 +51,24 @@ public class Fc {
 
     /**
      * 是否是空对象
-     * @Author mr.g
-     * @param obj
+     *
+     * @author mr.g
+     * @param obj 对象
      * @return boolean
      **/
     public static boolean isNull(@Nullable Object obj) {
-        return Objects.isNull(obj);
+        return ObjectUtil.isNull(obj);
     }
 
     /**
      * 不是空对象
-     * @Author mr.g
+     *
+     * @author mr.g
      * @param obj
      * @return boolean
      **/
     public static boolean notNull(@Nullable Object obj) {
-        return Objects.nonNull(obj);
-    }
-
-    /**
-     * 首字母变小写
-     *
-     * @param str 字符串
-     * @return {String}
-     */
-    public static String lowerFirst(String str) {
-        return StringUtil.lowerFirst(str);
-    }
-
-    /**
-     * 首字母变大写
-     *
-     * @param str 字符串
-     * @return {String}
-     */
-    public static String upperFirst(String str) {
-        return StringUtil.upperFirst(str);
+        return ObjectUtil.isNotNull(obj);
     }
 
     /**
@@ -96,6 +80,7 @@ public class Fc {
      * <li>{@code StrUtil.isBlank(" \t\n")  // true}</li>
      * <li>{@code StrUtil.isBlank("abc")    // false}</li>
      *
+     * @author mr.g
      * @param str 被检测的字符串
      * @return 若为空白，则返回 true
      */
@@ -113,6 +98,7 @@ public class Fc {
      * $.isNotBlank("  bob  ") = true
      * </pre>
      *
+     * @author mr.g
      * @param str 被检测的字符串
      * @return 是否为非空
      */
@@ -123,6 +109,7 @@ public class Fc {
     /**
      * 有 任意 一个 Blank
      *
+     * @author mr.g
      * @param cs CharSequence
      * @return boolean
      */
@@ -133,6 +120,7 @@ public class Fc {
     /**
      * 是否全非 Blank
      *
+     * @author mr.g
      * @param cs CharSequence
      * @return boolean
      */
@@ -144,6 +132,7 @@ public class Fc {
      * 判断给定对象是否为数组:
      * 对象数组或原始数组.
      *
+     * @author mr.g
      * @param obj 检查对象
      * @return 是否数组
      */
@@ -155,6 +144,7 @@ public class Fc {
      * 判断给定对象是否为空:
      * 即 {@code null} 或零长度.
      *
+     * @author mr.g
      * @param obj 检查对象
      * @return 数组是否为空
      */
@@ -166,17 +156,19 @@ public class Fc {
      * 判断给定的对象是否不为空：
      * 即 {@code null} 或零长度。
      *
+     * @author mr.g
      * @param obj 检查对象
      * @return 是否不为空
      */
     public static boolean isNotEmpty(@Nullable Object obj) {
-        return !ObjectUtil.isEmpty(obj);
+        return ObjectUtil.isNotEmpty(obj);
     }
 
     /**
      * 判断给定数组是否为空：
      * 即 {@code null} 或零长度。
      *
+     * @author mr.g
      * @param array 检查对象
      * @return 数组是否为空
      */
@@ -187,6 +179,7 @@ public class Fc {
     /**
      * 判断数组不为空
      *
+     * @author mr.g
      * @param array 数组
      * @return 数组是否不为空
      */
@@ -197,47 +190,52 @@ public class Fc {
     /**
      * 对象组中是否存在 Empty Object
      *
+     * @author mr.g
      * @param os 对象组
      * @return boolean
      */
     public static boolean hasEmpty(Object... os) {
         for (Object o : os) {
             if (isEmpty(o)) {
-                return true;
+                return Boolean.TRUE;
             }
         }
-        return false;
+        return Boolean.FALSE;
     }
 
     /**
      * 对象组中是否全是 Empty Object
      *
+     * @author mr.g
      * @param os 对象组
      * @return boolean
      */
     public static boolean allEmpty(Object... os) {
         for (Object o : os) {
             if (!isEmpty(o)) {
-                return false;
+                return Boolean.FALSE;
             }
         }
-        return true;
+        return Boolean.TRUE;
     }
 
     /**
      * 比较两个对象是否相等。<br>
      * 相同的条件有两个，满足其一即可：<br>
      *
+     * @author mr.g
      * @param obj1 对象1
      * @param obj2 对象2
      * @return 是否相等
      */
     public static boolean equals(Object obj1, Object obj2) {
-        return Objects.equals(obj1, obj2);
+        return ObjectUtil.equals(obj1, obj2);
     }
 
     /**
      * 判断俩个类型的值是否相等
+     *
+     * @author mr.g
      * @param o1 要比较的第一个对象
      * @param o2 要比较的第二个对象
      * @return 给定的对象值是否相等
@@ -248,6 +246,8 @@ public class Fc {
 
     /**
      * 判断俩个类型的值是否相等
+     *
+     * @author mr.g
      * @param o1 要比较的第一个对象
      * @param o2 要比较的第二个对象
      * @return 给定的对象值是否相等
@@ -259,6 +259,7 @@ public class Fc {
     /**
      * 判断给定的数组是否包含指定的元素
      *
+     * @author mr.g
      * @param array   要检查的数组
      * @param element 要查找的元素
      * @param <T>     通用标签
@@ -271,6 +272,7 @@ public class Fc {
     /**
      * 检查给定的迭代器是否包含给定的元素。
      *
+     * @author mr.g
      * @param iterator   要检查的集合
      * @param element 要查找的元素
      * @return {@code true} if found, {@code false} otherwise
@@ -282,6 +284,7 @@ public class Fc {
     /**
      * 强转string
      *
+     * @author mr.g
      * @param str 字符串
      * @return String
      */
@@ -292,6 +295,7 @@ public class Fc {
     /**
      * 强转string,并去掉多余空格
      *
+     * @author mr.g
      * @param str          字符串
      * @param defaultValue 默认值
      * @return String
@@ -306,6 +310,7 @@ public class Fc {
     /**
      * 判断一个字符串是否是数字
      *
+     * @author mr.g
      * @param str 要检查的 str，可能为 null
      * @return {boolean}
      */
@@ -315,28 +320,46 @@ public class Fc {
 
     /**
      * 转换成数字
-     */
+     *
+     * @author mr.g
+     * @param value 对象
+     * @return int
+     **/
     public static int toInt(final Object value) {
         return Convert.toInt(value,-1);
     }
 
     /**
      * 转换成数字
-     */
+     *
+     * @author mr.g
+     * @param value 对象
+     * @param defaultValue 默认值
+     * @return int
+     **/
     public static int toInt(final Object value, final int defaultValue) {
         return Convert.toInt(value,defaultValue);
     }
 
     /**
      * 转换成Long
-     */
+     *
+     * @author mr.g
+     * @param value 对象
+     * @return long
+     **/
     public static long toLong(final Object value) {
         return Convert.toLong(value);
     }
 
     /**
      * 转换成Long
-     */
+     *
+     * @author mr.g
+     * @param value 对象
+     * @param defaultValue 默认值
+     * @return long
+     **/
     public static long toLong(final Object value, final long defaultValue) {
         return Convert.toLong(value, defaultValue);
     }
@@ -430,7 +453,7 @@ public class Fc {
         String[] arr = str.split(split);
         final Integer[] ints = new Integer[arr.length];
         for (int i = 0; i < arr.length; i++) {
-            final Integer v = toInt(arr[i], 0);
+            final int v = toInt(arr[i], 0);
             ints[i] = v;
         }
         return ints;
@@ -605,16 +628,6 @@ public class Fc {
         return Convert.toBigDecimal(value);
     }
 
-    /**
-     * 将 {@code Collection} 转换为带分隔符的 {@code String}（例如 CSV）。
-     * <p>对 {@code toString()} 实现有用。
-     *
-     * @param coll the {@code Collection} to convert
-     * @return the delimited {@code String}
-     */
-    public static String join(Collection<?> coll) {
-        return StringUtil.join(coll);
-    }
 
     /**
      * 将 {@code Collection} 转换为带分隔符的 {@code String}（例如 CSV）。
@@ -629,35 +642,12 @@ public class Fc {
     }
 
     /**
-     * 将 {@code String} 数组转换为逗号分隔的 {@code String}
-     * <p>对 {@code toString()} 实现有用。
-     *
-     * @param arr the array to display
-     * @return the delimited {@code String}
-     */
-    public static String join(Object[] arr) {
-        return StringUtil.join(arr);
-    }
-
-    /**
-     * 将 {@code String} 数组转换为带分隔符的 {@code String}（例如 CSV）。
-     * <p>对 {@code toString()} 实现有用。
-     *
-     * @param arr   the array to display
-     * @param delim the delimiter to use (typically a ",")
-     * @return the delimited {@code String}
-     */
-    public static String join(Object[] arr, String delim) {
-        return StringUtil.join(arr, delim);
-    }
-
-    /**
      * 生成uuid
      *
      * @return UUID
      */
     public static String randomUUID() {
-        return UUIDUtil.getUUID();
+        return UuidUtil.fastUUID().toString(true);
     }
 
     /**
@@ -687,96 +677,6 @@ public class Fc {
      */
     public static String random(int count) {
         return RandomUtil.random(count);
-    }
-
-    /**
-     * 随机数生成
-     *
-     * @param count      字符长度
-     * @param randomType 随机数类别
-     * @return 随机数
-     */
-    public static String random(int count, RandomType randomType) {
-        if (RandomType.INT == randomType) {
-            return RandomUtil.randomNumbers(count);
-        }else if (RandomType.STRING == randomType){
-            return RandomUtil.randomString(count);
-        }else {
-            return RandomUtil.random(count);
-        }
-    }
-
-    /**
-     * 计算MD5摘要，并以32个字符的十六进制字符串形式返回值。
-     *
-     * @param data Data to digest
-     * @return MD5 digest as a hexg string
-     */
-    public static String md5(final String data) {
-        return MD5.md5Hex(data);
-    }
-
-    /**
-     * 编码
-     *
-     * @param value 字符串
-     * @return {String}
-     */
-    public static String encodeBase64(String value) {
-        return Base64Encoder.encode(value);
-    }
-
-    /**
-     * 编码
-     *
-     * @param value   字符串
-     * @param charset 字符集
-     * @return {String}
-     */
-    public static String encodeBase64(String value, Charset charset) {
-        return Base64Encoder.encode(value, charset);
-    }
-
-    /**
-     * 编码URL安全
-     *
-     * @param value 字符串
-     * @return {String}
-     */
-    public static String encodeBase64UrlSafe(String value) {
-        return Base64Encoder.encodeUrlSafe(value);
-    }
-
-    /**
-     * 编码URL安全
-     *
-     * @param value   字符串
-     * @param charset 字符集
-     * @return {String}
-     */
-    public static String encodeBase64UrlSafe(String value, Charset charset) {
-        return Base64Encoder.encodeUrlSafe(value, charset);
-    }
-
-    /**
-     * 解码
-     *
-     * @param value 字符串
-     * @return {String}
-     */
-    public static String decodeBase64(String value) {
-        return Base64Decoder.decodeStr(value);
-    }
-
-    /**
-     * 解码
-     *
-     * @param value   字符串
-     * @param charset 字符集
-     * @return {String}
-     */
-    public static String decodeBase64(String value, Charset charset) {
-        return Base64Decoder.decodeStr(value, charset);
     }
 
     /**
@@ -817,152 +717,6 @@ public class Fc {
      **/
     public static byte[] toByteArray(@Nullable InputStream input) {
         return cn.hutool.core.io.IoUtil.readBytes(input);
-    }
-
-
-    /**
-     * 对所有非法或保留的字符进行编码
-     * 意思是，在 URI 中的任何地方，如定义
-     * <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>.
-     * 这有助于确保给定的字符串按原样保留
-     * 并且不会对 URI 的结构或含义产生任何影响。
-     *
-     * @param source 要编码的字符串
-     * @return 编码的字符串
-     */
-    public static String encode(String source) {
-        return URLUtil.encode(source, CharsetKit.CHARSET_UTF_8);
-    }
-
-    /**
-     * 对所有非法或保留的字符进行编码
-     * 意思是，在 URI 中的任何地方，如定义
-     * <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>.
-     * 这有助于确保给定的字符串按原样保留
-     * 并且不会对 URI 的结构或含义产生任何影响。
-     *
-     * @param source  要编码的字符串
-     * @param charset 要编码的字符编码
-     * @return 编码的字符串
-     */
-    public static String encode(String source, Charset charset) {
-        return URLUtil.encode(source, charset);
-    }
-
-    /**
-     * 解码给定的编码 URI 组件。
-     * <p>See {@link StringUtils#uriDecode(String, Charset)} for the decoding rules.
-     *
-     * @param source 编码的字符串
-     * @return 解码后的值
-     */
-    public static String decode(String source) {
-        return StringUtils.uriDecode(source, CharsetKit.CHARSET_UTF_8);
-    }
-
-    /**
-     * 解码给定的编码 URI 组件。
-     * <p>See {@link StringUtils#uriDecode(String, Charset)} for the decoding rules.
-     *
-     * @param source  编码的字符串
-     * @param charset 要使用的字符编码
-     * @return 解码后的值
-     */
-    public static String decode(String source, Charset charset) {
-        return StringUtils.uriDecode(source, charset);
-    }
-
-    /**
-     * 日期时间格式化<br>
-     * 格式 yyyy-MM-dd HH:mm:ss
-     *
-     * @param date 时间
-     * @return 格式化后的时间
-     */
-    public static String formatDateTime(Date date) {
-        return DateUtil.formatDateTime(date);
-    }
-
-    /**
-     * 日期格式化<br>
-     * yyyy-MM-dd
-     *
-     * @param date 时间
-     * @return 格式化后的时间
-     */
-    public static String formatDate(Date date) {
-        return DateUtil.formatDate(date);
-    }
-
-    /**
-     * 将字符串转换为时间
-     *
-     * @param dateStr 时间字符串
-     * @return 时间
-     */
-    public static Date parseDate(String dateStr) {
-        return DateUtil.parseDate(dateStr);
-    }
-
-    /**
-     * 获取Bean的属性
-     *
-     * @param bean         bean
-     * @param propertyName 属性名
-     * @return 属性值
-     */
-    public static Object getProperty(Object bean, String propertyName) {
-        return BeanUtil.getProperty(bean, propertyName);
-    }
-
-    /**
-     * 设置Bean属性
-     *
-     * @param bean         bean
-     * @param propertyName 属性名
-     * @param value        属性值
-     */
-    public static void setProperty(Object bean, String propertyName, Object value) {
-        BeanUtil.setProperty(bean, propertyName, value);
-    }
-
-    /**
-     * 深复制
-     * <p>
-     * 注意：不支持链式Bean
-     *
-     * @param source 源对象
-     * @param <T>    泛型标记
-     * @return T
-     */
-    public static <T> T clone(T source) {
-        return (T) BeanUtil.copyProperties(source, source.getClass());
-    }
-
-    /**
-     * copy 对象属性到另一个对象，默认不使用Convert
-     * <p>
-     * 注意：不支持链式Bean，链式用 copyProperties
-     *
-     * @param source 源对象
-     * @param clazz  类名
-     * @param <T>    泛型标记
-     * @return T
-     */
-    public static <T> T copy(Object source, Class<T> clazz) {
-        return BeanUtil.copyProperties(source, clazz);
-    }
-
-    /**
-     * 拷贝对象
-     * <p>
-     * 注意：不支持链式Bean，链式用 copyProperties
-     *
-     * @param source     源对象
-     * @param targetBean 需要赋值的对象
-     */
-    public static void copy(Object source, Object targetBean) {
-        BeanUtil.copyProperties(source, targetBean);
     }
 
     /**
