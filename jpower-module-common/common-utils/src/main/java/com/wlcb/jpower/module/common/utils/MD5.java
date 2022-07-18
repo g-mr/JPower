@@ -22,5 +22,4 @@ public class MD5 extends cn.hutool.crypto.digest.DigestUtil {
         }
         return md5;
     }
-
 }
