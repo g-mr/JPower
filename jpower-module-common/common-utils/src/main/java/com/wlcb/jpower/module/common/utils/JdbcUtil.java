@@ -1,9 +1,13 @@
 package com.wlcb.jpower.module.common.utils;
 
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.text.csv.CsvData;
 import cn.hutool.core.text.csv.CsvReadConfig;
 import cn.hutool.core.text.csv.CsvRow;
 import cn.hutool.core.text.csv.CsvUtil;
+import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.core.util.ArrayUtil;
+import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import lombok.Cleanup;
 import lombok.NonNull;
@@ -15,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * JDBC工具
@@ -25,6 +30,277 @@ public class JdbcUtil {
 
     public static void main(String[] args) {
 
+        List<ChainMap> list = selectList("jdbc:mysql://82.156.227.156:3306/hand-phone?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8&tinyInt1isBit=false",
+                "root","P@ssw0rdMysql","select * from tb_core_city c where c.rankd = 4 and (select count(1) from tb_core_city d where d.pcode = c.code) = 0", ChainMap.class);
+
+
+        AtomicInteger connSum = new AtomicInteger();
+
+        list.forEach(m -> {
+
+            while (connSum.get()>100){
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    System.out.println("线程等待报错=>"+e.getMessage());
+                }
+            }
+
+            ThreadUtil.execAsync(()->{
+
+                connSum.getAndIncrement();
+
+
+                try {
+                    ChainMap map = select("jdbc:mysql://82.156.227.156:3306/hand-phone?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8&tinyInt1isBit=false",
+                            "root","P@ssw0rdMysql","select * from tb_core_city1 where rankd = 4 and code like '"+StringUtil.subPre(m.getStr("code"),6)+"%' and fullname like '"+m.getStr("name")+"%'", ChainMap.class);
+
+
+                    if (Fc.isNotEmpty(map)){
+                        FileUtil.appendUtf8Lines(ListUtil.toList("查到地区："+map.getStr("fullname")+",原CODE=>"+map.getStr("code")+",现code=>"+m.getStr("code")),"/Users/mr.gmac/Desktop/shuju.txt");
+
+
+//                        List<ChainMap> listChild = selectList("jdbc:mysql://82.156.227.156:3306/hand-phone?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8&tinyInt1isBit=false",
+//                                "root","P@ssw0rdMysql","select * from tb_core_city1 where pcode = '"+map.getStr("code")+"'", ChainMap.class);
+//
+//                        List<String> sqls = new ArrayList<>();
+//
+//                        listChild.forEach(chain->{
+//
+//                            chain.put("note","模糊匹配name");
+//                            chain.put("pcode",m.getStr("code"));
+//                            String code = StringUtil.subPre(m.getStr("code"),9)+StringUtil.subSufByLength(chain.getStr("code"),3);
+//                            chain.put("code",code);
+//
+//                            String sql = "insert into tb_core_city ("
+//                                    +
+//                                    CollectionUtil.join(chain.keySet(),",", StringUtil::humpToUnderline)
+//                                    +
+//                                    ") values ("
+//                                    +
+//                                    CollectionUtil.join(chain.values(),",", v-> Fc.notNull(v)? "'"+v+"'" : null)
+//                                    +
+//                                    ")";
+//
+//                            sqls.add(sql);
+//                        });
+//
+//
+//                        if (Fc.isNotEmpty(sqls)) {
+//
+//                            boolean save = save("jdbc:mysql://82.156.227.156:3306/hand-phone?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8",
+//                                    "root","P@ssw0rdMysql", sqls);
+//
+//                            if (!save){
+//                                FileUtil.appendUtf8String("保存失败=>"+save+",数量=>"+sqls.size()+",所属街道=>"+m.getStr("fullname")+",所属CODE=>"+m.getStr("code")+",原来CODE=>"+map.getStr("code"),new File("/Users/mr.gmac/Desktop/errorSql.txt"));
+//                            }
+//
+//                            System.out.println("保存成功=>"+save+",数量=>"+sqls.size()+",所属街道=>"+m.getStr("fullname")+",所属CODE=>"+m.getStr("code")+",原来CODE=>"+map.getStr("code"));
+//                        }
+
+                    }
+                } catch (Exception e){
+                    FileUtil.appendUtf8Lines(ListUtil.toList(m.getStr("name")+":"+m.getStr("code")+"=====>"+ExceptionUtil.getStackTraceAsString(e)),"/Users/mr.gmac/Desktop/error.txt");
+                }
+
+
+                connSum.getAndDecrement();
+            },false);
+
+        });
+
+    }
+
+
+    private static void addPcodeChild(){
+
+        List<ChainMap> list = selectList("jdbc:mysql://82.156.227.156:3306/hand-phone?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8&tinyInt1isBit=false",
+                "root","P@ssw0rdMysql","select c.* from tb_core_city c where c.rankd = 4 and (select count(1) from tb_core_city d where d.pcode = c.code) = 0", ChainMap.class);
+
+
+        AtomicInteger connSum = new AtomicInteger();
+
+        list.forEach(m -> {
+
+            while (connSum.get()>100){
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    System.out.println("线程等待报错=>"+e.getMessage());
+                }
+            }
+
+            ThreadUtil.execAsync(()->{
+
+                connSum.getAndIncrement();
+
+                ChainMap map = select("jdbc:mysql://82.156.227.156:3306/hand-phone?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8&tinyInt1isBit=false",
+                        "root","P@ssw0rdMysql","select * from tb_core_city1 where pcode = '"+m.getStr("pcode")+"' and fullname = '"+m.getStr("fullname")+"'", ChainMap.class);
+
+                if (Fc.isNotEmpty(map)){
+
+                    List<ChainMap> listChild = selectList("jdbc:mysql://82.156.227.156:3306/hand-phone?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8&tinyInt1isBit=false",
+                            "root","P@ssw0rdMysql","select * from tb_core_city1 where pcode = '"+map.getStr("code")+"'", ChainMap.class);
+
+
+                    List<String> sqls = new ArrayList<>();
+
+                    listChild.forEach(chain->{
+
+                        chain.put("note","addPcodeChild");
+                        chain.put("pcode",m.getStr("code"));
+                        String code = StringUtil.subPre(m.getStr("code"),9)+StringUtil.subSufByLength(chain.getStr("code"),3);
+                        chain.put("code",code);
+
+                        String sql = "insert into tb_core_city ("
+                                +
+                                CollectionUtil.join(chain.keySet(),",", StringUtil::humpToUnderline)
+                                +
+                                ") values ("
+                                +
+                                CollectionUtil.join(chain.values(),",", v-> Fc.notNull(v)? "'"+v+"'" : null)
+                                +
+                                ")";
+
+                        sqls.add(sql);
+                    });
+
+
+
+                    if (Fc.isNotEmpty(sqls)) {
+
+                        boolean save = save("jdbc:mysql://82.156.227.156:3306/hand-phone?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8",
+                                "root","P@ssw0rdMysql", sqls);
+
+                        if (!save){
+                            FileUtil.appendUtf8String("保存失败=>"+save+",数量=>"+sqls.size()+",所属街道=>"+m.getStr("fullname")+",所属CODE=>"+m.getStr("code")+",原来CODE=>"+map.getStr("code"),new File("/Users/mr.gmac/Desktop/errorSql.txt"));
+                        }
+
+                        System.out.println("保存成功=>"+save+",数量=>"+sqls.size()+",所属街道=>"+m.getStr("fullname")+",所属CODE=>"+m.getStr("code")+",原来CODE=>"+map.getStr("code"));
+                    }
+
+                }
+
+                connSum.getAndDecrement();
+            },false);
+
+        });
+
+
+        System.out.println("所有线程已经执行.....");
+
+    }
+
+
+    private static void saveLeven5(){
+        List<ChainMap> list = selectList("jdbc:mysql://82.156.227.156:3306/hand-phone?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8",
+                "root","P@ssw0rdMysql","select c.* from tb_core_city c where c.rankd = 4", ChainMap.class);
+
+        AtomicInteger connSum = new AtomicInteger();
+
+        list.forEach(m -> {
+
+            while (connSum.get()>=100){
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    System.out.println("线程等待报错=>"+e.getMessage());
+                }
+            }
+
+            ThreadUtil.execAsync(()->{
+
+                connSum.getAndIncrement();
+
+                Integer count = select("jdbc:mysql://82.156.227.156:3306/hand-phone?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8",
+                        "root","P@ssw0rdMysql","select count(1) from tb_core_city where pcode = '"+m.getStr("code")+"'", Integer.class);
+
+                if (count <= 0){
+                    List<ChainMap> listChild = selectList("jdbc:mysql://82.156.227.156:3306/hand-phone?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8&tinyInt1isBit=false",
+                            "root","P@ssw0rdMysql","select c.* from tb_core_city1 c left join tb_core_city1 p on p.code = c.pcode where p.code = '"+m.getStr("code")+"' and p.name = '"+m.getStr("fullname")+"'", ChainMap.class);
+
+                    List<String> sqls = new ArrayList<>();
+
+                    listChild.forEach(map->{
+
+                        String sql = "insert into tb_core_city ("
+                                +
+                                CollectionUtil.join(map.keySet(),",", StringUtil::humpToUnderline)
+                                +
+                                ") values ("
+                                +
+                                CollectionUtil.join(map.values(),",", v-> Fc.notNull(v)? "'"+v+"'" : null)
+                                +
+                                ")";
+
+                        sqls.add(sql);
+                    });
+
+
+                    if (Fc.isNotEmpty(sqls)) {
+
+                        boolean save = save("jdbc:mysql://82.156.227.156:3306/hand-phone?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8",
+                                "root","P@ssw0rdMysql", sqls);
+
+                        if (!save){
+                            FileUtil.appendUtf8String("保存成功=>"+save+",数量=>"+sqls.size()+",所属街道=>"+m.getStr("fullname")+",所属CODE=>"+m.getStr("code"),new File("/Users/mr.gmac/Desktop/errorSql.txt"));
+                        }
+
+                        System.out.println("保存成功=>"+save+",数量=>"+sqls.size()+",所属街道=>"+m.getStr("fullname")+",所属CODE=>"+m.getStr("code"));
+                    }
+                }
+
+
+                connSum.getAndDecrement();
+            },false);
+
+        });
+
+
+        System.out.println("所有线程已经执行.....");
+    }
+
+
+    private void csvtomysql(){
+
+        CsvReadConfig config = new CsvReadConfig();
+        config.setContainsHeader(true);
+        config.setTrimField(true);
+
+        CsvData data =  CsvUtil.getReader(config).read(new File("/Users/mr.gmac/Desktop/ok_data_level4.csv"));
+
+        List<String> sqls = new ArrayList<>();
+        for (CsvRow csvRow : data) {
+            String code = csvRow.getByName("ext_id");
+            String pcode = Fc.equalsValue(csvRow.getByName("pid"),"0")?"-1":csvRow.getByName("pid");
+            String name = csvRow.getByName("name");
+            String fullname = csvRow.getByName("ext_name");
+            int sort = (int) csvRow.getByName("pinyin_prefix").charAt(0);
+            Integer rankd = Fc.toInt(csvRow.getByName("deep"))+1;
+
+            if (!Fc.equalsValue(pcode,"-1")){
+                pcode = pcode + String.format("%0" + (12 - pcode.length()) + "d", 0);
+            }
+
+            String sql = "insert into tb_core_city_copy (id, code, pcode, name, fullname, rankd, lng, lat, country_code, city_type, note, sort_num, create_user, create_time, update_user, update_time, status, is_deleted, create_org) values " +
+                    "('"+Fc.randomUUID()+"', "+code+", "+pcode+", '"+name+"', '"+fullname+"', "+rankd+", null, null, 'CHN', "+rankd+", null, "+sort+", 'root', now(), 'root', now(), 1, 0, null)";
+
+            sqls.add(sql);
+        }
+
+        ListUtil.split(sqls,100).forEach(list -> {
+
+            boolean save = save("jdbc:mysql://82.156.227.156:3306/jpower?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8",
+                    "root","P@ssw0rdMysql", list);
+
+            System.out.println(save);
+
+        });
+
+
+    }
+
+    private void test1(){
         //查询
         Connection connection = null;
         Statement statement = null;
@@ -32,7 +308,8 @@ public class JdbcUtil {
 
         try {
             //1.获取连接对象
-            connection = JdbcUtil.getConnection("","","");
+            connection = JdbcUtil.getConnection("jdbc:mysql://82.156.227.156:3306/jpower?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8",
+                    "root","P@ssw0rdMysql");
             //2.根据连接对象获取statement
             statement = connection.createStatement();
 
@@ -120,6 +397,20 @@ public class JdbcUtil {
      * 执行修改SQL
      *
      * @author mr.g
+     * @param url 数据库连接
+     * @param name 数据库名称
+     * @param password 数据库密码
+     * @param sqls 执行SQL
+     * @return 是否执行完成
+     **/
+    public static boolean save(String url,String name,String password,@NonNull List<String> sqls){
+        return save(null, url, name, password, ArrayUtil.toArray(sqls,String.class));
+    }
+
+    /**
+     * 执行修改SQL
+     *
+     * @author mr.g
      * @param driverClass 驱动
      * @param url 数据库连接
      * @param name 数据库名称
@@ -148,7 +439,6 @@ public class JdbcUtil {
      * @param clasz 结果转换类型
      * @return 执行结果
      **/
-    @SneakyThrows(SQLException.class)
     public static <T> List<T> selectList(String url,String name,String password,String sql,Class<T> clasz){
         return selectList(null, url, name, password, sql, clasz);
     }
@@ -177,11 +467,15 @@ public class JdbcUtil {
         List<T> list = new ArrayList<>();
 
         while (resultSet.next()){
-            Map<String,Object> rowData = new HashMap<>(metaData.getColumnCount());
-            for (int i = 1; i <= metaData.getColumnCount(); i++) {
-                rowData.put(StringUtil.underlineToHump(metaData.getColumnName(i)),resultSet.getObject(i));
+            if (ClassUtil.isSimpleValueType(clasz)){
+                list.add(resultSet.getObject(1,clasz));
+            } else {
+                Map<String,Object> rowData = new HashMap<>(metaData.getColumnCount());
+                for (int i = 1; i <= metaData.getColumnCount(); i++) {
+                    rowData.put(StringUtil.underlineToHump(metaData.getColumnName(i)),resultSet.getObject(i));
+                }
+                list.add(BeanUtil.toBean(rowData,clasz));
             }
-            list.add(BeanUtil.toBean(rowData,clasz));
         }
 
         close(connection,resultSet,statement);
@@ -199,7 +493,6 @@ public class JdbcUtil {
      * @param clasz 结果转换类型
      * @return 执行结果
      **/
-    @SneakyThrows(SQLException.class)
     public static <T> T select(String url,String name,String password,String sql,Class<T> clasz){
         return select(null , url, name, password, sql, clasz);
     }
@@ -227,10 +520,19 @@ public class JdbcUtil {
             throw new SQLException("执行结果不是一条");
         }
         ResultSetMetaData metaData = resultSet.getMetaData();
+
         Map<String,Object> rowData = new HashMap<>(metaData.getColumnCount());
         if (resultSet.next()){
-            for (int i = 1; i <= metaData.getColumnCount(); i++) {
-                rowData.put(StringUtil.underlineToHump(metaData.getColumnName(i)),resultSet.getObject(i));
+            if (ClassUtil.isSimpleValueType(clasz)){
+                try {
+                    return resultSet.getObject(1,clasz);
+                } finally {
+                    close(connection,resultSet,statement);
+                }
+            } else {
+                for (int i = 1; i <= metaData.getColumnCount(); i++) {
+                    rowData.put(StringUtil.underlineToHump(metaData.getColumnName(i)),resultSet.getObject(i));
+                }
             }
         }
 
