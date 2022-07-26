@@ -25,8 +25,6 @@ import java.util.List;
  */
 public class SystemCache {
 
-    private static final Boolean TENANT_MODE = Boolean.FALSE;
-
     private static SystemClient systemClient;
 
     static {
@@ -79,7 +77,7 @@ public class SystemCache {
         return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_CLIENT_KEY,clientCode,() -> {
             ResponseData<TbCoreClient> responseData = systemClient.getClientByClientCode(clientCode);
             return responseData.getData();
-        },TENANT_MODE);
+        },Boolean.FALSE);
     }
 
     /**
@@ -134,7 +132,7 @@ public class SystemCache {
         return CacheUtil.get(CacheNames.DATASCOPE_REDIS_CACHE,CacheNames.SYSTEM_DATASCOPE_ALLROLES_KEY,"all",() -> {
             ResponseData<List<TbCoreDataScope>> responseData = systemClient.getAllRoleDataScope();
             return responseData.getData();
-        },TENANT_MODE);
+        });
     }
 
     /**
@@ -149,7 +147,7 @@ public class SystemCache {
         return CacheUtil.get(CacheNames.DATASCOPE_REDIS_CACHE,CacheNames.SYSTEM_DATASCOPE_ROLES_KEY,roleIds,() -> {
             ResponseData<List<TbCoreDataScope>> responseData = systemClient.getDataScopeByRole(roleIds);
             return responseData.getData();
-        },TENANT_MODE);
+        });
     }
 
     /**
@@ -194,6 +192,6 @@ public class SystemCache {
         return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_CITY_CODE_KEY,code,() -> {
             ResponseData<TbCoreCity> responseData = systemClient.getCityByCode(code);
             return responseData.getData();
-        },TENANT_MODE);
+        },Boolean.FALSE);
     }
 }

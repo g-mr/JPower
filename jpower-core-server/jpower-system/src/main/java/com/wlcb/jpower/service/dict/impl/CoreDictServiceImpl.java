@@ -49,9 +49,9 @@ public class CoreDictServiceImpl extends BaseServiceImpl<TbCoreDictMapper, TbCor
         if(Fc.isBlank(dict.getId())){
             dict.setLocaleId(Fc.isBlank(dict.getLocaleId())? ConstantsEnum.YYZL.CHINA.getValue() :dict.getLocaleId());
             dict.setParentId(Fc.isNotBlank(dict.getParentId())?dict.getParentId():TOP_CODE);
-            JpowerAssert.notTrue(coreDictType != null, JpowerError.BUSINESS,"该字典已存在");
+            JpowerAssert.notTrue(coreDictType != null, JpowerError.Business,"该字典已存在");
         }else {
-            JpowerAssert.notTrue(coreDictType != null && !StringUtil.equals(dict.getId(),coreDictType.getId()), JpowerError.BUSINESS,"该字典已存在");
+            JpowerAssert.notTrue(coreDictType != null && !StringUtil.equals(dict.getId(),coreDictType.getId()), JpowerError.Business,"该字典已存在");
         }
 
         return dictDao.saveOrUpdate(dict);

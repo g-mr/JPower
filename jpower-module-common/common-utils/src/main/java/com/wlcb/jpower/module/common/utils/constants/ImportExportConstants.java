@@ -5,12 +5,10 @@ import com.wlcb.jpower.module.common.utils.FileUtil;
 import java.io.File;
 
 /**
- * @ClassName ImportExportConstants
- * @Description TODO 导入导出
- * @Author 郭丁志
- * @Date 2020-08-21 11:06
- * @Version 1.0
- */
+ * 导入导出路径
+ *
+ * @author mr.g
+ **/
 public class ImportExportConstants {
 
     /** 导入文件夹 **/

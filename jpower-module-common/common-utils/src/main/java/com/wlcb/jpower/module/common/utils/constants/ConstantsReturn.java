@@ -1,55 +1,63 @@
 package com.wlcb.jpower.module.common.utils.constants;
 
 /**
- * @ClassName ConstantsUtils
- * @Description TODO 返回值工具类
- * @Author 郭丁志
- * @Date 2020-02-03 18:07
- * @Version 1.0
- */
+ * 返回值常量
+ *
+ * @author mr.g
+ **/
 public class ConstantsReturn {
     
     /**
-     * @Author 郭丁志
-     * @Description //TODO 406返回值
-     * @Date 14:36 2020-03-27
+     * 参数为空返回值
      **/
     public static final Integer RECODE_NULL = 406;
     /**
-     * @Author 郭丁志
-     * @Description //TODO 成功返回值
-     * @Date 14:36 2020-03-27
+     * 成功返回值
      **/
     public static final Integer RECODE_SUCCESS = 200;
     /**
-     * @Author 郭丁志
-     * @Description //TODO 找不到返回值
-     * @Date 14:37 2020-03-27
+     * 找不到返回值
      **/
     public static final Integer RECODE_NOTFOUND = 404;
     /**
-     * @Author 郭丁志
-     * @Description //TODO 业务逻辑返回值
-     * @Date 14:37 2020-03-27
+     * 业务逻辑返回值
      **/
     public static final Integer RECODE_BUSINESS = 300;
     /**
-     * @Author 郭丁志
-     * @Description //TODO 报错
-     * @Date 14:37 2020-03-27
+     * 系统异常
+     **/
+    public static final Integer RECODE_SYSTEM = 500;
+    /**
+     * 报错
      **/
     public static final Integer RECODE_ERROR = 501;
     /**
-     * @Author 郭丁志
-     * @Description //TODO 操作失败
-     * @Date 14:38 2020-03-27
+     * 操作失败
      **/
     public static final Integer RECODE_FAIL = 505;
     /**
-     * @Author 郭丁志
-     * @Description //TODO API报错
-     * @Date 14:38 2020-03-27
+     * API报错
      **/
     public static final Integer RECODE_API = 600;
+    /**
+     * 流量限制
+     **/
+    public static final Integer RECODE_RATELIMIT = 520;
+    /**
+     * Redis异常
+     **/
+    public static final Integer RECODE_REDIS = 550;
+    /**
+     * HTTP异常
+     **/
+    public static final Integer RECODE_HTTP = 540;
+    /**
+     * 解析异常
+     **/
+    public static final Integer RECODE_PARSER = 510;
+    /**
+     * 权限异常
+     **/
+    public static final Integer RECODE_AUTH = 401;
 
 }

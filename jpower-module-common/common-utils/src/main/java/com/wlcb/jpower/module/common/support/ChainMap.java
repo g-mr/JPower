@@ -1,203 +1,121 @@
-/**
- * Copyright (c) 2018-2028, Chill Zhuang 庄骞 (smallchill@163.com).
- * <p>
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE 3.0;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.gnu.org/licenses/lgpl.html
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.wlcb.jpower.module.common.support;
 
+import cn.hutool.core.map.MapBuilder;
+import cn.hutool.core.map.MapUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
-import org.springframework.util.LinkedCaseInsensitiveMap;
 
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 链式map
  *
- * @author Chill
+ * @author mr.g
  */
-public class ChainMap extends LinkedCaseInsensitiveMap<Object> {
+public class ChainMap<K, V> extends MapBuilder<K, V> {
 
-    private ChainMap() {
+    private static final long serialVersionUID = 987087206329511311L;
 
+    /**
+     * 创建Builder，默认HashMap实现
+     *
+     * @param <K> Key类型
+     * @param <V> Value类型
+     * @return MapBuilder
+     * @since 5.3.0
+     */
+    public static <K, V> ChainMap<K, V> create() {
+        return create(false);
     }
 
     /**
-     * 创建ChainMap
+     * 创建Builder
      *
-     * @return ChainMap
+     * @param <K>      Key类型
+     * @param <V>      Value类型
+     * @param isLinked true创建LinkedHashMap，false创建HashMap
+     * @return MapBuilder
+     * @since 5.3.0
      */
-    public static ChainMap init() {
-        return new ChainMap();
-    }
-
-    public static HashMap newMap() {
-        return new HashMap(16);
+    public static <K, V> ChainMap<K, V> create(boolean isLinked) {
+        return create(MapUtil.newHashMap(isLinked));
     }
 
     /**
-     * 设置列
+     * 创建Builder
      *
-     * @param attr  属性
-     * @param value 值
-     * @return 本身
+     * @param <K> Key类型
+     * @param <V> Value类型
+     * @param map Map实体类
+     * @return MapBuilder
+     * @since 3.2.3
      */
-    public ChainMap set(String attr, Object value) {
-        this.put(attr, value);
-        return this;
+    public static <K, V> ChainMap<K, V> create(Map<K, V> map) {
+        return new ChainMap<>(map);
     }
 
     /**
-     * 设置列，当键或值为null时忽略
+     * 链式Map创建类
      *
-     * @param attr  属性
-     * @param value 值
-     * @return 本身
+     * @param map 要使用的Map实现类
      */
-    public ChainMap setIgnoreNull(String attr, Object value) {
-        if (null != attr && null != value) {
-            set(attr, value);
-        }
-        return this;
-    }
-
-    public Object getObj(String key) {
-        return super.get(key);
+    public ChainMap(Map<K, V> map) {
+        super(map);
     }
 
     /**
-     * 获得特定类型值
+     * 链式Map创建
      *
-     * @param <T>          值类型
-     * @param attr         字段名
-     * @param defaultValue 默认值
-     * @return 字段值
+     * @param k Key类型
+     * @param v Value类型
+     * @return 当前类
      */
-    public <T> T get(String attr, T defaultValue) {
-        final Object result = get(attr);
-        return (T) (result != null ? result : defaultValue);
-    }
-
-    /**
-     * 获得特定类型值
-     *
-     * @param attr 字段名
-     * @return 字段值
-     */
-    public String getStr(String attr) {
-        return Fc.toStr(get(attr), null);
-    }
-
-    /**
-     * 获得特定类型值
-     *
-     * @param attr 字段名
-     * @return 字段值
-     */
-    public Integer getInt(String attr) {
-        return Fc.toInt(get(attr), -1);
-    }
-
-    /**
-     * 获得特定类型值
-     *
-     * @param attr 字段名
-     * @return 字段值
-     */
-    public Long getLong(String attr) {
-        return Fc.toLong(get(attr), -1L);
-    }
-
-    /**
-     * 获得特定类型值
-     *
-     * @param attr 字段名
-     * @return 字段值
-     */
-    public Float getFloat(String attr) {
-        return Fc.toFloat(get(attr), null);
-    }
-
-    public Double getDouble(String attr) {
-        return Fc.toDouble(get(attr), null);
-    }
-
-
-    /**
-     * 获得特定类型值
-     *
-     * @param attr 字段名
-     * @return 字段值
-     */
-    public Boolean getBool(String attr) {
-        return Fc.toBoolean(get(attr), null);
-    }
-
-    /**
-     * 获得特定类型值
-     *
-     * @param attr 字段名
-     * @return 字段值
-     */
-    public byte[] getBytes(String attr) {
-        return get(attr, null);
-    }
-
-    /**
-     * 获得特定类型值
-     *
-     * @param attr 字段名
-     * @return 字段值
-     */
-    public Date getDate(String attr) {
-        return get(attr, null);
-    }
-
-    /**
-     * 获得特定类型值
-     *
-     * @param attr 字段名
-     * @return 字段值
-     */
-    public Time getTime(String attr) {
-        return get(attr, null);
-    }
-
-    /**
-     * 获得特定类型值
-     *
-     * @param attr 字段名
-     * @return 字段值
-     */
-    public Timestamp getTimestamp(String attr) {
-        return get(attr, null);
-    }
-
-    /**
-     * 获得特定类型值
-     *
-     * @param attr 字段名
-     * @return 字段值
-     */
-    public Number getNumber(String attr) {
-        return get(attr, null);
-    }
-
     @Override
-    public ChainMap clone() {
-        return (ChainMap) super.clone();
+    public ChainMap<K, V> put(K k, V v) {
+        super.put(k, v);
+        return this;
     }
 
+    /**
+     * 返回int类型的值
+     *
+     * @author mr.g
+     * @param k key
+     * @return java.lang.Integer
+     **/
+    public Integer getInt(K k) {
+        return Fc.toInt(map().get(k));
+    }
+
+    /**
+     * 返回字符串类型的值
+     *
+     * @author mr.g
+     * @param k key
+     * @return java.lang.String
+     **/
+    public String getString(K k) {
+        return Fc.toStr(map().get(k));
+    }
+
+    /**
+     * 返回Boolean类型的值
+     *
+     * @author mr.g
+     * @param k key
+     * @return java.lang.String
+     **/
+    public Boolean getBool(K k) {
+        return Fc.toBool(map().get(k));
+    }
+
+    /**
+     * 返回值
+     *
+     * @author mr.g
+     * @param k key
+     * @return V
+     **/
+    public V get(K k) {
+        return map().get(k);
+    }
 }

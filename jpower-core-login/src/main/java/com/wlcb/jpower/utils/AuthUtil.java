@@ -45,7 +45,7 @@ public class AuthUtil {
         List<TbCoreDataScope> dataScopeRoleList = SystemCache.getDataScopeByRole(authInfo.getUser().getRoleIds());
         List<TbCoreFunction> menuList = SystemCache.getMenuListByRole(authInfo.getUser().getRoleIds());
 
-        Map<String,List<DataScope>> map = ChainMap.newMap();
+        Map<String,List<DataScope>> map = ChainMap.<String,List<DataScope>>create().build();
         if (Fc.isNotEmpty(dataScopeRoleList)){
             dataScopeRoleList.forEach(dataScope -> {
                 String code = getCode(menuList,dataScope.getMenuId());

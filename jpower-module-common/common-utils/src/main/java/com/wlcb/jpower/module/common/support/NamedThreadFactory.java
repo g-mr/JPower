@@ -10,12 +10,10 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * @ClassName NamedThreadFactory
- * @Description TODO 自定义线程名字
- * @Author 郭丁志
- * @Date 2020-06-28 17:52
- * @Version 1.0
- */
+ * 自定义线程名字
+ *
+ * @author mr.g
+ **/
 public class NamedThreadFactory implements ThreadFactory {
     private static final Logger logger = LoggerFactory.getLogger(NamedThreadFactory.class);
     private final ThreadGroup group;

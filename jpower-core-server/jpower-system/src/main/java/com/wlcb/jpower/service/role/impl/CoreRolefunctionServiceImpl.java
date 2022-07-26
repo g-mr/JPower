@@ -39,7 +39,7 @@ public class CoreRolefunctionServiceImpl extends BaseServiceImpl<TbCoreRoleFunct
     public boolean addRolefunctions(String roleId, String functionIds) {
 
         //先删除角色原有权限
-        coreRoleFunctionDao.removeRealByMap(ChainMap.init().set("role_id",roleId));
+        coreRoleFunctionDao.removeRealByMap(ChainMap.<String,Object>create().put("role_id",roleId).build());
 
         List<TbCoreRoleFunction> roleFunctions = new ArrayList<>();
         if (Fc.isNotBlank(functionIds)){

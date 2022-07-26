@@ -65,7 +65,7 @@ public class DataScopeHandler implements DataPermissionHandler {
 
             Expression andWhere;
             if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.CUSTOM.getValue())){
-                Map<String,Object> userMap = ChainMap.init();
+                Map<String,Object> userMap = ChainMap.<String,Object>create().build();
 
                 BeanUtil.beanToMap(LoginUserContext.get(),userMap,new CopyOptions(){
                     @Override

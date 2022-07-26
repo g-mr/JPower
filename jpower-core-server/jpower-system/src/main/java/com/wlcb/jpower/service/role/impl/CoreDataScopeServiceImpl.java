@@ -38,7 +38,7 @@ public class CoreDataScopeServiceImpl extends BaseServiceImpl<TbCoreDataScopeMap
     @Override
     public boolean save(TbCoreDataScope dataScope){
         JpowerAssert.geZero(dataScopeDao.count(Condition.<TbCoreDataScope>getQueryWrapper().lambda()
-                .eq(TbCoreDataScope::getScopeCode,dataScope.getScopeCode())), JpowerError.BUSINESS,"编号已经存在");
+                .eq(TbCoreDataScope::getScopeCode,dataScope.getScopeCode())), JpowerError.Business,"编号已经存在");
 
         return dataScopeDao.save(dataScope);
     }

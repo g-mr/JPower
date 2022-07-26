@@ -137,9 +137,9 @@ public class UserController extends BaseController {
         }
 
         if (StringUtils.isNotBlank(coreUser.getTelephone())) {
-            JpowerAssert.isNull(coreUserService.selectByPhone(coreUser.getTelephone(), coreUser.getTenantCode()), JpowerError.BUSINESS, "手机号已存在");
+            JpowerAssert.isNull(coreUserService.selectByPhone(coreUser.getTelephone(), coreUser.getTenantCode()), JpowerError.Business, "手机号已存在");
         }
-        JpowerAssert.isNull(coreUserService.selectUserLoginId(coreUser.getLoginId(), coreUser.getTenantCode()), JpowerError.BUSINESS, "当前登陆名已存在");
+        JpowerAssert.isNull(coreUserService.selectUserLoginId(coreUser.getLoginId(), coreUser.getTenantCode()), JpowerError.Business, "当前登陆名已存在");
 
         coreUser.setPassword(DigestUtil.pwdEncrypt(MD5.md5HexToUpperCase(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD, ConstantsUtils.DEFAULT_USER_PASSWORD))));
         if (Fc.isNull(coreUser.getUserType())){
@@ -313,7 +313,7 @@ public class UserController extends BaseController {
     public ResponseData<String> updatePassword(@ApiParam(value = "旧密码", required = true) @RequestParam String oldPw,
                                                @ApiParam(value = "新密码", required = true) @RequestParam String newPw) {
         UserInfo userInfo = SecureUtil.getUser();
-        JpowerAssert.notNull(userInfo, JpowerError.BUSINESS, "用户未登录");
+        JpowerAssert.notNull(userInfo, JpowerError.Business, "用户未登录");
 
         TbCoreUser user = coreUserService.getById(userInfo.getUserId());
 

@@ -11,7 +11,7 @@ import org.springframework.cache.CacheManager;
  */
 public class Cm {
 
-    public static final Boolean TENANT_MODE = EnvBeanUtil.get("jpower.tenant.enable", Boolean.class, true);
+    static final Boolean TENANT_MODE = EnvBeanUtil.get("jpower.tenant.enable", Boolean.class, true);
 
     private CacheManager cacheManager;
 

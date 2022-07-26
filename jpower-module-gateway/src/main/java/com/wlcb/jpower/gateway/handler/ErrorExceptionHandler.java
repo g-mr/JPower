@@ -41,7 +41,7 @@ public class ErrorExceptionHandler implements ErrorWebExceptionHandler {
 
         ServerHttpResponse response = exchange.getResponse();
 
-        ChainMap map = message(exchange.getRequest(),ex);
+        ChainMap<String, Object> map = message(exchange.getRequest(),ex);
         response.setRawStatusCode(map.getInt("code"));
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
         return response.writeWith(Flux.just(response.bufferFactory().wrap(JSON.toJSONBytes(map))));
@@ -54,14 +54,14 @@ public class ErrorExceptionHandler implements ErrorWebExceptionHandler {
      * @param ex
      * @return
      */
-    private ChainMap message(ServerHttpRequest request, Throwable ex) {
+    private ChainMap<String, Object> message(ServerHttpRequest request, Throwable ex) {
         if (Fc.isNull(ex)){
-            return ChainMap.init().set("code",HttpStatus.INTERNAL_SERVER_ERROR.value()).set("message","系统异常,请联系管理员");
+            return ChainMap.<String,Object>create().put("code",HttpStatus.INTERNAL_SERVER_ERROR.value()).put("message","系统异常,请联系管理员");
         }
 
         String uri = request.getURI().toString();
         if (uri.endsWith(API_PATH)) {
-            return ChainMap.init().set("code",HttpStatus.NOT_FOUND.value()).set("message","接口文档已迁移到【jpower-doc】服务,请联系开发人员索要请求地址");
+            return ChainMap.<String,Object>create().put("code",HttpStatus.NOT_FOUND.value()).put("message","接口文档已迁移到【jpower-doc】服务,请联系开发人员索要请求地址");
         }
 
         StringBuilder message = new StringBuilder("请求[");
@@ -87,7 +87,7 @@ public class ErrorExceptionHandler implements ErrorWebExceptionHandler {
         }else {
             message.append(ex.getMessage());
         }
-        return ChainMap.init().set("code",httpStatus).set("message",message.toString());
+        return ChainMap.<String, Object>create().put("code",httpStatus).put("message",message.toString());
     }
 
 }

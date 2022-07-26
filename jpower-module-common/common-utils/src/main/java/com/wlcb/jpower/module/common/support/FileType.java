@@ -2,8 +2,6 @@ package com.wlcb.jpower.module.common.support;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.HashMap;
@@ -18,44 +16,47 @@ import java.util.HashMap;
 @Slf4j
 public class FileType {
 
-    // 缓存文件头信息-文件头信息
-    public static final HashMap<String, String> mFileTypes = new HashMap<String, String>();
+    /**
+     * 缓存文件头信息-文件头信息
+     **/
+    private static final HashMap<String, String> M_FILE_TYPES = new HashMap<String, String>();
 
     static {
         // images
-        mFileTypes.put("FFD8FF", "jpg");
-        mFileTypes.put("89504E47", "png");
-        mFileTypes.put("47494638", "gif");
-        mFileTypes.put("49492A00", "tif");
-        mFileTypes.put("424D", "bmp");
-        mFileTypes.put("41433130", "dwg"); // CAD
-        mFileTypes.put("38425053", "psd");
-        mFileTypes.put("7B5C727466", "rtf"); // 日记本
-        mFileTypes.put("3C3F786D6C", "xml");
-        mFileTypes.put("68746D6C3E", "html");
-        mFileTypes.put("44656C69766572792D646174653A", "eml"); // 邮件
-        mFileTypes.put("D0CF11E0", "doc");
-        mFileTypes.put("D0CF11E0", "ppt");
-        mFileTypes.put("D0CF11E0", "xls");//excel2003版本文件
-        mFileTypes.put("5374616E64617264204A", "mdb");
-        mFileTypes.put("252150532D41646F6265", "ps");
-        mFileTypes.put("255044462D312E", "pdf");
-        mFileTypes.put("504B0304", "docx");
-        mFileTypes.put("504B0304", "xlsx");//excel2007以上版本文件
-        mFileTypes.put("52617221", "rar");
-        mFileTypes.put("57415645", "wav");
-        mFileTypes.put("41564920", "avi");
-        mFileTypes.put("2E524D46", "rm");
-        mFileTypes.put("000001BA", "mpg");
-        mFileTypes.put("000001B3", "mpg");
-        mFileTypes.put("6D6F6F76", "mov");
-        mFileTypes.put("3026B2758E66CF11", "asf");
-        mFileTypes.put("4D546864", "mid");
-        mFileTypes.put("1F8B08", "gz");
-    }
-
-    public static void main(String[] args) throws FileNotFoundException {
-        System.out.println(getFileType(new FileInputStream(new File("/Users/mr.gmac/Documents/联动公司文档/彩信素材/img/caixinbj.jsp"))));
+        M_FILE_TYPES.put("FFD8FF", "jpg");
+        M_FILE_TYPES.put("89504E47", "png");
+        M_FILE_TYPES.put("47494638", "gif");
+        M_FILE_TYPES.put("49492A00", "tif");
+        M_FILE_TYPES.put("424D", "bmp");
+        // CAD
+        M_FILE_TYPES.put("41433130", "dwg");
+        M_FILE_TYPES.put("38425053", "psd");
+        // 日记本
+        M_FILE_TYPES.put("7B5C727466", "rtf");
+        M_FILE_TYPES.put("3C3F786D6C", "xml");
+        M_FILE_TYPES.put("68746D6C3E", "html");
+        // 邮件
+        M_FILE_TYPES.put("44656C69766572792D646174653A", "eml");
+        M_FILE_TYPES.put("D0CF11E0", "doc");
+        M_FILE_TYPES.put("D0CF11E0", "ppt");
+        //excel2003版本文件
+        M_FILE_TYPES.put("D0CF11E0", "xls");
+        M_FILE_TYPES.put("5374616E64617264204A", "mdb");
+        M_FILE_TYPES.put("252150532D41646F6265", "ps");
+        M_FILE_TYPES.put("255044462D312E", "pdf");
+        M_FILE_TYPES.put("504B0304", "docx");
+        //excel2007以上版本文件
+        M_FILE_TYPES.put("504B0304", "xlsx");
+        M_FILE_TYPES.put("52617221", "rar");
+        M_FILE_TYPES.put("57415645", "wav");
+        M_FILE_TYPES.put("41564920", "avi");
+        M_FILE_TYPES.put("2E524D46", "rm");
+        M_FILE_TYPES.put("000001BA", "mpg");
+        M_FILE_TYPES.put("000001B3", "mpg");
+        M_FILE_TYPES.put("6D6F6F76", "mov");
+        M_FILE_TYPES.put("3026B2758E66CF11", "asf");
+        M_FILE_TYPES.put("4D546864", "mid");
+        M_FILE_TYPES.put("1F8B08", "gz");
     }
 
     /**
@@ -76,7 +77,7 @@ public class FileType {
         return res;
     }
     public static String getFileType(InputStream inputStream) {
-        return mFileTypes.get(getFileHeader(inputStream));
+        return M_FILE_TYPES.get(getFileHeader(inputStream));
     }
 
     /**

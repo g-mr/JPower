@@ -4,14 +4,17 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.wlcb.jpower.dbs.entity.TbLogMonitorParam;
-import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.DateUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.MapUtil;
 import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import lombok.AllArgsConstructor;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -130,7 +133,7 @@ public class HttpInfoHandler {
      * @return java.util.List<java.util.Map<java.lang.String,java.lang.String>>
      **/
     public Map<String,String> getPathParam(String method) {
-        Map<String,String> map = ChainMap.newMap();
+        Map<String,String> map = MapUtil.newHashMap();
         listParams(method).forEach(str -> {
             JSONObject param = (JSONObject) str;
             if (Fc.equals(param.getString(JSON_CONSTANT_KEY.IN),JSON_CONSTANT_VALUE.PATH)){
@@ -149,7 +152,7 @@ public class HttpInfoHandler {
      * @return java.util.List<java.util.Map<java.lang.String,java.lang.String>>
      **/
     public Map<String,String> getHeaderParam(String method, boolean required) {
-        Map<String,String> map = ChainMap.newMap();
+        Map<String,String> map = MapUtil.newHashMap();
         listParams(method).forEach(str -> {
             JSONObject param = (JSONObject) str;
             if (Fc.equals(param.getString(JSON_CONSTANT_KEY.IN),JSON_CONSTANT_VALUE.HEADER)){
@@ -172,7 +175,7 @@ public class HttpInfoHandler {
      * @return java.util.List<java.util.Map<java.lang.String,java.lang.String>>
      */
     public Map<String,String> getBodyParam(String method) {
-        Map<String,String> map = ChainMap.newMap();
+        Map<String,String> map = MapUtil.newHashMap();
         JSONArray json = listParams(method);
 
         json.forEach(str -> {
@@ -193,7 +196,7 @@ public class HttpInfoHandler {
      * @return java.util.List<java.util.Map<java.lang.String,java.lang.String>>
      */
     public Map<String,String> getFormParam(String method, boolean required) {
-        Map<String,String> map = ChainMap.newMap();
+        Map<String,String> map = MapUtil.newHashMap();
         JSONArray json = listParams(method);
         json.forEach(str -> {
             JSONObject param = (JSONObject) str;

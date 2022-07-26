@@ -135,7 +135,7 @@ public class AuthController extends BaseController {
         // 存入redis并设置过期时间为30分钟
         redisUtil.set(CacheNames.CAPTCHA_KEY + key, verCode, 30L, TimeUnit.MINUTES);
         // 将key和base64返回给前端
-        return ReturnJsonUtil.ok("操作成功",ChainMap.init().set("key", key).set("image", specCaptcha.toBase64()));
+        return ReturnJsonUtil.ok("操作成功",ChainMap.create().put("key", key).put("image", specCaptcha.toBase64()).build());
     }
 
     @ApiOperation(value = "发送手机登录验证码")

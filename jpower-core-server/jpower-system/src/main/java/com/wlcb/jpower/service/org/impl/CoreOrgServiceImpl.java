@@ -51,7 +51,7 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper, TbCoreO
         if (SecureUtil.isRoot()){
             queryWrapper.eq(TbCoreOrg::getTenantCode,Fc.isNotBlank(coreOrg.getTenantCode())?coreOrg.getTenantCode():DEFAULT_TENANT_CODE);
         }
-        JpowerAssert.geZero(coreOrgDao.count(queryWrapper), JpowerError.BUSINESS,"该编码已存在");
+        JpowerAssert.geZero(coreOrgDao.count(queryWrapper), JpowerError.Business,"该编码已存在");
 
         if (StringUtils.isBlank(coreOrg.getParentId())){
             coreOrg.setParentId(JpowerConstants.TOP_CODE);

@@ -67,7 +67,7 @@ public class ParamsController extends BaseController {
         JpowerAssert.notEmpty(coreParam.getName(), JpowerError.Arg,"参数名称不可为空");
         JpowerAssert.notEmpty(coreParam.getValue(), JpowerError.Arg,"参数值不可为空");
 
-        JpowerAssert.isEmpty(paramService.selectByCode(coreParam.getCode()), JpowerError.BUSINESS,"该系统参数已存在");
+        JpowerAssert.isEmpty(paramService.selectByCode(coreParam.getCode()), JpowerError.Business,"该系统参数已存在");
 
         return ReturnJsonUtil.status(paramService.save(coreParam));
     }
@@ -85,7 +85,7 @@ public class ParamsController extends BaseController {
         JpowerAssert.notEmpty(code, JpowerError.Arg,"编号值不可为空");
 
         TbCoreParam param = paramService.getOne(Condition.<TbCoreParam>getQueryWrapper().lambda().eq(TbCoreParam::getCode,code));
-        JpowerAssert.notTrue(Fc.equals(param.getIsEffect(), ConstantsEnum.YN01.N.getValue()), JpowerError.BUSINESS,"该参数无法立即生效，请重启项目");
+        JpowerAssert.notTrue(Fc.equals(param.getIsEffect(), ConstantsEnum.YN01.N.getValue()), JpowerError.Business,"该参数无法立即生效，请重启项目");
 
         if (Fc.isNotEmpty(param) && Fc.isNotBlank(param.getValue())){
             CacheUtil.put(CacheNames.PARAMS_REDIS_CACHE,CacheNames.PARAMS_REDIS_CODE_KEY,param.getCode(),param.getValue(),Boolean.FALSE);

@@ -136,7 +136,7 @@ public class RoleController extends BaseController {
                                     @ApiParam(value = "功能主键 多个逗号分割") @RequestParam(required = false) String functionIds){
 
         JpowerAssert.notEmpty(roleId, JpowerError.Arg,"角色id不可为空");
-        JpowerAssert.notNull(coreRoleService.getById(roleId),JpowerError.BUSINESS,"该角色不存在");
+        JpowerAssert.notNull(coreRoleService.getById(roleId),JpowerError.Business,"该角色不存在");
 
         if (coreRolefunctionService.addRolefunctions(roleId,functionIds)){
             TbCoreRole role = coreRoleService.getById(roleId);

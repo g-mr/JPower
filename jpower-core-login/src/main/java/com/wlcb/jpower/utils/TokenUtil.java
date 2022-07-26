@@ -105,7 +105,7 @@ public class TokenUtil {
         authInfo.setAccessToken(JwtUtil.createJwt(param, expire));
         authInfo.setExpiresIn(expire);
         authInfo.setRefreshToken(createRefreshToken(userInfo,client));
-        authInfo.setTokenType(TokenConstant.JPOWER);
+        authInfo.setTokenType(TokenConstant.TOKEN_PREFIX);
         AuthUtil.cacheAuth(authInfo);
         return authInfo;
     }
@@ -117,10 +117,10 @@ public class TokenUtil {
      * @return refreshToken
      */
     private static String createRefreshToken(UserInfo userInfo,TbCoreClient client) {
-        return JwtUtil.createJwt(ChainMap.init()
-                .set(TokenConstant.TOKEN_TYPE, TokenConstant.REFRESH_TOKEN)
-                .set(TokenConstant.USER_ID, userInfo.getUserId())
-                .set(TokenConstant.CLIENT_CODE, client.getClientCode())
+        return JwtUtil.createJwt(ChainMap.<String, Object>create()
+                .put(TokenConstant.TOKEN_TYPE, TokenConstant.REFRESH_TOKEN)
+                .put(TokenConstant.USER_ID, userInfo.getUserId())
+                .put(TokenConstant.CLIENT_CODE, client.getClientCode()).build()
                 ,getExpire(client.getRefreshTokenValidity()));
     }
 

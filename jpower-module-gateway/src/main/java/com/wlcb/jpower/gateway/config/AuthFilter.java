@@ -90,7 +90,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
             }
 
             Object dataAuth = redisUtil.get(CacheNames.TOKEN_DATA_SCOPE_KEY + token);
-            Map<String,List> map = Fc.isNull(dataAuth) ? ChainMap.newMap() : (Map<String, List>) dataAuth;
+            Map<String,List> map = Fc.isNull(dataAuth) ? ChainMap.<String,List>create().build() : (Map<String, List>) dataAuth;
             return chain.filter(addHeader(exchange, StringPool.EMPTY, JSON.toJSONString(map.getOrDefault(exchange.getRequest().getHeaders().getFirst(HEADER_MENU),ListUtil.empty()))));
         }else {
             //白名单
@@ -185,7 +185,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
      * @return
      */
     public static Map<String, Object> response(int status, String message) {
-        return ChainMap.init().set("code", status).set("message", message).set("status", false);
+        return ChainMap.<String, Object>create().put("code", status).put("message", message).put("status", false).build();
     }
 
     @Override

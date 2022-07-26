@@ -153,7 +153,7 @@ public class FileController extends BaseController {
     @Deprecated
     public void syncStart(@ApiParam("文件名称") @RequestParam String fileName){
 
-        JpowerAssert.isTrue(FileUtil.isValidFilename(fileName), JpowerError.BUSINESS,"文件名称("+fileName+")非法，不允许下载。 ");
+        JpowerAssert.isTrue(FileUtil.isValidFilename(fileName), JpowerError.Business,"文件名称("+fileName+")非法，不允许下载。 ");
 
         File file = new File(downloadPath+File.separator+fileName);
         if (file.exists()){

@@ -2,7 +2,6 @@ package com.wlcb.jpower.auth;
 
 import com.wlcb.jpower.dto.TokenParameter;
 import com.wlcb.jpower.module.common.auth.UserInfo;
-import com.wlcb.jpower.module.common.support.ChainMap;
 
 /**
  * @Author 郭丁志

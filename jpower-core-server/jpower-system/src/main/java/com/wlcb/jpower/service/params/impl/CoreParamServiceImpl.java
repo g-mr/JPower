@@ -51,7 +51,7 @@ public class CoreParamServiceImpl extends BaseServiceImpl<TbCoreParamsMapper, Tb
     @Override
     public void effectAll() {
         List<TbCoreParam> params = paramsDao.list(Condition.<TbCoreParam>getQueryWrapper().lambda().eq(TbCoreParam::getIsEffect, ConstantsEnum.YN01.Y.getValue()));
-        JpowerAssert.notGeZero(params.size(), JpowerError.BUSINESS,"不支持立即生效，需重启项目");
+        JpowerAssert.notGeZero(params.size(), JpowerError.Business,"不支持立即生效，需重启项目");
         for (TbCoreParam param : params) {
             if (StringUtils.isNotBlank(param.getValue())){
                 CacheUtil.put(CacheNames.PARAMS_REDIS_CACHE,CacheNames.PARAMS_REDIS_CODE_KEY,param.getCode(),param.getValue(),Boolean.FALSE);

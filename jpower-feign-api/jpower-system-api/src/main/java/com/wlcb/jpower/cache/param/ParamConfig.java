@@ -16,8 +16,6 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ParamConfig {
 
-    private static final Boolean TENANT_MODE = Boolean.FALSE;
-
     private static ParamsClient paramsClient;
 
     static {
@@ -32,7 +30,7 @@ public class ParamConfig {
      * @Date 15:47 2020-05-06
      **/
     public static String getString(String code){
-        return CacheUtil.get(CacheNames.PARAMS_REDIS_CACHE,PREFIX,code,String.class,TENANT_MODE);
+        return CacheUtil.get(CacheNames.PARAMS_REDIS_CACHE,PREFIX,code,String.class,Boolean.FALSE);
     }
 
     /**

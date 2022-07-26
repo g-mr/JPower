@@ -38,7 +38,7 @@ public class CityController extends BaseController {
     @RequestMapping(value = "/listChild",method = {RequestMethod.GET},produces="application/json")
     public ResponseData<List<Map<String,Object>>> listChild(@ApiParam(value = "父级code",required = true) @RequestParam(defaultValue = JpowerConstants.TOP_CODE) String pcode,
                                                             @ApiParam(value = "名称") @RequestParam(required = false) String name){
-        List<Map<String,Object>> list = coreCityService.listChild(ChainMap.init().set("pcode"+ SqlKeyword.EQUAL,pcode).set("name",name));
+        List<Map<String,Object>> list = coreCityService.listChild(ChainMap.<String, Object>create().put("pcode"+ SqlKeyword.EQUAL,pcode).put("name",name).build());
         return ReturnJsonUtil.ok("获取成功", list);
     }
 

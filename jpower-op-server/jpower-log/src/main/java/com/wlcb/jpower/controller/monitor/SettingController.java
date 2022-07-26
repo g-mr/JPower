@@ -43,7 +43,7 @@ public class SettingController {
     @GetMapping(value = "/servers",produces="application/json")
     public ResponseData<List<Map<String,Object>>> servers(){
         List<Map<String,Object>> list = new ArrayList<>();
-        properties.getRoutes().forEach(route -> list.add(ChainMap.init().set("name",route.getName()).set("location",route.getLocation())));
+        properties.getRoutes().forEach(route -> list.add(ChainMap.<String,Object>create().put("name",route.getName()).put("location",route.getLocation()).build()));
         return ReturnJsonUtil.ok("获取成功",list);
     }
 

@@ -16,8 +16,8 @@
 package com.wlcb.jpower.module.common.redis;
 
 import com.wlcb.jpower.module.common.properties.RedisProperties;
-import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.MapUtil;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -117,7 +117,7 @@ public class RedisConfig {
         defConfig.entryTtl(redisProperties.getDef().getTimeToLive());
 
         Map<String, RedisProperties.Cache> configs = redisProperties.getConfigs();
-        Map<String, RedisCacheConfiguration> map = ChainMap.newMap();
+        Map<String, RedisCacheConfiguration> map = MapUtil.newHashMap();
         //自定义的缓存过期时间配置
         Optional.ofNullable(configs).ifPresent(config ->
                 config.forEach((key, cache) -> {

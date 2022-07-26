@@ -24,7 +24,7 @@ public class JwtUtil {
     /**
      * token前缀长度
      **/
-    public static Integer AUTH_LENGTH = TokenConstant.JPOWER.length()+1;
+    public static Integer AUTH_LENGTH = TokenConstant.TOKEN_PREFIX.length()+1;
 
     /**
      * 解析令牌
@@ -56,7 +56,7 @@ public class JwtUtil {
      * @return 去掉前缀后的令牌
      **/
     public static String parsingToken(@NonNull String authToken) {
-        if (StringUtil.isNotBlank(authToken) && authToken.length() > AUTH_LENGTH && authToken.startsWith(TokenConstant.JPOWER)) {
+        if (StringUtil.isNotBlank(authToken) && authToken.length() > AUTH_LENGTH && authToken.startsWith(TokenConstant.TOKEN_PREFIX)) {
             authToken = authToken.substring(AUTH_LENGTH);
             return authToken;
         }

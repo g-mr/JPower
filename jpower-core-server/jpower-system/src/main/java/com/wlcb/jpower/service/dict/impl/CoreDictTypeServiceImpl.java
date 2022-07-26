@@ -65,7 +65,7 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
                 .eq(TbCoreDictType::getDelEnabled, ConstantsEnum.YN.Y.getValue()));
         if (listType.size() > 0){
             JpowerAssert.geZero(coreDictTypeDao.count(Condition.<TbCoreDictType>getQueryWrapper().lambda()
-                    .in(TbCoreDictType::getParentId,ids)), JpowerError.BUSINESS,"请先删除下级字典类型");
+                    .in(TbCoreDictType::getParentId,ids)), JpowerError.Business,"请先删除下级字典类型");
         }
 
         if (coreDictTypeDao.removeReal(Condition.<TbCoreDictType>getQueryWrapper().lambda()
@@ -94,7 +94,7 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
             dictType.setTenantCode(tenant);
             queryWrapper.eq(TbCoreDictType::getTenantCode,tenant);
         }
-        JpowerAssert.geZero(coreDictTypeDao.count(queryWrapper),JpowerError.BUSINESS,"该字典类型已存在");
+        JpowerAssert.geZero(coreDictTypeDao.count(queryWrapper),JpowerError.Business,"该字典类型已存在");
 
         return coreDictTypeDao.save(dictType);
     }

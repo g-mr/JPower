@@ -351,10 +351,10 @@ public class TaskServiceImpl implements TaskService {
             JSONObject methodsInfo = paths.getJSONObject(path);
             HttpInfoHandler handler = new HttpInfoHandler(monitorSettingService.queryParamByPath(route.getName(),path),methodsInfo,json.getJSONObject(DEFINITIONS));
 
-            handler.getPathParam(method).forEach((key,val) -> list.add(ChainMap.init().set("name",key).set("value",val).set("type","path")));
-            handler.getHeaderParam(method, false).forEach((key,val) -> list.add(ChainMap.init().set("name",key).set("value",val).set("type","header")));
-            handler.getFormParam(method,false).forEach((key,val) -> list.add(ChainMap.init().set("name",key).set("value",val).set("type","query")));
-            handler.getBodyParam(method).forEach((key,val) -> list.add(ChainMap.init().set("name",key).set("value",val).set("type","body")));
+            handler.getPathParam(method).forEach((key,val) -> list.add(ChainMap.<String, Object>create().put("name",key).put("value",val).put("type","path").build()));
+            handler.getHeaderParam(method, false).forEach((key,val) -> list.add(ChainMap.<String, Object>create().put("name",key).put("value",val).put("type","header").build()));
+            handler.getFormParam(method,false).forEach((key,val) -> list.add(ChainMap.<String, Object>create().put("name",key).put("value",val).put("type","query").build()));
+            handler.getBodyParam(method).forEach((key,val) -> list.add(ChainMap.<String, Object>create().put("name",key).put("value",val).put("type","body").build()));
         }
         return list;
     }

@@ -106,12 +106,12 @@ public class TenantController extends BaseController {
         }
         if (Fc.isNotBlank(tenant.getTenantCode())){
             JpowerAssert.geZero(tenantService.count(Condition.<TbCoreTenant>getQueryWrapper().lambda().eq(TbCoreTenant::getTenantCode,tenant.getTenantCode()))
-                    ,JpowerError.BUSINESS,"该租户已存在");
+                    ,JpowerError.Business,"该租户已存在");
         }
 
         if (Fc.isNotBlank(tenant.getDomain())){
             JpowerAssert.geZero(tenantService.count(Condition.<TbCoreTenant>getQueryWrapper().lambda().eq(TbCoreTenant::getDomain,tenant.getDomain()))
-                    ,JpowerError.BUSINESS,"该域名已存在");
+                    ,JpowerError.Business,"该域名已存在");
         }
 
         return ReturnJsonUtil.status(tenantService.save(tenant,functionCodes));
@@ -128,14 +128,14 @@ public class TenantController extends BaseController {
 
     @ApiOperation("通过域名查询租户")
     @GetMapping("/queryByDomain")
-    public ResponseData<ChainMap> queryByDomain(@ApiParam(value = "域名",required = true) @RequestParam String domain){
+    public ResponseData<ChainMap<String,Object>> queryByDomain(@ApiParam(value = "域名",required = true) @RequestParam String domain){
         JpowerAssert.notEmpty(domain, JpowerError.Arg,"域名不可为空");
         TbCoreTenant tenant = tenantService.getOne(Condition.<TbCoreTenant>getQueryWrapper().lambda().eq(TbCoreTenant::getDomain,domain));
-        ChainMap map = ChainMap.init();
+        ChainMap<String,Object> map = ChainMap.create();
         if (Fc.notNull(tenant)){
-            map.set("tenantCode",tenant.getTenantCode())
-                    .set("domain",tenant.getDomain())
-                    .set("logo",tenant.getLogo());
+            map.put("tenantCode",tenant.getTenantCode())
+                    .put("domain",tenant.getDomain())
+                    .put("logo",tenant.getLogo());
         }
         return ReturnJsonUtil.ok("查询成功",map);
     }

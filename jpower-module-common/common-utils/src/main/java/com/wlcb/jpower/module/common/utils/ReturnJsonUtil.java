@@ -17,7 +17,7 @@ public class ReturnJsonUtil {
      **/
     private static final String MP_PACKAGE = "com.baomidou.mybatisplus";
     /**
-     * pagehelper的包路径
+     * PageHelper的包路径
      **/
     private static final String PH_PACKAGE = "com.github.pagehelper";
     /**

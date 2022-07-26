@@ -60,7 +60,7 @@ public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper, TbCor
         coreCity.setCountryCode(Fc.isNotBlank(coreCity.getCountryCode())?coreCity.getCountryCode():JpowerConstants.COUNTRY_CODE);
         coreCity.setPcode(Fc.isNotBlank(coreCity.getPcode())?coreCity.getPcode():JpowerConstants.TOP_CODE);
 
-        JpowerAssert.notTrue(queryByCode(coreCity.getCode()) != null, JpowerError.BUSINESS,"该编号已存在");
+        JpowerAssert.notTrue(queryByCode(coreCity.getCode()) != null, JpowerError.Business,"该编号已存在");
 
         // 新增的下级如果是第一个，则需要删除上级的缓存
         try {
@@ -90,7 +90,7 @@ public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper, TbCor
         List<Object> listCode = coreCityDao.listObjs(Condition.<TbCoreCity>getQueryWrapper().lambda().select(TbCoreCity::getCode).in(TbCoreCity::getId,ids));
         if(listCode.size()>0){
             long count = coreCityDao.count(Condition.<TbCoreCity>getQueryWrapper().lambda().in(TbCoreCity::getPcode,listCode));
-            JpowerAssert.geZero(count,JpowerError.BUSINESS,"请先删除子区域");
+            JpowerAssert.geZero(count,JpowerError.Business,"请先删除子区域");
         }
 
         CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE,Boolean.FALSE);
@@ -110,7 +110,7 @@ public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper, TbCor
     public Boolean update(TbCoreCity coreCity) {
         TbCoreCity city = coreCityDao.getById(coreCity.getId());
         if (!StringUtil.equals(city.getCode(),coreCity.getCode())){
-            JpowerAssert.isNull(queryByCode(coreCity.getCode()),JpowerError.BUSINESS,"编号已存在");
+            JpowerAssert.isNull(queryByCode(coreCity.getCode()),JpowerError.Business,"编号已存在");
         }
 
         boolean is = coreCityDao.updateById(coreCity);
