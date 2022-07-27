@@ -9,8 +9,8 @@ import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.JwtUtil;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
-import com.wlcb.jpower.utils.AuthUtil;
 import com.wlcb.jpower.utils.TokenUtil;
+import com.wlcb.jpower.utils.UserUtil;
 import com.wlcb.jpower.vo.UserVo;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +53,7 @@ public class RefreshTokenGranter implements TokenGranter {
 					return authUserInfo.getRefreshUserInfo(userType,userId);
 				}else {
 					UserVo result = UserCache.getById(userId);
-					return AuthUtil.toUserInfo(result);
+					return UserUtil.toUserInfo(result);
 				}
 			}
 		}

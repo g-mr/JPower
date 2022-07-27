@@ -36,29 +36,6 @@ public class JpowerApplication {
         SpringApplicationBuilder builder = springApplicationBuilder(appName, source, args);
         ConfigurableApplicationContext context = builder.run(args);
 
-        /*
-        todo 这是一段会报错的代码，回头想办法让他不报错
-        String projectName = EnvBeanUtil.get("jpower.name",String.class);
-        if (Fc.isNotBlank(projectName)){
-            Field[] fields = AppConstant.class.getDeclaredFields();
-            for (Field field : fields) {
-                //这里进行了约定，只修改JPOWER开头的字段值
-                if (StringUtil.equalsIgnoreCase(field.getName(),"JPOWER")){
-                    String value = Fc.toStr(ReflectUtil.getStaticFieldValue(field));
-
-                    field.setAccessible(true);
-
-                    Field modifiersField = Field.class.getDeclaredField("modifiers");
-
-                    modifiersField.setAccessible(true);
-
-                    modifiersField.setInt(field,field.getModifiers() & ~Modifier.FINAL);
-                    field.set(AppConstant.class,projectName+"-"+value);
-                }
-            }
-        }
-        System.out.println(AppConstant.JPOWER_SYSTEM);*/
-
         log.info("启动成功：appName={}，profiles={}，port={}",appName,context.getEnvironment().getActiveProfiles(),context.getEnvironment().getProperty("server.port"));
         return context;
     }

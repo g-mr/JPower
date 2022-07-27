@@ -50,7 +50,7 @@ public class UserController extends BaseController {
     @ApiOperation("查询当前登录用户信息")
     @GetMapping(value = "/getLoginInfo", produces = "application/json")
     public ResponseData<UserVo> getLoginInfo() {
-        String id = SecureUtil.getUserId();
+        String id = ShieldUtil.getUserId();
         JpowerAssert.notEmpty(id,JpowerError.Arg,"用户未登录");
         return ReturnJsonUtil.ok("获取成功", coreUserService.getById(id));
     }
@@ -120,8 +120,8 @@ public class UserController extends BaseController {
             return ReturnJsonUtil.busFail("邮箱不合法");
         }
 
-        String tenantCode = SecureUtil.getTenantCode();
-        if (SecureUtil.isRoot()) {
+        String tenantCode = ShieldUtil.getTenantCode();
+        if (ShieldUtil.isRoot()) {
             tenantCode = Fc.isBlank(coreUser.getTenantCode()) ? DEFAULT_TENANT_CODE : coreUser.getTenantCode();
         }
         TbCoreTenant tenant = SystemCache.getTenantByCode(tenantCode);
@@ -220,7 +220,7 @@ public class UserController extends BaseController {
     @PutMapping(value = "/updateLogin", produces = "application/json")
     public ResponseData updateLogin(@ApiIgnore TbCoreUser coreUser) {
         JpowerAssert.notEmpty(coreUser.getId(), JpowerError.Arg, "用户ID不可为空");
-        JpowerAssert.notNull(SecureUtil.getUser(), JpowerError.Arg, "用户未登录");
+        JpowerAssert.notNull(ShieldUtil.getUser(), JpowerError.Arg, "用户未登录");
 
         if (coreUser.getIdType() != null && ConstantsEnum.ID_TYPE.ID_CARD.getValue().equals(coreUser.getIdType())) {
             if (!Validator.isCitizenId(coreUser.getIdNo())) {
@@ -230,7 +230,7 @@ public class UserController extends BaseController {
 
         coreUser.setPassword(null);
         coreUser.setRoleIds(null);
-        coreUser.setId(SecureUtil.getUser().getUserId());
+        coreUser.setId(ShieldUtil.getUser().getUserId());
         CacheUtil.clear(CacheNames.USER_REDIS_CACHE);
         return ReturnJsonUtil.status(coreUserService.update(coreUser));
     }
@@ -312,7 +312,7 @@ public class UserController extends BaseController {
     @GetMapping(value = "/updatePassword")
     public ResponseData<String> updatePassword(@ApiParam(value = "旧密码", required = true) @RequestParam String oldPw,
                                                @ApiParam(value = "新密码", required = true) @RequestParam String newPw) {
-        UserInfo userInfo = SecureUtil.getUser();
+        UserInfo userInfo = ShieldUtil.getUser();
         JpowerAssert.notNull(userInfo, JpowerError.Business, "用户未登录");
 
         TbCoreUser user = coreUserService.getById(userInfo.getUserId());

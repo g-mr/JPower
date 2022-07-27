@@ -13,12 +13,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @ClassName UserInfo
- * @Description TODO
- * @Author 郭丁志
- * @Date 2020-07-27 23:20
- * @Version 1.0
- */
+ * 用户登陆信息
+ *
+ * @author mr.g
+ **/
 @Data
 public class UserInfo implements Serializable {
 

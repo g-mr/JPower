@@ -24,13 +24,14 @@ import java.util.Objects;
 import static com.wlcb.jpower.module.common.auth.SecureConstant.BASIC_HEADER_PREFIX;
 
 /**
- * @Author mr.g
- * @Date 17:00 2020-08-24
+ * 系统鉴权信息获取工具
+ *
+ * @author mr.g
  **/
 @Slf4j
-public class SecureUtil {
-    private static final String REQUEST_USER_SESSION = "REQUEST_USER_SESSION";
-    private static final boolean TENANT_MODE = EnvBeanUtil.get("jpower.tenant.enable", Boolean.class, true);
+public class ShieldUtil {
+
+    private static final String REQUEST_USER_SESSION = "request_user_session";
 
     /**
      * 获取用户信息
@@ -111,7 +112,7 @@ public class SecureUtil {
      *
      * @return userAccount
      */
-    public static String getUserAccount() {
+    public static String getLoginId() {
         UserInfo user = getUser();
         return Fc.isNull(user) ? StringPool.EMPTY : user.getLoginId();
     }
@@ -157,7 +158,7 @@ public class SecureUtil {
      * @return tenantId
      */
     public static String getTenantCode(HttpServletRequest request) {
-        if (!TENANT_MODE) {
+        if (!EnvBeanUtil.getTenantEnable()) {
             return StringPool.EMPTY;
         }
         UserInfo user = getUser(request);
@@ -203,7 +204,7 @@ public class SecureUtil {
         String header = Objects.requireNonNull(WebUtil.getRequest()).getHeader(SecureConstant.BASIC_HEADER_KEY);
         header = Fc.toStr(header).replace(SecureConstant.BASIC_HEADER_PREFIX_EXT, BASIC_HEADER_PREFIX);
         if (!header.startsWith(BASIC_HEADER_PREFIX)) {
-            throw new RuntimeException("请求标头中没有客户端信息");
+            throw new IllegalArgumentException("请求头中没有客户端信息");
         }
 
         String decodeBasic = StringUtil.subAfter(header,BASIC_HEADER_PREFIX,false);
@@ -218,12 +219,12 @@ public class SecureUtil {
                     StringUtil.subBefore(token,StringPool.COLON,false),
                     StringUtil.subAfter(token,StringPool.COLON,false)};
         } else {
-            throw new RuntimeException("无效的基本身份验证令牌");
+            throw new IllegalArgumentException("无效的基本身份验证令牌");
         }
     }
 
     /**
-     * 获取请求头中的客户端id
+     * 获取请求头中的客户端Code
      */
     public static String getClientCodeFromHeader() {
         String[] tokens = getClientInfo();

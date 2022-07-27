@@ -109,14 +109,14 @@ public class AuthController extends BaseController {
             userClient.updateUserLoginInfo(userInfo.getUserId());
         }
 
-        return ReturnJsonUtil.ok("登录成功",TokenUtil.createAuthInfo(userInfo));
+        return ReturnJsonUtil.data(TokenUtil.createAuthInfo(userInfo));
     }
 
     @ApiOperation(value = "退出登录")
     @RequestMapping(value = "/loginOut",method = RequestMethod.POST,produces="application/json")
     public ResponseData<String> loginOut(@ApiParam(value = "用户ID",required = true)@RequestParam String userId) {
         JpowerAssert.notEmpty(userId, JpowerError.Arg,"用户ID不可为空");
-        UserInfo user = SecureUtil.getUser();
+        UserInfo user = ShieldUtil.getUser();
         if(Fc.notNull(user) && Fc.equals(userId,user.getUserId())){
             getRequest().getSession().invalidate();
             redisUtil.remove(CacheNames.TOKEN_URL_KEY+JwtUtil.getToken(getRequest()));

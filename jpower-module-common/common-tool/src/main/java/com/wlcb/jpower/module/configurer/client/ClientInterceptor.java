@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
-import com.wlcb.jpower.module.common.utils.SecureUtil;
+import com.wlcb.jpower.module.common.utils.ShieldUtil;
 import com.wlcb.jpower.module.common.utils.WebUtil;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
 import com.wlcb.jpower.module.properties.AuthProperties;
@@ -46,9 +46,9 @@ public class ClientInterceptor implements HandlerInterceptor {
     }
 
     private boolean isIntercept(AuthProperties.Client client,HttpServletRequest request) {
-        UserInfo user = SecureUtil.getUser(request);
-        return (user != null && Fc.equals(client.getCode(), user.getClientCode()) && Fc.equals(client.getCode(), SecureUtil.getClientCodeFromHeader())) ||
-                (Fc.equals(client.getCode(), SecureUtil.getClientCodeFromHeader()) && Fc.isNotBlank(request.getHeader(TokenConstant.PASS_HEADER_NAME))) &&
+        UserInfo user = ShieldUtil.getUser(request);
+        return (user != null && Fc.equals(client.getCode(), user.getClientCode()) && Fc.equals(client.getCode(), ShieldUtil.getClientCodeFromHeader())) ||
+                (Fc.equals(client.getCode(), ShieldUtil.getClientCodeFromHeader()) && Fc.isNotBlank(request.getHeader(TokenConstant.PASS_HEADER_NAME))) &&
                 client.getPath().stream().anyMatch(pattern -> antPathMatcher.match(pattern, request.getServletPath()));
     }
 

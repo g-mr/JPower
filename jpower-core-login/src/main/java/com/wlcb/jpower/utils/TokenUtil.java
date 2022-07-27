@@ -2,22 +2,30 @@ package com.wlcb.jpower.utils;
 
 import com.wlcb.jpower.cache.SystemCache;
 import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
+import com.wlcb.jpower.dbs.entity.function.TbCoreDataScope;
+import com.wlcb.jpower.dbs.entity.function.TbCoreFunction;
 import com.wlcb.jpower.dto.AuthInfo;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.common.auth.UserInfo;
+import com.wlcb.jpower.module.common.cache.CacheNames;
+import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.*;
+import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
+import com.wlcb.jpower.module.datascope.DataScope;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
- * @ClassName TokenUtil
- * @Description TODO 生成token
- * @Author 郭丁志
- * @Date 2020-07-27 22:01
- * @Version 1.0
- */
+ * 生成token工具
+ *
+ * @author mr.g
+ **/
 public class TokenUtil {
 
     public final static String CAPTCHA_HEADER_KEY = "Captcha-Key";
@@ -31,13 +39,11 @@ public class TokenUtil {
     public final static String USER_NOT_ACTIVATION = "用户尚未激活";
 
     /**
-     * @author 郭丁志
-     * @Description //TODO 获取客户端信息
-     * @date 23:08 2020/10/17 0017
-     * @return com.wlcb.jpower.module.common.auth.ClientDetails
+     * 获取客户端信息
+     * @return 客户端信息
      */
     public static TbCoreClient getClientDetails(){
-        String[] tokens = SecureUtil.getClientInfo();
+        String[] tokens = ShieldUtil.getClientInfo();
         assert tokens.length == 2;
         String clientCode = tokens[0];
         String clientSecret = tokens[1];
@@ -69,7 +75,8 @@ public class TokenUtil {
 
     /**
      * 获取过期时间
-     * @Author mr.g
+     *
+     * @author mr.g
      * @param tokenValidity
      * @return long
      **/
@@ -106,7 +113,7 @@ public class TokenUtil {
         authInfo.setExpiresIn(expire);
         authInfo.setRefreshToken(createRefreshToken(userInfo,client));
         authInfo.setTokenType(TokenConstant.TOKEN_PREFIX);
-        AuthUtil.cacheAuth(authInfo);
+        cacheAuth(authInfo);
         return authInfo;
     }
 
@@ -124,4 +131,45 @@ public class TokenUtil {
                 ,getExpire(client.getRefreshTokenValidity()));
     }
 
+    /**
+     * 缓存鉴权信息
+     *
+     * @author mr.g
+     * @param authInfo 鉴权信息
+     **/
+    private static void cacheAuth(AuthInfo authInfo) {
+        List<TbCoreDataScope> dataScopeRoleList = SystemCache.getDataScopeByRole(authInfo.getUser().getRoleIds());
+        List<TbCoreFunction> menuList = SystemCache.getMenuListByRole(authInfo.getUser().getRoleIds());
+
+        Map<String, List<DataScope>> map = ChainMap.<String,List<DataScope>>create().build();
+        if (Fc.isNotEmpty(dataScopeRoleList)){
+            dataScopeRoleList.forEach(dataScope -> {
+                String code = Fc.isNotEmpty(menuList) ? menuList.stream().filter(menu -> Fc.equalsValue(menu.getId(),dataScope.getMenuId())).map(TbCoreFunction::getCode).findFirst().orElse(null) : null;
+                if (Fc.isNotBlank(code)){
+
+                    boolean is = true;
+                    //角色配置的数据权限比所有角色可执行的权限优先级要高，所以判断有自己的权限的时候就不要全角色执行的权限了
+                    if (Fc.equalsValue(dataScope.getAllRole(), ConstantsEnum.YN01.Y.getValue())){
+                        is = dataScopeRoleList.stream().noneMatch(scope-> Fc.equalsValue(scope.getAllRole(), ConstantsEnum.YN01.N.getValue()) && Fc.equalsValue(dataScope.getScopeClass(), scope.getScopeClass()));
+                    }
+
+                    if (is){
+                        List<DataScope> dataScopeList = map.get(code);
+                        if (Fc.isEmpty(dataScopeList)){
+                            dataScopeList = new ArrayList<>();
+                        }
+                        dataScopeList.add(BeanUtil.copyProperties(dataScope, DataScope.class));
+
+                        map.put(code,dataScopeList);
+                    }
+
+                }
+            });
+        }
+
+        Objects.requireNonNull(SpringUtil.getBean(RedisUtil.class),"未获取到RedisUtil").set(CacheNames.TOKEN_DATA_SCOPE_KEY+authInfo.getAccessToken(), map , authInfo.getExpiresIn(), TimeUnit.SECONDS);
+
+        List<Object> list = SystemCache.getUrlsByRoleIds(authInfo.getUser().getRoleIds());
+        Objects.requireNonNull(SpringUtil.getBean(RedisUtil.class),"未获取到RedisUtil").set(CacheNames.TOKEN_URL_KEY+authInfo.getAccessToken(), list , authInfo.getExpiresIn(), TimeUnit.SECONDS);
+    }
 }

@@ -13,7 +13,7 @@ import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
-import com.wlcb.jpower.module.common.utils.SecureUtil;
+import com.wlcb.jpower.module.common.utils.ShieldUtil;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.tenant.TenantService;
 import io.swagger.annotations.*;
@@ -51,8 +51,8 @@ public class TenantController extends BaseController {
     @GetMapping("/list")
     public ResponseData<Pg<TbCoreTenant>> list(@ApiIgnore @RequestParam Map<String, Object> map){
         LambdaQueryWrapper<TbCoreTenant> queryWrapper = Condition.getQueryWrapper(map,TbCoreTenant.class).lambda();
-        if (!SecureUtil.isRoot()){
-            queryWrapper.eq(TbCoreTenant::getTenantCode,SecureUtil.getTenantCode());
+        if (!ShieldUtil.isRoot()){
+            queryWrapper.eq(TbCoreTenant::getTenantCode, ShieldUtil.getTenantCode());
         }
         return ReturnJsonUtil.ok("查询成功",tenantService.page(PaginationContext.getMpPage(), queryWrapper));
     }
@@ -72,7 +72,7 @@ public class TenantController extends BaseController {
     @ApiOperation("修改租户信息")
     @PutMapping("/update")
     public ResponseData update(TbCoreTenant tenant){
-        JpowerAssert.isTrue(SecureUtil.isRoot(), JpowerError.Auth,"只可超级管理员修改租户");
+        JpowerAssert.isTrue(ShieldUtil.isRoot(), JpowerError.Auth,"只可超级管理员修改租户");
         JpowerAssert.notEmpty(tenant.getId(), JpowerError.Arg,"主键不可为空");
 
         if (Fc.isNotBlank(tenant.getDomain())){
@@ -89,7 +89,7 @@ public class TenantController extends BaseController {
     @OperateLog(value = "删除租户",businessType = DELETE)
     @DeleteMapping("/delete")
     public ResponseData delete(@ApiParam("租户主键，多个逗号分隔") @RequestParam String ids){
-        JpowerAssert.isTrue(SecureUtil.isRoot(), JpowerError.Auth,"只可超级管理员删除租户");
+        JpowerAssert.isTrue(ShieldUtil.isRoot(), JpowerError.Auth,"只可超级管理员删除租户");
         JpowerAssert.notEmpty(ids, JpowerError.Arg,"主键不可为空");
         return ReturnJsonUtil.status(tenantService.removeByIds(Fc.toStrList(ids)));
     }
@@ -99,7 +99,7 @@ public class TenantController extends BaseController {
     public ResponseData add(TbCoreTenant tenant,
                             @ApiParam("功能CODE 多个逗号分隔") @RequestParam(required = false) List<String> functionCodes){
         tenant.setId(null);
-        JpowerAssert.isTrue(SecureUtil.isRoot(), JpowerError.Auth,"只可超级管理员增加租户");
+        JpowerAssert.isTrue(ShieldUtil.isRoot(), JpowerError.Auth,"只可超级管理员增加租户");
         JpowerAssert.notEmpty(tenant.getTenantName(), JpowerError.Arg,"租户名称不可为空");
         if (Fc.isNotBlank(tenant.getContactPhone()) && !Validator.isMobile(tenant.getContactPhone())){
             return ReturnJsonUtil.fail("手机号不合法");
@@ -122,7 +122,7 @@ public class TenantController extends BaseController {
     public ResponseData setting(@ApiParam(value = "租户ID 多个逗号分隔",required = true) @RequestParam List<String> ids,
                                 @ApiParam(value = "租户额度") @RequestParam(required = false) Integer accountNumber,
                                 @ApiParam(value = "租户过期时间") @RequestParam(required = false) Date expireTime){
-        JpowerAssert.isTrue(SecureUtil.isRoot(), JpowerError.Auth,"只可超级管理员配置租户");
+        JpowerAssert.isTrue(ShieldUtil.isRoot(), JpowerError.Auth,"只可超级管理员配置租户");
         return ReturnJsonUtil.status(tenantService.setting(ids,accountNumber,expireTime));
     }
 

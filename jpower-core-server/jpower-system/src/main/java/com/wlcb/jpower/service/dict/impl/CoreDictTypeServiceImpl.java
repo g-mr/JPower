@@ -12,7 +12,7 @@ import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.SecureUtil;
+import com.wlcb.jpower.module.common.utils.ShieldUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.mp.support.Condition;
@@ -43,7 +43,7 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
                 .select(TbCoreDictType::getDictTypeName,
                         TbCoreDictType::getDictTypeCode,
                         TbCoreDictType::getIsTree);
-        if (SecureUtil.isRoot()){
+        if (ShieldUtil.isRoot()){
             queryWrapper.eq(TbCoreDictType::getTenantCode,DEFAULT_TENANT_CODE);
         }
         return coreDictTypeDao.tree(queryWrapper.orderByAsc(TbCoreDictType::getSortNum));
@@ -52,7 +52,7 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
     @Override
     public List<Tree<String>> listTree(TbCoreDictType dictType) {
         LambdaTreeWrapper<TbCoreDictType> queryWrapper =
-                SecureUtil.isRoot()
+                ShieldUtil.isRoot()
                         ? Condition.getLambdaTreeWrapper(dictType,TbCoreDictType::getId,TbCoreDictType::getParentId).eq(TbCoreDictType::getTenantCode,DEFAULT_TENANT_CODE).orderByAsc(TbCoreDictType::getSortNum)
                         : Condition.getLambdaTreeWrapper(dictType,TbCoreDictType::getId,TbCoreDictType::getParentId).orderByAsc(TbCoreDictType::getSortNum);
         return coreDictTypeDao.tree(queryWrapper);
@@ -89,7 +89,7 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
         dictType.setDelEnabled(Fc.isBlank(dictType.getDelEnabled())? ConstantsEnum.YN.Y.getValue() :dictType.getDelEnabled());
 
         LambdaQueryWrapper<TbCoreDictType> queryWrapper = Condition.<TbCoreDictType>getQueryWrapper().lambda().eq(TbCoreDictType::getDictTypeCode,dictType.getDictTypeCode());
-        if (SecureUtil.isRoot()){
+        if (ShieldUtil.isRoot()){
             String tenant = Fc.isBlank(dictType.getTenantCode())?DEFAULT_TENANT_CODE:dictType.getTenantCode();
             dictType.setTenantCode(tenant);
             queryWrapper.eq(TbCoreDictType::getTenantCode,tenant);
@@ -108,7 +108,7 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
                 LambdaUpdateWrapper<TbCoreDict> queryWrapper = new UpdateWrapper<TbCoreDict>().lambda()
                         .set(TbCoreDict::getDictTypeCode,dictType.getDictTypeCode())
                         .eq(TbCoreDict::getDictTypeCode,coreDictType.getDictTypeCode());
-                if (SecureUtil.isRoot()){
+                if (ShieldUtil.isRoot()){
                     queryWrapper.eq(TbCoreDict::getTenantCode,coreDictType.getTenantCode());
                 }
                 coreDictService.update(queryWrapper);

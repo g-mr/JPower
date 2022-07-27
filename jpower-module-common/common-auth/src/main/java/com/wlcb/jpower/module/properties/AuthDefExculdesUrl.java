@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @ClassName AuthDefExculdesUrl
- * @Description TODO 不拦截的URL
- * @Author 郭丁志
- * @Date 2020/8/30 0030 0:00
- * @Version 1.0
- */
+ * 不拦截的URL
+ *
+ * @author mr.g
+ **/
 public class AuthDefExculdesUrl {
 
     private static List<String> exculudesUrl = new ArrayList<>();

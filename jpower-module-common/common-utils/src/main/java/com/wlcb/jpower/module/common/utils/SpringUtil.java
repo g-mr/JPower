@@ -7,7 +7,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
@@ -18,8 +17,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-@Order(Ordered.HIGHEST_PRECEDENCE)
-public class SpringUtil implements ApplicationContextAware {
+public class SpringUtil implements ApplicationContextAware, Ordered {
 
     /**
      * ApplicationContext
@@ -84,4 +82,14 @@ public class SpringUtil implements ApplicationContextAware {
         }
     }
 
+    /**
+     * 排序
+     *
+     * @author mr.g
+     * @return 顺序
+     **/
+    @Override
+    public int getOrder() {
+        return Ordered.HIGHEST_PRECEDENCE;
+    }
 }

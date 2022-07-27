@@ -11,7 +11,7 @@ import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
-import com.wlcb.jpower.module.common.utils.SecureUtil;
+import com.wlcb.jpower.module.common.utils.ShieldUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.mp.support.Condition;
@@ -47,8 +47,8 @@ public class RoleController extends BaseController {
     public ResponseData<List<Tree<String>>> listTree(TbCoreRole coreRole){
         List<Tree<String>> list = coreRoleService.tree(Condition.getLambdaTreeWrapper(coreRole,TbCoreRole::getId,TbCoreRole::getParentId)
                         .func(q->{
-                            if (!SecureUtil.isRoot()){
-                                List<String> roleId = SecureUtil.getUserRole();
+                            if (!ShieldUtil.isRoot()){
+                                List<String> roleId = ShieldUtil.getUserRole();
                                 q.apply("ancestor_id regexp '"+Fc.join(roleId, StringPool.SPILT)+"'")
                                         .or()
                                         .in(TbCoreRole::getId,roleId);

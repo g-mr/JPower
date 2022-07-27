@@ -2,26 +2,32 @@ package com.wlcb.jpower.module.configurer.xss;
 
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SqlInjectionUtil;
+import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
-/**
- * @ClassName XssHttpServletRequestWrapper
- * @Description TODO XSS具体过滤实现,连特殊字符和sql注入一起过滤
- * @Author 郭丁志
- * @Date 2020-05-01 22:49
- * @Version 1.0
- */
-public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
-    HttpServletRequest orgRequest = null;
-    private boolean isIncludeRichText = false;
+import static com.sun.org.apache.xml.internal.serialize.Method.HTML;
+import static com.wlcb.jpower.module.common.utils.constants.StringPool.NULL;
+import static com.wlcb.jpower.module.common.utils.constants.StringPool.UNDEFINED;
 
-    public XssHttpServletRequestWrapper(HttpServletRequest request, boolean isIncludeRichText) {
+/**
+ * XSS具体过滤实现,连特殊字符和sql注入一起过滤
+ *
+ * @author mr.g
+ **/
+public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
+
+    @Getter
+    private HttpServletRequest originalRequest;
+    private boolean isIncludeRichText;
+
+    XssHttpServletRequestWrapper(HttpServletRequest request, boolean isIncludeRichText) {
         super(request);
-        orgRequest = request;
+        this.originalRequest = request;
         this.isIncludeRichText = isIncludeRichText;
     }
 
@@ -34,7 +40,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
     @Override
     public String getParameter(String name) {
 
-        if(("content".equals(name) || name.endsWith("WithHtml")) && isIncludeRichText){
+        if(StringUtil.contains(name,HTML) && isIncludeRichText){
             return super.getParameter(name);
         }
 
@@ -42,7 +48,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
         String value = super.getParameter(name);
         if (StringUtils.isNotBlank(value)) {
             value = SqlInjectionUtil.filter(value);
-            if (StringUtils.equals(value,"null") || StringUtils.equals(value,"undefined")){
+            if (StringUtil.equals(value,NULL) || StringUtil.equals(value,UNDEFINED)){
                 value = null;
             }
         }
@@ -54,7 +60,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
         String[] arr = super.getParameterValues(name);
         if(arr != null){
             for (int i=0;i<arr.length;i++) {
-                arr[i] = SqlInjectionUtil.filter(arr[i]);//JsoupUtils.clean(arr[i]);
+                arr[i] = SqlInjectionUtil.filter(arr[i]);
             }
         }
         return arr;
@@ -76,7 +82,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
         String value = super.getHeader(name);
         if (StringUtils.isNotBlank(value) && !StringUtils.equals(name,"Accept") ) {
             value = SqlInjectionUtil.filter(value);
-            if (StringUtils.equals(value,"null") || StringUtils.equals(value,"undefined")){
+            if (StringUtils.equals(value,NULL) || StringUtils.equals(value,UNDEFINED)){
                 value = null;
             }
         }
@@ -84,22 +90,13 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
     }
 
     /**
-     * 获取最原始的request
-     *
-     * @return
-     */
-    public HttpServletRequest getOrgRequest() {
-        return orgRequest;
-    }
-
-    /**
      * 获取最原始的request的静态方法
      *
      * @return
      */
-    public static HttpServletRequest getOrgRequest(HttpServletRequest req) {
+    public static HttpServletRequest getOriginalRequest(HttpServletRequest req) {
         if (req instanceof XssHttpServletRequestWrapper) {
-            return ((XssHttpServletRequestWrapper) req).getOrgRequest();
+            return ((XssHttpServletRequestWrapper) req).getOriginalRequest();
         }
         return req;
     }

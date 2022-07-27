@@ -118,7 +118,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     @Override
     public TbCoreUser selectUserLoginId(String loginId,String tenantCode) {
         LambdaQueryWrapper<TbCoreUser> queryWrapper = Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getLoginId,loginId);
-        if (SecureUtil.isRoot()){
+        if (ShieldUtil.isRoot()){
             tenantCode = Fc.isBlank(tenantCode)?DEFAULT_TENANT_CODE:tenantCode;
             queryWrapper.eq(TbCoreUser::getTenantCode,tenantCode);
         }
@@ -144,7 +144,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     public TbCoreUser selectUserByOtherCode(String otherCode, String tenantCode) {
         LambdaQueryWrapper<TbCoreUser> queryWrapper = Condition.<TbCoreUser>getQueryWrapper()
                 .lambda().eq(TbCoreUser::getOtherCode,otherCode);
-        if (SecureUtil.isRoot()){
+        if (ShieldUtil.isRoot()){
             queryWrapper.eq(TbCoreUser::getTenantCode,Fc.isBlank(tenantCode)? DEFAULT_TENANT_CODE :tenantCode);
         }
         return coreUserDao.getOne(queryWrapper);
@@ -206,10 +206,10 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
             coreUser.setPassword(password);
             coreUser.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_SYSTEM.getValue());
 
-            if (SecureUtil.isRoot()){
-                coreUser.setTenantCode(Fc.isBlank(coreUser.getTenantCode())?SecureUtil.getTenantCode():coreUser.getTenantCode());
+            if (ShieldUtil.isRoot()){
+                coreUser.setTenantCode(Fc.isBlank(coreUser.getTenantCode())? ShieldUtil.getTenantCode():coreUser.getTenantCode());
             }else {
-                coreUser.setTenantCode(SecureUtil.getTenantCode());
+                coreUser.setTenantCode(ShieldUtil.getTenantCode());
             }
 
             setActivationStatus(coreUser);
@@ -344,7 +344,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     @Override
     public TbCoreUser selectByPhone(String phone,String tenantCode) {
         LambdaQueryWrapper<TbCoreUser> queryWrapper = Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getTelephone,phone);
-        if (SecureUtil.isRoot()){
+        if (ShieldUtil.isRoot()){
             tenantCode = Fc.isBlank(tenantCode)? DEFAULT_TENANT_CODE:tenantCode;
             queryWrapper.eq(TbCoreUser::getTenantCode,tenantCode);
         }

@@ -114,7 +114,7 @@ public class CacheUtil {
      **/
     public static void clear(String cacheName,String... tenantCode) {
         // 非超管不可操作其他租户缓存
-        if (SecureUtil.isRoot() && Fc.notNull(tenantCode) && tenantCode.length > 0){
+        if (ShieldUtil.isRoot() && Fc.notNull(tenantCode) && tenantCode.length > 0){
             if (Fc.isNotBlank(cacheName)) {
                 for (String code : tenantCode) {
                     Cm.getInstance().getCache(cacheName, code).clear();

@@ -16,12 +16,10 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * @ClassName JpowerJavaTimeModule
- * @Description TODO java 8 时间默认序列化
- * @Author 郭丁志
- * @Date 2021/3/10 0010 3:27
- * @Version 1.0
- */
+ * java 8 时间默认序列化
+ *
+ * @author mr.g
+ **/
 public class JpowerJavaTimeModule extends SimpleModule {
 
     public JpowerJavaTimeModule() {

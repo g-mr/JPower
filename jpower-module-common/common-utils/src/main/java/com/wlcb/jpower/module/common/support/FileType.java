@@ -7,12 +7,10 @@ import java.io.*;
 import java.util.HashMap;
 
 /**
- * @ClassName FileType
- * @Description TODO 文件类型
- * @Author 郭丁志
- * @Date 2020-05-02 00:43
- * @Version 1.0
- */
+ * 文件类型
+ *
+ * @author mr.g
+ **/
 @Slf4j
 public class FileType {
 

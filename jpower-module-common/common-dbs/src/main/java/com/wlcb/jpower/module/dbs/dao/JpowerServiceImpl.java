@@ -10,7 +10,7 @@ import com.wlcb.jpower.module.common.node.ForestNodeMerger;
 import com.wlcb.jpower.module.common.utils.BeanUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReflectUtil;
-import com.wlcb.jpower.module.common.utils.SecureUtil;
+import com.wlcb.jpower.module.common.utils.ShieldUtil;
 import com.wlcb.jpower.module.dbs.dao.mapper.base.JpowerBaseMapper;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 
@@ -39,8 +39,8 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
      */
     private void resolveEntity(T entity,boolean isSave){
         //  这里获取实际登陆人，如果是匿名用户或者其他接口调用方，交给 mp来赋值（可应用于未登录状态，根据具体业务，接口调用方可控制这些字段来保存更加符合的值）
-        String userId = SecureUtil.getUserId();
-        String orgId = SecureUtil.getOrgId();
+        String userId = ShieldUtil.getUserId();
+        String orgId = ShieldUtil.getOrgId();
         userId = Fc.isBlank(userId)?null:userId;
         orgId = Fc.isBlank(orgId)?null:orgId;
         Date now = new Date();
@@ -58,10 +58,10 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
         Field field = cn.hutool.core.util.ReflectUtil.getField(entity.getClass(), TENANT_CODE);
         if (Fc.notNull(field)){
             String tenantCode = Fc.toStr(ReflectUtil.getFieldValue(entity,TENANT_CODE),DEFAULT_TENANT_CODE);
-            if (SecureUtil.isRoot() && isSave){
+            if (ShieldUtil.isRoot() && isSave){
                 //如果是超级用户并且是保存数据，则必传一个租户编码
                 ReflectUtil.setFieldValue(entity,TENANT_CODE,tenantCode);
-            }else if (!SecureUtil.isRoot()){
+            }else if (!ShieldUtil.isRoot()){
                 //如果不是超级用户，则不能传租户编码
                 ReflectUtil.setFieldValue(entity,TENANT_CODE,null);
             }

@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
@@ -11,6 +12,7 @@ import java.io.Serializable;
 /**
  * @author Administrator
  */
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,35 +30,4 @@ public class ResponseData<T> implements Serializable {
     @ApiModelProperty(required = true,notes = "返回数据")
     private T data;
 
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
-
-    public boolean isStatus() {
-        return status;
-    }
-
-    public void setStatus(boolean status) {
-        this.status = status;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
-    }
 }

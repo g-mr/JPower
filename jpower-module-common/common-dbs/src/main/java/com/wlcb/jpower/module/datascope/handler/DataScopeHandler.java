@@ -47,7 +47,7 @@ public class DataScopeHandler implements DataPermissionHandler {
     public Expression getSqlSegment(Expression where, String mapperId) {
         DataScope dataScope = this.findDataScope(mapperId);
         //超级管理员不判断数据权限
-        if (Fc.isNull(dataScope) || SecureUtil.isRoot()) {
+        if (Fc.isNull(dataScope) || ShieldUtil.isRoot()) {
             return where;
         }
 

@@ -11,7 +11,7 @@ import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.SecureUtil;
+import com.wlcb.jpower.module.common.utils.ShieldUtil;
 import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
@@ -48,7 +48,7 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper, TbCoreO
     public Boolean add(TbCoreOrg coreOrg) {
 
         LambdaQueryWrapper<TbCoreOrg> queryWrapper = Condition.<TbCoreOrg>getQueryWrapper().lambda().eq(TbCoreOrg::getCode,coreOrg.getCode());
-        if (SecureUtil.isRoot()){
+        if (ShieldUtil.isRoot()){
             queryWrapper.eq(TbCoreOrg::getTenantCode,Fc.isNotBlank(coreOrg.getTenantCode())?coreOrg.getTenantCode():DEFAULT_TENANT_CODE);
         }
         JpowerAssert.geZero(coreOrgDao.count(queryWrapper), JpowerError.Business,"该编码已存在");
@@ -74,7 +74,7 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper, TbCoreO
 
         if (StringUtils.isNotBlank(coreOrg.getCode())){
             LambdaQueryWrapper<TbCoreOrg> queryWrapper = Condition.<TbCoreOrg>getQueryWrapper().lambda().eq(TbCoreOrg::getCode,coreOrg.getCode());
-            if (SecureUtil.isRoot()){
+            if (ShieldUtil.isRoot()){
                 queryWrapper.eq(TbCoreOrg::getTenantCode,org.getTenantCode());
             }
             TbCoreOrg tbCoreOrg = coreOrgDao.getOne(queryWrapper);

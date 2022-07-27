@@ -1,12 +1,10 @@
 package com.wlcb.jpower.module.common.auth;
 
 /**
- * @ClassName SecureConstant
- * @Description TODO 授权校验常量
- * @Author 郭丁志
- * @Date 2020-07-27 16:13
- * @Version 1.0
- */
+ * 授权校验常量
+ *
+ * @author mr.g
+ **/
 public interface SecureConstant {
 
     /**

@@ -8,7 +8,7 @@ import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.SecureUtil;
+import com.wlcb.jpower.module.common.utils.ShieldUtil;
 import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.mp.support.Condition;
@@ -37,7 +37,7 @@ public class CoreDictServiceImpl extends BaseServiceImpl<TbCoreDictMapper, TbCor
         LambdaQueryWrapper<TbCoreDict> wrapper = Condition.<TbCoreDict>getQueryWrapper().lambda()
                 .eq(TbCoreDict::getDictTypeCode,dictTypeCode)
                 .eq(TbCoreDict::getCode,code);
-        if(SecureUtil.isRoot()){
+        if(ShieldUtil.isRoot()){
             wrapper.eq(TbCoreDict::getTenantCode,DEFAULT_TENANT_CODE);
         }
         return dictDao.getOne(wrapper);
@@ -59,10 +59,10 @@ public class CoreDictServiceImpl extends BaseServiceImpl<TbCoreDictMapper, TbCor
 
     @Override
     public List<DictVo> listByType(TbCoreDict dict) {
-        if (SecureUtil.isRoot()) {
+        if (ShieldUtil.isRoot()) {
             dict.setTenantCode(Fc.isBlank(dict.getTenantCode()) ? DEFAULT_TENANT_CODE : dict.getTenantCode());
         } else {
-            dict.setTenantCode(SecureUtil.getTenantCode());
+            dict.setTenantCode(ShieldUtil.getTenantCode());
         }
         return dictDao.getBaseMapper().listByType(dict);
     }
@@ -72,7 +72,7 @@ public class CoreDictServiceImpl extends BaseServiceImpl<TbCoreDictMapper, TbCor
         LambdaQueryWrapper<TbCoreDict> queryWrapper = Condition.<TbCoreDict>getQueryWrapper().lambda()
                 .select(TbCoreDict::getCode,TbCoreDict::getName)
                 .eq(TbCoreDict::getDictTypeCode,dictTypeCode);
-        if (SecureUtil.isRoot()){
+        if (ShieldUtil.isRoot()){
             queryWrapper.eq(TbCoreDict::getTenantCode,DEFAULT_TENANT_CODE);
         }
         //这里不能返回实体类，不然会造成字典回写的死循环

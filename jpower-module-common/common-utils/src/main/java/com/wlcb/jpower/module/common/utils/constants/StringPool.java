@@ -23,6 +23,7 @@ public interface StringPool extends StrPool {
     String Y				= "y";
     String N				= "n";
     String NULL				= "null";
+    String UNDEFINED        = "undefined";
     String TAB				= "\t";
     String RIGHT_BRACKET	= ")";
     String SEMICOLON		= ";";

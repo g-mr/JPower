@@ -1,13 +1,12 @@
 package com.wlcb.jpower.module.common.utils;
 
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author mr.gmac
@@ -15,11 +14,11 @@ import java.util.regex.Pattern;
 public class SqlInjectionUtil {
     private static final Logger logger = LoggerFactory.getLogger(SqlInjectionUtil.class);
 
-    static final String[] char0  = new String[]{"'","--","|","<",">"," or "," xor "," and ",
+    private static final String[] SENSITIVE_CHAR = new String[]{"'","--","|","<",">"," or "," xor "," and ",
             "&lt;","&gt;","&#34","&#349","%27"};
-    static final String[] keys1  = new String[]{"delete","drop","create","select","truncate","update","insert",
+    private static final String[] SQL_CHAR  = new String[]{"delete","drop","create","select","truncate","update","insert",
             "alter","declare","xp_cmdshell","exec","execute"};
-    static final String[] keys2  = new String[]{"<img","%3cimg","<script","%3cscript","alert","console","document.location","window.location","javascript"};
+    private static final String[] JS_CHAR  = new String[]{"<img","%3cimg","<script","%3cscript","alert","console","document.location","window.location","javascript"};
 
     /**
      * 过滤入口
@@ -27,27 +26,27 @@ public class SqlInjectionUtil {
     public static String filter(String str) {
         String str0 = str;
         if (StringUtils.isBlank(str)) {
-            return "";
+            return StringPool.EMPTY;
         }
 
         // 敏感字符
-        for(String chars0:char0){
+        for(String chars0: SENSITIVE_CHAR){
             if( str.toLowerCase().contains(chars0) ){
-                str = str.replaceAll("(?i)"+chars0, "");
+                str = str.replaceAll("(?i)"+chars0, StringPool.EMPTY);
             }
         }
 
         // 已经替换掉字符的前提下，关键要生效就必须后面带最少一个半角空格
-        for(String keys0:keys1){
+        for(String keys0:SQL_CHAR){
             if( str.toLowerCase().contains(keys0+" ") ){
-                str = str.replaceAll("(?i)"+keys0, "");
+                str = str.replaceAll("(?i)"+keys0, StringPool.EMPTY);
             }
         }
 
         // 去掉含有歧义或者其他目的的关键词或语句
-        for(String keys0:keys2){
-            if( str.toLowerCase().replaceAll("\\s", "").contains(keys0) ){
-                str = str.replaceAll("(?i)"+keys0, "");
+        for(String keys0:JS_CHAR){
+            if( str.toLowerCase().replaceAll("\\s", StringPool.EMPTY).contains(keys0) ){
+                str = str.replaceAll("(?i)"+keys0, StringPool.EMPTY);
             }
         }
 
@@ -97,7 +96,7 @@ public class SqlInjectionUtil {
      */
     public static String filterParameters(String url,Map<String, String[]> paras) {
         String value = "";
-        String valueNew = "";
+        String valueNew;
         for (Map.Entry<String, String[]> entry : paras.entrySet()) {
             String[] values = entry.getValue();
             if (null == values) {
@@ -116,19 +115,5 @@ public class SqlInjectionUtil {
             url = url.replace(value, valueNew);
         }
         return url;
-    }
-
-    /**
-     * java实现不区分大小写替换
-     * @param source
-     * @param oldString
-     * @param newString
-     * @return
-     */
-    public static String IgnoreCaseReplace(String source, String oldString,String newString){
-        Pattern p = Pattern.compile(oldString, Pattern.CASE_INSENSITIVE);
-        Matcher m = p.matcher(source);
-        String ret=m.replaceAll(newString);
-        return ret;
     }
 }

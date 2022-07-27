@@ -11,8 +11,6 @@ import org.springframework.cache.CacheManager;
  */
 public class Cm {
 
-    static final Boolean TENANT_MODE = EnvBeanUtil.get("jpower.tenant.enable", Boolean.class, true);
-
     private CacheManager cacheManager;
 
     private static Cm instance;
@@ -31,7 +29,7 @@ public class Cm {
      * @Date 11:32 2020-09-01
      **/
     public Cache getCache(String cacheName, String tenantCode) {
-        return getCache(cacheName,TENANT_MODE,Fc.isNoneBlank(tenantCode)?tenantCode:SecureUtil.getTenantCode());
+        return getCache(cacheName,EnvBeanUtil.getTenantEnable(),Fc.isNotBlank(tenantCode)?tenantCode: ShieldUtil.getTenantCode());
     }
 
     /**
@@ -40,7 +38,7 @@ public class Cm {
      * @Date 11:32 2020-09-01
      **/
     public Cache getCache(String cacheName) {
-        return getCache(cacheName,TENANT_MODE);
+        return getCache(cacheName,EnvBeanUtil.getTenantEnable());
     }
 
     /**
@@ -49,7 +47,7 @@ public class Cm {
      * @Date 11:32 2020-09-01
      **/
     public Cache getCache(String cacheName,Boolean tenantMode) {
-        return getCache(cacheName,tenantMode,SecureUtil.getTenantCode());
+        return getCache(cacheName,tenantMode, ShieldUtil.getTenantCode());
     }
 
     /**

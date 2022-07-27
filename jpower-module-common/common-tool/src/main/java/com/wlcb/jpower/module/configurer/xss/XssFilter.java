@@ -43,8 +43,7 @@ public class XssFilter implements Filter {
             return;
         }
 
-        XssHttpServletRequestWrapper xssRequest = new XssHttpServletRequestWrapper((HttpServletRequest) request,xssProperties.getIsIncludeRichText());
-        filterChain.doFilter(xssRequest, response);
+        filterChain.doFilter(new XssHttpServletRequestWrapper((HttpServletRequest) request,xssProperties.getIsIncludeRichText()), response);
     }
 
     private boolean handleExcludeURL(HttpServletRequest request) {
@@ -64,7 +63,7 @@ public class XssFilter implements Filter {
 
         String url = request.getServletPath();
         for (String pattern : list) {
-            if (Fc.isNotBlank(pattern) && Fc.isNotBlank(url) && !Fc.equals(url,"/")){
+            if (Fc.isNotBlank(pattern) && Fc.isNotBlank(url) && !Fc.equalsValue(url,"/")){
                 if (StringUtil.wildcardEquals(pattern,url)){
                     return true;
                 }

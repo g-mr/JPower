@@ -25,7 +25,7 @@ import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.DigestUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.MD5;
-import com.wlcb.jpower.module.common.utils.SecureUtil;
+import com.wlcb.jpower.module.common.utils.ShieldUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
 import com.wlcb.jpower.module.common.utils.constants.ParamsConstants;
@@ -96,7 +96,7 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
             org.setParentId(TOP_CODE);
             org.setName(tenant.getTenantName());
             org.setCode(tenant.getTenantCode());
-            if (SecureUtil.isRoot()){
+            if (ShieldUtil.isRoot()){
                 org.setTenantCode(tenant.getTenantCode());
             }
             org.setAncestorId(TOP_CODE);
@@ -110,7 +110,7 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
             role.setIsSysRole(ConstantsEnum.YN01.Y.getValue());
             role.setName("管理员");
             role.setParentId(TOP_CODE);
-            if (SecureUtil.isRoot()){
+            if (ShieldUtil.isRoot()){
                 role.setTenantCode(tenant.getTenantCode());
             }
             roleDao.save(role);
@@ -150,7 +150,7 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
             user.setBirthday(new Date());
             user.setActivationStatus(ConstantsEnum.YN01.Y.getValue());
             user.setOrgId(org.getId());
-            if (SecureUtil.isRoot()){
+            if (ShieldUtil.isRoot()){
                 user.setTenantCode(tenant.getTenantCode());
             }
             ResponseData data = userClient.saveUser(user,role.getId());

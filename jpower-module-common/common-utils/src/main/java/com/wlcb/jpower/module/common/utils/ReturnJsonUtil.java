@@ -20,10 +20,6 @@ public class ReturnJsonUtil {
      * PageHelper的包路径
      **/
     private static final String PH_PACKAGE = "com.github.pagehelper";
-    /**
-     * 演示环境开关
-     **/
-    private static final boolean DEMO_ENABLE = EnvBeanUtil.get("jpower.demo.enable", Boolean.class, Boolean.FALSE);
 
     /**
      * 封装
@@ -107,7 +103,7 @@ public class ReturnJsonUtil {
         if(is){
             return ok("操作成功");
         }else {
-            if (DEMO_ENABLE){
+            if (EnvBeanUtil.getDemoEnable()){
                 return fail("演示环境不支持操作！");
             }
             return fail("操作失败");

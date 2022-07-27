@@ -3,7 +3,7 @@ package com.wlcb.jpower.module.dbs.config;
 import com.wlcb.jpower.module.common.auth.RoleConstant;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.SecureUtil;
+import com.wlcb.jpower.module.common.utils.ShieldUtil;
 import com.wlcb.jpower.module.common.utils.WebUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
@@ -11,14 +11,14 @@ import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collections;
+import java.util.Objects;
 
 /**
- * @ClassName LoginUserContext
- * @Description TODO 获取当前用户
- * @Author 郭丁志
- * @Date 2020-07-09 17:09
- * @Version 1.0
- */
+ * 当前登陆用户信息<br/>
+ * 当前用户未登陆可获取到匿名用户或白名单
+ *
+ * @author mr.g
+ **/
 @Slf4j
 public class LoginUserContext {
 
@@ -83,22 +83,21 @@ public class LoginUserContext {
     }
 
     /**
-     * @Author 郭丁志
-     * @Description //TODO 返回用户信息
-     * @Date 17:12 2020-07-09
-     * @Param []
-     * @return com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser
+     * 返回用户信息
+     *
+     * @author mr.g
+     * @return com.wlcb.jpower.module.common.auth.UserInfo
      **/
     public static UserInfo get() {
-        UserInfo user = SecureUtil.getUser();
+        UserInfo user = ShieldUtil.getUser();
 
         if (Fc.isNull(user)){
             if (Fc.notNull(WebUtil.getRequest())){
-                String header = WebUtil.getRequest().getHeader(TokenConstant.PASS_HEADER_NAME);
+                String header = Objects.requireNonNull(WebUtil.getRequest(), "未获取到HttpServletRequest").getHeader(TokenConstant.PASS_HEADER_NAME);
                 if (Fc.isNotBlank(header)){
                     user = new UserInfo();
 
-                    try { user.setClientCode(SecureUtil.getClientCodeFromHeader()); }catch (Exception ignored){}
+                    try { user.setClientCode(ShieldUtil.getClientCodeFromHeader()); }catch (Exception ignored){}
                     user.setLoginId(header);
                     user.setNickName(header);
                     user.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_ANONYMOUS.getValue());

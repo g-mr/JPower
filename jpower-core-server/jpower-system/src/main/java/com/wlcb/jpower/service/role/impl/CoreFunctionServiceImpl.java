@@ -11,7 +11,7 @@ import com.wlcb.jpower.dbs.entity.role.TbCoreRoleFunction;
 import com.wlcb.jpower.module.common.auth.RoleConstant;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.SecureUtil;
+import com.wlcb.jpower.module.common.utils.ShieldUtil;
 import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
@@ -49,11 +49,11 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
             isMenu = Fc.toStr(coreFunction.get("isMenu_eq"));
         }
 
-        LambdaQueryWrapper<TbCoreFunction> wrapper = SecureUtil.isRoot() ?
+        LambdaQueryWrapper<TbCoreFunction> wrapper = ShieldUtil.isRoot() ?
                 Condition.getQueryWrapper(coreFunction,TbCoreFunction.class).lambda()
                         .orderByAsc(TbCoreFunction::getSort) :
                 Condition.getQueryWrapper(coreFunction,TbCoreFunction.class).lambda()
-                        .inSql(TbCoreFunction::getId,StringUtil.format(sql,StringPool.SINGLE_QUOTE.concat(Fc.join(SecureUtil.getUserRole(),StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE)))
+                        .inSql(TbCoreFunction::getId,StringUtil.format(sql,StringPool.SINGLE_QUOTE.concat(Fc.join(ShieldUtil.getUserRole(),StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE)))
                         .orderByAsc(TbCoreFunction::getSort);
 
         return coreFunctionDao.getBaseMapper().listFunction(wrapper, isMenu);
@@ -136,7 +136,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
                 .select(TbCoreFunction::getFunctionName,TbCoreFunction::getCode,TbCoreFunction::getUrl)
                 .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.Y.getValue());
 
-        if (!SecureUtil.isRoot()){
+        if (!ShieldUtil.isRoot()){
             // 如果不是超级用户，则查出自己权限的菜单
             wrapper.inSql(TbCoreFunction::getId,StringUtil.format(sql,StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE)));
         }
@@ -160,7 +160,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
                 .eq(TbCoreFunction::getParentId,id)
                 .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.N.getValue());
 
-        if (!SecureUtil.isRoot()){
+        if (!ShieldUtil.isRoot()){
             // 如果不是超级用户，则查出自己权限的资源
             wrapper.inSql(TbCoreFunction::getId,StringUtil.format(sql,StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE)));
         }

@@ -151,8 +151,8 @@ public class FunctionController extends BaseController {
     @ApiOperation("懒加载登录用户所有功能树形结构")
     @RequestMapping(value = "/lazyTree",method = {RequestMethod.GET},produces="application/json")
     public ResponseData<List<Tree<String>>> lazyTree(@ApiParam(value = "父级编码",defaultValue = JpowerConstants.TOP_CODE,required = true) @RequestParam(defaultValue = JpowerConstants.TOP_CODE) String parentId){
-        List<String> roleIds = SecureUtil.getUserRole();
-        List<Tree<String>> list = SecureUtil.isRoot()?coreFunctionService.tree(Condition.getLambdaTreeWrapper(TbCoreFunction.class,TbCoreFunction::getId,TbCoreFunction::getParentId)
+        List<String> roleIds = ShieldUtil.getUserRole();
+        List<Tree<String>> list = ShieldUtil.isRoot()?coreFunctionService.tree(Condition.getLambdaTreeWrapper(TbCoreFunction.class,TbCoreFunction::getId,TbCoreFunction::getParentId)
                 .lazy(parentId)
                 .select(TbCoreFunction::getFunctionName,TbCoreFunction::getUrl)
                 .orderByAsc(TbCoreFunction::getSort)):
@@ -163,9 +163,9 @@ public class FunctionController extends BaseController {
     @ApiOperation("页面菜单获取")
     @GetMapping(value = "/listMenuTree", produces="application/json")
     public ResponseData<List<Tree<String>>> listMenuTree(){
-        List<String> roleIds = SecureUtil.getUserRole();
+        List<String> roleIds = ShieldUtil.getUserRole();
 
-        List<TbCoreFunction> list = SecureUtil.isRoot()
+        List<TbCoreFunction> list = ShieldUtil.isRoot()
                 ?
                 coreFunctionService.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                 .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.Y.getValue())
@@ -179,23 +179,23 @@ public class FunctionController extends BaseController {
     @GetMapping(value = "/listBut", produces="application/json")
     public ResponseData<List<TbCoreFunction>> listBut(@ApiParam(value = "菜单Id",required = true) @RequestParam String id){
         JpowerAssert.notEmpty(id, JpowerError.Arg, "菜单id不可为空");
-        List<TbCoreFunction> list = coreFunctionService.listBtnByRoleIdAndPcode(SecureUtil.getUserRole(),id);
+        List<TbCoreFunction> list = coreFunctionService.listBtnByRoleIdAndPcode(ShieldUtil.getUserRole(),id);
         return ReturnJsonUtil.ok("查询成功", list);
     }
 
     @ApiOperation("查询登录用户所有功能的树形列表")
     @GetMapping(value = "/listTree", produces="application/json")
     public ResponseData<List<Tree<String>>> listTree(){
-        List<Tree<String>> list = SecureUtil.isRoot()?
+        List<Tree<String>> list = ShieldUtil.isRoot()?
                 coreFunctionService.tree(Condition.getLambdaTreeWrapper(TbCoreFunction.class,TbCoreFunction::getId,TbCoreFunction::getParentId)):
-                coreFunctionService.listTreeByRoleId(SecureUtil.getUserRole());
+                coreFunctionService.listTreeByRoleId(ShieldUtil.getUserRole());
         return ReturnJsonUtil.ok("查询成功", list);
     }
 
     @ApiOperation("查询登录用户所有菜单树形结构")
     @GetMapping(value = "/menuTree", produces="application/json")
     public ResponseData<List<Tree<String>>> menuTree(){
-        return ReturnJsonUtil.ok("查询成功", coreFunctionService.menuTreeByRoleIds(SecureUtil.getUserRole()));
+        return ReturnJsonUtil.ok("查询成功", coreFunctionService.menuTreeByRoleIds(ShieldUtil.getUserRole()));
     }
 
     @ApiOperation(value = "查询登录用户一个菜单下的所有按钮接口资源", notes = "当不传菜单ID时，会查出顶级资源；单独查一个菜单时，不会把顶级按钮返回")
@@ -204,6 +204,6 @@ public class FunctionController extends BaseController {
         if (Fc.isBlank(id)){
             id = JpowerConstants.TOP_CODE;
         }
-        return ReturnJsonUtil.ok("查询成功", coreFunctionService.listButByMenu(SecureUtil.getUserRole(),id));
+        return ReturnJsonUtil.ok("查询成功", coreFunctionService.listButByMenu(ShieldUtil.getUserRole(),id));
     }
 }

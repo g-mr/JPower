@@ -6,12 +6,10 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 /**
- * @ClassName EnvBeanUtil
- * @Description TODO 环境变量获取
- * @Author 郭丁志
- * @Date 2020/10/16 0016 22:32
- * @Version 1.0
- */
+ * 环境变量获取
+ *
+ * @author mr.g
+ **/
 @Component("envBeanUtil")
 public class EnvBeanUtil implements EnvironmentAware {
 
@@ -43,5 +41,19 @@ public class EnvBeanUtil implements EnvironmentAware {
             return env.getProperty("jpower.env",String.class);
         }
         return null;
+    }
+
+    public static Boolean getTenantEnable() {
+        if (Fc.notNull(env)){
+            return env.getProperty("jpower.tenant.enable",Boolean.class);
+        }
+        return Boolean.FALSE;
+    }
+
+    public static Boolean getDemoEnable() {
+        if (Fc.notNull(env)){
+            return env.getProperty("jpower.demo.enable",Boolean.class);
+        }
+        return Boolean.FALSE;
     }
 }
