@@ -16,8 +16,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @JpowerCloudApplication
 @EnableJpowerFeignClients
-public class LoginStartApplication {
+public class AuthStartApplication {
     public static void main(String[] args) {
-        JpowerApplication.run(AppConstant.JPOWER_AUTH,LoginStartApplication.class,args);
+        JpowerApplication.run(AppConstant.JPOWER_AUTH,AuthStartApplication.class,args);
     }
 }
