@@ -8,12 +8,10 @@ import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.exception.JpowerException;
 import com.wlcb.jpower.module.base.vo.Pg;
 import com.wlcb.jpower.module.base.vo.ResponseData;
+import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.page.PaginationContext;
-import com.wlcb.jpower.module.common.utils.DesUtil;
-import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.FileUtil;
-import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
+import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsUtils;
 import com.wlcb.jpower.module.mp.support.Condition;
@@ -59,6 +57,7 @@ public class FileController extends BaseController {
         try {
             TbCoreFile coreFile = operateBuilder.getBuilder(storageType).upload(file);
             if (Fc.notNull(coreFile)){
+                CacheUtil.clear(CacheNames.FILE_KEY);
                 return ReturnJsonUtil.ok("上传成功", coreFile.getMark());
             }else {
                 return ReturnJsonUtil.fail("文件保存失败");
@@ -126,6 +125,7 @@ public class FileController extends BaseController {
         List<String> idList = Fc.toStrList(ids);
 
         coreFileService.listByIds(idList).forEach(tbCoreFile -> operateBuilder.getBuilder(tbCoreFile.getStorageType()).deleteFile(tbCoreFile));
+        CacheUtil.clear(CacheNames.FILE_KEY);
         return ReturnJsonUtil.status(coreFileService.removeRealByIds(idList));
     }
 
@@ -145,6 +145,7 @@ public class FileController extends BaseController {
         file.setStorageType(null);
         file.setPath(null);
 
+        CacheUtil.clear(CacheNames.FILE_KEY);
         return ReturnJsonUtil.status(coreFileService.updateById(file));
     }
 

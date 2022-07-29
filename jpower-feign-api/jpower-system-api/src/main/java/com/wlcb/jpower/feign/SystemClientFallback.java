@@ -38,7 +38,7 @@ public class SystemClientFallback implements SystemClient {
     }
 
     @Override
-    public ResponseData<List<Object>> getUrlsByRoleIds(List<String> roleIds) {
+    public ResponseData<List<String>> getUrlsByRoleIds(List<String> roleIds) {
         return ReturnJsonUtil.fail("查询失败");
     }
 

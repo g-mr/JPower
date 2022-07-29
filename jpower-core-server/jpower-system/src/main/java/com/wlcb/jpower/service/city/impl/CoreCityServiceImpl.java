@@ -74,7 +74,7 @@ public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper, TbCor
             log.warn("("+CacheNames.CITY_PARENT_REDIS_KEY+")缓存删除失败："+e.getMessage());
         }
 
-        CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE,Boolean.FALSE);
+        CacheUtil.clear(CacheNames.CITY_KEY,Boolean.FALSE);
         return coreCityDao.save(coreCity);
     }
 
@@ -93,7 +93,7 @@ public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper, TbCor
             JpowerAssert.geZero(count,JpowerError.Business,"请先删除子区域");
         }
 
-        CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE,Boolean.FALSE);
+        CacheUtil.clear(CacheNames.CITY_KEY,Boolean.FALSE);
         return coreCityDao.removeRealByIds(ids);
     }
 
@@ -120,7 +120,7 @@ public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper, TbCor
                     .eq(TbCoreCity::getPcode,city.getCode()));
         }
 
-        CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE,Boolean.FALSE);
+        CacheUtil.clear(CacheNames.CITY_KEY,Boolean.FALSE);
         return is;
     }
 

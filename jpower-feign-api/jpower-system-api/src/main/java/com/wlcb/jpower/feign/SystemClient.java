@@ -37,7 +37,7 @@ public interface SystemClient {
     ResponseData<TbCoreClient> getClientByClientCode(@RequestParam String clientCode);
 
     @GetMapping("/function/getUrlsByRoleIds")
-    ResponseData<List<Object>> getUrlsByRoleIds(@RequestParam List<String> roleIds);
+    ResponseData<List<String>> getUrlsByRoleIds(@RequestParam List<String> roleIds);
 
     @GetMapping("/tenant/getTenantByCode")
     ResponseData<TbCoreTenant> getTenantByCode(@RequestParam String tenantCode);

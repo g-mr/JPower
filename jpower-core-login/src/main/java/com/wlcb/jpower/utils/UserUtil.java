@@ -47,7 +47,7 @@ public class UserUtil {
             userInfo.setLastLoginTime(result.getLastLoginTime());
             userInfo.setLoginCount(result.getLoginCount());
             userInfo.setChildOrgId(SystemCache.getChildIdOrgById(result.getOrgId()));
-            CacheUtil.clear(CacheNames.USER_REDIS_CACHE);
+            CacheUtil.clear(CacheNames.USER_KEY);
         }
         return userInfo;
     }

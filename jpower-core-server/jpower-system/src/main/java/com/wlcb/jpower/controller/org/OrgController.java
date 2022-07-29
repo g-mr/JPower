@@ -56,7 +56,7 @@ public class OrgController extends BaseController {
         Boolean is = coreOrgService.add(coreOrg);
 
         if (is){
-            CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE,coreOrg.getTenantCode());
+            CacheUtil.clear(CacheNames.ORG_KEY,coreOrg.getTenantCode());
             return ReturnJsonUtil.ok("新增成功");
         }else {
             return ReturnJsonUtil.fail("新增失败");
@@ -79,7 +79,7 @@ public class OrgController extends BaseController {
         Boolean is = coreOrgService.removeByIds(Fc.toStrList(ids));
 
         if (is){
-            CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE, tenants.toArray(new String[tenants.size()]));
+            CacheUtil.clear(CacheNames.ORG_KEY, tenants.toArray(new String[tenants.size()]));
             return ReturnJsonUtil.ok("删除成功");
         }else {
             return ReturnJsonUtil.fail("删除失败");
@@ -94,7 +94,7 @@ public class OrgController extends BaseController {
         Boolean is = coreOrgService.update(coreOrg);
 
         if (is){
-            CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE,coreOrg.getTenantCode());
+            CacheUtil.clear(CacheNames.ORG_KEY,coreOrg.getTenantCode());
             return ReturnJsonUtil.ok("修改成功");
         }else {
             return ReturnJsonUtil.fail("修改失败");

@@ -114,12 +114,12 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     }
 
     @Override
-    public List<Object> getUrlsByRoleIds(List<String> roleIds) {
+    public List<String> getUrlsByRoleIds(List<String> roleIds) {
         String inSql = StringUtils.collectionToDelimitedString(roleIds, StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE);
         return coreFunctionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                 .select(TbCoreFunction::getUrl)
                 .isNotNull(TbCoreFunction::getUrl)
-                .inSql(TbCoreFunction::getId,StringUtil.format(sql,inSql)));
+                .inSql(TbCoreFunction::getId,StringUtil.format(sql,inSql)),Fc::toStr);
     }
 
     @Override

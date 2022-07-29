@@ -17,12 +17,10 @@ import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import java.util.List;
 
 /**
- * @ClassName ParamConfig
- * @Description TODO 获取配置文件参数
- * @Author 郭丁志
- * @Date 2020-05-06 14:55
- * @Version 1.0
- */
+ * 系统缓存
+ *
+ * @author mr.g
+ **/
 public class SystemCache {
 
     private static SystemClient systemClient;
@@ -32,9 +30,11 @@ public class SystemCache {
     }
 
     /**
-     * @Author 郭丁志
-     * @Description //TODO 获取部门名称
-     * @Date 15:47 2020-05-06
+     * 获取部门名称
+     *
+     * @author mr.g
+     * @param orgId 组织机构ID
+     * @return 组织机构名称
      **/
     public static String getOrgName(String orgId){
         TbCoreOrg org = getOrg(orgId);
@@ -45,131 +45,36 @@ public class SystemCache {
     }
 
     /**
-     * @Author 郭丁志
-     * @Description //TODO 获取部门
-     * @Date 15:47 2020-05-06
-     **/
+     * 通过ID获取部门
+     * 
+     * @param orgId 组织机构ID
+     * @return 部门详情
+     */
     public static TbCoreOrg getOrg(String orgId){
-        return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_ORG_ID_KEY,orgId,() -> {
+        return CacheUtil.get(CacheNames.ORG_KEY,CacheNames.ORG_DETAIL_KEY,orgId,() -> {
             ResponseData<TbCoreOrg> responseData = systemClient.queryOrgById(orgId);
             return responseData.getData();
         });
     }
 
     /**
-     * @Author 郭丁志
-     * @Description //TODO 根据部门ID获取下级所有ID
-     * @Date 15:47 2020-05-06
-     **/
+     * 根据部门ID获取下级所有ID
+     * 
+     * @param orgId 组织机构ID
+     * @return 下级ID列表
+     */
     public static List<String> getChildIdOrgById(String orgId) {
-        return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_ORG_PARENT_KEY,orgId,() -> {
+        return CacheUtil.get(CacheNames.ORG_KEY,CacheNames.ORG_CHILDID_KEY,orgId,() -> {
             ResponseData<List<String>> responseData = systemClient.queryChildOrgById(orgId);
             return responseData.getData();
         });
     }
-
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 获取客户端信息
-     * @Date 15:47 2020-05-06
-     **/
-    public static TbCoreClient getClientByClientCode(String clientCode) {
-        return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_CLIENT_KEY,clientCode,() -> {
-            ResponseData<TbCoreClient> responseData = systemClient.getClientByClientCode(clientCode);
-            return responseData.getData();
-        },Boolean.FALSE);
-    }
-
-    /**
-     * @author 郭丁志
-     * @Description //TODO 通过角色ID获取URL
-     * @date 23:51 2020/10/17 0017
-     * @param roleIds 角色ID
-     */
-    public static List<Object> getUrlsByRoleIds(List<String> roleIds) {
-        return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_URL_ROLES_KEY,roleIds,() -> {
-            ResponseData<List<Object>> responseData = systemClient.getUrlsByRoleIds(roleIds);
-            return responseData.getData();
-        });
-    }
-
-    /**
-     * @author 郭丁志
-     * @Description //TODO 获取租户信息
-     * @date 17:38 2020/10/25 0025
-     * @param tenantCode 租户编码
-     * @return com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant
-     */
-    public static TbCoreTenant getTenantByCode(String tenantCode) {
-        return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_TENANT_CODE_KEY,tenantCode,() -> {
-            ResponseData<TbCoreTenant> responseData = systemClient.getTenantByCode(tenantCode);
-            return responseData.getData();
-        });
-    }
-
-    /**
-     * 通过角色ID获取所有菜单
-     *
-     * @author 郭丁志
-     * @date 23:28 2020/11/5 0005
-     * @param roleIds 角色ID
-     */
-    public static List<TbCoreFunction> getMenuListByRole(List<String> roleIds) {
-        return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_MENU_ROLES_KEY,roleIds,() -> {
-            ResponseData<List<TbCoreFunction>> responseData = systemClient.getMenuListByRole(roleIds);
-            return responseData.getData();
-        });
-    }
-
-    /**
-     * 查询可所有角色执行得数据权限
-     *
-     * @author 郭丁志
-     * @date 23:31 2020/11/5 0005
-     * @return java.util.List<com.wlcb.jpower.dbs.entity.function.TbCoreDataScope>
-     */
-    public static List<TbCoreDataScope> getAllRoleDataScope() {
-        return CacheUtil.get(CacheNames.DATASCOPE_REDIS_CACHE,CacheNames.SYSTEM_DATASCOPE_ALLROLES_KEY,"all",() -> {
-            ResponseData<List<TbCoreDataScope>> responseData = systemClient.getAllRoleDataScope();
-            return responseData.getData();
-        });
-    }
-
-    /**
-     * 根据角色ID获取所有指定角色拥有的数据权限
-     *
-     * @author 郭丁志
-     * @date 23:38 2020/11/5 0005
-     * @param roleIds  角色ID
-     * @return java.util.List<com.wlcb.jpower.dbs.entity.function.TbCoreDataScope>
-     */
-    public static List<TbCoreDataScope> getDataScopeByRole(List<String> roleIds) {
-        return CacheUtil.get(CacheNames.DATASCOPE_REDIS_CACHE,CacheNames.SYSTEM_DATASCOPE_ROLES_KEY,roleIds,() -> {
-            ResponseData<List<TbCoreDataScope>> responseData = systemClient.getDataScopeByRole(roleIds);
-            return responseData.getData();
-        });
-    }
-
-    /**
-     * 通过角色ID获取角色名称
-     *
-     * @author 郭丁志
-     * @date 23:38 2020/11/5 0005
-     * @param roleIds  角色ID
-     * @return java.util.List<com.wlcb.jpower.dbs.entity.function.TbCoreDataScope>
-     */
-    public static List<String> getRoleNameByIds(List<String> roleIds) {
-        return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_ROLES_NAME_KEY,roleIds,() -> {
-            ResponseData<List<String>> responseData = systemClient.getRoleNameByIds(roleIds);
-            return responseData.getData();
-        });
-    }
-
+    
     /**
      * 获取地区名称
      *
-     * @Author ding
-     * @Date 23:38 2021-02-21
+     * @author mr.g
+     * @date 23:38 2021-02-21
      * @param code
      * @return java.lang.String
      **/
@@ -182,16 +87,117 @@ public class SystemCache {
     }
 
     /**
-     * 获取地区
-     * @Author ding
-     * @Date 23:39 2021-02-21
-     * @param code
-     * @return com.wlcb.jpower.dbs.entity.city.TbCoreCity
+     * 通过CODE获取地区
+     *
+     * @author mr.g
+     * @param code 城市CODE
+     * @return 城市详情
      **/
     public static TbCoreCity getCity(String code) {
-        return CacheUtil.get(CacheNames.SYSTEM_REDIS_CACHE,CacheNames.SYSTEM_CITY_CODE_KEY,code,() -> {
+        return CacheUtil.get(CacheNames.CITY_KEY,CacheNames.CITY_CODE_KEY,code,() -> {
             ResponseData<TbCoreCity> responseData = systemClient.getCityByCode(code);
             return responseData.getData();
         },Boolean.FALSE);
     }
+
+    /**
+     * 通过CODE获取客户端信息
+     *
+     * @author mr.g
+     * @param clientCode 客户端CODE
+     * @return 客户端详情
+     **/
+    public static TbCoreClient getClientByClientCode(String clientCode) {
+        return CacheUtil.get(CacheNames.CLIENT_KEY,CacheNames.CLIENTCODE_KEY,clientCode,() -> {
+            ResponseData<TbCoreClient> responseData = systemClient.getClientByClientCode(clientCode);
+            return responseData.getData();
+        },Boolean.FALSE);
+    }
+
+    /**
+     * 通过角色ID查询接口URL
+     *
+     * @author mr.g
+     * @param roleIds 角色ID
+     * @return URL列表
+     **/
+    public static List<String> getUrlsByRoleIds(List<String> roleIds) {
+        return CacheUtil.get(CacheNames.FUNCTION_KEY,CacheNames.URL_ROLE_KEY,roleIds,() -> {
+            ResponseData<List<String>> responseData = systemClient.getUrlsByRoleIds(roleIds);
+            return responseData.getData();
+        });
+    }
+
+    /**
+     * 通过角色ID获取所有菜单
+     *
+     * @author mr.g
+     * @date 23:28 2020/11/5 0005
+     * @param roleIds 角色ID
+     */
+    public static List<TbCoreFunction> getMenuListByRole(List<String> roleIds) {
+        return CacheUtil.get(CacheNames.FUNCTION_KEY,CacheNames.MENU_ROLE_KEY,roleIds,() -> {
+            ResponseData<List<TbCoreFunction>> responseData = systemClient.getMenuListByRole(roleIds);
+            return responseData.getData();
+        });
+    }
+
+    /**
+     * 查询可所有角色执行得数据权限
+     *
+     * @author mr.g
+     * @date 23:31 2020/11/5 0005
+     * @return 数据权限列表
+     */
+    public static List<TbCoreDataScope> getAllRoleDataScope() {
+        return CacheUtil.get(CacheNames.DATASCOPE_KEY,CacheNames.DATASCOPE_ALLROLE_KEY,"all",() -> {
+            ResponseData<List<TbCoreDataScope>> responseData = systemClient.getAllRoleDataScope();
+            return responseData.getData();
+        });
+    }
+
+    /**
+     * 根据角色ID获取数据权限
+     *
+     * @author mr.g
+     * @date 23:38 2020/11/5 0005
+     * @param roleIds  角色ID
+     * @return 数据权限列表
+     */
+    public static List<TbCoreDataScope> getDataScopeByRole(List<String> roleIds) {
+        return CacheUtil.get(CacheNames.DATASCOPE_KEY,CacheNames.DATASCOPE_ROLE_KEY,roleIds,() -> {
+            ResponseData<List<TbCoreDataScope>> responseData = systemClient.getDataScopeByRole(roleIds);
+            return responseData.getData();
+        });
+    }
+
+    /**
+     * 通过角色ID获取角色名称
+     *
+     * @author mr.g
+     * @date 23:38 2020/11/5 0005
+     * @param roleIds  角色ID
+     * @return 角色名称列表
+     */
+    public static List<String> getRoleNameByIds(List<String> roleIds) {
+        return CacheUtil.get(CacheNames.ROLE_KEY,CacheNames.ROLENAME_KEY,roleIds,() -> {
+            ResponseData<List<String>> responseData = systemClient.getRoleNameByIds(roleIds);
+            return responseData.getData();
+        });
+    }
+
+    /**
+     * 通过CODE获取租户信息
+     *
+     * @author mr.g
+     * @param tenantCode 租户CODE
+     * @return 租户信息
+     **/
+    public static TbCoreTenant getTenantByCode(String tenantCode) {
+        return CacheUtil.get(CacheNames.TENANT_KEY,CacheNames.TENANT_CODE_KEY,tenantCode,() -> {
+            ResponseData<TbCoreTenant> responseData = systemClient.getTenantByCode(tenantCode);
+            return responseData.getData();
+        });
+    }
+
 }

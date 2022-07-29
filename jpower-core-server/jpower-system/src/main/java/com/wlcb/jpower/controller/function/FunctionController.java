@@ -90,7 +90,7 @@ public class FunctionController extends BaseController {
         Boolean is = coreFunctionService.add(coreFunction);
 
         if (is){
-            CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE);
+            CacheUtil.clear(CacheNames.FUNCTION_KEY);
             return ReturnJsonUtil.ok("新增成功");
         }else {
             return ReturnJsonUtil.fail("新增失败");
@@ -111,7 +111,7 @@ public class FunctionController extends BaseController {
         Boolean is = coreFunctionService.delete(ids);
 
         if (is){
-            CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE);
+            CacheUtil.clear(CacheNames.FUNCTION_KEY);
             return ReturnJsonUtil.ok("删除成功");
         }else {
             return ReturnJsonUtil.fail("删除失败");
@@ -134,7 +134,7 @@ public class FunctionController extends BaseController {
         Boolean is = coreFunctionService.update(coreFunction);
 
         if (is){
-            CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE);
+            CacheUtil.clear(CacheNames.FUNCTION_KEY);
             return ReturnJsonUtil.ok("修改成功");
         }else {
             return ReturnJsonUtil.fail("修改失败");

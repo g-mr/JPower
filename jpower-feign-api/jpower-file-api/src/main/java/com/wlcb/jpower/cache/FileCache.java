@@ -23,7 +23,7 @@ public class FileCache {
     }
 
     public static TbCoreFile getFileDetail(String base) {
-        return CacheUtil.get(CacheNames.FILE_REDIS_CACHE,CacheNames.FILE_BASE_KEY, base,() -> {
+        return CacheUtil.get(CacheNames.FILE_KEY,CacheNames.FILE_BASE_KEY, base,() -> {
             ResponseData<TbCoreFile> responseData = fileClient.getFileDetail(base);
             return responseData.getData();
         });

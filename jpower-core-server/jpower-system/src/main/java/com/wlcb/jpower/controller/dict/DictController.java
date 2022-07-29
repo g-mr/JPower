@@ -8,6 +8,7 @@ import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.Pg;
 import com.wlcb.jpower.module.base.vo.ResponseData;
+import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.utils.CacheUtil;
@@ -24,7 +25,6 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 
-import static com.wlcb.jpower.module.common.cache.CacheNames.DICT_REDIS_CACHE;
 import static com.wlcb.jpower.module.common.utils.constants.JpowerConstants.TOP_CODE;
 
 /**
@@ -61,6 +61,7 @@ public class DictController extends BaseController {
         JpowerAssert.notEmpty(dictType.getDictTypeCode(), JpowerError.Arg,"字典类型编号不可为空");
         JpowerAssert.notEmpty(dictType.getDictTypeName(), JpowerError.Arg,"字典类型名称不可为空");
 
+        CacheUtil.clear(CacheNames.DICT_KEY);
         return ReturnJsonUtil.status(coreDictTypeService.addDictType(dictType));
     }
 
@@ -68,6 +69,7 @@ public class DictController extends BaseController {
     @RequestMapping(value = "/update",method = RequestMethod.POST,produces="application/json")
     public ResponseData update(TbCoreDictType dictType){
         JpowerAssert.notEmpty(dictType.getId(), JpowerError.Arg,"字典类型主键不可为空");
+        CacheUtil.clear(CacheNames.DICT_KEY);
         return ReturnJsonUtil.status(coreDictTypeService.updateDictType(dictType));
     }
 
@@ -75,6 +77,7 @@ public class DictController extends BaseController {
     @DeleteMapping(value = "/deleteDictType",produces="application/json")
     public ResponseData deleteDictType(@ApiParam(value = "主键，多个逗号分割",required = true) @RequestParam String ids){
         JpowerAssert.notEmpty(ids, JpowerError.Arg,"主键不可为空");
+        CacheUtil.clear(CacheNames.DICT_KEY);
         return ReturnJsonUtil.status(coreDictTypeService.deleteDictType(Fc.toStrList(ids)));
     }
 
@@ -153,7 +156,7 @@ public class DictController extends BaseController {
             }
         }
 
-        CacheUtil.clear(DICT_REDIS_CACHE);
+        CacheUtil.clear(CacheNames.DICT_KEY);
         return ReturnJsonUtil.status(coreDictService.saveDict(dict));
     }
 
@@ -169,7 +172,7 @@ public class DictController extends BaseController {
             return ReturnJsonUtil.notFind("请先删除下级字典");
         }
 
-        CacheUtil.clear(DICT_REDIS_CACHE);
+        CacheUtil.clear(CacheNames.DICT_KEY);
         return ReturnJsonUtil.status(coreDictService.removeRealByIds(list));
     }
 

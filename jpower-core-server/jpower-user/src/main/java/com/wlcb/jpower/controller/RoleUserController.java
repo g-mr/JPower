@@ -7,8 +7,10 @@ import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.Pg;
 import com.wlcb.jpower.module.base.vo.ResponseData;
+import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.page.PaginationContext;
+import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
@@ -42,6 +44,7 @@ public class RoleUserController extends BaseController {
         JpowerAssert.notEmpty(userIds, JpowerError.Arg, "userIds不可为空");
         JpowerAssert.notTrue(Fc.toStrArray(userIds).length <= 0, JpowerError.Arg, "userIds不可为空");
 
+        CacheUtil.clear(CacheNames.USER_KEY);
         return ReturnJsonUtil.status(coreUserService.updateUsersRole(userIds, roleIds));
     }
 
@@ -54,6 +57,7 @@ public class RoleUserController extends BaseController {
         JpowerAssert.notTrue(Fc.toStrArray(userIds).length <= 0, JpowerError.Arg, "userIds不可为空");
         JpowerAssert.notEmpty(roleId, JpowerError.Arg, "roleId不可为空");
 
+        CacheUtil.clear(CacheNames.USER_KEY);
         return ReturnJsonUtil.status(coreUserService.addRoleUsers(roleId, new ArrayList<>(Fc.toStrList(userIds))));
     }
 
@@ -66,6 +70,7 @@ public class RoleUserController extends BaseController {
         JpowerAssert.notTrue(Fc.toStrArray(userIds).length <= 0, JpowerError.Arg, "userIds不可为空");
         JpowerAssert.notEmpty(roleId, JpowerError.Arg, "roleId不可为空");
 
+        CacheUtil.clear(CacheNames.USER_KEY);
         return ReturnJsonUtil.status(coreUserService.deleteRoleUsers(roleId, new ArrayList<>(Fc.toStrList(userIds))));
     }
 

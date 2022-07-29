@@ -1,5 +1,6 @@
 package com.wlcb.jpower.module.common.utils;
 
+import com.wlcb.jpower.module.common.support.EnvBeanUtil;
 import org.springframework.cache.Cache;
 import org.springframework.lang.Nullable;
 
@@ -16,7 +17,7 @@ import java.util.concurrent.Callable;
 public class CacheUtil {
 
     public static <T> T get(String cacheName, String keyPrefix, Object key,@Nullable Class<T> clz) {
-        return get(cacheName,keyPrefix,key,clz,Cm.TENANT_MODE);
+        return get(cacheName,keyPrefix,key,clz, EnvBeanUtil.getTenantEnable());
     }
 
     public static <T> T get(String cacheName, String keyPrefix, Object key, Class<T> clz, Boolean tenantMode) {
@@ -53,7 +54,7 @@ public class CacheUtil {
      * @Date 11:32 2020-09-01
      **/
     public static <T> T get(String cacheName, String keyPrefix, Object key, Callable<T> valueLoader) {
-        return get(cacheName, keyPrefix, key, valueLoader,Cm.TENANT_MODE);
+        return get(cacheName, keyPrefix, key, valueLoader,EnvBeanUtil.getTenantEnable());
     }
 
     /**
@@ -73,7 +74,7 @@ public class CacheUtil {
      * @Date 11:32 2020-09-01
      **/
     public static void put(String cacheName, String keyPrefix, Object key, @Nullable Object value) {
-        put(cacheName, keyPrefix, key, value,Cm.TENANT_MODE);
+        put(cacheName, keyPrefix, key, value,EnvBeanUtil.getTenantEnable());
     }
 
     /**
@@ -93,7 +94,7 @@ public class CacheUtil {
      * @Date 11:32 2020-09-01
      **/
     public static void evict(String cacheName, String keyPrefix, Object key) {
-        evict(cacheName,keyPrefix,key,Cm.TENANT_MODE);
+        evict(cacheName,keyPrefix,key,EnvBeanUtil.getTenantEnable());
     }
 
     /**
@@ -131,7 +132,7 @@ public class CacheUtil {
      * @Date 11:32 2020-09-01
      **/
     public static void clear(String cacheName) {
-        clear(cacheName, Cm.TENANT_MODE);
+        clear(cacheName, EnvBeanUtil.getTenantEnable());
     }
 
 }

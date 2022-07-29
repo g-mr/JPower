@@ -54,7 +54,7 @@ public class SystemClientController extends BaseController implements SystemClie
 
     @Override
     @GetMapping("/function/getUrlsByRoleIds")
-    public ResponseData<List<Object>> getUrlsByRoleIds(@RequestParam List<String> roleIds) {
+    public ResponseData<List<String>> getUrlsByRoleIds(@RequestParam List<String> roleIds) {
         return ReturnJsonUtil.ok("查询成功",coreFunctionService.getUrlsByRoleIds(roleIds));
     }
 

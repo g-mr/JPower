@@ -24,13 +24,13 @@ public class SystemLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        try {
-            log.info("系统参数初始化...");
-            paramService.effectAll();
-            log.info("系统参数加载完成...");
-        }catch (Exception e){
-            log.warn("初始化系统参数异常：{}",e.getMessage());
-        }
+//        try {
+//            log.info("系统参数初始化...");
+//            paramService.effectAll();
+//            log.info("系统参数加载完成...");
+//        }catch (Exception e){
+//            log.warn("初始化系统参数异常：{}",e.getMessage());
+//        }
 
         try {
             log.info("缓存匿名用户权限...");

@@ -169,7 +169,7 @@ public class TokenUtil {
 
         Objects.requireNonNull(SpringUtil.getBean(RedisUtil.class),"未获取到RedisUtil").set(CacheNames.TOKEN_DATA_SCOPE_KEY+authInfo.getAccessToken(), map , authInfo.getExpiresIn(), TimeUnit.SECONDS);
 
-        List<Object> list = SystemCache.getUrlsByRoleIds(authInfo.getUser().getRoleIds());
+        List<String> list = SystemCache.getUrlsByRoleIds(authInfo.getUser().getRoleIds());
         Objects.requireNonNull(SpringUtil.getBean(RedisUtil.class),"未获取到RedisUtil").set(CacheNames.TOKEN_URL_KEY+authInfo.getAccessToken(), list , authInfo.getExpiresIn(), TimeUnit.SECONDS);
     }
 }

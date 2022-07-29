@@ -145,7 +145,7 @@ public class UserController extends BaseController {
         if (Fc.isNull(coreUser.getUserType())){
             coreUser.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_SYSTEM.getValue());
         }
-        CacheUtil.clear(CacheNames.USER_REDIS_CACHE);
+        CacheUtil.clear(CacheNames.USER_KEY);
         return ReturnJsonUtil.status(coreUserService.save(coreUser));
     }
 
@@ -157,7 +157,7 @@ public class UserController extends BaseController {
         JpowerAssert.notEmpty(ids, JpowerError.Arg, "ids不可为空");
 
         if (coreUserService.delete(ids)) {
-            CacheUtil.clear(CacheNames.USER_REDIS_CACHE);
+            CacheUtil.clear(CacheNames.USER_KEY);
             return ReturnJsonUtil.ok("删除成功");
         } else {
             return ReturnJsonUtil.fail("删除失败");
@@ -200,7 +200,7 @@ public class UserController extends BaseController {
         }
 
         coreUser.setPassword(null);
-        CacheUtil.clear(CacheNames.USER_REDIS_CACHE);
+        CacheUtil.clear(CacheNames.USER_KEY);
         return ReturnJsonUtil.status(coreUserService.update(coreUser));
     }
 
@@ -231,7 +231,7 @@ public class UserController extends BaseController {
         coreUser.setPassword(null);
         coreUser.setRoleIds(null);
         coreUser.setId(ShieldUtil.getUser().getUserId());
-        CacheUtil.clear(CacheNames.USER_REDIS_CACHE);
+        CacheUtil.clear(CacheNames.USER_KEY);
         return ReturnJsonUtil.status(coreUserService.update(coreUser));
     }
 
@@ -244,7 +244,7 @@ public class UserController extends BaseController {
         JpowerAssert.notEmpty(ids, JpowerError.Arg, "用户ids不可为空");
 
         if (coreUserService.updateUserPassword(ids, pass)) {
-            CacheUtil.clear(CacheNames.USER_REDIS_CACHE);
+            CacheUtil.clear(CacheNames.USER_KEY);
             return ReturnJsonUtil.ok(ids.split(",").length + "位用户密码重置成功");
         } else {
             return ReturnJsonUtil.fail("重置失败");
@@ -267,7 +267,7 @@ public class UserController extends BaseController {
                 //获取完数据之后删除文件
                 FileUtil.deleteFile(saveFile);
                 if (coreUserService.insertBatch(list, isCover == 1)) {
-                    CacheUtil.clear(CacheNames.USER_REDIS_CACHE);
+                    CacheUtil.clear(CacheNames.USER_KEY);
                     return ReturnJsonUtil.ok("新增成功");
                 } else {
                     return ReturnJsonUtil.fail("新增失败,请检查文件数据");
@@ -320,7 +320,7 @@ public class UserController extends BaseController {
         if (Fc.isNull(user) || !DigestUtil.checkPwd(oldPw,user.getPassword())) {
             return ReturnJsonUtil.fail("原密码错误");
         }
-        CacheUtil.clear(CacheNames.USER_REDIS_CACHE);
+        CacheUtil.clear(CacheNames.USER_KEY);
         return ReturnJsonUtil.status(coreUserService.updateUserPassword(user.getId(), DigestUtil.pwdEncrypt(newPw)));
     }
 }

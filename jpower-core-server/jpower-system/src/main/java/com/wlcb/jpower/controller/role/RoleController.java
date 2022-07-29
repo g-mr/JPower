@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
-import static com.wlcb.jpower.module.common.cache.CacheNames.SYSTEM_REDIS_CACHE;
 import static com.wlcb.jpower.module.common.utils.constants.JpowerConstants.TOP_CODE;
 
 @Api(tags = "角色管理")
@@ -78,7 +77,7 @@ public class RoleController extends BaseController {
         }
         coreRole.setAncestorId(ancestorId);
 
-        CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE,coreRole.getTenantCode());
+        CacheUtil.clear(CacheNames.ROLE_KEY,coreRole.getTenantCode());
         return ReturnJsonUtil.status(coreRoleService.add(coreRole));
     }
 
@@ -94,7 +93,10 @@ public class RoleController extends BaseController {
             return ReturnJsonUtil.busFail("该角色存在下级角色，请先删除下级角色");
         }
 
-        CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE,tenants.toArray(new String[tenants.size()]));
+        CacheUtil.clear(CacheNames.ROLE_KEY,tenants.toArray(new String[tenants.size()]));
+        CacheUtil.clear(CacheNames.FUNCTION_KEY);
+        CacheUtil.clear(CacheNames.DATASCOPE_KEY);
+        CacheUtil.clear(CacheNames.USER_KEY);
         return ReturnJsonUtil.status(coreRoleService.remove(Condition.<TbCoreRole>getQueryWrapper().lambda()
                 .in(TbCoreRole::getId,Fc.toStrList(ids))
                 .eq(TbCoreRole::getIsSysRole,ConstantsEnum.YN01.N.getValue())));
@@ -115,7 +117,7 @@ public class RoleController extends BaseController {
             coreRole.setAncestorId(ancestorId);
         }
 
-        CacheUtil.clear(CacheNames.SYSTEM_REDIS_CACHE,coreRole.getTenantCode());
+        CacheUtil.clear(CacheNames.ROLE_KEY,coreRole.getTenantCode());
         return ReturnJsonUtil.status(coreRoleService.update(coreRole));
     }
 
@@ -140,7 +142,8 @@ public class RoleController extends BaseController {
 
         if (coreRolefunctionService.addRolefunctions(roleId,functionIds)){
             TbCoreRole role = coreRoleService.getById(roleId);
-            CacheUtil.clear(SYSTEM_REDIS_CACHE,role.getTenantCode());
+            CacheUtil.clear(CacheNames.ROLE_KEY,role.getTenantCode());
+            CacheUtil.clear(CacheNames.FUNCTION_KEY,role.getTenantCode());
             return ReturnJsonUtil.ok("设置成功");
         }else {
             return ReturnJsonUtil.fail("设置失败");

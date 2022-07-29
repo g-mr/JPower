@@ -6,13 +6,11 @@ import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.Pg;
 import com.wlcb.jpower.module.base.vo.ResponseData;
-import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
-import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.params.CoreParamService;
 import io.swagger.annotations.*;
@@ -22,6 +20,8 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 import java.util.Map;
+
+import static com.wlcb.jpower.module.common.cache.CacheNames.PARAM_KEY;
 
 @Api(tags = "系统参数管理")
 @RestController
@@ -50,13 +50,16 @@ public class ParamsController extends BaseController {
     @RequestMapping(value = "/delete",method = RequestMethod.DELETE,produces="application/json")
     public ResponseData delete(@ApiParam(value = "主键",required = true) @RequestParam String ids){
         JpowerAssert.notEmpty(ids, JpowerError.Arg,"ids不可为空");
-        return ReturnJsonUtil.status(paramService.deletes(ids));
+
+        CacheUtil.clear(PARAM_KEY);
+        return ReturnJsonUtil.status(paramService.removeByIds(Fc.toStrList(ids)));
     }
 
     @ApiOperation("修改系统参数")
     @RequestMapping(value = "/update",method = RequestMethod.PUT,produces="application/json")
     public ResponseData update(TbCoreParam coreParam){
         JpowerAssert.notEmpty(coreParam.getId(), JpowerError.Arg,"id不可为空");
+        CacheUtil.clear(PARAM_KEY);
         return ReturnJsonUtil.status(paramService.update(coreParam));
     }
 
@@ -68,7 +71,7 @@ public class ParamsController extends BaseController {
         JpowerAssert.notEmpty(coreParam.getValue(), JpowerError.Arg,"参数值不可为空");
 
         JpowerAssert.isEmpty(paramService.selectByCode(coreParam.getCode()), JpowerError.Business,"该系统参数已存在");
-
+        CacheUtil.clear(PARAM_KEY);
         return ReturnJsonUtil.status(paramService.save(coreParam));
     }
 
@@ -79,29 +82,29 @@ public class ParamsController extends BaseController {
         return ReturnJsonUtil.ok("查询成功",paramService.getById(id));
     }
 
-    @ApiOperation(value = "立即生效一个参数")
-    @RequestMapping(value = "/takeEffect",method = RequestMethod.GET,produces="application/json")
-    public ResponseData<String> takeEffect(@ApiParam(value = "编码",required = true) @RequestParam String code){
-        JpowerAssert.notEmpty(code, JpowerError.Arg,"编号值不可为空");
+//    @ApiOperation(value = "立即生效一个参数")
+//    @RequestMapping(value = "/takeEffect",method = RequestMethod.GET,produces="application/json")
+//    public ResponseData<String> takeEffect(@ApiParam(value = "编码",required = true) @RequestParam String code){
+//        JpowerAssert.notEmpty(code, JpowerError.Arg,"编号值不可为空");
+//
+//        TbCoreParam param = paramService.getOne(Condition.<TbCoreParam>getQueryWrapper().lambda().eq(TbCoreParam::getCode,code));
+//        JpowerAssert.notTrue(Fc.equals(param.getIsEffect(), ConstantsEnum.YN01.N.getValue()), JpowerError.Business,"该参数无法立即生效，请重启项目");
+//
+//        if (Fc.isNotEmpty(param) && Fc.isNotBlank(param.getValue())){
+//            CacheUtil.put(CacheNames.PARAMS_REDIS_CACHE,CacheNames.PARAMS_REDIS_CODE_KEY,param.getCode(),param.getValue(),Boolean.FALSE);
+//        }else {
+//            if (Fc.isNull(param)){
+//                return ReturnJsonUtil.fail("该参数不存在");
+//            }
+//        }
+//        return ReturnJsonUtil.ok("操作成功");
+//    }
 
-        TbCoreParam param = paramService.getOne(Condition.<TbCoreParam>getQueryWrapper().lambda().eq(TbCoreParam::getCode,code));
-        JpowerAssert.notTrue(Fc.equals(param.getIsEffect(), ConstantsEnum.YN01.N.getValue()), JpowerError.Business,"该参数无法立即生效，请重启项目");
-
-        if (Fc.isNotEmpty(param) && Fc.isNotBlank(param.getValue())){
-            CacheUtil.put(CacheNames.PARAMS_REDIS_CACHE,CacheNames.PARAMS_REDIS_CODE_KEY,param.getCode(),param.getValue(),Boolean.FALSE);
-        }else {
-            if (Fc.isNull(param)){
-                return ReturnJsonUtil.fail("该参数不存在");
-            }
-        }
-        return ReturnJsonUtil.ok("操作成功");
-    }
-
-    @ApiOperation(value = "全部生效")
-    @RequestMapping(value = "/effectAll",method = RequestMethod.GET,produces="application/json")
-    public ResponseData<String> effectAll(){
-        paramService.effectAll();
-        return ReturnJsonUtil.ok("操作完成");
-    }
+//    @ApiOperation(value = "全部生效")
+//    @RequestMapping(value = "/effectAll",method = RequestMethod.GET,produces="application/json")
+//    public ResponseData<String> effectAll(){
+//        paramService.effectAll();
+//        return ReturnJsonUtil.ok("操作完成");
+//    }
 
 }

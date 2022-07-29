@@ -8,9 +8,11 @@ import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.Pg;
 import com.wlcb.jpower.module.base.vo.ResponseData;
+import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.support.ChainMap;
+import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.ShieldUtil;
@@ -82,6 +84,7 @@ public class TenantController extends BaseController {
             }
         }
 
+        CacheUtil.clear(CacheNames.TENANT_KEY);
         return ReturnJsonUtil.status(tenantService.updateById(tenant));
     }
 
@@ -91,6 +94,8 @@ public class TenantController extends BaseController {
     public ResponseData delete(@ApiParam("租户主键，多个逗号分隔") @RequestParam String ids){
         JpowerAssert.isTrue(ShieldUtil.isRoot(), JpowerError.Auth,"只可超级管理员删除租户");
         JpowerAssert.notEmpty(ids, JpowerError.Arg,"主键不可为空");
+
+        CacheUtil.clear(CacheNames.TENANT_KEY);
         return ReturnJsonUtil.status(tenantService.removeByIds(Fc.toStrList(ids)));
     }
 
@@ -114,6 +119,7 @@ public class TenantController extends BaseController {
                     ,JpowerError.Business,"该域名已存在");
         }
 
+        CacheUtil.clear(CacheNames.TENANT_KEY);
         return ReturnJsonUtil.status(tenantService.save(tenant,functionCodes));
     }
 
@@ -123,6 +129,7 @@ public class TenantController extends BaseController {
                                 @ApiParam(value = "租户额度") @RequestParam(required = false) Integer accountNumber,
                                 @ApiParam(value = "租户过期时间") @RequestParam(required = false) Date expireTime){
         JpowerAssert.isTrue(ShieldUtil.isRoot(), JpowerError.Auth,"只可超级管理员配置租户");
+        CacheUtil.clear(CacheNames.TENANT_KEY);
         return ReturnJsonUtil.status(tenantService.setting(ids,accountNumber,expireTime));
     }
 

@@ -24,7 +24,7 @@ public interface CoreParamService extends BaseService<TbCoreParam> {
      * @Param [id]
      * @return java.lang.Integer
      **/
-    Boolean deletes(String id);
+//    Boolean deletes(String id);
 
     /**
      * @Author 郭丁志
@@ -42,6 +42,6 @@ public interface CoreParamService extends BaseService<TbCoreParam> {
      * @Param
      * @return
      **/
-    void effectAll();
+//    void effectAll();
 
 }
