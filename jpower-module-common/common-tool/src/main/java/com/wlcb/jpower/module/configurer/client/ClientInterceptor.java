@@ -20,23 +20,27 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
- * @ClassName AuthInterceptor
- * @Description TODO
- * @Author 郭丁志
- * @Date 2020/8/30 0030 22:32
- * @Version 1.0
- */
+ * 客户端拦截器
+ *
+ * @author mr.g
+ **/
 @Slf4j
 @AllArgsConstructor
 public class ClientInterceptor implements HandlerInterceptor {
 
     private final List<AuthProperties.Client> clientCodes;
+    private final AuthProperties authProperties;
 
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
     @Override
     public boolean preHandle(@Nonnull HttpServletRequest request,@Nonnull HttpServletResponse response,@Nonnull Object handler){
-        boolean isSkip = clientCodes.stream().filter(client -> isIntercept(client,request)).map(client -> true).findFirst().orElse(false);
+        //放行接口不拦截
+        if (authProperties.getSkipUrl().stream().anyMatch(pattern -> antPathMatcher.match(pattern, request.getServletPath()))){
+            return Boolean.TRUE;
+        }
+
+        boolean isSkip = clientCodes.stream().filter(client -> isIntercept(client,request)).map(client -> Boolean.TRUE).findFirst().orElse(Boolean.FALSE);
 
         if (!isSkip){
             log.warn("客户端认证失败，请求接口：{}，请求IP：{}，请求参数：{}", request.getRequestURI(), WebUtil.getIp(request), JSON.toJSONString(request.getParameterMap()));
@@ -47,9 +51,14 @@ public class ClientInterceptor implements HandlerInterceptor {
 
     private boolean isIntercept(AuthProperties.Client client,HttpServletRequest request) {
         UserInfo user = ShieldUtil.getUser(request);
-        return (user != null && Fc.equals(client.getCode(), user.getClientCode()) && Fc.equals(client.getCode(), ShieldUtil.getClientCodeFromHeader())) ||
-                (Fc.equals(client.getCode(), ShieldUtil.getClientCodeFromHeader()) && Fc.isNotBlank(request.getHeader(TokenConstant.PASS_HEADER_NAME))) &&
-                client.getPath().stream().anyMatch(pattern -> antPathMatcher.match(pattern, request.getServletPath()));
+
+        if (client.getPath().stream().anyMatch(pattern -> antPathMatcher.match(pattern, request.getServletPath()))){
+            return (Fc.notNull(user) && Fc.equals(client.getCode(), user.getClientCode()) && Fc.equalsValue(client.getCode(), ShieldUtil.getClientCodeFromHeader()))
+                    ||
+                   (Fc.equalsValue(client.getCode(), ShieldUtil.getClientCodeFromHeader()) && (Fc.isNotBlank(request.getHeader(TokenConstant.PASS_HEADER_NAME))));
+        }
+
+        return Boolean.FALSE;
     }
 
 }

@@ -10,6 +10,7 @@ import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
+import com.wlcb.jpower.module.common.support.EnvBeanUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ShieldUtil;
 import com.wlcb.jpower.module.common.utils.StringUtil;
@@ -48,7 +49,7 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper, TbCoreO
     public Boolean add(TbCoreOrg coreOrg) {
 
         LambdaQueryWrapper<TbCoreOrg> queryWrapper = Condition.<TbCoreOrg>getQueryWrapper().lambda().eq(TbCoreOrg::getCode,coreOrg.getCode());
-        if (ShieldUtil.isRoot()){
+        if (ShieldUtil.isRoot() && EnvBeanUtil.getTenantEnable()){
             queryWrapper.eq(TbCoreOrg::getTenantCode,Fc.isNotBlank(coreOrg.getTenantCode())?coreOrg.getTenantCode():DEFAULT_TENANT_CODE);
         }
         JpowerAssert.geZero(coreOrgDao.count(queryWrapper), JpowerError.Business,"该编码已存在");

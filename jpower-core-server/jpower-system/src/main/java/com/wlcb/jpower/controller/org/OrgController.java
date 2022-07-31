@@ -56,7 +56,7 @@ public class OrgController extends BaseController {
         Boolean is = coreOrgService.add(coreOrg);
 
         if (is){
-            CacheUtil.clear(CacheNames.ORG_KEY,coreOrg.getTenantCode());
+            CacheUtil.clear(CacheNames.ORG_KEY, coreOrg.getTenantCode());
             return ReturnJsonUtil.ok("新增成功");
         }else {
             return ReturnJsonUtil.fail("新增失败");
