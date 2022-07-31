@@ -13,12 +13,10 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * @ClassName AuthConfigurer
- * @Description TODO
- * @Author 郭丁志
- * @Date 2020/8/30 0030 22:19
- * @Version 1.0
- */
+ * 拦截器配置
+ *
+ * @author mr.g
+ **/
 @Configuration
 @AllArgsConstructor
 @EnableConfigurationProperties({AuthProperties.class})
@@ -32,7 +30,7 @@ public class ClientConfigurer implements WebMvcConfigurer {
         List<AuthProperties.Client> clients = authProperties.getClient();
         clients.forEach(client -> set.addAll(client.getPath()));
         if (clients.size() > 0){
-            registry.addInterceptor(new ClientInterceptor(clients)).addPathPatterns(new ArrayList<>(set));
+            registry.addInterceptor(new ClientInterceptor(clients,authProperties.getSkipUrl())).addPathPatterns(new ArrayList<>(set));
         }
     }
 

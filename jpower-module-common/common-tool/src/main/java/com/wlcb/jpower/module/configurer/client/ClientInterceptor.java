@@ -29,14 +29,14 @@ import java.util.List;
 public class ClientInterceptor implements HandlerInterceptor {
 
     private final List<AuthProperties.Client> clientCodes;
-    private final AuthProperties authProperties;
+    private final List<String> skipUrls;
 
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
     @Override
     public boolean preHandle(@Nonnull HttpServletRequest request,@Nonnull HttpServletResponse response,@Nonnull Object handler){
         //放行接口不拦截
-        if (authProperties.getSkipUrl().stream().anyMatch(pattern -> antPathMatcher.match(pattern, request.getServletPath()))){
+        if (skipUrls.stream().anyMatch(pattern -> antPathMatcher.match(pattern, request.getServletPath()))){
             return Boolean.TRUE;
         }
 
