@@ -4,6 +4,7 @@ import cn.hutool.core.collection.ListUtil;
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wlcb.jpower.gateway.service.RoleService;
 import com.wlcb.jpower.gateway.utils.ExculdesUrl;
 import com.wlcb.jpower.gateway.utils.IpUtil;
 import com.wlcb.jpower.gateway.utils.TokenUtil;
@@ -37,11 +38,11 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static com.wlcb.jpower.module.common.auth.RoleConstant.ANONYMOUS;
+import static com.wlcb.jpower.module.common.auth.RoleConstant.ANONYMOUS_ID;
 import static com.wlcb.jpower.module.common.auth.RoleConstant.ROOT_ID;
 import static com.wlcb.jpower.module.common.utils.constants.TokenConstant.HEADER_MENU;
 
@@ -60,6 +61,7 @@ import static com.wlcb.jpower.module.common.utils.constants.TokenConstant.HEADER
 public class AuthFilter implements GlobalFilter, Ordered {
 
     private final RedisUtil redisUtil;
+    private final RoleService roleClient;
     private final ObjectMapper objectMapper;
     private final AuthProperties authProperties;
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
@@ -137,8 +139,10 @@ public class AuthFilter implements GlobalFilter, Ordered {
     }
 
     private boolean getIsAnonymous(String currentPath){
-        Object o = redisUtil.get(CacheNames.TOKEN_URL_KEY+ ANONYMOUS);
-        List<String> listUrl = Fc.isNull(o)?new ArrayList<>():(List<String>) o;
+        //获取匿名用户的权限
+        List<String> listUrl = roleClient.queryUrlByRole(ANONYMOUS_ID);
+//        Object o = redisUtil.get(CacheNames.TOKEN_URL_KEY+ ANONYMOUS);
+//        List<String> listUrl = Fc.isNull(list)?new ArrayList<>():list;
         return listUrl.stream().anyMatch(pattern -> antPathMatcher.match(pattern, currentPath));
     }
 

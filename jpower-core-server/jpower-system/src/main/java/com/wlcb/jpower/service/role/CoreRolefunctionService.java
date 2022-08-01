@@ -30,6 +30,6 @@ public interface CoreRolefunctionService extends BaseService<TbCoreRoleFunction>
      */
     boolean addRolefunctions(String roleId, String functionIds);
 
-    void cacheAnonymous();
+//    void cacheAnonymous();
 
 }

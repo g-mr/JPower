@@ -32,13 +32,13 @@ public class SystemLoader implements CommandLineRunner {
 //            log.warn("初始化系统参数异常：{}",e.getMessage());
 //        }
 
-        try {
-            log.info("缓存匿名用户权限...");
-            coreRolefunctionService.cacheAnonymous();
-            log.info("缓存匿名用户权限完成...");
-        }catch (Exception e){
-            log.warn("初始化匿名用户权限异常：{}",e.getMessage());
-        }
+//        try {
+//            log.info("缓存匿名用户权限...");
+//            coreRolefunctionService.cacheAnonymous();
+//            log.info("缓存匿名用户权限完成...");
+//        }catch (Exception e){
+//            log.warn("初始化匿名用户权限异常：{}",e.getMessage());
+//        }
 
     }
 

@@ -2,7 +2,9 @@ package com.wlcb.jpower.gateway.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.wlcb.jpower.module.common.support.ChainMap;
+import com.wlcb.jpower.module.common.utils.ExceptionUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
 import org.springframework.cloud.gateway.support.NotFoundException;
@@ -44,7 +46,7 @@ public class ErrorExceptionHandler implements ErrorWebExceptionHandler {
         ChainMap<String, Object> map = message(exchange.getRequest(),ex);
         response.setRawStatusCode(map.getInt("code"));
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
-        return response.writeWith(Flux.just(response.bufferFactory().wrap(JSON.toJSONBytes(map))));
+        return response.writeWith(Flux.just(response.bufferFactory().wrap(JSON.toJSONBytes(map.build()))));
     }
 
     /**
@@ -83,8 +85,11 @@ public class ErrorExceptionHandler implements ErrorWebExceptionHandler {
             message.append(ex.getMessage());
             if(null != cause && cause.getMessage().contains("Load balancer does not have available server for client")){
                 message.append("服务不存在");
+            } else {
+                log.error("未铺获异常=>{}{}", StringPool.NEWLINE, ExceptionUtil.getStackTraceAsString(ex));
             }
         }else {
+            log.error("未铺获异常=>{}{}", StringPool.NEWLINE, ExceptionUtil.getStackTraceAsString(ex));
             message.append(ex.getMessage());
         }
         return ChainMap.<String, Object>create().put("code",httpStatus).put("message",message.toString());

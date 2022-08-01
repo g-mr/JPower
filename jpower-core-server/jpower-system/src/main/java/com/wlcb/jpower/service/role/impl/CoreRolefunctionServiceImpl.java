@@ -3,8 +3,6 @@ package com.wlcb.jpower.service.role.impl;
 import com.wlcb.jpower.dbs.dao.role.TbCoreRoleFunctionDao;
 import com.wlcb.jpower.dbs.dao.role.mapper.TbCoreRoleFunctionMapper;
 import com.wlcb.jpower.dbs.entity.role.TbCoreRoleFunction;
-import com.wlcb.jpower.module.common.auth.RoleConstant;
-import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.support.ChainMap;
@@ -53,27 +51,26 @@ public class CoreRolefunctionServiceImpl extends BaseServiceImpl<TbCoreRoleFunct
         }
 
         if (roleFunctions.size() > 0){
-            boolean is = coreRoleFunctionDao.saveBatch(roleFunctions);
-            if(Fc.equals(roleId,RoleConstant.ANONYMOUS_ID)){
-                cacheAnonymous();
-            }
-            return is;
+//            if(Fc.equalsValue(roleId,RoleConstant.ANONYMOUS_ID)){
+//                cacheAnonymous();
+//            }
+            return coreRoleFunctionDao.saveBatch(roleFunctions);
         }
         return true;
     }
 
-    /**
-     * 缓存匿名用户权限
-     * @Author goo
-     * @Date 16:37 2021-03-15
-     * @param
-     * @return void
-     **/
-    @Override
-    public void cacheAnonymous() {
-        List<String> list = new ArrayList<>();
-        list.add(RoleConstant.ANONYMOUS_ID);
-        redisUtil.set(CacheNames.TOKEN_URL_KEY+RoleConstant.ANONYMOUS,coreFunctionService.getUrlsByRoleIds(list));
-    }
+//    /**
+//     * 缓存匿名用户权限
+//     * @Author goo
+//     * @Date 16:37 2021-03-15
+//     * @param
+//     * @return void
+//     **/
+//    @Override
+//    public void cacheAnonymous() {
+//        List<String> list = new ArrayList<>();
+//        list.add(RoleConstant.ANONYMOUS_ID);
+//        redisUtil.set(CacheNames.TOKEN_URL_KEY+RoleConstant.ANONYMOUS,coreFunctionService.getUrlsByRoleIds(list));
+//    }
 
 }

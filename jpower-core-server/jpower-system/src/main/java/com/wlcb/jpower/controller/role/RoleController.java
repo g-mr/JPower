@@ -22,10 +22,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -122,7 +119,7 @@ public class RoleController extends BaseController {
     }
 
     @ApiOperation("查询角色的权限")
-    @RequestMapping(value = "/roleFunction",method = {RequestMethod.GET},produces="application/json")
+    @GetMapping(value = "/roleFunction",produces="application/json")
     public ResponseData<List<Map<String,Object>>> roleFunction(@ApiParam(value = "角色主键",required = true) @RequestParam String roleId){
 
         JpowerAssert.notEmpty(roleId, JpowerError.Arg,"角色id不可为空");
