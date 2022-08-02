@@ -38,6 +38,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -103,7 +104,8 @@ public class AuthFilter implements GlobalFilter, Ordered {
 
             //匿名用户
             if (getIsAnonymous(currentPath)){
-                return chain.filter(addHeader(exchange,ANONYMOUS,StringPool.EMPTY));
+                String dataAuth = roleClient.queryDataScopeByRoleAndMenu(Collections.singletonList(ANONYMOUS_ID),exchange.getRequest().getHeaders().getFirst(HEADER_MENU));
+                return chain.filter(addHeader(exchange,ANONYMOUS,dataAuth));
             }
             return proxyAuthenticationRequired(exchange.getResponse(), "缺失令牌，鉴权失败");
         }
@@ -141,8 +143,6 @@ public class AuthFilter implements GlobalFilter, Ordered {
     private boolean getIsAnonymous(String currentPath){
         //获取匿名用户的权限
         List<String> listUrl = roleClient.queryUrlByRole(ANONYMOUS_ID);
-//        Object o = redisUtil.get(CacheNames.TOKEN_URL_KEY+ ANONYMOUS);
-//        List<String> listUrl = Fc.isNull(list)?new ArrayList<>():list;
         return listUrl.stream().anyMatch(pattern -> antPathMatcher.match(pattern, currentPath));
     }
 

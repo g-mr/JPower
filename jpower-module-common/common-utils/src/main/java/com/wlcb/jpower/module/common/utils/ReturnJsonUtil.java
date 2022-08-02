@@ -68,6 +68,10 @@ public class ReturnJsonUtil {
      * @return 返回实体
      **/
     public static <T> ResponseData ok(String msg, T data){
+        if (Fc.isNull(data)){
+            return null;
+        }
+
         if (!ClassUtil.isSimpleValueType(data.getClass())){
             if (StringUtil.startWith(data.getClass().getName(),MP_PACKAGE)){
                 return print(ConstantsReturn.RECODE_SUCCESS, msg, new Pg<>(ReflectUtil.invoke(data,"getTotal"),ReflectUtil.invoke(data,"getRecords")), true);

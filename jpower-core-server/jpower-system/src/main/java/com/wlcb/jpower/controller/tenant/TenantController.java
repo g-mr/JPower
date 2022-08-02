@@ -135,7 +135,7 @@ public class TenantController extends BaseController {
 
     @ApiOperation("通过域名查询租户")
     @GetMapping("/queryByDomain")
-    public ResponseData<ChainMap<String,Object>> queryByDomain(@ApiParam(value = "域名",required = true) @RequestParam String domain){
+    public ResponseData<Map<String,Object>> queryByDomain(@ApiParam(value = "域名",required = true) @RequestParam String domain){
         JpowerAssert.notEmpty(domain, JpowerError.Arg,"域名不可为空");
         TbCoreTenant tenant = tenantService.getOne(Condition.<TbCoreTenant>getQueryWrapper().lambda().eq(TbCoreTenant::getDomain,domain));
         ChainMap<String,Object> map = ChainMap.create();
@@ -144,6 +144,6 @@ public class TenantController extends BaseController {
                     .put("domain",tenant.getDomain())
                     .put("logo",tenant.getLogo());
         }
-        return ReturnJsonUtil.ok("查询成功",map);
+        return ReturnJsonUtil.ok("查询成功",map.build());
     }
 }

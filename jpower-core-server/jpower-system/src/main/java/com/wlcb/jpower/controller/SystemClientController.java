@@ -105,4 +105,12 @@ public class SystemClientController extends BaseController implements SystemClie
     public ResponseData<TbCoreCity> getCityByCode(@RequestParam String code) {
         return ReturnJsonUtil.ok("查询成功",coreCityService.queryByCode(code));
     }
+
+    @GetMapping("/menu/getIdByCode")
+    public ResponseData<String> getMenuIdByCode(@RequestParam String code) {
+        return ReturnJsonUtil.data(coreFunctionService.getObj(Condition.<TbCoreFunction>getQueryWrapper()
+                .lambda()
+                .select(TbCoreFunction::getId)
+                .eq(TbCoreFunction::getCode,code) , Fc::toStr));
+    }
 }

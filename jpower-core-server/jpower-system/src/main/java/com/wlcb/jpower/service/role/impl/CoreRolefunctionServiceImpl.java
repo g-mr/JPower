@@ -51,26 +51,9 @@ public class CoreRolefunctionServiceImpl extends BaseServiceImpl<TbCoreRoleFunct
         }
 
         if (roleFunctions.size() > 0){
-//            if(Fc.equalsValue(roleId,RoleConstant.ANONYMOUS_ID)){
-//                cacheAnonymous();
-//            }
             return coreRoleFunctionDao.saveBatch(roleFunctions);
         }
         return true;
     }
-
-//    /**
-//     * 缓存匿名用户权限
-//     * @Author goo
-//     * @Date 16:37 2021-03-15
-//     * @param
-//     * @return void
-//     **/
-//    @Override
-//    public void cacheAnonymous() {
-//        List<String> list = new ArrayList<>();
-//        list.add(RoleConstant.ANONYMOUS_ID);
-//        redisUtil.set(CacheNames.TOKEN_URL_KEY+RoleConstant.ANONYMOUS,coreFunctionService.getUrlsByRoleIds(list));
-//    }
 
 }
