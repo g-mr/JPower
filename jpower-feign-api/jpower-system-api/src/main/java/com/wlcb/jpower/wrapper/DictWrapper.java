@@ -9,6 +9,7 @@ import com.wlcb.jpower.module.dictbind.handler.IDictBindHandler;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -22,13 +23,17 @@ public class DictWrapper implements IDictBindHandler {
      * 本地缓存过期时间为5秒
      */
     private final static Long EXPIRE_TIME = 5L;
+    /**
+     * 字典默认存放字段名称
+     */
+    private final static String DICT_PARAMS = "params";
 
     /**
      * 绑定字典
      * @author mr.g
      */
     @Override
-    public void setMetaObject(Dict dict, Object fieldValue, MetaObject metaObject){
+    public void setMetaObject(Dict dict, String fieldName, Object fieldValue, MetaObject metaObject){
         if (Fc.isNotEmpty(fieldValue)){
             if (Fc.isNotBlank(dict.name())){
                 GuavaCache<String> guavaCache = GuavaCache.getInstance(EXPIRE_TIME, TimeUnit.SECONDS);
@@ -39,7 +44,15 @@ public class DictWrapper implements IDictBindHandler {
                         guavaCache.put(dict.name() + StringPool.COLON + fieldValue,value);
                     }
                 }
-                metaObject.setValue(dict.attributes(),value);
+
+                if (Fc.isNotBlank(dict.attributes())){
+                    metaObject.setValue(dict.attributes(),value);
+                } else {
+                    if (metaObject.hasGetter(DICT_PARAMS)){
+                        ((Map)metaObject.getValue(DICT_PARAMS)).put(fieldName,value);
+                    }
+                }
+
             }
         }
     }

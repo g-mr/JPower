@@ -1,8 +1,6 @@
 package com.wlcb.jpower.module.base.annotation;
 
 
-import com.wlcb.jpower.module.common.utils.constants.StringPool;
-
 import java.lang.annotation.*;
 
 
@@ -23,15 +21,10 @@ public @interface Dict {
     String name();
 
     /**
-     * 该属性暂时没用
-     **/
-    Class<?> type() default Object.class;
-
-    /**
      * 赋值的属性名称
      * @Desc 在 {@link IDictBindHandler#setMetaObject(Dict, Object, MetaObject)}中的dict参数
      */
-    String attributes();
+    String attributes() default "";
 
 
 }

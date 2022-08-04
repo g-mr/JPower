@@ -64,9 +64,7 @@ public class BaseEntity implements Serializable {
     private Boolean isDeleted;
 
     @ApiModelProperty(hidden = true)
-    @JSONField(serialize = false)
     @TableField(exist = false)
-    @JsonIgnore
     private Map<String, Object> params = new HashMap<>();
 
 }

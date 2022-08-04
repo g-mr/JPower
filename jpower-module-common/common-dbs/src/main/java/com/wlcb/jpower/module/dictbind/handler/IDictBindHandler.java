@@ -16,5 +16,5 @@ public interface IDictBindHandler {
      * @param fieldValue 字段值
      * @param metaObject MetaObject对象
      */
-    void setMetaObject(Dict dict, Object fieldValue, MetaObject metaObject);
+    void setMetaObject(Dict dict, String fieldName, Object fieldValue, MetaObject metaObject);
 }

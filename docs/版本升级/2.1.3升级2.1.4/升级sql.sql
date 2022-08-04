@@ -4,3 +4,5 @@ insert into tb_core_param (id, code, name, value, note, create_user, create_time
 
 alter table tb_core_user modify password varchar(100) not null comment '登录密码';
 
+alter table tb_core_param drop column is_effect;
+

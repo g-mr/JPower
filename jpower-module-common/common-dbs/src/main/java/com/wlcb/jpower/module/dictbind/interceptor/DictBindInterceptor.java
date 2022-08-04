@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 字典拦截器
+ *
  * @author mr.g
  * @date 2021-05-20 17:00
  */
@@ -32,8 +34,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DictBindInterceptor implements MybatisInterceptor {
-
-    private static final String DICT_ATTRIBUTES_SUFFIX = "Str";
 
     private IDictBindHandler dictBindHandler;
 
@@ -50,9 +50,13 @@ public class DictBindInterceptor implements MybatisInterceptor {
                         MetaObject metaObject = MetaObject.forObject(bean,new DefaultObjectFactory(),new DefaultObjectWrapperFactory(),new DefaultReflectorFactory());
                         BeanUtil.getFiledByAnnotation(bean.getClass(), Dict.class).forEach(field -> {
                             Dict dict = field.getAnnotation(Dict.class);
-                            //判断需要赋值的字段是否存在于bean
-                            if (Fc.isNoneBlank(dict.name(),dict.attributes()) && ReflectUtil.hasField(bean.getClass(),dict.attributes())){
-                                dictBindHandler.setMetaObject(dict, metaObject.getValue(field.getName()), metaObject);
+                            if (Fc.isNotBlank(dict.name())){
+                                //判断需要赋值的字段是否存在于bean
+                                if (Fc.isNotBlank(dict.attributes()) && ReflectUtil.hasField(bean.getClass(), dict.attributes())) {
+                                    dictBindHandler.setMetaObject(dict, field.getName() ,metaObject.getValue(field.getName()), metaObject);
+                                } else if (Fc.isBlank(dict.attributes())) {
+                                    dictBindHandler.setMetaObject(dict, field.getName() ,metaObject.getValue(field.getName()), metaObject);
+                                }
                             }
 
                         });
@@ -66,5 +70,4 @@ public class DictBindInterceptor implements MybatisInterceptor {
 
         return result;
     }
-
 }
