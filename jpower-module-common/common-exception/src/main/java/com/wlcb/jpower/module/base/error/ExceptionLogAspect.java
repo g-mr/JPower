@@ -1,5 +1,7 @@
 package com.wlcb.jpower.module.base.error;
 
+import com.wlcb.jpower.module.common.utils.ExceptionUtil;
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
@@ -9,12 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * @ClassName ExceptionLogAspect
- * @Description TODO 未捕获异常的日志打印切面
- * @Author 郭丁志
- * @Date 2020-01-31 16:11
- * @Version 1.0
- */
+ * 异常的日志打印切面
+ *
+ * @author mr.g
+ **/
 @Aspect
 @Configuration
 public class ExceptionLogAspect {
@@ -22,24 +22,24 @@ public class ExceptionLogAspect {
     private static final Logger logger = LoggerFactory.getLogger(ExceptionLogAspect.class);
 
     /**
-     * @Author 郭丁志
-     * @Description // 配置切入点,该方法无方法体,主要为方便同类中其他方法使用此处配置的切入点， 切入点为所有controller包下所有的方法
-     * @Date 10:47 2020-08-28
-     * @Param []
-     * @return void
+     * 配置切入点,该方法无方法体,主要为方便同类中其他方法使用此处配置的切入点， 切入点为所有controller包下所有的方法
+     *
+     * @author mr.g
      **/
     @Pointcut("execution(* com.wlcb..*.controller..*.*(..))")
     public void ctrlPointCut(){}
 
     /**
-     * @Author 郭丁志
-     * @Description // 配置抛出异常后通知,使用在方法ctrlPointCut()上注册的切入点
-     * @Date 10:47 2020-08-28
-     * @Param [joinPoint, ex]
+     * 配置抛出异常后通知,使用在方法ctrlPointCut()上注册的切入点
+     *
+     * @author mr.g
+     * @param joinPoint 切入点
+     * @param ex 异常信息
      * @return void
      **/
     @AfterThrowing(pointcut="ctrlPointCut()", throwing="ex")
     public void afterThrow(JoinPoint joinPoint, Throwable ex){
-        logger.error("未捕获异常： ", ex);
+        String methodName = joinPoint.getSignature().getDeclaringTypeName()+"."+joinPoint.getSignature().getName();
+        logger.error("未捕获异常=>{}请求方法：{}, 异常信息：{}", StringPool.NEWLINE , methodName , ExceptionUtil.getStackTraceAsString(ex));
     }
 }

@@ -8,12 +8,11 @@ import com.wlcb.jpower.module.base.listener.ErrorLogEvent;
 import com.wlcb.jpower.module.base.model.ErrorLogDto;
 import com.wlcb.jpower.module.base.utils.FieldCompletionUtil;
 import com.wlcb.jpower.module.base.vo.ErrorReturnJson;
-import com.wlcb.jpower.module.common.utils.ExceptionUtil;
-import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.SpringUtil;
-import com.wlcb.jpower.module.common.utils.WebUtil;
+import com.wlcb.jpower.module.common.utils.*;
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.dbs.config.LoginUserContext;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
@@ -33,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
  * @Date 2020-01-27 17:24
  * @Version 1.0
  */
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -97,6 +97,11 @@ public class GlobalExceptionHandler {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 
             createLog(request,e);
+
+            if (!isControllerStackTrace(e.getStackTrace())){
+                log.error("请求运行异常捕获=>{}异常信息：{}", StringPool.NEWLINE, ExceptionUtil.getStackTraceAsString(e));
+            }
+
         }
         r.setStatus(false);
         return r;
@@ -131,5 +136,14 @@ public class GlobalExceptionHandler {
             }
         }
         return elements[0];
+    }
+
+    private boolean isControllerStackTrace(StackTraceElement[] elements){
+        for (StackTraceElement element : elements) {
+            if (StrUtil.startWith(element.getClassName(),JPOWER_PACKAGE) && StringUtil.contains(element.getClassName(),".controller.")){
+                return true;
+            }
+        }
+        return false;
     }
 }
