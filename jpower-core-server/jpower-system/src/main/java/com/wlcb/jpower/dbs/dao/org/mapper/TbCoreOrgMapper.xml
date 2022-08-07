@@ -9,7 +9,7 @@
         FROM
         tb_core_org org
         <where>
-            org.is_deleted = 0
+            and org.is_deleted = 0
             <if test="org.parentId!=null and org.parentId != ''">
                 and org.parent_id = #{org.parentId}
             </if>

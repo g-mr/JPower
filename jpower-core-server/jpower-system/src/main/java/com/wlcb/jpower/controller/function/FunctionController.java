@@ -91,7 +91,7 @@ public class FunctionController extends BaseController {
 
         if (is){
             CacheUtil.clear(CacheNames.FUNCTION_KEY);
-            return ReturnJsonUtil.ok("新增成功");
+            return ReturnJsonUtil.ok("新增成功",coreFunction.getId());
         }else {
             return ReturnJsonUtil.fail("新增失败");
         }

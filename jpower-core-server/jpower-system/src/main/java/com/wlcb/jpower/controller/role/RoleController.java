@@ -75,7 +75,7 @@ public class RoleController extends BaseController {
         coreRole.setAncestorId(ancestorId);
 
         CacheUtil.clear(CacheNames.ROLE_KEY,coreRole.getTenantCode());
-        return ReturnJsonUtil.status(coreRoleService.add(coreRole));
+        return ReturnJsonUtil.status(coreRoleService.add(coreRole),coreRole.getId());
     }
 
     @ApiOperation("删除角色")

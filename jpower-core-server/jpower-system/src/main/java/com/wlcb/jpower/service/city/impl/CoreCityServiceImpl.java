@@ -67,7 +67,7 @@ public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper, TbCor
             if (coreCityDao.count(Condition.<TbCoreCity>getQueryWrapper().lambda().eq(TbCoreCity::getPcode,coreCity.getPcode())) <= 0){
                 TbCoreCity city = queryByCode(coreCity.getPcode());
                 if (Fc.notNull(city)){
-                    Fc.requireNotNull(Cm.getInstance().getCache(CacheNames.CITY_PARENT_REDIS_KEY),"缓存不存在").evict(city.getPcode());
+                    Fc.requireNotNull(Cm.getInstance().getCache(CacheNames.CITY_PARENT_REDIS_KEY, Boolean.FALSE),"缓存不存在").evict(city.getPcode());
                 }
             }
         }catch (Exception e){

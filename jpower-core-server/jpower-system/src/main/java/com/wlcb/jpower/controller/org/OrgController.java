@@ -1,7 +1,7 @@
 package com.wlcb.jpower.controller.org;
 
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.lang.tree.Tree;
-import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
@@ -36,15 +36,21 @@ public class OrgController extends BaseController {
     @ApiOperation("懒加载组织机构树形列表")
     @GetMapping(value = "/listLazyByParent",produces="application/json")
     public ResponseData<List<OrgVo>> listLazyByParent(TbCoreOrg coreOrg){
+        coreOrg.setParentId(Fc.isNotBlank(coreOrg.getParentId())?coreOrg.getParentId():JpowerConstants.TOP_CODE);
         return ReturnJsonUtil.ok("获取成功", coreOrgService.listLazyByParent(coreOrg));
     }
 
     @ApiOperation("分页懒加载组织机构树形列表")
     @GetMapping(value = "/listLazy",produces="application/json")
     public ResponseData<Pg<OrgVo>> listLazy(TbCoreOrg coreOrg){
-        PaginationContext.startPage();
-        PageInfo<OrgVo> pageInfo = new PageInfo<>(coreOrgService.listLazyByParent(coreOrg));
-        return ReturnJsonUtil.ok("获取成功", pageInfo);
+//        PaginationContext.startPage();
+
+        List<OrgVo> list = coreOrgService.listLazyByParent(coreOrg);
+
+        List<OrgVo> pageList = ListUtil.page(PaginationContext.getPageNum()-1,PaginationContext.getPageSize(),list);
+
+//        PageInfo<OrgVo> pageInfo = new PageInfo<>(coreOrgService.listLazyByParent(coreOrg));
+        return ReturnJsonUtil.data(new Pg<>(list.size(),pageList));
     }
 
     @ApiOperation(value = "新增一个组织机构",notes = "无需传主键(id)")
@@ -57,7 +63,7 @@ public class OrgController extends BaseController {
 
         if (is){
             CacheUtil.clear(CacheNames.ORG_KEY, coreOrg.getTenantCode());
-            return ReturnJsonUtil.ok("新增成功");
+            return ReturnJsonUtil.ok("新增成功",coreOrg.getId());
         }else {
             return ReturnJsonUtil.fail("新增失败");
         }

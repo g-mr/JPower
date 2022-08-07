@@ -51,7 +51,11 @@ public class CityController extends BaseController {
         JpowerAssert.notTrue(Fc.isEmpty(coreCity.getRankd()),JpowerError.Arg,"城市级别不可为空");
         JpowerAssert.notEmpty(coreCity.getCityType(),JpowerError.Arg,"城市类型不可为空");
 
-        return ReturnJsonUtil.status(coreCityService.add(coreCity));
+        if (coreCityService.add(coreCity)){
+            return ReturnJsonUtil.ok("新增成功", coreCity.getId());
+        }else {
+            return ReturnJsonUtil.fail("新增失败");
+        }
     }
 
     @ApiOperation(value = "修改行政区域",notes = "主键必传")

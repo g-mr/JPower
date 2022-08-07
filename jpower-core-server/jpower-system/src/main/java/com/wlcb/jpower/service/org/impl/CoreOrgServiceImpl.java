@@ -19,9 +19,9 @@ import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.org.CoreOrgService;
 import com.wlcb.jpower.vo.OrgVo;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,17 +32,23 @@ import static com.wlcb.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
 /**
  * @author mr.gmac
  */
+@AllArgsConstructor
 @Service("coreOrgService")
 @Slf4j
 public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper, TbCoreOrg> implements CoreOrgService {
 
-    @Autowired
     private TbCoreOrgDao coreOrgDao;
 
     @Override
     public List<OrgVo> listLazyByParent(TbCoreOrg coreOrg) {
-        coreOrg.setParentId(Fc.isNotBlank(coreOrg.getParentId())?coreOrg.getParentId():JpowerConstants.TOP_CODE);
-        return coreOrgDao.getBaseMapper().listLazyByParent(coreOrg);
+        if (Fc.isNotBlank(coreOrg.getParentId())){
+            return coreOrgDao.getBaseMapper().listLazyByParent(coreOrg);
+        }
+        // TODO: 2022-08-07 这块写的真恶心，有啥办法可以直接在SQL里查出最顶级，可以提供下办法 <br/>
+        //  只查最顶级数据
+        List<OrgVo> orgVoList = coreOrgDao.getBaseMapper().listLazyByParent(coreOrg);
+        orgVoList.removeIf(o-> orgVoList.stream().anyMatch(l->Fc.equalsValue(l.getId(),o.getParentId())));
+        return orgVoList;
     }
 
     @Override

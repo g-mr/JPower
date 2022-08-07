@@ -69,7 +69,7 @@ public class ReturnJsonUtil {
      **/
     public static <T> ResponseData ok(String msg, T data){
         if (Fc.isNull(data)){
-            return null;
+            return print(ConstantsReturn.RECODE_SUCCESS, msg, data, true);
         }
 
         if (!ClassUtil.isSimpleValueType(data.getClass())){
@@ -104,13 +104,17 @@ public class ReturnJsonUtil {
      * @return 返回实体
      **/
     public static <T> ResponseData<T> status(Boolean is) {
+        return status(is,null);
+    }
+
+    public static <T> ResponseData<T> status(Boolean is, T data) {
         if(is){
-            return ok("操作成功");
+            return ok("操作成功", data);
         }else {
             if (EnvBeanUtil.getDemoEnable()){
                 return fail("演示环境不支持操作！");
             }
-            return fail("操作失败");
+            return fail("操作失败", data);
         }
     }
 
@@ -170,4 +174,5 @@ public class ReturnJsonUtil {
     public static <T> ResponseData<T> busFail(String msg) {
         return print(ConstantsReturn.RECODE_BUSINESS,msg,false);
     }
+
 }

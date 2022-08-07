@@ -62,7 +62,7 @@ public class DictController extends BaseController {
         JpowerAssert.notEmpty(dictType.getDictTypeName(), JpowerError.Arg,"字典类型名称不可为空");
 
         CacheUtil.clear(CacheNames.DICT_KEY);
-        return ReturnJsonUtil.status(coreDictTypeService.addDictType(dictType));
+        return ReturnJsonUtil.status(coreDictTypeService.addDictType(dictType),dictType.getId());
     }
 
     @ApiOperation(value = "更新字典类型")
