@@ -44,6 +44,8 @@ public class ClientController extends BaseController {
         if (Fc.isBlank(coreClient.getId())){
             JpowerAssert.notEmpty(coreClient.getClientCode(), JpowerError.Arg,"客户端Code不可为空");
             JpowerAssert.notEmpty(coreClient.getName(), JpowerError.Arg,"客户端名称不可为空");
+            JpowerAssert.notTrue(coreClient.getRefreshTokenValidity() <= coreClient.getAccessTokenValidity(),JpowerError.Arg,"刷新令牌时长不可小于令牌时长");
+
 
             if (coreClientService.count(Condition.<TbCoreClient>getQueryWrapper().lambda().eq(TbCoreClient::getClientCode,coreClient.getClientCode())) > 0){
                 return ReturnJsonUtil.busFail("该客户端已存在");
@@ -54,6 +56,10 @@ public class ClientController extends BaseController {
             if (Fc.isNull(client)){
                 return ReturnJsonUtil.fail("该数据不存在");
             }
+
+            long refreshTokenValidity = Fc.isNull(coreClient.getRefreshTokenValidity())?client.getRefreshTokenValidity():coreClient.getRefreshTokenValidity();
+            long accessTokenValidity = Fc.isNull(coreClient.getAccessTokenValidity())?client.getAccessTokenValidity():coreClient.getAccessTokenValidity();
+            JpowerAssert.notTrue(refreshTokenValidity <= accessTokenValidity,JpowerError.Arg,"刷新令牌时长不可小于令牌时长");
 
             if (Fc.isNotBlank(coreClient.getId())){
                 TbCoreClient tbCoreClient = coreClientService.getOne(Condition.<TbCoreClient>getQueryWrapper().lambda().eq(TbCoreClient::getClientCode,coreClient.getClientCode()));

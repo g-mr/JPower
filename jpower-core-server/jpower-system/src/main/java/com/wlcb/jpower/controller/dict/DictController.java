@@ -134,6 +134,15 @@ public class DictController extends BaseController {
         return ReturnJsonUtil.ok("查询成功", list);
     }
 
+    @ApiOperation(value = "根据字典类型查询树形字典")
+    @GetMapping(value = "/treeDict",produces="application/json")
+    public ResponseData<List<DictVo>> treeDict(@ApiParam("字典类型编码") String dictTypeCode){
+        JpowerAssert.notEmpty(dictTypeCode, JpowerError.Arg,"字典类型编码不可为空");
+
+        return ReturnJsonUtil.ok("查询成功", coreDictService.tree(Condition.getLambdaTreeWrapper(TbCoreDict.class,TbCoreDict::getId,TbCoreDict::getParentId)
+                .eq(TbCoreDict::getDictTypeCode,dictTypeCode)));
+    }
+
     @ApiOperation("保存或者新增字典")
     @RequestMapping(value = "/saveDict",method = RequestMethod.POST,produces="application/json")
     public ResponseData saveDict(TbCoreDict dict){
