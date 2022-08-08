@@ -20,6 +20,8 @@ public class TbCoreFunction extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 7093626905745914312L;
 
+    @ApiModelProperty("客户端ID")
+    private String clientId;
     @ApiModelProperty("功能名称")
     private String functionName;
     @ApiModelProperty("别名")

@@ -95,4 +95,14 @@ public class ClientController extends BaseController {
         List<TbCoreClient> list = coreClientService.list(Condition.getQueryWrapper(coreClient,TbCoreClient.class).lambda().orderByAsc(TbCoreClient::getSortNum));
         return ReturnJsonUtil.ok("查询成功",new PageInfo<>(list));
     }
+
+    @ApiOperation("下拉客户端列表")
+    @GetMapping("selectList")
+    public ResponseData<List<Map<String,Object>>> selectList(){
+
+        return ReturnJsonUtil.data(coreClientService.listMaps(Condition.<TbCoreClient>getQueryWrapper()
+                .lambda()
+                .select(TbCoreClient::getId,TbCoreClient::getName)
+                .orderByAsc(TbCoreClient::getSortNum)));
+    }
 }

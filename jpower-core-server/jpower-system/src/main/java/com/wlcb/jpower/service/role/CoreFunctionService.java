@@ -128,12 +128,23 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
 
     /**
      * 查询树形菜单
-     * @Author ding
-     * @Date 00:46 2021-02-27
+     *
+     * @author ding
+     * @date 00:46 2021-02-27
      * @param roleIds 角色ID
+     * @param clientId 客户端ID
      * @return java.util.List<com.wlcb.jpower.module.common.node.Node>
      **/
-    List<Tree<String>> menuTreeByRoleIds(List<String> roleIds);
+    List<Tree<String>> menuTreeByRoleIds(List<String> roleIds,String clientId);
+
+    /**
+     * 查询角色所有菜单
+     *
+     * @author mr.g
+     * @param roleIds 角色ID
+     * @return java.util.List<com.wlcb.jpower.dbs.entity.function.TbCoreFunction>
+     **/
+    List<TbCoreFunction> menuByRoleIds(List<String> roleIds);
 
     /**
      * 查询资源

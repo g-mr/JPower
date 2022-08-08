@@ -20,6 +20,7 @@ import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
 import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
+import com.wlcb.jpower.module.base.exception.JpowerException;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.DigestUtil;
@@ -33,6 +34,7 @@ import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.tenant.TenantService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -80,6 +82,7 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
     }
 
     @Override
+    @Transactional(rollbackFor = {Exception.class, JpowerException.class})
     public boolean save(TbCoreTenant tenant, List<String> functionCodes){
         if (Fc.isBlank(tenant.getTenantCode())){
             List<String> tenantCodeList = tenantDao.listObjs(Condition.<TbCoreTenant>getQueryWrapper().lambda()
@@ -150,9 +153,8 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
             user.setBirthday(new Date());
             user.setActivationStatus(ConstantsEnum.YN01.Y.getValue());
             user.setOrgId(org.getId());
-            if (ShieldUtil.isRoot()){
-                user.setTenantCode(tenant.getTenantCode());
-            }
+            user.setTenantCode(tenant.getTenantCode());
+
             ResponseData data = userClient.saveUser(user,role.getId());
             JpowerAssert.isTrue(data.isStatus(), JpowerError.Rpc, data.getCode(), data.getMessage());
             return true;

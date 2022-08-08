@@ -31,6 +31,11 @@ public class CoreClientServiceImpl extends BaseServiceImpl<TbCoreClientMapper, T
     }
 
     @Override
+    public String queryIdByCode(String clientCode) {
+        return coreClientDao.queryIdByCode(clientCode);
+    }
+
+    @Override
     public boolean saveOrUpdate(TbCoreClient coreClient){
         if (Fc.isBlank(coreClient.getId())){
             coreClient.setClientSecret(RandomUtil.randomString(6));

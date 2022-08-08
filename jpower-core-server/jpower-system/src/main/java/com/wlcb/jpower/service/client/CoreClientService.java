@@ -16,4 +16,14 @@ public interface CoreClientService extends BaseService<TbCoreClient> {
      * @return com.wlcb.jpower.module.dbs.entity.core.client.TbCoreClient
      **/
     TbCoreClient loadClientByClientCode(String clientCode);
+
+    /**
+     * 通过CODE查询客户端ID
+     *
+     * @author mr.g
+     * @param clientCode 客户端编码
+     * @return id
+     **/
+    String queryIdByCode(String clientCode);
+
 }
