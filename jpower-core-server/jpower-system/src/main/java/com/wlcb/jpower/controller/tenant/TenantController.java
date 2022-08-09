@@ -1,5 +1,6 @@
 package com.wlcb.jpower.controller.tenant;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Validator;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
@@ -26,6 +27,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.wlcb.jpower.module.base.annotation.OperateLog.BusinessType.DELETE;
 
@@ -102,7 +104,8 @@ public class TenantController extends BaseController {
     @ApiOperation("新增租户信息")
     @PostMapping(value = "/add",produces = "application/json")
     public ResponseData add(TbCoreTenant tenant,
-                            @ApiParam("功能CODE 多个逗号分隔") @RequestParam(required = false) List<String> functionCodes){
+                            @ApiParam("功能CODE 多个逗号分隔") @RequestParam(required = false) Set<String> functionCode){
+
         tenant.setId(null);
         JpowerAssert.isTrue(ShieldUtil.isRoot(), JpowerError.Auth,"只可超级管理员增加租户");
         JpowerAssert.notEmpty(tenant.getTenantName(), JpowerError.Arg,"租户名称不可为空");
@@ -120,7 +123,7 @@ public class TenantController extends BaseController {
         }
 
         CacheUtil.clear(CacheNames.TENANT_KEY);
-        return ReturnJsonUtil.status(tenantService.save(tenant,functionCodes));
+        return ReturnJsonUtil.status(tenantService.save(tenant,CollUtil.removeBlank(functionCode)));
     }
 
     @ApiOperation("租户授权配置")

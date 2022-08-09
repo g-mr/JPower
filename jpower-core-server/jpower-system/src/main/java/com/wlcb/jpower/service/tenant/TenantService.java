@@ -5,6 +5,7 @@ import com.wlcb.jpower.module.common.service.BaseService;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author mr.gmac
@@ -26,7 +27,7 @@ public interface TenantService extends BaseService<TbCoreTenant> {
      * @param tenant 租户信息
      * @param functionCodes 权限Code
      */
-    boolean save(TbCoreTenant tenant, List<String> functionCodes);
+    boolean save(TbCoreTenant tenant, Set<String> functionCodes);
 
     /**
      * @author 郭丁志

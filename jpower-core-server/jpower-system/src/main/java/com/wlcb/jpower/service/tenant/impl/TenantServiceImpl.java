@@ -36,10 +36,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import static com.wlcb.jpower.module.common.utils.constants.JpowerConstants.TOP_CODE;
 import static com.wlcb.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
@@ -83,7 +80,7 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
 
     @Override
     @Transactional(rollbackFor = {Exception.class, JpowerException.class})
-    public boolean save(TbCoreTenant tenant, List<String> functionCodes){
+    public boolean save(TbCoreTenant tenant, Set<String> functionCodes){
         if (Fc.isBlank(tenant.getTenantCode())){
             List<String> tenantCodeList = tenantDao.listObjs(Condition.<TbCoreTenant>getQueryWrapper().lambda()
                     .select(TbCoreTenant::getTenantCode),Fc::toStr);
@@ -162,7 +159,7 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
         return false;
     }
 
-    private List<String> getFunctions(List<String> functionCodes,LinkedList<String> functionIds) {
+    private List<String> getFunctions(Set<String> functionCodes,LinkedList<String> functionIds) {
 
         List<String> ids = functionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                 .select(TbCoreFunction::getId)

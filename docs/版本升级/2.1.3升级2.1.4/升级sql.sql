@@ -18,6 +18,7 @@ alter table tb_log_error modify param text null;
 
 alter table tb_log_operate modify param text null;
 
+-- 加入这个字段后需要给这个字段的值是默认的客户端ID即可
 alter table tb_core_function add client_id varchar(32) null comment '客户端ID' after id;
 
 delete from tb_core_function where id in ('a4f353b2d34711ea97e4a34c90effc21','a4f5525cd34711ea97e4a34c90effc21');

@@ -134,13 +134,14 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
         String inSql = StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE);
         return coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                 .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.Y.getValue())
+                .eq(TbCoreFunction::getClientId,clientDao.queryIdByCode(ShieldUtil.getClientCode()))
                 .inSql(TbCoreFunction::getId,StringUtil.format(sql,inSql)).orderByAsc(TbCoreFunction::getSort));
     }
 
     @Override
     public List<Tree<String>> menuTreeByRoleIds(List<String> roleIds,String clientId) {
         LambdaTreeWrapper<TbCoreFunction> wrapper = Condition.getLambdaTreeWrapper(TbCoreFunction.class,TbCoreFunction::getId,TbCoreFunction::getParentId)
-                .select(TbCoreFunction::getFunctionName,TbCoreFunction::getCode,TbCoreFunction::getUrl,TbCoreFunction::getClientId)
+                .select(TbCoreFunction::getFunctionName,TbCoreFunction::getCode,TbCoreFunction::getUrl)
                 .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.Y.getValue());
 
         if (!ShieldUtil.isRoot()){
@@ -172,13 +173,14 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
         String inSql = StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE);
         return coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                 .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.N.getValue())
+                .eq(TbCoreFunction::getClientId,clientDao.queryIdByCode(ShieldUtil.getClientCode()))
                 .and(consumer -> consumer.eq(TbCoreFunction::getParentId, id).or(c
                         -> c.eq(TbCoreFunction::getParentId, TOP_CODE)))
                 .inSql(TbCoreFunction::getId,StringUtil.format(sql,inSql)));
     }
 
     @Override
-    public List<TbCoreFunction> listButByMenu(List<String> roleIds, String parentId) {
+    public List<TbCoreFunction> listButByMenu(List<String> roleIds, String parentId, String clientId) {
         LambdaQueryWrapper<TbCoreFunction> wrapper = Condition.<TbCoreFunction>getQueryWrapper()
                 .lambda()
                 .eq(TbCoreFunction::getParentId,parentId)
@@ -189,7 +191,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
             wrapper.inSql(TbCoreFunction::getId,StringUtil.format(sql,StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE)));
         }
 
-        return coreFunctionDao.list(wrapper.orderByAsc(TbCoreFunction::getSort));
+        return coreFunctionDao.list(wrapper.eq(TbCoreFunction::getClientId,clientId).orderByAsc(TbCoreFunction::getSort));
     }
 
     @Override
