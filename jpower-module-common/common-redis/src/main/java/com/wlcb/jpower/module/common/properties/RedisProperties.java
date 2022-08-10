@@ -7,6 +7,8 @@ import java.time.Duration;
 import java.util.Map;
 
 /**
+ * Redis配置
+ *
  * @Author mr.g
  * @Date 2021/5/7 0007 23:24
  */

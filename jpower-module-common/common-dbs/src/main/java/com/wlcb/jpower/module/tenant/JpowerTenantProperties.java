@@ -17,7 +17,17 @@ import java.util.List;
 @Data
 @ConfigurationProperties(prefix = "jpower.tenant")
 public class JpowerTenantProperties {
+
+    /**
+     * 多租户开关
+     **/
     private Boolean enable = true;
+    /**
+     * 租户字段名称
+     **/
     private String column = "tenant_code";
+    /**
+     * 排除租户管理的表
+     **/
     private List<String> excludeTables = new ArrayList<>();
 }

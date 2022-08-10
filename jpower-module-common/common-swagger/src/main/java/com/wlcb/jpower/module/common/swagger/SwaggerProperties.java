@@ -1,6 +1,7 @@
 package com.wlcb.jpower.module.common.swagger;
 
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
+import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -23,11 +24,12 @@ import java.util.List;
 public class SwaggerProperties {
 
     private static final String BASIC_HEADER_KEY = "Authorization";
-    private static final String HEADER = "jpower-auth";
+    private static final String HEADER = TokenConstant.HEADER;
 
     /** 分组名称 */
     private String groupName = "";
 
+    /** 扫描路径 **/
     private List<String> basePackage = new ArrayList(Collections.singletonList("com.wlcb"));
 
     /**
@@ -43,22 +45,47 @@ public class SwaggerProperties {
      * host信息
      **/
     private String host = "";
-
+    /**
+     * 接口文档名称
+     **/
     private String title = "Jpower 接口文档系统";
+    /**
+     * 接口文档描述
+     **/
     private String description = "Jpower 接口文档系统";
+    /**
+     * 文档下方的license显示信息
+     **/
     private String license = "Powered By Jpower";
-    private String licenseUrl = "http:localhost";
+    /**
+     * license点击跳转链接
+     **/
+    private String licenseUrl = "https://gitee.com/gdzWork/JPower";
+    /**
+     * 服务地址
+     **/
     private String termsOfServiceUrl = "https:localhost";
+    /**
+     * 服务版本
+     **/
     private String version = JpowerConstants.JPOWER_VESION;
-    private Contact contact = new Contact("GDZ","localhost","");
-
+    /**
+     * 联系人信息
+     **/
+    private Contact contact = new Contact("mr.g","localhost","");
+    /**
+     * 鉴权信息
+     **/
     private List<Authorization> authorization = new ArrayList<>(Arrays.asList(new Authorization(BASIC_HEADER_KEY,"header"),new Authorization(HEADER,"header")));
 
     @Data
     @AllArgsConstructor
     static class Contact{
+        /** 姓名 **/
         private String name;
+        /** 地址 **/
         private String url;
+        /** 邮箱 **/
         private String email;
     }
 

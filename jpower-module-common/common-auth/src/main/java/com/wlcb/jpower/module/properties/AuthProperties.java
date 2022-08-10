@@ -7,12 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @ClassName ClientProperties
- * @Description TODO
- * @Author 郭丁志
- * @Date 2020/8/30 0030 22:22
- * @Version 1.0
- */
+ * 鉴权配置
+ *
+ * @author mr.g
+ **/
 @Data
 @ConfigurationProperties("jpower.auth")
 public class AuthProperties {
@@ -32,7 +30,9 @@ public class AuthProperties {
 
     @Data
     public static class Client{
+        /** 客户端编码 */
         private String code;
+        /** 接口地址规则 */
         private List<String> path = new ArrayList<>();
     }
 }

@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * @ClassName DemoProperties
- * @Description TODO 演示环境配置
+ * @Description TODO mybatis配置
  * @Author 郭丁志
  * @Date 2020-10-14 21:12
  * @Version 1.0

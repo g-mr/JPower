@@ -5,8 +5,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * @Author mr.g
- * @Date 2022/1/17 0017 21:46
+ * 日志配置
+ *
+ * @author mr.g
+ * @date 2022/1/17 0017 21:46
  */
 @Data
 @Component
