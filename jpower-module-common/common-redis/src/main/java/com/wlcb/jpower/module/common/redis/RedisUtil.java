@@ -1,11 +1,15 @@
 package com.wlcb.jpower.module.common.redis;
 
-import lombok.AllArgsConstructor;
+import com.wlcb.jpower.module.common.utils.Fc;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.*;
 
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 /**
  * @ClassName RedisUtils
@@ -14,13 +18,51 @@ import java.util.concurrent.TimeUnit;
  * @Date 2020-03-18 20:44
  * @Version 1.0
  */
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class RedisUtil {
 
-    private RedisTemplate<String, Object> redisTemplate;
+    @Getter
+    private final RedisTemplate<String, Object> redisTemplate;
 
-    public RedisTemplate<String, Object> getRedisTemplate() {
-        return this.redisTemplate;
+    /**
+     * 分布式锁实现工具类
+     **/
+    private volatile static RedisLockUtil redisLockUtil;
+
+    /**
+     * 分布式锁<br/>
+     * 单例模式
+     *
+     * @author mr.g
+     * @return 分布式锁
+     **/
+    public RedisLockUtil getLock(){
+        if (Fc.isNull(redisLockUtil)) {
+            synchronized (RedisLockUtil.class) {
+                if (Fc.isNull(redisLockUtil)) {
+                    redisLockUtil = new RedisLockUtil(getRedisTemplate());
+                }
+            }
+        }
+        return redisLockUtil;
+    }
+
+    /**
+     * 扫描 实现
+     *
+     * @param pattern  表达式
+     * @param consumer 对迭代到的key进行操作
+     */
+    public void scan(String pattern, Consumer<byte[]> consumer) {
+        getRedisTemplate().execute((RedisConnection connection) -> {
+            try (Cursor<byte[]> cursor = connection.scan(ScanOptions.scanOptions().count(1000).match(pattern).build())) {
+                cursor.forEachRemaining(consumer);
+                return null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        });
     }
 
     /**

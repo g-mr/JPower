@@ -11,7 +11,7 @@ import static com.wlcb.jpower.module.common.utils.constants.ConstantsReturn.*;
 public enum JpowerError {
 
     // 异常信息
-    Redis(RECODE_REDIS, "redis异常"),
+    Redis(RECODE_REDIS, "redis异常:%s"),
     Http(RECODE_HTTP, "http异常"),
     Rpc(RECODE_API, "rpc异常[retcode:%s,retmsg:%s]"),
     RateLimit(RECODE_RATELIMIT, "流量限制"),
