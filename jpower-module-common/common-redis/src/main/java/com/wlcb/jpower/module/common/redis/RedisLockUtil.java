@@ -5,6 +5,7 @@ import com.wlcb.jpower.module.common.utils.Fc;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.listener.adapter.RedisListenerExecutionFailedException;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
@@ -121,7 +122,7 @@ public class RedisLockUtil {
                     ThreadUtil.sleep(waitTime);
                     return lock(key,waitTime,expireTime,timeUnit,supplier,msg);
                 } else {
-                    throw new RuntimeException(msg);
+                    throw new RedisListenerExecutionFailedException(msg);
                 }
             }
         }finally {

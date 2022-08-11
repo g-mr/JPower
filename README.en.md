@@ -116,23 +116,12 @@ JPower
 ├── jpower-core-login -- Authorized login module
 ├── jpower-core-server -- Core business module
 ├    ├── jpower-file -- File module
-├    ├    ├── file-api -- File API 
-├    ├    ├── file-api-biz -- File API implementation
-├    ├    ├── file-biz -- File business realization 
-├    ├    ├── file-entity -- File Entity 
-├    ├    └── file-server -- File service
 ├    ├── jpower-user -- User module
-├    ├    ├── user-api -- User API 
-├    ├    ├── user-api-biz -- User API implementation
-├    ├    ├── user-biz -- User business realization 
-├    ├    ├── user-entity -- User Entity 
-├    ├    └── user-server -- User Server
 ├    ├── jpower-system -- System module
-├    ├    ├── system-api -- System API 
-├    ├    ├── system-api-biz -- System API implementation
-├    ├    ├── system-biz -- System business realization 
-├    ├    ├── system-entity -- System Entity 
-├    └──  └── system-server -- System Server
+├── jpower-feign-api -- feign api
+├    ├── jpower-file-api -- File Api
+├    ├── jpower-system-api -- System Api
+├    ├── jpower-user-api -- User Api
 ├── jpower-module-common -- Toolkit module
 ├    ├── common-auth -- Authorization Toolkit 
 ├    ├── common-dbs -- Database toolkit 

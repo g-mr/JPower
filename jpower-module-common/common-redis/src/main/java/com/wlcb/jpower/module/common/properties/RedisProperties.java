@@ -7,31 +7,23 @@ import java.time.Duration;
 import java.util.Map;
 
 /**
- * Redis配置
+ * Redis配置属性<br/>
+ * 针对@Cacheable注解
  *
- * @Author mr.g
- * @Date 2021/5/7 0007 23:24
- */
+ * @author mr.g
+ **/
 @Data
 @ConfigurationProperties(prefix = "jpower.redis")
 public class RedisProperties {
 
     /**
-     * 是否缓存 null 值
-     */
-    private boolean cacheNullVal = true;
-
-    /**
      * 通过 @Cacheable 注解标注的方法的缓存策略
      */
-    private Cache def = new Cache();
+    private Cache cacheable = new Cache();
     /**
-     * 针对某几个具体的key特殊配置
-     * <p>
-     * 改属性只对 redis 有效！！！
-     * configs的key需要配置成@Cacheable注解的value
+     * 针对某几个具体的key配置
      */
-    private Map<String, Cache> configs;
+    private Map<String, Cache> cacheableKey;
 
     @Data
     public static class Cache {
@@ -45,12 +37,10 @@ public class RedisProperties {
         /**
          * 是否允许缓存null值
          */
-        private boolean cacheNullValues = true;
+        private boolean cacheNullVal = true;
 
         /**
          * key 的前缀
-         * 最后的key格式： keyPrefix + @Cacheable.value + @Cacheable.key
-         * <p>
          */
         private String keyPrefix;
 
@@ -58,11 +48,6 @@ public class RedisProperties {
          * 写入redis时，是否使用key前缀
          */
         private boolean useKeyPrefix = true;
-
-        /**
-         * Caffeine 的最大缓存个数
-         */
-        private int maxSize = 1000;
 
     }
 

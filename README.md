@@ -117,23 +117,12 @@ JPower
 ├── jpower-core-login -- 授权登录模块
 ├── jpower-core-server -- 核心业务模块
 ├    ├── jpower-file -- 文件模块
-├    ├    ├── file-api -- 文件API 
-├    ├    ├── file-api-biz -- 文件API实现
-├    ├    ├── file-biz -- 文件业务实现 
-├    ├    ├── file-entity -- 文件Entity 
-├    ├    └── file-server -- 文件服务
 ├    ├── jpower-user -- 用户模块
-├    ├    ├── user-api -- 用户API 
-├    ├    ├── user-api-biz -- 用户API实现
-├    ├    ├── user-biz -- 用户业务实现 
-├    ├    ├── user-entity -- 用户Entity 
-├    ├    └── user-server -- 用户服务
 ├    ├── jpower-system -- 系统模块
-├    ├    ├── system-api -- 系统API 
-├    ├    ├── system-api-biz -- 系统API实现
-├    ├    ├── system-biz -- 系统业务实现 
-├    ├    ├── system-entity -- 系统Entity 
-├    └──  └── system-server -- 系统服务
+├── jpower-feign-api -- feign api模块
+├    ├── jpower-file-api -- 文件API模块
+├    ├── jpower-system-api -- 系统管理API模块
+├    ├── jpower-user-api -- 用户API模块
 ├── jpower-module-common -- 工具包模块
 ├    ├── common-auth -- 授权工具包 
 ├    ├── common-dbs -- 数据库工具包 
