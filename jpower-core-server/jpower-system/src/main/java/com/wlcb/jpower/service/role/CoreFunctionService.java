@@ -102,7 +102,7 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @Param [roleIds]
      * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction>
      **/
-    List<TbCoreFunction> listMenuByRoleId(List<String> roleIds);
+    List<TbCoreFunction> listMenuByRoleId(List<String> roleIds, String clientCode);
 
     /**
      * @Author 郭丁志
@@ -124,7 +124,7 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
 
     long queryRoleByUrl(String url);
 
-    List<String> getUrlsByRoleIds(List<String> roleIds);
+    List<String> getUrlsByRoleIds(List<String> roleIds, String clientCode);
 
     /**
      * 查询树形菜单

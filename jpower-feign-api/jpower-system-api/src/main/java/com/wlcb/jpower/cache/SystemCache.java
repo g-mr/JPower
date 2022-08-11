@@ -115,29 +115,29 @@ public class SystemCache {
     }
 
     /**
-     * 通过角色ID查询接口URL
+     * 通过角色ID查询指定客户端的接口URL
      *
      * @author mr.g
      * @param roleIds 角色ID
      * @return URL列表
      **/
-    public static List<String> getUrlsByRoleIds(List<String> roleIds) {
-        return CacheUtil.get(CacheNames.FUNCTION_KEY,CacheNames.URL_ROLE_KEY,roleIds,() -> {
-            ResponseData<List<String>> responseData = systemClient.getUrlsByRoleIds(roleIds);
+    public static List<String> getUrlsByRoleIds(List<String> roleIds, String clientCode) {
+        return CacheUtil.get(CacheNames.FUNCTION_KEY,CacheNames.URL_CLIENT_ROLE_KEY,clientCode+StringPool.COLON+roleIds,() -> {
+            ResponseData<List<String>> responseData = systemClient.getUrlsByRoleIds(roleIds,clientCode);
             return responseData.getData();
         });
     }
 
     /**
-     * 通过角色ID获取所有菜单
+     * 通过角色ID获取指定客户端的所有菜单
      *
      * @author mr.g
      * @date 23:28 2020/11/5 0005
      * @param roleIds 角色ID
      */
-    public static List<TbCoreFunction> getMenuListByRole(List<String> roleIds) {
-        return CacheUtil.get(CacheNames.FUNCTION_KEY,CacheNames.MENU_ROLE_KEY,roleIds,() -> {
-            ResponseData<List<TbCoreFunction>> responseData = systemClient.getMenuListByRole(roleIds);
+    public static List<TbCoreFunction> getMenuListByRole(List<String> roleIds, String clientCode) {
+        return CacheUtil.get(CacheNames.FUNCTION_KEY,CacheNames.MENU_CLIENT_ROLE_KEY,clientCode+StringPool.COLON+roleIds,() -> {
+            ResponseData<List<TbCoreFunction>> responseData = systemClient.getMenuListByRole(roleIds,clientCode);
             return responseData.getData();
         });
     }
@@ -157,16 +157,16 @@ public class SystemCache {
     }
 
     /**
-     * 根据角色ID获取数据权限
+     * 根据角色ID获取指定客户端的数据权限
      *
      * @author mr.g
      * @date 23:38 2020/11/5 0005
      * @param roleIds  角色ID
      * @return 数据权限列表
      */
-    public static List<TbCoreDataScope> getDataScopeByRole(List<String> roleIds) {
-        return CacheUtil.get(CacheNames.DATASCOPE_KEY,CacheNames.DATASCOPE_ROLE_KEY,roleIds,() -> {
-            ResponseData<List<TbCoreDataScope>> responseData = systemClient.getDataScopeByRole(roleIds);
+    public static List<TbCoreDataScope> getDataScopeByRole(List<String> roleIds,String clientCode) {
+        return CacheUtil.get(CacheNames.DATASCOPE_KEY,CacheNames.DATASCOPE_CLIENT_ROLE_KEY,clientCode+StringPool.COLON+roleIds,() -> {
+            ResponseData<List<TbCoreDataScope>> responseData = systemClient.getDataScopeByRole(roleIds,clientCode);
             return responseData.getData();
         });
     }

@@ -38,7 +38,7 @@ public class SystemClientFallback implements SystemClient {
     }
 
     @Override
-    public ResponseData<List<String>> getUrlsByRoleIds(List<String> roleIds) {
+    public ResponseData<List<String>> getUrlsByRoleIds(List<String> roleIds, String clientCode) {
         return ReturnJsonUtil.fail("查询失败");
     }
 
@@ -48,7 +48,7 @@ public class SystemClientFallback implements SystemClient {
     }
 
     @Override
-    public ResponseData<List<TbCoreFunction>> getMenuListByRole(List<String> roleIds) {
+    public ResponseData<List<TbCoreFunction>> getMenuListByRole(List<String> roleIds, String clientCode) {
         return ReturnJsonUtil.fail("查询失败");
     }
 
@@ -58,7 +58,7 @@ public class SystemClientFallback implements SystemClient {
     }
 
     @Override
-    public ResponseData<List<TbCoreDataScope>> getDataScopeByRole(List<String> roleIds) {
+    public ResponseData<List<TbCoreDataScope>> getDataScopeByRole(List<String> roleIds,String clientCode) {
         return ReturnJsonUtil.fail("查询失败");
     }
 

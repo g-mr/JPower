@@ -37,19 +37,19 @@ public interface SystemClient {
     ResponseData<TbCoreClient> getClientByClientCode(@RequestParam String clientCode);
 
     @GetMapping("/function/getUrlsByRoleIds")
-    ResponseData<List<String>> getUrlsByRoleIds(@RequestParam List<String> roleIds);
+    ResponseData<List<String>> getUrlsByRoleIds(@RequestParam List<String> roleIds, @RequestParam String clientCode);
 
     @GetMapping("/tenant/getTenantByCode")
     ResponseData<TbCoreTenant> getTenantByCode(@RequestParam String tenantCode);
 
     @GetMapping("/function/getMenuListByRole")
-    ResponseData<List<TbCoreFunction>> getMenuListByRole(@RequestParam List<String> roleIds);
+    ResponseData<List<TbCoreFunction>> getMenuListByRole(@RequestParam List<String> roleIds, @RequestParam String clientCode);
 
     @GetMapping("/dataScope/getAllRoleDataScope")
     ResponseData<List<TbCoreDataScope>> getAllRoleDataScope();
 
     @GetMapping("/dataScope/getDataScopeByRole")
-    ResponseData<List<TbCoreDataScope>> getDataScopeByRole(@RequestParam List<String> roleIds);
+    ResponseData<List<TbCoreDataScope>> getDataScopeByRole(@RequestParam List<String> roleIds, @RequestParam String clientCode);
 
     @GetMapping("/role/getRoleNameByIds")
     ResponseData<List<String>> getRoleNameByIds(@RequestParam List<String> roleIds);

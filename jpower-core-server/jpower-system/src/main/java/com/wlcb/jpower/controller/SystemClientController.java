@@ -54,14 +54,14 @@ public class SystemClientController extends BaseController implements SystemClie
 
     @Override
     @GetMapping("/function/getUrlsByRoleIds")
-    public ResponseData<List<String>> getUrlsByRoleIds(@RequestParam List<String> roleIds) {
-        return ReturnJsonUtil.ok("查询成功",coreFunctionService.getUrlsByRoleIds(roleIds));
+    public ResponseData<List<String>> getUrlsByRoleIds(@RequestParam List<String> roleIds, @RequestParam String clientCode) {
+        return ReturnJsonUtil.ok("查询成功",coreFunctionService.getUrlsByRoleIds(roleIds,clientCode));
     }
 
     @Override
     @GetMapping("/function/getMenuListByRole")
-    public ResponseData<List<TbCoreFunction>> getMenuListByRole(@RequestParam List<String> roleIds) {
-        return ReturnJsonUtil.ok("查询成功",coreFunctionService.listMenuByRoleId(roleIds));
+    public ResponseData<List<TbCoreFunction>> getMenuListByRole(@RequestParam List<String> roleIds, @RequestParam String clientCode) {
+        return ReturnJsonUtil.ok("查询成功",coreFunctionService.listMenuByRoleId(roleIds,clientCode));
     }
 
     @Override
@@ -72,8 +72,8 @@ public class SystemClientController extends BaseController implements SystemClie
 
     @Override
     @GetMapping("/dataScope/getDataScopeByRole")
-    public ResponseData<List<TbCoreDataScope>> getDataScopeByRole(@RequestParam List<String> roleIds) {
-        return ReturnJsonUtil.ok("查询成功",coreDataScopeService.getDataScopeByRole(roleIds));
+    public ResponseData<List<TbCoreDataScope>> getDataScopeByRole(@RequestParam List<String> roleIds, @RequestParam String clientCode) {
+        return ReturnJsonUtil.ok("查询成功",coreDataScopeService.getDataScopeByRole(roleIds, clientCode));
     }
 
     @Override

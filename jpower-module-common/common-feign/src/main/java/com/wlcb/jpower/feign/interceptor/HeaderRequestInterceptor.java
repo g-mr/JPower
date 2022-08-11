@@ -13,12 +13,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 
 /**
- * @ClassName HeaderRequestInterceptor
- * @Description TODO feign调用时传递header
- * @Author 郭丁志
- * @Date 2020/9/13 0013 17:43
- * @Version 1.0
- */
+ * feign调用时传递header
+ *
+ * @author mr.g
+ **/
 @Configuration
 @Slf4j
 public class HeaderRequestInterceptor implements RequestInterceptor {
@@ -31,8 +29,12 @@ public class HeaderRequestInterceptor implements RequestInterceptor {
             if (headerNames != null) {
                 while (headerNames.hasMoreElements()) {
                     String name = headerNames.nextElement();
-                    if (name.equalsIgnoreCase(SecureConstant.BASIC_HEADER_KEY) || name.equalsIgnoreCase("User-Type") || name.equalsIgnoreCase(TokenConstant.HEADER)
-                            || name.equalsIgnoreCase(TokenConstant.HEADER_TENANT)){
+                    if (name.equalsIgnoreCase(SecureConstant.BASIC_HEADER_KEY)
+                            || name.equalsIgnoreCase("User-Type")
+                            || name.equalsIgnoreCase(TokenConstant.HEADER)
+                            || name.equalsIgnoreCase(TokenConstant.HEADER_TENANT)
+                            || name.equalsIgnoreCase(TokenConstant.DATA_SCOPE_NAME)
+                            || name.equalsIgnoreCase(TokenConstant.PASS_HEADER_NAME)){
                         String values = request.getHeader(name);
                         requestTemplate.header(name, values);
                     }

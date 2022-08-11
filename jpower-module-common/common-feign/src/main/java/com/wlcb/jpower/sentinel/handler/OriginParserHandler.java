@@ -2,6 +2,7 @@ package com.wlcb.jpower.sentinel.handler;
 
 import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.RequestOriginParser;
 import com.wlcb.jpower.module.common.utils.ShieldUtil;
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,7 +19,7 @@ public class OriginParserHandler implements RequestOriginParser {
         try {
             return ShieldUtil.getClientCodeFromHeader();
         }catch (Exception e){
-            return "";
+            return StringPool.EMPTY;
         }
 
     }

@@ -18,7 +18,6 @@ import com.wlcb.jpower.module.datascope.DataScope;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -113,7 +112,7 @@ public class TokenUtil {
         authInfo.setExpiresIn(expire);
         authInfo.setRefreshToken(createRefreshToken(userInfo,client));
         authInfo.setTokenType(TokenConstant.TOKEN_PREFIX);
-        cacheAuth(authInfo);
+        cacheAuth(authInfo,client);
         return authInfo;
     }
 
@@ -137,9 +136,9 @@ public class TokenUtil {
      * @author mr.g
      * @param authInfo 鉴权信息
      **/
-    private static void cacheAuth(AuthInfo authInfo) {
-        List<TbCoreDataScope> dataScopeRoleList = SystemCache.getDataScopeByRole(authInfo.getUser().getRoleIds());
-        List<TbCoreFunction> menuList = SystemCache.getMenuListByRole(authInfo.getUser().getRoleIds());
+    private static void cacheAuth(AuthInfo authInfo,TbCoreClient client) {
+        List<TbCoreDataScope> dataScopeRoleList = SystemCache.getDataScopeByRole(authInfo.getUser().getRoleIds(),client.getClientCode());
+        List<TbCoreFunction> menuList = SystemCache.getMenuListByRole(authInfo.getUser().getRoleIds(),client.getClientCode());
 
         Map<String, List<DataScope>> map = ChainMap.<String,List<DataScope>>create().build();
         if (Fc.isNotEmpty(dataScopeRoleList)){
@@ -167,9 +166,9 @@ public class TokenUtil {
             });
         }
 
-        Objects.requireNonNull(SpringUtil.getBean(RedisUtil.class),"未获取到RedisUtil").set(CacheNames.TOKEN_DATA_SCOPE_KEY+authInfo.getAccessToken(), map , authInfo.getExpiresIn(), TimeUnit.SECONDS);
+        Fc.requireNotNull(SpringUtil.getBean(RedisUtil.class),"未获取到RedisUtil").set(CacheNames.TOKEN_DATA_SCOPE_KEY+authInfo.getAccessToken(), map , authInfo.getExpiresIn(), TimeUnit.SECONDS);
 
-        List<String> list = SystemCache.getUrlsByRoleIds(authInfo.getUser().getRoleIds());
-        Objects.requireNonNull(SpringUtil.getBean(RedisUtil.class),"未获取到RedisUtil").set(CacheNames.TOKEN_URL_KEY+authInfo.getAccessToken(), list , authInfo.getExpiresIn(), TimeUnit.SECONDS);
+        List<String> list = SystemCache.getUrlsByRoleIds(authInfo.getUser().getRoleIds(),client.getClientCode());
+        Fc.requireNotNull(SpringUtil.getBean(RedisUtil.class),"未获取到RedisUtil").set(CacheNames.TOKEN_URL_KEY+authInfo.getAccessToken(), list , authInfo.getExpiresIn(), TimeUnit.SECONDS);
     }
 }

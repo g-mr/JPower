@@ -73,7 +73,7 @@ public interface CacheNames {
     /* 查询可所有角色执行得数据权限 **/
     String DATASCOPE_ALLROLE_KEY = "allRole:";
     /* 根据角色ID获取数据权限 **/
-    String DATASCOPE_ROLE_KEY = "dataScope:role:";
+    String DATASCOPE_CLIENT_ROLE_KEY = "dataScope:client:role:";
 
     /**
      * 功能菜单缓存
@@ -81,9 +81,9 @@ public interface CacheNames {
 
     String FUNCTION_KEY = "jpower:function";
     /* 通过角色ID查询接口URL **/
-    String URL_ROLE_KEY = "url:role:";
+    String URL_CLIENT_ROLE_KEY = "url:client:role:";
     /* 通过角色ID查询所有菜单 **/
-    String MENU_ROLE_KEY = "menu:role:";
+    String MENU_CLIENT_ROLE_KEY = "menu:client:role:";
 
     /**
      * 组织架构缓存

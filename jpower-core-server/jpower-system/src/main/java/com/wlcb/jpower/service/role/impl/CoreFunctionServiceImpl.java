@@ -27,6 +27,7 @@ import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.wlcb.jpower.module.common.utils.constants.JpowerConstants.TOP_CODE;
 
@@ -116,16 +117,18 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     }
 
     @Override
-    public List<String> getUrlsByRoleIds(List<String> roleIds) {
+    public List<String> getUrlsByRoleIds(List<String> roleIds, String clientCode) {
         String inSql = StringUtils.collectionToDelimitedString(roleIds, StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE);
+
         return coreFunctionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                 .select(TbCoreFunction::getUrl)
                 .isNotNull(TbCoreFunction::getUrl)
-                .inSql(TbCoreFunction::getId,StringUtil.format(sql,inSql)),Fc::toStr);
+                .eq(TbCoreFunction::getClientId,clientDao.queryIdByCode(clientCode))
+                .inSql(TbCoreFunction::getId,StringUtil.format(sql,inSql)),Fc::toStr).stream().distinct().collect(Collectors.toList());
     }
 
     @Override
-    public List<TbCoreFunction> listMenuByRoleId(List<String> roleIds) {
+    public List<TbCoreFunction> listMenuByRoleId(List<String> roleIds, String clientCode) {
 
         if (Fc.isEmpty(roleIds)){
             return new ArrayList<>();
@@ -134,7 +137,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
         String inSql = StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE);
         return coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                 .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.Y.getValue())
-                .eq(TbCoreFunction::getClientId,clientDao.queryIdByCode(ShieldUtil.getClientCode()))
+                .eq(TbCoreFunction::getClientId,clientDao.queryIdByCode(clientCode))
                 .inSql(TbCoreFunction::getId,StringUtil.format(sql,inSql)).orderByAsc(TbCoreFunction::getSort));
     }
 

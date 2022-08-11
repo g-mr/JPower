@@ -184,7 +184,7 @@ public class FunctionController extends BaseController {
                 .eq(TbCoreFunction::getClientId,clientService.queryIdByCode(ShieldUtil.getClientCode()))
                 .orderByAsc(TbCoreFunction::getSort))
                 :
-                coreFunctionService.listMenuByRoleId(roleIds);
+                coreFunctionService.listMenuByRoleId(roleIds,ShieldUtil.getClientCode());
         return ReturnJsonUtil.data(ForestNodeMerger.mergeTree(BeanUtil.copyToList(list,FunctionVo.class)));
     }
 
