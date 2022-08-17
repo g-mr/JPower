@@ -84,8 +84,8 @@ public class ClientController extends BaseController {
 
     @ApiOperation("分页查询客户端列表")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "pageNum",value = "第几页",defaultValue = "1",paramType = "query",dataType = "int",required = true),
-            @ApiImplicitParam(name = "pageSize",value = "每页长度",defaultValue = "10",paramType = "query",dataType = "int",required = true),
+            @ApiImplicitParam(name = "pageNum",value = "第几页",defaultValue = "1",paramType = "query",dataTypeClass = Integer.class,required = true),
+            @ApiImplicitParam(name = "pageSize",value = "每页长度",defaultValue = "10",paramType = "query",dataTypeClass = Integer.class,required = true),
             @ApiImplicitParam(name = "name",value = "客户端名称",paramType = "query"),
             @ApiImplicitParam(name = "clientCode",value = "客户端编码",paramType = "query")
     })
