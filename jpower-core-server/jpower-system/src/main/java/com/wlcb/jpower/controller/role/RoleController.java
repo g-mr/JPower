@@ -42,15 +42,24 @@ public class RoleController extends BaseController {
     @RequestMapping(value = "/listTree",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
     public ResponseData<List<Tree<String>>> listTree(TbCoreRole coreRole){
         List<Tree<String>> list = coreRoleService.tree(Condition.getLambdaTreeWrapper(coreRole,TbCoreRole::getId,TbCoreRole::getParentId)
-                        .func(q->{
-                            if (!ShieldUtil.isRoot()){
-                                List<String> roleId = ShieldUtil.getUserRole();
-                                q.apply("ancestor_id regexp '"+Fc.join(roleId, StringPool.SPILT)+"'")
-                                        .or()
-                                        .in(TbCoreRole::getId,roleId);
-                            }
-                        })
                         .orderByAsc(TbCoreRole::getCreateTime));
+        return ReturnJsonUtil.ok("获取成功", list);
+    }
+
+    @ApiOperation("查询角色树结构")
+    @GetMapping(value = "/tree",produces="application/json")
+    public ResponseData<List<Tree<String>>> tree(TbCoreRole coreRole){
+        List<Tree<String>> list = coreRoleService.tree(Condition.getLambdaTreeWrapper(coreRole,TbCoreRole::getId,TbCoreRole::getParentId)
+                .select(TbCoreRole::getAlias,TbCoreRole::getName)
+                .func(q->{
+                    if (!ShieldUtil.isRoot()){
+                        List<String> roleId = ShieldUtil.getUserRole();
+                        q.apply("ancestor_id regexp '"+Fc.join(roleId, StringPool.SPILT)+"'")
+                                .or()
+                                .in(TbCoreRole::getId,roleId);
+                    }
+                })
+                .orderByAsc(TbCoreRole::getCreateTime));
         return ReturnJsonUtil.ok("获取成功", list);
     }
 

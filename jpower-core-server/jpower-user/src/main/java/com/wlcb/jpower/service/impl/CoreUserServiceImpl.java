@@ -17,7 +17,9 @@ import com.wlcb.jpower.dbs.dao.mapper.TbCoreUserMapper;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.dbs.entity.TbCoreUserRole;
 import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
+import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.BusinessException;
+import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.common.auth.RoleConstant;
 import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
@@ -107,12 +109,17 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
 
     @Override
     public Boolean update(TbCoreUser coreUser) {
-        boolean is = coreUserDao.updateById(coreUser);
-        //如果成功并且存在角色则去修改角色
-        if (is && Fc.isNotBlank(coreUser.getRoleIds())){
+
+        TbCoreUser user = coreUserDao.getById(coreUser.getId());
+        JpowerAssert.notNull(user, JpowerError.NotFind,"该用户");
+
+        //如果修改了角色或者修改了租户则需要去更新角色
+        if (Fc.isNotBlank(coreUser.getRoleIds()) ||
+                (Fc.isNotBlank(coreUser.getTenantCode()) && Fc.equalsValue(user.getTenantCode(),coreUser.getTenantCode()))){
             updateUsersRole(coreUser.getId(),coreUser.getRoleIds());
         }
-        return is;
+
+        return coreUserDao.updateById(coreUser);
     }
 
     @Override
