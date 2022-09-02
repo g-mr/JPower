@@ -31,6 +31,7 @@ public class HeaderRequestInterceptor implements RequestInterceptor {
                     String name = headerNames.nextElement();
                     if (name.equalsIgnoreCase(SecureConstant.BASIC_HEADER_KEY)
                             || name.equalsIgnoreCase("User-Type")
+                            || name.equalsIgnoreCase(TokenConstant.HEADER_MENU)
                             || name.equalsIgnoreCase(TokenConstant.HEADER)
                             || name.equalsIgnoreCase(TokenConstant.HEADER_TENANT)
                             || name.equalsIgnoreCase(TokenConstant.DATA_SCOPE_NAME)

@@ -212,7 +212,7 @@ public class ShieldUtil {
     }
 
     @SneakyThrows(UnsupportedEncodingException.class)
-    private static String[] extractClient(String decodeBasic) {
+    public static String[] extractClient(String decodeBasic) {
         String token = new String(Base64Decoder.decode(decodeBasic.getBytes(CharsetKit.UTF_8)), CharsetKit.UTF_8);
         if (StringUtil.contains(token, CharPool.COLON)) {
             return new String[]{

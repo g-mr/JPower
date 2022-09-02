@@ -37,33 +37,19 @@ public class RoleService {
      *
      * @author mr.g
      * @param roleId 角色ID
+     * @param clientCode
      * @return java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
      **/
     @SneakyThrows({ExecutionException.class, InterruptedException.class})
-    public List<Map<String,Object>> queryFunctionByRole(String roleId){
-        Future<ResponseData<List<Map<String,Object>>>> future = ThreadUtil.execAsync(() -> restTemplate.getForObject("http://"+ AppConstant.JPOWER_SYSTEM+"/core/role/roleFunction?roleId="+roleId,ResponseData.class));
-        ResponseData<List<Map<String,Object>>> responseData = future.get();
+    public List<String> queryUrlByRole(String roleId, String clientCode){
+        Future<ResponseData<List<String>>> future = ThreadUtil.execAsync(() -> restTemplate.getForObject("http://"+ AppConstant.JPOWER_SYSTEM+"/core/function/getUrlsByRoleIds?roleIds="+roleId+"&clientCode="+clientCode,ResponseData.class));
+        ResponseData<List<String>> responseData = future.get();
         return Fc.isNull(responseData) ? ListUtil.of() : responseData.getData();
     }
 
-    /**
-     * 根据角色ID查询接口
-     *
-     * @author mr.g
-     * @param roleId 角色ID
-     * @return java.util.List<java.lang.String>
-     **/
-    public List<String> queryUrlByRole(String roleId){
-        List<Map<String,Object>> functionList = queryFunctionByRole(roleId);
-        if (Fc.isEmpty(functionList)){
-            return ListUtil.of();
-        }
-        return functionList.stream().map(m-> MapUtil.getStr(m,"url")).distinct().collect(Collectors.toList());
-    }
-
 
     /**
-     * 根据角色ID查询数据权限
+     * 根据菜单编码查询ID
      *
      * @author mr.g
      * @param code 菜单编码
@@ -84,8 +70,8 @@ public class RoleService {
      * @return java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
      **/
     @SneakyThrows({ExecutionException.class, InterruptedException.class})
-    public List<Map<String,Object>> queryDataScopeByRole(List<String> roleIds){
-        Future<ResponseData<List<Map<String,Object>>>> future = ThreadUtil.execAsync(() -> restTemplate.getForObject("http://"+ AppConstant.JPOWER_SYSTEM+"/core/dataScope/getDataScopeByRole?roleIds="+ StringUtil.join(roleIds),ResponseData.class));
+    public List<Map<String,Object>> queryDataScopeByRole(List<String> roleIds, String clientCode){
+        Future<ResponseData<List<Map<String,Object>>>> future = ThreadUtil.execAsync(() -> restTemplate.getForObject("http://"+ AppConstant.JPOWER_SYSTEM+"/core/dataScope/getDataScopeByRole?roleIds=" + StringUtil.join(roleIds) + "&clientCode=" + clientCode,ResponseData.class));
         ResponseData<List<Map<String,Object>>> responseData = future.get();
         return Fc.isNull(responseData) ? ListUtil.of() : responseData.getData();
     }
@@ -96,10 +82,11 @@ public class RoleService {
      *
      * @author mr.g
      * @param roleIds 角色ID
+     * @param clientCode
      * @return java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
      **/
-    public String queryDataScopeByRoleAndMenu(List<String> roleIds,String menuCode){
-        List<Map<String,Object>> list = queryDataScopeByRole(roleIds);
+    public String queryDataScopeByRoleAndMenu(List<String> roleIds, String menuCode, String clientCode){
+        List<Map<String,Object>> list = queryDataScopeByRole(roleIds,clientCode);
 
         if (Fc.isNotEmpty(list) && Fc.isNotBlank(menuCode)){
             String menuId = queryMenuIdByCode(menuCode);

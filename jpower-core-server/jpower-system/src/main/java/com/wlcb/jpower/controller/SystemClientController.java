@@ -12,6 +12,7 @@ import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
+import com.wlcb.jpower.module.common.utils.ShieldUtil;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.city.CoreCityService;
 import com.wlcb.jpower.service.client.CoreClientService;
@@ -54,7 +55,8 @@ public class SystemClientController extends BaseController implements SystemClie
 
     @Override
     @GetMapping("/function/getUrlsByRoleIds")
-    public ResponseData<List<String>> getUrlsByRoleIds(@RequestParam List<String> roleIds, @RequestParam String clientCode) {
+    public ResponseData<List<String>> getUrlsByRoleIds(@RequestParam List<String> roleIds, @RequestParam(required = false) String clientCode) {
+        clientCode = Fc.isBlank(clientCode) ? ShieldUtil.getClientCodeFromHeader() : clientCode;
         return ReturnJsonUtil.ok("查询成功",coreFunctionService.getUrlsByRoleIds(roleIds,clientCode));
     }
 
@@ -72,7 +74,8 @@ public class SystemClientController extends BaseController implements SystemClie
 
     @Override
     @GetMapping("/dataScope/getDataScopeByRole")
-    public ResponseData<List<TbCoreDataScope>> getDataScopeByRole(@RequestParam List<String> roleIds, @RequestParam String clientCode) {
+    public ResponseData<List<TbCoreDataScope>> getDataScopeByRole(@RequestParam List<String> roleIds, @RequestParam(required = false) String clientCode) {
+        clientCode = Fc.isBlank(clientCode) ? ShieldUtil.getClientCodeFromHeader() : clientCode;
         return ReturnJsonUtil.ok("查询成功",coreDataScopeService.getDataScopeByRole(roleIds, clientCode));
     }
 

@@ -1,6 +1,9 @@
 package com.wlcb.jpower.config;
 
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import com.wlcb.jpower.module.common.auth.SecureConstant;
+import com.wlcb.jpower.module.common.utils.WebUtil;
+import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -15,6 +18,7 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Enumeration;
 import java.util.List;
 
 /**
@@ -41,6 +45,32 @@ public class RestTemplateConfig {
         httpRequestFactory.setReadTimeout(120000);
 
         RestTemplate restTemplate = new RestTemplate(httpRequestFactory);
+
+        restTemplate.getInterceptors().add((request, body, execution) -> {
+
+            Enumeration<String> headerNames = WebUtil.getRequest().getHeaderNames();
+            if (headerNames != null) {
+                while (headerNames.hasMoreElements()) {
+                    String name = headerNames.nextElement();
+                    if (name.equalsIgnoreCase(SecureConstant.BASIC_HEADER_KEY)
+                            || name.equalsIgnoreCase("User-Type")
+                            || name.equalsIgnoreCase(TokenConstant.HEADER_MENU)
+                            || name.equalsIgnoreCase(TokenConstant.HEADER)
+                            || name.equalsIgnoreCase(TokenConstant.HEADER_TENANT)
+                            || name.equalsIgnoreCase(TokenConstant.DATA_SCOPE_NAME)
+                            || name.equalsIgnoreCase(TokenConstant.PASS_HEADER_NAME)){
+
+                        String values = WebUtil.getRequest().getHeader(name);
+                        request.getHeaders().add(name, values);
+
+                    }
+                }
+            }
+
+
+            return execution.execute(request, body);
+        });
+
 
         List<HttpMessageConverter<?>> converterList = restTemplate.getMessageConverters();
         //重新设置StringHttpMessageConverter字符集为UTF-8，解决中文乱码问题

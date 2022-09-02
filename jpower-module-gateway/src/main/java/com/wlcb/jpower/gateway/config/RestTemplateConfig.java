@@ -42,6 +42,11 @@ public class RestTemplateConfig {
 
         RestTemplate restTemplate = new RestTemplate(httpRequestFactory);
 
+        restTemplate.getInterceptors().add((request, body, execution) -> {
+            // TODO: 2022-09-01 目前这里没找到获取上下文request的好办法，谁有好办法可以提供下
+            return execution.execute(request, body);
+        });
+
         List<HttpMessageConverter<?>> converterList = restTemplate.getMessageConverters();
         //重新设置StringHttpMessageConverter字符集为UTF-8，解决中文乱码问题
         HttpMessageConverter<?> converterTarget = null;

@@ -82,10 +82,10 @@ public class ErrorExceptionHandler implements ErrorWebExceptionHandler {
             message.append(ex.getMessage());
         }else if (ex instanceof RuntimeException) {
             Throwable cause = ex.getCause();
-            message.append(ex.getMessage());
-            if(null != cause && cause.getMessage().contains("Load balancer does not have available server for client")){
+            if(Fc.notNull(cause) && cause.getMessage().contains("Load balancer does not have available server for client")){
                 message.append("服务不存在");
             } else {
+                message.append(ExceptionUtil.unwrap(ex).getMessage());
                 log.error("未捕获异常=>{}{}", StringPool.NEWLINE, ExceptionUtil.getStackTraceAsString(ex));
             }
         }else {

@@ -1,0 +1,1 @@
+update tb_core_function set url = '/core/role/tree' where id = 'a4a0a4aad34711ea97e4a34c90effc21';

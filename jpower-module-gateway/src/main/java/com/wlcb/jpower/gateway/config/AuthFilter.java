@@ -103,8 +103,8 @@ public class AuthFilter implements GlobalFilter, Ordered {
             }
 
             //匿名用户
-            if (getIsAnonymous(currentPath)){
-                String dataAuth = roleClient.queryDataScopeByRoleAndMenu(Collections.singletonList(ANONYMOUS_ID),exchange.getRequest().getHeaders().getFirst(HEADER_MENU));
+            if (getIsAnonymous(currentPath, TokenUtil.getClientCodeFromHeader(exchange.getRequest()))){
+                String dataAuth = roleClient.queryDataScopeByRoleAndMenu(Collections.singletonList(ANONYMOUS_ID),exchange.getRequest().getHeaders().getFirst(HEADER_MENU),TokenUtil.getClientCodeFromHeader(exchange.getRequest()));
                 return chain.filter(addHeader(exchange,ANONYMOUS,dataAuth));
             }
             return proxyAuthenticationRequired(exchange.getResponse(), "缺失令牌，鉴权失败");
@@ -140,9 +140,9 @@ public class AuthFilter implements GlobalFilter, Ordered {
                 || authProperties.getSkipUrl().stream().anyMatch(pattern -> antPathMatcher.match(pattern, path));
     }
 
-    private boolean getIsAnonymous(String currentPath){
+    private boolean getIsAnonymous(String currentPath, String clientCode){
         //获取匿名用户的权限
-        List<String> listUrl = roleClient.queryUrlByRole(ANONYMOUS_ID);
+        List<String> listUrl = roleClient.queryUrlByRole(ANONYMOUS_ID, clientCode);
         return listUrl.stream().anyMatch(pattern -> antPathMatcher.match(pattern, currentPath));
     }
 
