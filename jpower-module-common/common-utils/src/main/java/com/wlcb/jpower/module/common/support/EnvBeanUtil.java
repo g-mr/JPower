@@ -45,14 +45,14 @@ public class EnvBeanUtil implements EnvironmentAware {
 
     public static Boolean getTenantEnable() {
         if (Fc.notNull(env)){
-            return env.getProperty("jpower.tenant.enable",Boolean.class);
+            return env.getProperty("jpower.tenant.enable",Boolean.class,Boolean.TRUE);
         }
         return Boolean.FALSE;
     }
 
     public static Boolean getDemoEnable() {
         if (Fc.notNull(env)){
-            return env.getProperty("jpower.demo.enable",Boolean.class);
+            return env.getProperty("jpower.demo.enable",Boolean.class,Boolean.FALSE);
         }
         return Boolean.FALSE;
     }

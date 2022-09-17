@@ -5,6 +5,7 @@
     <sql id="Base_Column_List">
         id,
         org_id,
+        post_id,
         login_id,
         password,
         user_name,
@@ -33,6 +34,7 @@
     <sql id="Base_Column_List_Alias">
         u.id,
         u.org_id,
+        u.post_id,
         u.login_id,
         u.password,
         u.user_name,
@@ -99,6 +101,10 @@
 
         <if test="coreUser != null and coreUser.tenantCode != null and coreUser.tenantCode != ''">
             and u.tenant_code = #{coreUser.tenantCode,jdbcType=VARCHAR}
+        </if>
+
+        <if test="coreUser != null and coreUser.postId != null and coreUser.postId != ''">
+            and u.post_id = #{coreUser.postId,jdbcType=VARCHAR}
         </if>
 
         <if test="orgIds != null and orgIds.size > 0">

@@ -1,5 +1,6 @@
 package com.wlcb.jpower.cache;
 
+import com.wlcb.jpower.dbs.entity.TbCorePost;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.base.vo.ResponseData;
@@ -8,6 +9,7 @@ import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.DigestUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SpringUtil;
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.vo.UserVo;
 
 import java.util.List;
@@ -115,4 +117,31 @@ public class UserCache {
         });
     }
 
+    /**
+     * 获取岗位名称
+     *
+     * @author mr.g
+     * @param postId 岗位ID
+     * @return java.lang.String
+     **/
+    public static String getPostName(String postId) {
+        TbCorePost post = getPost(postId);
+        if (Fc.isNull(post)){
+            return StringPool.EMPTY;
+        }
+        return post.getName();
+    }
+
+    /**
+     * 通过ID获取岗位
+     *
+     * @param postId 岗位ID
+     * @return 岗位详情
+     */
+    public static TbCorePost getPost(String postId){
+        return CacheUtil.get(CacheNames.POST_KEY,CacheNames.POST_DETAIL_KEY,postId,() -> {
+            ResponseData<TbCorePost> responseData = userClient.queryPostById(postId);
+            return responseData.getData();
+        });
+    }
 }

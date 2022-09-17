@@ -61,6 +61,7 @@ public class UserController extends BaseController {
             @ApiImplicitParam(name = "pageNum", value = "第几页", defaultValue = "1", paramType = "query", dataType = "int", required = true),
             @ApiImplicitParam(name = "pageSize", value = "每页长度", defaultValue = "10", paramType = "query", dataType = "int", required = true),
             @ApiImplicitParam(name = "orgId", value = "部门ID", paramType = "query", required = false),
+            @ApiImplicitParam(name = "postId", value = "岗位ID", paramType = "query", required = false),
             @ApiImplicitParam(name = "loginId", value = "登录名", paramType = "query", required = false),
             @ApiImplicitParam(name = "nickName", value = "昵称", paramType = "query", required = false),
             @ApiImplicitParam(name = "userName", value = "姓名", paramType = "query", required = false),

@@ -1,10 +1,12 @@
-package com.wlcb.jpower.controller;
+package com.wlcb.jpower.controller.feign;
 
+import com.wlcb.jpower.dbs.entity.TbCorePost;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.mp.support.Condition;
+import com.wlcb.jpower.service.CorePostService;
 import com.wlcb.jpower.service.CoreUserRoleService;
 import com.wlcb.jpower.service.CoreUserService;
 import com.wlcb.jpower.vo.UserVo;
@@ -29,6 +31,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UserClientController implements UserClient {
 
+    private CorePostService corePostService;
     private CoreUserService coreUserService;
     private CoreUserRoleService coreUserRoleService;
 
@@ -87,5 +90,11 @@ public class UserClientController implements UserClient {
     public ResponseData<List<TbCoreUser>> listByUserType(@ApiParam(value = "用户类型", required = true) @RequestParam Integer userType) {
         List<TbCoreUser> list = coreUserService.list(Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getUserType, userType));
         return ReturnJsonUtil.ok("获取成功", list);
+    }
+
+    @Override
+    @GetMapping("/queryPostById")
+    public ResponseData<TbCorePost> queryPostById(@RequestParam String postId) {
+        return ReturnJsonUtil.data(corePostService.getById(postId));
     }
 }

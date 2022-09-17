@@ -28,6 +28,9 @@ public class UserVo extends TbCoreUser {
     @ApiModelProperty("部门名称")
     @Excel(name = "部门名称",type = Excel.Type.EXPORT)
     private String orgName;
+    @ApiModelProperty("岗位名称")
+    @Excel(name = "岗位名称",type = Excel.Type.EXPORT)
+    private String postName;
     @ApiModelProperty("角色名称")
     @Excel(name = "角色名称",type = Excel.Type.EXPORT)
     private String roleName;

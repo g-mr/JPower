@@ -2,6 +2,7 @@ package com.wlcb.jpower.dbs.dao;
 
 
 import com.wlcb.jpower.cache.SystemCache;
+import com.wlcb.jpower.cache.UserCache;
 import com.wlcb.jpower.dbs.dao.mapper.TbCoreUserMapper;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.module.common.utils.BeanUtil;
@@ -29,6 +30,9 @@ public class TbCoreUserDao extends JpowerServiceImpl<TbCoreUserMapper, TbCoreUse
         UserVo userVo = Objects.requireNonNull(BeanUtil.copyProperties(user, UserVo.class));
         userVo.setOrgName(SystemCache.getOrgName(userVo.getOrgId()));
         userVo.setRoleName(Fc.join(SystemCache.getRoleNameByIds(Fc.toStrList(user.getRoleIds()))," | "));
+        if (Fc.isNotBlank(userVo.getPostId())){
+            userVo.setPostName(UserCache.getPostName(userVo.getPostId()));
+        }
         return userVo;
     }
 

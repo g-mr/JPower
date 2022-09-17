@@ -1,5 +1,6 @@
 package com.wlcb.jpower.feign;
 
+import com.wlcb.jpower.dbs.entity.TbCorePost;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.utils.constants.AppConstant;
@@ -42,4 +43,14 @@ public interface UserClient {
 
     @GetMapping("/listByUserType")
     ResponseData<List<TbCoreUser>> listByUserType(@RequestParam Integer userType);
+
+    /**
+     * 通过ID查询岗位信息
+     *
+     * @author mr.g
+     * @param postId
+     * @return 岗位信息
+     **/
+    @GetMapping("/queryPostById")
+    ResponseData<TbCorePost> queryPostById(@RequestParam String postId);
 }

@@ -135,4 +135,13 @@ public interface CacheNames {
     String CITY_PARENT_LIST_REDIS_KEY = "city:list:select";
     /** 行政Code区域 **/
     String CITY_PARENT_CODE_REDIS_KEY = "city:list:parentCode";
+
+    /**
+     * 岗位缓存
+     **/
+
+    String POST_KEY = "jpower:post";
+
+    /** 通过ID获取岗位 **/
+    String POST_DETAIL_KEY = "detail:";
 }

@@ -1,6 +1,6 @@
 package com.wlcb.jpower.feign;
 
-import com.alibaba.fastjson.JSON;
+import com.wlcb.jpower.dbs.entity.TbCorePost;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
@@ -67,6 +67,12 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
             @Override
             public ResponseData<List<TbCoreUser>> listByUserType(Integer userType) {
                 log.error("调用listByUserType失败，参数：userType={}", userType);
+                return ReturnJsonUtil.print(ConstantsReturn.RECODE_API, cause.getMessage(), false);
+            }
+
+            @Override
+            public ResponseData<TbCorePost> queryPostById(String postId) {
+                log.error("调用queryPostById失败，参数：postId={}", postId);
                 return ReturnJsonUtil.print(ConstantsReturn.RECODE_API, cause.getMessage(), false);
             }
         };
