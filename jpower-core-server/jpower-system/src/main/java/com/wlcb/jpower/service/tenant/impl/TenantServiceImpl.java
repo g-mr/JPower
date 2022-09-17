@@ -110,6 +110,7 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
             role.setIsSysRole(ConstantsEnum.YN01.Y.getValue());
             role.setName(tenant.getTenantName()+"-管理员");
             role.setParentId(TOP_CODE);
+            role.setRemark("这是系统内置角色，不要删除，会影响功能");
             if (ShieldUtil.isRoot()){
                 role.setTenantCode(tenant.getTenantCode());
             }
