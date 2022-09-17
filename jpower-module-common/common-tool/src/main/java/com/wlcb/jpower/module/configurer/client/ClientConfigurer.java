@@ -30,7 +30,8 @@ public class ClientConfigurer implements WebMvcConfigurer {
         List<AuthProperties.Client> clients = authProperties.getClient();
         clients.forEach(client -> set.addAll(client.getPath()));
         if (clients.size() > 0){
-            registry.addInterceptor(new ClientInterceptor(clients,authProperties.getSkipUrl())).addPathPatterns(new ArrayList<>(set));
+            registry.addInterceptor(new ClientInterceptor(clients,authProperties.getSkipUrl()))
+                    .addPathPatterns(new ArrayList<>(set));
         }
     }
 

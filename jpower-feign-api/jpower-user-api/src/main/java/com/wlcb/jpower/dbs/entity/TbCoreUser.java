@@ -85,6 +85,8 @@ public class TbCoreUser extends TenantEntity implements Serializable {
     @ApiModelProperty("部门主键")
     @Excel(name = "部门ID",type = Excel.Type.IMPORT)
     private String orgId;
+    @ApiModelProperty("岗位ID")
+    private String postId;
 
     @ApiModelProperty("角色ID，多个逗号分割")
     @TableField(exist = false)

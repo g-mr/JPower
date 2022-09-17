@@ -78,7 +78,7 @@ public class BeanUtil extends cn.hutool.core.bean.BeanUtil {
      * @param target 目标对象
      * @return java.lang.Object
      **/
-    private Object merge(Object source, Object target){
+    public static Object merge(Object source, Object target){
         copyProperties(source, target, CopyOptions.create().setIgnoreNullValue(Boolean.TRUE));
         return target;
     }

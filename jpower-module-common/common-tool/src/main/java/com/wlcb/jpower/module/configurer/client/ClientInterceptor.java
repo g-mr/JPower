@@ -2,10 +2,7 @@ package com.wlcb.jpower.module.configurer.client;
 
 import com.alibaba.fastjson.JSON;
 import com.wlcb.jpower.module.common.auth.UserInfo;
-import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
-import com.wlcb.jpower.module.common.utils.ShieldUtil;
-import com.wlcb.jpower.module.common.utils.WebUtil;
+import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
 import com.wlcb.jpower.module.properties.AuthProperties;
 import lombok.AllArgsConstructor;
@@ -40,20 +37,34 @@ public class ClientInterceptor implements HandlerInterceptor {
             return Boolean.TRUE;
         }
 
-        boolean isSkip = clientCodes.stream().filter(client -> isIntercept(client,request)).map(client -> Boolean.TRUE).findFirst().orElse(Boolean.FALSE);
+        boolean isSkip = clientCodes.stream()
+                .filter(client -> isIntercept(client,request))
+                .map(client -> Boolean.TRUE)
+                .findFirst()
+                .orElse(Boolean.FALSE);
 
-        if (!isSkip){
-            log.warn("客户端认证失败，请求接口：{}，请求IP：{}，请求参数：{}", request.getRequestURI(), WebUtil.getIp(request), JSON.toJSONString(request.getParameterMap()));
+        if (!isSkip || !validateClient()){
+            log.warn("客户端认证失败，请求接口：{}，请求IP：{}，请求参数：{}，请求客户端信息：{}", request.getRequestURI(), WebUtil.getIp(request), JSON.toJSONString(request.getParameterMap()),ShieldUtil.getClientCodeFromHeader()+":"+ShieldUtil.getClientSecretFromHeader());
             WebUtil.renderJson(response,ReturnJsonUtil.print(HttpStatus.NOT_ACCEPTABLE.value(),"无效的客户端请求",false));
         }
         return isSkip;
+    }
+
+    /**
+     * 验证密钥是否正确
+     *
+     * @author mr.g
+     * @return boolean
+     **/
+    private boolean validateClient() {
+        return Fc.equalsValue(SystemClient.client(ShieldUtil.getClientCodeFromHeader()), ShieldUtil.getClientSecretFromHeader());
     }
 
     private boolean isIntercept(AuthProperties.Client client,HttpServletRequest request) {
         UserInfo user = ShieldUtil.getUser(request);
 
         if (client.getPath().stream().anyMatch(pattern -> antPathMatcher.match(pattern, request.getServletPath()))){
-            return (Fc.notNull(user) && Fc.equals(client.getCode(), user.getClientCode()) && Fc.equalsValue(client.getCode(), ShieldUtil.getClientCodeFromHeader()))
+            return (Fc.notNull(user) && Fc.equalsValue(client.getCode(), user.getClientCode()) && Fc.equalsValue(client.getCode(), ShieldUtil.getClientCodeFromHeader()))
                     ||
                    (Fc.equalsValue(client.getCode(), ShieldUtil.getClientCodeFromHeader()) && (Fc.isNotBlank(request.getHeader(TokenConstant.PASS_HEADER_NAME))));
         }

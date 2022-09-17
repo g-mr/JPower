@@ -214,10 +214,11 @@ public class ShieldUtil {
     @SneakyThrows(UnsupportedEncodingException.class)
     public static String[] extractClient(String decodeBasic) {
         String token = new String(Base64Decoder.decode(decodeBasic.getBytes(CharsetKit.UTF_8)), CharsetKit.UTF_8);
-        if (StringUtil.contains(token, CharPool.COLON)) {
-            return new String[]{
+        if (StringUtil.contains(token, CharPool.COLON) && !StringUtil.startWith(token,CharPool.COLON) && !StringUtil.endWith(token,CharPool.COLON)) {
+            String[] clients = new String[]{
                     StringUtil.subBefore(token,StringPool.COLON,false),
                     StringUtil.subAfter(token,StringPool.COLON,false)};
+            return clients;
         } else {
             throw new IllegalArgumentException("无效的基本身份验证令牌");
         }
@@ -230,6 +231,15 @@ public class ShieldUtil {
         String[] tokens = getClientInfo();
         assert tokens.length == 2;
         return tokens[0];
+    }
+
+    /**
+     * 获取请求头中的客户端密钥
+     */
+    public static String getClientSecretFromHeader() {
+        String[] tokens = getClientInfo();
+        assert tokens.length == 2;
+        return tokens[1];
     }
 
 }

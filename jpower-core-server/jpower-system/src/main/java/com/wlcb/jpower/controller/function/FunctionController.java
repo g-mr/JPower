@@ -53,32 +53,19 @@ public class FunctionController extends BaseController {
             @ApiImplicitParam(name = "url",value = "功能URL",paramType = "query")
     })
     @RequestMapping(value = "/listByParent",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
-    public ResponseData<List<?>> list(@ApiIgnore @RequestParam Map<String,Object> coreFunction){
+    public ResponseData<List<FunctionVo>> list(@ApiIgnore @RequestParam Map<String,Object> coreFunction){
         JpowerAssert.notEmpty(MapUtil.getStr(coreFunction,"clientId_eq"),JpowerError.Arg,"客户端ID不可为空");
 
         coreFunction.remove("clientId");
         coreFunction.remove("parentId");
+        coreFunction.remove("isMenu");
 
-        int size = coreFunction.size();
-
-        if (coreFunction.containsKey("parentId_eq")){
-            size--;
-        }
-        if (coreFunction.containsKey("isMenu_eq")){
-            size--;
-        }
-
-
-        if(StringUtils.isBlank(Fc.toStr(coreFunction.get("parentId_eq"))) && size <= 0 ){
+        if(StringUtils.isBlank(Fc.toStr(coreFunction.get("parentId_eq")))){
             coreFunction.put("parentId_eq", TOP_CODE);
         }
 
         List<FunctionVo> list = coreFunctionService.listFunction(coreFunction);
-        if (coreFunction.containsKey("parentId_eq")){
-            return ReturnJsonUtil.ok("获取成功", list);
-        }else {
-            return ReturnJsonUtil.ok("获取成功", ForestNodeMerger.mergeTree(list));
-        }
+        return ReturnJsonUtil.ok("获取成功", list);
     }
 
     @ApiOperation("新增")

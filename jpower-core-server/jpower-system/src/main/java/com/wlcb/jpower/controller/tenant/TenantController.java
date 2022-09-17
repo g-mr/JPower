@@ -86,7 +86,7 @@ public class TenantController extends BaseController {
             }
         }
 
-        CacheUtil.clear(CacheNames.TENANT_KEY);
+        CacheUtil.clear(CacheNames.TENANT_KEY, Boolean.FALSE);
         return ReturnJsonUtil.status(tenantService.updateById(tenant));
     }
 
@@ -97,7 +97,7 @@ public class TenantController extends BaseController {
         JpowerAssert.isTrue(ShieldUtil.isRoot(), JpowerError.Auth,"只可超级管理员删除租户");
         JpowerAssert.notEmpty(ids, JpowerError.Arg,"主键不可为空");
 
-        CacheUtil.clear(CacheNames.TENANT_KEY);
+        CacheUtil.clear(CacheNames.TENANT_KEY, Boolean.FALSE);
         return ReturnJsonUtil.status(tenantService.removeByIds(Fc.toStrList(ids)));
     }
 
@@ -122,7 +122,7 @@ public class TenantController extends BaseController {
                     ,JpowerError.Business,"该域名已存在");
         }
 
-        CacheUtil.clear(CacheNames.TENANT_KEY);
+        CacheUtil.clear(CacheNames.TENANT_KEY, Boolean.FALSE);
         return ReturnJsonUtil.status(tenantService.save(tenant,CollUtil.removeBlank(functionCode)));
     }
 
@@ -132,7 +132,7 @@ public class TenantController extends BaseController {
                                 @ApiParam(value = "租户额度") @RequestParam(required = false) Integer accountNumber,
                                 @ApiParam(value = "租户过期时间") @RequestParam(required = false) Date expireTime){
         JpowerAssert.isTrue(ShieldUtil.isRoot(), JpowerError.Auth,"只可超级管理员配置租户");
-        CacheUtil.clear(CacheNames.TENANT_KEY);
+        CacheUtil.clear(CacheNames.TENANT_KEY, Boolean.FALSE);
         return ReturnJsonUtil.status(tenantService.setting(ids,accountNumber,expireTime));
     }
 

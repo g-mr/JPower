@@ -116,6 +116,10 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
         //如果修改了角色或者修改了租户则需要去更新角色
         if (Fc.isNotBlank(coreUser.getRoleIds()) ||
                 (Fc.isNotBlank(coreUser.getTenantCode()) && !Fc.equalsValue(user.getTenantCode(),coreUser.getTenantCode()))){
+            //如果修改了租户则需要把原来的角色全部去掉
+            if (Fc.isNotBlank(coreUser.getTenantCode()) && !Fc.equalsValue(user.getTenantCode(),coreUser.getTenantCode())){
+                coreUser.setRoleIds(null);
+            }
             updateUsersRole(coreUser.getId(),coreUser.getRoleIds());
         }
 

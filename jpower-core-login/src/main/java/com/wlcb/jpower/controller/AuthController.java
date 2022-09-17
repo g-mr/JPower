@@ -40,6 +40,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.wlcb.jpower.module.common.utils.constants.TokenConstant.HEADER_TENANT;
+import static com.wlcb.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
 import static com.wlcb.jpower.module.tenant.TenantConstant.getExpireTime;
 
 /**
@@ -83,13 +84,15 @@ public class AuthController extends BaseController {
 
         if (tenantProperties.getEnable()){
             JpowerAssert.notNull(parameter.getTenantCode(),JpowerError.Arg,"租户编码不可为空");
-            TbCoreTenant tenant = SystemCache.getTenantByCode(parameter.getTenantCode());
-            if (Fc.isNull(tenant)){
-                return ReturnJsonUtil.notFind("租户不存在");
-            }
-            Date expireTime = getExpireTime(tenant.getLicenseKey());
-            if (Fc.notNull(tenant.getExpireTime()) && Fc.notNull(expireTime) && new Date().before(expireTime)){
-                return ReturnJsonUtil.busFail("租户已过期");
+            if (!Fc.equalsValue(DEFAULT_TENANT_CODE,parameter.getTenantCode())){
+                TbCoreTenant tenant = SystemCache.getTenantByCode(parameter.getTenantCode());
+                if (Fc.isNull(tenant)){
+                    return ReturnJsonUtil.notFind("租户不存在");
+                }
+                Date expireTime = getExpireTime(tenant.getLicenseKey());
+                if (Fc.notNull(tenant.getExpireTime()) && Fc.notNull(expireTime) && DateUtil.compare(DateUtil.date(),expireTime) > 0){
+                    return ReturnJsonUtil.busFail("租户已过期");
+                }
             }
         }
 

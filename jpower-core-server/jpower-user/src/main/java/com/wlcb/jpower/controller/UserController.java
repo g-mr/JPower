@@ -1,6 +1,7 @@
 package com.wlcb.jpower.controller;
 
 import cn.hutool.core.lang.Validator;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.cache.SystemCache;
 import com.wlcb.jpower.cache.param.ParamConfig;
@@ -108,7 +109,7 @@ public class UserController extends BaseController {
         JpowerAssert.notEmpty(coreUser.getLoginId(), JpowerError.Arg, "用户名不可为空");
 
         if (coreUser.getIdType() != null && ConstantsEnum.ID_TYPE.ID_CARD.getValue().equals(coreUser.getIdType())) {
-            if (!Validator.isCitizenId(coreUser.getIdNo())) {
+            if (Fc.isNotBlank(coreUser.getIdNo()) && !Validator.isCitizenId(coreUser.getIdNo())) {
                 return ReturnJsonUtil.busFail("身份证不合法");
             }
         }
@@ -208,7 +209,6 @@ public class UserController extends BaseController {
     @OperateLog(title = "修改个人信息", businessType = UPDATE)
     @ApiImplicitParams({
         @ApiImplicitParam(name = "avatar", value = "头像", paramType = "query", required = false),
-        @ApiImplicitParam(name = "orgId", value = "部门ID", paramType = "query", required = false),
         @ApiImplicitParam(name = "nickName", value = "昵称", paramType = "query", required = false),
         @ApiImplicitParam(name = "userName", value = "姓名", paramType = "query", required = false),
         @ApiImplicitParam(name = "idType", value = "证件类型", paramType = "query", required = false),
@@ -223,16 +223,22 @@ public class UserController extends BaseController {
         JpowerAssert.notNull(ShieldUtil.getUser(), JpowerError.Arg, "用户未登录");
 
         if (coreUser.getIdType() != null && ConstantsEnum.ID_TYPE.ID_CARD.getValue().equals(coreUser.getIdType())) {
-            if (!Validator.isCitizenId(coreUser.getIdNo())) {
+            if (Fc.isNotBlank(coreUser.getIdNo()) && !Validator.isCitizenId(coreUser.getIdNo())) {
                 return ReturnJsonUtil.busFail("身份证不合法");
             }
         }
 
-        coreUser.setPassword(null);
-        coreUser.setRoleIds(null);
-        coreUser.setId(ShieldUtil.getUser().getUserId());
         CacheUtil.clear(CacheNames.USER_KEY);
-        return ReturnJsonUtil.status(coreUserService.update(coreUser));
+        return ReturnJsonUtil.status(coreUserService.update(Wrappers.lambdaUpdate(TbCoreUser.class)
+                .set(TbCoreUser::getAvatar,coreUser.getAvatar())
+                .set(TbCoreUser::getNickName,coreUser.getNickName())
+                .set(TbCoreUser::getUserName,coreUser.getUserName())
+                .set(TbCoreUser::getIdType,coreUser.getIdType())
+                .set(TbCoreUser::getIdNo,coreUser.getIdNo())
+                .set(TbCoreUser::getBirthday,coreUser.getBirthday())
+                .set(TbCoreUser::getPostCode,coreUser.getPostCode())
+                .set(TbCoreUser::getAddress,coreUser.getAddress())
+                .eq(TbCoreUser::getId,ShieldUtil.getUser().getUserId())));
     }
 
     @ApiOperation(value = "重置用户登陆密码")

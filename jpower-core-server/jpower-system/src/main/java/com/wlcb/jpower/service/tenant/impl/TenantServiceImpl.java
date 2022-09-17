@@ -108,7 +108,7 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
             //创建租户默认角色
             TbCoreRole role = new TbCoreRole();
             role.setIsSysRole(ConstantsEnum.YN01.Y.getValue());
-            role.setName("管理员");
+            role.setName(tenant.getTenantName()+"-管理员");
             role.setParentId(TOP_CODE);
             if (ShieldUtil.isRoot()){
                 role.setTenantCode(tenant.getTenantCode());

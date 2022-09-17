@@ -197,7 +197,7 @@ public class SystemCache {
         return CacheUtil.get(CacheNames.TENANT_KEY,CacheNames.TENANT_CODE_KEY,tenantCode,() -> {
             ResponseData<TbCoreTenant> responseData = systemClient.getTenantByCode(tenantCode);
             return responseData.getData();
-        });
+        }, Boolean.FALSE);
     }
 
 }
