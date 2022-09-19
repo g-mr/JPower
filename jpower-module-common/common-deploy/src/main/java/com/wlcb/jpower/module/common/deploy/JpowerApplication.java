@@ -28,7 +28,7 @@ public class JpowerApplication {
      * @Author 郭丁志
      * @Description //TODO 项目启动
      * @Date 18:16 2020-08-02
-     * @Param appName 项目模块名称，必须与client表的code值相同
+     * @Param appName 项目模块名称
      * @return org.springframework.context.ConfigurableApplicationContext
      **/
     @SneakyThrows
@@ -72,6 +72,17 @@ public class JpowerApplication {
             // 同时存在dev、test、prod环境抛出错误
             throw new RuntimeException("同时存在环境变量:[" + StringUtils.arrayToCommaDelimitedString(activeProfiles) + "]");
         }
+
+
+//        BeanUtil.setFieldValue();
+//        ClassUtil.isTopLevelClass();
+//        ReflectUtil.setFieldValue(AppConstant.class,"JPOWER","ceshi");
+//        System.setProperty("jname","jpowersadcsa");
+//        System.out.println(AppConstant.JPOWER);
+//        System.out.println(AppConstant.JPOWER_AUTH);
+//        System.out.println(appName);
+
+
 
         Properties props = System.getProperties();
         props.setProperty("jpower.applicationName", appName);

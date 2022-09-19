@@ -28,7 +28,31 @@ public interface AppConstant {
     String OS_NAME_LINUX = "LINUX";
 
     /** 项目名称 **/
-    String JPOWER = "jpower";
+    String JPOWER = System.getProperty("jname","jpower");
+
+//    /** spring boot admin **/
+//    String JPOWER_ADMIN = JPOWER.concat("-admin");
+//
+//    /** swagger聚合文档 **/
+//    String JPOWER_DOC = JPOWER.concat("-doc");
+//
+//    /** 日志服务 **/
+//    String JPOWER_LOG = JPOWER.concat("-log");
+//
+//    /** 网关模块名称 **/
+//    String JPOWER_GATEWAY = JPOWER.concat("-gateway");
+//
+//    /** 系统模块名称 **/
+//    String JPOWER_SYSTEM = JPOWER.concat("-system");
+//
+//    /** 鉴权模块 **/
+//    String JPOWER_AUTH = JPOWER.concat("-auth");
+//
+//    /** 用户模块 **/
+//    String JPOWER_USER = JPOWER.concat("-user");
+//
+//    /** 文件模块名称 **/
+//    String JPOWER_FILE = JPOWER.concat("-file");
 
     /** spring boot admin **/
     String JPOWER_ADMIN = "jpower-admin";

@@ -11,7 +11,7 @@ public class DigestUtil extends cn.hutool.crypto.digest.DigestUtil {
 
     /**
      * 是否使用新的方式加密<br/>
-     * e.g : 从2.1.5版本之后可以使用新的方式；老系统升级到2.1.5或更高版本请设置为false（为了兼容数据库中已存在的密码），否者会导致所有用户密码错误
+     * todo e.g : 从2.1.4版本之后可以使用新的方式；老系统升级到2.1.4或更高版本请设置为false（为了兼容数据库中已存在的密码），否者会导致所有用户密码错误
      */
     private final static Boolean IS_NEW_PWD = Boolean.TRUE;
 
