@@ -17,7 +17,11 @@ import java.util.List;
  * @Date 2020/9/3 0003 1:00
  * @Version 1.0
  */
-@FeignClient(value = AppConstant.JPOWER_USER, fallbackFactory = UserClientFallback.class, path = "/core/user")
+@FeignClient(
+        value = AppConstant.JPOWER_USER,
+        fallbackFactory = UserClientFallback.class,
+        path = "/core/user"
+)
 public interface UserClient {
 
     @GetMapping("/queryUserByLoginId")

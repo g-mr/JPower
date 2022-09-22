@@ -78,7 +78,7 @@ public class JpowerApplication {
 //        ClassUtil.isTopLevelClass();
 //        ReflectUtil.setFieldValue(AppConstant.class,"JPOWER","ceshi");
 //        System.setProperty("jname","jpowersadcsa");
-//        System.out.println(AppConstant.JPOWER);
+        System.out.println(AppConstant.JPOWER);
 //        System.out.println(AppConstant.JPOWER_AUTH);
 //        System.out.println(appName);
 

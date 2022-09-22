@@ -1,5 +1,7 @@
 package com.wlcb.jpower.module.common.utils.constants;
 
+import com.wlcb.jpower.module.base.annotation.SystemName;
+
 /**
  * @ClassName AppConstant
  * @Description TODO 环境常量
@@ -28,54 +30,31 @@ public interface AppConstant {
     String OS_NAME_LINUX = "LINUX";
 
     /** 项目名称 **/
-    String JPOWER = System.getProperty("jname","jpower");
-
-//    /** spring boot admin **/
-//    String JPOWER_ADMIN = JPOWER.concat("-admin");
-//
-//    /** swagger聚合文档 **/
-//    String JPOWER_DOC = JPOWER.concat("-doc");
-//
-//    /** 日志服务 **/
-//    String JPOWER_LOG = JPOWER.concat("-log");
-//
-//    /** 网关模块名称 **/
-//    String JPOWER_GATEWAY = JPOWER.concat("-gateway");
-//
-//    /** 系统模块名称 **/
-//    String JPOWER_SYSTEM = JPOWER.concat("-system");
-//
-//    /** 鉴权模块 **/
-//    String JPOWER_AUTH = JPOWER.concat("-auth");
-//
-//    /** 用户模块 **/
-//    String JPOWER_USER = JPOWER.concat("-user");
-//
-//    /** 文件模块名称 **/
-//    String JPOWER_FILE = JPOWER.concat("-file");
+    @SystemName
+    String JPOWER = "jpower";
 
     /** spring boot admin **/
-    String JPOWER_ADMIN = "jpower-admin";
+    String JPOWER_ADMIN = JPOWER + "-admin";
 
     /** swagger聚合文档 **/
-    String JPOWER_DOC = "jpower-doc";
+    String JPOWER_DOC = JPOWER + "-doc";
 
     /** 日志服务 **/
-    String JPOWER_LOG = "jpower-log";
+    String JPOWER_LOG = JPOWER + "-log";
 
     /** 网关模块名称 **/
-    String JPOWER_GATEWAY = "jpower-gateway";
+    String JPOWER_GATEWAY = JPOWER + "-gateway";
 
     /** 系统模块名称 **/
-    String JPOWER_SYSTEM = "jpower-system";
+    String JPOWER_SYSTEM = JPOWER + "-system";
 
     /** 鉴权模块 **/
-    String JPOWER_AUTH = "jpower-auth";
+    String JPOWER_AUTH = JPOWER + "-auth";
 
     /** 用户模块 **/
-    String JPOWER_USER = "jpower-user";
+    String JPOWER_USER = JPOWER + "-user";
 
     /** 文件模块名称 **/
-    String JPOWER_FILE = "jpower-file";
+    String JPOWER_FILE = JPOWER + "-file";
 
 }
