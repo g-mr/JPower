@@ -42,7 +42,7 @@ public class RoleService {
      **/
     @SneakyThrows({ExecutionException.class, InterruptedException.class})
     public List<String> queryUrlByRole(String roleId, String clientCode){
-        Future<ResponseData<List<String>>> future = ThreadUtil.execAsync(() -> restTemplate.getForObject("http://"+ AppConstant.JPOWER_SYSTEM+"/core/function/getUrlsByRoleIds?roleIds="+roleId+"&clientCode="+clientCode,ResponseData.class));
+        Future<ResponseData<List<String>>> future = ThreadUtil.execAsync(() -> restTemplate.getForObject("http://"+ AppConstant.getInstance().getJpowerSystem()+"/core/function/getUrlsByRoleIds?roleIds="+roleId+"&clientCode="+clientCode,ResponseData.class));
         ResponseData<List<String>> responseData = future.get();
         return Fc.isNull(responseData) ? ListUtil.of() : responseData.getData();
     }
@@ -57,7 +57,7 @@ public class RoleService {
      **/
     @SneakyThrows({ExecutionException.class, InterruptedException.class})
     public String queryMenuIdByCode(String code){
-        Future<ResponseData<String>> future = ThreadUtil.execAsync(() -> restTemplate.getForObject("http://"+ AppConstant.JPOWER_SYSTEM+"/core/menu/getIdByCode?code="+ code,ResponseData.class));
+        Future<ResponseData<String>> future = ThreadUtil.execAsync(() -> restTemplate.getForObject("http://"+ AppConstant.getInstance().getJpowerSystem()+"/core/menu/getIdByCode?code="+ code,ResponseData.class));
         ResponseData<String> responseData = future.get();
         return Fc.isNull(responseData) ? StringPool.EMPTY : responseData.getData();
     }
@@ -71,7 +71,7 @@ public class RoleService {
      **/
     @SneakyThrows({ExecutionException.class, InterruptedException.class})
     public List<Map<String,Object>> queryDataScopeByRole(List<String> roleIds, String clientCode){
-        Future<ResponseData<List<Map<String,Object>>>> future = ThreadUtil.execAsync(() -> restTemplate.getForObject("http://"+ AppConstant.JPOWER_SYSTEM+"/core/dataScope/getDataScopeByRole?roleIds=" + StringUtil.join(roleIds) + "&clientCode=" + clientCode,ResponseData.class));
+        Future<ResponseData<List<Map<String,Object>>>> future = ThreadUtil.execAsync(() -> restTemplate.getForObject("http://"+ AppConstant.getInstance().getJpowerSystem()+"/core/dataScope/getDataScopeByRole?roleIds=" + StringUtil.join(roleIds) + "&clientCode=" + clientCode,ResponseData.class));
         ResponseData<List<Map<String,Object>>> responseData = future.get();
         return Fc.isNull(responseData) ? ListUtil.of() : responseData.getData();
     }

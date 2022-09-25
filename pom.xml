@@ -72,6 +72,7 @@
             <artifactId>spring-context-support</artifactId>
             <scope>provided</scope>
         </dependency>
+
     </dependencies>
 
     <dependencyManagement>
@@ -186,8 +187,15 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
+<!--                    <annotationProcessors>-->
+<!--                        <annotationProcessor>-->
+<!--                            lombok.launch.AnnotationProcessorHider$AnnotationProcessor-->
+<!--                        </annotationProcessor>-->
+<!--                        <annotationProcessor>-->
+<!--                            com.wlcb.jpower.module.common.support.SystemNameProcessor-->
+<!--                        </annotationProcessor>-->
+<!--                    </annotationProcessors>-->
                 </configuration>
-
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

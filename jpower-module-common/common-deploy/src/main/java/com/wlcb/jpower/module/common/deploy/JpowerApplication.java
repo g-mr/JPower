@@ -73,17 +73,6 @@ public class JpowerApplication {
             throw new RuntimeException("同时存在环境变量:[" + StringUtils.arrayToCommaDelimitedString(activeProfiles) + "]");
         }
 
-
-//        BeanUtil.setFieldValue();
-//        ClassUtil.isTopLevelClass();
-//        ReflectUtil.setFieldValue(AppConstant.class,"JPOWER","ceshi");
-//        System.setProperty("jname","jpowersadcsa");
-        System.out.println(AppConstant.JPOWER);
-//        System.out.println(AppConstant.JPOWER_AUTH);
-//        System.out.println(appName);
-
-
-
         Properties props = System.getProperties();
         props.setProperty("jpower.applicationName", appName);
         props.setProperty("jpower.env", profile);

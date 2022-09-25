@@ -5,12 +5,10 @@ import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 
 /**
- * @ClassName NacosConstants
- * @Description TODO
- * @Author 郭丁志
- * @Date 2020-08-19 16:03
- * @Version 1.0
- */
+ * NacosConstants
+ *
+ * @author mr.g
+ **/
 public interface NacosConstants {
 
     /** 配置文件类型 **/
@@ -32,7 +30,7 @@ public interface NacosConstants {
         if (Fc.isBlank(profile)){
             profile = AppConstant.DEV_CODE;
         }
-        return AppConstant.JPOWER.concat(StringPool.DASH).concat(profile).concat(StringPool.DOT).concat(FILE_EXTENSION);
+        return AppConstant.getInstance().getJpower().concat(StringPool.DASH).concat(profile).concat(StringPool.DOT).concat(FILE_EXTENSION);
     }
 
     /**
@@ -41,7 +39,7 @@ public interface NacosConstants {
      * @return addr
      */
     static String nacosDataId() {
-        return AppConstant.JPOWER.concat(StringPool.DOT).concat(FILE_EXTENSION);
+        return AppConstant.getInstance().getJpower().concat(StringPool.DOT).concat(FILE_EXTENSION);
     }
 
 }

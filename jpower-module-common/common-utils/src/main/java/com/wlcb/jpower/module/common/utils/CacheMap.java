@@ -94,6 +94,7 @@ public class CacheMap<K, V> extends ConcurrentHashMap<K, V> {
             return false;
         }else {
             long time1 = expireMap.get(key);
+            //过期时间为0的永不过期
             if (time1 == 0L){
                 return false;
             }

@@ -29,7 +29,7 @@ public class LogClient {
 	 */
 	public void saveOperateLog(OperateLogDto operateLog){
 		try {
-			ResponseData responseData = restTemplate.postForObject("http://"+ AppConstant.JPOWER_LOG+"/log/saveOperateLog",operateLog,ResponseData.class);
+			ResponseData responseData = restTemplate.postForObject("http://"+ AppConstant.getInstance().getJpowerLog()+"/log/saveOperateLog",operateLog,ResponseData.class);
 			if (Fc.isNull(responseData) || !responseData.isStatus()){
 				log.error("操作日志保存失败={}",responseData);
 			}
@@ -45,7 +45,7 @@ public class LogClient {
 	 * @return com.wlcb.jpower.module.base.vo.ResponseData<java.lang.Boolean>
 	 */
 	public void saveErrorLog(ErrorLogDto errorLog){
-		if (Fc.equalsValue(errorLog.getServerName(),AppConstant.JPOWER_LOG) &&
+		if (Fc.equalsValue(errorLog.getServerName(),AppConstant.getInstance().getJpowerLog()) &&
 			Fc.equalsValue(errorLog.getMethodClass(),"com.wlcb.jpower.feign.LogClientController") &&
 			Fc.equalsValue(errorLog.getMethodName(),"saveErrorLog") &&
 			Fc.equalsValue(errorLog.getUrl(),"/log/saveErrorLog")){
@@ -54,7 +54,7 @@ public class LogClient {
 		}
 
 		try{
-			ResponseData responseData = restTemplate.postForObject("http://"+ AppConstant.JPOWER_LOG+"/log/saveErrorLog",errorLog,ResponseData.class);
+			ResponseData responseData = restTemplate.postForObject("http://"+ AppConstant.getInstance().getJpowerLog()+"/log/saveErrorLog",errorLog,ResponseData.class);
 			if (Fc.isNull(responseData) || !responseData.isStatus()){
 				log.error("错误日志保存失败={}",responseData);
 			}

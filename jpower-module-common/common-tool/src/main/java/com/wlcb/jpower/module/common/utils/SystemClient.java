@@ -19,7 +19,7 @@ public class SystemClient {
 
         Map<String,Object> map = CLIENT_CACHE.get(code);
         if (Fc.isNull(map)){
-            ResponseData<Map<String,Object>> responseData = SpringUtil.getBean(RestTemplate.class).getForObject("http://"+ AppConstant.JPOWER_SYSTEM+"/core/client/getClientByClientCode?clientCode="+code, ResponseData.class);
+            ResponseData<Map<String,Object>> responseData = SpringUtil.getBean(RestTemplate.class).getForObject("http://"+ AppConstant.getInstance().getJpowerSystem()+"/core/client/getClientByClientCode?clientCode="+code, ResponseData.class);
             map = responseData.getData();
             CLIENT_CACHE.put(code,map);
         }
