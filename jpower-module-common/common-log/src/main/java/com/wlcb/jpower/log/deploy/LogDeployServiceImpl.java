@@ -1,5 +1,6 @@
 package com.wlcb.jpower.log.deploy;
 
+import com.wlcb.jpower.module.base.annotation.LoaderService;
 import com.wlcb.jpower.module.common.deploy.service.DeployService;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.core.Ordered;
@@ -13,6 +14,7 @@ import java.util.Properties;
  * @Date 2020-08-19 16:22
  * @Version 1.0
  */
+@LoaderService(DeployService.class)
 public class LogDeployServiceImpl implements DeployService {
 
     @Override

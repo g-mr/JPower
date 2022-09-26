@@ -15,7 +15,7 @@ import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 public class LogStartApplication {
 
     public static void main(String[] args) {
-        JpowerApplication.run(AppConstant.JPOWER_LOG,LogStartApplication.class,args);
+        JpowerApplication.run(AppConstant.getInstance().getJpowerLog(),LogStartApplication.class,args);
     }
 
 }

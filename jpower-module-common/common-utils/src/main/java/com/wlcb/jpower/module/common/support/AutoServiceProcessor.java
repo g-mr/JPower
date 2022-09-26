@@ -1,10 +1,13 @@
 package com.wlcb.jpower.module.common.support;
 
+import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.io.LineHandler;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
-import com.wlcb.jpower.module.base.annotation.AutoService;
+import com.wlcb.jpower.module.base.annotation.LoaderService;
+import com.wlcb.jpower.module.common.utils.BufferUtil;
+import com.wlcb.jpower.module.common.utils.CollectionUtil;
 import com.wlcb.jpower.module.common.utils.ExceptionUtil;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -21,7 +24,10 @@ import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
@@ -34,15 +40,16 @@ import static java.util.stream.Collectors.toList;
 @SupportedOptions("debug")
 public class AutoServiceProcessor extends AbstractProcessor {
 
+    private static final String SERVICES_PATH = "META-INF/services/";
 
     /**
-     * 报错接口和实现类
+     * 接口和实现类
      **/
     private final Multimap<String, String> providers = HashMultimap.create();
 
     @Override
     public ImmutableSet<String> getSupportedAnnotationTypes() {
-        return ImmutableSet.of(AutoService.class.getName());
+        return ImmutableSet.of(LoaderService.class.getName());
     }
 
     @Override
@@ -51,20 +58,13 @@ public class AutoServiceProcessor extends AbstractProcessor {
     }
 
     /**
-     * <ol>
-     *  <li> For each class annotated with {@link AutoService}<ul>
-     *      <li> Verify the {@link AutoService} interface value is correct
-     *      <li> Categorize the class by its service interface
-     *      </ul>
+     * 实现
      *
-     *  <li> For each {@link AutoService} interface <ul>
-     *       <li> Create a file named {@code META-INF/services/<interface>}
-     *       <li> For each {@link AutoService} annotated class for this interface <ul>
-     *           <li> Create an entry in the file
-     *           </ul>
-     *       </ul>
-     * </ol>
-     */
+     * @author mr.g
+     * @param annotations
+     * @param roundEnv
+     * @return boolean
+     **/
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         try {
@@ -74,10 +74,6 @@ public class AutoServiceProcessor extends AbstractProcessor {
         }
         return false;
     }
-
-//    ImmutableList<String> exceptionStacks() {
-//        return ImmutableList.copyOf(exceptionStacks);
-//    }
 
     private void processImpl(RoundEnvironment roundEnv) {
         if (roundEnv.processingOver()) {
@@ -89,12 +85,12 @@ public class AutoServiceProcessor extends AbstractProcessor {
 
     private void processAnnotations(RoundEnvironment roundEnv) {
 
-        Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(AutoService.class);
+        Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(LoaderService.class);
 
         for (Element e : elements) {
             if (e.getKind() == ElementKind.CLASS){
                 TypeElement providerImplementer = (TypeElement) e;
-                AnnotationMirror annotationMirror = providerImplementer.getAnnotationMirrors().stream().filter(am -> am.getAnnotationType().toString().contentEquals(AutoService.class.getCanonicalName())).findFirst().get();
+                AnnotationMirror annotationMirror = providerImplementer.getAnnotationMirrors().stream().filter(am -> am.getAnnotationType().toString().contentEquals(LoaderService.class.getCanonicalName())).findFirst().get();
                 Set<TypeMirror> providerInterfaces = getValueFieldOfClasses(annotationMirror);
                 if (providerInterfaces.isEmpty()) {
                     continue;
@@ -119,43 +115,30 @@ public class AutoServiceProcessor extends AbstractProcessor {
         Filer filer = processingEnv.getFiler();
 
         for (String providerInterface : providers.keySet()) {
-            String resourceFile = "META-INF/services/" + providerInterface;
-            log("Working on resource file: " + resourceFile);
+            String resourceFile = SERVICES_PATH + providerInterface;
             try {
-                SortedSet<String> allServices = Sets.newTreeSet();
+                HashSet<String> allServices = CollectionUtil.newHashSet(true,providers.get(providerInterface));
+
                 try {
-                    // would like to be able to print the full path
-                    // before we attempt to get the resource in case the behavior
-                    // of filer.getResource does change to match the spec, but there's
-                    // no good way to resolve CLASS_OUTPUT without first getting a resource.
-                    FileObject existingFile =
-                            filer.getResource(StandardLocation.CLASS_OUTPUT, "", resourceFile);
-                    log("Looking for existing resource file at " + existingFile.toUri());
-                    Set<String> oldServices = ServicesFiles.readServiceFile(existingFile.openInputStream());
-                    log("Existing service entries: " + oldServices);
-                    allServices.addAll(oldServices);
-                } catch (IOException e) {
-                    // According to the javadoc, Filer.getResource throws an exception
-                    // if the file doesn't already exist.  In practice this doesn't
-                    // appear to be the case.  Filer.getResource will happily return a
-                    // FileObject that refers to a non-existent file but will throw
-                    // IOException if you try to open an input stream for it.
-                    log("Resource file did not already exist.");
+                    FileObject existingFile = filer.getResource(StandardLocation.CLASS_OUTPUT, "", resourceFile);
+                    IoUtil.readUtf8Lines(existingFile.openInputStream(), (LineHandler) line->{
+                        int commentStart = line.indexOf('#');
+                        if (commentStart >= 0) {
+                            line = line.substring(0, commentStart);
+                        }
+                        line = line.trim();
+                        if (!line.isEmpty()) {
+                            allServices.add(line);
+                        }
+                    });
+                } catch (IOException e){
+                    log("未找到资源文件，去创建...");
                 }
 
-                Set<String> newServices = new HashSet<>(providers.get(providerInterface));
-                if (!allServices.addAll(newServices)) {
-                    log("No new service entries being added.");
-                    continue;
-                }
-
-                log("New service file contents: " + allServices);
-                FileObject fileObject =
-                        filer.createResource(StandardLocation.CLASS_OUTPUT, "", resourceFile);
+                FileObject fileObject = filer.createResource(StandardLocation.CLASS_OUTPUT, "", resourceFile);
                 try (OutputStream out = fileObject.openOutputStream()) {
-                    ServicesFiles.writeServiceFile(allServices, out);
+                    BufferUtil.writeLines(out,allServices);
                 }
-                log("Wrote to: " + fileObject.toUri());
             } catch (IOException e) {
                 fatalError("Unable to create " + resourceFile + ", " + e);
                 return;

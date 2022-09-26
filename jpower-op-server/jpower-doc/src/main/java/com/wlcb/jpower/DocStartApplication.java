@@ -15,7 +15,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class DocStartApplication {
 
     public static void main(String[] args) {
-        JpowerApplication.run(AppConstant.JPOWER_DOC,DocStartApplication.class,args);
+        JpowerApplication.run(AppConstant.getInstance().getJpowerDoc(),DocStartApplication.class,args);
     }
 
 }

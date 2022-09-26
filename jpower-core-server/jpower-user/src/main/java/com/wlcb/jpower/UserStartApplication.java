@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class UserStartApplication {
 
     public static void main(String[] args) {
-        JpowerApplication.run(AppConstant.JPOWER_USER,UserStartApplication.class,args);
+        JpowerApplication.run(AppConstant.getInstance().getJpowerUser(),UserStartApplication.class,args);
     }
 
 }

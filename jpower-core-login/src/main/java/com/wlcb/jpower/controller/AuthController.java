@@ -199,4 +199,10 @@ public class AuthController extends BaseController {
 
         return userClient.saveUser(coreUser, ParamConfig.getString(ParamsConstants.REGISTER_ROLE_ID));
     }
+
+    @GetMapping(value = "/test")
+    public ResponseData register() {
+        Integer a = Integer.parseInt("沙坑里见到拍摄角度拍");
+        return null;
+    }
 }

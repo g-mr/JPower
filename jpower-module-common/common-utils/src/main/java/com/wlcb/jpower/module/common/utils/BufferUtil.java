@@ -1,9 +1,14 @@
 package com.wlcb.jpower.module.common.utils;
 
+import cn.hutool.core.io.IoUtil;
 import okio.Buffer;
 
+import java.io.BufferedWriter;
 import java.io.EOFException;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.util.Collection;
 
 /**
  * okio - Buffer
@@ -64,4 +69,21 @@ public class BufferUtil extends cn.hutool.core.io.BufferUtil {
         return "buffer not readable";
     }
 
+    /**
+     * 写入流
+     *
+     * @author mr.g
+     * @param out 输出流
+     * @param lines 内容
+     * @return void
+     **/
+    public static void writeLines(OutputStream out,Collection<String> lines)
+            throws IOException {
+        BufferedWriter writer = IoUtil.toBuffered(IoUtil.getUtf8Writer(out));
+        for (String line : lines) {
+            writer.write(line);
+            writer.newLine();
+        }
+        writer.flush();
+    }
 }

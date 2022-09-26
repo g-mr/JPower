@@ -1,5 +1,6 @@
 package com.wlcb.jpower.module.common.nacos.deploy;
 
+import com.wlcb.jpower.module.base.annotation.LoaderService;
 import com.wlcb.jpower.module.common.deploy.service.DeployService;
 import com.wlcb.jpower.module.common.nacos.NacosConstants;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -14,6 +15,7 @@ import java.util.Properties;
  * @Date 2020-08-19 16:22
  * @Version 1.0
  */
+@LoaderService(DeployService.class)
 public class NacosServiceImpl implements DeployService {
 
     @Override

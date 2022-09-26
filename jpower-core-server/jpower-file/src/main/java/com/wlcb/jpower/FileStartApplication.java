@@ -17,7 +17,7 @@ import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 public class FileStartApplication {
 
     public static void main(String[] args) {
-        JpowerApplication.run(AppConstant.JPOWER_FILE,FileStartApplication.class,args);
+        JpowerApplication.run(AppConstant.getInstance().getJpowerFile(),FileStartApplication.class,args);
     }
 
 }

@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 @Documented
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.SOURCE)
-public @interface AutoService {
+public @interface LoaderService {
 
     /**
      * 注明这个类继承的哪个实现。

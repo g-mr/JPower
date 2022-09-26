@@ -17,7 +17,7 @@ import de.codecentric.boot.admin.server.config.EnableAdminServer;
 public class AdminStartApplication {
 
     public static void main(String[] args) {
-        JpowerApplication.run(AppConstant.JPOWER_ADMIN,AdminStartApplication.class,args);
+        JpowerApplication.run(AppConstant.getInstance().getJpowerAdmin(),AdminStartApplication.class,args);
     }
 
 }
