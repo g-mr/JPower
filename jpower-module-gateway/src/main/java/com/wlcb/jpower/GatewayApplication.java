@@ -13,6 +13,6 @@ import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 //@EnableJpowerFeignClients
 public class GatewayApplication {
     public static void main(String[] args) {
-        JpowerApplication.run(AppConstant.JPOWER_GATEWAY,GatewayApplication.class, args);
+        JpowerApplication.run(AppConstant.getInstance().getJpowerGateway(), GatewayApplication.class, args);
     }
 }
