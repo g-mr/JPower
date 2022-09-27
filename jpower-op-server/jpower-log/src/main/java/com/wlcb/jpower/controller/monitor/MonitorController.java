@@ -9,7 +9,7 @@ import com.wlcb.jpower.module.common.utils.DateUtil;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.ImportExportConstants;
 import com.wlcb.jpower.module.mp.support.Condition;
-import com.wlcb.jpower.module.mp.support.SqlKeyword;
+import com.wlcb.jpower.module.mp.support.WrapperKeyword;
 import com.wlcb.jpower.service.MonitorResultService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -44,8 +44,8 @@ public class MonitorController extends BaseController {
         @ApiImplicitParam(name = "pageSize",value = "每页长度",defaultValue = "10",paramType = "query",dataType = "int",required = true),
         @ApiImplicitParam(name = "name_eq",value = "服务名称",paramType = "query"),
         @ApiImplicitParam(name = "path",value = "接口地址",paramType = "query"),
-        @ApiImplicitParam(name = "createTime" + SqlKeyword.DATE_GT,value = "开始时间",paramType = "query", dataTypeClass = Date.class),
-        @ApiImplicitParam(name = "createTime" + SqlKeyword.DATE_LT,value = "结束时间",paramType = "query", dataTypeClass = Date.class)
+        @ApiImplicitParam(name = "createTime_dategt",value = "开始时间",paramType = "query", dataTypeClass = Date.class),
+        @ApiImplicitParam(name = "createTime_datelt",value = "结束时间",paramType = "query", dataTypeClass = Date.class)
     })
     @GetMapping(value = "/list",produces="application/json")
     public ResponseData<Pg<TbLogMonitorResult>> list(@ApiIgnore @RequestParam Map<String,Object> map){
@@ -54,12 +54,12 @@ public class MonitorController extends BaseController {
     }
 
     private Map<String,Object> initMap(Map<String,Object> map){
-        if (!map.containsKey("createTime" + SqlKeyword.DATE_GT)){
-            map.put("createTime" + SqlKeyword.DATE_GT, DateUtil.formatDateTime(DateUtil.offsetDay(new Date(), -30)));
+        if (!map.containsKey("createTime" + WrapperKeyword.DATE_GT.getSuffixKeyword())){
+            map.put("createTime" + WrapperKeyword.DATE_GT.getSuffixKeyword(), DateUtil.formatDateTime(DateUtil.offsetDay(new Date(), -30)));
         }
 
-        if (!map.containsKey("createTime" + SqlKeyword.DATE_LT)){
-            map.put("createTime" + SqlKeyword.DATE_LT,DateUtil.now());
+        if (!map.containsKey("createTime" + WrapperKeyword.DATE_LT.getSuffixKeyword())){
+            map.put("createTime" + WrapperKeyword.DATE_LT.getSuffixKeyword(),DateUtil.now());
         }
         return map;
     };
@@ -70,8 +70,8 @@ public class MonitorController extends BaseController {
         @ApiImplicitParam(name = "pageSize",value = "每页长度",defaultValue = "10",paramType = "query",dataType = "int",required = true),
         @ApiImplicitParam(name = "name",value = "服务名称",paramType = "query"),
         @ApiImplicitParam(name = "path",value = "接口地址",paramType = "query"),
-        @ApiImplicitParam(name = "createTime" + SqlKeyword.DATE_GT,value = "开始时间",paramType = "query", dataTypeClass = Date.class),
-        @ApiImplicitParam(name = "createTime" + SqlKeyword.DATE_LT,value = "结束时间",paramType = "query", dataTypeClass = Date.class)
+        @ApiImplicitParam(name = "createTime_dategt",value = "开始时间",paramType = "query", dataTypeClass = Date.class),
+        @ApiImplicitParam(name = "createTime_datelt",value = "结束时间",paramType = "query", dataTypeClass = Date.class)
     })
     @GetMapping(value = "/export")
     public void export(@ApiIgnore @RequestParam Map<String,Object> map){

@@ -16,7 +16,7 @@ public class SqlInjectionUtil {
 
     private static final String[] SENSITIVE_CHAR = new String[]{"'","--","|","<",">"," or "," xor "," and ",
             "&lt;","&gt;","&#34","&#349","%27"};
-    private static final String[] SQL_CHAR  = new String[]{"delete","drop","create","select","truncate","update","insert",
+    public static final String[] SQL_CHAR  = new String[]{"delete","drop","create","select","truncate","update","insert",
             "alter","declare","xp_cmdshell","exec","execute"};
     private static final String[] JS_CHAR  = new String[]{"<img","%3cimg","<script","%3cscript","alert","console","document.location","window.location","javascript"};
 

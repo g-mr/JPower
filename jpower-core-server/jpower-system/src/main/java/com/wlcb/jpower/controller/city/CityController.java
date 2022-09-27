@@ -11,7 +11,7 @@ import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
-import com.wlcb.jpower.module.mp.support.SqlKeyword;
+import com.wlcb.jpower.module.mp.support.WrapperKeyword;
 import com.wlcb.jpower.service.city.CoreCityService;
 import com.wlcb.jpower.vo.CityVo;
 import io.swagger.annotations.*;
@@ -38,7 +38,7 @@ public class CityController extends BaseController {
     @RequestMapping(value = "/listChild",method = {RequestMethod.GET},produces="application/json")
     public ResponseData<List<Map<String,Object>>> listChild(@ApiParam(value = "父级code",required = true) @RequestParam(defaultValue = JpowerConstants.TOP_CODE) String pcode,
                                                             @ApiParam(value = "名称") @RequestParam(required = false) String name){
-        List<Map<String,Object>> list = coreCityService.listChild(ChainMap.<String, Object>create().put("pcode"+ SqlKeyword.EQUAL,pcode).put("name",name).build());
+        List<Map<String,Object>> list = coreCityService.listChild(ChainMap.<String, Object>create().put("pcode"+ WrapperKeyword.EQ.getSuffixKeyword(),pcode).put("name",name).build());
         return ReturnJsonUtil.ok("获取成功", list);
     }
 

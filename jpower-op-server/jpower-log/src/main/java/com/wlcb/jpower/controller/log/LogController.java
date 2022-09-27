@@ -8,7 +8,6 @@ import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.mp.support.Condition;
-import com.wlcb.jpower.module.mp.support.SqlKeyword;
 import com.wlcb.jpower.service.ErrorLogService;
 import com.wlcb.jpower.service.OperateLogService;
 import io.swagger.annotations.Api;
@@ -47,8 +46,8 @@ public class LogController extends BaseController {
             @ApiImplicitParam(name = "serverName",value = "服务名称",paramType = "query"),
             @ApiImplicitParam(name = "clientCode_eq",value = "客户端编码",paramType = "query"),
             @ApiImplicitParam(name = "operName",value = "操作人员",paramType = "query"),
-            @ApiImplicitParam(name = "createTime" + SqlKeyword.DATE_GT,value = "开始时间",paramType = "query", dataTypeClass = Date.class),
-            @ApiImplicitParam(name = "createTime" + SqlKeyword.DATE_LT,value = "结束时间",paramType = "query", dataTypeClass = Date.class)
+            @ApiImplicitParam(name = "createTime_dategt",value = "开始时间",paramType = "query", dataTypeClass = Date.class),
+            @ApiImplicitParam(name = "createTime_datelt",value = "结束时间",paramType = "query", dataTypeClass = Date.class)
     })
     @GetMapping("/operate/list")
     public ResponseData<Pg<TbLogOperate>> listOperateLog(@ApiIgnore @RequestParam Map<String,Object> operateLog){
@@ -64,8 +63,8 @@ public class LogController extends BaseController {
             @ApiImplicitParam(name = "exceptionName",value = "异常名称",paramType = "query"),
             @ApiImplicitParam(name = "clientCode_eq",value = "客户端编码",paramType = "query"),
             @ApiImplicitParam(name = "operName",value = "操作人员",paramType = "query"),
-            @ApiImplicitParam(name = "createTime" + SqlKeyword.DATE_GT,value = "开始时间",paramType = "query", dataTypeClass = Date.class),
-            @ApiImplicitParam(name = "createTime" + SqlKeyword.DATE_LT,value = "结束时间",paramType = "query", dataTypeClass = Date.class)
+            @ApiImplicitParam(name = "createTime_dategt",value = "开始时间",paramType = "query", dataTypeClass = Date.class),
+            @ApiImplicitParam(name = "createTime_datelt",value = "结束时间",paramType = "query", dataTypeClass = Date.class)
     })
     @GetMapping("/error/list")
     public ResponseData<Pg<TbLogError>> listErrorLog(@ApiIgnore @RequestParam Map<String,Object> errorLog){

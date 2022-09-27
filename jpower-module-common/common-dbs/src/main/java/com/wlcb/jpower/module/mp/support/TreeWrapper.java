@@ -152,7 +152,7 @@ public class TreeWrapper<T> extends AbstractWrapper<T, String, TreeWrapper<T>>
      * @Author mr.g
      **/
     public TreeWrapper<T> map(Map<String,Object> query){
-        SqlKeyword.buildCondition(query, this);
+        SqlWrapper.buildCondition(this, query);
         return typedThis;
     }
 
