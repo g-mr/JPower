@@ -1,6 +1,7 @@
 package com.wlcb.jpower.controller;
 
 import cn.hutool.core.lang.Validator;
+import cn.hutool.core.util.ArrayUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.cache.SystemCache;
@@ -32,6 +33,8 @@ import springfox.documentation.annotations.ApiIgnore;
 import javax.validation.constraints.NotBlank;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import static com.wlcb.jpower.module.base.annotation.OperateLog.BusinessType.DELETE;
@@ -250,8 +253,15 @@ public class UserController extends BaseController {
 
         JpowerAssert.notEmpty(ids, JpowerError.Arg, "用户ids不可为空");
 
-        if (coreUserService.updateUserPassword(ids, pass)) {
-            CacheUtil.clear(CacheNames.USER_KEY);
+        if (coreUserService.updateUserPassword(Fc.toStrList(ids), pass)) {
+
+            if (ShieldUtil.isRoot()){
+                List<String> codes = coreUserService.listObjs(Condition.<TbCoreUser>getQueryWrapper().lambda().select(TbCoreUser::getTenantCode).in(TbCoreUser::getId,Fc.toStrList(ids)),Fc::toStr);
+                CacheUtil.clear(CacheNames.USER_KEY, ArrayUtil.toArray(new HashSet<>(codes),String.class));
+            } else {
+                CacheUtil.clear(CacheNames.USER_KEY);
+            }
+
             return ReturnJsonUtil.ok(ids.split(",").length + "位用户密码重置成功");
         } else {
             return ReturnJsonUtil.fail("重置失败");
@@ -328,6 +338,6 @@ public class UserController extends BaseController {
             return ReturnJsonUtil.fail("原密码错误");
         }
         CacheUtil.clear(CacheNames.USER_KEY);
-        return ReturnJsonUtil.status(coreUserService.updateUserPassword(user.getId(), DigestUtil.pwdEncrypt(newPw)));
+        return ReturnJsonUtil.status(coreUserService.updateUserPassword(Collections.singletonList(user.getId()), DigestUtil.pwdEncrypt(newPw)));
     }
 }

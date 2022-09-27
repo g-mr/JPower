@@ -77,7 +77,7 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
      * @param pass 用户加密后密码
      * @return java.lang.Integer
      */
-    Boolean updateUserPassword(String ids, String pass);
+    Boolean updateUserPassword(List<String> ids, String pass);
 
     /**
      * @author 郭丁志

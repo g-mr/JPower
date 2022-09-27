@@ -175,8 +175,8 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     }
 
     @Override
-    public Boolean updateUserPassword(String ids, String pass) {
-        return coreUserDao.update(new UpdateWrapper<TbCoreUser>().lambda().set(TbCoreUser::getPassword,pass).in(TbCoreUser::getId,Fc.toStrList(ids)));
+    public Boolean updateUserPassword(List<String> ids, String pass) {
+        return coreUserDao.update(new UpdateWrapper<TbCoreUser>().lambda().set(TbCoreUser::getPassword,pass).in(TbCoreUser::getId,ids));
     }
 
     /**
