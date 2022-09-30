@@ -94,7 +94,7 @@ public class JpowerApplication {
         List<DeployService> deployServiceList = new ArrayList<>();
         ServiceLoader.load(DeployService.class).forEach(deployServiceList::add);
         deployServiceList.stream().sorted(Comparator.comparing(DeployService::getOrder)).collect(Collectors.toList())
-                .forEach(deployService -> deployService.launcher(builder, appName, profile));
+                .forEach(deployService -> deployService.deploy(builder, appName, profile));
 
         log.info("{}项目已启动,运行环境：{}",appName,profile);
         return builder;

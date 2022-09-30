@@ -18,7 +18,7 @@ import java.util.Properties;
 public class LogDeployServiceImpl implements DeployService {
 
     @Override
-    public void launcher(SpringApplicationBuilder builder, String appName, String profile) {
+    public void deploy(SpringApplicationBuilder builder, String appName, String profile) {
         Properties props = System.getProperties();
         props.setProperty("logging.config", "classpath:logback-spring.xml");
     }

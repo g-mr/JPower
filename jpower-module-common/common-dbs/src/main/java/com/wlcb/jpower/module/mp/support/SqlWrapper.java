@@ -8,14 +8,15 @@ import com.wlcb.jpower.module.common.utils.StringUtil;
 
 import java.util.Map;
 
+import static com.wlcb.jpower.module.mp.support.WrapperKeyword.IGNORE;
 import static com.wlcb.jpower.module.mp.support.WrapperKeyword.LIKE;
 
 /**
- * 定义常用的 sql关键字
+ * SQL条件构造器
  *
  * @author mr.g
  */
-public class SqlWrapper {
+class SqlWrapper {
 
 
     private final static String[] SQL_REGEX = ArrayUtil.append(SqlInjectionUtil.SQL_CHAR,"--","count","group","union","alter","grant","execute","exec","xp_cmdshell","call","declare","sql");
@@ -37,41 +38,46 @@ public class SqlWrapper {
 
             WrapperKeyword keyword = getKeyword(k);
 
+            String column = filter(keyword.getColumn(k));
+            if (Fc.isBlank(column)){
+                keyword = IGNORE;
+            }
+            
             switch (keyword){
                 case EQ:
                 case DATE_EQ:
-                    wrapper.eq(keyword.getColumn(), v);
+                    wrapper.eq(column, v);
                     break;
                 case NOT_EQ:
-                    wrapper.ne(keyword.getColumn(), v);
+                    wrapper.ne(column, v);
                     break;
                 case LIKE:
-                    wrapper.like(keyword.getColumn(), v);
+                    wrapper.like(column, v);
                     break;
                 case NOT_LIKE:
-                    wrapper.notLike(keyword.getColumn(), v);
+                    wrapper.notLike(column, v);
                     break;
                 case GT:
                 case DATE_GT:
-                    wrapper.gt(keyword.getColumn(), v);
+                    wrapper.gt(column, v);
                     break;
                 case LT:
                 case DATE_LT:
-                    wrapper.lt(keyword.getColumn(), v);
+                    wrapper.lt(column, v);
                     break;
                 case GE:
                 case DATE_GE:
-                    wrapper.ge(keyword.getColumn(), v);
+                    wrapper.ge(column, v);
                     break;
                 case LE:
                 case DATE_LE:
-                    wrapper.le(keyword.getColumn(), v);
+                    wrapper.le(column, v);
                     break;
                 case IS_NULL:
-                    wrapper.isNull(keyword.getColumn());
+                    wrapper.isNull(column);
                     break;
                 case NOT_NULL:
-                    wrapper.isNotNull(keyword.getColumn());
+                    wrapper.isNotNull(column);
                 case IGNORE:
                 default:
                     break;
@@ -89,15 +95,11 @@ public class SqlWrapper {
 
         for (WrapperKeyword keyword : WrapperKeyword.values()){
             if (StringUtil.endWith(column,keyword.getSuffixKeyword())){
-                column = StringUtil.humpToUnderline(StringUtil.removeSuffix(column, keyword.getSuffixKeyword()));
-                keyword.setColumn(filter(column));
                 return keyword;
             }
         }
 
-        WrapperKeyword keyword = LIKE;
-        keyword.setColumn(filter(StringUtil.humpToUnderline(column)));
-        return keyword;
+        return LIKE;
     }
 
     /**

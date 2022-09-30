@@ -8,6 +8,8 @@ import com.wlcb.jpower.cache.SystemCache;
 import com.wlcb.jpower.cache.param.ParamConfig;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
+import com.wlcb.jpower.module.annotation.Function;
+import com.wlcb.jpower.module.annotation.Menu;
 import com.wlcb.jpower.module.base.annotation.OperateLog;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.BusinessException;
@@ -51,6 +53,10 @@ public class UserController extends BaseController {
 
     private CoreUserService coreUserService;
 
+    @Function(value = "测试",menus = {
+            @Menu(menuCode = "das",code = "fds"),
+            @Menu(menuCode = "r32",code = "rtgt")
+    })
     @ApiOperation("查询当前登录用户信息")
     @GetMapping(value = "/getLoginInfo", produces = "application/json")
     public ResponseData<UserVo> getLoginInfo() {
@@ -59,6 +65,10 @@ public class UserController extends BaseController {
         return ReturnJsonUtil.ok("获取成功", coreUserService.getById(id));
     }
 
+    @Function(value = "萨达",menus = {
+            @Menu(menuCode = "das",code = "fds"),
+            @Menu(menuCode = "r321",code = "rtgt3")
+    })
     @ApiOperation("查询用户分页列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum", value = "第几页", defaultValue = "1", paramType = "query", dataType = "int", required = true),
