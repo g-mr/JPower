@@ -4,6 +4,8 @@ import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.lang.tree.Tree;
 import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
 import com.wlcb.jpower.dbs.entity.function.TbCoreFunction;
+import com.wlcb.jpower.module.annotation.Function;
+import com.wlcb.jpower.module.annotation.Menu;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
@@ -254,5 +256,14 @@ public class FunctionController extends BaseController {
         }
 
         return ReturnJsonUtil.data(coreFunctionService.listButByMenu(ShieldUtil.getUserRole(), id, clientId));
+    }
+
+    @Function(value = "功能点同步",alias = "同步", menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION", code = "SYSTEM_FUNCTION_GENERATE")
+    })
+    @ApiOperation("生成功能点")
+    @PostMapping(value = "/generate", produces="application/json")
+    public ResponseData generate(){
+        return ReturnJsonUtil.status(coreFunctionService.generateFunction());
     }
 }

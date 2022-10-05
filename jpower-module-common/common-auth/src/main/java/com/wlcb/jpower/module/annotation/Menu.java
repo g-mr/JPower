@@ -12,6 +12,11 @@ import java.lang.annotation.*;
 public @interface Menu {
 
     /**
+     * 客户端编号
+     **/
+    String client();
+
+    /**
      * 菜单编号
      **/
     String menuCode();

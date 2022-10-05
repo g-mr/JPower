@@ -7,6 +7,7 @@ import com.wlcb.jpower.module.common.utils.MapUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
@@ -25,12 +26,13 @@ import java.util.Map;
  * @date 2022-09-30 17:19
  */
 @Component
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @AllArgsConstructor
 public class FunctionGenerate implements ApplicationRunner {
 
     private RequestMappingHandlerMapping requestMappingHandlerMapping;
 
-    public final static Map<String,List<Map<String,String>>> functions = new HashMap();
+    public final static Map<String,List<Map<String,String>>> functions = new HashMap<>();
 
     @Override
     public void run(ApplicationArguments args) {
@@ -47,24 +49,25 @@ public class FunctionGenerate implements ApplicationRunner {
 
                 if (Fc.notNull(function)){
                     for (Menu menu : function.menus()){
-                        List<Map<String,String>> list = functions.getOrDefault(menu.menuCode(),new ArrayList<>());
-                        Map<String,String> map = MapUtil.newHashMap(4);
-                        map.put("name",function.value());
-                        //判断code是否重复
-                        if (isExist(menu.code())){
-                            throw new IllegalArgumentException("@Function[code] exist repeat value");
+                        if (Fc.isNoneBlank(menu.menuCode(),menu.code())){
+                            List<Map<String,String>> list = functions.getOrDefault(menu.menuCode(),new ArrayList<>());
+                            Map<String,String> map = MapUtil.newHashMap(4);
+                            map.put("name",function.value());
+                            //判断code是否重复
+                            if (isExist(menu.code())){
+                                throw new IllegalArgumentException("@Function[code] exist repeat value");
+                            }
+                            map.put("code",menu.code());
+                            map.put("alias",Fc.isBlank(function.alias())?function.value():function.alias());
+                            map.put("url",url);
+                            list.add(map);
+                            functions.put(menu.menuCode(),list);
                         }
-                        map.put("code",menu.code());
-                        map.put("alias",Fc.isBlank(function.alias())?function.value():function.alias());
-                        map.put("url",url);
-                        list.add(map);
-                        functions.put(menu.menuCode(),list);
                     }
                 }
             }
         }
 
-        System.out.println("----反向加载URL完成----");
     }
 
     private boolean isExist(String code){

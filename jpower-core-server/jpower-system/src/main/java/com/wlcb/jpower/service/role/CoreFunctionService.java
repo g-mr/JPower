@@ -156,4 +156,13 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @return java.util.List<com.wlcb.jpower.dbs.entity.function.TbCoreFunction>
      **/
     List<TbCoreFunction> listButByMenu(List<String> roleIds, String id, String clientId);
+
+    /**
+     * 生成功能点
+     *
+     * @author mr.g
+     * @return boolean
+     **/
+    boolean generateFunction();
+
 }

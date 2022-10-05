@@ -12,6 +12,7 @@ import com.wlcb.jpower.dbs.entity.role.TbCoreRoleFunction;
 import com.wlcb.jpower.module.common.auth.RoleConstant;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.NacosUtil;
 import com.wlcb.jpower.module.common.utils.ShieldUtil;
 import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
@@ -23,13 +24,16 @@ import com.wlcb.jpower.vo.FunctionVo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.wlcb.jpower.module.common.utils.constants.JpowerConstants.TOP_CODE;
+import static com.wlcb.jpower.module.config.BuiltController.PATH;
 
 /**
  * @author mr.gmac
@@ -40,6 +44,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
 
     private final String sql = "select function_id from tb_core_role_function where role_id in ({})";
 
+    private RestTemplate restTemplate;
     private TbCoreFunctionDao coreFunctionDao;
     private TbCoreRoleFunctionDao coreRoleFunctionDao;
     private TbCoreClientDao clientDao;
@@ -215,6 +220,55 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
             return roleCount;
         }
         return 0;
+    }
+
+    @Override
+    public boolean generateFunction() {
+        List<String> servers = NacosUtil.getAllServers();
+        if (Fc.isNotEmpty(servers)){
+            //去请求拿到所有的功能点
+            List<Map> list = servers.stream().map(name-> restTemplate.getForObject("http://"+name+PATH,Map.class)).collect(Collectors.toList());
+
+            //拿到所有的菜单
+            List<TbCoreFunction> menus = coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda().eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.Y.getValue()));
+
+            if (Fc.isNotEmpty(menus)){
+                //拿到所有的code
+                List<String> allCode = coreFunctionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda().select(TbCoreFunction::getCode),Fc::toStr);
+
+                //存储要保存的功能
+                List<TbCoreFunction> functionList = new ArrayList<>();
+                list.forEach(map->{
+                    if (Fc.isNotEmpty(map)){
+                        map.forEach((menuCode,functions)->{
+                            Optional<TbCoreFunction> menu = menus.stream().filter(f->Fc.equalsValue(f.getCode(),menuCode)).findAny();
+                            menu.ifPresent(tbCoreFunction -> ((List<Map<String,String>>)functions).forEach(fun -> {
+                                String code = fun.get("code");
+                                //只要不重复的code才去存储
+                                if (functionList.stream().noneMatch(f -> Fc.equalsValue(f.getCode(), code)) && !allCode.contains(code)) {
+                                    TbCoreFunction function = new TbCoreFunction();
+                                    function.setCode(code);
+                                    function.setFunctionName(fun.get("name"));
+                                    function.setAlias(fun.get("alias"));
+                                    function.setUrl(fun.get("url"));
+                                    function.setClientId(tbCoreFunction.getClientId());
+                                    function.setParentId(tbCoreFunction.getId());
+                                    function.setIsMenu(ConstantsEnum.YN01.N.getValue());
+                                    function.setTarget(ConstantsEnum.FUNCTION_TARGET.SELF.getValue());
+                                    functionList.add(function);
+                                }
+                            }));
+                        });
+                    }
+                });
+
+                //去保存功能点
+                if (Fc.isNotEmpty(functionList)){
+                    return coreFunctionDao.addBatchSomeColumn(functionList);
+                }
+            }
+        }
+        return true;
     }
 
 }

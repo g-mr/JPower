@@ -300,4 +300,39 @@ public class ConstantsEnum {
         }
     }
 
+    /**
+     * 功能打开方式
+     * @Author mr.g
+     **/
+    public enum FUNCTION_TARGET {
+
+        SELF("_self", "_self"), TOP("_top", "_top"), BLANK("_blank", "_blank"), PARENT("_parent", "_parent");
+
+        FUNCTION_TARGET(String value, String name) {
+            this.value = value;
+            this.name = name;
+        }
+
+        private final String value;
+        private final String name;
+
+        public String getValue() {
+            return value;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public static String getName(String value) {
+            FUNCTION_TARGET[] businessModeEnums = values();
+            for (FUNCTION_TARGET businessModeEnum : businessModeEnums) {
+                if (businessModeEnum.value.equals(value)) {
+                    return businessModeEnum.name;
+                }
+            }
+            return null;
+        }
+    }
+
 }
