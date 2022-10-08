@@ -22,31 +22,9 @@ public class CoreParamServiceImpl extends BaseServiceImpl<TbCoreParamsMapper, Tb
         return baseMapper.selectByCode(code);
     }
 
-//    @Override
-//    public Boolean deletes(String ids) {
-//        List<String> id = Fc.toStrList(ids);
-//        List<TbCoreParam> coreParam = paramsDao.listByIds(id);
-//        Boolean c = paramsDao.removeByIds(id);
-//        if (c){
-//            coreParam.forEach((param) -> CacheUtil.evict(CacheNames.PARAMS_REDIS_CACHE,CacheNames.PARAMS_REDIS_CODE_KEY,param.getCode(),Boolean.FALSE));
-//        }
-//        return c;
-//    }
-
     @Override
     public Boolean update(TbCoreParam coreParam) {
         return paramsDao.updateById(coreParam);
     }
-
-//    @Override
-//    public void effectAll() {
-//        List<TbCoreParam> params = paramsDao.list(Condition.<TbCoreParam>getQueryWrapper().lambda().eq(TbCoreParam::getIsEffect, ConstantsEnum.YN01.Y.getValue()));
-//        JpowerAssert.notGeZero(params.size(), JpowerError.Business,"不支持立即生效，需重启项目");
-//        for (TbCoreParam param : params) {
-//            if (StringUtils.isNotBlank(param.getValue())){
-//                CacheUtil.put(CacheNames.PARAMS_REDIS_CACHE,CacheNames.PARAMS_REDIS_CODE_KEY,param.getCode(),param.getValue(),Boolean.FALSE);
-//            }
-//        }
-//    }
 
 }

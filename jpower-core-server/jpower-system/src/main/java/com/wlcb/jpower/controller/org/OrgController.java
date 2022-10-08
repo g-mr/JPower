@@ -3,6 +3,8 @@ package com.wlcb.jpower.controller.org;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.lang.tree.Tree;
 import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
+import com.wlcb.jpower.module.annotation.Function;
+import com.wlcb.jpower.module.annotation.Menu;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.Pg;
@@ -33,6 +35,9 @@ public class OrgController extends BaseController {
 
     private CoreOrgService coreOrgService;
 
+    @Function(value = "下级部门",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_ORG",code = "SYSTEM_ORGCHILDER_LIST")
+    })
     @ApiOperation("懒加载组织机构树形列表")
     @GetMapping(value = "/listLazyByParent",produces="application/json")
     public ResponseData<List<OrgVo>> listLazyByParent(TbCoreOrg coreOrg){
@@ -40,6 +45,9 @@ public class OrgController extends BaseController {
         return ReturnJsonUtil.ok("获取成功", coreOrgService.listLazyByParent(coreOrg));
     }
 
+    @Function(value = "树形列表",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_ORG",code = "SYSTEM_ORG_TREELIST")
+    })
     @ApiOperation("分页懒加载组织机构树形列表")
     @GetMapping(value = "/listLazy",produces="application/json")
     public ResponseData<Pg<OrgVo>> listLazy(TbCoreOrg coreOrg){
@@ -48,6 +56,10 @@ public class OrgController extends BaseController {
         return ReturnJsonUtil.data(new Pg<>(list.size(),pageList));
     }
 
+    @Function(value = "新增",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_ORG",code = "ORG_CHILD_ADD"),
+            @Menu(client = "admin",menuCode = "SYSTEM_ORG",code = "SYSTEM_ORG_ADD")
+    })
     @ApiOperation(value = "新增一个组织机构",notes = "无需传主键(id)")
     @RequestMapping(value = "/add",method = {RequestMethod.POST},produces="application/json")
     public ResponseData add(TbCoreOrg coreOrg){
@@ -64,6 +76,9 @@ public class OrgController extends BaseController {
         }
     }
 
+    @Function(value = "删除",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_ORG",code = "SYSTEM_ORG_DELETE")
+    })
     @ApiOperation("删除组织机构")
     @RequestMapping(value = "/deleteStatus",method = {RequestMethod.DELETE},produces="application/json")
     public ResponseData deleteStatus(@ApiParam(value = "主键 多个逗号分割",required = true) @RequestParam String ids){
@@ -87,6 +102,9 @@ public class OrgController extends BaseController {
         }
     }
 
+    @Function(value = "编辑",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_ORG",code = "SYSTEM_ORG_UPDATE")
+    })
     @ApiOperation(value = "修改组织机构信息")
     @RequestMapping(value = "/update",method = {RequestMethod.PUT},produces="application/json")
     public ResponseData update(TbCoreOrg coreOrg){
@@ -102,6 +120,11 @@ public class OrgController extends BaseController {
         }
     }
 
+    @Function(value = "树形部门",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_ORG",code = "SYSTEM_ORG_TREE"),
+            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_ORG"),
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_ORG")
+    })
     @ApiOperation("加载组织机构树形菜单")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "code",value = "编码",paramType = "query"),

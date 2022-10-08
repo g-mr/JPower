@@ -2,6 +2,8 @@ package com.wlcb.jpower.controller.function;
 
 import com.wlcb.jpower.dbs.entity.function.TbCoreDataScope;
 import com.wlcb.jpower.dbs.entity.role.TbCoreRoleData;
+import com.wlcb.jpower.module.annotation.Function;
+import com.wlcb.jpower.module.annotation.Menu;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.Pg;
@@ -40,9 +42,9 @@ public class DataScopeController {
     private CoreRoleService roleService;
     private CoreRoleDataService roleDataService;
 
-//    @Function(value = "字典详情",menus = {
-//            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_DETAIL")
-//    })
+    @Function(value = "新增",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "SYSTEM_DATASCOPE_ADD")
+    })
     @ApiOperation(value = "新增",notes = "主键ID不可传")
     @PostMapping(value = "/add",produces="application/json")
     public ResponseData add(TbCoreDataScope dataScope){
@@ -68,6 +70,9 @@ public class DataScopeController {
         return ReturnJsonUtil.status(dataScopeService.save(dataScope));
     }
 
+    @Function(value = "修改",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "SYSTEM_DATASCOPE_UPDATE")
+    })
     @ApiOperation("修改")
     @PutMapping(value = "/update",produces="application/json")
     public ResponseData update(TbCoreDataScope dataScope){
@@ -83,6 +88,9 @@ public class DataScopeController {
         return ReturnJsonUtil.status(dataScopeService.updateById(dataScope));
     }
 
+    @Function(value = "删除",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "SYSTEM_DATASCOPE_DELETE")
+    })
     @ApiOperation("删除")
     @DeleteMapping(value = "/delete",produces="application/json")
     public ResponseData delete(@ApiParam(value = "主键",required = true) @RequestParam String id){
@@ -91,6 +99,9 @@ public class DataScopeController {
         return ReturnJsonUtil.status(dataScopeService.removeRealById(id));
     }
 
+    @Function(value = "详情",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "SYSTEM_DATASCOPE_DETAIL")
+    })
     @ApiOperation("详情")
     @GetMapping(value = "/queryById",produces="application/json")
     public ResponseData<TbCoreDataScope> queryById(@ApiParam(value = "主键",required = true) @RequestParam String id){
@@ -98,6 +109,9 @@ public class DataScopeController {
         return ReturnJsonUtil.ok("查询成功",dataScopeService.getById(id));
     }
 
+    @Function(value = "列表",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "SYSTEM_DATASCOPE_LISTPAGE")
+    })
     @ApiOperation("分页列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "menuId_eq",value = "菜单ID",required = true,paramType = "query"),
@@ -112,6 +126,9 @@ public class DataScopeController {
         return ReturnJsonUtil.ok("查询成功",dataScopeService.page(PaginationContext.getMpPage(),Condition.getQueryWrapper(map,TbCoreDataScope.class)));
     }
 
+    @Function(value = "数据权限",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_DATASCOPE_LIST")
+    })
     @ApiOperation("通过菜单ID查询列表")
     @GetMapping(value = "/listByMenuId",produces="application/json")
     public ResponseData<List<TbCoreDataScope>> listByMenuId(@ApiParam(value = "菜单ID",required = true) @RequestParam String menuId){
@@ -120,6 +137,9 @@ public class DataScopeController {
                 .eq(TbCoreDataScope::getMenuId,menuId)));
     }
 
+    @Function(value = "数据权限ID",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_DATASCOPE_LISTID")
+    })
     @ApiOperation("通过角色ID查询所有数据权限ID")
     @GetMapping(value = "/listIdByRoleId",produces="application/json")
     public ResponseData<List<String>> listIdByRoleId(@ApiParam(value = "角色ID 多个逗号分割",required = true) @RequestParam String roleIds){
@@ -129,6 +149,9 @@ public class DataScopeController {
                 .in(TbCoreRoleData::getRoleId,roleIds),Fc::toStr));
     }
 
+    @Function(value = "数据赋权",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_DATASCOPE_ROLE")
+    })
     @ApiOperation("角色赋权")
     @PostMapping(value = "/roleDataScope",produces="application/json")
     public ResponseData roleDataScope(@ApiParam(value = "角色主键",required = true) @RequestParam String roleId,

@@ -4,6 +4,8 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Validator;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
+import com.wlcb.jpower.module.annotation.Function;
+import com.wlcb.jpower.module.annotation.Menu;
 import com.wlcb.jpower.module.base.annotation.OperateLog;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
@@ -42,6 +44,9 @@ public class TenantController extends BaseController {
 
     private TenantService tenantService;
 
+    @Function(value = "租户列表",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "TENANT_LIST")
+    })
     @ApiOperation("租户分页列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum",value = "第几页",defaultValue = "1",paramType = "query",dataType = "int",required = true),
@@ -73,6 +78,9 @@ public class TenantController extends BaseController {
         return ReturnJsonUtil.ok("查询成功",tenantService.listMaps(wrapper));
     }
 
+    @Function(value = "修改租户",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "SYSTEM_TENANT_UPDATE")
+    })
     @ApiOperation("修改租户信息")
     @PutMapping("/update")
     public ResponseData update(TbCoreTenant tenant){
@@ -90,6 +98,9 @@ public class TenantController extends BaseController {
         return ReturnJsonUtil.status(tenantService.updateById(tenant));
     }
 
+    @Function(value = "删除租户",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "SYSTEM_TENANT_DELETE")
+    })
     @ApiOperation("删除租户信息")
     @OperateLog(value = "删除租户",businessType = DELETE)
     @DeleteMapping("/delete")
@@ -101,6 +112,9 @@ public class TenantController extends BaseController {
         return ReturnJsonUtil.status(tenantService.removeByIds(Fc.toStrList(ids)));
     }
 
+    @Function(value = "新增租户",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "SYSTEM_TENANT_ADD")
+    })
     @ApiOperation("新增租户信息")
     @PostMapping(value = "/add",produces = "application/json")
     public ResponseData add(TbCoreTenant tenant,
@@ -126,6 +140,9 @@ public class TenantController extends BaseController {
         return ReturnJsonUtil.status(tenantService.save(tenant,CollUtil.removeBlank(functionCode)));
     }
 
+    @Function(value = "授权配置",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "SYSTEM_TENANT_SETTING")
+    })
     @ApiOperation("租户授权配置")
     @PutMapping(value = "/setting",produces = "application/json")
     public ResponseData setting(@ApiParam(value = "租户ID 多个逗号分隔",required = true) @RequestParam List<String> ids,

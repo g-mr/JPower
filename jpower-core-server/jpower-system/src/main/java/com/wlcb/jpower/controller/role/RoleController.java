@@ -2,6 +2,8 @@ package com.wlcb.jpower.controller.role;
 
 import cn.hutool.core.lang.tree.Tree;
 import com.wlcb.jpower.dbs.entity.role.TbCoreRole;
+import com.wlcb.jpower.module.annotation.Function;
+import com.wlcb.jpower.module.annotation.Menu;
 import com.wlcb.jpower.module.base.annotation.OperateLog;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
@@ -38,6 +40,9 @@ public class RoleController extends BaseController {
     private CoreRoleService coreRoleService;
     private CoreRolefunctionService coreRolefunctionService;
 
+    @Function(value = "树形角色列表",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_LIST_TREE")
+    })
     @ApiOperation("查询角色树结构列表")
     @RequestMapping(value = "/listTree",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
     public ResponseData<List<Tree<String>>> listTree(TbCoreRole coreRole){
@@ -46,6 +51,9 @@ public class RoleController extends BaseController {
         return ReturnJsonUtil.ok("获取成功", list);
     }
 
+    @Function(value = "角色树形",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "USER_ROLE_TREE")
+    })
     @ApiOperation("查询角色树结构")
     @GetMapping(value = "/tree",produces="application/json")
     public ResponseData<List<Tree<String>>> tree(TbCoreRole coreRole){
@@ -63,6 +71,9 @@ public class RoleController extends BaseController {
         return ReturnJsonUtil.ok("获取成功", list);
     }
 
+    @Function(value = "新增",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_ADD")
+    })
     @ApiOperation("新增角色")
     @RequestMapping(value = "/add",method = {RequestMethod.POST},produces="application/json")
     public ResponseData add(TbCoreRole coreRole){
@@ -87,6 +98,9 @@ public class RoleController extends BaseController {
         return ReturnJsonUtil.status(coreRoleService.add(coreRole),coreRole.getId());
     }
 
+    @Function(value = "删除",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_DELETE")
+    })
     @ApiOperation("删除角色")
     @RequestMapping(value = "/deleteStatus",method = {RequestMethod.DELETE},produces="application/json")
     public ResponseData deleteStatus(@ApiParam(value = "主键 多个逗号分割",required = true) @RequestParam String ids){
@@ -108,6 +122,9 @@ public class RoleController extends BaseController {
                 .eq(TbCoreRole::getIsSysRole,ConstantsEnum.YN01.N.getValue())));
     }
 
+    @Function(value = "修改",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_UPDATE")
+    })
     @ApiOperation(value = "修改角色信息",notes = "主键不用传")
     @RequestMapping(value = "/update",method = {RequestMethod.PUT},produces="application/json")
     public ResponseData update(TbCoreRole coreRole){
@@ -137,6 +154,9 @@ public class RoleController extends BaseController {
         return ReturnJsonUtil.ok("查询成功", roleFunction);
     }
 
+    @Function(value = "设置权限",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_UPDATEFUNCTION")
+    })
     @ApiOperation("重新给角色赋权")
     @OperateLog(title = "重新给角色赋权",isSaveLog = true)
     @RequestMapping(value = "/addFunction",method = {RequestMethod.POST},produces="application/json")

@@ -2,6 +2,8 @@ package com.wlcb.jpower.controller.params;
 
 import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.dbs.entity.params.TbCoreParam;
+import com.wlcb.jpower.module.annotation.Function;
+import com.wlcb.jpower.module.annotation.Menu;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.Pg;
@@ -31,6 +33,9 @@ public class ParamsController extends BaseController {
 
     private CoreParamService paramService;
 
+    @Function(value = "列表",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_PARAMS",code = "PARAM_LIST")
+    })
     @ApiOperation("系统参数分页列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum",value = "第几页",defaultValue = "1",paramType = "query",dataType = "int",required = true),
@@ -46,6 +51,9 @@ public class ParamsController extends BaseController {
         return ReturnJsonUtil.ok("获取成功", new PageInfo<>(list));
     }
 
+    @Function(value = "删除",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_PARAMS",code = "SYSTEM_PARAMS_DELETE")
+    })
     @ApiOperation("删除系统参数")
     @RequestMapping(value = "/delete",method = RequestMethod.DELETE,produces="application/json")
     public ResponseData delete(@ApiParam(value = "主键",required = true) @RequestParam String ids){
@@ -55,6 +63,9 @@ public class ParamsController extends BaseController {
         return ReturnJsonUtil.status(paramService.removeByIds(Fc.toStrList(ids)));
     }
 
+    @Function(value = "编辑",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_PARAMS",code = "SYSTEM_PARAMS_UPDATE")
+    })
     @ApiOperation("修改系统参数")
     @RequestMapping(value = "/update",method = RequestMethod.PUT,produces="application/json")
     public ResponseData update(TbCoreParam coreParam){
@@ -63,6 +74,9 @@ public class ParamsController extends BaseController {
         return ReturnJsonUtil.status(paramService.update(coreParam));
     }
 
+    @Function(value = "新增",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_PARAMS",code = "SYSTEM_PARAMS_ADD")
+    })
     @ApiOperation(value = "新增系统参数",notes = "新增不用传主键")
     @RequestMapping(value = "/add",method = RequestMethod.POST,produces="application/json")
     public ResponseData add(TbCoreParam coreParam){
@@ -75,36 +89,14 @@ public class ParamsController extends BaseController {
         return ReturnJsonUtil.status(paramService.save(coreParam));
     }
 
+    @Function(value = "详情",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_PARAMS",code = "SYSTEM_PARAMS_DETAIL")
+    })
     @ApiOperation(value = "通过Id获取参数详情")
     @RequestMapping(value = "/queryById",method = RequestMethod.GET,produces="application/json")
     public ResponseData<TbCoreParam> queryById(@ApiParam("主键ID") @RequestParam String id){
         JpowerAssert.notEmpty(id, JpowerError.Arg,"ID不可为空");
         return ReturnJsonUtil.ok("查询成功",paramService.getById(id));
     }
-
-//    @ApiOperation(value = "立即生效一个参数")
-//    @RequestMapping(value = "/takeEffect",method = RequestMethod.GET,produces="application/json")
-//    public ResponseData<String> takeEffect(@ApiParam(value = "编码",required = true) @RequestParam String code){
-//        JpowerAssert.notEmpty(code, JpowerError.Arg,"编号值不可为空");
-//
-//        TbCoreParam param = paramService.getOne(Condition.<TbCoreParam>getQueryWrapper().lambda().eq(TbCoreParam::getCode,code));
-//        JpowerAssert.notTrue(Fc.equals(param.getIsEffect(), ConstantsEnum.YN01.N.getValue()), JpowerError.Business,"该参数无法立即生效，请重启项目");
-//
-//        if (Fc.isNotEmpty(param) && Fc.isNotBlank(param.getValue())){
-//            CacheUtil.put(CacheNames.PARAMS_REDIS_CACHE,CacheNames.PARAMS_REDIS_CODE_KEY,param.getCode(),param.getValue(),Boolean.FALSE);
-//        }else {
-//            if (Fc.isNull(param)){
-//                return ReturnJsonUtil.fail("该参数不存在");
-//            }
-//        }
-//        return ReturnJsonUtil.ok("操作成功");
-//    }
-
-//    @ApiOperation(value = "全部生效")
-//    @RequestMapping(value = "/effectAll",method = RequestMethod.GET,produces="application/json")
-//    public ResponseData<String> effectAll(){
-//        paramService.effectAll();
-//        return ReturnJsonUtil.ok("操作完成");
-//    }
 
 }

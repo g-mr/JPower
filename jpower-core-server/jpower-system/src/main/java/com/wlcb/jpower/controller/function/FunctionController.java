@@ -44,6 +44,10 @@ public class FunctionController extends BaseController {
     private CoreFunctionService coreFunctionService;
     private CoreClientService clientService;
 
+    @Function(value = "菜单列表",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "SYSTEM_DATASCOPE_MENU"),
+            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "CHILD_FUNCTION")
+    })
     @ApiOperation("根据父节点查询子节点功能")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "clientId_eq",value = "客户端ID",paramType = "query",required = true),
@@ -70,6 +74,9 @@ public class FunctionController extends BaseController {
         return ReturnJsonUtil.ok("获取成功", list);
     }
 
+    @Function(value = "新增",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_ADD")
+    })
     @ApiOperation("新增")
     @PostMapping(value = "/add", produces="application/json")
     public ResponseData add(TbCoreFunction coreFunction){
@@ -98,6 +105,9 @@ public class FunctionController extends BaseController {
         }
     }
 
+    @Function(value = "删除",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_DELETE")
+    })
     @ApiOperation("删除")
     @RequestMapping(value = "/delete",method = {RequestMethod.DELETE},produces="application/json")
     public ResponseData delete(@ApiParam(value = "主键 多个逗号分割",required = true) @RequestParam String ids){
@@ -119,6 +129,9 @@ public class FunctionController extends BaseController {
         }
     }
 
+    @Function(value = "修改",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_UPDATE")
+    })
     @ApiOperation("修改")
     @RequestMapping(value = "/update",method = {RequestMethod.PUT},produces="application/json")
     public ResponseData update(TbCoreFunction coreFunction){
@@ -142,6 +155,9 @@ public class FunctionController extends BaseController {
         }
     }
 
+    @Function(value = "角色权限",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_SELECT_URL")
+    })
     @ApiOperation("根据角色ID查询所有的权限ID")
     @RequestMapping(value = "/queryUrlIdByRole",method = {RequestMethod.GET},produces="application/json")
     public ResponseData<List<String>> queryUrlIdByRole(@ApiParam(value = "角色ID 多个逗号分割",required = true) @RequestParam String roleIds){
@@ -195,6 +211,10 @@ public class FunctionController extends BaseController {
         return ReturnJsonUtil.ok("查询成功", list);
     }
 
+    @Function(value = "菜单树形",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_MENU_TREE"),
+            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_MENU")
+    })
     @ApiOperation("查询登录用户所有菜单树形结构")
     @GetMapping(value = "/menuTree", produces="application/json")
     public ResponseData<List<Tree<String>>> menuTree(@ApiParam("客户端ID") String clientId){
@@ -204,6 +224,9 @@ public class FunctionController extends BaseController {
         return ReturnJsonUtil.data(coreFunctionService.menuTreeByRoleIds(ShieldUtil.getUserRole(),clientId));
     }
 
+    @Function(value = "客户端功能树",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "CLIENT_MENU_TREE")
+    })
     @ApiOperation("查询登录用户所有菜单树形结构并根据客户端区分")
     @GetMapping(value = "/clientMenuTree", produces="application/json")
     public ResponseData<List<Tree<String>>> clientMenuTree(){
@@ -244,6 +267,9 @@ public class FunctionController extends BaseController {
         return ReturnJsonUtil.data(ForestNodeMerger.mergeTree(listMap));
     }
 
+    @Function(value = "菜单资源",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_BUT")
+    })
     @ApiOperation(value = "查询登录用户一个菜单下的所有按钮接口资源", notes = "当不传菜单ID时，会查出顶级资源；单独查一个菜单时，不会把顶级按钮返回")
     @GetMapping(value = "/listButByMenu", produces="application/json")
     public ResponseData<List<TbCoreFunction>> listButByMenu(@ApiParam(value = "菜单Id",required = true) @RequestParam(required = false,defaultValue = TOP_CODE) String id,
