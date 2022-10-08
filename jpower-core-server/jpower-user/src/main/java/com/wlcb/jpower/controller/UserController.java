@@ -8,6 +8,8 @@ import com.wlcb.jpower.cache.SystemCache;
 import com.wlcb.jpower.cache.param.ParamConfig;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
+import com.wlcb.jpower.module.annotation.Function;
+import com.wlcb.jpower.module.annotation.Menu;
 import com.wlcb.jpower.module.base.annotation.OperateLog;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.BusinessException;
@@ -59,6 +61,9 @@ public class UserController extends BaseController {
         return ReturnJsonUtil.ok("获取成功", coreUserService.getById(id));
     }
 
+    @Function(value = "用户列表",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "USER_LIST")
+    })
     @ApiOperation("查询用户分页列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum", value = "第几页", defaultValue = "1", paramType = "query", dataType = "int", required = true),
@@ -78,6 +83,9 @@ public class UserController extends BaseController {
         return ReturnJsonUtil.ok("获取成功", list);
     }
 
+    @Function(value = "导出用户",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_EXPORTUSER")
+    })
     @ApiOperation(value = "导出用户")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "orgId", value = "部门ID", paramType = "query", required = false),
@@ -97,6 +105,9 @@ public class UserController extends BaseController {
         download(responseData,"用户数据.xlsx");
     }
 
+    @Function(value = "用户详情",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "USER_DETAIL")
+    })
     @ApiOperation("查询用户详情")
     @RequestMapping(value = "/getById", method = RequestMethod.GET, produces = "application/json")
     public ResponseData<UserVo> getById(@ApiParam(value = "主键", required = true) @RequestParam @NotBlank(message = "主键不可为空") String id) {
@@ -106,6 +117,9 @@ public class UserController extends BaseController {
         return ReturnJsonUtil.ok("查询成功", user);
     }
 
+    @Function(value = "新增用户",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_ADD")
+    })
     @ApiOperation(value = "新增", notes = "主键不用传")
     @RequestMapping(value = "/add", method = {RequestMethod.POST}, produces = "application/json")
     public ResponseData add(TbCoreUser coreUser) {
@@ -154,6 +168,9 @@ public class UserController extends BaseController {
         return ReturnJsonUtil.status(coreUserService.save(coreUser));
     }
 
+    @Function(value = "删除用户",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_DELETE")
+    })
     @ApiOperation(value = "删除用户")
     @OperateLog(title = "删除登录用户", businessType = DELETE)
     @RequestMapping(value = "/delete", method = {RequestMethod.DELETE}, produces = "application/json")
@@ -169,6 +186,9 @@ public class UserController extends BaseController {
         }
     }
 
+    @Function(value = "修改用户",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_UPDATE")
+    })
     @ApiOperation(value = "修改用户信息")
     @OperateLog(title = "修改系统用户信息", businessType = UPDATE)
     @RequestMapping(value = "/update", method = {RequestMethod.PUT}, produces = "application/json")
@@ -245,6 +265,9 @@ public class UserController extends BaseController {
                 .eq(TbCoreUser::getId,ShieldUtil.getUser().getUserId())));
     }
 
+    @Function(value = "重置密码",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_RESETPASSWORD")
+    })
     @ApiOperation(value = "重置用户登陆密码")
     @PutMapping(value = "/resetPassword", produces = "application/json")
     public ResponseData resetPassword(@ApiParam(value = "主键 多个逗号分割", required = true) @RequestParam String ids) {
@@ -268,6 +291,9 @@ public class UserController extends BaseController {
         }
     }
 
+    @Function(value = "导入用户",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_IMPORTUSER")
+    })
     @ApiOperation(value = "批量导入用户")
     @PostMapping(value = "/importUser", produces = "application/json")
     public ResponseData importUser(@ApiParam(value = "Excel文件", required = true) MultipartFile file,
@@ -300,6 +326,9 @@ public class UserController extends BaseController {
 
     }
 
+    @Function(value = "模板下载",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_DOWNLOADTEMPLATE")
+    })
     @ApiOperation(value = "用户上传模板下载")
     @GetMapping(value = "/downloadTemplate")
     public void downloadTemplate() {

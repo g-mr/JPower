@@ -2,6 +2,8 @@ package com.wlcb.jpower.controller.client;
 
 import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
+import com.wlcb.jpower.module.annotation.Function;
+import com.wlcb.jpower.module.annotation.Menu;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.Pg;
@@ -37,6 +39,10 @@ public class ClientController extends BaseController {
      * @Param [coreClient]
      * @return com.wlcb.jpower.module.base.vo.ResponseData
      **/
+    @Function(value = "保存",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_CLIENT",code = "SYSTEM_CLIENT_SAVE"),
+            @Menu(client = "admin",menuCode = "SYSTEM_CLIENT",code = "SYSTEM_CLIENT_ADD")
+    })
     @ApiOperation("保存或者更新客户端信息")
     @PostMapping("save")
     public ResponseData save(TbCoreClient coreClient){
@@ -74,6 +80,9 @@ public class ClientController extends BaseController {
         return ReturnJsonUtil.status(coreClientService.saveOrUpdate(coreClient));
     }
 
+    @Function(value = "删除",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_CLIENT",code = "SYSTEM_CLIENT_DELETE")
+    })
     @ApiOperation("删除客户端")
     @DeleteMapping("delete")
     public ResponseData delete(@ApiParam(value = "主键，多个逗号分割",required = true) @RequestParam String ids){
@@ -82,6 +91,9 @@ public class ClientController extends BaseController {
         return ReturnJsonUtil.status(coreClientService.removeByIds(Fc.toStrList(ids)));
     }
 
+    @Function(value = "列表",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_CLIENT",code = "CLIENT_LIST")
+    })
     @ApiOperation("分页查询客户端列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum",value = "第几页",defaultValue = "1",paramType = "query",dataTypeClass = Integer.class,required = true),
@@ -96,6 +108,11 @@ public class ClientController extends BaseController {
         return ReturnJsonUtil.ok("查询成功",new PageInfo<>(list));
     }
 
+    @Function(value = "客户端下拉",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "FUNCTION_CLIENT_SELECT"),
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_CLIENT_SELECT"),
+            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "DATASCOPE_CLIENT_SELECT")
+    })
     @ApiOperation("下拉客户端列表")
     @GetMapping("selectList")
     public ResponseData<List<Map<String,Object>>> selectList(){

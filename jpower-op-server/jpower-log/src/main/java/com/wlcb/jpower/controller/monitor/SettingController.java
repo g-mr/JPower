@@ -5,6 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.wlcb.jpower.dbs.entity.TbLogMonitorParam;
 import com.wlcb.jpower.dbs.entity.TbLogMonitorSetting;
+import com.wlcb.jpower.module.annotation.Function;
+import com.wlcb.jpower.module.annotation.Menu;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
@@ -38,6 +40,9 @@ public class SettingController {
     private final TaskService taskService;
     private final MonitorSettingService monitorSettingService;
 
+    @Function(value = "服务列表",menus = {
+            @Menu(client = "admin",menuCode = "MONITOR_RESULT",code = "MONITOR_SERVERS")
+    })
     @ApiOperationSupport(order = 1)
     @ApiOperation("服务列表")
     @GetMapping(value = "/servers",produces="application/json")
@@ -47,6 +52,9 @@ public class SettingController {
         return ReturnJsonUtil.ok("获取成功",list);
     }
 
+    @Function(value = "分组列表",menus = {
+            @Menu(client = "admin",menuCode = "MONITOR_RESULT",code = "MONITOR_TAGS")
+    })
     @ApiOperationSupport(order = 2)
     @ApiOperation("分组列表")
     @GetMapping(value = "/tags",produces="application/json")
@@ -58,6 +66,9 @@ public class SettingController {
         return ReturnJsonUtil.ok("获取成功",list);
     }
 
+    @Function(value = "接口树形",menus = {
+            @Menu(client = "admin",menuCode = "MONITOR_SETTING",code = "MONITOR_TREE")
+    })
     @ApiOperationSupport(order = 3)
     @ApiOperation("接口树形列表")
     @GetMapping(value = "/monitors",produces="application/json")
@@ -76,6 +87,9 @@ public class SettingController {
         return ReturnJsonUtil.ok("获取成功",array);
     }
 
+    @Function(value = "获取接口设置",menus = {
+            @Menu(client = "admin",menuCode = "MONITOR_SETTING",code = "MONITOR_SETUP")
+    })
     @ApiOperationSupport(order = 4)
     @ApiOperation("获取接口设置")
     @GetMapping(value = "/setup",produces="application/json")
@@ -84,6 +98,9 @@ public class SettingController {
         return ReturnJsonUtil.ok("获取成功",monitorSettingService.getOneSetting(setting));
     }
 
+    @Function(value = "保存接口设置",menus = {
+            @Menu(client = "admin",menuCode = "MONITOR_SETTING",code = "MONITOR_SAVE_SETUP")
+    })
     @ApiOperationSupport(order = 5)
     @ApiOperation("保存接口设置")
     @ApiImplicitParams({
@@ -105,6 +122,9 @@ public class SettingController {
         return ReturnJsonUtil.fail("保存失败");
     }
 
+    @Function(value = "删除接口设置",menus = {
+            @Menu(client = "admin",menuCode = "MONITOR_SETTING",code = "MONITOR_DELETE_SETUP")
+    })
     @ApiOperationSupport(order = 6)
     @ApiOperation("删除接口设置")
     @DeleteMapping(value = "/delete-setup",produces="application/json")
@@ -113,6 +133,9 @@ public class SettingController {
         return ReturnJsonUtil.status(monitorSettingService.removeRealById(id));
     }
 
+    @Function(value = "获取接口参数",menus = {
+            @Menu(client = "admin",menuCode = "MONITOR_SETTING",code = "MONITOR_PARAMS")
+    })
     @ApiOperationSupport(order = 7)
     @ApiOperation("获取接口参数")
     @ApiImplicitParams({
@@ -130,6 +153,9 @@ public class SettingController {
         return ReturnJsonUtil.ok("获取成功",taskService.getParams(route,param.getPath(),param.getMethod()));
     }
 
+    @Function(value = "保存接口参数",menus = {
+            @Menu(client = "admin",menuCode = "MONITOR_SETTING",code = "MONITOR_SAVE_PARAMS")
+    })
     @ApiOperationSupport(order = 8)
     @ApiOperation("保存接口参数")
     @PostMapping(value = "/save-param",produces="application/json")

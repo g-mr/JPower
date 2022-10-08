@@ -2,6 +2,8 @@ package com.wlcb.jpower.controller.log;
 
 import com.wlcb.jpower.dbs.entity.TbLogError;
 import com.wlcb.jpower.dbs.entity.TbLogOperate;
+import com.wlcb.jpower.module.annotation.Function;
+import com.wlcb.jpower.module.annotation.Menu;
 import com.wlcb.jpower.module.base.vo.Pg;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
@@ -37,6 +39,9 @@ public class LogController extends BaseController {
     private final ErrorLogService errorLogService;
     private final OperateLogService operateLogService;
 
+    @Function(value = "操作日志",menus = {
+            @Menu(client = "admin",menuCode = "OPERATE_LOG",code = "OPERATE_LOG_LIST")
+    })
     @ApiOperation("操作日志列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum",value = "第几页",defaultValue = "1",paramType = "query",dataType = "int",required = true),
@@ -55,6 +60,9 @@ public class LogController extends BaseController {
                 Condition.getQueryWrapper(operateLog,TbLogOperate.class).lambda().orderByDesc(TbLogOperate::getCreateTime)));
     }
 
+    @Function(value = "错误日志",menus = {
+            @Menu(client = "admin",menuCode = "ERROR_LOG",code = "ERROR_LOG_LIST")
+    })
     @ApiOperation("错误日志列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum",value = "第几页",defaultValue = "1",paramType = "query",dataType = "int",required = true),

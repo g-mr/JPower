@@ -1,6 +1,8 @@
 package com.wlcb.jpower.controller.monitor;
 
 import com.wlcb.jpower.dbs.entity.TbLogMonitorResult;
+import com.wlcb.jpower.module.annotation.Function;
+import com.wlcb.jpower.module.annotation.Menu;
 import com.wlcb.jpower.module.base.vo.Pg;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
@@ -38,6 +40,9 @@ public class MonitorController extends BaseController {
 
     private final MonitorResultService monitorResultService;
 
+    @Function(value = "监控结果",menus = {
+            @Menu(client = "admin",menuCode = "MONITOR_RESULT",code = "MONITOR_RESULTS_LIST")
+    })
     @ApiOperation(value = "监控结果列表",notes = "默认查询最近一个月得")
     @ApiImplicitParams({
         @ApiImplicitParam(name = "pageNum",value = "第几页",defaultValue = "1",paramType = "query",dataType = "int",required = true),
@@ -62,8 +67,11 @@ public class MonitorController extends BaseController {
             map.put("createTime" + WrapperKeyword.DATE_LT.getSuffixKeyword(),DateUtil.now());
         }
         return map;
-    };
+    }
 
+    @Function(value = "导出监控结果",menus = {
+            @Menu(client = "admin",menuCode = "MONITOR_RESULT",code = "MONITOR_RESULTS_EXPORT")
+    })
     @ApiOperation(value = "导出结果列表")
     @ApiImplicitParams({
         @ApiImplicitParam(name = "pageNum",value = "第几页",defaultValue = "1",paramType = "query",dataType = "int",required = true),

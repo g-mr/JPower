@@ -40,6 +40,9 @@ public class DataScopeController {
     private CoreRoleService roleService;
     private CoreRoleDataService roleDataService;
 
+//    @Function(value = "字典详情",menus = {
+//            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_DETAIL")
+//    })
     @ApiOperation(value = "新增",notes = "主键ID不可传")
     @PostMapping(value = "/add",produces="application/json")
     public ResponseData add(TbCoreDataScope dataScope){

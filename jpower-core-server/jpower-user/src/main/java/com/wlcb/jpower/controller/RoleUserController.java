@@ -3,6 +3,8 @@ package com.wlcb.jpower.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.dbs.entity.TbCoreUserRole;
+import com.wlcb.jpower.module.annotation.Function;
+import com.wlcb.jpower.module.annotation.Menu;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.Pg;
@@ -36,6 +38,9 @@ public class RoleUserController extends BaseController {
     private CoreUserService coreUserService;
     private CoreUserRoleService coreUserRoleService;
 
+    @Function(value = "设置角色",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_UPDATEROLE")
+    })
     @ApiOperation(value = "给用户重新设置角色")
     @PostMapping(value = "/addRole", produces = "application/json")
     public ResponseData addRole(@ApiParam(value = "用户主键 多个逗号分割", required = true) @RequestParam String userIds,
@@ -48,6 +53,9 @@ public class RoleUserController extends BaseController {
         return ReturnJsonUtil.status(coreUserService.updateUsersRole(userIds, roleIds));
     }
 
+    @Function(value = "角色新增用户",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_ADDUSER")
+    })
     @ApiOperation(value = "给角色新增用户")
     @PutMapping(value = "/addRoleUser", produces = "application/json")
     public ResponseData addRoleUser(@ApiParam(value = "用户主键 多个逗号分割", required = true) @RequestParam String userIds,
@@ -61,6 +69,9 @@ public class RoleUserController extends BaseController {
         return ReturnJsonUtil.status(coreUserService.addRoleUsers(roleId, new ArrayList<>(Fc.toStrList(userIds))));
     }
 
+    @Function(value = "角色去除用户",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_DELUSER")
+    })
     @ApiOperation(value = "给角色去除用户")
     @DeleteMapping(value = "/deleteRoleUser", produces = "application/json")
     public ResponseData deleteRoleUser(@ApiParam(value = "用户主键 多个逗号分割", required = true) @RequestParam String userIds,
@@ -84,6 +95,9 @@ public class RoleUserController extends BaseController {
         return ReturnJsonUtil.ok("查询成功", userRoleList);
     }
 
+    @Function(value = "角色用户列表",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_USER")
+    })
     @ApiOperation(value = "通过角色查询用户列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum", value = "第几页", defaultValue = "1", paramType = "query", dataType = "int", required = true),

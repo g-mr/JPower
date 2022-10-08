@@ -4,6 +4,8 @@ import cn.hutool.core.lang.tree.Tree;
 import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.dbs.entity.dict.TbCoreDict;
 import com.wlcb.jpower.dbs.entity.dict.TbCoreDictType;
+import com.wlcb.jpower.module.annotation.Function;
+import com.wlcb.jpower.module.annotation.Menu;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.Pg;
@@ -43,6 +45,9 @@ public class DictController extends BaseController {
     private CoreDictService coreDictService;
     private CoreDictTypeService coreDictTypeService;
 
+    @Function(value = "字典类型树",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_TYPELIST")
+    })
     @ApiOperation("查询所有字典类型树形结构")
     @RequestMapping(value = "/dictTypeTree",method = RequestMethod.GET,produces="application/json")
     public ResponseData<List<Tree<String>>> dictTypeTree(){
@@ -55,6 +60,9 @@ public class DictController extends BaseController {
         return ReturnJsonUtil.ok("查询成功",coreDictTypeService.listTree(dictType));
     }
 
+    @Function(value = "新增字典类型",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_TYPE_ADD")
+    })
     @ApiOperation(value = "新增字典类型")
     @RequestMapping(value = "/add",method = RequestMethod.POST,produces="application/json")
     public ResponseData add(TbCoreDictType dictType){
@@ -65,6 +73,9 @@ public class DictController extends BaseController {
         return ReturnJsonUtil.status(coreDictTypeService.addDictType(dictType),dictType.getId());
     }
 
+    @Function(value = "修改字典类型",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_TYPE_UPDATE")
+    })
     @ApiOperation(value = "更新字典类型")
     @RequestMapping(value = "/update",method = RequestMethod.POST,produces="application/json")
     public ResponseData update(TbCoreDictType dictType){
@@ -73,6 +84,9 @@ public class DictController extends BaseController {
         return ReturnJsonUtil.status(coreDictTypeService.updateDictType(dictType));
     }
 
+    @Function(value = "删除字典类型",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_TYPE_DELETE")
+    })
     @ApiOperation("删除字典类型")
     @DeleteMapping(value = "/deleteDictType",produces="application/json")
     public ResponseData deleteDictType(@ApiParam(value = "主键，多个逗号分割",required = true) @RequestParam String ids){
@@ -81,6 +95,9 @@ public class DictController extends BaseController {
         return ReturnJsonUtil.status(coreDictTypeService.deleteDictType(Fc.toStrList(ids)));
     }
 
+    @Function(value = "字典类型详情",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_TYPE_DETAIL")
+    })
     @ApiOperation("查询字典类型详情")
     @RequestMapping(value = "/getDictType",method = RequestMethod.GET,produces="application/json")
     public ResponseData<TbCoreDictType> getDictType(@ApiParam(value = "主键",required = true) @RequestParam String id){
@@ -88,6 +105,9 @@ public class DictController extends BaseController {
         return ReturnJsonUtil.ok("查询成功", coreDictTypeService.getById(id));
     }
 
+    @Function(value = "字典列表",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_LIST")
+    })
     @ApiOperation("通过字典类型分页查询字典")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum",value = "第几页",defaultValue = "1",paramType = "query",dataType = "int",required = true),
@@ -119,6 +139,9 @@ public class DictController extends BaseController {
         return ReturnJsonUtil.ok("查询成功", coreDictService.listByType(dict));
     }
 
+    @Function(value = "字典子级",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_LIST_BY_PARENT")
+    })
     @ApiOperation(value = "查询下级字典",notes = "parentId不可传-1")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "parentId",value = "父级字典",paramType = "query",required = true),
@@ -143,6 +166,9 @@ public class DictController extends BaseController {
                 .eq(TbCoreDict::getDictTypeCode,dictTypeCode)));
     }
 
+    @Function(value = "保存字典",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_SAVE")
+    })
     @ApiOperation("保存或者新增字典")
     @RequestMapping(value = "/saveDict",method = RequestMethod.POST,produces="application/json")
     public ResponseData saveDict(TbCoreDict dict){
@@ -169,6 +195,9 @@ public class DictController extends BaseController {
         return ReturnJsonUtil.status(coreDictService.saveDict(dict));
     }
 
+    @Function(value = "删除字典",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_DELETE")
+    })
     @ApiOperation("删除字典")
     @RequestMapping(value = "/deleteDict",method = RequestMethod.DELETE,produces="application/json")
     public ResponseData deleteDict(@ApiParam(value = "主键，多个逗号分割",required = true) @RequestParam String ids){
@@ -185,6 +214,9 @@ public class DictController extends BaseController {
         return ReturnJsonUtil.status(coreDictService.removeRealByIds(list));
     }
 
+    @Function(value = "字典详情",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_DETAIL")
+    })
     @ApiOperation("查询字典详情")
     @RequestMapping(value = "/getDict",method = RequestMethod.GET,produces="application/json")
     public ResponseData<TbCoreDict> getDict(@ApiParam(value = "字典ID",required = true) @RequestParam(required = false) String id){

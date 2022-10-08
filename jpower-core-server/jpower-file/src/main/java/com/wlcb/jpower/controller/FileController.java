@@ -2,6 +2,8 @@ package com.wlcb.jpower.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wlcb.jpower.dbs.entity.TbCoreFile;
+import com.wlcb.jpower.module.annotation.Function;
+import com.wlcb.jpower.module.annotation.Menu;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
@@ -92,6 +94,9 @@ public class FileController extends BaseController {
         }
     }
 
+    @Function(value = "文件列表",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_FILE",code = "SYSTEM_FILE_LIST")
+    })
     @ApiOperation("文件列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum",value = "第几页",defaultValue = "1",paramType = "query",dataType = "int",required = true),
@@ -110,6 +115,9 @@ public class FileController extends BaseController {
         return ReturnJsonUtil.ok("获取成功", page);
     }
 
+    @Function(value = "文件详情",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_FILE",code = "SYSTEM_FILE_DETAIL")
+    })
     @ApiOperation("详情")
     @GetMapping(value = "/get",produces="application/json")
     public ResponseData<TbCoreFile> get(@RequestParam String id){
@@ -117,6 +125,9 @@ public class FileController extends BaseController {
         return ReturnJsonUtil.ok("获取成功",coreFileService.getById(id));
     }
 
+    @Function(value = "批量删除",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_FILE",code = "SYSTEM_FILE_DELETE")
+    })
     @ApiOperation("批量删除")
     @DeleteMapping(value = "/delete",produces="application/json")
     public ResponseData delete(@RequestParam String ids){
@@ -129,6 +140,9 @@ public class FileController extends BaseController {
         return ReturnJsonUtil.status(coreFileService.removeRealByIds(idList));
     }
 
+    @Function(value = "修改文件",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_FILE",code = "SYSTEM_FILE_UPDATE")
+    })
     @ApiOperation("修改文件")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "主键",paramType = "query",required = true),

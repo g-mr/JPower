@@ -2,6 +2,8 @@ package com.wlcb.jpower.controller.city;
 
 import cn.hutool.core.lang.tree.Tree;
 import com.wlcb.jpower.dbs.entity.city.TbCoreCity;
+import com.wlcb.jpower.module.annotation.Function;
+import com.wlcb.jpower.module.annotation.Menu;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.ResponseData;
@@ -66,24 +68,36 @@ public class CityController extends BaseController {
         return ReturnJsonUtil.status(coreCityService.update(coreCity));
     }
 
+    @Function(value = "保存",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_CITY",code = "SYSTEM_CITY_SAVE")
+    })
     @ApiOperation(value = "保存行政区域",notes = "主键传是修改，不传是新增")
     @PostMapping(value = "/save", produces="application/json")
     public ResponseData save( TbCoreCity coreCity){
         return Fc.isNotBlank(coreCity.getId())?update(coreCity):add(coreCity);
     }
 
+    @Function(value = "删除",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_CITY",code = "SYSTEM_CITY_DELETE")
+    })
     @ApiOperation("删除行政区域")
     @RequestMapping(value = "/delete",method = {RequestMethod.DELETE},produces="application/json")
     public ResponseData delete(@ApiParam(value = "主键，多个逗号分割",required = true) @RequestParam String ids){
         return ReturnJsonUtil.status(coreCityService.deleteBatch(Fc.toStrList(ids)));
     }
 
+    @Function(value = "详情",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_CITY",code = "SYSTEM_CITY_DETAIL")
+    })
     @ApiOperation("查询行政区域详情")
     @GetMapping(value = "/get", produces="application/json")
     public ResponseData<CityVo> get(@ApiParam(value = "主键",required = true) @RequestParam String id){
         return ReturnJsonUtil.ok("成功", coreCityService.getById(id));
     }
 
+    @Function(value = "列表",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_CITY",code = "CITY_LIST")
+    })
     @ApiOperation("懒加载树形菜单")
     @RequestMapping(value = "/lazyTree",method = {RequestMethod.GET},produces="application/json")
     public ResponseData<List<Tree<String>>> lazyTree(@ApiParam(value = "父级编码",required = true) @RequestParam String pcode){

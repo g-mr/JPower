@@ -1,6 +1,8 @@
 package com.wlcb.jpower.controller;
 
 import com.wlcb.jpower.dbs.entity.TbCorePost;
+import com.wlcb.jpower.module.annotation.Function;
+import com.wlcb.jpower.module.annotation.Menu;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.Pg;
@@ -36,6 +38,9 @@ public class PostController extends BaseController {
 
     private final CorePostService postService;
 
+    @Function(value = "岗位列表",menus = {
+            @Menu(client = "admin",menuCode = "POST",code = "POST_PAGE")
+    })
     @ApiOperation(value = "分页")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum", value = "第几页", defaultValue = "1", paramType = "query", dataTypeClass = Integer.class, required = true),
@@ -50,6 +55,9 @@ public class PostController extends BaseController {
         return ReturnJsonUtil.data(postService.pageVo(map));
     }
 
+    @Function(value = "岗位下拉",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "POST_SELECT")
+    })
     @ApiOperation(value = "下拉列表")
     @GetMapping(value = "/select", produces = "application/json")
     public ResponseData<List<Map<String,String>>> select(@ApiParam("岗位名称") String name,@ApiParam("所属租户") String tenantCode) {
@@ -62,6 +70,9 @@ public class PostController extends BaseController {
                         .orderByAsc(TbCorePost::getSort)));
     }
 
+    @Function(value = "新增岗位",menus = {
+            @Menu(client = "admin",menuCode = "POST",code = "POST_ADD")
+    })
     @ApiOperation(value = "新增")
     @PostMapping(value = "/add", produces = "application/json")
     public ResponseData add(@Validated TbCorePost corePost) {
@@ -78,6 +89,9 @@ public class PostController extends BaseController {
         return ReturnJsonUtil.status(postService.save(corePost));
     }
 
+    @Function(value = "编辑岗位",menus = {
+            @Menu(client = "admin",menuCode = "POST",code = "POST_UPDATE")
+    })
     @ApiOperation(value = "编辑")
     @PutMapping(value = "/update", produces = "application/json")
     public ResponseData update(TbCorePost corePost) {
@@ -90,6 +104,9 @@ public class PostController extends BaseController {
         return ReturnJsonUtil.status(postService.updateById(corePost));
     }
 
+    @Function(value = "删除岗位",menus = {
+            @Menu(client = "admin",menuCode = "POST",code = "POST_DELETE")
+    })
     @ApiOperation(value = "删除")
     @DeleteMapping(value = "/delete", produces = "application/json")
     public ResponseData delete(@ApiParam("主键，多个逗号分割") String ids) {
@@ -98,7 +115,9 @@ public class PostController extends BaseController {
         return ReturnJsonUtil.status(postService.delete(Fc.toStrList(ids)));
     }
 
-
+    @Function(value = "岗位详情",menus = {
+            @Menu(client = "admin",menuCode = "POST",code = "POST_DETAIL")
+    })
     @ApiOperation(value = "详情")
     @DeleteMapping(value = "/get", produces = "application/json")
     public ResponseData<TbCorePost> get(@ApiParam("主键") String id) {
