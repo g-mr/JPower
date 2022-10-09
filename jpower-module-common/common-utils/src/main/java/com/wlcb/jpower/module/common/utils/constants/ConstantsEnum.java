@@ -205,7 +205,7 @@ public class ConstantsEnum {
      */
     public enum YYZL {
 
-        CHINA("zh_cn", "中文"), ENG("en", "英文");
+        CHINA("zh", "中文"), ENG("en", "英文");
 
         YYZL(String value, String name) {
             this.value = value;

@@ -3,16 +3,17 @@ package com.wlcb.jpower.cache.dict;
 import com.wlcb.jpower.feign.DictClient;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.cache.CacheNames;
-import com.wlcb.jpower.module.common.utils.CacheUtil;
-import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.MapUtil;
-import com.wlcb.jpower.module.common.utils.SpringUtil;
+import com.wlcb.jpower.module.common.utils.*;
+import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static com.wlcb.jpower.module.common.utils.constants.ConstantsUtils.I18N_KEY;
 
 /**
  * 字典缓存
@@ -39,7 +40,15 @@ public class DictCache {
         List<Map<String, Object>> list = getDictByType(dictTypeCode);
         list = Fc.isNull(list)?new ArrayList<>():list;
         return list.stream()
-                .filter(map -> Fc.equalsValue(MapUtil.getStr(map,"code"),code))
+                .filter(map -> {
+
+                    String requestLocale = ConstantsEnum.YYZL.CHINA.getValue();
+                    if (Fc.notNull(WebUtil.getRequest())){
+                        requestLocale = Fc.toStr(Objects.requireNonNull(WebUtil.getRequest()).getHeader(I18N_KEY), ConstantsEnum.YYZL.CHINA.getValue());
+                    }
+
+                    return Fc.equalsValue(MapUtil.getStr(map,"code"),code) && Fc.equalsValue(MapUtil.getStr(map,"locale"), requestLocale);
+                })
                 .map(map-> MapUtil.getStr(map,"name"))
                 .collect(Collectors.joining(StringPool.SPILT));
     }

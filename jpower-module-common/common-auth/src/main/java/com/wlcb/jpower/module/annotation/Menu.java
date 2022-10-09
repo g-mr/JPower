@@ -12,6 +12,11 @@ import java.lang.annotation.*;
 public @interface Menu {
 
     /**
+     * 按钮或接口名称
+     * e.g: 如果这个值为空，则取@Function注解的value值
+     **/
+    String name() default "";
+    /**
      * 客户端编号
      **/
     String client();

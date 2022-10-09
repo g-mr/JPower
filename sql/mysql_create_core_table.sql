@@ -106,27 +106,30 @@ CREATE TABLE `tb_core_data_scope`  (
 -- Table structure for tb_core_dict
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_dict`;
-CREATE TABLE `tb_core_dict`  (
-  `id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '主键',
-  `dict_type_code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字典类型代码',
-  `code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字典代码',
-  `name` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字典名称',
-  `parent_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '-1' COMMENT '上级ID',
-  `locale_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'zh_cn' COMMENT '语言 zh_cn en_us',
-  `note` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
-  `sort_num` int(6) NULL DEFAULT 0 COMMENT '排序',
-  `create_user` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'root' COMMENT '创建人',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_user` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'root' COMMENT '更新人',
-  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-  `status` tinyint(1) NULL DEFAULT 1 COMMENT '状态',
-  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
-  `dict_level` int(6) NULL DEFAULT NULL COMMENT '树形字典结构的级别',
-  `pcode` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '-1' COMMENT '上级代码',
-  `tenant_code` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '000000' COMMENT '租户编码',
-  `create_org` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+create table tb_core_dict
+(
+    id             varchar(32)                            not null comment '主键',
+    dict_type_code varchar(50)                            not null comment '字典类型代码',
+    code           varchar(100)                           not null comment '字典代码',
+    name           varchar(250)                           not null comment '字典名称',
+    is_stop        char         default 'N'               not null comment '是否停用',
+    parent_id      varchar(32)  default '-1'              null comment '上级ID',
+    locale         varchar(20)  default 'zh'           not null comment '语言 zh en',
+    note           varchar(100)                           null comment '备注',
+    sort_num       int(6)       default 0                 null comment '排序',
+    create_user    varchar(32)  default 'root'            not null comment '创建人',
+    create_time    datetime     default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_user    varchar(32)  default 'root'            not null comment '更新人',
+    update_time    datetime     default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    status         tinyint(1)   default 1                 null comment '状态',
+    is_deleted     tinyint(1)   default 0                 null comment '是否删除 0否 1是',
+    dict_level     int(6)                                 null comment '树形字典结构的级别',
+    pcode          varchar(100) default '-1'              null comment '上级代码',
+    tenant_code    varchar(6)   default '000000'          not null comment '租户编码',
+    create_org     varchar(32)                            null,
+    PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '字典表' ROW_FORMAT = Dynamic;
+
 
 -- ----------------------------
 -- Table structure for tb_core_dict_type

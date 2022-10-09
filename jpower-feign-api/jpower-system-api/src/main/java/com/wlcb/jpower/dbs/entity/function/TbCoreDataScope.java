@@ -33,6 +33,7 @@ public class TbCoreDataScope extends BaseEntity {
     @ApiModelProperty("数据权限值域")
     private String scopeValue;
     @ApiModelProperty("是否所有角色都执行")
+    @Dict(name = "YN01")
     private Integer allRole;
     @ApiModelProperty("备注")
     private String note;

@@ -47,7 +47,8 @@ public class CoreDictServiceImpl extends BaseServiceImpl<TbCoreDictMapper, TbCor
     public Boolean saveDict(TbCoreDict dict) {
         TbCoreDict coreDictType = queryDictTypeByCode(dict.getDictTypeCode(),dict.getCode());
         if(Fc.isBlank(dict.getId())){
-            dict.setLocaleId(Fc.isBlank(dict.getLocaleId())? ConstantsEnum.YYZL.CHINA.getValue() :dict.getLocaleId());
+            dict.setLocale(Fc.isBlank(dict.getLocale())? ConstantsEnum.YYZL.CHINA.getValue() :dict.getLocale());
+            dict.setIsStop(Fc.isBlank(dict.getIsStop())? ConstantsEnum.YN.N.getValue() : dict.getIsStop());
             dict.setParentId(Fc.isNotBlank(dict.getParentId())?dict.getParentId():TOP_CODE);
             JpowerAssert.notTrue(coreDictType != null, JpowerError.Business,"该字典已存在");
         }else {
@@ -70,7 +71,7 @@ public class CoreDictServiceImpl extends BaseServiceImpl<TbCoreDictMapper, TbCor
     @Override
     public List<Map<String, Object>> listByTypeCode(String dictTypeCode) {
         LambdaQueryWrapper<TbCoreDict> queryWrapper = Condition.<TbCoreDict>getQueryWrapper().lambda()
-                .select(TbCoreDict::getCode,TbCoreDict::getName)
+                .select(TbCoreDict::getCode,TbCoreDict::getName,TbCoreDict::getLocale)
                 .eq(TbCoreDict::getDictTypeCode,dictTypeCode);
         if (ShieldUtil.isRoot()){
             queryWrapper.eq(TbCoreDict::getTenantCode,DEFAULT_TENANT_CODE);

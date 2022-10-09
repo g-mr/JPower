@@ -89,6 +89,17 @@ public class Fc {
     }
 
     /**
+     * 字符串如果是空的则返回默认值，不空返回原字符串
+     *
+     * @author mr.g
+     * @param str 被检测的字符串
+     * @return Str
+     */
+    public static String blankDefault(@Nullable final String str,@org.springframework.lang.NonNull final String defaultValue) {
+        return StringUtil.isBlank(str)?defaultValue:str;
+    }
+
+    /**
      * <p>字符串是否为非空白，非空白的定义如下
      * <pre>
      * $.isNotBlank(null)	= false

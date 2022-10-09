@@ -1,5 +1,6 @@
 package com.wlcb.jpower.dbs.entity;
 
+import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -26,6 +27,7 @@ public class TbLogMonitorParam extends BaseEntity {
     private String method;
 
     @ApiModelProperty("参数类型 字典:PARAM_TYPE")
+    @Dict(name = "PARAM_TYPE")
     private String type;
     @ApiModelProperty("参数名称")
     private String name;

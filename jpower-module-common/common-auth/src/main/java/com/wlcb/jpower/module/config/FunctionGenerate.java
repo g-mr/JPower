@@ -52,13 +52,13 @@ public class FunctionGenerate implements ApplicationRunner {
                         if (Fc.isNoneBlank(menu.menuCode(),menu.code())){
                             List<Map<String,String>> list = functions.getOrDefault(menu.menuCode(),new ArrayList<>());
                             Map<String,String> map = MapUtil.newHashMap(4);
-                            map.put("name",function.value());
+                            map.put("name",Fc.blankDefault(menu.name(),function.value()));
                             //判断code是否重复
                             if (isExist(menu.code())){
                                 throw new IllegalArgumentException("@Function[code] exist repeat value");
                             }
                             map.put("code",menu.code());
-                            map.put("alias",Fc.isBlank(function.alias())?function.value():function.alias());
+                            map.put("alias",Fc.blankDefault(function.alias(),map.get("name")));
                             map.put("url",url);
                             list.add(map);
                             functions.put(menu.menuCode(),list);

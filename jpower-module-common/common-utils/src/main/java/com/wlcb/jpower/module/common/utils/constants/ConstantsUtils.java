@@ -16,4 +16,7 @@ public class ConstantsUtils {
     /** 用户默认是否激活。这里的优先级最低 **/
     public static final Integer DEFAULT_USER_ACTIVATION = ConstantsEnum.YN01.N.getValue();
 
+    /** 国际化语言HEADER **/
+    public static final String I18N_KEY = "Jpower-Language";
+
 }

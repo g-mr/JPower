@@ -16,6 +16,12 @@
             <if test="dictTypeCode!=null and dictTypeCode != ''">
                 and dict.dict_type_code = #{dictTypeCode}
             </if>
+            <if test="isStop!=null and isStop != ''">
+                and dict.is_stop = #{isStop}
+            </if>
+            <if test="locale!=null and locale != ''">
+                and dict.locale = #{locale}
+            </if>
             <if test="code!=null and code!=''">
                 and dict.code like concat(concat('%', #{code}),'%')
             </if>

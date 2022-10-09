@@ -1,6 +1,5 @@
 package com.wlcb.jpower.dbs.entity.dict;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.tenant.entity.TenantEntity;
 import io.swagger.annotations.ApiModelProperty;
@@ -24,8 +23,11 @@ public class TbCoreDict extends TenantEntity {
     @ApiModelProperty("字典名称")
     private String name;
     @ApiModelProperty("语言类型 字典YYZL")
-    @Dict(name = "YYZL",attributes = "localeStr")
-    private String localeId;
+    @Dict(name = "YYZL")
+    private String locale;
+    @ApiModelProperty("是否停用 字典YN")
+    @Dict(name = "YN")
+    private String isStop;
     @ApiModelProperty("备注")
     private String note;
     @ApiModelProperty("排序")
@@ -34,8 +36,5 @@ public class TbCoreDict extends TenantEntity {
     private String parentId;
     @ApiModelProperty("级别")
     private Integer dictLevel;
-
-    @TableField(exist = false)
-    private String localeStr;
 
 }
