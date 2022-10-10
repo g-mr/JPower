@@ -7,3 +7,8 @@ alter table tb_core_dict add is_stop char(1) default 'N' not null comment '是�
 alter table tb_core_dict change locale_id locale varchar(20) default 'zh' not null comment '语言 zh en';
 
 update tb_core_dict set locale = 'zh' where locale = 'zh_cn';
+
+delete from tb_core_dict_type where tenant_code <> '000000';
+
+alter table tb_core_dict_type drop column tenant_code;
+

@@ -12,7 +12,6 @@ import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.ShieldUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.mp.support.Condition;
@@ -23,8 +22,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
-import static com.wlcb.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
 
 /**
  * @author mr.gmac
@@ -43,19 +40,7 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
                 .select(TbCoreDictType::getDictTypeName,
                         TbCoreDictType::getDictTypeCode,
                         TbCoreDictType::getIsTree);
-        if (ShieldUtil.isRoot()){
-            queryWrapper.eq(TbCoreDictType::getTenantCode,DEFAULT_TENANT_CODE);
-        }
         return coreDictTypeDao.tree(queryWrapper.orderByAsc(TbCoreDictType::getSortNum));
-    }
-
-    @Override
-    public List<Tree<String>> listTree(TbCoreDictType dictType) {
-        LambdaTreeWrapper<TbCoreDictType> queryWrapper =
-                ShieldUtil.isRoot()
-                        ? Condition.getLambdaTreeWrapper(dictType,TbCoreDictType::getId,TbCoreDictType::getParentId).eq(TbCoreDictType::getTenantCode,DEFAULT_TENANT_CODE).orderByAsc(TbCoreDictType::getSortNum)
-                        : Condition.getLambdaTreeWrapper(dictType,TbCoreDictType::getId,TbCoreDictType::getParentId).orderByAsc(TbCoreDictType::getSortNum);
-        return coreDictTypeDao.tree(queryWrapper);
     }
 
     @Override
@@ -74,8 +59,7 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
             listType.forEach(type ->
                 coreDictService.removeReal(Condition.<TbCoreDict>getQueryWrapper()
                         .lambda()
-                        .eq(TbCoreDict::getDictTypeCode,type.getDictTypeCode())
-                        .eq(TbCoreDict::getTenantCode,type.getTenantCode()))
+                        .eq(TbCoreDict::getDictTypeCode,type.getDictTypeCode()))
             );
             return true;
         }else {
@@ -89,11 +73,6 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
         dictType.setDelEnabled(Fc.isBlank(dictType.getDelEnabled())? ConstantsEnum.YN.Y.getValue() :dictType.getDelEnabled());
 
         LambdaQueryWrapper<TbCoreDictType> queryWrapper = Condition.<TbCoreDictType>getQueryWrapper().lambda().eq(TbCoreDictType::getDictTypeCode,dictType.getDictTypeCode());
-        if (ShieldUtil.isRoot()){
-            String tenant = Fc.isBlank(dictType.getTenantCode())?DEFAULT_TENANT_CODE:dictType.getTenantCode();
-            dictType.setTenantCode(tenant);
-            queryWrapper.eq(TbCoreDictType::getTenantCode,tenant);
-        }
         JpowerAssert.geZero(coreDictTypeDao.count(queryWrapper),JpowerError.Business,"该字典类型已存在");
 
         return coreDictTypeDao.save(dictType);
@@ -108,9 +87,6 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
                 LambdaUpdateWrapper<TbCoreDict> queryWrapper = new UpdateWrapper<TbCoreDict>().lambda()
                         .set(TbCoreDict::getDictTypeCode,dictType.getDictTypeCode())
                         .eq(TbCoreDict::getDictTypeCode,coreDictType.getDictTypeCode());
-                if (ShieldUtil.isRoot()){
-                    queryWrapper.eq(TbCoreDict::getTenantCode,coreDictType.getTenantCode());
-                }
                 coreDictService.update(queryWrapper);
             }
             return true;

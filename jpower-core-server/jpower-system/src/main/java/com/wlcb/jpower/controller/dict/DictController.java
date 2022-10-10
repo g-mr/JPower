@@ -58,12 +58,6 @@ public class DictController extends BaseController {
         return ReturnJsonUtil.ok("查询成功",coreDictTypeService.tree());
     }
 
-//    @ApiOperation("查询所有字典类型树形列表结构")
-//    @RequestMapping(value = "/dictTypeListTree",method = RequestMethod.GET,produces="application/json")
-//    public ResponseData<List<Tree<String>>> dictTypeListTree(TbCoreDictType dictType){
-//        return ReturnJsonUtil.ok("查询成功",coreDictTypeService.listTree(dictType));
-//    }
-
     @Function(value = "新增字典类型",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_TYPE_ADD")
     })

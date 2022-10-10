@@ -11,7 +11,6 @@ import com.wlcb.jpower.dbs.dao.tenant.TbCoreTenantDao;
 import com.wlcb.jpower.dbs.dao.tenant.mapper.TbCoreTenantMapper;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.dbs.entity.dict.TbCoreDict;
-import com.wlcb.jpower.dbs.entity.dict.TbCoreDictType;
 import com.wlcb.jpower.dbs.entity.function.TbCoreFunction;
 import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
 import com.wlcb.jpower.dbs.entity.role.TbCoreRole;
@@ -37,6 +36,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.wlcb.jpower.module.common.utils.constants.JpowerConstants.TOP_CODE;
 import static com.wlcb.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
@@ -135,18 +135,28 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
             roleFunctionDao.saveBatch(roleFunctionList);
 
             //创建租户默认字典
-            LinkedList<TbCoreDictType> dictTypes = new LinkedList<>();
-            LinkedList<TbCoreDict> dicts = new LinkedList<>();
-            getDictTypes(TOP_CODE,TOP_CODE,tenant.getTenantCode(),dictTypes,dicts);
-            dictTypeDao.saveBatch(dictTypes);
-            dictDao.saveBatch(dicts);
+            List<TbCoreDict> dictList = dictDao.list(Condition.<TbCoreDict>getQueryWrapper().lambda().eq(TbCoreDict::getTenantCode,DEFAULT_TENANT_CODE).orderByAsc(TbCoreDict::getParentId));
+            Map<String,String> map = new HashMap<>(dictList.size());
+            dictList = dictList.stream().peek(dict->{
+              dict.setTenantCode(tenant.getTenantCode());
+              String id = Fc.randomUUID();
+              //把旧ID和新ID的对应关系存储起来
+              map.put(dict.getId(),id);
+              dict.setId(id);
+            }).collect(Collectors.toList());
+            dictList = dictList.stream().peek(dict -> {
+                if (!Fc.equalsValue(dict.getParentId(),TOP_CODE)){
+                    dict.setParentId(map.get(dict.getParentId()));
+                }
+            }).collect(Collectors.toList());
+            dictDao.addBatchSomeColumn(dictList);
 
             //创建租户默认用户 (必须放到最后创建，因为没有启动分布式事务)
             TbCoreUser user = new TbCoreUser();
             user.setLoginId("admin");
             user.setPassword(DigestUtil.pwdEncrypt(MD5.md5HexToUpperCase(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD, ConstantsUtils.DEFAULT_USER_PASSWORD))));
-            user.setNickName("管理员");
-            user.setUserName("管理员");
+            user.setNickName(tenant.getTenantName()+"-管理员");
+            user.setUserName(tenant.getTenantName()+"-管理员");
             user.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_SYSTEM.getValue());
             user.setBirthday(new Date());
             user.setActivationStatus(ConstantsEnum.YN01.Y.getValue());
@@ -178,49 +188,6 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
         });
 
         return functionIds;
-    }
-
-    /**
-     * @author 郭丁志
-     * @Description //TODO 查询新租户默认字典类型
-     * @date 16:50 2020/10/25 0025
-     * @return void
-     */
-    private void getDictTypes(String oldParentId,String newParentId,String tenantCode,LinkedList<TbCoreDictType> dictTypes,LinkedList<TbCoreDict> dicts){
-        List<TbCoreDictType> dictTypeList = dictTypeDao.list(Condition.<TbCoreDictType>getQueryWrapper().lambda()
-                .eq(TbCoreDictType::getTenantCode,DEFAULT_TENANT_CODE)
-                .eq(TbCoreDictType::getParentId,oldParentId));
-        dictTypeList.forEach(type -> {
-            String oldId = type.getId();
-            type.setId(Fc.randomUUID());
-            type.setTenantCode(tenantCode);
-            type.setParentId(newParentId);
-            dictTypes.add(type);
-            getDicts(type.getDictTypeCode(),TOP_CODE,TOP_CODE,tenantCode,dicts);
-            getDictTypes(oldId,type.getId(),tenantCode,dictTypes,dicts);
-        });
-    }
-
-    /**
-     * @author 郭丁志
-     * @Description //TODO 新增新租户默认字典
-     * @date 16:50 2020/10/25 0025
-     * @return void
-     */
-    private void getDicts(String typeCode,String top,String parentId,String tenantCode,LinkedList<TbCoreDict> dicts){
-        List<TbCoreDict> dictList = dictDao.list(Condition.<TbCoreDict>getQueryWrapper().lambda()
-                .eq(TbCoreDict::getTenantCode,DEFAULT_TENANT_CODE)
-                .eq(TbCoreDict::getDictTypeCode,typeCode)
-                .eq(TbCoreDict::getParentId,top));
-
-        dictList.forEach(dict -> {
-            String oldId = dict.getId();
-            dict.setId(Fc.randomUUID());
-            dict.setTenantCode(tenantCode);
-            dict.setParentId(parentId);
-            dicts.add(dict);
-            getDicts(typeCode,oldId,dict.getId(),tenantCode,dicts);
-        });
     }
 
     @Override

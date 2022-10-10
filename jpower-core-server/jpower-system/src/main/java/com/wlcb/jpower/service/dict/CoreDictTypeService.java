@@ -22,13 +22,6 @@ public interface CoreDictTypeService extends BaseService<TbCoreDictType> {
 
     /**
      * @author 郭丁志
-     * @Description //TODO 查询字典类型树形列表结构
-     * @date 18:24 2020/7/26 0026
-     */
-    List<Tree<String>> listTree(TbCoreDictType dictType);
-
-    /**
-     * @author 郭丁志
      * @Description //TODO 批量删除字典类型
      * @date 19:23 2020/7/26 0026
      * @param ids
