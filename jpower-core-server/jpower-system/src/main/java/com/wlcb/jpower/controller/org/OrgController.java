@@ -90,7 +90,6 @@ public class OrgController extends BaseController {
             return ReturnJsonUtil.busFail("您选中的组织机构存在下级机构，请先删除下级机构");
         }
 
-
         List<String> tenants = coreOrgService.listObjs(Condition.<TbCoreOrg>getQueryWrapper().lambda().select(TbCoreOrg::getTenantCode).in(TbCoreOrg::getId,Fc.toStrList(ids)),Fc::toStr);
         Boolean is = coreOrgService.removeByIds(Fc.toStrList(ids));
 

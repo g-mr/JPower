@@ -82,7 +82,8 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     public long listByPids(String ids) {
         return coreFunctionDao.count(Condition.<TbCoreFunction>getQueryWrapper()
                 .lambda()
-                .in(TbCoreFunction::getParentId,Fc.toStrList(ids)));
+                .in(TbCoreFunction::getParentId,Fc.toStrList(ids))
+                .notIn(TbCoreFunction::getId,Fc.toStrList(ids)));
     }
 
     @Override
