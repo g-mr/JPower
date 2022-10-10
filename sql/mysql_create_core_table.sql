@@ -149,7 +149,6 @@ CREATE TABLE `tb_core_dict_type`  (
   `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   `status` tinyint(1) NULL DEFAULT 1 COMMENT '状态',
   `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
-  `tenant_code` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '000000' COMMENT '租户编码',
   `is_tree` tinyint(1) NULL DEFAULT NULL COMMENT '是否树形结构 字典YN01',
   `create_org` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
