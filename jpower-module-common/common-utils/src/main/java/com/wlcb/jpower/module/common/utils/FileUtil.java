@@ -125,6 +125,7 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
                 response.setContentType("application/octet-stream");
                 // 下载文件能正常显示中文
                 response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
+                response.setHeader("filename",URLEncoder.encode(fileName, "UTF-8"));
                 // 实现文件下载
                 byte[] buffer = new byte[1024];
                 FileInputStream fis = null;

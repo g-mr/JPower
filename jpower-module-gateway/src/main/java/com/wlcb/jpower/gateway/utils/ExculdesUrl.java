@@ -19,12 +19,6 @@ public class ExculdesUrl {
         exculudesUrl.add("/v2/api-docs-ext/**");
         exculudesUrl.add("/v2/api-docs/**");
         exculudesUrl.add("/chat/file/**");
-
-        exculudesUrl.add("/core/dict/getDictListByType");
-        exculudesUrl.add("/core/user/downloadTemplate");
-        exculudesUrl.add("/core/tenant/selectors");
-        exculudesUrl.add("/core/function/listMenuTree");
-        exculudesUrl.add("/core/function/listBut");
         exculudesUrl.add("/all/restful");
     }
 

@@ -20,12 +20,6 @@ public class AuthDefExculdesUrl {
         exculudesUrl.add("/doc.html");
         exculudesUrl.add("/webjars/**");
         exculudesUrl.add("/druid/**");
-
-        exculudesUrl.add("/core/dict/getDictListByType");
-        exculudesUrl.add("/core/user/downloadTemplate");
-        exculudesUrl.add("/core/tenant/selectors");
-        exculudesUrl.add("/core/function/listMenuTree");
-        exculudesUrl.add("/core/function/listBut");
     }
 
     /**
