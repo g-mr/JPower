@@ -11,6 +11,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jpower-feign-api</artifactId>
     <packaging>pom</packaging>
+
     <modules>
         <module>jpower-file-api</module>
         <module>jpower-system-api</module>

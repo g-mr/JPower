@@ -39,7 +39,7 @@ public class SwaggerProperties {
     /**
      * 在basePath基础上需要排除的url规则
      **/
-    private List<String> excludePath = Arrays.asList("/error", "/actuator/**");
+    private List<String> excludePath = Arrays.asList("/error", "/actuator/**", "/getAllFunction");
 
     /**
      * host信息

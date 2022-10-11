@@ -19,6 +19,7 @@ public class BuiltController{
 
     public static final String PATH = "/getAllFunction";
 
+
     @GetMapping(value = PATH)
     public Map<String,List<Map<String,String>>> getAllFunction(){
         return FunctionGenerate.functions;

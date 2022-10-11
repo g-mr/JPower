@@ -7,8 +7,8 @@
         <groupId>com.wlcb</groupId>
         <version>2.1.6</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
+    <modelVersion>4.0.0</modelVersion>
     <artifactId>jpower-module-gateway</artifactId>
 
     <dependencies>
@@ -20,10 +20,6 @@
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-web</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.wlcb</groupId>
-                    <artifactId>common-transaction</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

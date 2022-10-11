@@ -7,12 +7,11 @@
         <groupId>com.wlcb</groupId>
         <version>2.1.6</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
+    <modelVersion>4.0.0</modelVersion>
     <artifactId>jpower-core-login</artifactId>
 
     <dependencies>
-
         <dependency>
             <groupId>com.wlcb</groupId>
             <artifactId>jpower-user-api</artifactId>
@@ -84,7 +83,6 @@
                 <groupId>com.spotify</groupId>
                 <artifactId>dockerfile-maven-plugin</artifactId>
                 <configuration>
-                    <repository>${docker.registry}/${docker.image.prefix}/auth-server</repository>
                     <skip>false</skip>
                 </configuration>
             </plugin>
