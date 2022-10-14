@@ -197,6 +197,7 @@ public class AuthController extends BaseController {
             return ReturnJsonUtil.fail("该用户已注册");
         }
 
+        user.setPassword(DigestUtil.pwdEncrypt(coreUser.getPassword()));
         return userClient.saveUser(coreUser, ParamConfig.getString(ParamsConstants.REGISTER_ROLE_ID));
     }
 
