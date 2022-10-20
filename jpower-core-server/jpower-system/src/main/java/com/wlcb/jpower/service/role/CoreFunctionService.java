@@ -106,12 +106,12 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
 
     /**
      * @Author 郭丁志
-     * @Description //TODO 根据角色，查询一个菜单code下的所有可用按钮
+     * @Description //TODO 根据角色，查询一个角色下的所有可用按钮
      * @Date 11:38 2020-07-30
-     * @Param [roleIds, code]
+     * @Param [roleIds]
      * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction>
      **/
-    List<TbCoreFunction> listBtnByRoleIdAndPcode(List<String> roleIds, String id);
+    List<String> listBtnByRoleId(List<String> roleIds);
 
     /**
      * @Author 郭丁志

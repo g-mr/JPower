@@ -193,11 +193,10 @@ public class FunctionController extends BaseController {
         return ReturnJsonUtil.data(ForestNodeMerger.mergeTree(BeanUtil.copyToList(list,FunctionVo.class)));
     }
 
-    @ApiOperation(value = "查询登录用户一个菜单下的所有按钮接口资源（用于页面权限）", notes = "用于页面权限判断，会把顶级按钮一起返回，顶级按钮代表所有菜单都可拥有权限")
+    @ApiOperation(value = "查询登录用户所有按钮接口资源（用于页面权限）", notes = "用于页面权限判断，会把顶级按钮一起返回，顶级按钮代表所有菜单都可拥有权限")
     @GetMapping(value = "/listBut", produces="application/json")
-    public ResponseData<List<TbCoreFunction>> listBut(@ApiParam(value = "菜单Id",required = true) @RequestParam String id){
-        JpowerAssert.notEmpty(id, JpowerError.Arg, "菜单id不可为空");
-        List<TbCoreFunction> list = coreFunctionService.listBtnByRoleIdAndPcode(ShieldUtil.getUserRole(),id);
+    public ResponseData<List<String>> listBut(){
+        List<String> list = coreFunctionService.listBtnByRoleId(ShieldUtil.getUserRole());
         return ReturnJsonUtil.ok("查询成功", list);
     }
 

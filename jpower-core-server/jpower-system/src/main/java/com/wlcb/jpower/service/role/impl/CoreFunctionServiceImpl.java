@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.wlcb.jpower.module.common.utils.constants.JpowerConstants.TOP_CODE;
 import static com.wlcb.jpower.module.config.BuiltController.PATH;
 
 /**
@@ -178,14 +177,13 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     }
 
     @Override
-    public List<TbCoreFunction> listBtnByRoleIdAndPcode(List<String> roleIds, String id) {
+    public List<String> listBtnByRoleId(List<String> roleIds) {
         String inSql = StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE);
-        return coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
+        return coreFunctionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
+                .select(TbCoreFunction::getCode)
                 .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.N.getValue())
                 .eq(TbCoreFunction::getClientId,clientDao.queryIdByCode(ShieldUtil.getClientCode()))
-                .and(consumer -> consumer.eq(TbCoreFunction::getParentId, id).or(c
-                        -> c.eq(TbCoreFunction::getParentId, TOP_CODE)))
-                .inSql(TbCoreFunction::getId,StringUtil.format(sql,inSql)));
+                .inSql(TbCoreFunction::getId,StringUtil.format(sql,inSql)),Fc::toStr);
     }
 
     @Override
