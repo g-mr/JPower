@@ -111,7 +111,8 @@ public class ClientController extends BaseController {
     @Function(value = "客户端下拉",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "FUNCTION_CLIENT_SELECT"),
             @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_CLIENT_SELECT"),
-            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "DATASCOPE_CLIENT_SELECT")
+            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "DATASCOPE_CLIENT_SELECT"),
+            @Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_CLIENT_SELECT")
     })
     @ApiOperation("下拉客户端列表")
     @GetMapping("selectList")

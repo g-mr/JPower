@@ -433,6 +433,63 @@ CREATE TABLE `tb_core_user_role`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户角色表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Table structure for tb_core_top_menu
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_core_top_menu`;
+CREATE TABLE `tb_core_top_menu`  (
+    `id` varchar(32)  NOT NULL COMMENT '主键',
+    `client_id` varchar(32) NOT NULL COMMENT '客户端ID',
+    `code` varchar(25) NOT NULL COMMENT '菜单编号',
+    `name` varchar(128) NOT NULL COMMENT '菜单名称',
+    `sort_num` int(6) NOT NULL DEFAULT 1 COMMENT '排序',
+    `note` varchar(525) NULL DEFAULT NULL COMMENT '备注说明',
+    `create_user` varchar(32)  NOT NULL DEFAULT 'root' COMMENT '创建人',
+    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+    `update_user` varchar(32)  NOT NULL DEFAULT 'root' COMMENT '更新人',
+    `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+    `status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '状态 1启用 0停用',
+    `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+    `create_org` varchar(32)  NULL DEFAULT NULL COMMENT '创建部门',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '顶级菜单表';
+
+-- ----------------------------
+-- Table structure for tb_core_role_menu
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_core_role_menu`;
+CREATE TABLE `tb_core_role_menu`  (
+    `id` varchar(32)  NOT NULL COMMENT '主键',
+    `role_id` varchar(32) NOT NULL COMMENT '角色ID',
+    `menu_id` varchar(32) NOT NULL COMMENT '菜单ID',
+    `create_user` varchar(32)  NOT NULL DEFAULT 'root' COMMENT '创建人',
+    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+    `update_user` varchar(32)  NOT NULL DEFAULT 'root' COMMENT '更新人',
+    `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+    `status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '状态',
+    `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+    `create_org` varchar(32)  NULL DEFAULT NULL COMMENT '创建部门',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '角色顶级菜单关联表';
+
+-- ----------------------------
+-- Table structure for tb_core_function_menu
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_core_function_menu`;
+CREATE TABLE `tb_core_function_menu`  (
+    `id` varchar(32)  NOT NULL COMMENT '主键',
+    `function_id` varchar(32) NOT NULL COMMENT '功能ID',
+    `menu_id` varchar(32) NOT NULL COMMENT '菜单ID',
+    `create_user` varchar(32)  NOT NULL DEFAULT 'root' COMMENT '创建人',
+    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+    `update_user` varchar(32)  NOT NULL DEFAULT 'root' COMMENT '更新人',
+    `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+    `status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '状态',
+    `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+    `create_org` varchar(32)  NULL DEFAULT NULL COMMENT '创建部门',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '功能菜单顶级菜单关联表';
+
+-- ----------------------------
 -- Table structure for tb_log_error
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_log_error`;

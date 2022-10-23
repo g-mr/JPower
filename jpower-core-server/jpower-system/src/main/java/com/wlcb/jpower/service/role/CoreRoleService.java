@@ -3,6 +3,8 @@ package com.wlcb.jpower.service.role;
 import com.wlcb.jpower.dbs.entity.role.TbCoreRole;
 import com.wlcb.jpower.module.common.service.BaseService;
 
+import java.util.List;
+
 /**
  * @author mr.gmac
  */
@@ -34,4 +36,23 @@ public interface CoreRoleService extends BaseService<TbCoreRole> {
      * @return java.lang.Integer
      **/
     Boolean update(TbCoreRole coreRole);
+
+    /**
+     * 保存顶部菜单关联信息
+     *
+     * @author mr.g
+     * @param roleId 角色ID
+     * @param menuIds 顶部菜单ID
+     * @return boolean
+     **/
+    boolean saveTopMenu(String roleId, List<String> menuIds);
+
+    /**
+     * 角色关联的顶部菜单ID
+     *
+     * @author mr.g
+     * @param roleId 角色ID
+     * @return java.util.List<java.lang.String>
+     **/
+    List<String> topMenuId(String roleId);
 }
