@@ -5,9 +5,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wlcb.jpower.dbs.dao.client.TbCoreClientDao;
 import com.wlcb.jpower.dbs.dao.role.TbCoreFunctionDao;
+import com.wlcb.jpower.dbs.dao.role.TbCoreFunctionMenuDao;
 import com.wlcb.jpower.dbs.dao.role.TbCoreRoleFunctionDao;
 import com.wlcb.jpower.dbs.dao.role.mapper.TbCoreFunctionMapper;
 import com.wlcb.jpower.dbs.entity.function.TbCoreFunction;
+import com.wlcb.jpower.dbs.entity.function.TbCoreFunctionMenu;
 import com.wlcb.jpower.dbs.entity.role.TbCoreRoleFunction;
 import com.wlcb.jpower.module.common.auth.RoleConstant;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
@@ -16,6 +18,7 @@ import com.wlcb.jpower.module.common.utils.NacosUtil;
 import com.wlcb.jpower.module.common.utils.ShieldUtil;
 import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
+import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.module.mp.support.LambdaTreeWrapper;
@@ -26,10 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.wlcb.jpower.module.config.BuiltController.PATH;
@@ -46,6 +46,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     private RestTemplate restTemplate;
     private TbCoreFunctionDao coreFunctionDao;
     private TbCoreRoleFunctionDao coreRoleFunctionDao;
+    private TbCoreFunctionMenuDao functionMenuDao;
     private TbCoreClientDao clientDao;
 
     @Override
@@ -133,17 +134,45 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     }
 
     @Override
-    public List<TbCoreFunction> listMenuByRoleId(List<String> roleIds, String clientCode) {
+    public List<TbCoreFunction> listMenuByRoleId(List<String> roleIds, String clientCode, String topMenuId) {
 
         if (Fc.isEmpty(roleIds)){
             return new ArrayList<>();
         }
 
         String inSql = StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE);
-        return coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
+        List<TbCoreFunction> list = coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                 .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.Y.getValue())
                 .eq(TbCoreFunction::getClientId,clientDao.queryIdByCode(clientCode))
-                .inSql(TbCoreFunction::getId,StringUtil.format(sql,inSql)).orderByAsc(TbCoreFunction::getSort));
+                .inSql(!ShieldUtil.isRoot(), TbCoreFunction::getId,StringUtil.format(sql,inSql))
+                .orderByAsc(TbCoreFunction::getSort));
+
+        //获取顶部菜单关联的左侧菜单
+        if (Fc.isNotBlank(topMenuId)){
+            Set<String> listId = new HashSet<>(functionMenuDao.listObjs(Condition.<TbCoreFunctionMenu>getQueryWrapper().lambda().select(TbCoreFunctionMenu::getFunctionId).eq(TbCoreFunctionMenu::getMenuId,topMenuId), Fc::toStr));
+            listId.addAll(findDescendants(list,listId));
+            list = list.stream().filter(function -> listId.contains(function.getId())).collect(Collectors.toList());
+        }
+        return list;
+    }
+
+    /**
+     * 查找子孙级别
+     *
+     * @author mr.g
+     * @param listAll 全部功能
+     * @param listId 一级功能ID
+     * @return java.util.List<com.wlcb.jpower.dbs.entity.function.TbCoreFunction>
+     **/
+    private Set<String> findDescendants(List<TbCoreFunction> listAll, Set<String> listId) {
+
+        Set<String> childrenId = listAll.stream().filter(function -> listId.contains(function.getParentId())).map(TbCoreFunction::getId).collect(Collectors.toSet());
+
+        if (Fc.isNotEmpty(childrenId)) {
+            listId.addAll(findDescendants(listAll, childrenId));
+        }
+
+        return listId;
     }
 
     @Override
@@ -177,12 +206,28 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     }
 
     @Override
-    public List<String> listBtnByRoleId(List<String> roleIds) {
+    public List<String> listBtnByRoleId(List<String> roleIds, String topMenuId) {
         String inSql = StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE);
+
+        String clientId = clientDao.queryIdByCode(ShieldUtil.getClientCode());
+
+        Set<String> listId = new HashSet<>();
+        if (Fc.isNotBlank(topMenuId)){
+            List<TbCoreFunction> list = coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
+                    .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.Y.getValue())
+                    .eq(TbCoreFunction::getClientId, clientId)
+                    .inSql(!ShieldUtil.isRoot(), TbCoreFunction::getId,StringUtil.format(sql,inSql))
+                    .orderByAsc(TbCoreFunction::getSort));
+            //获取顶部菜单关联的左侧菜单
+            listId.addAll(functionMenuDao.listObjs(Condition.<TbCoreFunctionMenu>getQueryWrapper().lambda().select(TbCoreFunctionMenu::getFunctionId).eq(TbCoreFunctionMenu::getMenuId,topMenuId), Fc::toStr));
+            listId.addAll(findDescendants(list,listId));
+        }
+
         return coreFunctionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                 .select(TbCoreFunction::getCode)
                 .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.N.getValue())
-                .eq(TbCoreFunction::getClientId,clientDao.queryIdByCode(ShieldUtil.getClientCode()))
+                .eq(TbCoreFunction::getClientId,clientId)
+                .and(Fc.isNotEmpty(listId),q -> q.in(TbCoreFunction::getParentId,listId).or().eq(TbCoreFunction::getParentId, JpowerConstants.TOP_CODE))
                 .inSql(TbCoreFunction::getId,StringUtil.format(sql,inSql)),Fc::toStr);
     }
 

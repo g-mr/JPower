@@ -138,7 +138,7 @@ public class TokenUtil {
      **/
     private static void cacheAuth(AuthInfo authInfo,TbCoreClient client) {
         List<TbCoreDataScope> dataScopeRoleList = SystemCache.getDataScopeByRole(authInfo.getUser().getRoleIds(),client.getClientCode());
-        List<TbCoreFunction> menuList = SystemCache.getMenuListByRole(authInfo.getUser().getRoleIds(),client.getClientCode());
+        List<TbCoreFunction> menuList = SystemCache.getMenuListByRole(authInfo.getUser().getRoleIds(),client.getClientCode(),null);
 
         Map<String, List<DataScope>> map = ChainMap.<String,List<DataScope>>create().build();
         if (Fc.isNotEmpty(dataScopeRoleList)){

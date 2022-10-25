@@ -48,8 +48,8 @@ public class TbCoreFunction extends BaseEntity implements Serializable {
     private String moudeSummary;
     @ApiModelProperty("操作说明")
     private String operateInstruction;
-    @ApiModelProperty("菜单级别")
-    private Integer functionLevel;
+//    @ApiModelProperty("菜单级别")
+//    private Integer functionLevel;
 
     @TableField(exist = false)
     private String isMenuStr;

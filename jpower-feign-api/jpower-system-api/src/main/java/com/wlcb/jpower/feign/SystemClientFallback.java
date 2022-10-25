@@ -48,7 +48,7 @@ public class SystemClientFallback implements SystemClient {
     }
 
     @Override
-    public ResponseData<List<TbCoreFunction>> getMenuListByRole(List<String> roleIds, String clientCode) {
+    public ResponseData<List<TbCoreFunction>> getMenuListByRole(List<String> roleIds, String clientCode, String topMenuId) {
         return ReturnJsonUtil.fail("查询失败");
     }
 

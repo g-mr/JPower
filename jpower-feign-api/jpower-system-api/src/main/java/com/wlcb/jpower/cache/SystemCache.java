@@ -135,9 +135,9 @@ public class SystemCache {
      * @date 23:28 2020/11/5 0005
      * @param roleIds 角色ID
      */
-    public static List<TbCoreFunction> getMenuListByRole(List<String> roleIds, String clientCode) {
+    public static List<TbCoreFunction> getMenuListByRole(List<String> roleIds, String clientCode, String topMenuId) {
         return CacheUtil.get(CacheNames.FUNCTION_KEY,CacheNames.MENU_CLIENT_ROLE_KEY,clientCode+StringPool.COLON+roleIds,() -> {
-            ResponseData<List<TbCoreFunction>> responseData = systemClient.getMenuListByRole(roleIds,clientCode);
+            ResponseData<List<TbCoreFunction>> responseData = systemClient.getMenuListByRole(roleIds, clientCode, topMenuId);
             return responseData.getData();
         });
     }

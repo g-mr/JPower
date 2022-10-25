@@ -62,8 +62,8 @@ public class SystemClientController extends BaseController implements SystemClie
 
     @Override
     @GetMapping("/function/getMenuListByRole")
-    public ResponseData<List<TbCoreFunction>> getMenuListByRole(@RequestParam List<String> roleIds, @RequestParam String clientCode) {
-        return ReturnJsonUtil.ok("查询成功",coreFunctionService.listMenuByRoleId(roleIds,clientCode));
+    public ResponseData<List<TbCoreFunction>> getMenuListByRole(@RequestParam List<String> roleIds, @RequestParam String clientCode, @RequestParam String topMenuId) {
+        return ReturnJsonUtil.ok("查询成功",coreFunctionService.listMenuByRoleId(roleIds,clientCode, topMenuId));
     }
 
     @Override

@@ -43,7 +43,7 @@ public interface SystemClient {
     ResponseData<TbCoreTenant> getTenantByCode(@RequestParam String tenantCode);
 
     @GetMapping("/function/getMenuListByRole")
-    ResponseData<List<TbCoreFunction>> getMenuListByRole(@RequestParam List<String> roleIds, @RequestParam String clientCode);
+    ResponseData<List<TbCoreFunction>> getMenuListByRole(@RequestParam List<String> roleIds, @RequestParam String clientCode, @RequestParam String topMenuId);
 
     @GetMapping("/dataScope/getAllRoleDataScope")
     ResponseData<List<TbCoreDataScope>> getAllRoleDataScope();

@@ -13,7 +13,6 @@ import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.node.ForestNodeMerger;
 import com.wlcb.jpower.module.common.utils.*;
-import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsReturn;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.client.CoreClientService;
@@ -179,24 +178,15 @@ public class FunctionController extends BaseController {
 
     @ApiOperation("页面菜单获取")
     @GetMapping(value = "/listMenuTree", produces="application/json")
-    public ResponseData<List<Tree<String>>> listMenuTree(){
+    public ResponseData<List<Tree<String>>> listMenuTree(@ApiParam("顶部菜单ID") String topMenuId){
         List<String> roleIds = ShieldUtil.getUserRole();
-
-        List<TbCoreFunction> list = ShieldUtil.isRoot()
-                ?
-                coreFunctionService.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
-                .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.Y.getValue())
-                .eq(TbCoreFunction::getClientId,clientService.queryIdByCode(ShieldUtil.getClientCode()))
-                .orderByAsc(TbCoreFunction::getSort))
-                :
-                coreFunctionService.listMenuByRoleId(roleIds,ShieldUtil.getClientCode());
-        return ReturnJsonUtil.data(ForestNodeMerger.mergeTree(BeanUtil.copyToList(list,FunctionVo.class)));
+        return ReturnJsonUtil.data(ForestNodeMerger.mergeTree(BeanUtil.copyToList(coreFunctionService.listMenuByRoleId(roleIds,ShieldUtil.getClientCode(),topMenuId),FunctionVo.class)));
     }
 
     @ApiOperation(value = "查询登录用户所有按钮接口资源（用于页面权限）", notes = "用于页面权限判断，会把顶级按钮一起返回，顶级按钮代表所有菜单都可拥有权限")
     @GetMapping(value = "/listBut", produces="application/json")
-    public ResponseData<List<String>> listBut(){
-        List<String> list = coreFunctionService.listBtnByRoleId(ShieldUtil.getUserRole());
+    public ResponseData<List<String>> listBut(@ApiParam("顶部菜单ID") String topMenuId){
+        List<String> list = coreFunctionService.listBtnByRoleId(ShieldUtil.getUserRole(),topMenuId);
         return ReturnJsonUtil.ok("查询成功", list);
     }
 
