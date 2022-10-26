@@ -271,7 +271,14 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
         List<String> servers = NacosUtil.getAllServers();
         if (Fc.isNotEmpty(servers)){
             //去请求拿到所有的功能点
-            List<Map> list = servers.stream().map(name-> restTemplate.getForObject("http://"+name+PATH,Map.class)).collect(Collectors.toList());
+            //去请求拿到所有的功能点
+            List<Map> list = servers.stream().map(name-> {
+                try {
+                    return restTemplate.getForObject("http://"+name+PATH,Map.class);
+                }catch (Exception e){
+                    return new HashMap();
+                }
+            }).collect(Collectors.toList());
 
             //拿到所有的菜单
             List<TbCoreFunction> menus = coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda().eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.Y.getValue()));
