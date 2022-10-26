@@ -191,7 +191,7 @@ public class RoleController extends BaseController {
             @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_TOPMENU_ID")
     })
     @ApiOperation("角色关联的顶部菜单ID")
-    @PostMapping(value = "/topMenuId",produces="application/json")
+    @GetMapping(value = "/topMenuId",produces="application/json")
     public ResponseData<List<String>> topMenuId(@ApiParam(value = "角色ID") String roleId){
         JpowerAssert.notEmpty(roleId,JpowerError.Arg,"角色ID不可为空");
 

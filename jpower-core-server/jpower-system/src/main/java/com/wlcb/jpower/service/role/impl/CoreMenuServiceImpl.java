@@ -71,6 +71,6 @@ public class CoreMenuServiceImpl extends BaseServiceImpl<TbCoreTopMenuMapper, Tb
                         .select(TbCoreTopMenu::getId,TbCoreTopMenu::getName,TbCoreTopMenu::getCode)
                         .eq(TbCoreTopMenu::getStatus, ConstantsEnum.YN01.Y.getValue())
                         .eq(TbCoreTopMenu::getClientId,clientDao.queryIdByCode(ShieldUtil.getClientCode()))
-                        .inSql(TbCoreTopMenu::getId,sql));
+                        .inSql(!ShieldUtil.isRoot(),TbCoreTopMenu::getId,sql));
     }
 }

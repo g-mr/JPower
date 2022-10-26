@@ -10,6 +10,7 @@ import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.base.vo.Pg;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
+import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
@@ -50,7 +51,7 @@ public class TopMenuController extends BaseController {
     })
     @ApiOperation("新增菜单")
     @PostMapping(value = "/add",produces="application/json")
-    public ResponseData list(TbCoreTopMenu topMenu){
+    public ResponseData add(TbCoreTopMenu topMenu){
         topMenu.setId(null);
         JpowerAssert.notEmpty(topMenu.getCode(), JpowerError.Arg,"编号不可为空");
         JpowerAssert.notEmpty(topMenu.getName(), JpowerError.Arg,"名称不可为空");
@@ -107,7 +108,7 @@ public class TopMenuController extends BaseController {
     @ApiOperation("删除菜单")
     @GetMapping(value = "/list",produces="application/json")
     public ResponseData<Pg<TbCoreTopMenu>> list(@ApiIgnore @RequestParam Map<String,Object> map){
-        return ReturnJsonUtil.data(menuService.list(Condition.getQueryWrapper(map,TbCoreTopMenu.class)));
+        return ReturnJsonUtil.data(menuService.page(PaginationContext.getMpPage(), Condition.getQueryWrapper(map,TbCoreTopMenu.class)));
     }
 
     @Function(value = "顶部菜单",menus = {
@@ -155,12 +156,10 @@ public class TopMenuController extends BaseController {
     })
     @ApiOperation("一级菜单列表")
     @GetMapping(value = "/listFunction",produces="application/json")
-    public ResponseData<List<Map<String,Object>>> listFunction(@ApiParam(value = "顶部菜单ID",required = true) String menuId){
-        JpowerAssert.notEmpty(menuId,JpowerError.Arg,"顶部菜单ID不可为空");
+    public ResponseData<List<Map<String,Object>>> listFunction(@ApiParam(value = "客户端ID",required = true) String clientId){
+        JpowerAssert.notEmpty(clientId,JpowerError.Arg,"客户端ID不可为空");
 
-        String clientId = menuService.getObj(Condition.<TbCoreTopMenu>getQueryWrapper().lambda().select(TbCoreTopMenu::getClientId).eq(TbCoreTopMenu::getId,menuId), Fc::toStr);
-        JpowerAssert.notEmpty(clientId,JpowerError.NotFind,"顶部菜单");
-        return ReturnJsonUtil.data(functionService.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
+        return ReturnJsonUtil.data(functionService.listMaps(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                         .select(TbCoreFunction::getId,TbCoreFunction::getFunctionName)
                         .eq(TbCoreFunction::getParentId, TOP_CODE)
                         .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.Y.getValue())
