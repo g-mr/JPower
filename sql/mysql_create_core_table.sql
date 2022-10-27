@@ -152,7 +152,7 @@ CREATE TABLE `tb_core_dict_type`  (
   `is_tree` tinyint(1) NULL DEFAULT NULL COMMENT '是否树形结构 字典YN01',
   `create_org` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `core_dict_type`(`dict_type_code`, `tenant_code`) USING BTREE
+  UNIQUE INDEX `core_dict_type`(`dict_type_code`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '字典类型表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -441,6 +441,8 @@ CREATE TABLE `tb_core_top_menu`  (
     `client_id` varchar(32) NOT NULL COMMENT '客户端ID',
     `code` varchar(25) NOT NULL COMMENT '菜单编号',
     `name` varchar(128) NOT NULL COMMENT '菜单名称',
+    `icon` varchar(100) DEFAULT NULL COMMENT '图标',
+    `router` varchar(50) DEFAULT NULL COMMENT '首页路由',
     `sort_num` int(6) NOT NULL DEFAULT 1 COMMENT '排序',
     `note` varchar(525) NULL DEFAULT NULL COMMENT '备注说明',
     `create_user` varchar(32)  NOT NULL DEFAULT 'root' COMMENT '创建人',

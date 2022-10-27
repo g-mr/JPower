@@ -68,9 +68,9 @@ public class CoreMenuServiceImpl extends BaseServiceImpl<TbCoreTopMenuMapper, Tb
 
         String sql = StringUtil.format("select menu_id from tb_core_role_menu where role_id in ({})", StringPool.SINGLE_QUOTE.concat(Fc.join(ShieldUtil.getUserRole(),StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE));
         return menuDao.listMaps(Condition.<TbCoreTopMenu>getQueryWrapper().lambda()
-                        .select(TbCoreTopMenu::getId,TbCoreTopMenu::getName,TbCoreTopMenu::getCode)
+                        .select(TbCoreTopMenu::getId,TbCoreTopMenu::getName,TbCoreTopMenu::getCode,TbCoreTopMenu::getIcon,TbCoreTopMenu::getRouter)
                         .eq(TbCoreTopMenu::getStatus, ConstantsEnum.YN01.Y.getValue())
                         .eq(TbCoreTopMenu::getClientId,clientDao.queryIdByCode(ShieldUtil.getClientCode()))
-                        .inSql(!ShieldUtil.isRoot(),TbCoreTopMenu::getId,sql));
+                        .inSql(!ShieldUtil.isRoot(),TbCoreTopMenu::getId,sql).orderByAsc(TbCoreTopMenu::getSortNum));
     }
 }

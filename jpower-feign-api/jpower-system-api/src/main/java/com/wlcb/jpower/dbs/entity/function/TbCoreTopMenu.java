@@ -1,5 +1,6 @@
 package com.wlcb.jpower.dbs.entity.function;
 
+import com.baomidou.mybatisplus.annotation.OrderBy;
 import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
@@ -24,7 +25,12 @@ public class TbCoreTopMenu extends BaseEntity implements Serializable {
     private String code;
     @ApiModelProperty("菜单名称")
     private String name;
+    @ApiModelProperty("图标")
+    private String icon;
+    @ApiModelProperty("首页路由")
+    private String router;
     @ApiModelProperty("排序")
+    @OrderBy(asc = true)
     private Integer sortNum;
     @ApiModelProperty("备注")
     private String note;
