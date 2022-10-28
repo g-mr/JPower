@@ -18,6 +18,6 @@ public class JpowerConstants {
     public static final Integer DB_STATUS_NORMAL = 1;
 
     /** 框架版本 **/
-    public static final String JPOWER_VESION = "2.1.6";
+    public static final String JPOWER_VESION = "2.1.7";
 
 }
