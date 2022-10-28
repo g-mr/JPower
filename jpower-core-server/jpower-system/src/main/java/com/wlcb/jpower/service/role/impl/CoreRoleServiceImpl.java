@@ -1,12 +1,18 @@
 package com.wlcb.jpower.service.role.impl;
 
+import com.wlcb.jpower.dbs.dao.role.TbCoreFunctionDao;
 import com.wlcb.jpower.dbs.dao.role.TbCoreRoleDao;
+import com.wlcb.jpower.dbs.dao.role.TbCoreRoleFunctionDao;
 import com.wlcb.jpower.dbs.dao.role.TbCoreRoleMenuDao;
 import com.wlcb.jpower.dbs.dao.role.mapper.TbCoreRoleMapper;
+import com.wlcb.jpower.dbs.entity.function.TbCoreFunction;
 import com.wlcb.jpower.dbs.entity.role.TbCoreRole;
+import com.wlcb.jpower.dbs.entity.role.TbCoreRoleFunction;
 import com.wlcb.jpower.dbs.entity.role.TbCoreRoleMenu;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
+import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.role.CoreRoleService;
 import lombok.RequiredArgsConstructor;
@@ -23,11 +29,24 @@ import java.util.List;
 public class CoreRoleServiceImpl extends BaseServiceImpl<TbCoreRoleMapper, TbCoreRole> implements CoreRoleService {
 
     private final TbCoreRoleDao coreRoleDao;
+    private final TbCoreRoleFunctionDao coreRoleFunctionDao;
+    private final TbCoreFunctionDao coreFunctionDao;
     private final TbCoreRoleMenuDao coreRoleMenuDao;
 
     @Override
     public Boolean add(TbCoreRole coreRole) {
-        return coreRoleDao.save(coreRole);
+        if (coreRoleDao.save(coreRole)){
+            List<String> functionIds = coreFunctionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda().select(TbCoreFunction::getId).eq(TbCoreFunction::getParentId, JpowerConstants.TOP_CODE).eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.N), Fc::toStr);
+            List<TbCoreRoleFunction> roleFunctions = new ArrayList<>();
+            functionIds.forEach(functionId -> {
+                TbCoreRoleFunction roleFunction = new TbCoreRoleFunction();
+                roleFunction.setFunctionId(functionId);
+                roleFunction.setRoleId(coreRole.getId());
+                roleFunctions.add(roleFunction);
+            });
+            return coreRoleFunctionDao.saveBatch(roleFunctions);
+        }
+        return false;
     }
 
     @Override

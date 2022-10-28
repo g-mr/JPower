@@ -2,7 +2,6 @@ package com.wlcb.jpower.service.tenant.impl;
 
 import com.wlcb.jpower.cache.param.ParamConfig;
 import com.wlcb.jpower.dbs.dao.dict.TbCoreDictDao;
-import com.wlcb.jpower.dbs.dao.dict.TbCoreDictTypeDao;
 import com.wlcb.jpower.dbs.dao.org.TbCoreOrgDao;
 import com.wlcb.jpower.dbs.dao.role.TbCoreFunctionDao;
 import com.wlcb.jpower.dbs.dao.role.TbCoreRoleDao;
@@ -60,7 +59,6 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
     private TbCoreRoleDao roleDao;
     private TbCoreFunctionDao functionDao;
     private TbCoreRoleFunctionDao roleFunctionDao;
-    private TbCoreDictTypeDao dictTypeDao;
     private TbCoreDictDao dictDao;
     private UserClient userClient;
 
