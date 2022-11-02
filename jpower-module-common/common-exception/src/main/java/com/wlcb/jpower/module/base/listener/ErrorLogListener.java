@@ -19,7 +19,6 @@ import org.springframework.scheduling.annotation.Async;
 @RequiredArgsConstructor
 public class ErrorLogListener {
 
-    private final LogClient logService;
     private final JpowerProperties properties;
 
     @Async
@@ -27,7 +26,7 @@ public class ErrorLogListener {
     public void saveApiLog(ErrorLogEvent event) {
         ErrorLogDto errorLog = (ErrorLogDto) event.getSource();
         FieldCompletionUtil.serverInfo(errorLog,properties);
-        logService.saveErrorLog(errorLog);
+        LogClient.getInstance(properties.getServer()).saveErrorLog(errorLog);
     }
 
 }

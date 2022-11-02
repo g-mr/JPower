@@ -13,6 +13,7 @@ spring:
     #  commandTimeout: 5000
 
 jpower:
+  server: CLOUD
 #  log:
 #    mode: elk
 #    elk:

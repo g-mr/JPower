@@ -15,12 +15,12 @@ public class JpowerProperties {
 	 * 运行环境
 	 */
 	private String env;
-
 	/**
-	 * 服务名
+	 * 服务类型 (微服务：cloud、单体服务：boot)
+	 *
+	 * todo 回头想想有什么办法可以自动判断不需要配置
 	 */
-	private String name;
-
+	private SERVER server = SERVER.BOOT;
 	/**
 	 * 服务名
 	 */
@@ -45,5 +45,9 @@ public class JpowerProperties {
 	 * 端口
 	 */
 	private Integer port;
+
+	public enum SERVER {
+		CLOUD,BOOT
+	}
 
 }

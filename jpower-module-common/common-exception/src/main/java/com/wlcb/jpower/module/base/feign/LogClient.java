@@ -3,11 +3,14 @@ package com.wlcb.jpower.module.base.feign;
 import com.wlcb.jpower.module.base.model.ErrorLogDto;
 import com.wlcb.jpower.module.base.model.OperateLogDto;
 import com.wlcb.jpower.module.base.vo.ResponseData;
+import com.wlcb.jpower.module.common.deploy.props.JpowerProperties;
+import com.wlcb.jpower.module.common.utils.ExceptionUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.SpringUtil;
 import com.wlcb.jpower.module.common.utils.constants.AppConstant;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -16,11 +19,24 @@ import org.springframework.web.client.RestTemplate;
  * @author mr.g
  */
 @Slf4j
-@Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class LogClient {
 
-	private RestTemplate restTemplate;
+	private static volatile LogClient INSTANCE = null;
+
+	private final JpowerProperties.SERVER server;
+
+	public static LogClient getInstance(JpowerProperties.SERVER server) {
+		if (INSTANCE == null) {
+			synchronized (LogClient.class) {
+				if (INSTANCE == null) {
+					INSTANCE = new LogClient(server);
+
+				}
+			}
+		}
+		return INSTANCE;
+	}
 
 	/**
 	 * 保存操作日志
@@ -29,9 +45,29 @@ public class LogClient {
 	 */
 	public void saveOperateLog(OperateLogDto operateLog){
 		try {
-			ResponseData responseData = restTemplate.postForObject("http://"+ AppConstant.getInstance().getJpowerLog()+"/log/saveOperateLog",operateLog,ResponseData.class);
-			if (Fc.isNull(responseData) || !responseData.isStatus()){
-				log.error("操作日志保存失败={}",responseData);
+			if (server == JpowerProperties.SERVER.BOOT){
+				try {
+					int count = SpringUtil.getBean(JdbcTemplate.class).update("insert into tb_log_operate" +
+							"(id,server_name,server_ip,server_host,env,url,method,method_class,method_name,param,oper_ip,oper_name,oper_user_type,client_code,title,business_type,return_content,status,error_msg) " +
+							"values " +
+							"(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+							Fc.randomUUID(),operateLog.getServerName(),operateLog.getServerIp(),operateLog.getServerHost(),operateLog.getEnv(),operateLog.getUrl(),operateLog.getMethod(),operateLog.getMethodClass(),operateLog.getMethodName(),operateLog.getParam(),operateLog.getOperIp(),operateLog.getOperName(),operateLog.getOperUserType(),operateLog.getClientCode(),operateLog.getTitle(),operateLog.getBusinessType(),operateLog.getReturnContent(),operateLog.getStatus(),operateLog.getErrorMsg());
+					if (count <= 0){
+						log.error("操作日志保存失败={}",count);
+					}
+				}catch (Exception e){
+					log.error("操作日志保存失败={}", ExceptionUtil.getStackTraceAsString(e));
+				}
+
+			}else {
+				try {
+					ResponseData responseData = SpringUtil.getBean(RestTemplate.class).postForObject("http://"+ AppConstant.getInstance().getJpowerLog()+"/log/saveOperateLog",operateLog,ResponseData.class);
+					if (Fc.isNull(responseData) || !responseData.isStatus()){
+						log.error("操作日志保存失败={}",responseData);
+					}
+				}catch (Exception e){
+					log.error("操作日志保存失败={}", ExceptionUtil.getStackTraceAsString(e));
+				}
 			}
 		} catch (Exception e){
 			log.error("操作日志保存失败={}", e.getMessage());
@@ -54,9 +90,28 @@ public class LogClient {
 		}
 
 		try{
-			ResponseData responseData = restTemplate.postForObject("http://"+ AppConstant.getInstance().getJpowerLog()+"/log/saveErrorLog",errorLog,ResponseData.class);
-			if (Fc.isNull(responseData) || !responseData.isStatus()){
-				log.error("错误日志保存失败={}",responseData);
+			if (server == JpowerProperties.SERVER.BOOT){
+				try {
+					int count = SpringUtil.getBean(JdbcTemplate.class).update("insert into tb_log_error" +
+									"(id,server_name,server_ip,server_host,env,url,method,method_class,method_name,param,oper_ip,oper_name,oper_user_type,client_code,error,line_number,exception_name,message) " +
+									"values " +
+									"(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+							Fc.randomUUID(),errorLog.getServerName(),errorLog.getServerIp(),errorLog.getServerHost(),errorLog.getEnv(),errorLog.getUrl(),errorLog.getMethod(),errorLog.getMethodClass(),errorLog.getMethodName(),errorLog.getParam(),errorLog.getOperIp(),errorLog.getOperName(),errorLog.getOperUserType(),errorLog.getClientCode(),errorLog.getError(),errorLog.getLineNumber(),errorLog.getExceptionName(),errorLog.getMessage());
+					if (count <= 0){
+						log.error("错误日志保存失败={}",count);
+					}
+				}catch (Exception e){
+					log.error("错误日志保存失败={}", ExceptionUtil.getStackTraceAsString(e));
+				}
+			}else {
+				try {
+					ResponseData responseData = SpringUtil.getBean(RestTemplate.class).postForObject("http://"+ AppConstant.getInstance().getJpowerLog()+"/log/saveErrorLog",errorLog,ResponseData.class);
+					if (Fc.isNull(responseData) || !responseData.isStatus()){
+						log.error("错误日志保存失败={}",responseData);
+					}
+				}catch (Exception e){
+					log.error("错误日志保存失败={}", ExceptionUtil.getStackTraceAsString(e));
+				}
 			}
 		} catch (Exception e){
 			log.error("错误日志保存失败={}", e.getMessage());

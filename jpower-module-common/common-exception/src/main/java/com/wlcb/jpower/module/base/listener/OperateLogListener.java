@@ -17,7 +17,6 @@ import org.springframework.scheduling.annotation.Async;
 @RequiredArgsConstructor
 public class OperateLogListener {
 
-    private final LogClient logService;
     private final JpowerProperties properties;
 
     @Async
@@ -25,7 +24,7 @@ public class OperateLogListener {
     public void saveApiLog(OperateLogEvent event) {
         OperateLogDto operateLog = (OperateLogDto) event.getSource();
         FieldCompletionUtil.serverInfo(operateLog,properties);
-        logService.saveOperateLog(operateLog);
+        LogClient.getInstance(properties.getServer()).saveOperateLog(operateLog);
     }
 
 }

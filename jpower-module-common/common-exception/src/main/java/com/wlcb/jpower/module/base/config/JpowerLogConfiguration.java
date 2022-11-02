@@ -1,7 +1,6 @@
 package com.wlcb.jpower.module.base.config;
 
 import com.wlcb.jpower.module.base.aspectj.OperateLogAspect;
-import com.wlcb.jpower.module.base.feign.LogClient;
 import com.wlcb.jpower.module.base.listener.ErrorLogListener;
 import com.wlcb.jpower.module.base.listener.OperateLogListener;
 import com.wlcb.jpower.module.common.deploy.props.JpowerProperties;
@@ -27,13 +26,13 @@ public class JpowerLogConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(name = "operateLogListener")
-    public OperateLogListener operateLogListener(LogClient logService, JpowerProperties jpowerProperties) {
-        return new OperateLogListener(logService, jpowerProperties);
+    public OperateLogListener operateLogListener(JpowerProperties jpowerProperties) {
+        return new OperateLogListener(jpowerProperties);
     }
 
     @Bean
     @ConditionalOnMissingBean(name = "errorLogListener")
-    public ErrorLogListener errorLogListener(LogClient logService, JpowerProperties jpowerProperties) {
-        return new ErrorLogListener(logService, jpowerProperties);
+    public ErrorLogListener errorLogListener(JpowerProperties jpowerProperties) {
+        return new ErrorLogListener(jpowerProperties);
     }
 }
