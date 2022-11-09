@@ -14,6 +14,7 @@ public class AuthDefExculdesUrl {
 
     static {
         exculudesUrl.add("/auth/**");
+        exculudesUrl.add("/core/system/configure");
         exculudesUrl.add("/v2/api-docs-ext/**");
         exculudesUrl.add("/v2/api-docs/**");
         exculudesUrl.add("/swagger-resources/**");
