@@ -20,6 +20,7 @@ public class ExculdesUrl {
         exculudesUrl.add("/v2/api-docs/**");
         exculudesUrl.add("/chat/file/**");
         exculudesUrl.add("/all/restful");
+        exculudesUrl.add("/core/system/configure");
     }
 
     /**
