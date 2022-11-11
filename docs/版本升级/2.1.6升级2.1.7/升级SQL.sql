@@ -1,6 +1,11 @@
 alter table tb_core_client
 	add login_limit varchar(10) null comment '登录限制' after refresh_token_validity;
 
+INSERT INTO tb_core_dict_type(id, dict_type_code, dict_type_name, note, del_enabled, sort_num, parent_id, create_user, create_time, update_user, update_time, status, is_deleted, is_tree, create_org) VALUES ('ec3e14d6464ca0a0f3072b2106757c8f', 'LOGIN_LIMIT', '登录限制', null, 'N', 10, '35b7cae4d34e11ea97e4a34c90effc21', '1', '2022-11-11 19:05:48', '1', '2022-11-11 19:05:48', 1, 0, 0, '6836de3b179d11eb8189fa163e5c4fd4');
+INSERT INTO tb_core_dict(id, dict_type_code, code, name, is_stop, parent_id, locale, note, sort_num, create_user, create_time, update_user, update_time, status, is_deleted, dict_level, pcode, tenant_code, create_org) VALUES ('7c3398567fe2551836b0b8bdc49a4e70', 'LOGIN_LIMIT', 'NONE', '不限制', 'N', '-1', 'zh', null, 0, '1', '2022-11-11 19:06:03', '1', '2022-11-11 19:06:27', 1, 0, null, '-1', '000000', '6836de3b179d11eb8189fa163e5c4fd4');
+INSERT INTO tb_core_dict(id, dict_type_code, code, name, is_stop, parent_id, locale, note, sort_num, create_user, create_time, update_user, update_time, status, is_deleted, dict_level, pcode, tenant_code, create_org) VALUES ('81442a92c65be42291350078b320645f', 'LOGIN_LIMIT', 'ONE', '单模式', 'N', '-1', 'zh', null, 0, '1', '2022-11-11 19:06:14', '1', '2022-11-11 19:06:14', 1, 0, null, '-1', '000000', '6836de3b179d11eb8189fa163e5c4fd4');
+INSERT INTO tb_core_dict(id, dict_type_code, code, name, is_stop, parent_id, locale, note, sort_num, create_user, create_time, update_user, update_time, status, is_deleted, dict_level, pcode, tenant_code, create_org) VALUES ('89290d1c6cdda60e5dd9a8dd675c5923', 'LOGIN_LIMIT', 'SQUEEZE', '挤掉模式', 'N', '-1', 'zh', null, 0, '1', '2022-11-11 19:06:44', '1', '2022-11-11 19:06:44', 1, 0, null, '-1', '000000', '6836de3b179d11eb8189fa163e5c4fd4');
+
 -- ----------------------------
 -- Table structure for tb_core_top_menu
 -- ----------------------------
