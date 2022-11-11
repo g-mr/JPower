@@ -9,6 +9,7 @@ import com.wlcb.jpower.cache.SystemCache;
 import com.wlcb.jpower.cache.UserCache;
 import com.wlcb.jpower.cache.param.ParamConfig;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
+import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
 import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
 import com.wlcb.jpower.dto.AuthInfo;
 import com.wlcb.jpower.dto.TokenParameter;
@@ -25,6 +26,7 @@ import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.ParamsConstants;
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.tenant.JpowerTenantProperties;
 import com.wlcb.jpower.utils.SmsUtil;
 import com.wlcb.jpower.utils.TokenUtil;
@@ -37,8 +39,10 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import static com.wlcb.jpower.module.common.cache.CacheNames.TOKEN_USER_KEY;
 import static com.wlcb.jpower.module.common.utils.constants.TokenConstant.HEADER_TENANT;
 import static com.wlcb.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
 import static com.wlcb.jpower.module.tenant.TenantConstant.getExpireTime;
@@ -107,8 +111,31 @@ public class AuthController extends BaseController {
             return ReturnJsonUtil.fail(TokenUtil.USER_NOT_FOUND);
         }
 
+        //判断单端登录
+        TbCoreClient client = SystemCache.getClientByClientCode(ShieldUtil.getClientCodeFromHeader());
+        if (StringUtil.equalsIgnoreCase(client.getLoginLimit(), ConstantsEnum.LOGIN_LIMIT.ONE.getValue())){
+            Set<String> keys = redisUtil.pattern(TOKEN_USER_KEY+userInfo.getUserId());
+            keys.forEach(key->{
+                Map<String,String> map = (Map<String, String>) redisUtil.get(key);
+                if (Fc.equalsValue(MapUtil.getStr(map,"client"),client.getClientCode())){
+                    JpowerAssert.createException(JpowerError.RateLimit);
+                }
+            });
+        } else if(StringUtil.equalsIgnoreCase(client.getLoginLimit(), ConstantsEnum.LOGIN_LIMIT.SQUEEZE.getValue())){
+            Set<String> keys = redisUtil.pattern(TOKEN_USER_KEY+userInfo.getUserId());
+            keys.forEach(key->{
+                Map<String,String> map = (Map<String, String>) redisUtil.get(key);
+                if (Fc.equalsValue(MapUtil.getStr(map,"client"),client.getClientCode())){
+                    String token = StringUtil.split(key,StringPool.COLON).get(4);
+                    redisUtil.remove(CacheNames.TOKEN_URL_KEY+token);
+                    redisUtil.remove(CacheNames.TOKEN_DATA_SCOPE_KEY+token);
+                    redisUtil.remove(TOKEN_USER_KEY+userInfo.getUserId()+ StringPool.COLON +token);
+                }
+            });
+        }
+
+        // 登录成功要刷新用户登录数据
         if (!Fc.equalsValue(parameter.getGrantType(), RefreshTokenGranter.GRANT_TYPE)){
-            // 登录成功要刷新用户登录数据
             userClient.updateUserLoginInfo(userInfo.getUserId());
         }
 
@@ -123,6 +150,8 @@ public class AuthController extends BaseController {
         if(Fc.notNull(user) && Fc.equals(userId,user.getUserId())){
             getRequest().getSession().invalidate();
             redisUtil.remove(CacheNames.TOKEN_URL_KEY+JwtUtil.getToken(getRequest()));
+            redisUtil.remove(CacheNames.TOKEN_DATA_SCOPE_KEY+JwtUtil.getToken(getRequest()));
+            redisUtil.remove(TOKEN_USER_KEY+userId+ StringPool.COLON +JwtUtil.getToken(getRequest()));
             return ReturnJsonUtil.ok("退出成功");
         }else{
             return ReturnJsonUtil.fail("该用户暂未登录");

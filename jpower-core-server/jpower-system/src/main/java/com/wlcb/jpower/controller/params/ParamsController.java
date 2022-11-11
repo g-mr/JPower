@@ -59,7 +59,7 @@ public class ParamsController extends BaseController {
     public ResponseData delete(@ApiParam(value = "主键",required = true) @RequestParam String ids){
         JpowerAssert.notEmpty(ids, JpowerError.Arg,"ids不可为空");
 
-        CacheUtil.clear(PARAM_KEY);
+        CacheUtil.clear(PARAM_KEY, Boolean.FALSE);
         return ReturnJsonUtil.status(paramService.removeByIds(Fc.toStrList(ids)));
     }
 
@@ -70,7 +70,7 @@ public class ParamsController extends BaseController {
     @RequestMapping(value = "/update",method = RequestMethod.PUT,produces="application/json")
     public ResponseData update(TbCoreParam coreParam){
         JpowerAssert.notEmpty(coreParam.getId(), JpowerError.Arg,"id不可为空");
-        CacheUtil.clear(PARAM_KEY);
+        CacheUtil.clear(PARAM_KEY, Boolean.FALSE);
         return ReturnJsonUtil.status(paramService.update(coreParam));
     }
 
@@ -85,7 +85,7 @@ public class ParamsController extends BaseController {
         JpowerAssert.notEmpty(coreParam.getValue(), JpowerError.Arg,"参数值不可为空");
 
         JpowerAssert.isEmpty(paramService.selectByCode(coreParam.getCode()), JpowerError.Business,"该系统参数已存在");
-        CacheUtil.clear(PARAM_KEY);
+        CacheUtil.clear(PARAM_KEY, Boolean.FALSE);
         return ReturnJsonUtil.status(paramService.save(coreParam));
     }
 

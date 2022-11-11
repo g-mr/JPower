@@ -12,6 +12,7 @@ import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
 import com.wlcb.jpower.module.datascope.DataScope;
 
@@ -19,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import static com.wlcb.jpower.module.common.cache.CacheNames.TOKEN_USER_KEY;
 
 /**
  * 生成token工具
@@ -36,6 +39,13 @@ public class TokenUtil {
     public final static String USER_NOT_FOUND = "用户名或密码错误";
     public final static String TOKEN_EXPIRED = "token已过期，请重新登陆";
     public final static String USER_NOT_ACTIVATION = "用户尚未激活";
+
+
+    private static final RedisUtil redisUtil;
+
+    static {
+        redisUtil = SpringUtil.getBean(RedisUtil.class);
+    }
 
     /**
      * 获取客户端信息
@@ -166,9 +176,17 @@ public class TokenUtil {
             });
         }
 
-        Fc.requireNotNull(SpringUtil.getBean(RedisUtil.class),"未获取到RedisUtil").set(CacheNames.TOKEN_DATA_SCOPE_KEY+authInfo.getAccessToken(), map , authInfo.getExpiresIn(), TimeUnit.SECONDS);
+        redisUtil.set(CacheNames.TOKEN_DATA_SCOPE_KEY+authInfo.getAccessToken(), map , authInfo.getExpiresIn(), TimeUnit.SECONDS);
 
         List<String> list = SystemCache.getUrlsByRoleIds(authInfo.getUser().getRoleIds(),client.getClientCode());
-        Fc.requireNotNull(SpringUtil.getBean(RedisUtil.class),"未获取到RedisUtil").set(CacheNames.TOKEN_URL_KEY+authInfo.getAccessToken(), list , authInfo.getExpiresIn(), TimeUnit.SECONDS);
+        redisUtil.set(CacheNames.TOKEN_URL_KEY+authInfo.getAccessToken(), list , authInfo.getExpiresIn(), TimeUnit.SECONDS);
+
+        //缓存用户在线信息
+        String oldToken = JwtUtil.getToken(WebUtil.getRequest());
+        //如果有旧token代表的是刷新token
+        if (Fc.isNotBlank(oldToken)){
+            redisUtil.remove(TOKEN_USER_KEY+authInfo.getUser().getUserId()+ StringPool.COLON+oldToken);
+        }
+        redisUtil.set(TOKEN_USER_KEY+authInfo.getUser().getUserId()+ StringPool.COLON+authInfo.getAccessToken(),ChainMap.<String,String>create().put("client",client.getClientCode()).put("ip", WebUtil.getIp()).put("date", DateUtil.now()).build(),authInfo.getExpiresIn(), TimeUnit.SECONDS);
     }
 }

@@ -19,6 +19,7 @@ import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.controller.BaseController;
+import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.support.BeanExcelUtil;
 import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.*;
@@ -35,12 +36,11 @@ import springfox.documentation.annotations.ApiIgnore;
 import javax.validation.constraints.NotBlank;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 import static com.wlcb.jpower.module.base.annotation.OperateLog.BusinessType.DELETE;
 import static com.wlcb.jpower.module.base.annotation.OperateLog.BusinessType.UPDATE;
+import static com.wlcb.jpower.module.common.cache.CacheNames.TOKEN_USER_KEY;
 import static com.wlcb.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
 import static com.wlcb.jpower.module.tenant.TenantConstant.TENANT_ACCOUNT_NUMBER;
 import static com.wlcb.jpower.module.tenant.TenantConstant.getAccountNumber;
@@ -52,6 +52,7 @@ import static com.wlcb.jpower.module.tenant.TenantConstant.getAccountNumber;
 public class UserController extends BaseController {
 
     private CoreUserService coreUserService;
+    private RedisUtil redisUtil;
 
     @ApiOperation("查询当前登录用户信息")
     @GetMapping(value = "/getLoginInfo", produces = "application/json")
@@ -59,6 +60,42 @@ public class UserController extends BaseController {
         String id = ShieldUtil.getUserId();
         JpowerAssert.notEmpty(id,JpowerError.Arg,"用户未登录");
         return ReturnJsonUtil.ok("获取成功", coreUserService.getById(id));
+    }
+
+    @Function(value = "用户在线信息",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "USER_ONLINE")
+    })
+    @ApiOperation("查询用户在线信息")
+    @GetMapping(value = "/online", produces = "application/json")
+    public ResponseData<List<Map<String,String>>> online(String userId) {
+        JpowerAssert.notEmpty(userId,JpowerError.Arg,"用户ID不可为空");
+
+        Set<String> keys = redisUtil.pattern(TOKEN_USER_KEY+userId);
+        List<Map<String,String>> list = new ArrayList<>();
+        keys.forEach(key -> {
+            Map<String,String> map = (Map<String, String>) redisUtil.get(key);
+            map.put("token",StringUtil.split(key,StringPool.COLON).get(4));
+            map.put("userId",userId);
+            list.add(map);
+        });
+
+        return ReturnJsonUtil.ok("获取成功", list);
+    }
+
+    @Function(value = "踢下线",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "USER_OFFLINE")
+    })
+    @ApiOperation("踢下线")
+    @PostMapping(value = "/offline", produces = "application/json")
+    public ResponseData offline(String userId,String token) {
+        JpowerAssert.notEmpty(userId,JpowerError.Arg,"用户ID不可为空");
+        JpowerAssert.notEmpty(token,JpowerError.Arg,"TOKEN不可为空");
+
+        redisUtil.remove(CacheNames.TOKEN_URL_KEY+token);
+        redisUtil.remove(CacheNames.TOKEN_DATA_SCOPE_KEY+token);
+        redisUtil.remove(TOKEN_USER_KEY + userId + StringPool.COLON + token);
+
+        return ReturnJsonUtil.ok("操作成功");
     }
 
     @Function(value = "用户列表",menus = {

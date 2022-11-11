@@ -34,5 +34,7 @@ public class UserVo extends TbCoreUser {
     @ApiModelProperty("角色名称")
     @Excel(name = "角色名称",type = Excel.Type.EXPORT)
     private String roleName;
+    @ApiModelProperty("在线数量")
+    private Integer onLine;
 
 }

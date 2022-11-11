@@ -1,5 +1,6 @@
 package com.wlcb.jpower.dbs.entity.client;
 
+import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -22,6 +23,9 @@ public class TbCoreClient extends BaseEntity {
     private String clientCode;
     @ApiModelProperty("客户端密钥")
     private String clientSecret;
+    @ApiModelProperty("登录限制")
+    @Dict(name = "LOGIN_LIMIT")
+    private String loginLimit;
     @ApiModelProperty("token有效时长 单位秒")
     private Long accessTokenValidity;
     @ApiModelProperty("刷新token有效时长 单位秒")

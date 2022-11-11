@@ -1,3 +1,6 @@
+alter table tb_core_client
+	add login_limit varchar(10) null comment '登录限制' after refresh_token_validity;
+
 -- ----------------------------
 -- Table structure for tb_core_top_menu
 -- ----------------------------

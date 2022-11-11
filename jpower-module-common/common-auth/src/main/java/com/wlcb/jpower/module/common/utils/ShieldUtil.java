@@ -32,6 +32,7 @@ import static com.wlcb.jpower.module.common.auth.SecureConstant.BASIC_HEADER_PRE
 public class ShieldUtil {
 
     private static final String REQUEST_USER_SESSION = "request_user_session";
+    private static final String REQUEST_USER_TOKEN = "request_user_token";
 
     /**
      * 获取用户信息
@@ -40,18 +41,21 @@ public class ShieldUtil {
      */
     public static UserInfo getUser() {
         HttpServletRequest request = WebUtil.getRequest();
-        if (Fc.isNull(request)) {
+        String token = JwtUtil.getToken(request);
+        if (Fc.isNull(request) || Fc.isBlank(token)) {
             return null;
         }
 
         UserInfo userInfo = (UserInfo) request.getSession().getAttribute(REQUEST_USER_SESSION);
-        if (Fc.isNull(userInfo)) {
+        String sessionToken = (String) request.getSession().getAttribute(REQUEST_USER_TOKEN);
+        if (Fc.isNull(userInfo) || !Fc.equalsValue(sessionToken,token)) {
             userInfo = getUser(request);
             if (Fc.notNull(userInfo)){
                 long bet = DateUtil.between(DateUtil.date(),getClaims(request).getExpiration(), DateUnit.SECOND, false);
                 if (bet > 0){
                     request.getSession().setMaxInactiveInterval((int) bet);
                     request.getSession().setAttribute(REQUEST_USER_SESSION, userInfo);
+                    request.getSession().setAttribute(REQUEST_USER_TOKEN, token);
                 }
             }
         }

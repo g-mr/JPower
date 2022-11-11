@@ -22,6 +22,7 @@ import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.common.auth.RoleConstant;
 import com.wlcb.jpower.module.common.page.PaginationContext;
+import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
@@ -43,6 +44,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static com.wlcb.jpower.module.common.cache.CacheNames.TOKEN_USER_KEY;
 import static com.wlcb.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
 import static com.wlcb.jpower.module.tenant.TenantConstant.TENANT_ACCOUNT_NUMBER;
 import static com.wlcb.jpower.module.tenant.TenantConstant.getAccountNumber;
@@ -57,11 +59,17 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
 
     private TbCoreUserDao coreUserDao;
     private TbCoreUserRoleDao coreUserRoleDao;
+    private RedisUtil redisUtil;
 
     @Override
     public PageInfo<UserVo> listPage(TbCoreUser coreUser) {
         PaginationContext.startPage();
-        return new PageInfo<>(coreUserDao.listVo(coreUser));
+        List<UserVo> userVo = coreUserDao.listVo(coreUser);
+        //查询用户在线信息
+        userVo.forEach(user-> {
+            user.setOnLine(redisUtil.pattern(TOKEN_USER_KEY+user.getId()).size());
+        });
+        return new PageInfo<>(userVo);
     }
 
     @Override

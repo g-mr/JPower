@@ -177,10 +177,17 @@ public class RedisUtil {
      * @return
      */
     public Object get(final String key) {
-        Object result = null;
         ValueOperations<String, Object> operations = redisTemplate.opsForValue();
-        result = operations.get(key);
-        return result;
+        return operations.get(key);
+    }
+
+    /**
+     * 批量读取缓存Key
+     *
+     * @param pattern
+     */
+    public Set<String> pattern(final String pattern) {
+        return redisTemplate.keys(pattern+"*");
     }
 
     /**
@@ -205,6 +212,29 @@ public class RedisUtil {
     public Object hmGet(String key, Object hashKey) {
         HashOperations<String, Object, Object> hash = redisTemplate.opsForHash();
         return hash.get(key, hashKey);
+    }
+
+    /**
+     * 是否存在HashKey
+     *
+     * @param key
+     * @param hashKey
+     * @return
+     */
+    public Boolean hmHasKey(String key, Object hashKey) {
+        HashOperations<String, Object, Object> hash = redisTemplate.opsForHash();
+        return hash.hasKey(key,hashKey);
+    }
+
+    /**
+     * 哈希 删除
+     *
+     * @param key
+     * @param hashKey
+     */
+    public void hmRemove(String key, Object... hashKey) {
+        HashOperations<String, Object, Object> hash = redisTemplate.opsForHash();
+        hash.delete(key, hashKey);
     }
 
     /**

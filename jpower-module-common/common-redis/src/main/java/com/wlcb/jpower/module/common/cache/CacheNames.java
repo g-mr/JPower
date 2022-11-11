@@ -22,6 +22,8 @@ public interface CacheNames {
     String TOKEN_URL_KEY = AUTH_KEY+"token:";
     /* 登录用户数据权限缓存KEY **/
     String TOKEN_DATA_SCOPE_KEY = AUTH_KEY+"dataScope:";
+    /* 登录用户在线信息 */
+    String TOKEN_USER_KEY = AUTH_KEY+"user:";
 
 
     /**

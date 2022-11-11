@@ -335,4 +335,39 @@ public class ConstantsEnum {
         }
     }
 
+    /**
+     * 功能打开方式
+     * @Author mr.g
+     **/
+    public enum LOGIN_LIMIT {
+
+        NONE("NONE", "不限制"), ONE("ONE", "单模式"), SQUEEZE("SQUEEZE", "挤掉模式");
+
+        LOGIN_LIMIT(String value, String name) {
+            this.value = value;
+            this.name = name;
+        }
+
+        private final String value;
+        private final String name;
+
+        public String getValue() {
+            return value;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public static String getName(String value) {
+            LOGIN_LIMIT[] businessModeEnums = values();
+            for (LOGIN_LIMIT businessModeEnum : businessModeEnums) {
+                if (businessModeEnum.value.equals(value)) {
+                    return businessModeEnum.name;
+                }
+            }
+            return null;
+        }
+    }
+
 }
