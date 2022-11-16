@@ -40,7 +40,7 @@ public class LogController extends BaseController {
     private final OperateLogService operateLogService;
 
     @Function(value = "操作日志",menus = {
-            @Menu(client = "admin",menuCode = "OPERATE_LOG",code = "OPERATE_LOG_LIST")
+            @Menu(client = "admin",menuCode = "OPERATE_LOG",code = "OPERATE_LOG_LIST",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("操作日志列表")
     @ApiImplicitParams({
@@ -61,7 +61,7 @@ public class LogController extends BaseController {
     }
 
     @Function(value = "错误日志",menus = {
-            @Menu(client = "admin",menuCode = "ERROR_LOG",code = "ERROR_LOG_LIST")
+            @Menu(client = "admin",menuCode = "ERROR_LOG",code = "ERROR_LOG_LIST",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("错误日志列表")
     @ApiImplicitParams({

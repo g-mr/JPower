@@ -34,7 +34,7 @@ public class ParamsController extends BaseController {
     private CoreParamService paramService;
 
     @Function(value = "列表",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_PARAMS",code = "PARAM_LIST")
+            @Menu(client = "admin",menuCode = "SYSTEM_PARAMS",code = "PARAM_LIST",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("系统参数分页列表")
     @ApiImplicitParams({
@@ -52,7 +52,7 @@ public class ParamsController extends BaseController {
     }
 
     @Function(value = "删除",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_PARAMS",code = "SYSTEM_PARAMS_DELETE")
+            @Menu(client = "admin",menuCode = "SYSTEM_PARAMS",code = "SYSTEM_PARAMS_DELETE",type = Menu.TYPE.BTN)
     })
     @ApiOperation("删除系统参数")
     @RequestMapping(value = "/delete",method = RequestMethod.DELETE,produces="application/json")
@@ -64,7 +64,7 @@ public class ParamsController extends BaseController {
     }
 
     @Function(value = "编辑",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_PARAMS",code = "SYSTEM_PARAMS_UPDATE")
+            @Menu(client = "admin",menuCode = "SYSTEM_PARAMS",code = "SYSTEM_PARAMS_UPDATE",type = Menu.TYPE.BTN)
     })
     @ApiOperation("修改系统参数")
     @RequestMapping(value = "/update",method = RequestMethod.PUT,produces="application/json")
@@ -75,7 +75,7 @@ public class ParamsController extends BaseController {
     }
 
     @Function(value = "新增",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_PARAMS",code = "SYSTEM_PARAMS_ADD")
+            @Menu(client = "admin",menuCode = "SYSTEM_PARAMS",code = "SYSTEM_PARAMS_ADD",type = Menu.TYPE.BTN)
     })
     @ApiOperation(value = "新增系统参数",notes = "新增不用传主键")
     @RequestMapping(value = "/add",method = RequestMethod.POST,produces="application/json")
@@ -90,7 +90,7 @@ public class ParamsController extends BaseController {
     }
 
     @Function(value = "详情",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_PARAMS",code = "SYSTEM_PARAMS_DETAIL")
+            @Menu(client = "admin",menuCode = "SYSTEM_PARAMS",code = "SYSTEM_PARAMS_DETAIL",type = Menu.TYPE.BTN)
     })
     @ApiOperation(value = "通过Id获取参数详情")
     @RequestMapping(value = "/queryById",method = RequestMethod.GET,produces="application/json")

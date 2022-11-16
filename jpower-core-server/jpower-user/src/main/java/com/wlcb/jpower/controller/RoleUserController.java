@@ -39,7 +39,7 @@ public class RoleUserController extends BaseController {
     private CoreUserRoleService coreUserRoleService;
 
     @Function(value = "设置角色",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_UPDATEROLE")
+            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_UPDATEROLE",type = Menu.TYPE.BTN)
     })
     @ApiOperation(value = "给用户重新设置角色")
     @PostMapping(value = "/addRole", produces = "application/json")
@@ -54,7 +54,7 @@ public class RoleUserController extends BaseController {
     }
 
     @Function(value = "角色新增用户",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_ADDUSER")
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_ADDUSER",type = Menu.TYPE.BTN)
     })
     @ApiOperation(value = "给角色新增用户")
     @PutMapping(value = "/addRoleUser", produces = "application/json")
@@ -70,7 +70,7 @@ public class RoleUserController extends BaseController {
     }
 
     @Function(value = "角色去除用户",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_DELUSER")
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_DELUSER",type = Menu.TYPE.BTN)
     })
     @ApiOperation(value = "给角色去除用户")
     @DeleteMapping(value = "/deleteRoleUser", produces = "application/json")
@@ -96,7 +96,7 @@ public class RoleUserController extends BaseController {
     }
 
     @Function(value = "角色用户列表",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_USER")
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_USER",type = Menu.TYPE.BTN)
     })
     @ApiOperation(value = "通过角色查询用户列表")
     @ApiImplicitParams({

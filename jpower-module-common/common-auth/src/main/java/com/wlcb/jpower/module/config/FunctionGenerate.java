@@ -58,6 +58,7 @@ public class FunctionGenerate implements ApplicationRunner {
                                 throw new IllegalArgumentException("@Function[code] exist repeat value");
                             }
                             map.put("code",menu.code());
+                            map.put("type",Fc.toStr(menu.type().getValue()));
                             map.put("alias",Fc.blankDefault(function.alias(),map.get("name")));
                             map.put("url",url);
                             list.add(map);

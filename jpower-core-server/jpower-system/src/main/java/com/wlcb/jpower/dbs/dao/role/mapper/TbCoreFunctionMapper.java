@@ -21,9 +21,9 @@ public interface TbCoreFunctionMapper extends JpowerBaseMapper<TbCoreFunction> {
      * @Author goo
      * @Date 16:47 2021-02-17
      * @param coreFunction
-     * @param isMenu
+     * @param functionType
      * @return java.util.List<com.wlcb.jpower.dbs.entity.function.TbCoreFunction>
      **/
-    List<FunctionVo> listFunction(@Param(Constants.WRAPPER) Wrapper<TbCoreFunction> coreFunction,@Param("isMenu") String isMenu);
+    List<FunctionVo> listFunction(@Param(Constants.WRAPPER) Wrapper<TbCoreFunction> coreFunction,@Param("functionType") String functionType);
 
 }

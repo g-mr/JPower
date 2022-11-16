@@ -47,7 +47,7 @@ public class TopMenuController extends BaseController {
     private final CoreClientService clientService;
 
     @Function(value = "新增菜单",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_ADD")
+            @Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_ADD",type = Menu.TYPE.BTN)
     })
     @ApiOperation("新增菜单")
     @PostMapping(value = "/add",produces="application/json")
@@ -72,7 +72,7 @@ public class TopMenuController extends BaseController {
     }
 
     @Function(value = "更新菜单",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_UPDATE")
+            @Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_UPDATE",type = Menu.TYPE.BTN)
     })
     @ApiOperation("更新菜单")
     @PutMapping(value = "/update",produces="application/json")
@@ -86,7 +86,7 @@ public class TopMenuController extends BaseController {
     }
 
     @Function(value = "删除菜单",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_DELETE")
+            @Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_DELETE",type = Menu.TYPE.BTN)
     })
     @ApiOperation("删除菜单")
     @DeleteMapping(value = "/delete",produces="application/json")
@@ -96,7 +96,7 @@ public class TopMenuController extends BaseController {
     }
 
     @Function(value = "菜单列表",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_LIST")
+            @Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_LIST",type = Menu.TYPE.INTERFACE)
     })
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum",value = "第几页",defaultValue = "1",paramType = "query",dataTypeClass = Integer.class,required = true),
@@ -112,7 +112,7 @@ public class TopMenuController extends BaseController {
     }
 
     @Function(value = "顶部菜单",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_TOPMENU")
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_TOPMENU",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("顶部菜单启用列表")
     @GetMapping(value = "/listName",produces="application/json")
@@ -142,7 +142,7 @@ public class TopMenuController extends BaseController {
     }
 
     @Function(value = "关联一级菜单ID",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_FUNCTION_ID")
+            @Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_FUNCTION_ID",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("顶部菜单关联的左侧第一级菜单ID")
     @GetMapping(value = "/listFunctionId",produces="application/json")
@@ -152,7 +152,7 @@ public class TopMenuController extends BaseController {
     }
 
     @Function(value = "一级菜单",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_FUNCTION")
+            @Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_FUNCTION",type = Menu.TYPE.BTN)
     })
     @ApiOperation("一级菜单列表")
     @GetMapping(value = "/listFunction",produces="application/json")
@@ -162,12 +162,12 @@ public class TopMenuController extends BaseController {
         return ReturnJsonUtil.data(functionService.listMaps(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                         .select(TbCoreFunction::getId,TbCoreFunction::getFunctionName)
                         .eq(TbCoreFunction::getParentId, TOP_CODE)
-                        .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.Y.getValue())
+                        .eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.MENU.getValue())
                         .eq(TbCoreFunction::getClientId,clientId)));
     }
 
     @Function(value = "保存一级菜单",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_FUNCTION_SAVE")
+            @Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_FUNCTION_SAVE",type = Menu.TYPE.BTN)
     })
     @ApiOperation("设置顶部菜单关联的一级菜单")
     @PostMapping(value = "/saveFunction",produces="application/json")

@@ -336,7 +336,7 @@ public class ConstantsEnum {
     }
 
     /**
-     * 功能打开方式
+     * 登录模式
      * @Author mr.g
      **/
     public enum LOGIN_LIMIT {
@@ -362,6 +362,41 @@ public class ConstantsEnum {
         public static String getName(String value) {
             LOGIN_LIMIT[] businessModeEnums = values();
             for (LOGIN_LIMIT businessModeEnum : businessModeEnums) {
+                if (businessModeEnum.value.equals(value)) {
+                    return businessModeEnum.name;
+                }
+            }
+            return null;
+        }
+    }
+
+    /**
+     * 功能类型
+     * @Author mr.g
+     **/
+    public enum FUNCTION_TYPE {
+
+        BTN(0, "按钮"), MENU(1, "菜单"), INTERFACE(2, "接口");
+
+        FUNCTION_TYPE(Integer value, String name) {
+            this.value = value;
+            this.name = name;
+        }
+
+        private final Integer value;
+        private final String name;
+
+        public Integer getValue() {
+            return value;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public static String getName(Integer value) {
+            FUNCTION_TYPE[] businessModeEnums = values();
+            for (FUNCTION_TYPE businessModeEnum : businessModeEnums) {
                 if (businessModeEnum.value.equals(value)) {
                     return businessModeEnum.name;
                 }

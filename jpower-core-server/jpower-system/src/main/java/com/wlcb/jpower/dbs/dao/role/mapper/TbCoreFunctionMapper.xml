@@ -10,8 +10,8 @@
             SELECT CASE WHEN count( 1 ) > 0 THEN 1 ELSE 0 END
             FROM tb_core_function
             WHERE parent_id = f.id
-            <if test="isMenu!=null">
-                AND is_menu = ${isMenu}
+            <if test="functionType!=null">
+                AND function_type = ${functionType}
             </if>
         ) AS "has_children"
         from tb_core_function f

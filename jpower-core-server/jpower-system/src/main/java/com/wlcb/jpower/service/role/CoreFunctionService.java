@@ -147,7 +147,7 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
     List<TbCoreFunction> menuByRoleIds(List<String> roleIds);
 
     /**
-     * 查询按钮
+     * 查询接口按钮
      * @author mr.g
      * @date 00:47 2021-02-27
      * @param roleIds 角色ID

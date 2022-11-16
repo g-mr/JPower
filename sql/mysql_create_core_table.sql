@@ -1,18 +1,3 @@
-/*
- Navicat Premium Data Transfer
-
- Source Server         : 82.156.227.156
- Source Server Type    : MySQL
- Source Server Version : 50734
- Source Host           : 82.156.227.156:3306
- Source Schema         : jpower
-
- Target Server Type    : MySQL
- Target Server Version : 50734
- File Encoding         : 65001
-
- Date: 18/09/2022 00:53:26
-*/
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
@@ -62,6 +47,7 @@ CREATE TABLE `tb_core_client`  (
   `client_secret` varchar(31) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '客户端密钥',
   `access_token_validity` int(10) NOT NULL DEFAULT 0 COMMENT 'token过期时间，单位秒',
   `refresh_token_validity` int(10) NOT NULL DEFAULT 0 COMMENT '刷新token时间，单位秒，时间应该比token过期时间更长',
+  `login_limit` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '登录限制',
   `sort_num` int(6) NULL DEFAULT NULL COMMENT '排序',
   `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
   `create_user` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'root' COMMENT '创建人',
@@ -106,30 +92,28 @@ CREATE TABLE `tb_core_data_scope`  (
 -- Table structure for tb_core_dict
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_dict`;
-create table tb_core_dict
-(
-    id             varchar(32)                            not null comment '主键',
-    dict_type_code varchar(50)                            not null comment '字典类型代码',
-    code           varchar(100)                           not null comment '字典代码',
-    name           varchar(250)                           not null comment '字典名称',
-    is_stop        char         default 'N'               not null comment '是否停用',
-    parent_id      varchar(32)  default '-1'              null comment '上级ID',
-    locale         varchar(20)  default 'zh'           not null comment '语言 zh en',
-    note           varchar(100)                           null comment '备注',
-    sort_num       int(6)       default 0                 null comment '排序',
-    create_user    varchar(32)  default 'root'            not null comment '创建人',
-    create_time    datetime     default CURRENT_TIMESTAMP not null comment '创建时间',
-    update_user    varchar(32)  default 'root'            not null comment '更新人',
-    update_time    datetime     default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    status         tinyint(1)   default 1                 null comment '状态',
-    is_deleted     tinyint(1)   default 0                 null comment '是否删除 0否 1是',
-    dict_level     int(6)                                 null comment '树形字典结构的级别',
-    pcode          varchar(100) default '-1'              null comment '上级代码',
-    tenant_code    varchar(6)   default '000000'          not null comment '租户编码',
-    create_org     varchar(32)                            null,
-    PRIMARY KEY (`id`) USING BTREE
+CREATE TABLE `tb_core_dict`  (
+  `id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '主键',
+  `dict_type_code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字典类型代码',
+  `code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字典代码',
+  `name` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字典名称',
+  `is_stop` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'N' COMMENT '是否停用',
+  `parent_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '-1' COMMENT '上级ID',
+  `locale` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'zh' COMMENT '语言 zh_cn en',
+  `note` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
+  `sort_num` int(6) NULL DEFAULT 0 COMMENT '排序',
+  `create_user` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'root' COMMENT '创建人',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'root' COMMENT '更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `status` tinyint(1) NULL DEFAULT 1 COMMENT '状态',
+  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+  `dict_level` int(6) NULL DEFAULT NULL COMMENT '树形字典结构的级别',
+  `pcode` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '-1' COMMENT '上级代码',
+  `tenant_code` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '000000' COMMENT '租户编码',
+  `create_org` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '字典表' ROW_FORMAT = Dynamic;
-
 
 -- ----------------------------
 -- Table structure for tb_core_dict_type
@@ -191,7 +175,7 @@ CREATE TABLE `tb_core_function`  (
   `code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '功能编码',
   `parent_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '-1' COMMENT '父级ID',
   `url` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '资源URL',
-  `is_menu` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否菜单 0：否 1：是',
+  `function_type` int(1) NOT NULL DEFAULT 0 COMMENT '功能类型 0：按钮 1：菜单 2：接口',
   `icon` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '图标',
   `target` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '_self' COMMENT '打开方式',
   `sort` int(6) NULL DEFAULT 0 COMMENT '排序',
@@ -209,6 +193,24 @@ CREATE TABLE `tb_core_function`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `code_index`(`code`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '功能菜单表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for tb_core_function_menu
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_core_function_menu`;
+CREATE TABLE `tb_core_function_menu`  (
+  `id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '主键',
+  `function_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '功能ID',
+  `menu_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '菜单ID',
+  `create_user` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'root' COMMENT '创建人',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'root' COMMENT '更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '状态',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+  `create_org` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建部门',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '功能菜单顶级菜单关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for tb_core_org
@@ -351,6 +353,24 @@ CREATE TABLE `tb_core_role_function`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '角色菜单表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Table structure for tb_core_role_menu
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_core_role_menu`;
+CREATE TABLE `tb_core_role_menu`  (
+  `id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '主键',
+  `role_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '角色ID',
+  `menu_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '菜单ID',
+  `create_user` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'root' COMMENT '创建人',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'root' COMMENT '更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '状态',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+  `create_org` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建部门',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '角色顶级菜单关联表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
 -- Table structure for tb_core_tenant
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_tenant`;
@@ -375,6 +395,29 @@ CREATE TABLE `tb_core_tenant`  (
   `create_org` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '租户表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for tb_core_top_menu
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_core_top_menu`;
+CREATE TABLE `tb_core_top_menu`  (
+  `id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '主键',
+  `client_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '客户端ID',
+  `code` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '菜单编号',
+  `name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '菜单名称',
+  `icon` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '图标',
+  `router` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '首页路由',
+  `sort_num` int(6) NOT NULL DEFAULT 1 COMMENT '排序',
+  `note` varchar(525) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注说明',
+  `create_user` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'root' COMMENT '创建人',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'root' COMMENT '更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '状态 1启用 0停用',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+  `create_org` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建部门',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '顶级菜单表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for tb_core_user
@@ -431,65 +474,6 @@ CREATE TABLE `tb_core_user_role`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `core_dict_type`(`role_id`, `user_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户角色表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Table structure for tb_core_top_menu
--- ----------------------------
-DROP TABLE IF EXISTS `tb_core_top_menu`;
-CREATE TABLE `tb_core_top_menu`  (
-    `id` varchar(32)  NOT NULL COMMENT '主键',
-    `client_id` varchar(32) NOT NULL COMMENT '客户端ID',
-    `code` varchar(25) NOT NULL COMMENT '菜单编号',
-    `name` varchar(128) NOT NULL COMMENT '菜单名称',
-    `icon` varchar(100) DEFAULT NULL COMMENT '图标',
-    `router` varchar(50) DEFAULT NULL COMMENT '首页路由',
-    `sort_num` int(6) NOT NULL DEFAULT 1 COMMENT '排序',
-    `note` varchar(525) NULL DEFAULT NULL COMMENT '备注说明',
-    `create_user` varchar(32)  NOT NULL DEFAULT 'root' COMMENT '创建人',
-    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-    `update_user` varchar(32)  NOT NULL DEFAULT 'root' COMMENT '更新人',
-    `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-    `status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '状态 1启用 0停用',
-    `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
-    `create_org` varchar(32)  NULL DEFAULT NULL COMMENT '创建部门',
-    PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '顶级菜单表';
-
--- ----------------------------
--- Table structure for tb_core_role_menu
--- ----------------------------
-DROP TABLE IF EXISTS `tb_core_role_menu`;
-CREATE TABLE `tb_core_role_menu`  (
-    `id` varchar(32)  NOT NULL COMMENT '主键',
-    `role_id` varchar(32) NOT NULL COMMENT '角色ID',
-    `menu_id` varchar(32) NOT NULL COMMENT '菜单ID',
-    `create_user` varchar(32)  NOT NULL DEFAULT 'root' COMMENT '创建人',
-    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-    `update_user` varchar(32)  NOT NULL DEFAULT 'root' COMMENT '更新人',
-    `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-    `status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '状态',
-    `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
-    `create_org` varchar(32)  NULL DEFAULT NULL COMMENT '创建部门',
-    PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '角色顶级菜单关联表';
-
--- ----------------------------
--- Table structure for tb_core_function_menu
--- ----------------------------
-DROP TABLE IF EXISTS `tb_core_function_menu`;
-CREATE TABLE `tb_core_function_menu`  (
-    `id` varchar(32)  NOT NULL COMMENT '主键',
-    `function_id` varchar(32) NOT NULL COMMENT '功能ID',
-    `menu_id` varchar(32) NOT NULL COMMENT '菜单ID',
-    `create_user` varchar(32)  NOT NULL DEFAULT 'root' COMMENT '创建人',
-    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-    `update_user` varchar(32)  NOT NULL DEFAULT 'root' COMMENT '更新人',
-    `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-    `status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '状态',
-    `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
-    `create_org` varchar(32)  NULL DEFAULT NULL COMMENT '创建部门',
-    PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '功能菜单顶级菜单关联表';
 
 -- ----------------------------
 -- Table structure for tb_log_error

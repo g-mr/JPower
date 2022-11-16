@@ -95,7 +95,7 @@ public class FileController extends BaseController {
     }
 
     @Function(value = "文件列表",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_FILE",code = "SYSTEM_FILE_LIST")
+            @Menu(client = "admin",menuCode = "SYSTEM_FILE",code = "SYSTEM_FILE_LIST",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("文件列表")
     @ApiImplicitParams({
@@ -116,7 +116,7 @@ public class FileController extends BaseController {
     }
 
     @Function(value = "文件详情",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_FILE",code = "SYSTEM_FILE_DETAIL")
+            @Menu(client = "admin",menuCode = "SYSTEM_FILE",code = "SYSTEM_FILE_DETAIL",type = Menu.TYPE.BTN)
     })
     @ApiOperation("详情")
     @GetMapping(value = "/get",produces="application/json")
@@ -126,7 +126,7 @@ public class FileController extends BaseController {
     }
 
     @Function(value = "批量删除",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_FILE",code = "SYSTEM_FILE_DELETE")
+            @Menu(client = "admin",menuCode = "SYSTEM_FILE",code = "SYSTEM_FILE_DELETE",type = Menu.TYPE.BTN)
     })
     @ApiOperation("批量删除")
     @DeleteMapping(value = "/delete",produces="application/json")
@@ -141,7 +141,7 @@ public class FileController extends BaseController {
     }
 
     @Function(value = "修改文件",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_FILE",code = "SYSTEM_FILE_UPDATE")
+            @Menu(client = "admin",menuCode = "SYSTEM_FILE",code = "SYSTEM_FILE_UPDATE",type = Menu.TYPE.BTN)
     })
     @ApiOperation("修改文件")
     @ApiImplicitParams({

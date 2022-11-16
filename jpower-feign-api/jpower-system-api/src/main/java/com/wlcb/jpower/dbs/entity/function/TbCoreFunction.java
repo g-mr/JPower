@@ -32,9 +32,9 @@ public class TbCoreFunction extends BaseEntity implements Serializable {
     private String parentId;
     @ApiModelProperty("地址")
     private String url;
-    @ApiModelProperty("是否菜单 字典YN01")
-    @Dict(name = "YN01",attributes = "isMenuStr")
-    private Integer isMenu;
+    @ApiModelProperty("功能类型 字典：FUNCTION_TYPE")
+    @Dict(name = "FUNCTION_TYPE")
+    private Integer functionType;
     @ApiModelProperty("打开方式 字典DKFS")
     @Dict(name = "DKFS",attributes = "targetStr")
     private String target;
@@ -48,11 +48,7 @@ public class TbCoreFunction extends BaseEntity implements Serializable {
     private String moudeSummary;
     @ApiModelProperty("操作说明")
     private String operateInstruction;
-//    @ApiModelProperty("菜单级别")
-//    private Integer functionLevel;
 
-    @TableField(exist = false)
-    private String isMenuStr;
     @TableField(exist = false)
     private String targetStr;
 

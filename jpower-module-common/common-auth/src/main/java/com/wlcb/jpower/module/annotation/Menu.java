@@ -1,5 +1,8 @@
 package com.wlcb.jpower.module.annotation;
 
+import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
+import lombok.Getter;
+
 import java.lang.annotation.*;
 
 /**
@@ -30,5 +33,31 @@ public @interface Menu {
      * 功能编号
      **/
     String code();
+
+    /**
+     * 功能类型
+     **/
+    TYPE type();
+
+    enum TYPE
+    {
+        /**
+         * 按钮
+         */
+        BTN(ConstantsEnum.FUNCTION_TYPE.BTN.getValue()),
+
+        /**
+         * 接口
+         */
+        INTERFACE(ConstantsEnum.FUNCTION_TYPE.INTERFACE.getValue()),
+        ;
+
+        TYPE(int value) {
+            this.value = value;
+        }
+
+        @Getter
+        private final Integer value;
+    }
 
 }

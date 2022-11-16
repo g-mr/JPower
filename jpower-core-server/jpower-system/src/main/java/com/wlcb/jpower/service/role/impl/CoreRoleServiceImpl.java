@@ -36,7 +36,7 @@ public class CoreRoleServiceImpl extends BaseServiceImpl<TbCoreRoleMapper, TbCor
     @Override
     public Boolean add(TbCoreRole coreRole) {
         if (coreRoleDao.save(coreRole)){
-            List<String> functionIds = coreFunctionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda().select(TbCoreFunction::getId).eq(TbCoreFunction::getParentId, JpowerConstants.TOP_CODE).eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.N), Fc::toStr);
+            List<String> functionIds = coreFunctionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda().select(TbCoreFunction::getId).eq(TbCoreFunction::getParentId, JpowerConstants.TOP_CODE).ne(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.MENU.getValue()), Fc::toStr);
             List<TbCoreRoleFunction> roleFunctions = new ArrayList<>();
             functionIds.forEach(functionId -> {
                 TbCoreRoleFunction roleFunction = new TbCoreRoleFunction();

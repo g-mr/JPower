@@ -39,7 +39,7 @@ public class PostController extends BaseController {
     private final CorePostService postService;
 
     @Function(value = "岗位列表",menus = {
-            @Menu(client = "admin",menuCode = "POST",code = "POST_PAGE")
+            @Menu(client = "admin",menuCode = "POST",code = "POST_PAGE",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation(value = "分页")
     @ApiImplicitParams({
@@ -56,7 +56,7 @@ public class PostController extends BaseController {
     }
 
     @Function(value = "岗位下拉",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "POST_SELECT")
+            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "POST_SELECT",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation(value = "下拉列表")
     @GetMapping(value = "/select", produces = "application/json")
@@ -71,7 +71,7 @@ public class PostController extends BaseController {
     }
 
     @Function(value = "新增岗位",menus = {
-            @Menu(client = "admin",menuCode = "POST",code = "POST_ADD")
+            @Menu(client = "admin",menuCode = "POST",code = "POST_ADD",type = Menu.TYPE.BTN)
     })
     @ApiOperation(value = "新增")
     @PostMapping(value = "/add", produces = "application/json")
@@ -90,7 +90,7 @@ public class PostController extends BaseController {
     }
 
     @Function(value = "编辑岗位",menus = {
-            @Menu(client = "admin",menuCode = "POST",code = "POST_UPDATE")
+            @Menu(client = "admin",menuCode = "POST",code = "POST_UPDATE",type = Menu.TYPE.BTN)
     })
     @ApiOperation(value = "编辑")
     @PutMapping(value = "/update", produces = "application/json")
@@ -105,7 +105,7 @@ public class PostController extends BaseController {
     }
 
     @Function(value = "删除岗位",menus = {
-            @Menu(client = "admin",menuCode = "POST",code = "POST_DELETE")
+            @Menu(client = "admin",menuCode = "POST",code = "POST_DELETE",type = Menu.TYPE.BTN)
     })
     @ApiOperation(value = "删除")
     @DeleteMapping(value = "/delete", produces = "application/json")
@@ -116,7 +116,7 @@ public class PostController extends BaseController {
     }
 
     @Function(value = "岗位详情",menus = {
-            @Menu(client = "admin",menuCode = "POST",code = "POST_DETAIL")
+            @Menu(client = "admin",menuCode = "POST",code = "POST_DETAIL",type = Menu.TYPE.BTN)
     })
     @ApiOperation(value = "详情")
     @DeleteMapping(value = "/get", produces = "application/json")

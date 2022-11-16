@@ -73,7 +73,7 @@ public class CoreDataScopeServiceImpl extends BaseServiceImpl<TbCoreDataScopeMap
     public List<TbCoreDataScope> getDataScopeByRole(List<String> roleIds,String clientCode) {
         String inSql = StringUtils.collectionToDelimitedString(roleIds, StringPool.COMMA, StringPool.SINGLE_QUOTE, StringPool.SINGLE_QUOTE);
         return dataScopeDao.list(Condition.<TbCoreDataScope>getQueryWrapper().lambda()
-                .inSql(TbCoreDataScope::getMenuId,"select id from tb_core_function where client_id = '" + clientDao.queryIdByCode(clientCode) + "' and is_menu = 1")
+                .inSql(TbCoreDataScope::getMenuId,"select id from tb_core_function where client_id = '" + clientDao.queryIdByCode(clientCode) + "' and function_type = " + ConstantsEnum.FUNCTION_TYPE.MENU.getValue())
                 .and(query-> query.inSql(TbCoreDataScope::getId, StringUtil.format(sql,inSql))
                         .or().eq(TbCoreDataScope::getAllRole,ConstantsEnum.YN01.Y.getValue())));
     }

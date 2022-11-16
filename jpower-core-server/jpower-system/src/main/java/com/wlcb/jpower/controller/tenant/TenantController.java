@@ -45,7 +45,7 @@ public class TenantController extends BaseController {
     private TenantService tenantService;
 
     @Function(value = "租户列表",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "TENANT_LIST")
+            @Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "TENANT_LIST", type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("租户分页列表")
     @ApiImplicitParams({
@@ -79,7 +79,7 @@ public class TenantController extends BaseController {
     }
 
     @Function(value = "修改租户",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "SYSTEM_TENANT_UPDATE")
+            @Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "SYSTEM_TENANT_UPDATE",type = Menu.TYPE.BTN)
     })
     @ApiOperation("修改租户信息")
     @PutMapping("/update")
@@ -99,7 +99,7 @@ public class TenantController extends BaseController {
     }
 
     @Function(value = "删除租户",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "SYSTEM_TENANT_DELETE")
+            @Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "SYSTEM_TENANT_DELETE",type = Menu.TYPE.BTN)
     })
     @ApiOperation("删除租户信息")
     @OperateLog(value = "删除租户",businessType = DELETE)
@@ -113,7 +113,7 @@ public class TenantController extends BaseController {
     }
 
     @Function(value = "新增租户",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "SYSTEM_TENANT_ADD")
+            @Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "SYSTEM_TENANT_ADD",type = Menu.TYPE.BTN)
     })
     @ApiOperation("新增租户信息")
     @PostMapping(value = "/add",produces = "application/json")
@@ -141,7 +141,7 @@ public class TenantController extends BaseController {
     }
 
     @Function(value = "授权配置",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "SYSTEM_TENANT_SETTING")
+            @Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "SYSTEM_TENANT_SETTING",type = Menu.TYPE.BTN)
     })
     @ApiOperation("租户授权配置")
     @PutMapping(value = "/setting",produces = "application/json")

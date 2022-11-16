@@ -50,7 +50,7 @@ public class DictController extends BaseController {
     private CoreDictTypeService coreDictTypeService;
 
     @Function(value = "字典类型树",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_TYPELIST")
+            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_TYPELIST",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("查询所有字典类型树形结构")
     @RequestMapping(value = "/dictTypeTree",method = RequestMethod.GET,produces="application/json")
@@ -59,7 +59,7 @@ public class DictController extends BaseController {
     }
 
     @Function(value = "新增字典类型",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_TYPE_ADD")
+            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_TYPE_ADD",type = Menu.TYPE.BTN)
     })
     @ApiOperation(value = "新增字典类型")
     @RequestMapping(value = "/add",method = RequestMethod.POST,produces="application/json")
@@ -72,7 +72,7 @@ public class DictController extends BaseController {
     }
 
     @Function(value = "修改字典类型",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_TYPE_UPDATE")
+            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_TYPE_UPDATE",type = Menu.TYPE.BTN)
     })
     @ApiOperation(value = "更新字典类型")
     @RequestMapping(value = "/update",method = RequestMethod.POST,produces="application/json")
@@ -83,7 +83,7 @@ public class DictController extends BaseController {
     }
 
     @Function(value = "删除字典类型",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_TYPE_DELETE")
+            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_TYPE_DELETE",type = Menu.TYPE.BTN)
     })
     @ApiOperation("删除字典类型")
     @DeleteMapping(value = "/deleteDictType",produces="application/json")
@@ -94,7 +94,7 @@ public class DictController extends BaseController {
     }
 
     @Function(value = "字典类型详情",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_TYPE_DETAIL")
+            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_TYPE_DETAIL",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("查询字典类型详情")
     @RequestMapping(value = "/getDictType",method = RequestMethod.GET,produces="application/json")
@@ -104,7 +104,7 @@ public class DictController extends BaseController {
     }
 
     @Function(value = "字典列表",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_LIST")
+            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_LIST",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("通过字典类型分页查询字典")
     @ApiImplicitParams({
@@ -127,7 +127,7 @@ public class DictController extends BaseController {
     }
 
     @Function(value = "字典子级",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_LIST_BY_PARENT")
+            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_LIST_BY_PARENT",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation(value = "查询下级字典",notes = "parentId不可传-1")
     @ApiImplicitParams({
@@ -145,7 +145,7 @@ public class DictController extends BaseController {
     }
 
     @Function(value = "保存字典",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_SAVE")
+            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_SAVE",type = Menu.TYPE.BTN)
     })
     @ApiOperation("保存或者新增字典")
     @RequestMapping(value = "/saveDict",method = RequestMethod.POST,produces="application/json")
@@ -174,7 +174,7 @@ public class DictController extends BaseController {
     }
 
     @Function(value = "停用字典",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_STOP")
+            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_STOP",type = Menu.TYPE.BTN)
     })
     @ApiOperation("停用字典")
     @PostMapping(value = "/stopDict",produces="application/json")
@@ -189,7 +189,7 @@ public class DictController extends BaseController {
     }
 
     @Function(value = "删除字典",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_DELETE")
+            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_DELETE",type = Menu.TYPE.BTN)
     })
     @ApiOperation("删除字典")
     @RequestMapping(value = "/deleteDict",method = RequestMethod.DELETE,produces="application/json")
@@ -208,7 +208,7 @@ public class DictController extends BaseController {
     }
 
     @Function(value = "字典详情",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_DETAIL")
+            @Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_DETAIL",type = Menu.TYPE.BTN)
     })
     @ApiOperation("查询字典详情")
     @RequestMapping(value = "/getDict",method = RequestMethod.GET,produces="application/json")

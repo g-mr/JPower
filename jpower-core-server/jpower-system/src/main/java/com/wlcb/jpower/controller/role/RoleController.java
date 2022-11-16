@@ -41,7 +41,7 @@ public class RoleController extends BaseController {
     private CoreRolefunctionService coreRolefunctionService;
 
     @Function(value = "树形角色列表",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_LIST_TREE")
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_LIST_TREE",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("查询角色树结构列表")
     @RequestMapping(value = "/listTree",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
@@ -52,7 +52,7 @@ public class RoleController extends BaseController {
     }
 
     @Function(value = "角色树形",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "USER_ROLE_TREE")
+            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "USER_ROLE_TREE",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("查询角色树结构")
     @GetMapping(value = "/tree",produces="application/json")
@@ -72,7 +72,7 @@ public class RoleController extends BaseController {
     }
 
     @Function(value = "新增",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_ADD")
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_ADD",type = Menu.TYPE.BTN)
     })
     @ApiOperation("新增角色")
     @RequestMapping(value = "/add",method = {RequestMethod.POST},produces="application/json")
@@ -99,7 +99,7 @@ public class RoleController extends BaseController {
     }
 
     @Function(value = "删除",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_DELETE")
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_DELETE",type = Menu.TYPE.BTN)
     })
     @ApiOperation("删除角色")
     @RequestMapping(value = "/deleteStatus",method = {RequestMethod.DELETE},produces="application/json")
@@ -123,7 +123,7 @@ public class RoleController extends BaseController {
     }
 
     @Function(value = "修改",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_UPDATE")
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_UPDATE",type = Menu.TYPE.BTN)
     })
     @ApiOperation(value = "修改角色信息",notes = "主键不用传")
     @RequestMapping(value = "/update",method = {RequestMethod.PUT},produces="application/json")
@@ -155,7 +155,7 @@ public class RoleController extends BaseController {
     }
 
     @Function(value = "设置权限",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_UPDATEFUNCTION")
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_UPDATEFUNCTION",type = Menu.TYPE.BTN)
     })
     @ApiOperation("重新给角色赋权")
     @OperateLog(title = "重新给角色赋权",isSaveLog = true)
@@ -177,7 +177,7 @@ public class RoleController extends BaseController {
     }
 
     @Function(value = "保存顶部菜单",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_TOPMENU_SAVE")
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_TOPMENU_SAVE",type = Menu.TYPE.BTN)
     })
     @ApiOperation("设置角色关联的顶部菜单")
     @PostMapping(value = "/saveTopMenu",produces="application/json")
@@ -188,7 +188,7 @@ public class RoleController extends BaseController {
     }
 
     @Function(value = "顶部菜单ID",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_TOPMENU_ID")
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_TOPMENU_ID",type = Menu.TYPE.BTN)
     })
     @ApiOperation("角色关联的顶部菜单ID")
     @GetMapping(value = "/topMenuId",produces="application/json")

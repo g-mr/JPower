@@ -69,7 +69,7 @@ public class CityController extends BaseController {
     }
 
     @Function(value = "保存",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_CITY",code = "SYSTEM_CITY_SAVE")
+            @Menu(client = "admin",menuCode = "SYSTEM_CITY",code = "SYSTEM_CITY_SAVE",type = Menu.TYPE.BTN)
     })
     @ApiOperation(value = "保存行政区域",notes = "主键传是修改，不传是新增")
     @PostMapping(value = "/save", produces="application/json")
@@ -78,7 +78,7 @@ public class CityController extends BaseController {
     }
 
     @Function(value = "删除",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_CITY",code = "SYSTEM_CITY_DELETE")
+            @Menu(client = "admin",menuCode = "SYSTEM_CITY",code = "SYSTEM_CITY_DELETE",type = Menu.TYPE.BTN)
     })
     @ApiOperation("删除行政区域")
     @RequestMapping(value = "/delete",method = {RequestMethod.DELETE},produces="application/json")
@@ -87,7 +87,7 @@ public class CityController extends BaseController {
     }
 
     @Function(value = "详情",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_CITY",code = "SYSTEM_CITY_DETAIL")
+            @Menu(client = "admin",menuCode = "SYSTEM_CITY",code = "SYSTEM_CITY_DETAIL",type = Menu.TYPE.BTN)
     })
     @ApiOperation("查询行政区域详情")
     @GetMapping(value = "/get", produces="application/json")
@@ -96,7 +96,7 @@ public class CityController extends BaseController {
     }
 
     @Function(value = "列表",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_CITY",code = "CITY_LIST")
+            @Menu(client = "admin",menuCode = "SYSTEM_CITY",code = "CITY_LIST",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("懒加载树形菜单")
     @RequestMapping(value = "/lazyTree",method = {RequestMethod.GET},produces="application/json")

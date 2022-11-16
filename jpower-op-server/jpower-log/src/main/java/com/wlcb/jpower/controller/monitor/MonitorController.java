@@ -41,7 +41,7 @@ public class MonitorController extends BaseController {
     private final MonitorResultService monitorResultService;
 
     @Function(value = "监控结果",menus = {
-            @Menu(client = "admin",menuCode = "MONITOR_RESULT",code = "MONITOR_RESULTS_LIST")
+            @Menu(client = "admin",menuCode = "MONITOR_RESULT",code = "MONITOR_RESULTS_LIST",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation(value = "监控结果列表",notes = "默认查询最近一个月得")
     @ApiImplicitParams({
@@ -70,7 +70,7 @@ public class MonitorController extends BaseController {
     }
 
     @Function(value = "导出监控结果",menus = {
-            @Menu(client = "admin",menuCode = "MONITOR_RESULT",code = "MONITOR_RESULTS_EXPORT")
+            @Menu(client = "admin",menuCode = "MONITOR_RESULT",code = "MONITOR_RESULTS_EXPORT",type = Menu.TYPE.BTN)
     })
     @ApiOperation(value = "导出结果列表")
     @ApiImplicitParams({

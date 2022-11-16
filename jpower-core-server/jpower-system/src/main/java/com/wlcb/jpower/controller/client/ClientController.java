@@ -40,8 +40,8 @@ public class ClientController extends BaseController {
      * @return com.wlcb.jpower.module.base.vo.ResponseData
      **/
     @Function(value = "保存",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_CLIENT",code = "SYSTEM_CLIENT_SAVE"),
-            @Menu(client = "admin",menuCode = "SYSTEM_CLIENT",code = "SYSTEM_CLIENT_ADD")
+            @Menu(client = "admin",menuCode = "SYSTEM_CLIENT",code = "SYSTEM_CLIENT_SAVE",type = Menu.TYPE.BTN),
+            @Menu(client = "admin",menuCode = "SYSTEM_CLIENT",code = "SYSTEM_CLIENT_ADD",type = Menu.TYPE.BTN)
     })
     @ApiOperation("保存或者更新客户端信息")
     @PostMapping("save")
@@ -81,7 +81,7 @@ public class ClientController extends BaseController {
     }
 
     @Function(value = "删除",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_CLIENT",code = "SYSTEM_CLIENT_DELETE")
+            @Menu(client = "admin",menuCode = "SYSTEM_CLIENT",code = "SYSTEM_CLIENT_DELETE",type = Menu.TYPE.BTN)
     })
     @ApiOperation("删除客户端")
     @DeleteMapping("delete")
@@ -92,7 +92,7 @@ public class ClientController extends BaseController {
     }
 
     @Function(value = "列表",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_CLIENT",code = "CLIENT_LIST")
+            @Menu(client = "admin",menuCode = "SYSTEM_CLIENT",code = "CLIENT_LIST",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("分页查询客户端列表")
     @ApiImplicitParams({
@@ -109,10 +109,10 @@ public class ClientController extends BaseController {
     }
 
     @Function(value = "客户端下拉",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "FUNCTION_CLIENT_SELECT"),
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_CLIENT_SELECT"),
-            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "DATASCOPE_CLIENT_SELECT"),
-            @Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_CLIENT_SELECT")
+            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "FUNCTION_CLIENT_SELECT",type = Menu.TYPE.INTERFACE),
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_CLIENT_SELECT",type = Menu.TYPE.INTERFACE),
+            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "DATASCOPE_CLIENT_SELECT",type = Menu.TYPE.INTERFACE),
+            @Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_CLIENT_SELECT",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("下拉客户端列表")
     @GetMapping("selectList")

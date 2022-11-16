@@ -37,12 +37,12 @@ public class DictWrapper implements IDictBindHandler {
         if (Fc.isNotEmpty(fieldValue)){
             if (Fc.isNotBlank(dict.name())){
                 GuavaCache<String> guavaCache = GuavaCache.getInstance(EXPIRE_TIME, TimeUnit.SECONDS);
-                String value = guavaCache.get(dict.name() + StringPool.COLON + fieldValue);
-                if (Fc.isBlank(value)){
+                String value;
+                if (guavaCache.isExist(dict.name() + StringPool.COLON + fieldValue)){
+                    value = guavaCache.get(dict.name() + StringPool.COLON + fieldValue);
+                }else {
                     value = DictCache.getDictByTypeAndCode(dict.name(), Fc.toStr(fieldValue));
-                    if (Fc.isNotBlank(value)){
-                        guavaCache.put(dict.name() + StringPool.COLON + fieldValue,value);
-                    }
+                    guavaCache.put(dict.name() + StringPool.COLON + fieldValue,value);
                 }
 
                 if (Fc.isNotBlank(dict.attributes())){

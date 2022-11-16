@@ -41,7 +41,7 @@ public class SettingController {
     private final MonitorSettingService monitorSettingService;
 
     @Function(value = "服务列表",menus = {
-            @Menu(client = "admin",menuCode = "MONITOR_RESULT",code = "MONITOR_SERVERS")
+            @Menu(client = "admin",menuCode = "MONITOR_RESULT",code = "MONITOR_SERVERS",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperationSupport(order = 1)
     @ApiOperation("服务列表")
@@ -53,7 +53,7 @@ public class SettingController {
     }
 
     @Function(value = "分组列表",menus = {
-            @Menu(client = "admin",menuCode = "MONITOR_RESULT",code = "MONITOR_TAGS")
+            @Menu(client = "admin",menuCode = "MONITOR_RESULT",code = "MONITOR_TAGS",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperationSupport(order = 2)
     @ApiOperation("分组列表")
@@ -67,7 +67,7 @@ public class SettingController {
     }
 
     @Function(value = "接口树形",menus = {
-            @Menu(client = "admin",menuCode = "MONITOR_SETTING",code = "MONITOR_TREE")
+            @Menu(client = "admin",menuCode = "MONITOR_SETTING",code = "MONITOR_TREE",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperationSupport(order = 3)
     @ApiOperation("接口树形列表")
@@ -88,7 +88,7 @@ public class SettingController {
     }
 
     @Function(value = "获取接口设置",menus = {
-            @Menu(client = "admin",menuCode = "MONITOR_SETTING",code = "MONITOR_SETUP")
+            @Menu(client = "admin",menuCode = "MONITOR_SETTING",code = "MONITOR_SETUP",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperationSupport(order = 4)
     @ApiOperation("获取接口设置")
@@ -99,7 +99,7 @@ public class SettingController {
     }
 
     @Function(value = "保存接口设置",menus = {
-            @Menu(client = "admin",menuCode = "MONITOR_SETTING",code = "MONITOR_SAVE_SETUP")
+            @Menu(client = "admin",menuCode = "MONITOR_SETTING",code = "MONITOR_SAVE_SETUP",type = Menu.TYPE.BTN)
     })
     @ApiOperationSupport(order = 5)
     @ApiOperation("保存接口设置")
@@ -123,7 +123,7 @@ public class SettingController {
     }
 
     @Function(value = "删除接口设置",menus = {
-            @Menu(client = "admin",menuCode = "MONITOR_SETTING",code = "MONITOR_DELETE_SETUP")
+            @Menu(client = "admin",menuCode = "MONITOR_SETTING",code = "MONITOR_DELETE_SETUP",type = Menu.TYPE.BTN)
     })
     @ApiOperationSupport(order = 6)
     @ApiOperation("删除接口设置")
@@ -134,7 +134,7 @@ public class SettingController {
     }
 
     @Function(value = "获取接口参数",menus = {
-            @Menu(client = "admin",menuCode = "MONITOR_SETTING",code = "MONITOR_PARAMS")
+            @Menu(client = "admin",menuCode = "MONITOR_SETTING",code = "MONITOR_PARAMS",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperationSupport(order = 7)
     @ApiOperation("获取接口参数")
@@ -154,7 +154,7 @@ public class SettingController {
     }
 
     @Function(value = "保存接口参数",menus = {
-            @Menu(client = "admin",menuCode = "MONITOR_SETTING",code = "MONITOR_SAVE_PARAMS")
+            @Menu(client = "admin",menuCode = "MONITOR_SETTING",code = "MONITOR_SAVE_PARAMS",type = Menu.TYPE.BTN)
     })
     @ApiOperationSupport(order = 8)
     @ApiOperation("保存接口参数")

@@ -63,7 +63,7 @@ public class UserController extends BaseController {
     }
 
     @Function(value = "用户在线信息",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "USER_ONLINE")
+            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "USER_ONLINE",type = Menu.TYPE.BTN)
     })
     @ApiOperation("查询用户在线信息")
     @GetMapping(value = "/online", produces = "application/json")
@@ -83,7 +83,7 @@ public class UserController extends BaseController {
     }
 
     @Function(value = "踢下线",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "USER_OFFLINE")
+            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "USER_OFFLINE",type = Menu.TYPE.BTN)
     })
     @ApiOperation("踢下线")
     @PostMapping(value = "/offline", produces = "application/json")
@@ -99,7 +99,7 @@ public class UserController extends BaseController {
     }
 
     @Function(value = "用户列表",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "USER_LIST")
+            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "USER_LIST",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("查询用户分页列表")
     @ApiImplicitParams({
@@ -121,7 +121,7 @@ public class UserController extends BaseController {
     }
 
     @Function(value = "导出用户",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_EXPORTUSER")
+            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_EXPORTUSER",type = Menu.TYPE.BTN)
     })
     @ApiOperation(value = "导出用户")
     @ApiImplicitParams({
@@ -143,7 +143,7 @@ public class UserController extends BaseController {
     }
 
     @Function(value = "用户详情",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "USER_DETAIL")
+            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "USER_DETAIL",type = Menu.TYPE.BTN)
     })
     @ApiOperation("查询用户详情")
     @RequestMapping(value = "/getById", method = RequestMethod.GET, produces = "application/json")
@@ -155,7 +155,7 @@ public class UserController extends BaseController {
     }
 
     @Function(value = "新增用户",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_ADD")
+            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_ADD",type = Menu.TYPE.BTN)
     })
     @ApiOperation(value = "新增", notes = "主键不用传")
     @RequestMapping(value = "/add", method = {RequestMethod.POST}, produces = "application/json")
@@ -206,7 +206,7 @@ public class UserController extends BaseController {
     }
 
     @Function(value = "删除用户",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_DELETE")
+            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_DELETE",type = Menu.TYPE.BTN)
     })
     @ApiOperation(value = "删除用户")
     @OperateLog(title = "删除登录用户", businessType = DELETE)
@@ -224,7 +224,7 @@ public class UserController extends BaseController {
     }
 
     @Function(value = "修改用户",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_UPDATE")
+            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_UPDATE",type = Menu.TYPE.BTN)
     })
     @ApiOperation(value = "修改用户信息")
     @OperateLog(title = "修改系统用户信息", businessType = UPDATE)
@@ -303,7 +303,7 @@ public class UserController extends BaseController {
     }
 
     @Function(value = "重置密码",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_RESETPASSWORD")
+            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_RESETPASSWORD",type = Menu.TYPE.BTN)
     })
     @ApiOperation(value = "重置用户登陆密码")
     @PutMapping(value = "/resetPassword", produces = "application/json")
@@ -329,7 +329,7 @@ public class UserController extends BaseController {
     }
 
     @Function(value = "导入用户",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_IMPORTUSER")
+            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_IMPORTUSER",type = Menu.TYPE.BTN)
     })
     @ApiOperation(value = "批量导入用户")
     @PostMapping(value = "/importUser", produces = "application/json")
@@ -364,7 +364,7 @@ public class UserController extends BaseController {
     }
 
     @Function(value = "模板下载",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_DOWNLOADTEMPLATE")
+            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_DOWNLOADTEMPLATE",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation(value = "用户上传模板下载")
     @GetMapping(value = "/downloadTemplate")

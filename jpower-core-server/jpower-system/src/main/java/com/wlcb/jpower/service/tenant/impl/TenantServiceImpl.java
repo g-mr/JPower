@@ -118,7 +118,7 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
             List<String> functionIds = functionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                     .select(TbCoreFunction::getId)
                     .eq(TbCoreFunction::getParentId,TOP_CODE)
-                    .eq(TbCoreFunction::getIsMenu,ConstantsEnum.YN01.N.getValue()),Fc::toStr);
+                    .ne(TbCoreFunction::getFunctionType,ConstantsEnum.FUNCTION_TYPE.MENU.getValue()),Fc::toStr);
 
             if (Fc.isNotEmpty(functionCodes)){
                 functionIds.addAll(getFunctions(functionCodes,new LinkedList<>()));
@@ -179,7 +179,7 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
 
             List<String> btnIds = functionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                     .select(TbCoreFunction::getId)
-                    .eq(TbCoreFunction::getIsMenu,ConstantsEnum.YN01.N.getValue())
+                    .ne(TbCoreFunction::getFunctionType,ConstantsEnum.FUNCTION_TYPE.MENU.getValue())
                     .eq(TbCoreFunction::getParentId,id),Fc::toStr);
 
             functionIds.addAll(btnIds);

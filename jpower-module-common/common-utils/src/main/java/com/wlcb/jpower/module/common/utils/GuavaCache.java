@@ -38,7 +38,7 @@ public class GuavaCache<T> {
         if (CACHE_MAP.get(key) == null){
             Cache<String, T> cache = CacheBuilder.newBuilder()
                     .initialCapacity(1000)
-                    // 设置缓存在写入一天后失效
+                    // 设置缓存失效时间
                     .expireAfterWrite(expireTime, unit)
                     // 设置并发级别为cpu核心数，默认为4
                     .concurrencyLevel(Runtime.getRuntime().availableProcessors())
@@ -74,5 +74,16 @@ public class GuavaCache<T> {
         if (Fc.notNull(value)){
             cache.put(key, value);
         }
+    }
+
+    /**
+     * 是否存在缓存
+     *
+     * @author mr.g
+     * @param key 键
+     * @return boolean
+     **/
+    public boolean isExist(String key) {
+        return cache.asMap().containsKey(key);
     }
 }

@@ -15,9 +15,6 @@ import lombok.Data;
 @Data
 public class FunctionVo extends TbCoreFunction{
 
-    @ApiModelProperty("是否菜单")
-    private String isMenuStr;
-
     @ApiModelProperty("页面打开方式")
     private String targetStr;
 

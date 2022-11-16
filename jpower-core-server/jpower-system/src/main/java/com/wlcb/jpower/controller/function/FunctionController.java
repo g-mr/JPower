@@ -44,8 +44,8 @@ public class FunctionController extends BaseController {
     private CoreClientService clientService;
 
     @Function(value = "菜单列表",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "SYSTEM_DATASCOPE_MENU"),
-            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "CHILD_FUNCTION")
+            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "SYSTEM_DATASCOPE_MENU",type = Menu.TYPE.INTERFACE),
+            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "CHILD_FUNCTION",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("根据父节点查询子节点功能")
     @ApiImplicitParams({
@@ -53,7 +53,7 @@ public class FunctionController extends BaseController {
             @ApiImplicitParam(name = "parentId_eq",value = "父级节点",defaultValue = TOP_CODE,required = true,paramType = "query"),
             @ApiImplicitParam(name = "alias",value = "别名",paramType = "query"),
             @ApiImplicitParam(name = "code",value = "编码",paramType = "query"),
-            @ApiImplicitParam(name = "isMenu_eq",value = "是否菜单 字典YN01",paramType = "query"),
+            @ApiImplicitParam(name = "functionType_eq",value = "是否菜单 字典YN01",paramType = "query"),
             @ApiImplicitParam(name = "functionName",value = "功能名称",paramType = "query"),
             @ApiImplicitParam(name = "url",value = "功能URL",paramType = "query")
     })
@@ -63,7 +63,7 @@ public class FunctionController extends BaseController {
 
         coreFunction.remove("clientId");
         coreFunction.remove("parentId");
-        coreFunction.remove("isMenu");
+        coreFunction.remove("functionType");
 
         if(StringUtils.isBlank(Fc.toStr(coreFunction.get("parentId_eq")))){
             coreFunction.put("parentId_eq", TOP_CODE);
@@ -74,7 +74,7 @@ public class FunctionController extends BaseController {
     }
 
     @Function(value = "新增",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_ADD")
+            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_ADD",type = Menu.TYPE.BTN)
     })
     @ApiOperation("新增")
     @PostMapping(value = "/add", produces="application/json")
@@ -83,7 +83,7 @@ public class FunctionController extends BaseController {
         JpowerAssert.notEmpty(coreFunction.getCode(),JpowerError.Arg,"编码不可为空");
         JpowerAssert.notEmpty(coreFunction.getUrl(),JpowerError.Arg,"URL不可为空");
         JpowerAssert.notEmpty(coreFunction.getClientId(),JpowerError.Arg,"客户端ID不可为空");
-        JpowerAssert.notNull(coreFunction.getIsMenu(),JpowerError.Arg,"是否菜单不可为空");
+        JpowerAssert.notNull(coreFunction.getFunctionType(),JpowerError.Arg,"功能类型不可为空");
 
         if(StringUtils.isBlank(coreFunction.getParentId())){
             coreFunction.setParentId("-1");
@@ -105,7 +105,7 @@ public class FunctionController extends BaseController {
     }
 
     @Function(value = "删除",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_DELETE")
+            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_DELETE",type = Menu.TYPE.BTN)
     })
     @ApiOperation("删除")
     @RequestMapping(value = "/delete",method = {RequestMethod.DELETE},produces="application/json")
@@ -129,7 +129,7 @@ public class FunctionController extends BaseController {
     }
 
     @Function(value = "修改",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_UPDATE")
+            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_UPDATE",type = Menu.TYPE.BTN)
     })
     @ApiOperation("修改")
     @RequestMapping(value = "/update",method = {RequestMethod.PUT},produces="application/json")
@@ -155,7 +155,7 @@ public class FunctionController extends BaseController {
     }
 
     @Function(value = "角色权限",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_SELECT_URL")
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_SELECT_URL",type = Menu.TYPE.BTN)
     })
     @ApiOperation("根据角色ID查询所有的权限ID")
     @RequestMapping(value = "/queryUrlIdByRole",method = {RequestMethod.GET},produces="application/json")
@@ -201,8 +201,8 @@ public class FunctionController extends BaseController {
     }
 
     @Function(value = "菜单树形",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_MENU_TREE"),
-            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_MENU")
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_MENU_TREE",type = Menu.TYPE.INTERFACE),
+            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_MENU",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("查询登录用户所有菜单树形结构")
     @GetMapping(value = "/menuTree", produces="application/json")
@@ -214,7 +214,7 @@ public class FunctionController extends BaseController {
     }
 
     @Function(value = "客户端功能树",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "CLIENT_MENU_TREE")
+            @Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "CLIENT_MENU_TREE",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("查询登录用户所有菜单树形结构并根据客户端区分")
     @GetMapping(value = "/clientMenuTree", produces="application/json")
@@ -257,7 +257,7 @@ public class FunctionController extends BaseController {
     }
 
     @Function(value = "菜单资源",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_BUT")
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_BUT",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation(value = "查询登录用户一个菜单下的所有按钮接口资源", notes = "当不传菜单ID时，会查出顶级资源；单独查一个菜单时，不会把顶级按钮返回")
     @GetMapping(value = "/listButByMenu", produces="application/json")
@@ -274,7 +274,7 @@ public class FunctionController extends BaseController {
     }
 
     @Function(value = "功能点同步",alias = "同步", menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION", code = "SYSTEM_FUNCTION_GENERATE")
+            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION", code = "SYSTEM_FUNCTION_GENERATE",type = Menu.TYPE.BTN)
     })
     @ApiOperation("生成功能点")
     @PostMapping(value = "/generate", produces="application/json")

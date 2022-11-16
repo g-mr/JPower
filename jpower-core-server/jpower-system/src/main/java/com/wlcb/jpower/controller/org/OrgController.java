@@ -36,7 +36,7 @@ public class OrgController extends BaseController {
     private CoreOrgService coreOrgService;
 
     @Function(value = "下级部门",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ORG",code = "SYSTEM_ORGCHILDER_LIST")
+            @Menu(client = "admin",menuCode = "SYSTEM_ORG",code = "SYSTEM_ORGCHILDER_LIST",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("懒加载组织机构树形列表")
     @GetMapping(value = "/listLazyByParent",produces="application/json")
@@ -46,7 +46,7 @@ public class OrgController extends BaseController {
     }
 
     @Function(value = "树形列表",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ORG",code = "SYSTEM_ORG_TREELIST")
+            @Menu(client = "admin",menuCode = "SYSTEM_ORG",code = "SYSTEM_ORG_TREELIST",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("分页懒加载组织机构树形列表")
     @GetMapping(value = "/listLazy",produces="application/json")
@@ -57,8 +57,8 @@ public class OrgController extends BaseController {
     }
 
     @Function(value = "新增",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ORG",code = "ORG_CHILD_ADD"),
-            @Menu(client = "admin",menuCode = "SYSTEM_ORG",code = "SYSTEM_ORG_ADD")
+            @Menu(client = "admin",menuCode = "SYSTEM_ORG",code = "ORG_CHILD_ADD",type = Menu.TYPE.BTN),
+            @Menu(client = "admin",menuCode = "SYSTEM_ORG",code = "SYSTEM_ORG_ADD",type = Menu.TYPE.BTN)
     })
     @ApiOperation(value = "新增一个组织机构",notes = "无需传主键(id)")
     @RequestMapping(value = "/add",method = {RequestMethod.POST},produces="application/json")
@@ -77,7 +77,7 @@ public class OrgController extends BaseController {
     }
 
     @Function(value = "删除",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ORG",code = "SYSTEM_ORG_DELETE")
+            @Menu(client = "admin",menuCode = "SYSTEM_ORG",code = "SYSTEM_ORG_DELETE",type = Menu.TYPE.BTN)
     })
     @ApiOperation("删除组织机构")
     @RequestMapping(value = "/deleteStatus",method = {RequestMethod.DELETE},produces="application/json")
@@ -102,7 +102,7 @@ public class OrgController extends BaseController {
     }
 
     @Function(value = "编辑",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ORG",code = "SYSTEM_ORG_UPDATE")
+            @Menu(client = "admin",menuCode = "SYSTEM_ORG",code = "SYSTEM_ORG_UPDATE",type = Menu.TYPE.BTN)
     })
     @ApiOperation(value = "修改组织机构信息")
     @RequestMapping(value = "/update",method = {RequestMethod.PUT},produces="application/json")
@@ -120,9 +120,9 @@ public class OrgController extends BaseController {
     }
 
     @Function(value = "树形部门",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ORG",code = "SYSTEM_ORG_TREE"),
-            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_ORG"),
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_ORG")
+            @Menu(client = "admin",menuCode = "SYSTEM_ORG",code = "SYSTEM_ORG_TREE",type = Menu.TYPE.INTERFACE),
+            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_ORG",type = Menu.TYPE.INTERFACE),
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_ORG",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("加载组织机构树形菜单")
     @ApiImplicitParams({

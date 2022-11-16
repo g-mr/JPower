@@ -52,9 +52,9 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     @Override
     public List<FunctionVo> listFunction(Map<String,Object> coreFunction) {
 
-        String isMenu = null;
-        if (coreFunction.containsKey("isMenu_eq")){
-            isMenu = Fc.toStr(coreFunction.get("isMenu_eq"));
+        String functionType = null;
+        if (coreFunction.containsKey("functionType_eq")){
+            functionType = Fc.toStr(coreFunction.get("functionType_eq"));
         }
 
         LambdaQueryWrapper<TbCoreFunction> wrapper = ShieldUtil.isRoot() ?
@@ -64,7 +64,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
                         .inSql(TbCoreFunction::getId,StringUtil.format(sql,StringPool.SINGLE_QUOTE.concat(Fc.join(ShieldUtil.getUserRole(),StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE)))
                         .orderByAsc(TbCoreFunction::getSort);
 
-        return coreFunctionDao.getBaseMapper().listFunction(wrapper, isMenu);
+        return coreFunctionDao.getBaseMapper().listFunction(wrapper, functionType);
     }
 
     @Override
@@ -142,7 +142,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
 
         String inSql = StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE);
         List<TbCoreFunction> list = coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
-                .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.Y.getValue())
+                .eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.MENU.getValue())
                 .eq(TbCoreFunction::getClientId,clientDao.queryIdByCode(clientCode))
                 .inSql(!ShieldUtil.isRoot(), TbCoreFunction::getId,StringUtil.format(sql,inSql))
                 .orderByAsc(TbCoreFunction::getSort));
@@ -179,7 +179,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     public List<Tree<String>> menuTreeByRoleIds(List<String> roleIds,String clientId) {
         LambdaTreeWrapper<TbCoreFunction> wrapper = Condition.getLambdaTreeWrapper(TbCoreFunction.class,TbCoreFunction::getId,TbCoreFunction::getParentId)
                 .select(TbCoreFunction::getFunctionName,TbCoreFunction::getCode,TbCoreFunction::getUrl)
-                .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.Y.getValue());
+                .eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.MENU.getValue());
 
         if (!ShieldUtil.isRoot()){
             // 如果不是超级用户，则查出自己权限的菜单
@@ -196,7 +196,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
 
         return coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper()
                 .lambda()
-                .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.Y.getValue())
+                .eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.MENU.getValue())
                 .func(q->{
                     if (!ShieldUtil.isRoot()){
                         q.inSql(TbCoreFunction::getId,StringUtil.format(sql, StringPool.SINGLE_QUOTE.concat(Fc.join(ShieldUtil.getUserRole(),StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE)));
@@ -214,7 +214,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
         Set<String> listId = new HashSet<>();
         if (Fc.isNotBlank(topMenuId)){
             List<TbCoreFunction> list = coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
-                    .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.Y.getValue())
+                    .eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.MENU.getValue())
                     .eq(TbCoreFunction::getClientId, clientId)
                     .inSql(!ShieldUtil.isRoot(), TbCoreFunction::getId,StringUtil.format(sql,inSql))
                     .orderByAsc(TbCoreFunction::getSort));
@@ -225,7 +225,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
 
         return coreFunctionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                 .select(TbCoreFunction::getCode)
-                .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.N.getValue())
+                .eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.BTN.getValue())
                 .eq(TbCoreFunction::getClientId,clientId)
                 .and(Fc.isNotEmpty(listId),q -> q.in(TbCoreFunction::getParentId,listId).or().eq(TbCoreFunction::getParentId, JpowerConstants.TOP_CODE))
                 .inSql(TbCoreFunction::getId,StringUtil.format(sql,inSql)),Fc::toStr);
@@ -236,7 +236,8 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
         LambdaQueryWrapper<TbCoreFunction> wrapper = Condition.<TbCoreFunction>getQueryWrapper()
                 .lambda()
                 .eq(TbCoreFunction::getParentId,parentId)
-                .eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.N.getValue());
+                .ne(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.MENU.getValue())
+                .orderByAsc(TbCoreFunction::getFunctionType);
 
         if (!ShieldUtil.isRoot()){
             // 如果不是超级用户，则查出自己权限的资源
@@ -281,7 +282,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
             }).collect(Collectors.toList());
 
             //拿到所有的菜单
-            List<TbCoreFunction> menus = coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda().eq(TbCoreFunction::getIsMenu, ConstantsEnum.YN01.Y.getValue()));
+            List<TbCoreFunction> menus = coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda().eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.MENU.getValue()));
 
             if (Fc.isNotEmpty(menus)){
                 //拿到所有的code
@@ -304,7 +305,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
                                     function.setUrl(fun.get("url"));
                                     function.setClientId(tbCoreFunction.getClientId());
                                     function.setParentId(tbCoreFunction.getId());
-                                    function.setIsMenu(ConstantsEnum.YN01.N.getValue());
+                                    function.setFunctionType(Fc.toInt(fun.get("type")));
                                     function.setTarget(ConstantsEnum.FUNCTION_TARGET.SELF.getValue());
                                     functionList.add(function);
                                 }
