@@ -21,6 +21,7 @@ import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.support.BeanExcelUtil;
+import com.wlcb.jpower.module.common.support.EnvBeanUtil;
 import com.wlcb.jpower.module.common.utils.*;
 import com.wlcb.jpower.module.common.utils.constants.*;
 import com.wlcb.jpower.module.mp.support.Condition;
@@ -176,19 +177,21 @@ public class UserController extends BaseController {
             return ReturnJsonUtil.busFail("邮箱不合法");
         }
 
-        String tenantCode = ShieldUtil.getTenantCode();
-        if (ShieldUtil.isRoot()) {
-            tenantCode = Fc.isBlank(coreUser.getTenantCode()) ? DEFAULT_TENANT_CODE : coreUser.getTenantCode();
-        }
-        TbCoreTenant tenant = SystemCache.getTenantByCode(tenantCode);
-        if (Fc.isNull(tenant)) {
-            return ReturnJsonUtil.fail("租户不存在");
-        }
-        long accountNumber = getAccountNumber(tenant.getLicenseKey());
-        if (!Fc.equalsValue(accountNumber, TENANT_ACCOUNT_NUMBER)) {
-            long count = coreUserService.count(Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getTenantCode, tenantCode));
-            if (count >= accountNumber) {
-                return ReturnJsonUtil.busFail("账号额度已不足");
+        if (EnvBeanUtil.getTenantEnable()){
+            String tenantCode = ShieldUtil.getTenantCode();
+            if (ShieldUtil.isRoot()) {
+                tenantCode = Fc.isBlank(coreUser.getTenantCode()) ? DEFAULT_TENANT_CODE : coreUser.getTenantCode();
+            }
+            TbCoreTenant tenant = SystemCache.getTenantByCode(tenantCode);
+            if (Fc.isNull(tenant)) {
+                return ReturnJsonUtil.fail("租户不存在");
+            }
+            long accountNumber = getAccountNumber(tenant.getLicenseKey());
+            if (!Fc.equalsValue(accountNumber, TENANT_ACCOUNT_NUMBER)) {
+                long count = coreUserService.count(Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getTenantCode, tenantCode));
+                if (count >= accountNumber) {
+                    return ReturnJsonUtil.busFail("账号额度已不足");
+                }
             }
         }
 

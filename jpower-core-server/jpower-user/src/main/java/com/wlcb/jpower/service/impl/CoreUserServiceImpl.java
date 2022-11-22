@@ -226,9 +226,9 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
             coreUser.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_SYSTEM.getValue());
 
             if (ShieldUtil.isRoot()){
-                coreUser.setTenantCode(Fc.isBlank(coreUser.getTenantCode())? ShieldUtil.getTenantCode():coreUser.getTenantCode());
+                coreUser.setTenantCode(Fc.isBlank(coreUser.getTenantCode())? Fc.toStr(ShieldUtil.getTenantCode(),DEFAULT_TENANT_CODE):coreUser.getTenantCode());
             }else {
-                coreUser.setTenantCode(ShieldUtil.getTenantCode());
+                coreUser.setTenantCode(Fc.toStr(ShieldUtil.getTenantCode(),DEFAULT_TENANT_CODE));
             }
 
             setActivationStatus(coreUser);

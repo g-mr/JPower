@@ -62,8 +62,6 @@ public class CoreDictServiceImpl extends BaseServiceImpl<TbCoreDictMapper, TbCor
     public List<DictVo> listByType(TbCoreDict dict) {
         if (ShieldUtil.isRoot()) {
             dict.setTenantCode(Fc.isBlank(dict.getTenantCode()) ? DEFAULT_TENANT_CODE : dict.getTenantCode());
-        } else {
-            dict.setTenantCode(ShieldUtil.getTenantCode());
         }
         return dictDao.getBaseMapper().listByType(dict);
     }
