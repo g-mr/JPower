@@ -5,6 +5,7 @@ import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import lombok.NonNull;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -320,5 +321,70 @@ public class StringUtil extends StrUtil {
             return StringPool.EMPTY;
         }
         return str.toLowerCase();
+    }
+
+    /**
+     * 格式化文本，使用 {varName} 占位；支持嵌套Map<br>
+     * map = {a: "aValue", b: "bValue"} format("{a} and {b}", map) ---=》 aValue and bValue
+     *
+     * @param template 文本模板，被替换的部分用 {key} 表示
+     * @param map      参数值对
+     * @return 格式化后的文本
+     */
+    public static String formatMap(CharSequence template, Map<?, ?> map) {
+        return formatMap(template, map, Boolean.TRUE);
+    }
+
+    /**
+     * 格式化文本，使用 {varName} 占位；支持嵌套Map<br>
+     * map = {a: "aValue", b: "bValue"} format("{a} and {b}", map) ---=》 aValue and bValue
+     *
+     * @param template 文本模板，被替换的部分用 {key} 表示
+     * @param map      参数值对
+     * @param ignoreNull 是否忽略空值
+     * @return 格式化后的文本
+     */
+    public static String formatMap(CharSequence template, Map<?, ?> map, boolean ignoreNull) {
+        if (null == template) {
+            return null;
+        }
+        if (null == map || map.isEmpty()) {
+            return template.toString();
+        }
+
+        String template2 = template.toString();
+        Object value;
+        for (Map.Entry<?, ?> entry : map.entrySet()) {
+            value = entry.getValue();
+            if (null == StrUtil.utf8Str(value) && ignoreNull) {
+                continue;
+            }
+
+            if (value instanceof Map){
+                template2 = mapTemplate(template2,entry.getKey(),(Map<?, ?>) value, ignoreNull);
+            } else {
+                template2 = StrUtil.replace(template2, "{" + entry.getKey() + "}", StrUtil.utf8Str(value));
+            }
+
+        }
+        return template2;
+    }
+
+    private static String mapTemplate(String template2, Object key, Map<?, ?> map, boolean ignoreNull) {
+        for (Map.Entry<?, ?> entry : map.entrySet()) {
+
+            Object value = entry.getValue();
+            if (null == StrUtil.utf8Str(value) && ignoreNull) {
+                continue;
+            }
+
+            if (value instanceof Map){
+                template2 = mapTemplate(template2,key+"."+entry.getKey(),(Map<?, ?>) value,ignoreNull);
+            } else {
+                template2 = StrUtil.replace(template2, "{" + key+"."+entry.getKey() + "}", StrUtil.utf8Str(value));
+            }
+        }
+
+        return template2;
     }
 }

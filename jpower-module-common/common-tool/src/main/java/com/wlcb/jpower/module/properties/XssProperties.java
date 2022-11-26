@@ -33,5 +33,7 @@ public class XssProperties {
     static {
         defaultExcludes.addAll(AuthDefExculdesUrl.getExculudesUrl());
         defaultExcludes.removeIf(i -> i.startsWith("/auth"));
+        defaultExcludes.add("/core/dataScope/update");
+        defaultExcludes.add("/core/dataScope/add");
     }
 }
