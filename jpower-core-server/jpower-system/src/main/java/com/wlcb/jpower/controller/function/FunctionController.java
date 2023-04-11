@@ -88,6 +88,9 @@ public class FunctionController extends BaseController {
         if(StringUtils.isBlank(coreFunction.getParentId())){
             coreFunction.setParentId("-1");
         }
+        if(Fc.isEmpty(coreFunction.getIsHide())){
+            coreFunction.setIsHide(Boolean.FALSE);
+        }
 
         TbCoreFunction function = coreFunctionService.selectFunctionByCode(coreFunction.getCode());
         if (function != null){
@@ -280,5 +283,20 @@ public class FunctionController extends BaseController {
     @PostMapping(value = "/generate", produces="application/json")
     public ResponseData generate(){
         return ReturnJsonUtil.status(coreFunctionService.generateFunction());
+    }
+
+    @Function(value = "菜单开关",alias = "同步", menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION", code = "SYSTEM_FUNCTION_HIDE",type = Menu.TYPE.INTERFACE)
+    })
+    @ApiOperation("菜单开关")
+    @PostMapping(value = "/hide", produces="application/json")
+    public ResponseData hide(@ApiParam(value = "主键",required = true) String id,@ApiParam(value = "是否隐藏",required = true) Boolean hide){
+        JpowerAssert.notEmpty(id,JpowerError.Arg,"主键不可为空");
+        JpowerAssert.notNull(hide,JpowerError.Arg,"是否隐藏不可为空");
+
+        TbCoreFunction function = new TbCoreFunction();
+        function.setId(id);
+        function.setIsHide(hide);
+        return ReturnJsonUtil.status(coreFunctionService.updateById(function));
     }
 }

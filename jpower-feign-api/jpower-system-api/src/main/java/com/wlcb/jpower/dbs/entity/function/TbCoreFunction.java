@@ -38,6 +38,8 @@ public class TbCoreFunction extends BaseEntity implements Serializable {
     @ApiModelProperty("打开方式 字典DKFS")
     @Dict(name = "DKFS",attributes = "targetStr")
     private String target;
+    @ApiModelProperty("是否隐藏")
+    private Boolean isHide;
     @ApiModelProperty("图标")
     private String icon;
     @ApiModelProperty("排序")

@@ -1,0 +1,1 @@
+alter table tb_core_function add is_hide tinyint(1) not null default 0 comment '是否隐藏' after function_type;

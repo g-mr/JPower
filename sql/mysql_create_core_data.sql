@@ -297,12 +297,6 @@ INSERT INTO tb_core_param (id, code, name, value, note, create_user, create_time
 INSERT INTO tb_core_param (id, code, name, value, note, create_user, create_time, update_user, update_time, status, is_deleted, create_org) VALUES ('39d36d80997f11ea20eb7a10df2f4ffc', 'JPOWER_IS_REGISTER', '是否开启注册', 'false', '是否开启注册', 'root', '2022-06-08 16:05:14', '1', '2022-10-08 23:20:59', 1, 0, null);
 INSERT INTO tb_core_param (id, code, name, value, note, create_user, create_time, update_user, update_time, status, is_deleted, create_org) VALUES ('39d36d80997f11ea80eb7a10df2f4ffc', 'JPOWER_IS_ACTIVATION', '新增用户默认是否激活', '1', '注册用户默认是否激活：1代表是，0代表否', '1', '2021-03-03 22:33:47', '1', '2021-03-05 11:38:27', 1, 0, '6836de3b179d11eb8189fa163e5c4fd4');
 INSERT INTO tb_core_param (id, code, name, value, note, create_user, create_time, update_user, update_time, status, is_deleted, create_org) VALUES ('39d36d80997f11ra80eb7a10df2f4ffc', 'REGISTER_ROLE', '注册用户角色ID', '', '注册用户角色ID', 'root', '2022-06-08 16:10:18', 'root', '2022-06-08 16:10:21', 1, 0, null);
-INSERT INTO tb_core_param (id, code, name, value, note, create_user, create_time, update_user, update_time, status, is_deleted, create_org) VALUES ('ff4ad7f3c6f04dae3abad634a60ef25b', 'user.login', '登录模式', 'NONE', '参数值说明：
-NONE：不限制
-ONE：所有客户端只可登录一个次
-CLIENT：一个客户端下只可登录一次
-ONE_SQUEEZE：所有客户端下当产生新的登录以后，后登录用户挤掉之前的登录者
-CLIENT_SQUEEZE：一个客户端下当产生新的登录以后，后登录用户挤掉之前的登录者', '1', '2022-11-10 22:44:45', '1', '2022-11-10 22:44:45', 1, 0, '6836de3b179d11eb8189fa163e5c4fd4');
 
 -- tb_core_post
 

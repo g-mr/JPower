@@ -144,6 +144,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
         List<TbCoreFunction> list = coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                 .eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.MENU.getValue())
                 .eq(TbCoreFunction::getClientId,clientDao.queryIdByCode(clientCode))
+                .eq(TbCoreFunction::getIsHide, ConstantsEnum.YN01.N.getValue())
                 .inSql(!ShieldUtil.isRoot(), TbCoreFunction::getId,StringUtil.format(sql,inSql))
                 .orderByAsc(TbCoreFunction::getSort));
 
@@ -307,6 +308,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
                                     function.setParentId(tbCoreFunction.getId());
                                     function.setFunctionType(Fc.toInt(fun.get("type")));
                                     function.setTarget(ConstantsEnum.FUNCTION_TARGET.SELF.getValue());
+                                    function.setIsHide(Boolean.FALSE);
                                     functionList.add(function);
                                 }
                             }));
