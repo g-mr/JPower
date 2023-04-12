@@ -39,4 +39,13 @@ public interface CoreMenuService extends BaseService<TbCoreTopMenu> {
      * @return java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
      **/
     List<Map<String,Object>> roleMenu();
+
+    /**
+     * 通过客户端ID查询登录用户的顶级菜单
+     *
+     * @author mr.g
+     * @param clientId
+     * @return java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
+     **/
+    List<Map<String,Object>> selectList(String clientId);
 }

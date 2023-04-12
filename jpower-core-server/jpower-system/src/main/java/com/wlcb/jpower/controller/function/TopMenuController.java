@@ -105,7 +105,7 @@ public class TopMenuController extends BaseController {
             @ApiImplicitParam(name = "name",value = "菜单名称",paramType = "query",dataTypeClass = String.class),
             @ApiImplicitParam(name = "status",value = "状态 字典：YN01",paramType = "query",dataTypeClass = String.class)
     })
-    @ApiOperation("删除菜单")
+    @ApiOperation("菜单列表")
     @GetMapping(value = "/list",produces="application/json")
     public ResponseData<Pg<TbCoreTopMenu>> list(@ApiIgnore @RequestParam Map<String,Object> map){
         return ReturnJsonUtil.data(menuService.page(PaginationContext.getMpPage(), Condition.getQueryWrapper(map,TbCoreTopMenu.class)));
@@ -179,7 +179,20 @@ public class TopMenuController extends BaseController {
 
     @ApiOperation("获取当前登录用户的顶级菜单")
     @GetMapping(value = "/roleMenu",produces="application/json")
-    public ResponseData<List<Map<String,Object>>> roleFunction(){
+    public ResponseData<List<Map<String,Object>>> roleMenu(){
         return ReturnJsonUtil.data(menuService.roleMenu());
+    }
+
+    @Function(value = "顶级菜单选项",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "FUNCTION_TOPMENU_SELECT",type = Menu.TYPE.INTERFACE),
+            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "DATASCOPE_TOPMENU_SELECT",type = Menu.TYPE.INTERFACE)
+    })
+    @ApiOperation(value = "获取顶级菜单下拉框",notes = "只获取当前用户的权限")
+    @GetMapping(value = "/select",produces="application/json")
+    public ResponseData<List<Map<String,Object>>> select(@ApiParam(value = "客户端ID",required = true) String clientId){
+
+        JpowerAssert.notEmpty(clientId,JpowerError.Arg,"客户端ID不可为空");
+
+        return ReturnJsonUtil.data(menuService.selectList(clientId));
     }
 }

@@ -55,7 +55,8 @@ public class FunctionController extends BaseController {
             @ApiImplicitParam(name = "code",value = "编码",paramType = "query"),
             @ApiImplicitParam(name = "functionType_eq",value = "是否菜单 字典YN01",paramType = "query"),
             @ApiImplicitParam(name = "functionName",value = "功能名称",paramType = "query"),
-            @ApiImplicitParam(name = "url",value = "功能URL",paramType = "query")
+            @ApiImplicitParam(name = "url",value = "功能URL",paramType = "query"),
+            @ApiImplicitParam(name = "menuId_eq",value = "顶级菜单ID",paramType = "query")
     })
     @RequestMapping(value = "/listByParent",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
     public ResponseData<List<FunctionVo>> list(@ApiIgnore @RequestParam Map<String,Object> coreFunction){
@@ -64,6 +65,7 @@ public class FunctionController extends BaseController {
         coreFunction.remove("clientId");
         coreFunction.remove("parentId");
         coreFunction.remove("functionType");
+        coreFunction.remove("menuId");
 
         if(StringUtils.isBlank(Fc.toStr(coreFunction.get("parentId_eq")))){
             coreFunction.put("parentId_eq", TOP_CODE);
