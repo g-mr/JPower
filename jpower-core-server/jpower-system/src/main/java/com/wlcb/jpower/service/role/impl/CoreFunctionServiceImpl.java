@@ -178,16 +178,24 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     }
 
     @Override
-    public List<Tree<String>> menuTreeByRoleIds(List<String> roleIds,String clientId) {
+    public List<Tree<String>> menuTreeByRoleIds(List<String> roleIds, String clientId, String topMenuId) {
         LambdaTreeWrapper<TbCoreFunction> wrapper = Condition.getLambdaTreeWrapper(TbCoreFunction.class,TbCoreFunction::getId,TbCoreFunction::getParentId)
                 .select(TbCoreFunction::getFunctionName,TbCoreFunction::getCode,TbCoreFunction::getUrl)
-                .eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.MENU.getValue());
+                .eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.MENU.getValue())
+                // 如果不是超级用户，则查出自己权限的菜单
+                .inSql(!ShieldUtil.isRoot(),TbCoreFunction::getId,StringUtil.format(ROLE_SQL,StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE)));
 
-        if (!ShieldUtil.isRoot()){
-            // 如果不是超级用户，则查出自己权限的菜单
-            wrapper.inSql(TbCoreFunction::getId,StringUtil.format(ROLE_SQL,StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE)));
+        List<Tree<String>> list = coreFunctionDao.tree(wrapper.eq(TbCoreFunction::getClientId,clientId).orderByAsc(TbCoreFunction::getSort));
+
+        if (Fc.isBlank(topMenuId)){
+            return list;
         }
-        return coreFunctionDao.tree(wrapper.eq(TbCoreFunction::getClientId,clientId).orderByAsc(TbCoreFunction::getSort));
+
+        List<String> functionIds = functionMenuDao.listObjs(Condition.<TbCoreFunctionMenu>getQueryWrapper().lambda().select(TbCoreFunctionMenu::getFunctionId).eq(TbCoreFunctionMenu::getMenuId,topMenuId),Fc::toStr);
+        if (Fc.isEmpty(functionIds)){
+            return new ArrayList<>();
+        }
+        return list.stream().filter(tree->functionIds.contains(tree.getId())).collect(Collectors.toList());
     }
 
     @Override

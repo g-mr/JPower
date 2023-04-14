@@ -133,9 +133,10 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @date 00:46 2021-02-27
      * @param roleIds 角色ID
      * @param clientId 客户端ID
+     * @param topMenuId 顶部菜单ID
      * @return java.util.List<com.wlcb.jpower.module.common.node.Node>
      **/
-    List<Tree<String>> menuTreeByRoleIds(List<String> roleIds,String clientId);
+    List<Tree<String>> menuTreeByRoleIds(List<String> roleIds,String clientId, String topMenuId);
 
     /**
      * 查询角色所有菜单

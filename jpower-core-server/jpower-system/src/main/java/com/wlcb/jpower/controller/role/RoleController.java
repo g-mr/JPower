@@ -176,25 +176,25 @@ public class RoleController extends BaseController {
         }
     }
 
-    @Function(value = "保存顶部菜单",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_TOPMENU_SAVE",type = Menu.TYPE.BTN)
-    })
-    @ApiOperation("设置角色关联的顶部菜单")
-    @PostMapping(value = "/saveTopMenu",produces="application/json")
-    public ResponseData saveTopMenu(@ApiParam(value = "顶部菜单ID，多个逗号分割") String menuIds,@ApiParam(value = "角色ID") String roleId){
-        JpowerAssert.notEmpty(roleId,JpowerError.Arg,"角色ID不可为空");
+    // @Function(value = "保存顶部菜单",menus = {
+    //         @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_TOPMENU_SAVE",type = Menu.TYPE.BTN)
+    // })
+    // @ApiOperation("设置角色关联的顶部菜单")
+    // @PostMapping(value = "/saveTopMenu",produces="application/json")
+    // public ResponseData saveTopMenu(@ApiParam(value = "顶部菜单ID，多个逗号分割") String menuIds,@ApiParam(value = "角色ID") String roleId){
+    //     JpowerAssert.notEmpty(roleId,JpowerError.Arg,"角色ID不可为空");
+    //
+    //     return ReturnJsonUtil.status(coreRoleService.saveTopMenu(roleId,Fc.toStrList(menuIds)));
+    // }
 
-        return ReturnJsonUtil.status(coreRoleService.saveTopMenu(roleId,Fc.toStrList(menuIds)));
-    }
-
-    @Function(value = "顶部菜单ID",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_TOPMENU_ID",type = Menu.TYPE.BTN)
-    })
-    @ApiOperation("角色关联的顶部菜单ID")
-    @GetMapping(value = "/topMenuId",produces="application/json")
-    public ResponseData<List<String>> topMenuId(@ApiParam(value = "角色ID") String roleId){
-        JpowerAssert.notEmpty(roleId,JpowerError.Arg,"角色ID不可为空");
-
-        return ReturnJsonUtil.data(coreRoleService.topMenuId(roleId));
-    }
+    // @Function(value = "顶部菜单ID",menus = {
+    //         @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_TOPMENU_ID",type = Menu.TYPE.BTN)
+    // })
+    // @ApiOperation("角色关联的顶部菜单ID")
+    // @GetMapping(value = "/topMenuId",produces="application/json")
+    // public ResponseData<List<String>> topMenuId(@ApiParam(value = "角色ID") String roleId){
+    //     JpowerAssert.notEmpty(roleId,JpowerError.Arg,"角色ID不可为空");
+    //
+    //     return ReturnJsonUtil.data(coreRoleService.topMenuId(roleId));
+    // }
 }

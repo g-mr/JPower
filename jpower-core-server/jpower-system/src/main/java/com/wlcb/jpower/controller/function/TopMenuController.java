@@ -1,6 +1,5 @@
 package com.wlcb.jpower.controller.function;
 
-import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
 import com.wlcb.jpower.dbs.entity.function.TbCoreFunction;
 import com.wlcb.jpower.dbs.entity.function.TbCoreTopMenu;
 import com.wlcb.jpower.module.annotation.Function;
@@ -11,7 +10,6 @@ import com.wlcb.jpower.module.base.vo.Pg;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.controller.BaseController;
 import com.wlcb.jpower.module.common.page.PaginationContext;
-import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
@@ -24,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -111,35 +108,35 @@ public class TopMenuController extends BaseController {
         return ReturnJsonUtil.data(menuService.page(PaginationContext.getMpPage(), Condition.getQueryWrapper(map,TbCoreTopMenu.class)));
     }
 
-    @Function(value = "顶部菜单",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_TOPMENU",type = Menu.TYPE.INTERFACE)
-    })
-    @ApiOperation("顶部菜单启用列表")
-    @GetMapping(value = "/listName",produces="application/json")
-    public ResponseData<List<Map<String,Object>>> listName(){
-
-        List<TbCoreTopMenu> menuList = menuService.list(Condition.<TbCoreTopMenu>getQueryWrapper().lambda()
-                .eq(TbCoreTopMenu::getStatus, ConstantsEnum.YN01.Y.getValue()));
-
-        List<TbCoreClient> coreClients = clientService.list();
-
-        List<Map<String,Object>> list = new ArrayList<>();
-        coreClients.forEach(client -> {
-            Map<String,Object> map = ChainMap.<String,Object>create().put("name",client.getName()).put("id",client.getId()).build();
-
-            List<Map<String,String>> menuMapList = new ArrayList<>();
-            menuList.stream().filter(topMenu -> Fc.equalsValue(topMenu.getClientId(),client.getId())).forEach(topMenu -> {
-                Map<String,String> menuMap = ChainMap.<String,String>create().put("name",topMenu.getName()).put("id",topMenu.getId()).build();
-                menuMapList.add(menuMap);
-            });
-            map.put("children",menuMapList);
-            map.put("hasChildren",Fc.isNotEmpty(menuMapList));
-
-            list.add(map);
-        });
-
-        return ReturnJsonUtil.data(list);
-    }
+    // @Function(value = "顶部菜单",menus = {
+    //         @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_TOPMENU",type = Menu.TYPE.INTERFACE)
+    // })
+    // @ApiOperation("顶部菜单启用列表")
+    // @GetMapping(value = "/listName",produces="application/json")
+    // public ResponseData<List<Map<String,Object>>> listName(){
+    //
+    //     List<TbCoreTopMenu> menuList = menuService.list(Condition.<TbCoreTopMenu>getQueryWrapper().lambda()
+    //             .eq(TbCoreTopMenu::getStatus, ConstantsEnum.YN01.Y.getValue()));
+    //
+    //     List<TbCoreClient> coreClients = clientService.list();
+    //
+    //     List<Map<String,Object>> list = new ArrayList<>();
+    //     coreClients.forEach(client -> {
+    //         Map<String,Object> map = ChainMap.<String,Object>create().put("name",client.getName()).put("id",client.getId()).build();
+    //
+    //         List<Map<String,String>> menuMapList = new ArrayList<>();
+    //         menuList.stream().filter(topMenu -> Fc.equalsValue(topMenu.getClientId(),client.getId())).forEach(topMenu -> {
+    //             Map<String,String> menuMap = ChainMap.<String,String>create().put("name",topMenu.getName()).put("id",topMenu.getId()).build();
+    //             menuMapList.add(menuMap);
+    //         });
+    //         map.put("children",menuMapList);
+    //         map.put("hasChildren",Fc.isNotEmpty(menuMapList));
+    //
+    //         list.add(map);
+    //     });
+    //
+    //     return ReturnJsonUtil.data(list);
+    // }
 
     @Function(value = "关联一级菜单ID",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_FUNCTION_ID",type = Menu.TYPE.INTERFACE)
@@ -185,7 +182,8 @@ public class TopMenuController extends BaseController {
 
     @Function(value = "顶级菜单选项",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "FUNCTION_TOPMENU_SELECT",type = Menu.TYPE.INTERFACE),
-            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "DATASCOPE_TOPMENU_SELECT",type = Menu.TYPE.INTERFACE)
+            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "DATASCOPE_TOPMENU_SELECT",type = Menu.TYPE.INTERFACE),
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_TOPMENU",type = Menu.TYPE.INTERFACE),
     })
     @ApiOperation(value = "获取顶级菜单下拉框",notes = "只获取当前用户的权限")
     @GetMapping(value = "/select",produces="application/json")

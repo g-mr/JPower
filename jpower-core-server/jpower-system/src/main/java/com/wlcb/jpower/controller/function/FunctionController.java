@@ -211,11 +211,11 @@ public class FunctionController extends BaseController {
     })
     @ApiOperation("查询登录用户所有菜单树形结构")
     @GetMapping(value = "/menuTree", produces="application/json")
-    public ResponseData<List<Tree<String>>> menuTree(@ApiParam("客户端ID") String clientId){
+    public ResponseData<List<Tree<String>>> menuTree(@ApiParam("客户端ID") String clientId,@ApiParam("顶部菜单ID") String topMenuId){
         if (Fc.isBlank(clientId)){
             return ReturnJsonUtil.data(ListUtil.empty());
         }
-        return ReturnJsonUtil.data(coreFunctionService.menuTreeByRoleIds(ShieldUtil.getUserRole(),clientId));
+        return ReturnJsonUtil.data(coreFunctionService.menuTreeByRoleIds(ShieldUtil.getUserRole(),clientId,topMenuId));
     }
 
     @Function(value = "客户端功能树",menus = {
