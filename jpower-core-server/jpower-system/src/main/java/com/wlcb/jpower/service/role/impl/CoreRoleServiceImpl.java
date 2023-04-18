@@ -81,6 +81,9 @@ public class CoreRoleServiceImpl extends BaseServiceImpl<TbCoreRoleMapper, TbCor
 
     @Override
     public List<String> topMenuId(String roleId) {
-        return coreRoleMenuDao.listObjs(Condition.<TbCoreRoleMenu>getQueryWrapper().lambda().select(TbCoreRoleMenu::getMenuId).eq(TbCoreRoleMenu::getRoleId,roleId), Fc::toStr);
+        return coreRoleMenuDao.listObjs(Condition.<TbCoreRoleMenu>getQueryWrapper()
+                .lambda()
+                .select(TbCoreRoleMenu::getMenuId)
+                .eq(TbCoreRoleMenu::getRoleId,roleId), Fc::toStr);
     }
 }

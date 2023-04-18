@@ -187,14 +187,14 @@ public class RoleController extends BaseController {
     //     return ReturnJsonUtil.status(coreRoleService.saveTopMenu(roleId,Fc.toStrList(menuIds)));
     // }
 
-    // @Function(value = "顶部菜单ID",menus = {
-    //         @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_TOPMENU_ID",type = Menu.TYPE.BTN)
-    // })
-    // @ApiOperation("角色关联的顶部菜单ID")
-    // @GetMapping(value = "/topMenuId",produces="application/json")
-    // public ResponseData<List<String>> topMenuId(@ApiParam(value = "角色ID") String roleId){
-    //     JpowerAssert.notEmpty(roleId,JpowerError.Arg,"角色ID不可为空");
-    //
-    //     return ReturnJsonUtil.data(coreRoleService.topMenuId(roleId));
-    // }
+    @Function(value = "顶部菜单ID",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_TOPMENU_ID",type = Menu.TYPE.INTERFACE)
+    })
+    @ApiOperation("角色关联的顶部菜单ID")
+    @GetMapping(value = "/topMenuId",produces="application/json")
+    public ResponseData<List<String>> topMenuId(@ApiParam(value = "角色ID") String roleId){
+        JpowerAssert.notEmpty(roleId,JpowerError.Arg,"角色ID不可为空");
+
+        return ReturnJsonUtil.data(coreRoleService.topMenuId(roleId));
+    }
 }
