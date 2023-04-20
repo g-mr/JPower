@@ -161,12 +161,14 @@ public class RoleController extends BaseController {
     @OperateLog(title = "重新给角色赋权",isSaveLog = true)
     @RequestMapping(value = "/addFunction",method = {RequestMethod.POST},produces="application/json")
     public ResponseData addFunction(@ApiParam(value = "角色主键",required = true) @RequestParam String roleId,
-                                    @ApiParam(value = "功能主键 多个逗号分割") @RequestParam(required = false) String functionIds){
+                                    @ApiParam(value = "功能主键 多个逗号分割") @RequestParam(required = false) String functionIds,
+                                    @ApiParam(value = "顶级菜单主键 多个逗号分割") @RequestParam(required = false) String topMenuIds){
 
         JpowerAssert.notEmpty(roleId, JpowerError.Arg,"角色id不可为空");
         JpowerAssert.notNull(coreRoleService.getById(roleId),JpowerError.Business,"该角色不存在");
 
-        if (coreRolefunctionService.addRolefunctions(roleId,functionIds)){
+        //保存功能权限和顶部菜单权限
+        if (coreRolefunctionService.addRolefunctions(roleId,functionIds) && coreRoleService.saveTopMenu(roleId,Fc.toStrList(topMenuIds))){
             TbCoreRole role = coreRoleService.getById(roleId);
             CacheUtil.clear(CacheNames.ROLE_KEY,role.getTenantCode());
             CacheUtil.clear(CacheNames.FUNCTION_KEY,role.getTenantCode());
