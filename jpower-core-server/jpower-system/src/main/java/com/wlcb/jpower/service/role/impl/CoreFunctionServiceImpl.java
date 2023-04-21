@@ -135,7 +135,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     }
 
     @Override
-    public List<TbCoreFunction> listMenuByRoleId(List<String> roleIds, String clientCode, String topMenuId) {
+    public List<TbCoreFunction> listMenuByRoleId(List<String> roleIds, String clientCode, String topMenuId,boolean isHide) {
 
         if (Fc.isEmpty(roleIds)){
             return new ArrayList<>();
@@ -145,7 +145,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
         List<TbCoreFunction> list = coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                 .eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.MENU.getValue())
                 .eq(TbCoreFunction::getClientId,clientDao.queryIdByCode(clientCode))
-                .eq(TbCoreFunction::getIsHide, ConstantsEnum.YN01.N.getValue())
+                .eq(isHide, TbCoreFunction::getIsHide, ConstantsEnum.YN01.N.getValue())
                 .inSql(!ShieldUtil.isRoot(), TbCoreFunction::getId,StringUtil.format(ROLE_SQL,inSql))
                 .orderByAsc(TbCoreFunction::getSort));
 

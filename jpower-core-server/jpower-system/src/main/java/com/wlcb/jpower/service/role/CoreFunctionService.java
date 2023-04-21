@@ -100,9 +100,10 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @Description //TODO 根据角色ID查询所有菜单
      * @Date 11:23 2020-07-30
      * @Param [roleIds]
+     * @param isHide 是否去除隐藏的菜单
      * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction>
      **/
-    List<TbCoreFunction> listMenuByRoleId(List<String> roleIds, String clientCode, String topMenuId);
+    List<TbCoreFunction> listMenuByRoleId(List<String> roleIds, String clientCode, String topMenuId, boolean isHide);
 
     /**
      * @Author 郭丁志

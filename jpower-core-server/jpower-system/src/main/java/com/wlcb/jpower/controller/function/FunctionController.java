@@ -185,7 +185,7 @@ public class FunctionController extends BaseController {
     @GetMapping(value = "/listMenuTree", produces="application/json")
     public ResponseData<List<Tree<String>>> listMenuTree(@ApiParam("顶部菜单ID") String topMenuId){
         List<String> roleIds = ShieldUtil.getUserRole();
-        return ReturnJsonUtil.data(ForestNodeMerger.mergeTree(BeanUtil.copyToList(coreFunctionService.listMenuByRoleId(roleIds,ShieldUtil.getClientCode(),topMenuId),FunctionVo.class)));
+        return ReturnJsonUtil.data(ForestNodeMerger.mergeTree(BeanUtil.copyToList(coreFunctionService.listMenuByRoleId(roleIds,ShieldUtil.getClientCode(),topMenuId, Boolean.TRUE),FunctionVo.class)));
     }
 
     @ApiOperation(value = "查询登录用户所有按钮接口资源（用于页面权限）", notes = "用于页面权限判断，会把顶级按钮一起返回，顶级按钮代表所有菜单都可拥有权限")
