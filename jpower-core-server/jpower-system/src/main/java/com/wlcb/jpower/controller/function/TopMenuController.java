@@ -1,5 +1,6 @@
 package com.wlcb.jpower.controller.function;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
 import com.wlcb.jpower.dbs.entity.function.TbCoreFunction;
 import com.wlcb.jpower.dbs.entity.function.TbCoreTopMenu;
@@ -83,6 +84,22 @@ public class TopMenuController extends BaseController {
         JpowerAssert.geZero(c,JpowerError.Business, "菜单编号不可重复");
 
         return ReturnJsonUtil.status(menuService.updateById(topMenu));
+    }
+
+    @Function(value = "菜单开关",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_SWITCH",type = Menu.TYPE.BTN)
+    })
+    @ApiOperation("菜单开关")
+    @PutMapping(value = "/switch",produces="application/json")
+    public ResponseData statusSwitch(@ApiParam(value = "主键",required = true) String id,@ApiParam(value = "开关状态",required = true) Integer status){
+        JpowerAssert.notEmpty(id, JpowerError.Arg,"主键不可为空");
+        JpowerAssert.notNull(status, JpowerError.Arg,"开关状态不可为空");
+
+        JpowerAssert.isTrue(ConstantsEnum.YN01.isExist(status), JpowerError.Arg,"开关状态值不合法");
+
+        return ReturnJsonUtil.status(menuService.update(Wrappers.<TbCoreTopMenu>lambdaUpdate()
+                .set(TbCoreTopMenu::getStatus,status)
+                .eq(TbCoreTopMenu::getId,id)));
     }
 
     @Function(value = "删除菜单",menus = {

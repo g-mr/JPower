@@ -1,5 +1,6 @@
 package com.wlcb.jpower.dbs.entity.function;
 
+import com.baomidou.mybatisplus.annotation.OrderBy;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
@@ -43,6 +44,7 @@ public class TbCoreFunction extends BaseEntity implements Serializable {
     @ApiModelProperty("图标")
     private String icon;
     @ApiModelProperty("排序")
+    @OrderBy(asc = true)
     private Integer sort;
     @ApiModelProperty("说明")
     private String remark;

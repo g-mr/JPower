@@ -195,6 +195,15 @@ public class ConstantsEnum {
             }
             return null;
         }
+
+        public static boolean isExist(Integer key) {
+            for (YN01 businessModeEnum : values()) {
+                if (businessModeEnum.value.equals(key)) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     /**

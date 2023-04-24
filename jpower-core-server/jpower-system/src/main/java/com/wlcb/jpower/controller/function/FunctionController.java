@@ -288,7 +288,7 @@ public class FunctionController extends BaseController {
     }
 
     @Function(value = "菜单开关",alias = "同步", menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION", code = "SYSTEM_FUNCTION_HIDE",type = Menu.TYPE.INTERFACE)
+            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION", code = "SYSTEM_FUNCTION_HIDE",type = Menu.TYPE.BTN)
     })
     @ApiOperation("菜单开关")
     @PostMapping(value = "/hide", produces="application/json")
