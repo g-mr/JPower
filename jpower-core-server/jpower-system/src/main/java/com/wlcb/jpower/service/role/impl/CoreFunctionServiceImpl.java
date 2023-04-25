@@ -3,6 +3,7 @@ package com.wlcb.jpower.service.role.impl;
 import cn.hutool.core.lang.tree.Tree;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wlcb.jpower.dbs.dao.client.TbCoreClientDao;
 import com.wlcb.jpower.dbs.dao.role.TbCoreFunctionDao;
 import com.wlcb.jpower.dbs.dao.role.TbCoreFunctionMenuDao;
@@ -76,6 +77,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     @Override
     public Boolean delete(String ids) {
         coreRoleFunctionDao.removeReal(Condition.<TbCoreRoleFunction>getQueryWrapper().lambda().in(TbCoreRoleFunction::getFunctionId,Fc.toStrList(ids)));
+        functionMenuDao.removeReal(Condition.<TbCoreFunctionMenu>getQueryWrapper().lambda().eq(TbCoreFunctionMenu::getFunctionId,Fc.toStrList(ids)));
         return coreFunctionDao.removeRealByIds(Fc.toStrList(ids));
     }
 
@@ -105,13 +107,24 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     public Boolean update(TbCoreFunction coreFunction) {
 
         TbCoreFunction function = coreFunctionDao.getById(coreFunction.getId());
-        if (Fc.notNull(function)){
+        if (Fc.notNull(function) && !Fc.equalsValue(function.getParentId(),coreFunction.getParentId())){
             if (Fc.isNotBlank(coreFunction.getParentId()) && Fc.isBlank(function.getParentId())){
                 functionMenuDao.removeReal(Condition.<TbCoreFunctionMenu>getQueryWrapper().lambda().eq(TbCoreFunctionMenu::getFunctionId,function.getId()));
             }
         }
 
         return coreFunctionDao.updateById(coreFunction);
+    }
+
+    @Override
+    public boolean saveHierarchy(String parentId, List<String> ids) {
+
+        functionMenuDao.removeReal(Condition.<TbCoreFunctionMenu>getQueryWrapper()
+                .lambda().in(TbCoreFunctionMenu::getFunctionId,ids));
+
+        return coreFunctionDao.update(Wrappers.<TbCoreFunction>lambdaUpdate()
+                .set(TbCoreFunction::getParentId, parentId)
+                .in(TbCoreFunction::getId, ids));
     }
 
     @Override

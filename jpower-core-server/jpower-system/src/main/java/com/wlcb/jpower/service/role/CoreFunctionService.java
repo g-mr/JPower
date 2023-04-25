@@ -167,4 +167,13 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      **/
     boolean generateFunction();
 
+    /**
+     * 保存层级
+     *
+     * @author mr.g
+     * @param parentId 上级ID
+     * @param ids 主键
+     * @return boolean
+     **/
+    boolean saveHierarchy(String parentId, List<String> ids);
 }

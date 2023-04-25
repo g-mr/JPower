@@ -159,6 +159,25 @@ public class FunctionController extends BaseController {
         }
     }
 
+    @Function(value = "设置层级",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_HIERARCHY",type = Menu.TYPE.BTN)
+    })
+    @ApiOperation("保存层级")
+    @PostMapping(value = "/saveHierarchy", produces="application/json")
+    public ResponseData saveHierarchy(@ApiParam(value = "上级ID",required = true) String parentId, @ApiParam(value = "主键，多个逗号分割",required = true) String ids){
+
+        JpowerAssert.notEmpty(ids, JpowerError.Arg, "ids不可为空");
+
+        boolean is = coreFunctionService.saveHierarchy(parentId, Fc.toStrList(Fc.toStr(ids,TOP_CODE)));
+
+        if (is){
+            CacheUtil.clear(CacheNames.FUNCTION_KEY);
+            return ReturnJsonUtil.ok("设置成功");
+        }else {
+            return ReturnJsonUtil.fail("设置失败");
+        }
+    }
+
     @Function(value = "角色权限",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_SELECT_URL",type = Menu.TYPE.BTN)
     })
