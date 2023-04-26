@@ -107,9 +107,9 @@ public class TopMenuController extends BaseController {
     })
     @ApiOperation("删除菜单")
     @DeleteMapping(value = "/delete",produces="application/json")
-    public ResponseData delete(String id){
-        JpowerAssert.notEmpty(id, JpowerError.Arg,"主键不可为空");
-        return ReturnJsonUtil.status(menuService.removeById(id));
+    public ResponseData delete(String ids){
+        JpowerAssert.notEmpty(ids, JpowerError.Arg,"主键不可为空");
+        return ReturnJsonUtil.status(menuService.removeByIds(Fc.toStrList(ids)));
     }
 
     @Function(value = "菜单列表",menus = {
