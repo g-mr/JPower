@@ -9,6 +9,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 实体工具类
@@ -81,6 +82,21 @@ public class BeanUtil extends cn.hutool.core.bean.BeanUtil {
     public static Object merge(Object source, Object target){
         copyProperties(source, target, CopyOptions.create().setIgnoreNullValue(Boolean.TRUE));
         return target;
+    }
+
+    /**
+     * bean转换成map 父类字段自动去除
+     *
+     * @author mr.g
+     * @param bean bean对象
+     * @param names 父类需要保留的字段
+     * @return java.util.Map<java.lang.String,java.lang.Object>
+     **/
+    public static Map<String,Object> beanToMapRemoveSuper(Object bean, String... names){
+        Field[] declaredFields = bean.getClass().getDeclaredFields();
+
+        return beanToMap(bean, MapUtil.newHashMap(true), CopyOptions.create().setPropertiesFilter((filed, value)->
+                Fc.contains(names,filed.getName()) || Fc.contains(declaredFields,filed)));
     }
 
 }
