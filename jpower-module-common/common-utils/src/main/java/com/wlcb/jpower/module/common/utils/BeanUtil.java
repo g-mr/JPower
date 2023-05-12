@@ -8,8 +8,10 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 实体工具类
@@ -97,6 +99,25 @@ public class BeanUtil extends cn.hutool.core.bean.BeanUtil {
 
         return beanToMap(bean, MapUtil.newHashMap(true), CopyOptions.create().setPropertiesFilter((filed, value)->
                 Fc.contains(names,filed.getName()) || Fc.contains(declaredFields,filed)));
+    }
+
+    /**
+     * list<bean>转换成list<map> 父类字段自动去除
+     *
+     * @author mr.g
+     * @param collection bean对象
+     * @param names 父类需要保留的字段
+     * @return java.util.Map<java.lang.String,java.lang.Object>
+     **/
+    public static List<Map<String,Object>> listBeanToMapRemoveSuper(Collection<?> collection, String... names){
+        if (null == collection) {
+            return null;
+        }
+        if (collection.isEmpty()) {
+            return new ArrayList<>(0);
+        }
+
+        return collection.stream().map((source) -> beanToMapRemoveSuper(source,names)).collect(Collectors.toList());
     }
 
 }
