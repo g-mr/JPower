@@ -86,11 +86,10 @@ public class MybatisSqlPrintInterceptor implements MybatisInterceptor {
         }else {
             if (rest instanceof List){
                 List list = (List) rest;
-                if (list.size() == 1 && ClassUtil.isPrimitiveWrapper(list.get(0).getClass())){
+                if (list.size() == 1){
                     sb.append(TAB).append("<== Result: ").append(list.get(0)).append(StringPool.NEWLINE);
-                }else {
-                    sb.append(TAB).append("<== Total: ").append(((List) rest).size()).append(StringPool.NEWLINE);
                 }
+                sb.append(TAB).append("<== Total: ").append(((List) rest).size()).append(StringPool.NEWLINE);
             }else {
                 sb.append(TAB).append("<== Result: ").append(rest).append(StringPool.NEWLINE);
             }
