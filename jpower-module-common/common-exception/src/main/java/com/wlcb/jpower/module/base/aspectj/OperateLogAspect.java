@@ -99,19 +99,15 @@ public class OperateLogAspect {
     }
 
     public String generateKeyBySpEL(String spELString, JoinPoint joinPoint) {
-        if (Fc.isNotBlank(spELString) && spELString.contains("#")){
-            MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-            String[] paramNames = nameDiscoverer.getParameterNames(methodSignature.getMethod());
-            Expression expression = parser.parseExpression(spELString);
-            EvaluationContext context = new StandardEvaluationContext();
-            Object[] args = joinPoint.getArgs();
-            for(int i = 0 ; i < args.length ; i++) {
-                context.setVariable(paramNames[i], args[i]);
-            }
-            return expression.getValue(context).toString();
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        String[] paramNames = nameDiscoverer.getParameterNames(methodSignature.getMethod());
+        Expression expression = parser.parseExpression(spELString);
+        EvaluationContext context = new StandardEvaluationContext();
+        Object[] args = joinPoint.getArgs();
+        for(int i = 0 ; i < args.length ; i++) {
+            context.setVariable(paramNames[i], args[i]);
         }
-
-        return spELString;
+        return expression.getValue(context).toString();
     }
 
     private OperateInfo copyOperateLog(OperateLog operateLog){
