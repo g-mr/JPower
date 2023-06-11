@@ -42,9 +42,7 @@ import java.util.*;
 import static com.wlcb.jpower.module.base.annotation.OperateLog.BusinessType.DELETE;
 import static com.wlcb.jpower.module.base.annotation.OperateLog.BusinessType.UPDATE;
 import static com.wlcb.jpower.module.common.cache.CacheNames.TOKEN_USER_KEY;
-import static com.wlcb.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
-import static com.wlcb.jpower.module.tenant.TenantConstant.TENANT_ACCOUNT_NUMBER;
-import static com.wlcb.jpower.module.tenant.TenantConstant.getAccountNumber;
+import static com.wlcb.jpower.module.tenant.TenantConstant.*;
 
 @Api(tags = "用户管理")
 @RestController

@@ -15,6 +15,8 @@ public enum WrapperKeyword {
     EQ("eq"),
     NOT_EQ("noteq"),
     LIKE("like"),
+    LEFT_LIKE("leftlike"),
+    RIGHT_LIKE("rightlike"),
     NOT_LIKE("notlike"),
     GT("gt"),
     LT("lt"),

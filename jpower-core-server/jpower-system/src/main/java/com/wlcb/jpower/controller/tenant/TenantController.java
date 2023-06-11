@@ -102,7 +102,7 @@ public class TenantController extends BaseController {
             @Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "SYSTEM_TENANT_DELETE",type = Menu.TYPE.BTN)
     })
     @ApiOperation("删除租户信息")
-    @OperateLog(value = "删除租户",businessType = DELETE)
+    @OperateLog(title = "删除租户",businessType = DELETE)
     @DeleteMapping("/delete")
     public ResponseData delete(@ApiParam("租户主键，多个逗号分隔") @RequestParam String ids){
         JpowerAssert.isTrue(ShieldUtil.isRoot(), JpowerError.Auth,"只可超级管理员删除租户");

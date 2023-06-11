@@ -54,6 +54,12 @@ class SqlWrapper {
                 case LIKE:
                     wrapper.like(column, v);
                     break;
+                case LEFT_LIKE:
+                    wrapper.likeLeft(column, v);
+                    break;
+                case RIGHT_LIKE:
+                    wrapper.likeRight(column, v);
+                    break;
                 case NOT_LIKE:
                     wrapper.notLike(column, v);
                     break;

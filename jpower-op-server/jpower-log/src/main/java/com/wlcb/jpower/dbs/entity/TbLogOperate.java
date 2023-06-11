@@ -26,6 +26,11 @@ public class TbLogOperate extends TbLogBase {
     private Integer status;
     @ApiModelProperty("错误消息")
     private String errorMsg;
+    @ApiModelProperty("记录ID")
+    private String recordId;
+    @ApiModelProperty("记录内容")
+    private String content;
+
 
     @TableField(exist = false)
     private String statusStr;

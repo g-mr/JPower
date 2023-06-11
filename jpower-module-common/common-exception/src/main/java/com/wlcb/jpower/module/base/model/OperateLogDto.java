@@ -28,4 +28,10 @@ public class OperateLogDto  extends LogDto implements Serializable {
     /** 错误消息 */
     private String errorMsg;
 
+    /** 记录ID */
+    private String recordId;
+
+    /** 记录内容 */
+    private String content;
+
 }
