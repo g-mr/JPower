@@ -34,17 +34,11 @@ public class OperateInfo {
 
     /**
      * 操作内容<br/>
-     * <per>
-     * e.g: 支持EL表达式
-     * </per>
      **/
     private String content = "";
 
     /**
      * 记录ID<br/>
-     * <per>
-     *     e.g: 支持EL表达式
-     * </per>
      **/
     private String recordId = "";
 

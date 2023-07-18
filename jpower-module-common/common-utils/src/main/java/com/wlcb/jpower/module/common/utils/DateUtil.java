@@ -25,5 +25,4 @@ public class DateUtil extends cn.hutool.core.date.DateUtil {
     public static String time() {
         return formatTime(new DateTime());
     }
-
 }

@@ -20,6 +20,7 @@
         <module>common-tool</module>
         <module>common-feign</module>
         <module>common-log</module>
+        <module>common-delay-task</module>
     </modules>
 
     <modelVersion>4.0.0</modelVersion>
