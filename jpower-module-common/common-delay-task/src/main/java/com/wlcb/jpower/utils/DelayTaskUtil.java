@@ -3,13 +3,13 @@ package com.wlcb.jpower.utils;
 import cn.hutool.core.util.ClassUtil;
 import com.alibaba.fastjson.JSON;
 import com.wlcb.jpower.annotation.JpowerDelayTask;
-import com.wlcb.jpower.task.DelayTask;
-import com.wlcb.jpower.task.entity.TaskDelay;
 import com.wlcb.jpower.enums.TaskStatusEnum;
 import com.wlcb.jpower.enums.TaskTypeEnum;
-import com.wlcb.jpower.task.jdbc.TaskDelayJdbc;
 import com.wlcb.jpower.module.common.support.EnvBeanUtil;
 import com.wlcb.jpower.module.common.utils.*;
+import com.wlcb.jpower.task.DelayTask;
+import com.wlcb.jpower.task.entity.TaskDelay;
+import com.wlcb.jpower.task.jdbc.TaskDelayJdbc;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -48,15 +48,14 @@ public class DelayTaskUtil {
      * @param params 请求参数
      * @param taskTime 执行时间
      **/
-    public void add(Class<?> clz, Map<String,Object> params, Date taskTime){
+    public void add(Class<?> clz, String methodName, Map<String,Object> params, Date taskTime){
         if (DateUtil.compare(taskTime, DateUtil.date()) <= 0){
             throw new DateTimeException("执行时间小于当前时间,无法执行...");
         }
 
-        Method mt = getMethod(clz, params);
+        Method mt = getMethod(clz, methodName, params);
 
         //拼装数据
-        String methodName = mt.getName();
         JpowerDelayTask delayTask = AnnotationUtil.getAnnotation(mt, JpowerDelayTask.class);
 
         TaskDelay taskTimeBean = new TaskDelay();
@@ -91,13 +90,13 @@ public class DelayTaskUtil {
         taskDelayJdbc.save(taskTimeBean);
     }
 
-    private static Method getMethod(Class<?> clz, Map<String, Object> params) {
+    private static Method getMethod(Class<?> clz, String methodName, Map<String, Object> params) {
         Set<Method> methods = AnnotationUtil.findAnnotatedMethods(clz, JpowerDelayTask.class);
         if (Fc.isEmpty(methods)){
             throw new RuntimeException(ClassUtil.getClassName(clz, false) + "类中不存在可执行的方法...");
         }
         for (Method method : methods) {
-            if (method.getParameterCount() == params.size()) {
+            if (method.getParameterCount() == params.size() && Fc.equalsValue(methodName, method.getName())) {
                 if (params.size() == 0) {
                     return method;
                 }else {
@@ -119,8 +118,8 @@ public class DelayTaskUtil {
      * @param clz 执行类
      * @param taskTime 执行时间
      **/
-    public void add(Class<?> clz, Date taskTime){
-        add(clz, MapUtil.empty(), taskTime);
+    public void add(Class<?> clz, String methodName, Date taskTime){
+        add(clz, methodName, MapUtil.empty(), taskTime);
     }
 
 }
