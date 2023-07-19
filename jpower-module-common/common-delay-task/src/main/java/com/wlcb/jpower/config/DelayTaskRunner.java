@@ -43,7 +43,7 @@ public class DelayTaskRunner implements InitializingBean {
                         if (Fc.notNull(task) && !task.getIsRun()){
                             //执行之前要查找任务任务是否存在,如果不存在说明任务已经删除不需要再执行
                             TaskDelay taskDelay = taskDelayJdbc.getByIdAndUpdateIsRun(task.getId());
-                            if (Fc.notNull(taskDelay)){
+                            if (Fc.notNull(taskDelay) && !taskDelay.getIsRun() && Fc.equalsValue(taskDelay.getStatus(), TaskStatusEnum.EXECUTED.getCode())){
                                 taskRun(taskDelay);
                             }
                         }

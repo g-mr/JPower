@@ -84,7 +84,7 @@ public class DelayTaskUtil {
 
         // 判断这个任务执行时间是否小于当前已经入列任务,如果小于则立即加入当前任务队列
         DelayTask dt = delayQueue.stream().max(Comparator.comparing(DelayTask::getTaskTime)).orElse(new DelayTask());
-        if (Fc.notNull(dt) && DateUtil.compare(taskTime, dt.getTaskTime()) >= 0){
+        if (Fc.notNull(dt) && DateUtil.compare(taskTime, dt.getTaskTime()) <= 0){
             delayQueue.add(BeanUtil.copyProperties(taskTimeBean, DelayTask.class));
         }
         //保存数据库
