@@ -55,7 +55,8 @@ public class FunctionController extends BaseController {
             @ApiImplicitParam(name = "code",value = "编码",paramType = "query"),
             @ApiImplicitParam(name = "functionType_eq",value = "是否菜单 字典YN01",paramType = "query"),
             @ApiImplicitParam(name = "functionName",value = "功能名称",paramType = "query"),
-            @ApiImplicitParam(name = "url",value = "功能URL",paramType = "query")
+            @ApiImplicitParam(name = "url",value = "功能URL",paramType = "query"),
+            @ApiImplicitParam(name = "menuId_eq",value = "顶级菜单ID",paramType = "query")
     })
     @RequestMapping(value = "/listByParent",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
     public ResponseData<List<FunctionVo>> list(@ApiIgnore @RequestParam Map<String,Object> coreFunction){
@@ -64,6 +65,7 @@ public class FunctionController extends BaseController {
         coreFunction.remove("clientId");
         coreFunction.remove("parentId");
         coreFunction.remove("functionType");
+        coreFunction.remove("menuId");
 
         if(StringUtils.isBlank(Fc.toStr(coreFunction.get("parentId_eq")))){
             coreFunction.put("parentId_eq", TOP_CODE);
@@ -87,6 +89,9 @@ public class FunctionController extends BaseController {
 
         if(StringUtils.isBlank(coreFunction.getParentId())){
             coreFunction.setParentId("-1");
+        }
+        if(Fc.isEmpty(coreFunction.getIsHide())){
+            coreFunction.setIsHide(Boolean.FALSE);
         }
 
         TbCoreFunction function = coreFunctionService.selectFunctionByCode(coreFunction.getCode());
@@ -154,6 +159,25 @@ public class FunctionController extends BaseController {
         }
     }
 
+    @Function(value = "设置层级",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_HIERARCHY",type = Menu.TYPE.BTN)
+    })
+    @ApiOperation("保存层级")
+    @PostMapping(value = "/saveHierarchy", produces="application/json")
+    public ResponseData saveHierarchy(@ApiParam(value = "上级ID",required = true) String parentId, @ApiParam(value = "主键，多个逗号分割",required = true) String ids){
+
+        JpowerAssert.notEmpty(ids, JpowerError.Arg, "ids不可为空");
+
+        boolean is = coreFunctionService.saveHierarchy(parentId, Fc.toStrList(Fc.toStr(ids,TOP_CODE)));
+
+        if (is){
+            CacheUtil.clear(CacheNames.FUNCTION_KEY);
+            return ReturnJsonUtil.ok("设置成功");
+        }else {
+            return ReturnJsonUtil.fail("设置失败");
+        }
+    }
+
     @Function(value = "角色权限",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_SELECT_URL",type = Menu.TYPE.BTN)
     })
@@ -180,7 +204,7 @@ public class FunctionController extends BaseController {
     @GetMapping(value = "/listMenuTree", produces="application/json")
     public ResponseData<List<Tree<String>>> listMenuTree(@ApiParam("顶部菜单ID") String topMenuId){
         List<String> roleIds = ShieldUtil.getUserRole();
-        return ReturnJsonUtil.data(ForestNodeMerger.mergeTree(BeanUtil.copyToList(coreFunctionService.listMenuByRoleId(roleIds,ShieldUtil.getClientCode(),topMenuId),FunctionVo.class)));
+        return ReturnJsonUtil.data(ForestNodeMerger.mergeTree(BeanUtil.copyToList(coreFunctionService.listMenuByRoleId(roleIds,ShieldUtil.getClientCode(),topMenuId, Boolean.TRUE),FunctionVo.class)));
     }
 
     @ApiOperation(value = "查询登录用户所有按钮接口资源（用于页面权限）", notes = "用于页面权限判断，会把顶级按钮一起返回，顶级按钮代表所有菜单都可拥有权限")
@@ -206,11 +230,11 @@ public class FunctionController extends BaseController {
     })
     @ApiOperation("查询登录用户所有菜单树形结构")
     @GetMapping(value = "/menuTree", produces="application/json")
-    public ResponseData<List<Tree<String>>> menuTree(@ApiParam("客户端ID") String clientId){
+    public ResponseData<List<Tree<String>>> menuTree(@ApiParam("客户端ID") String clientId,@ApiParam("顶部菜单ID") String topMenuId){
         if (Fc.isBlank(clientId)){
             return ReturnJsonUtil.data(ListUtil.empty());
         }
-        return ReturnJsonUtil.data(coreFunctionService.menuTreeByRoleIds(ShieldUtil.getUserRole(),clientId));
+        return ReturnJsonUtil.data(coreFunctionService.menuTreeByRoleIds(ShieldUtil.getUserRole(),clientId,topMenuId));
     }
 
     @Function(value = "客户端功能树",menus = {
@@ -280,5 +304,20 @@ public class FunctionController extends BaseController {
     @PostMapping(value = "/generate", produces="application/json")
     public ResponseData generate(){
         return ReturnJsonUtil.status(coreFunctionService.generateFunction());
+    }
+
+    @Function(value = "菜单开关",alias = "同步", menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION", code = "SYSTEM_FUNCTION_HIDE",type = Menu.TYPE.BTN)
+    })
+    @ApiOperation("菜单开关")
+    @PostMapping(value = "/hide", produces="application/json")
+    public ResponseData hide(@ApiParam(value = "主键",required = true) String id,@ApiParam(value = "是否隐藏",required = true) Boolean hide){
+        JpowerAssert.notEmpty(id,JpowerError.Arg,"主键不可为空");
+        JpowerAssert.notNull(hide,JpowerError.Arg,"是否隐藏不可为空");
+
+        TbCoreFunction function = new TbCoreFunction();
+        function.setId(id);
+        function.setIsHide(hide);
+        return ReturnJsonUtil.status(coreFunctionService.updateById(function));
     }
 }

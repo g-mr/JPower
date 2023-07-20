@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.wlcb</groupId>
         <artifactId>jpower</artifactId>
-        <version>2.1.7</version>
+        <version>2.1.8</version>
     </parent>
 
     <modules>
@@ -20,6 +20,7 @@
         <module>common-tool</module>
         <module>common-feign</module>
         <module>common-log</module>
+        <module>common-delay-task</module>
     </modules>
 
     <modelVersion>4.0.0</modelVersion>

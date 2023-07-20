@@ -48,10 +48,10 @@ public class LogClient {
 			if (server == JpowerProperties.SERVER.BOOT){
 				try {
 					int count = SpringUtil.getBean(JdbcTemplate.class).update("insert into tb_log_operate" +
-							"(id,server_name,server_ip,server_host,env,url,method,method_class,method_name,param,oper_ip,oper_name,oper_user_type,client_code,title,business_type,return_content,status,error_msg) " +
+							"(id,server_name,server_ip,server_host,env,url,method,method_class,method_name,param,oper_ip,oper_name,oper_user_type,client_code,title,business_type,return_content,status,error_msg,record_id,content) " +
 							"values " +
-							"(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-							Fc.randomUUID(),operateLog.getServerName(),operateLog.getServerIp(),operateLog.getServerHost(),operateLog.getEnv(),operateLog.getUrl(),operateLog.getMethod(),operateLog.getMethodClass(),operateLog.getMethodName(),operateLog.getParam(),operateLog.getOperIp(),operateLog.getOperName(),operateLog.getOperUserType(),operateLog.getClientCode(),operateLog.getTitle(),operateLog.getBusinessType(),operateLog.getReturnContent(),operateLog.getStatus(),operateLog.getErrorMsg());
+							"(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+							Fc.randomUUID(),operateLog.getServerName(),operateLog.getServerIp(),operateLog.getServerHost(),operateLog.getEnv(),operateLog.getUrl(),operateLog.getMethod(),operateLog.getMethodClass(),operateLog.getMethodName(),operateLog.getParam(),operateLog.getOperIp(),operateLog.getOperName(),operateLog.getOperUserType(),operateLog.getClientCode(),operateLog.getTitle(),operateLog.getBusinessType(),operateLog.getReturnContent(),operateLog.getStatus(),operateLog.getErrorMsg(),operateLog.getRecordId(),operateLog.getContent());
 					if (count <= 0){
 						log.error("操作日志保存失败={}",count);
 					}

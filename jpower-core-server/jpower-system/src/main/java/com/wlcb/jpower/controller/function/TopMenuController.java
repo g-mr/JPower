@@ -1,5 +1,6 @@
 package com.wlcb.jpower.controller.function;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wlcb.jpower.dbs.entity.client.TbCoreClient;
 import com.wlcb.jpower.dbs.entity.function.TbCoreFunction;
 import com.wlcb.jpower.dbs.entity.function.TbCoreTopMenu;
@@ -85,14 +86,30 @@ public class TopMenuController extends BaseController {
         return ReturnJsonUtil.status(menuService.updateById(topMenu));
     }
 
+    @Function(value = "菜单开关",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_SWITCH",type = Menu.TYPE.BTN)
+    })
+    @ApiOperation("菜单开关")
+    @PutMapping(value = "/switch",produces="application/json")
+    public ResponseData statusSwitch(@ApiParam(value = "主键",required = true) String id,@ApiParam(value = "开关状态",required = true) Integer status){
+        JpowerAssert.notEmpty(id, JpowerError.Arg,"主键不可为空");
+        JpowerAssert.notNull(status, JpowerError.Arg,"开关状态不可为空");
+
+        JpowerAssert.isTrue(ConstantsEnum.YN01.isExist(status), JpowerError.Arg,"开关状态值不合法");
+
+        return ReturnJsonUtil.status(menuService.update(Wrappers.<TbCoreTopMenu>lambdaUpdate()
+                .set(TbCoreTopMenu::getStatus,status)
+                .eq(TbCoreTopMenu::getId,id)));
+    }
+
     @Function(value = "删除菜单",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_DELETE",type = Menu.TYPE.BTN)
     })
     @ApiOperation("删除菜单")
     @DeleteMapping(value = "/delete",produces="application/json")
-    public ResponseData delete(String id){
-        JpowerAssert.notEmpty(id, JpowerError.Arg,"主键不可为空");
-        return ReturnJsonUtil.status(menuService.removeById(id));
+    public ResponseData delete(String ids){
+        JpowerAssert.notEmpty(ids, JpowerError.Arg,"主键不可为空");
+        return ReturnJsonUtil.status(menuService.removeByIds(Fc.toStrList(ids)));
     }
 
     @Function(value = "菜单列表",menus = {
@@ -105,21 +122,20 @@ public class TopMenuController extends BaseController {
             @ApiImplicitParam(name = "name",value = "菜单名称",paramType = "query",dataTypeClass = String.class),
             @ApiImplicitParam(name = "status",value = "状态 字典：YN01",paramType = "query",dataTypeClass = String.class)
     })
-    @ApiOperation("删除菜单")
+    @ApiOperation("菜单列表")
     @GetMapping(value = "/list",produces="application/json")
     public ResponseData<Pg<TbCoreTopMenu>> list(@ApiIgnore @RequestParam Map<String,Object> map){
         return ReturnJsonUtil.data(menuService.page(PaginationContext.getMpPage(), Condition.getQueryWrapper(map,TbCoreTopMenu.class)));
     }
 
-    @Function(value = "顶部菜单",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_TOPMENU",type = Menu.TYPE.INTERFACE)
+    @Function(value = "客户端顶部菜单树",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_CLIENT_TOPMENU",type = Menu.TYPE.INTERFACE)
     })
-    @ApiOperation("顶部菜单启用列表")
+    @ApiOperation("客户端顶部菜单树")
     @GetMapping(value = "/listName",produces="application/json")
     public ResponseData<List<Map<String,Object>>> listName(){
 
-        List<TbCoreTopMenu> menuList = menuService.list(Condition.<TbCoreTopMenu>getQueryWrapper().lambda()
-                .eq(TbCoreTopMenu::getStatus, ConstantsEnum.YN01.Y.getValue()));
+        List<Map<String, Object>> menuList = menuService.selectList(null);
 
         List<TbCoreClient> coreClients = clientService.list();
 
@@ -127,13 +143,8 @@ public class TopMenuController extends BaseController {
         coreClients.forEach(client -> {
             Map<String,Object> map = ChainMap.<String,Object>create().put("name",client.getName()).put("id",client.getId()).build();
 
-            List<Map<String,String>> menuMapList = new ArrayList<>();
-            menuList.stream().filter(topMenu -> Fc.equalsValue(topMenu.getClientId(),client.getId())).forEach(topMenu -> {
-                Map<String,String> menuMap = ChainMap.<String,String>create().put("name",topMenu.getName()).put("id",topMenu.getId()).build();
-                menuMapList.add(menuMap);
-            });
-            map.put("children",menuMapList);
-            map.put("hasChildren",Fc.isNotEmpty(menuMapList));
+            map.put("children",menuList.stream().filter(topMenu -> Fc.equalsValue(topMenu.get("client_id"),client.getId())));
+            map.put("hasChildren",Fc.isNotEmpty(map.get("children")));
 
             list.add(map);
         });
@@ -179,7 +190,21 @@ public class TopMenuController extends BaseController {
 
     @ApiOperation("获取当前登录用户的顶级菜单")
     @GetMapping(value = "/roleMenu",produces="application/json")
-    public ResponseData<List<Map<String,Object>>> roleFunction(){
+    public ResponseData<List<Map<String,Object>>> roleMenu(){
         return ReturnJsonUtil.data(menuService.roleMenu());
+    }
+
+    @Function(value = "顶级菜单选项",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "FUNCTION_TOPMENU_SELECT",type = Menu.TYPE.INTERFACE),
+            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "DATASCOPE_TOPMENU_SELECT",type = Menu.TYPE.INTERFACE),
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_TOPMENU",type = Menu.TYPE.INTERFACE),
+    })
+    @ApiOperation(value = "获取顶级菜单下拉框",notes = "只获取当前用户的权限")
+    @GetMapping(value = "/select",produces="application/json")
+    public ResponseData<List<Map<String,Object>>> select(@ApiParam(value = "客户端ID",required = true) String clientId){
+
+        JpowerAssert.notEmpty(clientId,JpowerError.Arg,"客户端ID不可为空");
+
+        return ReturnJsonUtil.data(menuService.selectList(clientId));
     }
 }

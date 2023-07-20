@@ -132,7 +132,7 @@ public class ShieldUtil {
     }
 
     /**
-     * 获取用角色
+     * 获取用户角色
      *
      * @return userName
      */

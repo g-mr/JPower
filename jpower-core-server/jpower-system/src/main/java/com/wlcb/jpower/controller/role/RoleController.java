@@ -161,12 +161,14 @@ public class RoleController extends BaseController {
     @OperateLog(title = "重新给角色赋权",isSaveLog = true)
     @RequestMapping(value = "/addFunction",method = {RequestMethod.POST},produces="application/json")
     public ResponseData addFunction(@ApiParam(value = "角色主键",required = true) @RequestParam String roleId,
-                                    @ApiParam(value = "功能主键 多个逗号分割") @RequestParam(required = false) String functionIds){
+                                    @ApiParam(value = "功能主键 多个逗号分割") @RequestParam(required = false) String functionIds,
+                                    @ApiParam(value = "顶级菜单主键 多个逗号分割") @RequestParam(required = false) String topMenuIds){
 
         JpowerAssert.notEmpty(roleId, JpowerError.Arg,"角色id不可为空");
         JpowerAssert.notNull(coreRoleService.getById(roleId),JpowerError.Business,"该角色不存在");
 
-        if (coreRolefunctionService.addRolefunctions(roleId,functionIds)){
+        //保存功能权限和顶部菜单权限
+        if (coreRolefunctionService.addRolefunctions(roleId,functionIds) && coreRoleService.saveTopMenu(roleId,Fc.toStrList(topMenuIds))){
             TbCoreRole role = coreRoleService.getById(roleId);
             CacheUtil.clear(CacheNames.ROLE_KEY,role.getTenantCode());
             CacheUtil.clear(CacheNames.FUNCTION_KEY,role.getTenantCode());
@@ -176,19 +178,8 @@ public class RoleController extends BaseController {
         }
     }
 
-    @Function(value = "保存顶部菜单",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_TOPMENU_SAVE",type = Menu.TYPE.BTN)
-    })
-    @ApiOperation("设置角色关联的顶部菜单")
-    @PostMapping(value = "/saveTopMenu",produces="application/json")
-    public ResponseData saveTopMenu(@ApiParam(value = "顶部菜单ID，多个逗号分割") String menuIds,@ApiParam(value = "角色ID") String roleId){
-        JpowerAssert.notEmpty(roleId,JpowerError.Arg,"角色ID不可为空");
-
-        return ReturnJsonUtil.status(coreRoleService.saveTopMenu(roleId,Fc.toStrList(menuIds)));
-    }
-
     @Function(value = "顶部菜单ID",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_TOPMENU_ID",type = Menu.TYPE.BTN)
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_TOPMENU_ID",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("角色关联的顶部菜单ID")
     @GetMapping(value = "/topMenuId",produces="application/json")

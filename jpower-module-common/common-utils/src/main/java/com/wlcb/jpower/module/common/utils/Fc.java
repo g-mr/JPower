@@ -2,10 +2,10 @@ package com.wlcb.jpower.module.common.utils;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.EscapeUtil;
 import cn.hutool.core.util.NumberUtil;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
-import lombok.NonNull;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.lang.Nullable;
 
@@ -251,8 +251,11 @@ public class Fc {
      * @param o2 要比较的第二个对象
      * @return 给定的对象值是否相等
      **/
-    public static boolean equalsValue(@NonNull Object o1, @NonNull Object o2) {
-        return ObjectUtil.equalsValue(o1, o2);
+    public static boolean equalsValue(Object o1, Object o2) {
+        if (notNull(o1) && notNull(o2) && cn.hutool.core.util.ClassUtil.isBasicType(o1.getClass()) && ClassUtil.isBasicType(o2.getClass())){
+            return ObjectUtil.equalsValue(o1, o2);
+        }
+        return ObjectUtil.equals(o1, o2);
     }
 
     /**
@@ -664,7 +667,7 @@ public class Fc {
     /**
      * 生成雪花ID
      *
-     * @return UUID
+     * @return 雪花ID
      */
     public static long randomSnowFlakeId() {
         return SnowFlakeIdUtil.nextId();

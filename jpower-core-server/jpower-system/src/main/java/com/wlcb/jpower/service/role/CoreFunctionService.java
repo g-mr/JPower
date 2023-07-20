@@ -100,9 +100,10 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @Description //TODO 根据角色ID查询所有菜单
      * @Date 11:23 2020-07-30
      * @Param [roleIds]
+     * @param isHide 是否去除隐藏的菜单
      * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction>
      **/
-    List<TbCoreFunction> listMenuByRoleId(List<String> roleIds, String clientCode, String topMenuId);
+    List<TbCoreFunction> listMenuByRoleId(List<String> roleIds, String clientCode, String topMenuId, boolean isHide);
 
     /**
      * @Author 郭丁志
@@ -133,9 +134,10 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @date 00:46 2021-02-27
      * @param roleIds 角色ID
      * @param clientId 客户端ID
+     * @param topMenuId 顶部菜单ID
      * @return java.util.List<com.wlcb.jpower.module.common.node.Node>
      **/
-    List<Tree<String>> menuTreeByRoleIds(List<String> roleIds,String clientId);
+    List<Tree<String>> menuTreeByRoleIds(List<String> roleIds,String clientId, String topMenuId);
 
     /**
      * 查询角色所有菜单
@@ -165,4 +167,13 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      **/
     boolean generateFunction();
 
+    /**
+     * 保存层级
+     *
+     * @author mr.g
+     * @param parentId 上级ID
+     * @param ids 主键
+     * @return boolean
+     **/
+    boolean saveHierarchy(String parentId, List<String> ids);
 }

@@ -1,8 +1,6 @@
 package com.wlcb.jpower.module.base.annotation;
 
 
-import org.springframework.core.annotation.AliasFor;
-
 import java.lang.annotation.*;
 
 /**
@@ -14,24 +12,42 @@ import java.lang.annotation.*;
 @Documented
 public @interface OperateLog{
 
-    /**
-     * Alias for {@link #title}.
-     */
-    @AliasFor(attribute = "title")
-    String value() default "日志记录";
-
     /** 模块 **/
-    @AliasFor(attribute = "value")
     String title() default "日志记录";
 
     /** 功能类型 **/
     BusinessType businessType() default BusinessType.OTHER;
 
+    /**
+     *  功能类型为其他时的信息<br/>
+     *  必须{@link #businessType}={@link BusinessType#OTHER}时生效
+     **/
+    String businessOther() default "";
+
     /** 是否需要记录到数据库 **/
     boolean isSaveLog() default true;
 
+    /** 方法执行失败是否保存日志 **/
+    boolean isErrorSaveLog() default true;
+
     /** 是否获取Request信息 **/
     boolean isSaveRequestData() default true;
+
+    /**
+     * 操作内容<br/>
+     * <per>
+     * e.g: 支持EL表达式
+     * </per>
+     **/
+    String content() default "";
+
+    /**
+     * 记录ID<br/>
+     * <per>
+     *     e.g: 支持EL表达式
+     * </per>
+     **/
+    String recordId() default "";
 
     enum BusinessType {
         /**
