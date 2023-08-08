@@ -252,7 +252,7 @@ public class Fc {
      * @return 给定的对象值是否相等
      **/
     public static boolean equalsValue(Object o1, Object o2) {
-        if (notNull(o1) && notNull(o2) && cn.hutool.core.util.ClassUtil.isBasicType(o1.getClass()) && ClassUtil.isBasicType(o2.getClass())){
+        if (notNull(o1) && notNull(o2) && cn.hutool.core.util.ClassUtil.isSimpleValueType(o1.getClass()) && ClassUtil.isSimpleValueType(o2.getClass())){
             return ObjectUtil.equalsValue(o1, o2);
         }
         return ObjectUtil.equals(o1, o2);
