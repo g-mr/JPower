@@ -61,9 +61,6 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
             if (ShieldUtil.isRoot() && isSave){
                 //如果是超级用户并且是保存数据，则必传一个租户编码
                 ReflectUtil.setFieldValue(entity,TENANT_CODE,tenantCode);
-            }else if (!ShieldUtil.isRoot()){
-                //如果不是超级用户，则不能传租户编码
-                ReflectUtil.setFieldValue(entity,TENANT_CODE,null);
             }
         }
     }

@@ -25,14 +25,14 @@ public class CustomSqlInjector extends DefaultSqlInjector {
         List<AbstractMethod> methodList = super.getMethodList(mapperClass,tableInfo);
 
         if (tableInfo.havePK()) {
-            methodList.add(new InsertBatchSomeColumn(field -> !Fc.equalsValue(TenantConstant.TENANT_CODE, field.getProperty())));
+            methodList.add(new InsertBatchSomeColumn());
             methodList.add(new UpdateAllById(field -> (!Fc.equalsValue(field.getFieldFill(), FieldFill.INSERT) || Fc.equalsValue("status", field.getProperty())) && !Fc.equalsValue(TenantConstant.TENANT_CODE, field.getProperty())));
             methodList.add(new DeleteReal());
             methodList.add(new DeleteRealBatchByIds());
             methodList.add(new DeleteRealById());
             methodList.add(new DeleteRealByMap());
         }else {
-            methodList.add(new InsertBatchSomeColumn(field -> !Fc.equalsValue(TenantConstant.TENANT_CODE, field.getProperty())));
+            methodList.add(new InsertBatchSomeColumn());
             methodList.add(new DeleteReal());
             methodList.add(new DeleteRealByMap());
         }

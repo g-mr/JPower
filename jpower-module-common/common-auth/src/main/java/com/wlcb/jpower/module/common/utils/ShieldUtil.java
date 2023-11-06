@@ -165,6 +165,12 @@ public class ShieldUtil {
         if (!EnvBeanUtil.getTenantEnable()) {
             return StringPool.EMPTY;
         }
+
+        if (Fc.isNull(request)){
+            log.warn("HttpServletRequest为空，无法获取当前租户");
+            return StringPool.EMPTY;
+        }
+
         UserInfo user = getUser(request);
 
         //先从当前登陆用户中获取租户编码，如果当前用户没有登陆则去参数里获取租户编码如果还没有则去header里去取

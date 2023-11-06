@@ -47,7 +47,7 @@ public class Cm {
      * @Date 11:32 2020-09-01
      **/
     public Cache getCache(String cacheName,Boolean tenantMode) {
-        return getCache(cacheName,tenantMode, ShieldUtil.getTenantCode());
+        return getCache(cacheName, tenantMode, ShieldUtil.getTenantCode());
     }
 
     /**

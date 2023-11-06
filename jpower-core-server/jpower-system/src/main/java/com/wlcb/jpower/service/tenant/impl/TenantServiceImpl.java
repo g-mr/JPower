@@ -1,5 +1,6 @@
 package com.wlcb.jpower.service.tenant.impl;
 
+import cn.hutool.core.thread.ThreadUtil;
 import com.wlcb.jpower.cache.param.ParamConfig;
 import com.wlcb.jpower.dbs.dao.dict.TbCoreDictDao;
 import com.wlcb.jpower.dbs.dao.org.TbCoreOrgDao;
@@ -38,10 +39,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.wlcb.jpower.module.common.utils.constants.JpowerConstants.TOP_CODE;
-import static com.wlcb.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
-import static com.wlcb.jpower.module.tenant.TenantConstant.TENANT_ACCOUNT_NUMBER;
-import static com.wlcb.jpower.module.tenant.TenantConstant.getLicenseKey;
-import static com.wlcb.jpower.module.tenant.TenantConstant.tenantCode;
+import static com.wlcb.jpower.module.tenant.TenantConstant.*;
 
 /**
  * @ClassName TenantServiceImpl
@@ -133,21 +131,23 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
             roleFunctionDao.saveBatch(roleFunctionList);
 
             //创建租户默认字典
-            List<TbCoreDict> dictList = dictDao.list(Condition.<TbCoreDict>getQueryWrapper().lambda().eq(TbCoreDict::getTenantCode,DEFAULT_TENANT_CODE).orderByAsc(TbCoreDict::getParentId));
-            Map<String,String> map = new HashMap<>(dictList.size());
-            dictList = dictList.stream().peek(dict->{
-              dict.setTenantCode(tenant.getTenantCode());
-              String id = Fc.randomUUID();
-              //把旧ID和新ID的对应关系存储起来
-              map.put(dict.getId(),id);
-              dict.setId(id);
-            }).collect(Collectors.toList());
-            dictList = dictList.stream().peek(dict -> {
-                if (!Fc.equalsValue(dict.getParentId(),TOP_CODE)){
-                    dict.setParentId(map.get(dict.getParentId()));
-                }
-            }).collect(Collectors.toList());
-            dictDao.addBatchSomeColumn(dictList);
+            ThreadUtil.execute(()->{
+                List<TbCoreDict> dictList = dictDao.list(Condition.<TbCoreDict>getQueryWrapper().lambda().eq(TbCoreDict::getTenantCode,DEFAULT_TENANT_CODE).orderByAsc(TbCoreDict::getParentId));
+                Map<String,String> map = new HashMap<>(dictList.size());
+                dictList = dictList.stream().peek(dict->{
+                    dict.setTenantCode(tenant.getTenantCode());
+                    String id = Fc.randomUUID();
+                    //把旧ID和新ID的对应关系存储起来
+                    map.put(dict.getId(),id);
+                    dict.setId(id);
+                }).collect(Collectors.toList());
+                dictList = dictList.stream().peek(dict -> {
+                    if (!Fc.equalsValue(dict.getParentId(),TOP_CODE)){
+                        dict.setParentId(map.get(dict.getParentId()));
+                    }
+                }).collect(Collectors.toList());
+                dictDao.saveBatch(dictList);
+            });
 
             //创建租户默认用户 (必须放到最后创建，因为没有启动分布式事务)
             TbCoreUser user = new TbCoreUser();

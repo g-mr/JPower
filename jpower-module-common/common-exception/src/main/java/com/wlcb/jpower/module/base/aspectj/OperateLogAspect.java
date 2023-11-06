@@ -3,6 +3,7 @@ package com.wlcb.jpower.module.base.aspectj;
 import com.wlcb.jpower.module.base.annotation.OperateLog;
 import com.wlcb.jpower.module.base.operate.OperateInfo;
 import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -99,6 +100,9 @@ public class OperateLogAspect {
     }
 
     public String generateKeyBySpEL(String spELString, JoinPoint joinPoint) {
+        if (Fc.isBlank(spELString)){
+            return StringPool.EMPTY;
+        }
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         String[] paramNames = nameDiscoverer.getParameterNames(methodSignature.getMethod());
         Expression expression = parser.parseExpression(spELString);
