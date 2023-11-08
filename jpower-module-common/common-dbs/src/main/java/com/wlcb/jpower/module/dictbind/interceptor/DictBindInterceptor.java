@@ -7,7 +7,6 @@ import com.wlcb.jpower.module.common.utils.ClassUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ReflectUtil;
 import com.wlcb.jpower.module.config.interceptor.chain.MybatisInterceptor;
-import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import com.wlcb.jpower.module.dictbind.handler.IDictBindHandler;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -44,7 +43,7 @@ public class DictBindInterceptor implements MybatisInterceptor {
             List list = (List) result;
             if (list.size()>0){
                 Object object = list.get(0);
-                if (Fc.notNull(object) && ClassUtil.isAssignable(BaseEntity.class, object.getClass())){
+                if (Fc.notNull(object) && !ClassUtil.isSimpleValueType(object.getClass())){
                     List newList = new ArrayList(list.size());
                     list.forEach(bean -> {
                         MetaObject metaObject = MetaObject.forObject(bean,new DefaultObjectFactory(),new DefaultObjectWrapperFactory(),new DefaultReflectorFactory());
