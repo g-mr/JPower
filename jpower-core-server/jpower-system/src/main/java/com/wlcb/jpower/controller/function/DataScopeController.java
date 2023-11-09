@@ -12,13 +12,16 @@ import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.page.PaginationContext;
 import com.wlcb.jpower.module.common.utils.CacheUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.MapUtil;
 import com.wlcb.jpower.module.common.utils.ReturnJsonUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.role.CoreDataScopeService;
+import com.wlcb.jpower.service.role.CoreFunctionService;
 import com.wlcb.jpower.service.role.CoreRoleDataService;
 import com.wlcb.jpower.service.role.CoreRoleService;
+import com.wlcb.jpower.vo.DataFunctionVo;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +29,8 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 import java.util.Map;
+
+import static com.wlcb.jpower.module.common.utils.constants.JpowerConstants.TOP_CODE;
 
 /**
  * @author ding
@@ -41,6 +46,30 @@ public class DataScopeController {
     private CoreDataScopeService dataScopeService;
     private CoreRoleService roleService;
     private CoreRoleDataService roleDataService;
+    private CoreFunctionService coreFunctionService;
+
+    @Function(value = "数据权限菜单列表",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "SYSTEM_DATASCOPE_MENU",type = Menu.TYPE.INTERFACE)
+    })
+    @ApiOperation("数据权限菜单列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "clientId_eq",value = "客户端ID",paramType = "query",required = true),
+            @ApiImplicitParam(name = "parentId_eq",value = "父级节点",defaultValue = TOP_CODE,required = true,paramType = "query"),
+            @ApiImplicitParam(name = "alias",value = "别名",paramType = "query"),
+            @ApiImplicitParam(name = "code",value = "编码",paramType = "query"),
+            @ApiImplicitParam(name = "functionType_eq",value = "是否菜单 字典YN01",paramType = "query"),
+            @ApiImplicitParam(name = "functionName",value = "功能名称",paramType = "query"),
+            @ApiImplicitParam(name = "url",value = "功能URL",paramType = "query"),
+            @ApiImplicitParam(name = "menuId_eq",value = "顶级菜单ID",paramType = "query")
+    })
+    @RequestMapping(value = "/listDataByParent",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
+    public ResponseData<List<DataFunctionVo>> listDataByParent(@ApiIgnore @RequestParam Map<String,Object> coreFunction){
+        JpowerAssert.notEmpty(MapUtil.getStr(coreFunction,"clientId_eq"),JpowerError.Arg,"客户端ID不可为空");
+        coreFunction.put("parentId_eq", Fc.toStr(coreFunction.get("parentId_eq"),TOP_CODE));
+
+        List<DataFunctionVo> list = coreFunctionService.listDataFunction(coreFunction);
+        return ReturnJsonUtil.ok("获取成功", list);
+    }
 
     @Function(value = "新增",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "SYSTEM_DATASCOPE_ADD",type = Menu.TYPE.BTN)

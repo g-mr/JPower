@@ -44,7 +44,6 @@ public class FunctionController extends BaseController {
     private CoreClientService clientService;
 
     @Function(value = "菜单列表",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "SYSTEM_DATASCOPE_MENU",type = Menu.TYPE.INTERFACE),
             @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "CHILD_FUNCTION",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("根据父节点查询子节点功能")

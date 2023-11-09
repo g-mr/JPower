@@ -1,6 +1,7 @@
 package com.wlcb.jpower.module.common.utils;
 
 import com.wlcb.jpower.module.common.support.EnvBeanUtil;
+import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import org.springframework.cache.Cache;
 import org.springframework.lang.Nullable;
 
@@ -104,7 +105,11 @@ public class CacheUtil {
      **/
     public static void clear(String cacheName, Boolean tenantMode) {
         if (Fc.isNotBlank(cacheName)) {
-            Cm.getInstance().getCache(cacheName, tenantMode).clear();
+            if (ShieldUtil.isRoot()){
+                Cm.getInstance().getCache("*"+StringPool.COLON+cacheName, Boolean.FALSE).clear();
+            }else {
+                Cm.getInstance().getCache(cacheName, tenantMode).clear();
+            }
         }
     }
 

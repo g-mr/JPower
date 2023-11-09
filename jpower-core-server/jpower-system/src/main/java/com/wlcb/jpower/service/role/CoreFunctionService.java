@@ -3,6 +3,7 @@ package com.wlcb.jpower.service.role;
 import cn.hutool.core.lang.tree.Tree;
 import com.wlcb.jpower.dbs.entity.function.TbCoreFunction;
 import com.wlcb.jpower.module.common.service.BaseService;
+import com.wlcb.jpower.vo.DataFunctionVo;
 import com.wlcb.jpower.vo.FunctionVo;
 
 import java.util.List;
@@ -176,4 +177,12 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @return boolean
      **/
     boolean saveHierarchy(String parentId, List<String> ids);
+
+    /**
+     * 查询菜单列表
+     * @author mr.g
+     * @param coreFunction
+     * @return 
+     **/
+    List<DataFunctionVo> listDataFunction(Map<String, Object> coreFunction);
 }

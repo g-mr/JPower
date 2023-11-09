@@ -18,4 +18,21 @@
         ${ew.customSqlSegment}
     </select>
 
+    <select id="listDataFunction"
+            resultType="com.wlcb.jpower.vo.DataFunctionVo">
+        select *,
+               (
+                   SELECT CASE WHEN count( 1 ) > 0 THEN 1 ELSE 0 END
+                   FROM tb_core_function
+                   WHERE parent_id = f.id AND function_type = 1
+               ) AS "has_children",
+               (
+                   SELECT CASE WHEN count( 1 ) > 0 THEN 1 ELSE 0 END
+                   FROM tb_core_function
+                   WHERE parent_id = f.id AND function_type <![CDATA[ <> ]]> 1
+               ) AS isData
+        from tb_core_function f
+            ${ew.customSqlSegment}
+    </select>
+
 </mapper>

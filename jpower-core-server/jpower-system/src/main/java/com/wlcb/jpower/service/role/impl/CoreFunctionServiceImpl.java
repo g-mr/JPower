@@ -24,6 +24,7 @@ import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.module.mp.support.LambdaTreeWrapper;
 import com.wlcb.jpower.service.role.CoreFunctionService;
+import com.wlcb.jpower.vo.DataFunctionVo;
 import com.wlcb.jpower.vo.FunctionVo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -125,6 +126,23 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
         return coreFunctionDao.update(Wrappers.<TbCoreFunction>lambdaUpdate()
                 .set(TbCoreFunction::getParentId, parentId)
                 .in(TbCoreFunction::getId, ids));
+    }
+
+    /**
+     * 查询菜单列表
+     *
+     * @param coreFunction
+     * @return
+     * @author mr.g
+     **/
+    @Override
+    public List<DataFunctionVo> listDataFunction(Map<String, Object> coreFunction) {
+        String menuId = Fc.toStr(coreFunction.remove("menuId_eq"));
+
+        return coreFunctionDao.getBaseMapper().listDataFunction(Condition.getQueryWrapper(coreFunction,TbCoreFunction.class).lambda()
+                .inSql(!ShieldUtil.isRoot(),TbCoreFunction::getId,StringUtil.format(ROLE_SQL,StringPool.SINGLE_QUOTE.concat(Fc.join(ShieldUtil.getUserRole(),StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE)))
+                .inSql(Fc.isNotBlank(menuId),TbCoreFunction::getId,StringUtil.format("select function_id from tb_core_function_menu where menu_id = '{}'",menuId))
+                .orderByAsc(TbCoreFunction::getSort));
     }
 
     @Override
