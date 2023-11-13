@@ -55,7 +55,7 @@ public class FunctionGenerate implements ApplicationRunner {
                             map.put("name",Fc.blankDefault(menu.name(),function.value()));
                             //判断code是否重复
                             if (isExist(menu.code())){
-                                throw new IllegalArgumentException("@Function[code] exist repeat value");
+                                throw new IllegalArgumentException("@Function[code] ["+menu.code()+"] exist repeat value");
                             }
                             map.put("code",menu.code());
                             map.put("type",Fc.toStr(menu.type().getValue()));
