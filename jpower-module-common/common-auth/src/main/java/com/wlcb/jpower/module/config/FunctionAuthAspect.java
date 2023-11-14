@@ -1,9 +1,11 @@
 package com.wlcb.jpower.module.config;
 
 import com.wlcb.jpower.module.annotation.Function;
+import com.wlcb.jpower.module.common.support.EnvBeanUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ShieldUtil;
 import com.wlcb.jpower.module.common.utils.WebUtil;
+import com.wlcb.jpower.module.common.utils.constants.AppConstant;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -47,6 +49,11 @@ public class FunctionAuthAspect {
     @SneakyThrows(GeneralSecurityException.class)
     @Before("authPointCut()")
     public void doBefore(JoinPoint joinPoint){
+
+        // 开发环境不检测
+        if (Fc.equalsValue(EnvBeanUtil.getProfile(), AppConstant.DEV_CODE)){
+            return;
+        }
 
         Function function = getAnnotation(joinPoint);
         if (Fc.isNull(function)){
