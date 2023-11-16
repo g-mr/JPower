@@ -2,6 +2,7 @@ package com.wlcb.jpower.module.common.utils;
 
 
 import cn.hutool.core.codec.Base64Decoder;
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.date.DateUnit;
 import com.wlcb.jpower.module.common.auth.RoleConstant;
 import com.wlcb.jpower.module.common.auth.SecureConstant;
@@ -17,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -96,9 +96,9 @@ public class ShieldUtil {
      *
      * @return userId
      */
-    public static String getUserId() {
+    public static Long getUserId() {
         UserInfo user = getUser();
-        return (null == user) ? StringPool.EMPTY : user.getUserId();
+        return (null == user) ? null : user.getUserId();
     }
 
     /**
@@ -106,9 +106,9 @@ public class ShieldUtil {
      *
      * @return orgId
      */
-    public static String getOrgId() {
+    public static Long getOrgId() {
         UserInfo user = getUser();
-        return (null == user) ? StringPool.EMPTY : user.getOrgId();
+        return (null == user) ? null : user.getOrgId();
     }
 
     /**
@@ -136,12 +136,10 @@ public class ShieldUtil {
      *
      * @return userName
      */
-    public static List<String> getUserRole() {
+    public static List<Long> getUserRole() {
         UserInfo user = getUser();
         if (Fc.isNull(user)) {
-            List<String> list = new ArrayList<>();
-            list.add(RoleConstant.ANONYMOUS_ID);
-            return list;
+            return ListUtil.of(RoleConstant.ANONYMOUS_ID);
         }
         return user.getRoleIds();
     }

@@ -44,10 +44,10 @@ public class LoginUserContext {
      * @Param []
      * @return java.lang.String
      **/
-    public static String getUserId() {
+    public static Long getUserId() {
         UserInfo user = get();
         if (user == null){
-            return StringPool.EMPTY;
+            return null;
         }
         return user.getUserId();
     }
@@ -59,10 +59,10 @@ public class LoginUserContext {
      * @Param []
      * @return java.lang.String
      **/
-    public static String getOrgId() {
+    public static Long getOrgId() {
         UserInfo user = get();
         if (user == null){
-            return StringPool.EMPTY;
+            return null;
         }
         return user.getOrgId();
     }
@@ -107,7 +107,7 @@ public class LoginUserContext {
                         user.setUserName(RoleConstant.ANONYMOUS_NAME);
                         user.setRoleIds(Collections.singletonList(RoleConstant.ANONYMOUS_ID));
                     }else {
-                        user.setUserId(header);
+                        user.setUserId(0L);
                         user.setIsSysUser(UserInfo.TBALE_USER_TYPE_WHILT);
                         user.setUserName(header);
                     }

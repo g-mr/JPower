@@ -8,11 +8,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * @ClassName TbCoreFile
- * @Description TODO 文件
- * @Author 郭丁志
+ * 文件
+ *
+ * @Author mr.g
  * @Date 2020-07-13 17:20
- * @Version 1.0
  */
 @EqualsAndHashCode(callSuper = true)
 @Data

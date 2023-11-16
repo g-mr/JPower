@@ -33,7 +33,7 @@ public class UserInfo implements Serializable {
     private String tenantCode;
 
     @ApiModelProperty("用户ID")
-    private String userId;
+    private Long userId;
 
     @ApiModelProperty("客户端")
     private String clientCode;
@@ -60,7 +60,7 @@ public class UserInfo implements Serializable {
     private Integer userType;
 
     @ApiModelProperty("部门ID")
-    private String orgId;
+    private Long orgId;
 
     @ApiModelProperty("部门")
     private String orgName;
@@ -94,10 +94,10 @@ public class UserInfo implements Serializable {
     private Date lastLoginTime;
 
     @ApiModelProperty("角色集合")
-    private List<String> roleIds;
+    private List<Long> roleIds;
 
     @ApiModelProperty("子级部门ID")
-    private List<String> childOrgId;
+    private List<Long> childOrgId;
 
     @ApiModelProperty("用来表示是core_user表数据还是其他表映射的数据 0core_user系统表 1业务表 2白名单")
     private Integer isSysUser = TBALE_USER_TYPE_CORE;

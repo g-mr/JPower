@@ -18,8 +18,8 @@ public class TbCoreRoleMenu extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty("角色ID")
-    private String roleId;
+    private Long roleId;
     @ApiModelProperty("顶部菜单ID")
-    private String menuId;
+    private Long menuId;
 
 }

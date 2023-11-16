@@ -26,7 +26,7 @@ public class CustomSqlInjector extends DefaultSqlInjector {
 
         if (tableInfo.havePK()) {
             methodList.add(new InsertBatchSomeColumn());
-            methodList.add(new UpdateAllById(field -> (!Fc.equalsValue(field.getFieldFill(), FieldFill.INSERT) || Fc.equalsValue("status", field.getProperty())) && !Fc.equalsValue(TenantConstant.TENANT_CODE, field.getProperty())));
+            methodList.add(new UpdateAllById(field -> !Fc.equalsValue(field.getFieldFill(), FieldFill.INSERT) && !Fc.equalsValue(TenantConstant.TENANT_CODE, field.getProperty())));
             methodList.add(new DeleteReal());
             methodList.add(new DeleteRealBatchByIds());
             methodList.add(new DeleteRealById());

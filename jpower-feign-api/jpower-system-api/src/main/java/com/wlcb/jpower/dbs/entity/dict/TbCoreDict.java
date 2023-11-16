@@ -33,7 +33,7 @@ public class TbCoreDict extends TenantEntity {
     @ApiModelProperty("排序")
     private Integer sortNum;
     @ApiModelProperty("父级ID")
-    private String parentId;
+    private Long parentId;
     @ApiModelProperty("级别")
     private Integer dictLevel;
 

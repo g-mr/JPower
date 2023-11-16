@@ -23,7 +23,7 @@ public class TbCoreOrg extends TenantEntity {
     @ApiModelProperty("名称")
     private String name;
     @ApiModelProperty("父级ID")
-    private String parentId;
+    private Long parentId;
     @ApiModelProperty("祖级ID")
     private String ancestorId;
     @ApiModelProperty("图标")

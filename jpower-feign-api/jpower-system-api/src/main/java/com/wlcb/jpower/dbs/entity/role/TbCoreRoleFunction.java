@@ -18,8 +18,8 @@ public class TbCoreRoleFunction extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private String roleId;
-    private String functionId;
+    private Long roleId;
+    private Long functionId;
 
     @TableField(exist = false)
     private String functionName;

@@ -10,7 +10,7 @@ public class RoleConstant {
 
     public static final String ROOT = "root";
 
-    public static final String ROOT_ID = "1";
+    public static final long ROOT_ID = 1L;
 
     public static final String ROOT_NAME = "超级管理员";
 
@@ -21,7 +21,7 @@ public class RoleConstant {
 
     public static final String ANONYMOUS_NAME = "匿名用户";
 
-    public static final String ANONYMOUS_ID = "2";
+    public static final long ANONYMOUS_ID = 2L;
 
     public static final Integer ANONYMOUS_UESR_TYPE = 9;
 

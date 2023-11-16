@@ -19,8 +19,8 @@ public class TbCoreRoleData extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty("角色ID")
-    private String roleId;
+    private Long roleId;
     @ApiModelProperty("数据权限ID")
-    private String dataId;
+    private Long dataId;
 
 }

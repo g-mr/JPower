@@ -20,7 +20,7 @@ public class TbCoreTopMenu extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 7634665521029358012L;
 
     @ApiModelProperty("客户端ID")
-    private String clientId;
+    private Long clientId;
     @ApiModelProperty("菜单编号")
     private String code;
     @ApiModelProperty("菜单名称")

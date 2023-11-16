@@ -30,7 +30,7 @@ public class TbCoreDictType extends BaseEntity {
     @ApiModelProperty("排序")
     private Integer sortNum;
     @ApiModelProperty("父级ID")
-    private String parentId;
+    private Long parentId;
     @ApiModelProperty("是否树形结构 字典YN01")
     @Dict(name = "YN01",attributes = "isTreeStr")
     private Integer isTree;

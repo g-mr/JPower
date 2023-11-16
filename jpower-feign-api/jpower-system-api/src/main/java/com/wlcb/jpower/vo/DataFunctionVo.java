@@ -18,7 +18,7 @@ public class DataFunctionVo implements Serializable {
 
     private static final long serialVersionUID = 7120949826947710266L;
 
-    private String id;
+    private Long id;
 
     @ApiModelProperty("功能名称")
     private String functionName;
@@ -33,7 +33,7 @@ public class DataFunctionVo implements Serializable {
     private String code;
 
     @ApiModelProperty("父级ID")
-    private String parentId;
+    private Long parentId;
 
     @ApiModelProperty("别名")
     private String alias;
