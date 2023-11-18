@@ -27,7 +27,7 @@ mybatis-plus:
   type-aliases-package: com.wlcb..*.dbs.entity.**
   global-config:
     db-config:
-      id-type: ASSIGN_UUID
+      id-type: ASSIGN_ID
       where-strategy: NOT_EMPTY
       update-strategy: NOT_EMPTY
       insert-strategy: NOT_EMPTY

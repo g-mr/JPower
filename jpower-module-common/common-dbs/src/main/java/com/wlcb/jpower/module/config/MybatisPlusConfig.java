@@ -49,6 +49,12 @@ public class MybatisPlusConfig {
         return new CustomSqlInjector();
     }
 
+    @Bean
+    @ConditionalOnMissingBean
+    public UpdateRelatedFieldsMetaHandler updateRelatedFieldsMetaHandler(){
+        return new UpdateRelatedFieldsMetaHandler();
+    }
+
     /**
      * 全局配置
      **/
