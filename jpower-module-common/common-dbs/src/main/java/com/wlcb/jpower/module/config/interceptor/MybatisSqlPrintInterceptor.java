@@ -11,7 +11,7 @@ import com.wlcb.jpower.module.config.interceptor.chain.MybatisInterceptor;
 import com.wlcb.jpower.module.config.properties.MybatisProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.executor.Executor;
+import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ParameterMapping;
@@ -19,9 +19,9 @@ import org.apache.ibatis.mapping.ParameterMode;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
-import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 
+import java.sql.Statement;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -40,12 +40,12 @@ public class MybatisSqlPrintInterceptor implements MybatisInterceptor {
     private final MybatisProperties.Sql sqlProperties;
 
     @Override
-    public Object aroundUpdate(ChainFilter chainFilter, final Executor executor, MappedStatement ms, Object parameter, BoundSql boundSql){
+    public Object aroundUpdate(ChainFilter chainFilter, final StatementHandler sh, MappedStatement ms, BoundSql boundSql, Statement statement){
         return printSql(chainFilter, ms.getConfiguration(), ms.getId(), boundSql, true);
     }
 
     @Override
-    public Object aroundQuery(ChainFilter chainFilter, final Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql){
+    public Object aroundQuery(ChainFilter chainFilter, final StatementHandler sh, MappedStatement ms, BoundSql boundSql, Statement statement, ResultHandler resultHandler){
         return printSql(chainFilter, ms.getConfiguration(), ms.getId(), boundSql, false);
     }
 
@@ -55,6 +55,7 @@ public class MybatisSqlPrintInterceptor implements MybatisInterceptor {
             long startTime = System.currentTimeMillis();
             Object rest = chainFilter.proceed();
             try {
+
                 long time = System.currentTimeMillis() - startTime;
                 // 超过超时时长则打印
                 if(time >= sqlProperties.getPrintTimeout()) {

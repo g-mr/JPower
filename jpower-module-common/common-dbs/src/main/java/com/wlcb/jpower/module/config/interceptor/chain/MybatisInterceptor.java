@@ -1,11 +1,10 @@
 package com.wlcb.jpower.module.config.interceptor.chain;
 
-import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.resultset.ResultSetHandler;
+import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.ResultHandler;
-import org.apache.ibatis.session.RowBounds;
 
 import java.sql.Statement;
 
@@ -21,7 +20,7 @@ public interface MybatisInterceptor {
      * @author mr.g
      * @return java.lang.Object sql返回值
      */
-    default Object aroundUpdate(ChainFilter chainFilter, final Executor executor, MappedStatement ms, Object parameter, BoundSql boundSql){
+    default Object aroundUpdate(ChainFilter chainFilter, final StatementHandler sh, MappedStatement ms, BoundSql boundSql, Statement statement){
         return chainFilter.proceed();
     }
 
@@ -31,7 +30,7 @@ public interface MybatisInterceptor {
      * @author mr.g
      * @return java.lang.Object sql返回值
      */
-    default Object aroundQuery(ChainFilter chainFilter,final Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql){
+    default Object aroundQuery(ChainFilter chainFilter, final StatementHandler sh, MappedStatement ms, BoundSql boundSql, Statement statement, ResultHandler resultHandler){
         return chainFilter.proceed();
     }
 

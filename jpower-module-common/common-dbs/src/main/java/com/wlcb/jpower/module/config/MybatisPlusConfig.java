@@ -49,6 +49,12 @@ public class MybatisPlusConfig {
         return new CustomSqlInjector();
     }
 
+    @Bean
+    @ConditionalOnMissingBean
+    public UpdateRelatedFieldsMetaHandler updateRelatedFieldsMetaHandler(){
+        return new UpdateRelatedFieldsMetaHandler();
+    }
+
     /**
      * 全局配置
      **/
@@ -129,7 +135,6 @@ public class MybatisPlusConfig {
     public JpowerMybatisInterceptor jpowerMybatisInterceptor(ObjectProvider<MybatisInterceptor> mybatisInterceptors) {
         return new JpowerMybatisInterceptor(mybatisInterceptors.orderedStream().collect(Collectors.toList()));
     }
-
 
     /**
      * sql打印

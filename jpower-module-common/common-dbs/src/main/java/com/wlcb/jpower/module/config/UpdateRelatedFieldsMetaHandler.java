@@ -5,7 +5,6 @@ import com.wlcb.jpower.module.common.auth.RoleConstant;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.dbs.config.LoginUserContext;
 import org.apache.ibatis.reflection.MetaObject;
-import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
@@ -15,7 +14,6 @@ import java.util.Date;
  * @Author 郭丁志
  * @Date 2020-07-09 17:35
  */
-@Component
 public class UpdateRelatedFieldsMetaHandler implements MetaObjectHandler {
 
     /**
