@@ -7,14 +7,10 @@ import com.wlcb.jpower.module.config.interceptor.chain.ChainFilter;
 import com.wlcb.jpower.module.config.interceptor.chain.MybatisInterceptor;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
-import org.apache.ibatis.cache.CacheKey;
-import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.resultset.ResultSetHandler;
-import org.apache.ibatis.mapping.BoundSql;
-import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.session.ResultHandler;
-import org.apache.ibatis.session.RowBounds;
 
 import java.sql.Statement;
 import java.util.List;
@@ -27,10 +23,10 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @Intercepts(
     {
-        @Signature(type = ResultSetHandler.class,method = "handleResultSets",args = {Statement.class}),
-        @Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class}),
-        @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class}),
-        @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class}),
+        @Signature(type = StatementHandler.class, method = "update", args = {Statement.class}),
+        @Signature(type = StatementHandler.class, method = "batch", args = {Statement.class}),
+        @Signature(type = StatementHandler.class, method = "query", args = {Statement.class, ResultHandler.class}),
+        @Signature(type = ResultSetHandler.class, method = "handleResultSets",args = {Statement.class})
     }
 )
 @AllArgsConstructor
@@ -42,7 +38,7 @@ public class JpowerMybatisInterceptor implements Interceptor {
     @SneakyThrows
     public Object intercept(Invocation invocation) {
         Object target = invocation.getTarget();
-        if (target instanceof Executor){
+        if (target instanceof StatementHandler){
             return new ChainFilter(interceptors.iterator(),invocation).proceed();
         }else if (target instanceof ResultSetHandler){
             Object rest = invocation.proceed();
@@ -65,7 +61,7 @@ public class JpowerMybatisInterceptor implements Interceptor {
 
     @Override
     public Object plugin(Object target) {
-        if (target instanceof Executor || target instanceof ResultSetHandler) {
+        if (target instanceof StatementHandler || target instanceof ResultSetHandler) {
             return Plugin.wrap(target, this);
         }
         return target;

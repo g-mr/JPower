@@ -1,14 +1,15 @@
 package com.wlcb.jpower.module.config.interceptor.chain;
 
+import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
 import lombok.SneakyThrows;
-import org.apache.ibatis.executor.Executor;
+import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.plugin.Invocation;
 import org.apache.ibatis.session.ResultHandler;
-import org.apache.ibatis.session.RowBounds;
 
+import java.sql.Statement;
 import java.util.Iterator;
 
 /**
@@ -19,34 +20,27 @@ public class ChainFilter {
 
     private final Iterator<MybatisInterceptor> interceptors;
     private final Invocation invocation;
-    private final Executor executor;
-    private MappedStatement ms;
-    private Object parameter;
+    private final MappedStatement ms;
     private final boolean isUpdate;
-    private RowBounds rowBounds;
+    private final BoundSql boundSql;
+    private final StatementHandler sh;
+    private final Statement statement;
     private ResultHandler resultHandler;
-    private BoundSql boundSql;
 
     public ChainFilter(Iterator<MybatisInterceptor> interceptors,Invocation invocation){
         this.interceptors = interceptors;
         this.invocation = invocation;
-        this.executor = (Executor) invocation.getTarget();
-
+        this.sh = (StatementHandler) invocation.getTarget();
         Object[] args = invocation.getArgs();
-        this.ms = (MappedStatement) args[0];
-        this.parameter = args[1];
-        this.isUpdate = args.length == 2;
-        if (isUpdate) {
-            boundSql = ms.getBoundSql(parameter);
-        }else{
-            rowBounds = (RowBounds) args[2];
-            resultHandler = (ResultHandler) args[3];
-            if (args.length == 4) {
-                boundSql = ms.getBoundSql(parameter);
-            } else {
-                // 使用Executor的代理对象调用query[args[6]]
-                boundSql = (BoundSql) args[5];
-            }
+        this.boundSql = sh.getBoundSql();
+        PluginUtils.MPStatementHandler mpSh = PluginUtils.mpStatementHandler(sh);
+        this.ms = mpSh.mappedStatement();
+        SqlCommandType sct = ms.getSqlCommandType();
+        this.isUpdate = sct == SqlCommandType.INSERT || sct == SqlCommandType.UPDATE || sct == SqlCommandType.DELETE;
+
+        this.statement = (Statement) args[0];
+        if (ms.getSqlCommandType() == SqlCommandType.SELECT) {
+            this.resultHandler = (ResultHandler) args[1];
         }
     }
 
@@ -54,9 +48,9 @@ public class ChainFilter {
     public Object proceed(){
         if (interceptors.hasNext()){
             if (isUpdate){
-                return interceptors.next().aroundUpdate(this, executor, ms, parameter, boundSql);
+                return interceptors.next().aroundUpdate(this, sh, ms, boundSql, statement);
             }else if (ms.getSqlCommandType() == SqlCommandType.SELECT){
-                return interceptors.next().aroundQuery(this, executor, ms, parameter, rowBounds, resultHandler, boundSql);
+                return interceptors.next().aroundQuery(this, sh, ms, boundSql, statement, resultHandler);
             }
         }
         return invocation.proceed();

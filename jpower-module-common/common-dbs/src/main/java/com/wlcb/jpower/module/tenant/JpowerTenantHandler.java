@@ -43,7 +43,7 @@ public class JpowerTenantHandler implements TenantLineHandler, SmartInitializing
     public boolean ignoreTable(String tableName) {
         // 在表中不存在tenant_code字段的、超级用户登陆的、获取不到request的（例如：多线程、定时任务等）情况下不做多租户过滤
         return !tenantTableList.contains(tableName) || Fc.isNull(WebUtil.getRequest()) || ShieldUtil.isRoot()
-        // 或者登录用户没有租户表示标识的
+        // 或者登录用户没有租户标识的
                 || Fc.isBlank(ShieldUtil.getTenantCode());
     }
 

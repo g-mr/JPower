@@ -130,7 +130,6 @@ public class MybatisPlusConfig {
         return new JpowerMybatisInterceptor(mybatisInterceptors.orderedStream().collect(Collectors.toList()));
     }
 
-
     /**
      * sql打印
      **/
