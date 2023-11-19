@@ -75,6 +75,6 @@ public interface CoreOrgService extends BaseService<TbCoreOrg> {
      * @param id
      * @return java.util.List<java.lang.String>
      */
-    List<String> queryChildById(String id);
+    List<Long> queryChildById(Long id);
 
 }

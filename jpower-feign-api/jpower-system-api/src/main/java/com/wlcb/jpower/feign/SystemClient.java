@@ -28,31 +28,31 @@ public interface SystemClient {
      * @return com.wlcb.jpower.module.base.vo.ResponseData<java.lang.String>
      */
     @GetMapping("/org/queryChildById")
-    ResponseData<List<String>> queryChildOrgById(@RequestParam String id);
+    ResponseData<List<Long>> queryChildOrgById(@RequestParam Long id);
 
     @GetMapping("/org/queryOrgById")
-    ResponseData<TbCoreOrg> queryOrgById(@RequestParam String orgId);
+    ResponseData<TbCoreOrg> queryOrgById(@RequestParam Long orgId);
 
     @GetMapping("/client/getClientByClientCode")
     ResponseData<TbCoreClient> getClientByClientCode(@RequestParam String clientCode);
 
     @GetMapping("/function/getUrlsByRoleIds")
-    ResponseData<List<String>> getUrlsByRoleIds(@RequestParam List<String> roleIds, @RequestParam String clientCode);
+    ResponseData<List<String>> getUrlsByRoleIds(@RequestParam List<Long> roleIds, @RequestParam String clientCode);
 
     @GetMapping("/tenant/getTenantByCode")
     ResponseData<TbCoreTenant> getTenantByCode(@RequestParam String tenantCode);
 
     @GetMapping("/function/getMenuListByRole")
-    ResponseData<List<TbCoreFunction>> getMenuListByRole(@RequestParam List<String> roleIds, @RequestParam String clientCode, @RequestParam String topMenuId);
+    ResponseData<List<TbCoreFunction>> getMenuListByRole(@RequestParam List<Long> roleIds, @RequestParam String clientCode, @RequestParam Long topMenuId);
 
     @GetMapping("/dataScope/getAllRoleDataScope")
     ResponseData<List<TbCoreDataScope>> getAllRoleDataScope();
 
     @GetMapping("/dataScope/getDataScopeByRole")
-    ResponseData<List<TbCoreDataScope>> getDataScopeByRole(@RequestParam List<String> roleIds, @RequestParam String clientCode);
+    ResponseData<List<TbCoreDataScope>> getDataScopeByRole(@RequestParam List<Long> roleIds, @RequestParam String clientCode);
 
     @GetMapping("/role/getRoleNameByIds")
-    ResponseData<List<String>> getRoleNameByIds(@RequestParam List<String> roleIds);
+    ResponseData<List<String>> getRoleNameByIds(@RequestParam List<Long> roleIds);
 
     @GetMapping("/city/getCityByCode")
     ResponseData<TbCoreCity> getCityByCode(@RequestParam String code);

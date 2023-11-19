@@ -110,7 +110,7 @@
         <if test="orgIds != null and orgIds.size > 0">
             and u.org_id in
             <foreach collection="orgIds" item="orgId" open="(" close=")" separator=",">
-                #{orgId,jdbcType=VARCHAR}
+                #{orgId,jdbcType=BIGINT}
             </foreach>
         </if>
 

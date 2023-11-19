@@ -44,7 +44,7 @@ public class CaptchaTokenGranter implements TokenGranter {
 			throw new BusinessException(TokenUtil.CAPTCHA_NOT_CORRECT);
 		}
 
-		if (!Fc.isNull(authUserInfo)){
+		if (Fc.notNull(authUserInfo)){
 			if (Fc.isNoneBlank(tokenParameter.getLoginId(), tokenParameter.getPassWord())) {
 				return authUserInfo.getCaptchaUserInfo(tokenParameter);
 			}

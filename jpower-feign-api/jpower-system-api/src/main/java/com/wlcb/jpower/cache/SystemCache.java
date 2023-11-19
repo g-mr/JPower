@@ -36,7 +36,7 @@ public class SystemCache {
      * @param orgId 组织机构ID
      * @return 组织机构名称
      **/
-    public static String getOrgName(String orgId){
+    public static String getOrgName(Long orgId){
         TbCoreOrg org = getOrg(orgId);
         if (Fc.isNull(org)){
             return StringPool.EMPTY;
@@ -50,7 +50,7 @@ public class SystemCache {
      * @param orgId 组织机构ID
      * @return 部门详情
      */
-    public static TbCoreOrg getOrg(String orgId){
+    public static TbCoreOrg getOrg(Long orgId){
         return CacheUtil.get(CacheNames.ORG_KEY,CacheNames.ORG_DETAIL_KEY,orgId,() -> {
             ResponseData<TbCoreOrg> responseData = systemClient.queryOrgById(orgId);
             return responseData.getData();
@@ -63,9 +63,9 @@ public class SystemCache {
      * @param orgId 组织机构ID
      * @return 下级ID列表
      */
-    public static List<String> getChildIdOrgById(String orgId) {
+    public static List<Long> getChildIdOrgById(Long orgId) {
         return CacheUtil.get(CacheNames.ORG_KEY,CacheNames.ORG_CHILDID_KEY,orgId,() -> {
-            ResponseData<List<String>> responseData = systemClient.queryChildOrgById(orgId);
+            ResponseData<List<Long>> responseData = systemClient.queryChildOrgById(orgId);
             return responseData.getData();
         });
     }
@@ -121,7 +121,7 @@ public class SystemCache {
      * @param roleIds 角色ID
      * @return URL列表
      **/
-    public static List<String> getUrlsByRoleIds(List<String> roleIds, String clientCode) {
+    public static List<String> getUrlsByRoleIds(List<Long> roleIds, String clientCode) {
         return CacheUtil.get(CacheNames.FUNCTION_KEY,CacheNames.URL_CLIENT_ROLE_KEY,clientCode+StringPool.COLON+roleIds,() -> {
             ResponseData<List<String>> responseData = systemClient.getUrlsByRoleIds(roleIds,clientCode);
             return responseData.getData();
@@ -135,7 +135,7 @@ public class SystemCache {
      * @date 23:28 2020/11/5 0005
      * @param roleIds 角色ID
      */
-    public static List<TbCoreFunction> getMenuListByRole(List<String> roleIds, String clientCode) {
+    public static List<TbCoreFunction> getMenuListByRole(List<Long> roleIds, String clientCode) {
         return CacheUtil.get(CacheNames.FUNCTION_KEY,CacheNames.MENU_CLIENT_ROLE_KEY,clientCode+StringPool.COLON+roleIds,() -> {
             ResponseData<List<TbCoreFunction>> responseData = systemClient.getMenuListByRole(roleIds, clientCode, null);
             return responseData.getData();
@@ -164,7 +164,7 @@ public class SystemCache {
      * @param roleIds  角色ID
      * @return 数据权限列表
      */
-    public static List<TbCoreDataScope> getDataScopeByRole(List<String> roleIds,String clientCode) {
+    public static List<TbCoreDataScope> getDataScopeByRole(List<Long> roleIds,String clientCode) {
         return CacheUtil.get(CacheNames.DATASCOPE_KEY,CacheNames.DATASCOPE_CLIENT_ROLE_KEY,clientCode+StringPool.COLON+roleIds,() -> {
             ResponseData<List<TbCoreDataScope>> responseData = systemClient.getDataScopeByRole(roleIds,clientCode);
             return responseData.getData();
@@ -179,7 +179,7 @@ public class SystemCache {
      * @param roleIds  角色ID
      * @return 角色名称列表
      */
-    public static List<String> getRoleNameByIds(List<String> roleIds) {
+    public static List<String> getRoleNameByIds(List<Long> roleIds) {
         return CacheUtil.get(CacheNames.ROLE_KEY,CacheNames.ROLENAME_KEY,roleIds,() -> {
             ResponseData<List<String>> responseData = systemClient.getRoleNameByIds(roleIds);
             return responseData.getData();

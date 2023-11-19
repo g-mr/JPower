@@ -145,7 +145,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     }
 
     @Override
-    public UserVo selectUserById(String id) {
+    public UserVo selectUserById(Long id) {
         return coreUserDao.conver(getBaseMapper().selectAllById(id));
     }
 

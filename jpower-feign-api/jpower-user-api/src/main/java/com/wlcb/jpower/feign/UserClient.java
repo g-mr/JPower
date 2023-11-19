@@ -28,7 +28,7 @@ public interface UserClient {
     ResponseData<TbCoreUser> queryUserByLoginId(@RequestParam String loginId, @RequestParam String tenantCode);
 
     @GetMapping("/getRoleIdsByUserId")
-    ResponseData<List<String>> getRoleIds(@RequestParam String userId);
+    ResponseData<List<Long>> getRoleIds(@RequestParam Long userId);
 
     @PutMapping("/updateUserLoginInfo")
     ResponseData updateUserLoginInfo(@RequestParam String userId);
@@ -37,7 +37,7 @@ public interface UserClient {
     ResponseData<TbCoreUser> queryUserByCode(@RequestParam String otherCode, @RequestParam String tenantCode);
 
     @GetMapping("/get")
-    ResponseData<UserVo> get(@RequestParam String id);
+    ResponseData<UserVo> get(@RequestParam Long id);
 
     @GetMapping("/queryUserByPhone")
     ResponseData<TbCoreUser> queryUserByPhone(@RequestParam String phone, @RequestParam String tenantCode);
@@ -56,5 +56,5 @@ public interface UserClient {
      * @return 岗位信息
      **/
     @GetMapping("/queryPostById")
-    ResponseData<TbCorePost> queryPostById(@RequestParam String postId);
+    ResponseData<TbCorePost> queryPostById(@RequestParam Long postId);
 }

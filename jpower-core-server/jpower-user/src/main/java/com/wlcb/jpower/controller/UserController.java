@@ -148,8 +148,8 @@ public class UserController extends BaseController {
     })
     @ApiOperation("查询用户详情")
     @RequestMapping(value = "/getById", method = RequestMethod.GET, produces = "application/json")
-    public ResponseData<UserVo> getById(@ApiParam(value = "主键", required = true) @RequestParam @NotBlank(message = "主键不可为空") String id) {
-        JpowerAssert.notEmpty(id, JpowerError.Arg, "id不可为空");
+    public ResponseData<UserVo> getById(@ApiParam(value = "主键", required = true) @RequestParam @NotBlank(message = "主键不可为空") Long id) {
+        JpowerAssert.notNull(id, JpowerError.Arg, "id不可为空");
 
         UserVo user = coreUserService.selectUserById(id);
         return ReturnJsonUtil.ok("查询成功", user);

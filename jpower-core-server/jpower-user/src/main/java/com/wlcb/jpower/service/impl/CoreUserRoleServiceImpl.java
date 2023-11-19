@@ -24,8 +24,8 @@ public class CoreUserRoleServiceImpl extends BaseServiceImpl<TbCoreUserRoleMappe
     public TbCoreUserRoleDao coreUserRoleDao;
 
     @Override
-    public List<String> queryRoleIds(String userId) {
+    public List<Long> queryRoleIds(Long userId) {
         return coreUserRoleDao.listObjs(Condition.<TbCoreUserRole>getQueryWrapper()
-                .lambda().select(TbCoreUserRole::getRoleId).eq(TbCoreUserRole::getUserId,userId), Fc::toStr);
+                .lambda().select(TbCoreUserRole::getRoleId).eq(TbCoreUserRole::getUserId,userId), Fc::toLong);
     }
 }

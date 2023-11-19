@@ -24,8 +24,8 @@ public class TbCoreClientDao extends JpowerServiceImpl<TbCoreClientMapper, TbCor
      * @param code 客户端编码
      * @return id
      **/
-    public String queryIdByCode(String code){
-        return super.getObj(Condition.<TbCoreClient>getQueryWrapper().lambda().select(TbCoreClient::getId).eq(TbCoreClient::getClientCode, code), Fc::toStr);
+    public Long queryIdByCode(String code){
+        return super.getObj(Condition.<TbCoreClient>getQueryWrapper().lambda().select(TbCoreClient::getId).eq(TbCoreClient::getClientCode, code), Fc::toLong);
     }
 
 }

@@ -81,9 +81,9 @@ public class UserCache {
      * @param userId
      * @return 角色ID列表
      **/
-    public static List<String> getRoleIds(String userId) {
+    public static List<Long> getRoleIds(Long userId) {
         return CacheUtil.get(CacheNames.USER_KEY,CacheNames.USER_ROLEID_KEY,userId,() -> {
-            ResponseData<List<String>> responseData = userClient.getRoleIds(userId);
+            ResponseData<List<Long>> responseData = userClient.getRoleIds(userId);
             return responseData.getData();
         });
     }
@@ -110,7 +110,7 @@ public class UserCache {
      * @param userId 用户ID
      * @return 用户信息
      **/
-    public static UserVo getById(String userId) {
+    public static UserVo getById(Long userId) {
         return CacheUtil.get(CacheNames.USER_KEY,CacheNames.USER_DETAIL_KEY,userId,() -> {
             ResponseData<UserVo> responseData = userClient.get(userId);
             return responseData.getData();
@@ -124,7 +124,7 @@ public class UserCache {
      * @param postId 岗位ID
      * @return java.lang.String
      **/
-    public static String getPostName(String postId) {
+    public static String getPostName(Long postId) {
         TbCorePost post = getPost(postId);
         if (Fc.isNull(post)){
             return StringPool.EMPTY;
@@ -138,7 +138,7 @@ public class UserCache {
      * @param postId 岗位ID
      * @return 岗位详情
      */
-    public static TbCorePost getPost(String postId){
+    public static TbCorePost getPost(Long postId){
         return CacheUtil.get(CacheNames.POST_KEY,CacheNames.POST_DETAIL_KEY,postId,() -> {
             ResponseData<TbCorePost> responseData = userClient.queryPostById(postId);
             return responseData.getData();

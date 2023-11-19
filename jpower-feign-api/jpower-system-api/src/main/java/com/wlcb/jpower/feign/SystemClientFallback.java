@@ -23,12 +23,12 @@ import java.util.List;
 public class SystemClientFallback implements SystemClient {
 
     @Override
-    public ResponseData<List<String>> queryChildOrgById(String id) {
+    public ResponseData<List<Long>> queryChildOrgById(Long id) {
         return ReturnJsonUtil.fail("查询失败");
     }
 
     @Override
-    public ResponseData<TbCoreOrg> queryOrgById(String orgId) {
+    public ResponseData<TbCoreOrg> queryOrgById(Long orgId) {
         return ReturnJsonUtil.fail("查询失败");
     }
 
@@ -38,7 +38,7 @@ public class SystemClientFallback implements SystemClient {
     }
 
     @Override
-    public ResponseData<List<String>> getUrlsByRoleIds(List<String> roleIds, String clientCode) {
+    public ResponseData<List<String>> getUrlsByRoleIds(List<Long> roleIds, String clientCode) {
         return ReturnJsonUtil.fail("查询失败");
     }
 
@@ -48,7 +48,7 @@ public class SystemClientFallback implements SystemClient {
     }
 
     @Override
-    public ResponseData<List<TbCoreFunction>> getMenuListByRole(List<String> roleIds, String clientCode, String topMenuId) {
+    public ResponseData<List<TbCoreFunction>> getMenuListByRole(List<Long> roleIds, String clientCode, Long topMenuId) {
         return ReturnJsonUtil.fail("查询失败");
     }
 
@@ -58,12 +58,12 @@ public class SystemClientFallback implements SystemClient {
     }
 
     @Override
-    public ResponseData<List<TbCoreDataScope>> getDataScopeByRole(List<String> roleIds,String clientCode) {
+    public ResponseData<List<TbCoreDataScope>> getDataScopeByRole(List<Long> roleIds,String clientCode) {
         return ReturnJsonUtil.fail("查询失败");
     }
 
     @Override
-    public ResponseData<List<String>> getRoleNameByIds(List<String> roleIds) {
+    public ResponseData<List<String>> getRoleNameByIds(List<Long> roleIds) {
         return ReturnJsonUtil.fail("查询失败");
     }
 

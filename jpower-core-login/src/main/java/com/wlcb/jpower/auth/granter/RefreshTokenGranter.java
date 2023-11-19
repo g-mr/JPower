@@ -47,7 +47,7 @@ public class RefreshTokenGranter implements TokenGranter {
 			}
 			String tokenType = Fc.toStr(claims.get(TokenConstant.TOKEN_TYPE));
 			if (tokenType.equals(TokenConstant.REFRESH_TOKEN)) {
-				String userId = Fc.toStr(claims.get(TokenConstant.USER_ID));
+				Long userId = Fc.toLong(claims.get(TokenConstant.USER_ID));
 
 				if (!Fc.isNull(authUserInfo)){
 					return authUserInfo.getRefreshUserInfo(userType,userId);

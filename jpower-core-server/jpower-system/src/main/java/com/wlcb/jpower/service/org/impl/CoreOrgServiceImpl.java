@@ -115,10 +115,10 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper, TbCoreO
     }
 
     @Override
-    public List<String> queryChildById(String id) {
+    public List<Long> queryChildById(Long id) {
         return coreOrgDao.listObjs(Condition.<TbCoreOrg>getQueryWrapper().lambda()
                 .select(TbCoreOrg::getId)
-                .like(TbCoreOrg::getAncestorId,id),Fc::toStr);
+                .like(TbCoreOrg::getAncestorId,id),Fc::toLong);
     }
 
 }

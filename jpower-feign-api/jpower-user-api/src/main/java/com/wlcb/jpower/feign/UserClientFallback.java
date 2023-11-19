@@ -33,7 +33,7 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
             }
 
             @Override
-            public ResponseData<List<String>> getRoleIds(String userId) {
+            public ResponseData<List<Long>> getRoleIds(Long userId) {
                 return ReturnJsonUtil.fail("查询失败");
             }
 
@@ -49,7 +49,7 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
             }
 
             @Override
-            public ResponseData<UserVo> get(String id) {
+            public ResponseData<UserVo> get(Long id) {
                 return ReturnJsonUtil.fail("查询失败");
             }
 
@@ -71,7 +71,7 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
             }
 
             @Override
-            public ResponseData<TbCorePost> queryPostById(String postId) {
+            public ResponseData<TbCorePost> queryPostById(Long postId) {
                 log.error("调用queryPostById失败，参数：postId={}", postId);
                 return ReturnJsonUtil.print(ConstantsReturn.RECODE_API, cause.getMessage(), false);
             }

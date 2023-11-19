@@ -144,10 +144,10 @@ public class AuthController extends BaseController {
 
     @ApiOperation(value = "退出登录")
     @RequestMapping(value = "/loginOut",method = RequestMethod.POST,produces="application/json")
-    public ResponseData<String> loginOut(@ApiParam(value = "用户ID",required = true)@RequestParam String userId) {
-        JpowerAssert.notEmpty(userId, JpowerError.Arg,"用户ID不可为空");
+    public ResponseData<String> loginOut(@ApiParam(value = "用户ID",required = true)@RequestParam Long userId) {
+        JpowerAssert.notNull(userId, JpowerError.Arg,"用户ID不可为空");
         UserInfo user = ShieldUtil.getUser();
-        if(Fc.notNull(user) && Fc.equals(userId,user.getUserId())){
+        if(Fc.notNull(user) && Fc.equals(userId, user.getUserId())){
             getRequest().getSession().invalidate();
             redisUtil.remove(CacheNames.TOKEN_URL_KEY+JwtUtil.getToken(getRequest()));
             redisUtil.remove(CacheNames.TOKEN_DATA_SCOPE_KEY+JwtUtil.getToken(getRequest()));

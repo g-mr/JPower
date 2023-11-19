@@ -163,8 +163,8 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     }
 
     @Override
-    public List<String> getUrlsByRoleIds(List<String> roleIds, String clientCode) {
-        String inSql = StringUtils.collectionToDelimitedString(roleIds, StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE);
+    public List<String> getUrlsByRoleIds(List<Long> roleIds, String clientCode) {
+        String inSql = StringUtils.collectionToCommaDelimitedString(roleIds);
 
         return coreFunctionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                 .select(TbCoreFunction::getUrl)
@@ -174,13 +174,13 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     }
 
     @Override
-    public List<TbCoreFunction> listMenuByRoleId(List<String> roleIds, String clientCode, String topMenuId,boolean isHide) {
+    public List<TbCoreFunction> listMenuByRoleId(List<Long> roleIds, String clientCode, Long topMenuId,boolean isHide) {
 
         if (Fc.isEmpty(roleIds)){
             return new ArrayList<>();
         }
 
-        String inSql = StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE);
+        String inSql = StringUtil.join(roleIds);
         List<TbCoreFunction> list = coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                 .eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.MENU.getValue())
                 .eq(TbCoreFunction::getClientId,clientDao.queryIdByCode(clientCode))
@@ -189,8 +189,8 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
                 .orderByAsc(TbCoreFunction::getSort));
 
         //获取顶部菜单关联的左侧菜单
-        if (Fc.isNotBlank(topMenuId)){
-            Set<String> listId = new HashSet<>(functionMenuDao.listObjs(Condition.<TbCoreFunctionMenu>getQueryWrapper().lambda().select(TbCoreFunctionMenu::getFunctionId).eq(TbCoreFunctionMenu::getMenuId,topMenuId), Fc::toStr));
+        if (Fc.notNull(topMenuId)){
+            Set<Long> listId = new HashSet<>(functionMenuDao.listObjs(Condition.<TbCoreFunctionMenu>getQueryWrapper().lambda().select(TbCoreFunctionMenu::getFunctionId).eq(TbCoreFunctionMenu::getMenuId,topMenuId), Fc::toLong));
             listId.addAll(findDescendants(list,listId));
             list = list.stream().filter(function -> listId.contains(function.getId())).collect(Collectors.toList());
         }
@@ -205,9 +205,9 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
      * @param listId 一级功能ID
      * @return java.util.List<com.wlcb.jpower.dbs.entity.function.TbCoreFunction>
      **/
-    private Set<String> findDescendants(List<TbCoreFunction> listAll, Set<String> listId) {
+    private Set<Long> findDescendants(List<TbCoreFunction> listAll, Set<Long> listId) {
 
-        Set<String> childrenId = listAll.stream().filter(function -> listId.contains(function.getParentId())).map(TbCoreFunction::getId).collect(Collectors.toSet());
+        Set<Long> childrenId = listAll.stream().filter(function -> listId.contains(function.getParentId())).map(TbCoreFunction::getId).collect(Collectors.toSet());
 
         if (Fc.isNotEmpty(childrenId)) {
             listId.addAll(findDescendants(listAll, childrenId));

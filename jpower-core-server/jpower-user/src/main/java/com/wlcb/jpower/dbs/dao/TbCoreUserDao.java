@@ -29,8 +29,8 @@ public class TbCoreUserDao extends JpowerServiceImpl<TbCoreUserMapper, TbCoreUse
         }
         UserVo userVo = Objects.requireNonNull(BeanUtil.copyProperties(user, UserVo.class));
         userVo.setOrgName(SystemCache.getOrgName(userVo.getOrgId()));
-        userVo.setRoleName(Fc.join(SystemCache.getRoleNameByIds(Fc.toStrList(user.getRoleIds()))," | "));
-        if (Fc.isNotBlank(userVo.getPostId())){
+        userVo.setRoleName(Fc.join(SystemCache.getRoleNameByIds(Fc.toLongList(user.getRoleIds()))," | "));
+        if (Fc.notNull(userVo.getPostId())){
             userVo.setPostName(UserCache.getPostName(userVo.getPostId()));
         }
         return userVo;
@@ -41,10 +41,10 @@ public class TbCoreUserDao extends JpowerServiceImpl<TbCoreUserMapper, TbCoreUse
         return listConver(list);
     }
 
-    private List<String> getChildOrg(String orgId){
-        List<String> listOrgId = Fc.isNotBlank(orgId)?SystemCache.getChildIdOrgById(orgId):null;
+    private List<Long> getChildOrg(Long orgId){
+        List<Long> listOrgId = Fc.notNull(orgId)?SystemCache.getChildIdOrgById(orgId):null;
         listOrgId = Fc.isNull(listOrgId)?new ArrayList<>():listOrgId;
-        if(Fc.isNotBlank(orgId)){
+        if(Fc.notNull(orgId)){
             listOrgId.add(orgId);
         }
         return listOrgId;

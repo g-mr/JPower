@@ -67,7 +67,7 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
      * @param id 用户id
      * @return com.wlcb.jpower.module.dbs.entity.core.user.TbCoreUser
      */
-    UserVo selectUserById(String id);
+    UserVo selectUserById(Long id);
 
     /**
      * @author 郭丁志

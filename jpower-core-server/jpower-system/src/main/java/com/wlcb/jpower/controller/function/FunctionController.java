@@ -201,8 +201,8 @@ public class FunctionController extends BaseController {
 
     @ApiOperation("页面菜单获取")
     @GetMapping(value = "/listMenuTree", produces="application/json")
-    public ResponseData<List<Tree<String>>> listMenuTree(@ApiParam("顶部菜单ID") String topMenuId){
-        List<String> roleIds = ShieldUtil.getUserRole();
+    public ResponseData<List<Tree<String>>> listMenuTree(@ApiParam("顶部菜单ID") Long topMenuId){
+        List<Long> roleIds = ShieldUtil.getUserRole();
         return ReturnJsonUtil.data(ForestNodeMerger.mergeTree(BeanUtil.copyToList(coreFunctionService.listMenuByRoleId(roleIds,ShieldUtil.getClientCode(),topMenuId, Boolean.TRUE),FunctionVo.class)));
     }
 

@@ -13,7 +13,7 @@ import java.util.List;
 @Component("tbCoreUserMapper")
 public interface TbCoreUserMapper extends JpowerBaseMapper<TbCoreUser> {
 
-    TbCoreUser selectAllById(String id);
+    TbCoreUser selectAllById(Long id);
 
-    List<TbCoreUser> selectUserList(@Param("coreUser") TbCoreUser coreUser, @Param("orgIds") List<String> orgIds);
+    List<TbCoreUser> selectUserList(@Param("coreUser") TbCoreUser coreUser, @Param("orgIds") List<Long> orgIds);
 }

@@ -41,7 +41,7 @@ public class RoleService {
      * @return java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
      **/
     @SneakyThrows({ExecutionException.class, InterruptedException.class})
-    public List<String> queryUrlByRole(String roleId, String clientCode){
+    public List<String> queryUrlByRole(Long roleId, String clientCode){
         Future<ResponseData<List<String>>> future = ThreadUtil.execAsync(() -> restTemplate.getForObject("http://"+ AppConstant.getInstance().getJpowerSystem()+"/core/function/getUrlsByRoleIds?roleIds="+roleId+"&clientCode="+clientCode,ResponseData.class));
         ResponseData<List<String>> responseData = future.get();
         return Fc.isNull(responseData) ? ListUtil.of() : responseData.getData();
@@ -56,10 +56,10 @@ public class RoleService {
      * @return java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
      **/
     @SneakyThrows({ExecutionException.class, InterruptedException.class})
-    public String queryMenuIdByCode(String code){
-        Future<ResponseData<String>> future = ThreadUtil.execAsync(() -> restTemplate.getForObject("http://"+ AppConstant.getInstance().getJpowerSystem()+"/core/menu/getIdByCode?code="+ code,ResponseData.class));
-        ResponseData<String> responseData = future.get();
-        return Fc.isNull(responseData) ? StringPool.EMPTY : responseData.getData();
+    public Long queryMenuIdByCode(String code){
+        Future<ResponseData<Long>> future = ThreadUtil.execAsync(() -> restTemplate.getForObject("http://"+ AppConstant.getInstance().getJpowerSystem()+"/core/menu/getIdByCode?code="+ code,ResponseData.class));
+        ResponseData<Long> responseData = future.get();
+        return Fc.isNull(responseData) ? null : responseData.getData();
     }
 
     /**
@@ -70,7 +70,7 @@ public class RoleService {
      * @return java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
      **/
     @SneakyThrows({ExecutionException.class, InterruptedException.class})
-    public List<Map<String,Object>> queryDataScopeByRole(List<String> roleIds, String clientCode){
+    public List<Map<String,Object>> queryDataScopeByRole(List<Long> roleIds, String clientCode){
         Future<ResponseData<List<Map<String,Object>>>> future = ThreadUtil.execAsync(() -> restTemplate.getForObject("http://"+ AppConstant.getInstance().getJpowerSystem()+"/core/dataScope/getDataScopeByRole?roleIds=" + StringUtil.join(roleIds) + "&clientCode=" + clientCode,ResponseData.class));
         ResponseData<List<Map<String,Object>>> responseData = future.get();
         return Fc.isNull(responseData) ? ListUtil.of() : responseData.getData();
@@ -85,14 +85,14 @@ public class RoleService {
      * @param clientCode
      * @return java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
      **/
-    public String queryDataScopeByRoleAndMenu(List<String> roleIds, String menuCode, String clientCode){
+    public String queryDataScopeByRoleAndMenu(List<Long> roleIds, String menuCode, String clientCode){
         List<Map<String,Object>> list = queryDataScopeByRole(roleIds,clientCode);
 
         if (Fc.isNotEmpty(list) && Fc.isNotBlank(menuCode)){
-            String menuId = queryMenuIdByCode(menuCode);
-            if (Fc.isNotBlank(menuId)){
+            Long menuId = queryMenuIdByCode(menuCode);
+            if (Fc.notNull(menuId)){
                 List<Map<String,Object>> listScope = list.stream()
-                        .filter(m->Fc.equalsValue(MapUtil.getStr(m,"menuId"),menuId))
+                        .filter(m->Fc.equalsValue(MapUtil.getLong(m,"menuId"),menuId))
                         .sorted(Comparator.comparingInt(m->MapUtil.getInt(m,"allRole")))
                         .filter(m->{
                             if (Fc.equalsValue(MapUtil.getInt(m,"allRole"), ConstantsEnum.YN01.N.getValue())){

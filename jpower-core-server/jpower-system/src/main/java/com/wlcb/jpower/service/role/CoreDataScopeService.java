@@ -48,5 +48,5 @@ public interface CoreDataScopeService extends BaseService<TbCoreDataScope> {
      * @param roleIds 角色ID
      * @return java.util.List<com.wlcb.jpower.dbs.entity.function.TbCoreDataScope>
      */
-    List<TbCoreDataScope> getDataScopeByRole(List<String> roleIds,String clientCode);
+    List<TbCoreDataScope> getDataScopeByRole(List<Long> roleIds,String clientCode);
 }

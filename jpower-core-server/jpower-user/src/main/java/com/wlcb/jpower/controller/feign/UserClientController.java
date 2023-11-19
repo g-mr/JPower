@@ -45,7 +45,7 @@ public class UserClientController implements UserClient {
     @ApiOperation(value = "通过用户ID查询所有角色ID")
     @Override
     @GetMapping("/getRoleIdsByUserId")
-    public ResponseData<List<String>> getRoleIds(@RequestParam String userId){
+    public ResponseData<List<Long>> getRoleIds(@RequestParam Long userId){
         return ReturnJsonUtil.ok("查询成功",coreUserRoleService.queryRoleIds(userId));
     }
 
@@ -66,7 +66,7 @@ public class UserClientController implements UserClient {
     @ApiOperation("查询用户详情")
     @Override
     @GetMapping(value = "/get")
-    public ResponseData<UserVo> get(@RequestParam String id){
+    public ResponseData<UserVo> get(@RequestParam Long id){
         return ReturnJsonUtil.ok("查询成功", coreUserService.selectUserById(id));
     }
 
@@ -94,7 +94,7 @@ public class UserClientController implements UserClient {
 
     @Override
     @GetMapping("/queryPostById")
-    public ResponseData<TbCorePost> queryPostById(@RequestParam String postId) {
+    public ResponseData<TbCorePost> queryPostById(@RequestParam Long postId) {
         return ReturnJsonUtil.data(corePostService.getById(postId));
     }
 }
