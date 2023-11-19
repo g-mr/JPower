@@ -7,7 +7,8 @@ import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.extension.injector.methods.InsertBatchSomeColumn;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.mp.methods.*;
-import com.wlcb.jpower.module.tenant.TenantConstant;
+import com.wlcb.jpower.module.tenant.JpowerTenantProperties;
+import lombok.AllArgsConstructor;
 
 import java.util.List;
 
@@ -18,7 +19,10 @@ import java.util.List;
  * @Date 2020-08-11 15:13
  * @Version 1.0
  */
+@AllArgsConstructor
 public class CustomSqlInjector extends DefaultSqlInjector {
+
+    private JpowerTenantProperties tenantProperties;
 
     @Override
     public List<AbstractMethod> getMethodList(Class<?> mapperClass, TableInfo tableInfo) {
@@ -26,7 +30,11 @@ public class CustomSqlInjector extends DefaultSqlInjector {
 
         if (tableInfo.havePK()) {
             methodList.add(new InsertBatchSomeColumn());
-            methodList.add(new UpdateAllById(field -> !Fc.equalsValue(field.getFieldFill(), FieldFill.INSERT) && !Fc.equalsValue(TenantConstant.TENANT_CODE, field.getProperty())));
+            if (Fc.notNull(tenantProperties) && tenantProperties.getEnable()){
+                methodList.add(new UpdateAllById(field -> !Fc.equalsValue(field.getFieldFill(), FieldFill.INSERT) && !Fc.equalsValue(tenantProperties.getColumn(), field.getColumn())));
+            }else {
+                methodList.add(new UpdateAllById(field -> !Fc.equalsValue(field.getFieldFill(), FieldFill.INSERT)));
+            }
             methodList.add(new DeleteReal());
             methodList.add(new DeleteRealBatchByIds());
             methodList.add(new DeleteRealById());

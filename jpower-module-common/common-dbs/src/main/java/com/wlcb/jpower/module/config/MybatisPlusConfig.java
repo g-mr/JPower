@@ -12,6 +12,7 @@ import com.wlcb.jpower.module.config.interceptor.chain.MybatisInterceptor;
 import com.wlcb.jpower.module.config.properties.DemoProperties;
 import com.wlcb.jpower.module.config.properties.MybatisProperties;
 import com.wlcb.jpower.module.mp.CustomSqlInjector;
+import com.wlcb.jpower.module.tenant.JpowerTenantProperties;
 import lombok.AllArgsConstructor;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.ObjectProvider;
@@ -45,8 +46,8 @@ public class MybatisPlusConfig {
 
     @Bean
     @ConditionalOnMissingBean
-    public ISqlInjector sqlInjector() {
-        return new CustomSqlInjector();
+    public ISqlInjector sqlInjector(@Autowired(required = false) JpowerTenantProperties tenantProperties) {
+        return new CustomSqlInjector(tenantProperties);
     }
 
     @Bean
@@ -73,7 +74,7 @@ public class MybatisPlusConfig {
     public MybatisPlusInterceptor mybatisPlusInterceptor(@Autowired(required = false) DataPermissionInterceptor dataPermissionInterceptor,
                                                          @Autowired(required = false) TenantLineInnerInterceptor tenantLineInnerInterceptor,
                                                          @Autowired(required = false) DynamicTableNameInnerInterceptor dynamicTableNameInnerInterceptor,
-//                                                         ObjectProvider<InnerInterceptor> innerInterceptors,
+                                                         ObjectProvider<InnerInterceptor> innerInterceptors,
                                                          DemoProperties demoProperties,
                                                          MybatisProperties mybatisProperties) {
 
@@ -126,6 +127,13 @@ public class MybatisPlusConfig {
         if (demoProperties.isEnable()){
             interceptor.addInnerInterceptor(new DemoInterceptor(demoProperties));
         }
+
+
+        innerInterceptors.orderedStream().collect(Collectors.toList()).forEach(innerInterceptor -> {
+            if (!interceptor.getInterceptors().contains(innerInterceptor)){
+                interceptor.addInnerInterceptor(innerInterceptor);
+            }
+        });
 
         return interceptor;
     }
