@@ -49,7 +49,6 @@ public class InsertBatchSomeColumnTenant implements InnerInterceptor {
     }
 
     protected void doTenantValue(List list) {
-        //insertBatchSomeColumn(entity)
         TableInfo tableInfo = TableInfoHelper.getTableInfo(list.get(0).getClass());
         if (tableInfo == null) {
             return;
@@ -60,25 +59,22 @@ public class InsertBatchSomeColumnTenant implements InnerInterceptor {
             return;
         }
 
-        List<TableFieldInfo> fieldInfos = tableInfo.getFieldList();
+        Field field = tableInfo.getFieldList().stream().filter(fieldInfo->Fc.equalsValue(fieldInfo.getColumn(), tenantLineHandler.getTenantIdColumn())).findFirst().map(TableFieldInfo::getField).orElse(null);
 
-        fieldInfos.forEach(fieldInfo -> {
-            if (Fc.equalsValue(fieldInfo.getColumn(), tenantLineHandler.getTenantIdColumn())){
-                Field field = fieldInfo.getField();
-                list.forEach(ob->{
-                    try {
+        if (Fc.notNull(field)){
+            list.forEach(ob->{
+                try {
 
-                        Object val = field.get(ob);
-                        if (Fc.isNull(val)){
-                            field.set(ob, ((StringValue)tenantLineHandler.getTenantId()).getValue());
-                        }
-
-                    } catch (IllegalAccessException e){
-                        log.error("insertBatchSomeColumn tenant value set error:{}", ExceptionUtil.getStackTraceAsString(e));
+                    Object val = field.get(ob);
+                    if (Fc.isNull(val)){
+                        field.set(ob, ((StringValue)tenantLineHandler.getTenantId()).getValue());
                     }
-                });
-            }
-        });
+
+                } catch (IllegalAccessException e){
+                    log.error("insertBatchSomeColumn tenant value set error:{}", ExceptionUtil.getStackTraceAsString(e));
+                }
+            });
+        }
     }
 
 }
