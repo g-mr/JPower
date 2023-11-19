@@ -2,10 +2,10 @@
 spring:
   redis:
     ##redis 单机环境配置
-    host: 127.0.0.1
-    port: 6379
-    password:
-    database: 1
+    host: 183.134.91.177
+    password: P@ssw0rdRedis
+    port: 10663
+    database: 17
     ssl: false
     ##redis 集群环境配置
     #cluster:

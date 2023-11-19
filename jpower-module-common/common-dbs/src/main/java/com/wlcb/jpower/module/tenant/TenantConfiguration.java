@@ -11,11 +11,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * @ClassName TenantConfiguration
- * @Description TODO 多租户配置
- * @Author 郭丁志
- * @Date 2020-10-14 20:54
- * @Version 2.0
+ * 多租户配置
+ *
+ * @author 郭丁志
+ * @date 2020-10-14 20:54
  */
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureBefore({MybatisPlusConfig.class})
@@ -26,6 +25,13 @@ public class TenantConfiguration {
     @ConditionalOnMissingBean({TenantLineHandler.class})
     public TenantLineHandler tenantHandler(JpowerTenantProperties properties) {
         return new JpowerTenantHandler(properties);
+    }
+
+    @Bean
+    @ConditionalOnProperty(value = {"jpower.tenant.enable"}, matchIfMissing = true)
+    @ConditionalOnMissingBean({InsertBatchSomeColumnTenant.class})
+    public InsertBatchSomeColumnTenant insertBatchSomeColumnTenant(TenantLineHandler tenantHandler) {
+        return new InsertBatchSomeColumnTenant(tenantHandler);
     }
 
     @Bean
