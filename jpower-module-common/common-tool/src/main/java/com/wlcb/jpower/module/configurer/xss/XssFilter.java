@@ -33,6 +33,11 @@ public class XssFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException,ServletException {
+        if (!xssProperties.getEnable()){
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         if(log.isDebugEnabled()){
             log.debug("xss filter is open");
         }

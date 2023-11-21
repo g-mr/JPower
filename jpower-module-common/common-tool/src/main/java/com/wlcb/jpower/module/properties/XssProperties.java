@@ -18,6 +18,9 @@ import java.util.List;
 @ConfigurationProperties("jpower.xss")
 public class XssProperties {
 
+    /** 是否开XSS过滤 **/
+    private Boolean enable = true;
+
     /** 是否开启富文本过滤 **/
     private Boolean isIncludeRichText = false;
     /** 不过滤得URL **/
