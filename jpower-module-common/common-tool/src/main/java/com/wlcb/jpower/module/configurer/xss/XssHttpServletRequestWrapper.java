@@ -3,6 +3,7 @@ package com.wlcb.jpower.module.configurer.xss;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SqlInjectionUtil;
 import com.wlcb.jpower.module.common.utils.StringUtil;
+import com.wlcb.jpower.module.common.utils.constants.Header;
 import com.wlcb.jpower.module.common.utils.constants.TokenConstant;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
@@ -80,7 +81,8 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
         name = SqlInjectionUtil.filter(name);
         String value = super.getHeader(name);
-        if (StringUtils.isNotBlank(value) && !StringUtils.equals(name,"Accept") ) {
+
+        if (StringUtils.isNotBlank(value) && !Header.contains(name)) {
             value = SqlInjectionUtil.filter(value);
             if (StringUtils.equals(value,NULL) || StringUtils.equals(value,UNDEFINED)){
                 value = null;
