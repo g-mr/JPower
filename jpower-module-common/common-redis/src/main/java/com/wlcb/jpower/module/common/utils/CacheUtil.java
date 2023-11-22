@@ -105,11 +105,12 @@ public class CacheUtil {
      **/
     public static void clear(String cacheName, Boolean tenantMode) {
         if (Fc.isNotBlank(cacheName)) {
-            if (ShieldUtil.isRoot()){
-                Cm.getInstance().getCache("*"+StringPool.COLON+cacheName, Boolean.FALSE).clear();
-            }else {
+            if (tenantMode && ShieldUtil.isRoot()){
+                Cm.getInstance().getCache("*" + StringPool.COLON + cacheName, Boolean.FALSE).clear();
+            } else {
                 Cm.getInstance().getCache(cacheName, tenantMode).clear();
             }
+
         }
     }
 

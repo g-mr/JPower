@@ -1,10 +1,14 @@
 package com.wlcb.jpower.module.common.apm;
 
 import com.google.common.collect.ImmutableSet;
+import com.wlcb.jpower.module.common.utils.ExceptionUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.StringUtil;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.skywalking.apm.toolkit.trace.ActiveSpan;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
@@ -18,6 +22,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,8 +34,12 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Component
+@AllArgsConstructor
+@EnableConfigurationProperties({SkywalkingApmProperties.class})
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 public class ApmHttpInfoFilter extends HttpFilter {
+
+    private SkywalkingApmProperties apmProperties;
 
     private static final ImmutableSet<String> IGNORED_HEADERS;
     private static final long serialVersionUID = 3019775050229344922L;
@@ -54,6 +63,27 @@ public class ApmHttpInfoFilter extends HttpFilter {
 
     @Override
     public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+
+        if (!apmProperties.isEnable()){
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        if (request.isAsyncStarted()){
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        if (request.isAsyncStarted()){
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        if (excludeUrl(apmProperties.getExcludes(), request.getServletPath())){
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
         ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);
 
@@ -93,11 +123,27 @@ public class ApmHttpInfoFilter extends HttpFilter {
                 //输出到output
                 ActiveSpan.tag("响应数据", responseBody);
             } catch (Exception e) {
-                log.warn("fail to build http log", e);
+                log.error("fail to build http log:{}", ExceptionUtil.getStackTraceAsString(e));
             } finally {
                 //这一行必须添加，否则就一直不返回
                 responseWrapper.copyBodyToResponse();
             }
         }
+    }
+
+    private boolean excludeUrl(List<String> list, String url) {
+        if (Fc.isEmpty(list)) {
+            return false;
+        }
+
+        for (String pattern : list) {
+            if (Fc.isNotBlank(pattern) && Fc.isNotBlank(url) && !Fc.equalsValue(url,"/")){
+                if (StringUtil.wildcardEquals(pattern,url)){
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
