@@ -1,7 +1,6 @@
 package com.wlcb.jpower.module.common.jackson;
 
 import cn.hutool.core.date.DatePattern;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -23,7 +22,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.TimeZone;
 
 /**
  * java 8 时间默认序列化
@@ -60,9 +58,6 @@ public class JpowerJavaTimeModule{
         objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         // PrettyPrinter 格式化输出
         objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-
-        // 指定时区
-        objectMapper.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
 
         // java8日期日期处理
         JavaTimeModule javaTimeModule = new JavaTimeModule();
