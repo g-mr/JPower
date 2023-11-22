@@ -23,7 +23,7 @@ public class ParamsClientFallback implements ParamsClient {
     }
 
     @Override
-    public TbCoreParam queryById(String id) {
+    public TbCoreParam queryById(Long id) {
         log.error("feign->>查询系统参数详情失败:{}",id);
         return null;
     }

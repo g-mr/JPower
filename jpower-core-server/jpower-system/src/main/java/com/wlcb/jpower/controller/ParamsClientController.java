@@ -42,7 +42,7 @@ public class ParamsClientController implements ParamsClient {
     @ApiOperation(value = "通过Id获取参数详情")
     @Override
     @GetMapping("/queryById")
-    public TbCoreParam queryById(@ApiParam("主键ID") @RequestParam String id){
+    public TbCoreParam queryById(@ApiParam("主键ID") @RequestParam Long id){
         return paramService.getById(id);
     }
 

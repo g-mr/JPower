@@ -52,7 +52,7 @@ public class UserClientController implements UserClient {
     @ApiOperation(value = "更新用户登陆信息")
     @Override
     @PutMapping("/updateUserLoginInfo")
-    public ResponseData updateUserLoginInfo(@RequestParam String userId){
+    public ResponseData updateUserLoginInfo(@RequestParam Long userId){
         return ReturnJsonUtil.status(coreUserService.updateLoginInfo(userId));
     }
 

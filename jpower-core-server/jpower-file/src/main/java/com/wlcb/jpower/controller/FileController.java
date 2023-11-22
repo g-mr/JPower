@@ -120,8 +120,8 @@ public class FileController extends BaseController {
     })
     @ApiOperation("详情")
     @GetMapping(value = "/get",produces="application/json")
-    public ResponseData<TbCoreFile> get(@RequestParam String id){
-        JpowerAssert.notEmpty(id,JpowerError.Arg,"主键不可为空");
+    public ResponseData<TbCoreFile> get(@RequestParam Long id){
+        JpowerAssert.notNull(id,JpowerError.Arg,"主键不可为空");
         return ReturnJsonUtil.ok("获取成功",coreFileService.getById(id));
     }
 
@@ -133,7 +133,7 @@ public class FileController extends BaseController {
     public ResponseData delete(@RequestParam String ids){
         JpowerAssert.notEmpty(ids,JpowerError.Arg,"主键不可为空");
 
-        List<String> idList = Fc.toStrList(ids);
+        List<Long> idList = Fc.toLongList(ids);
 
         coreFileService.listByIds(idList).forEach(tbCoreFile -> operateBuilder.getBuilder(tbCoreFile.getStorageType()).deleteFile(tbCoreFile));
         CacheUtil.clear(CacheNames.FILE_KEY);
@@ -152,7 +152,7 @@ public class FileController extends BaseController {
     })
     @PutMapping(value = "/update",produces="application/json")
     public ResponseData update(@ApiIgnore TbCoreFile file){
-        JpowerAssert.notEmpty(file.getId(),JpowerError.Arg,"主键不可为空");
+        JpowerAssert.notNull(file.getId(),JpowerError.Arg,"主键不可为空");
 
         //不可修改项
         file.setContent(null);

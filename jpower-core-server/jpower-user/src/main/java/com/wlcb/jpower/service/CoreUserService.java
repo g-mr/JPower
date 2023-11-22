@@ -113,7 +113,7 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
      * @date 0:02 2020/10/21 0021
      * @param id
      */
-    Boolean updateLoginInfo(String id);
+    Boolean updateLoginInfo(Long id);
 
     /**
      * @Author 郭丁志

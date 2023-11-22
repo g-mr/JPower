@@ -31,6 +31,6 @@ public interface ParamsClient {
      * @return com.wlcb.jpower.module.base.vo.ResponseData<java.lang.Boolean>
      */
     @GetMapping("/queryById")
-    TbCoreParam queryById(@RequestParam String id);
+    TbCoreParam queryById(@RequestParam Long id);
 
 }

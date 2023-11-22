@@ -43,8 +43,8 @@ public class FastDfsFileOperate implements FileOperate {
 		TbCoreFile coreFile = new TbCoreFile();
 		coreFile.setFileType(FileTypeUtil.getType(file.getInputStream(),originalFileName));
 		coreFile.setFileSize(file.getSize());
-		coreFile.setId(Fc.randomUUID());
-		coreFile.setMark(DesUtil.encrypt(coreFile.getId(), ConstantsUtils.FILE_DES_KEY));
+		coreFile.setId(Fc.randomSnowFlakeId());
+		coreFile.setMark(DesUtil.encrypt(Fc.toStr(coreFile.getId()), ConstantsUtils.FILE_DES_KEY));
 		coreFile.setStorageType(FASTDFS.getValue());
 		coreFile.setPath(dfsPath);
 		coreFile.setName(originalFileName);

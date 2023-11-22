@@ -5,11 +5,10 @@ import com.wlcb.jpower.dbs.dao.TbCoreFileDao;
 import com.wlcb.jpower.dbs.dao.mapper.TbCoreFileMapper;
 import com.wlcb.jpower.dbs.entity.TbCoreFile;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
+import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.service.CoreFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.function.Function;
 
 /**
  * @author mr.gmac
@@ -27,17 +26,12 @@ public class CoreFileServiceImpl extends BaseServiceImpl<TbCoreFileMapper, TbCor
     }
 
     @Override
-    public TbCoreFile getById(String id) {
+    public TbCoreFile getById(Long id) {
         return coreFileDao.getById(id);
     }
 
     @Override
-    public String getPathById(String id) {
-        return coreFileDao.getObj(new QueryWrapper<TbCoreFile>().lambda().select(TbCoreFile::getPath).eq(TbCoreFile::getId, id), new Function<Object, String>() {
-            @Override
-            public String apply(Object o) {
-                return (String) o;
-            }
-        });
+    public String getPathById(Long id) {
+        return coreFileDao.getObj(new QueryWrapper<TbCoreFile>().lambda().select(TbCoreFile::getPath).eq(TbCoreFile::getId, id), Fc::toStr);
     }
 }

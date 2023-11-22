@@ -371,7 +371,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     }
 
     @Override
-    public Boolean updateLoginInfo(String id) {
+    public Boolean updateLoginInfo(Long id) {
         return coreUserDao.update(Wrappers.<TbCoreUser>lambdaUpdate()
                 .setSql("login_count = ifnull(login_count,0)+1")
                 .set(TbCoreUser::getLastLoginTime,new Date())

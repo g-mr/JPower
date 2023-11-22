@@ -18,7 +18,7 @@ public interface CoreFileService extends BaseService<TbCoreFile> {
      **/
     Boolean add(TbCoreFile coreFile);
 
-    TbCoreFile getById(String id);
+    TbCoreFile getById(Long id);
 
     /**
      * @Author 郭丁志
@@ -27,5 +27,5 @@ public interface CoreFileService extends BaseService<TbCoreFile> {
      * @Param [id]
      * @return com.wlcb.jpower.module.dbs.entity.core.file.TbCoreFile
      **/
-    String getPathById(String id);
+    String getPathById(Long id);
 }

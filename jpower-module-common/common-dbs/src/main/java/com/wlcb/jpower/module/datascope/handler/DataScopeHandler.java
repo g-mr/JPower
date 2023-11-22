@@ -17,7 +17,7 @@ import com.wlcb.jpower.module.dbs.config.LoginUserContext;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.StringValue;
+import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
@@ -85,6 +85,10 @@ public class DataScopeHandler implements DataPermissionHandler {
                             case "childOrgId":
                                 fieldValue = Fc.isNull(fieldValue) ? new ArrayList<>() : fieldValue;
                                 break;
+                            case "orgId":
+                            case "userId":
+                                fieldValue = Fc.isNull(fieldValue) ? -1L : fieldValue;
+                                break;
                             default:
                                 fieldValue = Fc.isNull(fieldValue) ? StringPool.EMPTY : fieldValue;
                                 break;
@@ -94,30 +98,40 @@ public class DataScopeHandler implements DataPermissionHandler {
                     }
                 });
 
-                userMap.put(PropertyNamer.methodToProperty(LambdaUtils.extract(UserInfo::getRoleIds).getImplMethodName()), StringUtils.collectionToDelimitedString(LoginUserContext.get().getRoleIds(), StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE));
+                Set<Long> roleIds = CollectionUtil.newHashSet(LoginUserContext.get().getRoleIds());
+                if (Fc.isEmpty(roleIds)){
+                    //如果没有角色证明看不到数据
+                    roleIds.add(-1L);
+                }
+                userMap.put(PropertyNamer.methodToProperty(LambdaUtils.extract(UserInfo::getRoleIds).getImplMethodName()), StringUtils.collectionToDelimitedString(roleIds, StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE));
 
-                Set<String> listOrgId = CollectionUtil.newHashSet(LoginUserContext.get().getChildOrgId());
-                listOrgId.add(LoginUserContext.getOrgId());
+                Set<Long> listOrgId = CollectionUtil.newHashSet(LoginUserContext.get().getChildOrgId());
+                if (Fc.isEmpty(listOrgId)){
+                    //如果没有子级部门证明看不到数据
+                    listOrgId.add(-1L);
+                }
                 userMap.put(PropertyNamer.methodToProperty(LambdaUtils.extract(UserInfo::getChildOrgId).getImplMethodName()), StringUtils.collectionToDelimitedString(listOrgId, StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE));
 
                 andWhere = CCJSqlParserUtil.parseCondExpression(StringUtil.formatMap(Fc.toStr(dataScope.getScopeValue(),"1=1"),userMap));
             }else if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.OWN.getValue())){
-                andWhere = new EqualsTo().withLeftExpression(new Column(dataScope.getScopeColumn())).withRightExpression(new StringValue(LoginUserContext.getUserId()));
+                andWhere = new EqualsTo().withLeftExpression(new Column(dataScope.getScopeColumn())).withRightExpression(new LongValue(Fc.toLong(LoginUserContext.getUserId(), -1L)));
             }else if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.OWN_ORG.getValue())){
-                andWhere = new EqualsTo().withLeftExpression(new Column(dataScope.getScopeColumn())).withRightExpression(new StringValue(LoginUserContext.getOrgId()));
+                andWhere = new EqualsTo().withLeftExpression(new Column(dataScope.getScopeColumn())).withRightExpression(new LongValue(Fc.toLong(LoginUserContext.getOrgId(), -1L)));
             }else if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.OWN_ORG_CHILD.getValue())){
-                Set<String> listOrgId = CollectionUtil.newHashSet(LoginUserContext.get().getChildOrgId());
+                Set<Long> listOrgId = CollectionUtil.newHashSet(LoginUserContext.get().getChildOrgId());
                 listOrgId.add(LoginUserContext.getOrgId());
                 //如果没有部门就什么都不要查出来
-                listOrgId.add("-1");
-                ItemsList itemsList = new ExpressionList(listOrgId.stream().filter(Fc::isNotBlank).map(StringValue::new).collect(Collectors.toList()));
+                listOrgId.add(-1L);
+                ItemsList itemsList = new ExpressionList(listOrgId.stream().filter(Fc::notNull).map(LongValue::new).collect(Collectors.toList()));
                 andWhere = new InExpression(new Column(dataScope.getScopeColumn()),itemsList);
             }else {
                 return where;
             }
 
             andWhere = CCJSqlParserUtil.parseCondExpression(StringPool.LEFT_BRACKET+andWhere.toString()+ StringPool.RIGHT_BRACKET);
-            log.debug("DATASCOPE WHERE : {}",andWhere.toString());
+            if (log.isDebugEnabled()){
+                log.info("DATASCOPE WHERE : {}",andWhere.toString());
+            }
             return where==null?andWhere:new AndExpression(where,andWhere);
         }
         return where;

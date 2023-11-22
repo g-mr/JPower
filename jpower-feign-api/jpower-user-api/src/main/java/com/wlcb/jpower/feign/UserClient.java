@@ -31,7 +31,7 @@ public interface UserClient {
     ResponseData<List<Long>> getRoleIds(@RequestParam Long userId);
 
     @PutMapping("/updateUserLoginInfo")
-    ResponseData updateUserLoginInfo(@RequestParam String userId);
+    ResponseData updateUserLoginInfo(@RequestParam Long userId);
 
     @GetMapping("/queryUserByCode")
     ResponseData<TbCoreUser> queryUserByCode(@RequestParam String otherCode, @RequestParam String tenantCode);

@@ -128,8 +128,8 @@ public class SettingController {
     @ApiOperationSupport(order = 6)
     @ApiOperation("删除接口设置")
     @DeleteMapping(value = "/delete-setup",produces="application/json")
-    public ResponseData<Boolean> deleteSetup(@ApiParam("设置ID") @RequestParam String id){
-        JpowerAssert.notEmpty(id,JpowerError.Arg,"ID不可为空");
+    public ResponseData<Boolean> deleteSetup(@ApiParam("设置ID") @RequestParam Long id){
+        JpowerAssert.notNull(id,JpowerError.Arg,"ID不可为空");
         return ReturnJsonUtil.status(monitorSettingService.removeRealById(id));
     }
 

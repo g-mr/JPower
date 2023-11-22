@@ -1,6 +1,7 @@
 package com.wlcb.jpower.controller;
 
 import cn.hutool.core.lang.Validator;
+import cn.hutool.core.util.NumberUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.wf.captcha.SpecCaptcha;
 import com.wlcb.jpower.auth.TokenGranterBuilder;
@@ -107,7 +108,7 @@ public class AuthController extends BaseController {
 
         UserInfo userInfo = granterBuilder.getGranter(parameter.getGrantType()).grant(parameter);
 
-        if (Fc.isNull(userInfo) || Fc.isBlank(userInfo.getUserId())) {
+        if (Fc.isNull(userInfo) || Fc.isNull(userInfo.getUserId())) {
             return ReturnJsonUtil.fail(TokenUtil.USER_NOT_FOUND);
         }
 
@@ -147,7 +148,7 @@ public class AuthController extends BaseController {
     public ResponseData<String> loginOut(@ApiParam(value = "用户ID",required = true)@RequestParam Long userId) {
         JpowerAssert.notNull(userId, JpowerError.Arg,"用户ID不可为空");
         UserInfo user = ShieldUtil.getUser();
-        if(Fc.notNull(user) && Fc.equals(userId, user.getUserId())){
+        if(Fc.notNull(user) && NumberUtil.equals(userId, user.getUserId())){
             getRequest().getSession().invalidate();
             redisUtil.remove(CacheNames.TOKEN_URL_KEY+JwtUtil.getToken(getRequest()));
             redisUtil.remove(CacheNames.TOKEN_DATA_SCOPE_KEY+JwtUtil.getToken(getRequest()));

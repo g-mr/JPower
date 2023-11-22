@@ -46,8 +46,8 @@ public class ServerFileOperate implements FileOperate {
 		coreFile.setStorageType(SERVER.getValue());
 		coreFile.setFileType(FileTypeUtil.getType(saveFile));
 		coreFile.setFileSize(file.getSize());
-		coreFile.setId(Fc.randomUUID());
-		coreFile.setMark(DesUtil.encrypt(coreFile.getId(), ConstantsUtils.FILE_DES_KEY));
+		coreFile.setId(Fc.randomSnowFlakeId());
+		coreFile.setMark(DesUtil.encrypt(Fc.toStr(coreFile.getId()), ConstantsUtils.FILE_DES_KEY));
 
 		try {
 			if (!coreFileService.add(coreFile)){

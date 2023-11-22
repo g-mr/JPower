@@ -38,7 +38,7 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
             }
 
             @Override
-            public ResponseData updateUserLoginInfo(@RequestParam String userId) {
+            public ResponseData updateUserLoginInfo(@RequestParam Long userId) {
                 log.error("调用updateUserLoginInfo失败，参数：{}，e={}", userId, cause);
                 return ReturnJsonUtil.fail("更新失败");
             }
