@@ -60,8 +60,6 @@ public class JpowerJavaTimeModule{
         objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         // PrettyPrinter 格式化输出
         objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-        // NULL不参与序列化
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
         // 指定时区
         objectMapper.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
