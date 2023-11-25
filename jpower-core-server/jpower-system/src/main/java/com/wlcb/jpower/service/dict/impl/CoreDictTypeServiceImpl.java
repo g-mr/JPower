@@ -34,17 +34,16 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
     private CoreDictService coreDictService;
 
     @Override
-    public List<Tree<String>> tree() {
-        LambdaTreeWrapper<TbCoreDictType> queryWrapper = Condition.getLambdaTreeWrapper(TbCoreDictType.class,TbCoreDictType::getId,
-                TbCoreDictType::getParentId)
+    public List<Tree<Long>> tree() {
+        return coreDictTypeDao.tree(Condition.getLambdaTreeWrapper(TbCoreDictType.class,TbCoreDictType::getId,
+                        TbCoreDictType::getParentId)
                 .select(TbCoreDictType::getDictTypeName,
                         TbCoreDictType::getDictTypeCode,
-                        TbCoreDictType::getIsTree);
-        return coreDictTypeDao.tree(queryWrapper.orderByAsc(TbCoreDictType::getSortNum));
+                        TbCoreDictType::getIsTree).orderByAsc(TbCoreDictType::getSortNum));
     }
 
     @Override
-    public Boolean deleteDictType(List<String> ids) {
+    public Boolean deleteDictType(List<Long> ids) {
         List<TbCoreDictType> listType = coreDictTypeDao.list(Condition.<TbCoreDictType>getQueryWrapper().lambda()
                 .in(TbCoreDictType::getId,ids)
                 .eq(TbCoreDictType::getDelEnabled, ConstantsEnum.YN.Y.getValue()));

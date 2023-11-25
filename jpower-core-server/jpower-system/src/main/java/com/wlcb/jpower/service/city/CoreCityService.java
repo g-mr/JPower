@@ -57,7 +57,7 @@ public interface CoreCityService extends BaseService<TbCoreCity> {
      * @param ids
      * @return java.lang.Boolean
      */
-    Boolean deleteBatch(List<String> ids);
+    Boolean deleteBatch(List<Long> ids);
 
     /**
      * @Author 郭丁志

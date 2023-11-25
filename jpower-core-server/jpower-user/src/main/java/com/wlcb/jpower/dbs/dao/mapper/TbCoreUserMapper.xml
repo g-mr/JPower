@@ -26,7 +26,6 @@
         create_time,
         update_user,
         update_time,
-        status,
         tenant_code,
         create_org
     </sql>
@@ -55,7 +54,6 @@
         u.create_time,
         u.update_user,
         u.update_time,
-        u.status,
         u.is_deleted,
         u.tenant_code,
         u.create_org
@@ -65,7 +63,7 @@
         select <include refid="Base_Column_List_Alias"/>,
         (select group_concat(role_id) from tb_core_user_role r where r.user_id = u.id) as roleIds
         from tb_core_user u
-        where u.id = #{id,jdbcType=VARCHAR} and u.is_deleted = 0
+        where u.id = #{id,jdbcType=BIGINT} and u.is_deleted = 0
     </select>
 
     <select id="selectUserList" resultType="com.wlcb.jpower.dbs.entity.TbCoreUser">
@@ -104,7 +102,7 @@
         </if>
 
         <if test="coreUser != null and coreUser.postId != null and coreUser.postId != ''">
-            and u.post_id = #{coreUser.postId,jdbcType=VARCHAR}
+            and u.post_id = #{coreUser.postId,jdbcType=BIGINT}
         </if>
 
         <if test="orgIds != null and orgIds.size > 0">

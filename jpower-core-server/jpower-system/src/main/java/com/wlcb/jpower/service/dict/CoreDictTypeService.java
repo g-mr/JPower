@@ -18,7 +18,7 @@ public interface CoreDictTypeService extends BaseService<TbCoreDictType> {
      * @param
      * @return java.util.List<com.wlcb.jpower.module.common.node.Node>
      */
-    List<Tree<String>> tree();
+    List<Tree<Long>> tree();
 
     /**
      * @author 郭丁志
@@ -27,7 +27,7 @@ public interface CoreDictTypeService extends BaseService<TbCoreDictType> {
      * @param ids
      * @return java.lang.Boolean
      */
-    Boolean deleteDictType(List<String> ids);
+    Boolean deleteDictType(List<Long> ids);
 
     /**
      * @author 郭丁志

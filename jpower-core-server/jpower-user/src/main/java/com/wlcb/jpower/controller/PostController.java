@@ -81,7 +81,7 @@ public class PostController extends BaseController {
             corePost.setSort(0);
         }
         if (Fc.isNull(corePost.getStatus())){
-            corePost.setStatus(1);
+            corePost.setStatus(ConstantsEnum.YN01.Y.getValue());
         }
 
         JpowerAssert.geZero(postService.count(Condition.<TbCorePost>getQueryWrapper().lambda().eq(TbCorePost::getCode,corePost.getCode())),JpowerError.Arg,"编码已存在");
@@ -95,7 +95,7 @@ public class PostController extends BaseController {
     @ApiOperation(value = "编辑")
     @PutMapping(value = "/update", produces = "application/json")
     public ResponseData update(TbCorePost corePost) {
-        JpowerAssert.notEmpty(corePost.getId(), JpowerError.Arg,"主键不可为空");
+        JpowerAssert.notNull(corePost.getId(), JpowerError.Arg,"主键不可为空");
 
         TbCorePost post = postService.getOne(Condition.<TbCorePost>getQueryWrapper().lambda().eq(TbCorePost::getCode,corePost.getCode()));
         JpowerAssert.notTrue(Fc.notNull(post)&&!Fc.equalsValue(post.getId(),corePost.getId()),JpowerError.Arg,"该编码已存在");
@@ -112,7 +112,7 @@ public class PostController extends BaseController {
     public ResponseData delete(@ApiParam("主键，多个逗号分割") String ids) {
         JpowerAssert.notEmpty(ids, JpowerError.Arg,"主键不可为空");
         CacheUtil.clear(CacheNames.POST_KEY);
-        return ReturnJsonUtil.status(postService.delete(Fc.toStrList(ids)));
+        return ReturnJsonUtil.status(postService.delete(Fc.toLongList(ids)));
     }
 
     @Function(value = "岗位详情",menus = {
@@ -120,8 +120,8 @@ public class PostController extends BaseController {
     })
     @ApiOperation(value = "详情")
     @DeleteMapping(value = "/get", produces = "application/json")
-    public ResponseData<TbCorePost> get(@ApiParam("主键") String id) {
-        JpowerAssert.notEmpty(id, JpowerError.Arg,"主键不可为空");
+    public ResponseData<TbCorePost> get(@ApiParam("主键") Long id) {
+        JpowerAssert.notNull(id, JpowerError.Arg,"主键不可为空");
         return ReturnJsonUtil.data(postService.getById(id));
     }
 

@@ -54,8 +54,8 @@ public class DictController extends BaseController {
     })
     @ApiOperation("查询所有字典类型树形结构")
     @RequestMapping(value = "/dictTypeTree",method = RequestMethod.GET,produces="application/json")
-    public ResponseData<List<Tree<String>>> dictTypeTree(){
-        return ReturnJsonUtil.ok("查询成功",coreDictTypeService.tree());
+    public ResponseData<List<Tree<Long>>> dictTypeTree(){
+        return ReturnJsonUtil.data(coreDictTypeService.tree());
     }
 
     @Function(value = "新增字典类型",menus = {
@@ -63,12 +63,12 @@ public class DictController extends BaseController {
     })
     @ApiOperation(value = "新增字典类型")
     @RequestMapping(value = "/add",method = RequestMethod.POST,produces="application/json")
-    public ResponseData add(TbCoreDictType dictType){
+    public ResponseData<Long> add(TbCoreDictType dictType){
         JpowerAssert.notEmpty(dictType.getDictTypeCode(), JpowerError.Arg,"字典类型编号不可为空");
         JpowerAssert.notEmpty(dictType.getDictTypeName(), JpowerError.Arg,"字典类型名称不可为空");
 
         CacheUtil.clear(CacheNames.DICT_KEY);
-        return ReturnJsonUtil.status(coreDictTypeService.addDictType(dictType),dictType.getId());
+        return ReturnJsonUtil.status(coreDictTypeService.addDictType(dictType), dictType.getId());
     }
 
     @Function(value = "修改字典类型",menus = {
@@ -77,7 +77,7 @@ public class DictController extends BaseController {
     @ApiOperation(value = "更新字典类型")
     @RequestMapping(value = "/update",method = RequestMethod.POST,produces="application/json")
     public ResponseData update(TbCoreDictType dictType){
-        JpowerAssert.notEmpty(dictType.getId(), JpowerError.Arg,"字典类型主键不可为空");
+        JpowerAssert.notNull(dictType.getId(), JpowerError.Arg,"字典类型主键不可为空");
         CacheUtil.clear(CacheNames.DICT_KEY);
         return ReturnJsonUtil.status(coreDictTypeService.updateDictType(dictType));
     }
@@ -90,7 +90,7 @@ public class DictController extends BaseController {
     public ResponseData deleteDictType(@ApiParam(value = "主键，多个逗号分割",required = true) @RequestParam String ids){
         JpowerAssert.notEmpty(ids, JpowerError.Arg,"主键不可为空");
         CacheUtil.clear(CacheNames.DICT_KEY);
-        return ReturnJsonUtil.status(coreDictTypeService.deleteDictType(Fc.toStrList(ids)));
+        return ReturnJsonUtil.status(coreDictTypeService.deleteDictType(Fc.toLongList(ids)));
     }
 
     @Function(value = "字典类型详情",menus = {
@@ -98,8 +98,8 @@ public class DictController extends BaseController {
     })
     @ApiOperation("查询字典类型详情")
     @RequestMapping(value = "/getDictType",method = RequestMethod.GET,produces="application/json")
-    public ResponseData<TbCoreDictType> getDictType(@ApiParam(value = "主键",required = true) @RequestParam String id){
-        JpowerAssert.notEmpty(id, JpowerError.Arg,"主键不可为空");
+    public ResponseData<TbCoreDictType> getDictType(@ApiParam(value = "主键",required = true) @RequestParam Long id){
+        JpowerAssert.notNull(id, JpowerError.Arg,"主键不可为空");
         return ReturnJsonUtil.ok("查询成功", coreDictTypeService.getById(id));
     }
 
@@ -117,8 +117,8 @@ public class DictController extends BaseController {
     @RequestMapping(value = "/listByType",method = RequestMethod.GET,produces="application/json")
     public ResponseData<Pg<DictVo>> listByType(@ApiIgnore TbCoreDict dict){
         JpowerAssert.notEmpty(dict.getDictTypeCode(), JpowerError.Arg,"字典类型不可为空");
-        if (Fc.isBlank(dict.getParentId())){
-            dict.setParentId(TOP_CODE);
+        if (Fc.isNull(dict.getParentId())){
+            dict.setParentId(Fc.toLong(TOP_CODE));
         }
 
         PaginationContext.startPage();
@@ -137,8 +137,8 @@ public class DictController extends BaseController {
     })
     @GetMapping(value = "/listDictChildList",produces="application/json")
     public ResponseData<List<DictVo>> listDictChildList(@ApiIgnore TbCoreDict dict){
-        JpowerAssert.notEmpty(dict.getParentId(), JpowerError.Arg,"父级字典id不可为空");
-        JpowerAssert.notTrue(Fc.equals(dict.getParentId(), TOP_CODE), JpowerError.Arg,"父级字典id不可为-1");
+        JpowerAssert.notNull(dict.getParentId(), JpowerError.Arg,"父级字典id不可为空");
+        JpowerAssert.notTrue(Fc.equalsValue(dict.getParentId(), TOP_CODE), JpowerError.Arg,"父级字典id不可为-1");
 
         List<DictVo> list = coreDictService.listByType(dict);
         return ReturnJsonUtil.ok("查询成功", list);
@@ -150,7 +150,7 @@ public class DictController extends BaseController {
     @ApiOperation("保存或者新增字典")
     @RequestMapping(value = "/saveDict",method = RequestMethod.POST,produces="application/json")
     public ResponseData saveDict(TbCoreDict dict){
-        if (Fc.isBlank(dict.getId())){
+        if (Fc.isNull(dict.getId())){
             JpowerAssert.notEmpty(dict.getDictTypeCode(), JpowerError.Arg,"字典类型编号不可为空");
             JpowerAssert.notEmpty(dict.getCode(), JpowerError.Arg,"字典编号不可为空");
             JpowerAssert.notEmpty(dict.getName(), JpowerError.Arg,"字典名称不可为空");
@@ -181,11 +181,11 @@ public class DictController extends BaseController {
     public ResponseData stopDict(@ApiParam("字典主键，多个逗号分割") String ids){
         JpowerAssert.notEmpty(ids,JpowerError.Arg,"字典主键不可为空");
 
-        long count = coreDictService.count(Condition.<TbCoreDict>getQueryWrapper().lambda().eq(TbCoreDict::getIsStop, ConstantsEnum.YN.N.getValue()).in(TbCoreDict::getParentId,Fc.toStrList(ids)));
+        long count = coreDictService.count(Condition.<TbCoreDict>getQueryWrapper().lambda().eq(TbCoreDict::getIsStop, ConstantsEnum.YN.N.getValue()).in(TbCoreDict::getParentId,Fc.toLongList(ids)));
         JpowerAssert.geZero(count,JpowerError.Business,"存在启用的下级字典，不可停用");
 
         CacheUtil.clear(CacheNames.DICT_KEY);
-        return ReturnJsonUtil.status(coreDictService.update(Wrappers.<TbCoreDict>lambdaUpdate().set(TbCoreDict::getIsStop, ConstantsEnum.YN.Y.getValue()).in(TbCoreDict::getId,Fc.toStrList(ids))));
+        return ReturnJsonUtil.status(coreDictService.update(Wrappers.<TbCoreDict>lambdaUpdate().set(TbCoreDict::getIsStop, ConstantsEnum.YN.Y.getValue()).in(TbCoreDict::getId,Fc.toLongList(ids))));
     }
 
     @Function(value = "删除字典",menus = {
@@ -195,12 +195,12 @@ public class DictController extends BaseController {
     @RequestMapping(value = "/deleteDict",method = RequestMethod.DELETE,produces="application/json")
     public ResponseData deleteDict(@ApiParam(value = "主键，多个逗号分割",required = true) @RequestParam String ids){
         JpowerAssert.notEmpty(ids, JpowerError.Arg,"字典ID不可为空");
-        List<String> list = Fc.toStrList(ids);
+        List<Long> list = Fc.toLongList(ids);
 
         if(coreDictService.count(Condition.<TbCoreDict>getQueryWrapper()
                 .lambda()
                 .in(TbCoreDict::getParentId,list)) > 0){
-            return ReturnJsonUtil.notFind("请先删除下级字典");
+            return ReturnJsonUtil.fail("请先删除下级字典");
         }
 
         CacheUtil.clear(CacheNames.DICT_KEY);
@@ -212,9 +212,9 @@ public class DictController extends BaseController {
     })
     @ApiOperation("查询字典详情")
     @RequestMapping(value = "/getDict",method = RequestMethod.GET,produces="application/json")
-    public ResponseData<TbCoreDict> getDict(@ApiParam(value = "字典ID",required = true) @RequestParam(required = false) String id){
-        JpowerAssert.notEmpty(id, JpowerError.Arg,"字典ID不可为空");
-        return ReturnJsonUtil.ok("查询成功", coreDictService.getById(id));
+    public ResponseData<TbCoreDict> getDict(@ApiParam(value = "字典ID",required = true) @RequestParam(required = false) Long id){
+        JpowerAssert.notNull(id, JpowerError.Arg,"字典ID不可为空");
+        return ReturnJsonUtil.data(coreDictService.getById(id));
     }
 
     @ApiOperationSupport(order = 100)
@@ -222,8 +222,8 @@ public class DictController extends BaseController {
     @GetMapping("/getDictListByType")
     public ResponseData<List<DictVo>> getDictListByType(TbCoreDict dict){
         JpowerAssert.notEmpty(dict.getDictTypeCode(), JpowerError.Arg,"字典类型不可为空");
-        if (Fc.isBlank(dict.getParentId())){
-            dict.setParentId(TOP_CODE);
+        if (Fc.isNull(dict.getParentId())){
+            dict.setParentId(Fc.toLong(TOP_CODE));
         }
 
         //只查询未停用的
@@ -231,16 +231,16 @@ public class DictController extends BaseController {
         //查询的语言
         dict.setLocale(Fc.toStr(getRequest().getHeader(I18N_KEY), ConstantsEnum.YYZL.CHINA.getValue()));
 
-        return ReturnJsonUtil.ok("查询成功", coreDictService.listByType(dict));
+        return ReturnJsonUtil.data(coreDictService.listByType(dict));
     }
 
     @ApiOperationSupport(order = 101)
     @ApiOperation(value = "根据字典类型查询树形字典")
     @GetMapping(value = "/treeDict",produces="application/json")
-    public ResponseData<List<Tree<String>>> treeDict(@ApiParam("字典类型编码") String dictTypeCode){
+    public ResponseData<List<Tree<Long>>> treeDict(@ApiParam("字典类型编码") String dictTypeCode){
         JpowerAssert.notEmpty(dictTypeCode, JpowerError.Arg,"字典类型编码不可为空");
 
-        return ReturnJsonUtil.ok("查询成功", coreDictService.tree(Condition.getLambdaTreeWrapper(TbCoreDict.class,TbCoreDict::getId,TbCoreDict::getParentId)
+        return ReturnJsonUtil.data(coreDictService.tree(Condition.getLambdaTreeWrapper(TbCoreDict.class,TbCoreDict::getId,TbCoreDict::getParentId)
                 .eq(TbCoreDict::getDictTypeCode,dictTypeCode)));
     }
 }

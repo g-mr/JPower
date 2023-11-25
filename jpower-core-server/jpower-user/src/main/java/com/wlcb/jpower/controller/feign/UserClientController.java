@@ -80,7 +80,7 @@ public class UserClientController implements UserClient {
 
     @Override
     @PostMapping("/saveUser")
-    public ResponseData saveUser(@RequestBody TbCoreUser user,@RequestParam String roleId) {
+    public ResponseData saveUser(@RequestBody TbCoreUser user,@RequestParam Long roleId) {
         return coreUserService.saveUser(user,roleId)?ReturnJsonUtil.ok("用户创建成功"):ReturnJsonUtil.fail("用户创建失败");
     }
 

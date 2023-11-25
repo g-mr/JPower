@@ -43,7 +43,7 @@ public class CorePostServiceImpl extends BaseServiceImpl<TbCorePostMapper, TbCor
     }
 
     @Override
-    public boolean delete(List<String> ids) {
+    public boolean delete(List<Long> ids) {
 
         if (postDao.removeRealByIds(ids)){
             userDao.update(Wrappers.<TbCoreUser>lambdaUpdate()

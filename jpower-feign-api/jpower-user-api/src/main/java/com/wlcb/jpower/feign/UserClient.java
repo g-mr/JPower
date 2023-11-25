@@ -43,7 +43,7 @@ public interface UserClient {
     ResponseData<TbCoreUser> queryUserByPhone(@RequestParam String phone, @RequestParam String tenantCode);
 
     @PostMapping("/saveUser")
-    ResponseData saveUser(@RequestBody TbCoreUser user, @RequestParam String roleId);
+    ResponseData saveUser(@RequestBody TbCoreUser user, @RequestParam Long roleId);
 
     @GetMapping("/listByUserType")
     ResponseData<List<TbCoreUser>> listByUserType(@RequestParam Integer userType);

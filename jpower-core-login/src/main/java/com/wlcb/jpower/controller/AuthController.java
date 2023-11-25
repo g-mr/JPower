@@ -117,7 +117,7 @@ public class AuthController extends BaseController {
         if (StringUtil.equalsIgnoreCase(client.getLoginLimit(), ConstantsEnum.LOGIN_LIMIT.ONE.getValue())){
             Set<String> keys = redisUtil.pattern(TOKEN_USER_KEY+userInfo.getUserId());
             keys.forEach(key->{
-                Map<String,String> map = (Map<String, String>) redisUtil.get(key);
+                Map<String,Object> map = (Map<String, Object>) redisUtil.get(key);
                 if (Fc.equalsValue(MapUtil.getStr(map,"client"),client.getClientCode())){
                     JpowerAssert.createException(JpowerError.RateLimit);
                 }
@@ -125,7 +125,7 @@ public class AuthController extends BaseController {
         } else if(StringUtil.equalsIgnoreCase(client.getLoginLimit(), ConstantsEnum.LOGIN_LIMIT.SQUEEZE.getValue())){
             Set<String> keys = redisUtil.pattern(TOKEN_USER_KEY+userInfo.getUserId());
             keys.forEach(key->{
-                Map<String,String> map = (Map<String, String>) redisUtil.get(key);
+                Map<String,Object> map = (Map<String, Object>) redisUtil.get(key);
                 if (Fc.equalsValue(MapUtil.getStr(map,"client"),client.getClientCode())){
                     String token = StringUtil.split(key,StringPool.COLON).get(4);
                     redisUtil.remove(CacheNames.TOKEN_URL_KEY+token);
@@ -228,7 +228,7 @@ public class AuthController extends BaseController {
         }
 
         user.setPassword(DigestUtil.pwdEncrypt(coreUser.getPassword()));
-        return userClient.saveUser(coreUser, ParamConfig.getString(ParamsConstants.REGISTER_ROLE_ID));
+        return userClient.saveUser(coreUser, ParamConfig.getLong(ParamsConstants.REGISTER_ROLE_ID));
     }
 
 }

@@ -59,7 +59,7 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
             }
 
             @Override
-            public ResponseData saveUser(TbCoreUser user, String roleId) {
+            public ResponseData saveUser(TbCoreUser user, Long roleId) {
                 log.error("调用saveUser失败，参数：user={}，roleId={} ，e={}", user, roleId, cause);
                 return ReturnJsonUtil.print(ConstantsReturn.RECODE_API, cause.getMessage(), false);
             }

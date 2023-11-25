@@ -2,6 +2,7 @@ package com.wlcb.jpower.controller;
 
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.NumberUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.PageInfo;
 import com.wlcb.jpower.cache.SystemCache;
@@ -58,8 +59,8 @@ public class UserController extends BaseController {
     @ApiOperation("查询当前登录用户信息")
     @GetMapping(value = "/getLoginInfo", produces = "application/json")
     public ResponseData<UserVo> getLoginInfo() {
-        String id = ShieldUtil.getUserId();
-        JpowerAssert.notEmpty(id,JpowerError.Arg,"用户未登录");
+        Long id = ShieldUtil.getUserId();
+        JpowerAssert.notNull(id,JpowerError.Arg,"用户未登录");
         return ReturnJsonUtil.ok("获取成功", coreUserService.getById(id));
     }
 
@@ -68,13 +69,13 @@ public class UserController extends BaseController {
     })
     @ApiOperation("查询用户在线信息")
     @GetMapping(value = "/online", produces = "application/json")
-    public ResponseData<List<Map<String,String>>> online(String userId) {
-        JpowerAssert.notEmpty(userId,JpowerError.Arg,"用户ID不可为空");
+    public ResponseData<List<Map<String,String>>> online(Long userId) {
+        JpowerAssert.notNull(userId,JpowerError.Arg,"用户ID不可为空");
 
         Set<String> keys = redisUtil.pattern(TOKEN_USER_KEY+userId);
-        List<Map<String,String>> list = new ArrayList<>();
+        List<Map<String,Object>> list = new ArrayList<>();
         keys.forEach(key -> {
-            Map<String,String> map = (Map<String, String>) redisUtil.get(key);
+            Map<String,Object> map = (Map<String, Object>) redisUtil.get(key);
             map.put("token",StringUtil.split(key,StringPool.COLON).get(4));
             map.put("userId",userId);
             list.add(map);
@@ -88,8 +89,8 @@ public class UserController extends BaseController {
     })
     @ApiOperation("踢下线")
     @PostMapping(value = "/offline", produces = "application/json")
-    public ResponseData offline(String userId,String token) {
-        JpowerAssert.notEmpty(userId,JpowerError.Arg,"用户ID不可为空");
+    public ResponseData offline(Long userId,String token) {
+        JpowerAssert.notNull(userId,JpowerError.Arg,"用户ID不可为空");
         JpowerAssert.notEmpty(token,JpowerError.Arg,"TOKEN不可为空");
 
         redisUtil.remove(CacheNames.TOKEN_URL_KEY+token);
@@ -218,7 +219,7 @@ public class UserController extends BaseController {
 
         JpowerAssert.notEmpty(ids, JpowerError.Arg, "ids不可为空");
 
-        if (coreUserService.delete(ids)) {
+        if (coreUserService.delete(Fc.toLongList(ids))) {
             CacheUtil.clear(CacheNames.USER_KEY);
             return ReturnJsonUtil.ok("删除成功");
         } else {
@@ -234,7 +235,7 @@ public class UserController extends BaseController {
     @RequestMapping(value = "/update", method = {RequestMethod.PUT}, produces = "application/json")
     public ResponseData update(TbCoreUser coreUser) {
 
-        JpowerAssert.notEmpty(coreUser.getId(), JpowerError.Arg, "用户ID不可为空");
+        JpowerAssert.notNull(coreUser.getId(), JpowerError.Arg, "用户ID不可为空");
 
         if (Fc.notNull(coreUser.getIdType()) && ConstantsEnum.ID_TYPE.ID_CARD.getValue().equals(coreUser.getIdType())) {
             if (Fc.isNotBlank(coreUser.getIdNo()) && !Validator.isCitizenId(coreUser.getIdNo())) {
@@ -252,14 +253,14 @@ public class UserController extends BaseController {
 
         if (StringUtils.isNotBlank(coreUser.getLoginId())) {
             TbCoreUser user = coreUserService.selectUserLoginId(coreUser.getLoginId(), coreUser.getTenantCode());
-            if (user != null && !StringUtils.equals(user.getId(), coreUser.getId())) {
+            if (user != null && !NumberUtil.equals(user.getId(), coreUser.getId())) {
                 return ReturnJsonUtil.busFail("该登录用户名已存在");
             }
         }
 
         if (StringUtils.isNotBlank(coreUser.getTelephone())) {
             TbCoreUser user = coreUserService.selectByPhone(coreUser.getTelephone(), coreUser.getTenantCode());
-            if (user != null && !StringUtils.equals(user.getId(), coreUser.getId())) {
+            if (user != null && !NumberUtil.equals(user.getId(), coreUser.getId())) {
                 return ReturnJsonUtil.busFail("该手机号已存在");
             }
         }
@@ -283,7 +284,7 @@ public class UserController extends BaseController {
     })
     @PutMapping(value = "/updateLogin", produces = "application/json")
     public ResponseData updateLogin(@ApiIgnore TbCoreUser coreUser) {
-        JpowerAssert.notEmpty(coreUser.getId(), JpowerError.Arg, "用户ID不可为空");
+        JpowerAssert.notNull(coreUser.getId(), JpowerError.Arg, "用户ID不可为空");
         JpowerAssert.notNull(ShieldUtil.getUser(), JpowerError.Arg, "用户未登录");
 
         if (coreUser.getIdType() != null && ConstantsEnum.ID_TYPE.ID_CARD.getValue().equals(coreUser.getIdType())) {
@@ -316,16 +317,16 @@ public class UserController extends BaseController {
 
         JpowerAssert.notEmpty(ids, JpowerError.Arg, "用户ids不可为空");
 
-        if (coreUserService.updateUserPassword(Fc.toStrList(ids), pass)) {
+        if (coreUserService.updateUserPassword(Fc.toLongList(ids), pass)) {
 
             if (ShieldUtil.isRoot()){
-                List<String> codes = coreUserService.listObjs(Condition.<TbCoreUser>getQueryWrapper().lambda().select(TbCoreUser::getTenantCode).in(TbCoreUser::getId,Fc.toStrList(ids)),Fc::toStr);
+                List<String> codes = coreUserService.listObjs(Condition.<TbCoreUser>getQueryWrapper().lambda().select(TbCoreUser::getTenantCode).in(TbCoreUser::getId,Fc.toLongList(ids)),Fc::toStr);
                 CacheUtil.clear(CacheNames.USER_KEY, ArrayUtil.toArray(new HashSet<>(codes),String.class));
             } else {
                 CacheUtil.clear(CacheNames.USER_KEY);
             }
 
-            return ReturnJsonUtil.ok(ids.split(",").length + "位用户密码重置成功");
+            return ReturnJsonUtil.ok(Fc.toLongArray(ids).length + "位用户密码重置成功");
         } else {
             return ReturnJsonUtil.fail("重置失败");
         }
