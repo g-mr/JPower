@@ -31,7 +31,7 @@ import java.util.Date;
  * @author mr.g
  **/
 @Configuration
-public class JpowerJavaTimeModule{
+public class JpowerJacksonModule{
 
     @Bean
     @ConditionalOnMissingBean(DateJacksonConverter.class)
