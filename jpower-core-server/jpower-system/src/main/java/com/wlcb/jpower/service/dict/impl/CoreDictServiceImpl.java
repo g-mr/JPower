@@ -1,5 +1,6 @@
 package com.wlcb.jpower.service.dict.impl;
 
+import cn.hutool.core.util.NumberUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wlcb.jpower.dbs.dao.dict.TbCoreDictDao;
 import com.wlcb.jpower.dbs.dao.dict.mapper.TbCoreDictMapper;
@@ -9,7 +10,6 @@ import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.ShieldUtil;
-import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.dict.CoreDictService;
@@ -46,13 +46,13 @@ public class CoreDictServiceImpl extends BaseServiceImpl<TbCoreDictMapper, TbCor
     @Override
     public Boolean saveDict(TbCoreDict dict) {
         TbCoreDict coreDictType = queryDictTypeByCode(dict.getDictTypeCode(),dict.getCode());
-        if(Fc.isBlank(dict.getId())){
+        if(Fc.isNull(dict.getId())){
             dict.setLocale(Fc.isBlank(dict.getLocale())? ConstantsEnum.YYZL.CHINA.getValue() :dict.getLocale());
             dict.setIsStop(Fc.isBlank(dict.getIsStop())? ConstantsEnum.YN.N.getValue() : dict.getIsStop());
-            dict.setParentId(Fc.isNotBlank(dict.getParentId())?dict.getParentId():TOP_CODE);
+            dict.setParentId(Fc.notNull(dict.getParentId())?dict.getParentId():Fc.toLong(TOP_CODE));
             JpowerAssert.notTrue(coreDictType != null, JpowerError.Business,"该字典已存在");
         }else {
-            JpowerAssert.notTrue(coreDictType != null && !StringUtil.equals(dict.getId(),coreDictType.getId()), JpowerError.Business,"该字典已存在");
+            JpowerAssert.notTrue(coreDictType != null && !NumberUtil.equals(dict.getId(),coreDictType.getId()), JpowerError.Business,"该字典已存在");
         }
 
         return dictDao.saveOrUpdate(dict);
@@ -72,7 +72,7 @@ public class CoreDictServiceImpl extends BaseServiceImpl<TbCoreDictMapper, TbCor
         return dictDao.listMaps(Condition.<TbCoreDict>getQueryWrapper().lambda()
                 .select(TbCoreDict::getCode,TbCoreDict::getName,TbCoreDict::getLocale)
                 .eq(TbCoreDict::getDictTypeCode,dictTypeCode)
-                .eq(ShieldUtil.isRoot(), TbCoreDict::getTenantCode,DEFAULT_TENANT_CODE));
+                .eq(ShieldUtil.isRoot(), TbCoreDict::getTenantCode, DEFAULT_TENANT_CODE));
     }
 
 }

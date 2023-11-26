@@ -642,6 +642,16 @@ public class Fc {
         return Convert.toBigDecimal(value);
     }
 
+    /**
+     * 将 {@code Collection} 转换为带分隔符的 {@code String}（例如 CSV）。
+     * <p>对 {@code toString()} 实现有用。
+     *
+     * @param coll  the {@code Collection} to convert
+     * @return the delimited {@code String}
+     */
+    public static String join(Collection<?> coll) {
+        return StringUtil.join(coll, StringPool.COMMA);
+    }
 
     /**
      * 将 {@code Collection} 转换为带分隔符的 {@code String}（例如 CSV）。

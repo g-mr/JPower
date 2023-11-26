@@ -91,7 +91,7 @@ public class CityController extends BaseController {
     })
     @ApiOperation("查询行政区域详情")
     @GetMapping(value = "/get", produces="application/json")
-    public ResponseData<CityVo> get(@ApiParam(value = "主键",required = true) @RequestParam String id){
+    public ResponseData<CityVo> get(@ApiParam(value = "主键",required = true) @RequestParam Long id){
         return ReturnJsonUtil.ok("成功", coreCityService.getById(id));
     }
 

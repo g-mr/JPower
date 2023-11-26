@@ -70,5 +70,5 @@ public interface CoreCityService extends BaseService<TbCoreCity> {
 
     Boolean update(TbCoreCity coreCity);
 
-    CityVo getById(String id);
+    CityVo getById(Long id);
 }

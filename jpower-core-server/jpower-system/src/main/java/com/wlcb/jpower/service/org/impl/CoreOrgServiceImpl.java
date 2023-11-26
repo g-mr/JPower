@@ -1,13 +1,13 @@
 package com.wlcb.jpower.service.org.impl;
 
 import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.util.NumberUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wlcb.jpower.dbs.dao.org.TbCoreOrgDao;
 import com.wlcb.jpower.dbs.dao.org.mapper.TbCoreOrgMapper;
 import com.wlcb.jpower.dbs.entity.org.TbCoreOrg;
 import com.wlcb.jpower.module.base.enums.JpowerError;
-import com.wlcb.jpower.module.base.exception.BusinessException;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.support.EnvBeanUtil;
@@ -41,13 +41,13 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper, TbCoreO
 
     @Override
     public List<OrgVo> listLazyByParent(TbCoreOrg coreOrg) {
-        if (Fc.isNotBlank(coreOrg.getParentId())){
+        if (Fc.notNull(coreOrg.getParentId())){
             return coreOrgDao.getBaseMapper().listLazyByParent(coreOrg);
         }
         // TODO: 2022-08-07 这块写的真恶心，有啥办法可以直接在SQL里查出最顶级，可以提供下办法 <br/>
         //  只查最顶级数据
         List<OrgVo> orgVoList = coreOrgDao.getBaseMapper().listLazyByParent(coreOrg);
-        orgVoList.removeIf(o-> orgVoList.stream().anyMatch(l->Fc.equalsValue(l.getId(),o.getParentId())));
+        orgVoList.removeIf(o-> orgVoList.stream().anyMatch(l-> NumberUtil.equals(l.getId(),o.getParentId())));
         return orgVoList;
     }
 
@@ -60,19 +60,19 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper, TbCoreO
         }
         JpowerAssert.geZero(coreOrgDao.count(queryWrapper), JpowerError.Business,"该编码已存在");
 
-        if (StringUtils.isBlank(coreOrg.getParentId())){
-            coreOrg.setParentId(JpowerConstants.TOP_CODE);
+        if (Fc.isNull(coreOrg.getParentId())){
+            coreOrg.setParentId(Fc.toLong(JpowerConstants.TOP_CODE));
             coreOrg.setAncestorId(JpowerConstants.TOP_CODE);
         }else {
-            coreOrg.setAncestorId(coreOrg.getParentId().concat(StringPool.COMMA).concat(Fc.toStr(coreOrgDao.getById(coreOrg.getParentId()).getAncestorId())));
+            coreOrg.setAncestorId(Fc.toStr(coreOrg.getParentId()).concat(StringPool.COMMA).concat(Fc.toStr(coreOrgDao.getById(coreOrg.getParentId()).getAncestorId())));
         }
         return coreOrgDao.save(coreOrg);
     }
 
     @Override
-    public long listOrgByPids(String ids) {
+    public long listOrgByPids(List<Long> ids) {
         return coreOrgDao.count(new QueryWrapper<TbCoreOrg>()
-                .lambda().in(TbCoreOrg::getParentId, Fc.toStrList(ids)).notIn(TbCoreOrg::getId,Fc.toStrList(ids)));
+                .lambda().in(TbCoreOrg::getParentId, ids).notIn(TbCoreOrg::getId,ids));
     }
 
     @Override
@@ -85,20 +85,20 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper, TbCoreO
                 queryWrapper.eq(TbCoreOrg::getTenantCode,org.getTenantCode());
             }
             TbCoreOrg tbCoreOrg = coreOrgDao.getOne(queryWrapper);
-            if (tbCoreOrg != null && !StringUtils.equals(tbCoreOrg.getId(),coreOrg.getId())){
-                throw new BusinessException("该编码已存在");
+            if (tbCoreOrg != null && !NumberUtil.equals(tbCoreOrg.getId(),coreOrg.getId())){
+                JpowerAssert.createException(JpowerError.Business,"该编码已存在");
             }
         }
 
-        if (StringUtils.isNotBlank(coreOrg.getParentId())){
-            coreOrg.setAncestorId(StringUtil.replace(org.getAncestorId(),org.getParentId(),coreOrg.getParentId()));
+        if (Fc.notNull(coreOrg.getParentId())){
+            coreOrg.setAncestorId(StringUtil.replace(org.getAncestorId(),Fc.toStr(org.getParentId()),Fc.toStr(coreOrg.getParentId())));
         }
 
         return coreOrgDao.updateById(coreOrg);
     }
 
     @Override
-    public List<Tree<String>> tree(Map<String, Object> coreOrg) {
+    public List<Tree<Long>> tree(Map<String, Object> coreOrg) {
         return coreOrgDao.tree(Condition.getLambdaTreeWrapper(TbCoreOrg.class,TbCoreOrg::getId,TbCoreOrg::getParentId)
                 .select(TbCoreOrg::getName)
                 .orderByAsc(TbCoreOrg::getSort)
@@ -107,7 +107,7 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper, TbCoreO
     }
 
     @Override
-    public List<Tree<String>> tree(String parentId, Map<String, Object> coreOrg) {
+    public List<Tree<Long>> tree(Long parentId, Map<String, Object> coreOrg) {
         return coreOrgDao.tree(Condition.getLambdaTreeWrapper(TbCoreOrg.class,TbCoreOrg::getId,TbCoreOrg::getParentId)
                 .lazy(parentId)
                 .select(TbCoreOrg::getName,TbCoreOrg::getCode)

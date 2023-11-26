@@ -125,7 +125,7 @@ public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper, TbCor
     }
 
     @Override
-    public CityVo getById(String id) {
+    public CityVo getById(Long id) {
         return coreCityDao.conver(super.getById(id));
     }
 

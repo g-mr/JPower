@@ -7,7 +7,6 @@ import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
 import com.wlcb.jpower.module.common.support.ChainMap;
 import com.wlcb.jpower.module.common.utils.Fc;
-import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.service.role.CoreFunctionService;
 import com.wlcb.jpower.service.role.CoreRolefunctionService;
 import lombok.AllArgsConstructor;
@@ -29,21 +28,21 @@ public class CoreRolefunctionServiceImpl extends BaseServiceImpl<TbCoreRoleFunct
     public RedisUtil redisUtil;
 
     @Override
-    public List<Map<String,Object>> selectRoleFunctionByRoleId(String roleId) {
+    public List<Map<String,Object>> selectRoleFunctionByRoleId(Long roleId) {
         return coreRoleFunctionDao.getBaseMapper().selectRoleFunctionByRoleId(roleId);
     }
 
     @Override
-    public boolean addRolefunctions(String roleId, String functionIds) {
+    public boolean addRolefunctions(Long roleId, List<Long> functionIds) {
 
         //先删除角色原有权限
         coreRoleFunctionDao.removeRealByMap(ChainMap.<String,Object>create().put("role_id",roleId).build());
 
         List<TbCoreRoleFunction> roleFunctions = new ArrayList<>();
-        if (Fc.isNotBlank(functionIds)){
-            for (String fId : functionIds.split(StringPool.COMMA)) {
+        if (Fc.isNotEmpty(functionIds)){
+            for (Long fId : functionIds) {
                 TbCoreRoleFunction roleFunction = new TbCoreRoleFunction();
-                roleFunction.setId(Fc.randomUUID());
+                roleFunction.setId(Fc.randomSnowFlakeId());
                 roleFunction.setFunctionId(fId);
                 roleFunction.setRoleId(roleId);
                 roleFunctions.add(roleFunction);

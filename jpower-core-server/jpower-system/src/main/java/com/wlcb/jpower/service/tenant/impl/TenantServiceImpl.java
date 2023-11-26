@@ -89,7 +89,7 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
         if (tenantDao.save(tenant)){
             //创建租户默认部门
             TbCoreOrg org = new TbCoreOrg();
-            org.setParentId(TOP_CODE);
+            org.setParentId(Fc.toLong(TOP_CODE));
             org.setName(tenant.getTenantName());
             org.setCode(tenant.getTenantCode());
             if (ShieldUtil.isRoot()){
@@ -105,7 +105,7 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
             TbCoreRole role = new TbCoreRole();
             role.setIsSysRole(ConstantsEnum.YN01.Y.getValue());
             role.setName(tenant.getTenantName()+"-管理员");
-            role.setParentId(TOP_CODE);
+            role.setParentId(Fc.toLong(TOP_CODE));
             role.setRemark("这是系统内置角色，不要删除，会影响功能");
             if (ShieldUtil.isRoot()){
                 role.setTenantCode(tenant.getTenantCode());
@@ -113,10 +113,10 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
             roleDao.save(role);
             //创建租户初始权限
 
-            List<String> functionIds = functionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
+            List<Long> functionIds = functionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                     .select(TbCoreFunction::getId)
-                    .eq(TbCoreFunction::getParentId,TOP_CODE)
-                    .ne(TbCoreFunction::getFunctionType,ConstantsEnum.FUNCTION_TYPE.MENU.getValue()),Fc::toStr);
+                    .eq(TbCoreFunction::getParentId,Fc.toLong(TOP_CODE))
+                    .ne(TbCoreFunction::getFunctionType,ConstantsEnum.FUNCTION_TYPE.MENU.getValue()),Fc::toLong);
 
             if (Fc.isNotEmpty(functionCodes)){
                 functionIds.addAll(getFunctions(functionCodes,new LinkedList<>()));
@@ -133,10 +133,10 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
             //创建租户默认字典
             ThreadUtil.execute(()->{
                 List<TbCoreDict> dictList = dictDao.list(Condition.<TbCoreDict>getQueryWrapper().lambda().eq(TbCoreDict::getTenantCode,DEFAULT_TENANT_CODE).orderByAsc(TbCoreDict::getParentId));
-                Map<String,String> map = new HashMap<>(dictList.size());
+                Map<Long,Long> map = new HashMap<>(dictList.size());
                 dictList = dictList.stream().peek(dict->{
                     dict.setTenantCode(tenant.getTenantCode());
-                    String id = Fc.randomUUID();
+                    Long id = Fc.randomSnowFlakeId();
                     //把旧ID和新ID的对应关系存储起来
                     map.put(dict.getId(),id);
                     dict.setId(id);
@@ -168,19 +168,19 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
         return false;
     }
 
-    private List<String> getFunctions(Set<String> functionCodes,LinkedList<String> functionIds) {
+    private List<Long> getFunctions(Set<String> functionCodes,LinkedList<Long> functionIds) {
 
-        List<String> ids = functionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
+        List<Long> ids = functionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                 .select(TbCoreFunction::getId)
-                .in(TbCoreFunction::getCode,functionCodes),Fc::toStr);
+                .in(TbCoreFunction::getCode,functionCodes),Fc::toLong);
 
         ids.forEach(id->{
             functionIds.add(id);
 
-            List<String> btnIds = functionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
+            List<Long> btnIds = functionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                     .select(TbCoreFunction::getId)
                     .ne(TbCoreFunction::getFunctionType,ConstantsEnum.FUNCTION_TYPE.MENU.getValue())
-                    .eq(TbCoreFunction::getParentId,id),Fc::toStr);
+                    .eq(TbCoreFunction::getParentId,id),Fc::toLong);
 
             functionIds.addAll(btnIds);
         });
@@ -189,7 +189,7 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
     }
 
     @Override
-    public boolean setting(List<String> ids, Integer accountNumber, Date expireTime) {
+    public boolean setting(List<Long> ids, Integer accountNumber, Date expireTime) {
         String licenseKey = getLicenseKey(accountNumber,expireTime);
         List<TbCoreTenant> tenantList = new ArrayList<>();
         ids.forEach(id -> {

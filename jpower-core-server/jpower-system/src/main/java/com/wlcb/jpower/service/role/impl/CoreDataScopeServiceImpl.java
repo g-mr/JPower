@@ -9,10 +9,8 @@ import com.wlcb.jpower.dbs.entity.role.TbCoreRoleData;
 import com.wlcb.jpower.module.base.enums.JpowerError;
 import com.wlcb.jpower.module.base.exception.JpowerAssert;
 import com.wlcb.jpower.module.common.service.impl.BaseServiceImpl;
-import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.StringUtil;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
-import com.wlcb.jpower.module.common.utils.constants.StringPool;
 import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.service.role.CoreDataScopeService;
 import lombok.AllArgsConstructor;
@@ -46,14 +44,13 @@ public class CoreDataScopeServiceImpl extends BaseServiceImpl<TbCoreDataScopeMap
     }
 
     @Override
-    public boolean roleDataScope(String roleId, String dataIds) {
+    public boolean roleDataScope(Long roleId, List<Long> dataIds) {
 
         roleDataDao.removeReal(Condition.<TbCoreRoleData>getQueryWrapper().lambda()
                                 .eq(TbCoreRoleData::getRoleId,roleId));
-        List<String> dataScopeIds = Fc.toStrList(dataIds);
-        if (dataScopeIds.size() > 0){
+        if (dataIds.size() > 0){
             List<TbCoreRoleData> list = new ArrayList<>();
-            dataScopeIds.forEach(dataId -> {
+            dataIds.forEach(dataId -> {
                 TbCoreRoleData roleData = new TbCoreRoleData();
                 roleData.setDataId(dataId);
                 roleData.setRoleId(roleId);

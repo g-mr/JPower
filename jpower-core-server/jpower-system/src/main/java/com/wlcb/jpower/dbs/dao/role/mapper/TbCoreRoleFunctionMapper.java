@@ -11,10 +11,10 @@ import java.util.Map;
 @Component("tbCoreRoleFunctionMapper")
 public interface TbCoreRoleFunctionMapper extends JpowerBaseMapper<TbCoreRoleFunction> {
 
-    List<Map<String,Object>> selectRoleFunctionByRoleId(String roleId);
+    List<Map<String,Object>> selectRoleFunctionByRoleId(Long roleId);
 
     Integer insertList(@Param("roleFunctions") List<TbCoreRoleFunction> roleFunctions);
 
-    List<String> selectFunctionIdInRoleIds(@Param("list") List<String> roleIdList);
+    List<Long> selectFunctionIdInRoleIds(@Param("list") List<Long> roleIdList);
 
 }

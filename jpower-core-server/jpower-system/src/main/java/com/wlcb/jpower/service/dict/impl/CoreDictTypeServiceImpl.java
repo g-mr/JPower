@@ -15,7 +15,6 @@ import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.constants.ConstantsEnum;
 import com.wlcb.jpower.module.common.utils.constants.JpowerConstants;
 import com.wlcb.jpower.module.mp.support.Condition;
-import com.wlcb.jpower.module.mp.support.LambdaTreeWrapper;
 import com.wlcb.jpower.service.dict.CoreDictService;
 import com.wlcb.jpower.service.dict.CoreDictTypeService;
 import lombok.AllArgsConstructor;
@@ -35,8 +34,7 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
 
     @Override
     public List<Tree<Long>> tree() {
-        return coreDictTypeDao.tree(Condition.getLambdaTreeWrapper(TbCoreDictType.class,TbCoreDictType::getId,
-                        TbCoreDictType::getParentId)
+        return coreDictTypeDao.tree(Condition.getLambdaTreeWrapper(TbCoreDictType.class, TbCoreDictType::getId, TbCoreDictType::getParentId)
                 .select(TbCoreDictType::getDictTypeName,
                         TbCoreDictType::getDictTypeCode,
                         TbCoreDictType::getIsTree).orderByAsc(TbCoreDictType::getSortNum));
@@ -68,7 +66,7 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
 
     @Override
     public Boolean addDictType(TbCoreDictType dictType) {
-        dictType.setParentId(Fc.isBlank(dictType.getParentId())? JpowerConstants.TOP_CODE:dictType.getParentId());
+        dictType.setParentId(Fc.isNull(dictType.getParentId())? Fc.toLong(JpowerConstants.TOP_CODE):dictType.getParentId());
         dictType.setDelEnabled(Fc.isBlank(dictType.getDelEnabled())? ConstantsEnum.YN.Y.getValue() :dictType.getDelEnabled());
 
         LambdaQueryWrapper<TbCoreDictType> queryWrapper = Condition.<TbCoreDictType>getQueryWrapper().lambda().eq(TbCoreDictType::getDictTypeCode,dictType.getDictTypeCode());

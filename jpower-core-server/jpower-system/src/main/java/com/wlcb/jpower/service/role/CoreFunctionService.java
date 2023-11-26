@@ -43,21 +43,12 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
 
     /**
      * @Author 郭丁志
-     * @Description //TODO 新增菜单
-     * @Date 15:35 2020-05-20
-     * @Param [coreFunction]
-     * @return java.lang.Integer
-     **/
-    Boolean add(TbCoreFunction coreFunction);
-
-    /**
-     * @Author 郭丁志
      * @Description //TODO 批量查询id下的子节点数量
      * @Date 15:40 2020-05-20
      * @Param [ids]
      * @return java.lang.Integer
      **/
-    long listByPids(String ids);
+    long listByPids(List<Long> ids);
 
     /**
      * @Author 郭丁志
@@ -66,7 +57,7 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @Param [ids]
      * @return java.lang.Integer
      **/
-    Boolean delete(String ids);
+    Boolean delete(List<Long> ids);
 
     /**
      * @Author 郭丁志
@@ -84,7 +75,7 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @param roleIds
      * @return java.util.List<com.wlcb.jpower.module.common.node.Node>
      */
-    List<String> queryUrlIdByRole(String roleIds);
+    List<Long> queryUrlIdByRole(List<Long> roleIds);
 
     /**
      * @author 郭丁志
@@ -94,7 +85,7 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @param roleIds
      * @return java.util.List<com.wlcb.jpower.module.common.node.Node>
      */
-    List<Tree<String>> lazyTreeByRole(String parentId, List<String> roleIds);
+    List<Tree<Long>> lazyTreeByRole(Long parentId, List<Long> roleIds);
 
     /**
      * @Author 郭丁志
@@ -113,7 +104,7 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @Param [roleIds]
      * @return java.util.List<com.wlcb.jpower.module.dbs.entity.core.function.TbCoreFunction>
      **/
-    List<String> listBtnByRoleId(List<String> roleIds, String topMenuId);
+    List<String> listBtnByRoleId(List<Long> roleIds, Long topMenuId);
 
     /**
      * @Author 郭丁志
@@ -122,7 +113,7 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @Param [roleIds, functionVoClass]
      * @return java.util.List<com.wlcb.jpower.module.dbs.vo.FunctionVo>
      **/
-    List<Tree<String>> listTreeByRoleId(List<String> roleIds);
+    List<Tree<Long>> listTreeByRoleId(List<Long> roleIds);
 
     long queryRoleByUrl(String url);
 
@@ -138,7 +129,7 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @param topMenuId 顶部菜单ID
      * @return java.util.List<com.wlcb.jpower.module.common.node.Node>
      **/
-    List<Tree<String>> menuTreeByRoleIds(List<String> roleIds,String clientId, String topMenuId);
+    List<Tree<Long>> menuTreeByRoleIds(List<Long> roleIds,Long clientId, Long topMenuId);
 
     /**
      * 查询角色所有菜单
@@ -147,7 +138,7 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @param roleIds 角色ID
      * @return java.util.List<com.wlcb.jpower.dbs.entity.function.TbCoreFunction>
      **/
-    List<TbCoreFunction> menuByRoleIds(List<String> roleIds);
+    List<TbCoreFunction> menuByRoleIds(List<Long> roleIds);
 
     /**
      * 查询接口按钮
@@ -158,7 +149,7 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @param clientId 客户端ID
      * @return java.util.List<com.wlcb.jpower.dbs.entity.function.TbCoreFunction>
      **/
-    List<TbCoreFunction> listButByMenu(List<String> roleIds, String id, String clientId);
+    List<TbCoreFunction> listButByMenu(List<Long> roleIds, Long id, Long clientId);
 
     /**
      * 生成功能点
@@ -176,7 +167,7 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @param ids 主键
      * @return boolean
      **/
-    boolean saveHierarchy(String parentId, List<String> ids);
+    boolean saveHierarchy(Long parentId, List<Long> ids);
 
     /**
      * 查询菜单列表

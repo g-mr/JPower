@@ -17,13 +17,4 @@ public interface CoreParamService extends BaseService<TbCoreParam> {
      **/
     String selectByCode(String code);
 
-    /**
-     * @Author 郭丁志
-     * @Description //TODO 更新系统参数
-     * @Date 17:20 2020-05-07
-     * @Param [coreParam]
-     * @return java.lang.Integer
-     **/
-    Boolean update(TbCoreParam coreParam);
-
 }

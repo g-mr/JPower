@@ -30,7 +30,7 @@ public interface CoreDataScopeService extends BaseService<TbCoreDataScope> {
      * @param dataIds
      * @return boolean
      **/
-    boolean roleDataScope(String roleId, String dataIds);
+    boolean roleDataScope(Long roleId, List<Long> dataIds);
 
     /**
      * 查询所有角色都可执行得数据权限

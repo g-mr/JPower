@@ -37,5 +37,5 @@ public interface TenantService extends BaseService<TbCoreTenant> {
      * @param accountNumber 额度
      * @param expireTime 过期时间
      */
-    boolean setting(List<String> ids, Integer accountNumber, Date expireTime);
+    boolean setting(List<Long> ids, Integer accountNumber, Date expireTime);
 }

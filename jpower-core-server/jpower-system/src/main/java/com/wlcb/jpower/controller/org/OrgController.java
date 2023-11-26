@@ -41,7 +41,7 @@ public class OrgController extends BaseController {
     @ApiOperation("懒加载组织机构树形列表")
     @GetMapping(value = "/listLazyByParent",produces="application/json")
     public ResponseData<List<OrgVo>> listLazyByParent(TbCoreOrg coreOrg){
-        coreOrg.setParentId(Fc.isNotBlank(coreOrg.getParentId())?coreOrg.getParentId():JpowerConstants.TOP_CODE);
+        coreOrg.setParentId(Fc.notNull(coreOrg.getParentId())?coreOrg.getParentId():Fc.toLong(JpowerConstants.TOP_CODE));
         return ReturnJsonUtil.ok("获取成功", coreOrgService.listLazyByParent(coreOrg));
     }
 
@@ -52,7 +52,7 @@ public class OrgController extends BaseController {
     @GetMapping(value = "/listLazy",produces="application/json")
     public ResponseData<Pg<OrgVo>> listLazy(TbCoreOrg coreOrg){
         List<OrgVo> list = coreOrgService.listLazyByParent(coreOrg);
-        List<OrgVo> pageList = ListUtil.page(PaginationContext.getPageNum()-1,PaginationContext.getPageSize(),list);
+        List<OrgVo> pageList = ListUtil.page(PaginationContext.getPageNum()-1, PaginationContext.getPageSize(),list);
         return ReturnJsonUtil.data(new Pg<>(list.size(),pageList));
     }
 
@@ -62,13 +62,11 @@ public class OrgController extends BaseController {
     })
     @ApiOperation(value = "新增一个组织机构",notes = "无需传主键(id)")
     @RequestMapping(value = "/add",method = {RequestMethod.POST},produces="application/json")
-    public ResponseData add(TbCoreOrg coreOrg){
+    public ResponseData<Long> add(TbCoreOrg coreOrg){
         JpowerAssert.notEmpty(coreOrg.getName(),JpowerError.Arg,"名称不可为空");
         JpowerAssert.notEmpty(coreOrg.getCode(),JpowerError.Arg,"编码不可为空");
 
-        Boolean is = coreOrgService.add(coreOrg);
-
-        if (is){
+        if (coreOrgService.add(coreOrg)){
             CacheUtil.clear(CacheNames.ORG_KEY, coreOrg.getTenantCode());
             return ReturnJsonUtil.ok("新增成功",coreOrg.getId());
         }else {
@@ -85,15 +83,11 @@ public class OrgController extends BaseController {
 
         JpowerAssert.notEmpty(ids, JpowerError.Arg,"ids不可为空");
 
-        long c = coreOrgService.listOrgByPids(ids);
-        if (c > 0){
-            return ReturnJsonUtil.busFail("您选中的组织机构存在下级机构，请先删除下级机构");
-        }
+        long c = coreOrgService.listOrgByPids(Fc.toLongList(ids));
+        JpowerAssert.geZero(c, JpowerError.Business, "您选中的组织机构存在下级机构，请先删除下级机构");
 
-        List<String> tenants = coreOrgService.listObjs(Condition.<TbCoreOrg>getQueryWrapper().lambda().select(TbCoreOrg::getTenantCode).in(TbCoreOrg::getId,Fc.toStrList(ids)),Fc::toStr);
-        Boolean is = coreOrgService.removeByIds(Fc.toStrList(ids));
-
-        if (is){
+        List<String> tenants = coreOrgService.listObjs(Condition.<TbCoreOrg>getQueryWrapper().lambda().select(TbCoreOrg::getTenantCode).in(TbCoreOrg::getId,Fc.toLongList(ids)),Fc::toStr);
+        if (coreOrgService.removeByIds(Fc.toLongList(ids))){
             CacheUtil.clear(CacheNames.ORG_KEY, tenants.toArray(new String[tenants.size()]));
             return ReturnJsonUtil.ok("删除成功");
         }else {
@@ -107,7 +101,7 @@ public class OrgController extends BaseController {
     @ApiOperation(value = "修改组织机构信息")
     @RequestMapping(value = "/update",method = {RequestMethod.PUT},produces="application/json")
     public ResponseData update(TbCoreOrg coreOrg){
-        JpowerAssert.notEmpty(coreOrg.getId(), JpowerError.Arg,"id不可为空");
+        JpowerAssert.notNull(coreOrg.getId(), JpowerError.Arg,"id不可为空");
 
         Boolean is = coreOrgService.update(coreOrg);
 
@@ -138,9 +132,9 @@ public class OrgController extends BaseController {
             @ApiImplicitParam(name = "isVirtual",value = "是否虚拟机构 字典YN01",paramType = "query"),
     })
     @RequestMapping(value = "/tree",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData<List<Tree<String>>> tree(@ApiIgnore @RequestParam Map<String,Object> coreOrg){
-        List<Tree<String>> list = coreOrgService.tree(coreOrg);
-        return ReturnJsonUtil.ok("查询成功",list);
+    public ResponseData<List<Tree<Long>>> tree(@ApiIgnore @RequestParam Map<String,Object> coreOrg){
+        List<Tree<Long>> list = coreOrgService.tree(coreOrg);
+        return ReturnJsonUtil.data(list);
     }
 
     @ApiOperation("懒加载组织机构树形菜单")
@@ -158,11 +152,11 @@ public class OrgController extends BaseController {
 
     })
     @RequestMapping(value = "/lazyTree",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData<List<Tree<String>>> lazyTree(@ApiParam(value = "父级ID",defaultValue = JpowerConstants.TOP_CODE,required = true) @RequestParam(defaultValue = JpowerConstants.TOP_CODE)  String parentId,
+    public ResponseData<List<Tree<Long>>> lazyTree(@ApiParam(value = "父级ID",defaultValue = JpowerConstants.TOP_CODE,required = true) @RequestParam(defaultValue = JpowerConstants.TOP_CODE)  Long parentId,
                                  @ApiIgnore @RequestParam Map<String,Object> coreOrg){
         coreOrg.remove("parentId");
-        List<Tree<String>> list = coreOrgService.tree(parentId,coreOrg);
-        return ReturnJsonUtil.ok("查询成功",list);
+        List<Tree<Long>> list = coreOrgService.tree(parentId,coreOrg);
+        return ReturnJsonUtil.data(list);
     }
 
 }

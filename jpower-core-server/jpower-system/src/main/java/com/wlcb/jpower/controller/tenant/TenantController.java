@@ -2,6 +2,7 @@ package com.wlcb.jpower.controller.tenant;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Validator;
+import cn.hutool.core.util.NumberUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wlcb.jpower.dbs.entity.tenant.TbCoreTenant;
 import com.wlcb.jpower.module.annotation.Function;
@@ -85,11 +86,11 @@ public class TenantController extends BaseController {
     @PutMapping("/update")
     public ResponseData update(TbCoreTenant tenant){
         JpowerAssert.isTrue(ShieldUtil.isRoot(), JpowerError.Auth,"只可超级管理员修改租户");
-        JpowerAssert.notEmpty(tenant.getId(), JpowerError.Arg,"主键不可为空");
+        JpowerAssert.notNull(tenant.getId(), JpowerError.Arg,"主键不可为空");
 
         if (Fc.isNotBlank(tenant.getDomain())){
             TbCoreTenant coreTenant = tenantService.getOne(Condition.<TbCoreTenant>getQueryWrapper().lambda().eq(TbCoreTenant::getDomain,tenant.getDomain()));
-            if (Fc.notNull(coreTenant) && !Fc.equals(coreTenant.getId(),tenant.getId())){
+            if (Fc.notNull(coreTenant) && !NumberUtil.equals(coreTenant.getId(),tenant.getId())){
                 return ReturnJsonUtil.fail("该域名已存在");
             }
         }
@@ -109,7 +110,7 @@ public class TenantController extends BaseController {
         JpowerAssert.notEmpty(ids, JpowerError.Arg,"主键不可为空");
 
         CacheUtil.clear(CacheNames.TENANT_KEY, Boolean.FALSE);
-        return ReturnJsonUtil.status(tenantService.removeByIds(Fc.toStrList(ids)));
+        return ReturnJsonUtil.status(tenantService.removeByIds(Fc.toLongList(ids)));
     }
 
     @Function(value = "新增租户",menus = {
@@ -145,7 +146,7 @@ public class TenantController extends BaseController {
     })
     @ApiOperation("租户授权配置")
     @PutMapping(value = "/setting",produces = "application/json")
-    public ResponseData setting(@ApiParam(value = "租户ID 多个逗号分隔",required = true) @RequestParam List<String> ids,
+    public ResponseData setting(@ApiParam(value = "租户ID 多个逗号分隔",required = true) @RequestParam List<Long> ids,
                                 @ApiParam(value = "租户额度") @RequestParam(required = false) Integer accountNumber,
                                 @ApiParam(value = "租户过期时间") @RequestParam(required = false) Date expireTime){
         JpowerAssert.isTrue(ShieldUtil.isRoot(), JpowerError.Auth,"只可超级管理员配置租户");

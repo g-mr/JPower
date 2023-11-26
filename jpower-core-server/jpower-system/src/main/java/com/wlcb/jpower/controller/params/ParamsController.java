@@ -60,7 +60,7 @@ public class ParamsController extends BaseController {
         JpowerAssert.notEmpty(ids, JpowerError.Arg,"ids不可为空");
 
         CacheUtil.clear(PARAM_KEY, Boolean.FALSE);
-        return ReturnJsonUtil.status(paramService.removeByIds(Fc.toStrList(ids)));
+        return ReturnJsonUtil.status(paramService.removeByIds(Fc.toLongList(ids)));
     }
 
     @Function(value = "编辑",menus = {
@@ -69,9 +69,9 @@ public class ParamsController extends BaseController {
     @ApiOperation("修改系统参数")
     @RequestMapping(value = "/update",method = RequestMethod.PUT,produces="application/json")
     public ResponseData update(TbCoreParam coreParam){
-        JpowerAssert.notEmpty(coreParam.getId(), JpowerError.Arg,"id不可为空");
+        JpowerAssert.notNull(coreParam.getId(), JpowerError.Arg,"id不可为空");
         CacheUtil.clear(PARAM_KEY, Boolean.FALSE);
-        return ReturnJsonUtil.status(paramService.update(coreParam));
+        return ReturnJsonUtil.status(paramService.updateById(coreParam));
     }
 
     @Function(value = "新增",menus = {
@@ -94,9 +94,9 @@ public class ParamsController extends BaseController {
     })
     @ApiOperation(value = "通过Id获取参数详情")
     @RequestMapping(value = "/queryById",method = RequestMethod.GET,produces="application/json")
-    public ResponseData<TbCoreParam> queryById(@ApiParam("主键ID") @RequestParam String id){
-        JpowerAssert.notEmpty(id, JpowerError.Arg,"ID不可为空");
-        return ReturnJsonUtil.ok("查询成功",paramService.getById(id));
+    public ResponseData<TbCoreParam> queryById(@ApiParam("主键ID") @RequestParam Long id){
+        JpowerAssert.notNull(id, JpowerError.Arg,"ID不可为空");
+        return ReturnJsonUtil.data(paramService.getById(id));
     }
 
 }
