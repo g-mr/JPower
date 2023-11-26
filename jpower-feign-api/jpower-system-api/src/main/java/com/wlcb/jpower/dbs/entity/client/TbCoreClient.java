@@ -1,5 +1,6 @@
 package com.wlcb.jpower.dbs.entity.client;
 
+import com.baomidou.mybatisplus.annotation.OrderBy;
 import com.wlcb.jpower.module.base.annotation.Dict;
 import com.wlcb.jpower.module.dbs.entity.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
@@ -31,7 +32,8 @@ public class TbCoreClient extends BaseEntity {
     @ApiModelProperty("刷新token有效时长 单位秒")
     private Long refreshTokenValidity;
     @ApiModelProperty("排序")
-    private String sortNum;
+    @OrderBy(asc = true)
+    private Integer sortNum;
     @ApiModelProperty("备注")
     private String note;
 
