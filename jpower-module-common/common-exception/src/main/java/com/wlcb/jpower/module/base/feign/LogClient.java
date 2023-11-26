@@ -51,7 +51,7 @@ public class LogClient {
 							"(id,server_name,server_ip,server_host,env,url,method,method_class,method_name,param,oper_ip,oper_name,oper_user_type,client_code,title,business_type,return_content,status,error_msg,record_id,content) " +
 							"values " +
 							"(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-							Fc.randomUUID(),operateLog.getServerName(),operateLog.getServerIp(),operateLog.getServerHost(),operateLog.getEnv(),operateLog.getUrl(),operateLog.getMethod(),operateLog.getMethodClass(),operateLog.getMethodName(),operateLog.getParam(),operateLog.getOperIp(),operateLog.getOperName(),operateLog.getOperUserType(),operateLog.getClientCode(),operateLog.getTitle(),operateLog.getBusinessType(),operateLog.getReturnContent(),operateLog.getStatus(),operateLog.getErrorMsg(),operateLog.getRecordId(),operateLog.getContent());
+							Fc.randomSnowFlakeId(),operateLog.getServerName(),operateLog.getServerIp(),operateLog.getServerHost(),operateLog.getEnv(),operateLog.getUrl(),operateLog.getMethod(),operateLog.getMethodClass(),operateLog.getMethodName(),operateLog.getParam(),operateLog.getOperIp(),operateLog.getOperName(),operateLog.getOperUserType(),operateLog.getClientCode(),operateLog.getTitle(),operateLog.getBusinessType(),operateLog.getReturnContent(),operateLog.getStatus(),operateLog.getErrorMsg(),operateLog.getRecordId(),operateLog.getContent());
 					if (count <= 0){
 						log.error("操作日志保存失败={}",count);
 					}
@@ -96,7 +96,7 @@ public class LogClient {
 									"(id,server_name,server_ip,server_host,env,url,method,method_class,method_name,param,oper_ip,oper_name,oper_user_type,client_code,error,line_number,exception_name,message) " +
 									"values " +
 									"(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-							Fc.randomUUID(),errorLog.getServerName(),errorLog.getServerIp(),errorLog.getServerHost(),errorLog.getEnv(),errorLog.getUrl(),errorLog.getMethod(),errorLog.getMethodClass(),errorLog.getMethodName(),errorLog.getParam(),errorLog.getOperIp(),errorLog.getOperName(),errorLog.getOperUserType(),errorLog.getClientCode(),errorLog.getError(),errorLog.getLineNumber(),errorLog.getExceptionName(),errorLog.getMessage());
+							Fc.randomSnowFlakeId(),errorLog.getServerName(),errorLog.getServerIp(),errorLog.getServerHost(),errorLog.getEnv(),errorLog.getUrl(),errorLog.getMethod(),errorLog.getMethodClass(),errorLog.getMethodName(),errorLog.getParam(),errorLog.getOperIp(),errorLog.getOperName(),errorLog.getOperUserType(),errorLog.getClientCode(),errorLog.getError(),errorLog.getLineNumber(),errorLog.getExceptionName(),errorLog.getMessage());
 					if (count <= 0){
 						log.error("错误日志保存失败={}",count);
 					}
