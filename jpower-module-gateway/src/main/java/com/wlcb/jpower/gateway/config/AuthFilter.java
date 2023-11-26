@@ -11,6 +11,7 @@ import com.wlcb.jpower.gateway.utils.TokenUtil;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.redis.RedisUtil;
 import com.wlcb.jpower.module.common.support.ChainMap;
+import com.wlcb.jpower.module.common.utils.CollectionUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.JwtUtil;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
@@ -119,8 +120,8 @@ public class AuthFilter implements GlobalFilter, Ordered {
      * @return boolean
      **/
     private boolean isAuth(Claims claims, String token,String currentPath){
-        List roleIds = claims.get("roleIds",List.class);
-        if (Fc.isNotEmpty(roleIds) && roleIds.contains(ROOT_ID)){
+        List<Long> roleIds = claims.get("roleIds",List.class);
+        if (Fc.isNotEmpty(roleIds) && CollectionUtil.containsValue(roleIds,ROOT_ID)){
             return true;
         }
 

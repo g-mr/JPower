@@ -23,4 +23,18 @@ public class CollectionUtil extends CollUtil {
         return isEmpty(collection) ? newHashSet() : newHashSet(false, collection);
     }
 
+    /**
+     * 判断指定集合是否包含指定值(无视值类型只比较值是否相等)，如果集合为空（null或者空），返回false，否则找到元素返回true
+     *
+     * @author mr.g
+     * @param collection
+     * @param value
+     * @return boolean
+     **/
+    public static boolean containsValue(Collection<?> collection, Object value) {
+        if (Fc.isEmpty(collection)){
+            return false;
+        }
+        return collection.stream().anyMatch(val->Fc.equalsValue(val,value));
+    }
 }

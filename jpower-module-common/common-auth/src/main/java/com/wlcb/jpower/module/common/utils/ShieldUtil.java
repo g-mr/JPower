@@ -66,8 +66,7 @@ public class ShieldUtil {
     public static UserInfo getUser(Claims claims) {
         UserInfo user = new UserInfo();
         if (Fc.notNull(claims)) {
-            BeanUtil.getFieldList(UserInfo.class).forEach(field -> BeanUtil.setFieldValue(user,field.getName(),claims.get(field.getName(),field.getType())));
-            user.setClientCode(Fc.toStr(claims.get(TokenConstant.CLIENT_CODE)));
+            user = BeanUtil.toBean(claims, UserInfo.class);
         }
         return user.isEmpty()?null:user;
     }

@@ -4,6 +4,8 @@ import cn.hutool.core.date.DatePattern;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -15,13 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 /**
  * java 8 时间默认序列化
@@ -38,18 +40,8 @@ public class JpowerJavaTimeModule{
     }
 
     @Bean
-    @ConditionalOnMissingBean(Jackson2ObjectMapperFactoryBean.class)
-    public Jackson2ObjectMapperFactoryBean jackson2ObjectMapperFactoryBean(@Autowired DateJacksonConverter dateJacksonConverter) {
-        Jackson2ObjectMapperFactoryBean jackson2ObjectMapperFactoryBean = new Jackson2ObjectMapperFactoryBean();
-
-        jackson2ObjectMapperFactoryBean.setDeserializers(dateJacksonConverter);
-        return jackson2ObjectMapperFactoryBean;
-    }
-
-
-    @Bean
     @ConditionalOnMissingBean(MappingJackson2HttpMessageConverter.class)
-    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(@Autowired ObjectMapper objectMapper) {
+    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(@Autowired ObjectMapper objectMapper,@Autowired DateJacksonConverter dateJacksonConverter) {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
 
         // 忽略json字符串中不识别的属性
@@ -74,6 +66,13 @@ public class JpowerJavaTimeModule{
         javaTimeModule.addDeserializer(LocalTime.class,
                 new LocalTimeDeserializer(DateTimeFormatter.ofPattern(DatePattern.NORM_TIME_PATTERN)));
         objectMapper.registerModule(javaTimeModule);
+
+        //Long类型 前端精度丢失
+        SimpleModule simpleModule = new SimpleModule();
+        simpleModule.addSerializer(Long.class, ToStringSerializer.instance);
+        simpleModule.addSerializer(Long.TYPE, ToStringSerializer.instance);
+        simpleModule.addDeserializer(Date.class, dateJacksonConverter);
+        objectMapper.registerModule(simpleModule);
 
         converter.setObjectMapper(objectMapper);
         return converter;

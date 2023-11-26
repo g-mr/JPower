@@ -1,7 +1,6 @@
 package com.wlcb.jpower.module.common.jackson;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.wlcb.jpower.module.common.utils.DateUtil;
@@ -17,7 +16,7 @@ import java.util.Date;
 public class DateJacksonConverter extends JsonDeserializer<Date> {
 
     @Override
-    public Date deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+    public Date deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
 
         Date targetDate = null;
         String originDate = p.getText();
