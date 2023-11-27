@@ -53,16 +53,24 @@ public class MybatisSqlPrintInterceptor implements MybatisInterceptor {
 
         if (isLog(mpId)){
             long startTime = System.currentTimeMillis();
-            Object rest = chainFilter.proceed();
+            Object rest = null;
+            String error = null;
             try {
+                rest = chainFilter.proceed();
+            } catch (Exception e){
+                error = ExceptionUtil.getRootCauseMessage(e);
+                throw e;
+            } finally {
+                try {
 
-                long time = System.currentTimeMillis() - startTime;
-                // 超过超时时长则打印
-                if(time >= sqlProperties.getPrintTimeout()) {
-                    printSql(boundSql,configuration,mpId,time,rest,isUpdate);
+                    long time = System.currentTimeMillis() - startTime;
+                    // 超过超时时长则打印
+                    if(time >= sqlProperties.getPrintTimeout()) {
+                        printSql(boundSql,configuration,mpId,time,rest,isUpdate,error);
+                    }
+                } catch (Exception e) {
+                    log.error("==> 打印sql 日志异常 {}", NEWLINE+ExceptionUtil.getStackTraceAsString(e));
                 }
-            } catch (Exception e) {
-                log.error("==> 打印sql 日志异常 {}", NEWLINE+ExceptionUtil.getStackTraceAsString(e));
             }
             return rest;
         }
@@ -70,7 +78,7 @@ public class MybatisSqlPrintInterceptor implements MybatisInterceptor {
         return chainFilter.proceed();
     }
 
-    public void printSql(BoundSql boundSql,Configuration configuration,String sqlId,long time,Object rest, boolean isUpdate) {
+    public void printSql(BoundSql boundSql,Configuration configuration,String sqlId,long time,Object rest, boolean isUpdate,String error) {
         // 替换参数格式化Sql语句，去除换行符
         String sql = formatSql(boundSql, configuration).concat(";");
 
@@ -94,6 +102,10 @@ public class MybatisSqlPrintInterceptor implements MybatisInterceptor {
             }else {
                 sb.append(TAB).append("<== Result: ").append(rest).append(StringPool.NEWLINE);
             }
+        }
+
+        if (Fc.isNotBlank(error)){
+            sb.append(TAB).append("<== errorSqlInfo: ").append(error).append(StringPool.NEWLINE);
         }
         log.info(sb.toString());
     }

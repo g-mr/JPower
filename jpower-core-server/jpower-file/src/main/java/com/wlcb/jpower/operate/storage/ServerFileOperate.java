@@ -12,6 +12,7 @@ import com.wlcb.jpower.service.CoreFileService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,6 +27,7 @@ import static com.wlcb.jpower.operate.storage.ServerFileOperate.STORAGE_TYPE;
  * @Author mr.g
  **/
 @Component(STORAGE_TYPE)
+@RefreshScope
 public class ServerFileOperate implements FileOperate {
 
 	public static final String STORAGE_TYPE = "SERVER";

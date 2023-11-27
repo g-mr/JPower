@@ -339,8 +339,11 @@ public class Fc {
      * @param value 对象
      * @return int
      **/
-    public static int toInt(final Object value) {
-        return Convert.toInt(value,-1);
+    public static Integer toInt(final Object value) {
+        if (ObjectUtil.isNull(value)){
+            return null;
+        }
+        return Convert.toInt(value);
     }
 
     /**
@@ -362,7 +365,10 @@ public class Fc {
      * @param value 对象
      * @return long
      **/
-    public static long toLong(final Object value) {
+    public static Long toLong(final Object value) {
+        if (ObjectUtil.isNull(value)){
+            return null;
+        }
         return Convert.toLong(value);
     }
 
@@ -382,6 +388,9 @@ public class Fc {
      * 转换成Double
      */
     public static Double toDouble(Object value) {
+        if (ObjectUtil.isNull(value)){
+            return null;
+        }
         return Convert.toDouble(value);
     }
 
@@ -396,6 +405,9 @@ public class Fc {
      * 转换成Float
      */
     public static Float toFloat(Object value) {
+        if (ObjectUtil.isNull(value)){
+            return null;
+        }
         return Convert.toFloat(value);
     }
 
@@ -410,6 +422,9 @@ public class Fc {
      * 转换成Boolean
      */
     public static Boolean toBoolean(Object value) {
+        if (ObjectUtil.isNull(value)){
+            return null;
+        }
         return toBoolean(value, null);
     }
 
@@ -440,6 +455,9 @@ public class Fc {
      * 转换失败不会报错
      */
     public static Boolean toBool(Object value) {
+        if (ObjectUtil.isNull(value)){
+            return null;
+        }
         return toBool(value, null);
     }
 

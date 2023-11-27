@@ -716,7 +716,9 @@ public class BeanExcelUtil<T> {
                             {
                                 propertyName = field.getName() + "." + attr.targetAttr();
                             }
-                            ReflectUtil.invokeSetter(entity, propertyName, val);
+                            if (Fc.isNotEmpty(val)){
+                                ReflectUtil.invokeSetter(entity, propertyName, val);
+                            }
                         }
                     }
                 }

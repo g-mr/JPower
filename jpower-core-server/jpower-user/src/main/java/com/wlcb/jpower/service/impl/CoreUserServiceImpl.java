@@ -266,7 +266,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
             long accountNumber = getAccountNumber(tenant.getLicenseKey());
             if (!Fc.equals(accountNumber, TENANT_ACCOUNT_NUMBER)){
                 long count = coreUserDao.count(Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getTenantCode,tenantCode));
-                if (count >= accountNumber){
+                if (!NumberUtil.equals(accountNumber,-1L) && count >= accountNumber){
                     throw new BusinessException(tenant.getTenantName()+"租户账号额度不足");
                 }
             }

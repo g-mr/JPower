@@ -73,7 +73,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     @Override
     public Boolean delete(List<Long> ids) {
         coreRoleFunctionDao.removeReal(Condition.<TbCoreRoleFunction>getQueryWrapper().lambda().in(TbCoreRoleFunction::getFunctionId,ids));
-        functionMenuDao.removeReal(Condition.<TbCoreFunctionMenu>getQueryWrapper().lambda().eq(TbCoreFunctionMenu::getFunctionId,ids));
+        functionMenuDao.removeReal(Condition.<TbCoreFunctionMenu>getQueryWrapper().lambda().in(TbCoreFunctionMenu::getFunctionId,ids));
         return coreFunctionDao.removeRealByIds(ids);
     }
 
