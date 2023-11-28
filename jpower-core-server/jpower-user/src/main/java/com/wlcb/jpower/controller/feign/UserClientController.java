@@ -97,4 +97,10 @@ public class UserClientController implements UserClient {
     public ResponseData<TbCorePost> queryPostById(@RequestParam Long postId) {
         return ReturnJsonUtil.data(corePostService.getById(postId));
     }
+
+    @Override
+    @PostMapping("/validatePassword")
+    public boolean validatePassword(@RequestParam String account,@RequestParam String password,@RequestParam String tenantCode) {
+        return coreUserService.validatePassword(account,password,tenantCode);
+    }
 }

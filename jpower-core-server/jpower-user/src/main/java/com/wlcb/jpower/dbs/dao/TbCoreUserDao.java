@@ -7,14 +7,18 @@ import com.wlcb.jpower.dbs.dao.mapper.TbCoreUserMapper;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.module.common.utils.BeanUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
+import com.wlcb.jpower.module.common.utils.ShieldUtil;
 import com.wlcb.jpower.module.dbs.dao.BaseDaoWrapper;
 import com.wlcb.jpower.module.dbs.dao.JpowerServiceImpl;
+import com.wlcb.jpower.module.mp.support.Condition;
 import com.wlcb.jpower.vo.UserVo;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static com.wlcb.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
 
 /**
  * @author mr.gmac
@@ -50,4 +54,17 @@ public class TbCoreUserDao extends JpowerServiceImpl<TbCoreUserMapper, TbCoreUse
         return listOrgId;
     }
 
+    /**
+     * 获取用户密码
+     * @author mr.g
+     * @param account
+     * @param tenantCode
+     * @return
+     **/
+    public String getPassword(String account, String tenantCode) {
+        return super.getObj(Condition.<TbCoreUser>getQueryWrapper().lambda()
+                .select(TbCoreUser::getPassword)
+                .eq(TbCoreUser::getLoginId, account)
+                .eq(ShieldUtil.isRoot(), TbCoreUser::getTenantCode, Fc.isBlank(tenantCode)?DEFAULT_TENANT_CODE:tenantCode), Fc::toStr);
+    }
 }

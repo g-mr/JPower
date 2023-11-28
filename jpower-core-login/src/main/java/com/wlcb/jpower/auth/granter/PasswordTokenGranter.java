@@ -5,9 +5,11 @@ import com.wlcb.jpower.auth.TokenGranter;
 import com.wlcb.jpower.cache.UserCache;
 import com.wlcb.jpower.dbs.entity.TbCoreUser;
 import com.wlcb.jpower.dto.TokenParameter;
+import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.utils.UserUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,12 +22,14 @@ import static com.wlcb.jpower.auth.granter.PasswordTokenGranter.GRANT_TYPE;
  * @Date 00:50 2020-07-28
  **/
 @Component(GRANT_TYPE)
+@RequiredArgsConstructor
 public class PasswordTokenGranter implements TokenGranter {
 
 	public static final String GRANT_TYPE = "password";
 
 	@Autowired(required = false)
 	private AuthUserInfo authUserInfo;
+	private final UserClient userClient;
 
 	@Override
 	public UserInfo grant(TokenParameter tokenParameter) {
@@ -36,8 +40,10 @@ public class PasswordTokenGranter implements TokenGranter {
 			if (!Fc.isNull(authUserInfo)){
 				return authUserInfo.getPasswordUserInfo(tokenParameter);
 			}else {
-				TbCoreUser result = UserCache.queryUserByLoginIdPwd(account,password,tenantCode);
-				return UserUtil.toUserInfo(result);
+				if (userClient.validatePassword(account,password,tenantCode)){
+					TbCoreUser result = UserCache.getUserByLoginId(account, tenantCode);
+					return UserUtil.toUserInfo(result);
+				}
 			}
 		}
 		return null;

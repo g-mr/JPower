@@ -6,7 +6,6 @@ import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.base.vo.ResponseData;
 import com.wlcb.jpower.module.common.cache.CacheNames;
 import com.wlcb.jpower.module.common.utils.CacheUtil;
-import com.wlcb.jpower.module.common.utils.DigestUtil;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.module.common.utils.SpringUtil;
 import com.wlcb.jpower.module.common.utils.constants.StringPool;
@@ -55,23 +54,6 @@ public class UserCache {
             ResponseData<TbCoreUser> responseData = userClient.queryUserByLoginId(loginId,tenantCode);
             return responseData.getData();
         });
-    }
-
-    /**
-     * 通过账号密码查询用户
-     *
-     * @author mr.g
-     * @param loginId 账号
-     * @param password 密码
-     * @param tenantCode 租户CODE
-     * @return 用户信息
-     **/
-    public static TbCoreUser queryUserByLoginIdPwd(String loginId,String password, String tenantCode) {
-        TbCoreUser user = getUserByLoginId(loginId,tenantCode);
-        if (Fc.notNull(user) && DigestUtil.checkPwd(password,user.getPassword())){
-            return user;
-        }
-        return null;
     }
 
     /**

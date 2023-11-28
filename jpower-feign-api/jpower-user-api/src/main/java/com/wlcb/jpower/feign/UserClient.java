@@ -57,4 +57,16 @@ public interface UserClient {
      **/
     @GetMapping("/queryPostById")
     ResponseData<TbCorePost> queryPostById(@RequestParam Long postId);
+
+    /**
+     * 验证帐号密码是否正确
+     * @author mr.g
+     * @param account
+     * @param password
+     * @param tenantCode
+     * @return
+     **/
+    @PostMapping("/validatePassword")
+    boolean validatePassword(@RequestParam String account,@RequestParam  String password,@RequestParam String tenantCode);
+
 }
