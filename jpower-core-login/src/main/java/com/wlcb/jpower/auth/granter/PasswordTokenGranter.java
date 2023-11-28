@@ -9,7 +9,7 @@ import com.wlcb.jpower.feign.UserClient;
 import com.wlcb.jpower.module.common.auth.UserInfo;
 import com.wlcb.jpower.module.common.utils.Fc;
 import com.wlcb.jpower.utils.UserUtil;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,14 +22,14 @@ import static com.wlcb.jpower.auth.granter.PasswordTokenGranter.GRANT_TYPE;
  * @Date 00:50 2020-07-28
  **/
 @Component(GRANT_TYPE)
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PasswordTokenGranter implements TokenGranter {
 
 	public static final String GRANT_TYPE = "password";
 
 	@Autowired(required = false)
 	private AuthUserInfo authUserInfo;
-	private UserClient userClient;
+	private final UserClient userClient;
 
 	@Override
 	public UserInfo grant(TokenParameter tokenParameter) {

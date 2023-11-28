@@ -149,5 +149,14 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
 
     Page<UserVo> page(Page<TbCoreUser> page, Wrapper<TbCoreUser> queryWrapper);
 
+    /**
+     * 验证登录名的密码
+     *
+     * @author mr.g
+     * @param account 登录名
+     * @param password 密码
+     * @param tenantCode 租户
+     * @return 密码是否正确
+     **/
     boolean validatePassword(String account, String password, String tenantCode);
 }
