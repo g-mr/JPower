@@ -148,4 +148,6 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
     UserVo getById(String id);
 
     Page<UserVo> page(Page<TbCoreUser> page, Wrapper<TbCoreUser> queryWrapper);
+
+    boolean validatePassword(String account, String password, String tenantCode);
 }

@@ -42,7 +42,7 @@ public class DictWrapper implements IDictBindHandler {
      */
     @Override
     public void setMetaObject(Dict dict, String fieldName, Object fieldValue, MetaObject metaObject){
-        if (Fc.isNotEmpty(fieldValue)){
+        if (Fc.isNotEmpty(fieldValue) && Fc.notNull(WebUtil.getRequest())){
             if (Fc.isNotBlank(dict.name())){
                 GuavaCache<List<Map<String, Object>>> guavaCache = GuavaCache.getInstance(EXPIRE_TIME, TimeUnit.SECONDS);
                 List<Map<String, Object>> list;

@@ -75,6 +75,21 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
                 log.error("调用queryPostById失败，参数：postId={}", postId);
                 return ReturnJsonUtil.print(ConstantsReturn.RECODE_API, cause.getMessage(), false);
             }
+
+            /**
+             * 验证帐号密码是否正确
+             *
+             * @param account
+             * @param password
+             * @param tenantCode
+             * @return
+             * @author mr.g
+             **/
+            @Override
+            public boolean validatePassword(String account, String password, String tenantCode) {
+                log.error("调用validatePassword失败，参数：account={},password={},tenantCode={}", account, password, tenantCode);
+                return false;
+            }
         };
     }
 }

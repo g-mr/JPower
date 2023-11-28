@@ -145,6 +145,12 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     }
 
     @Override
+    public boolean validatePassword(String account, String password, String tenantCode) {
+        String userPassword = coreUserDao.getPassword(account, tenantCode);
+        return DigestUtil.checkPwd(password, userPassword);
+    }
+
+    @Override
     public UserVo selectUserById(String id) {
         return coreUserDao.conver(getBaseMapper().selectAllById(id));
     }

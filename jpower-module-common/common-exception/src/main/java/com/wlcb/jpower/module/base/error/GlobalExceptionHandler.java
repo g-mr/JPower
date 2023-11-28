@@ -20,6 +20,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -72,6 +73,15 @@ public class GlobalExceptionHandler {
         r.setStatus(false);
 
         return r;
+    }
+
+    @ExceptionHandler(AsyncRequestTimeoutException.class)
+    public void handleException(AsyncRequestTimeoutException e) {
+        log.error("CControlAdvice.handleException ex={}", e.getMessage());
+        ErrorReturnJson r = new ErrorReturnJson();
+        r.setCode(500);
+        r.setStatus(false);
+        r.setMessage(e.getLocalizedMessage());
     }
 
     /**
