@@ -135,7 +135,7 @@ public class OrgController extends BaseController {
             @ApiImplicitParam(name = "contactPhone",value = "联系人电话",paramType = "query"),
             @ApiImplicitParam(name = "contactEmail",value = "联系人邮箱",paramType = "query"),
             @ApiImplicitParam(name = "address",value = "地址",paramType = "query"),
-            @ApiImplicitParam(name = "isVirtual",value = "是否虚拟机构 字典YN01",paramType = "query"),
+            @ApiImplicitParam(name = "type",value = "机构类型 字典ORG_TYPE",paramType = "query"),
     })
     @RequestMapping(value = "/tree",method = {RequestMethod.GET},produces="application/json")
     public ResponseData<List<Tree<String>>> tree(@ApiIgnore @RequestParam Map<String,Object> coreOrg){
@@ -154,7 +154,7 @@ public class OrgController extends BaseController {
             @ApiImplicitParam(name = "contactPhone",value = "联系人电话",paramType = "query"),
             @ApiImplicitParam(name = "contactEmail",value = "联系人邮箱",paramType = "query"),
             @ApiImplicitParam(name = "address",value = "地址",paramType = "query"),
-            @ApiImplicitParam(name = "isVirtual",value = "是否虚拟机构 字典YN01",paramType = "query"),
+            @ApiImplicitParam(name = "type",value = "机构类型 字典ORG_TYPE",paramType = "query"),
 
     })
     @RequestMapping(value = "/lazyTree",method = {RequestMethod.GET},produces="application/json")

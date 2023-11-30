@@ -177,8 +177,8 @@ public class UserController extends BaseController {
             return ReturnJsonUtil.busFail("邮箱不合法");
         }
 
+        String tenantCode = Fc.toStr(coreUser.getTenantCode(), ShieldUtil.getTenantCode());
         if (EnvBeanUtil.getTenantEnable()){
-            String tenantCode = ShieldUtil.getTenantCode();
             if (ShieldUtil.isRoot()) {
                 tenantCode = Fc.isBlank(coreUser.getTenantCode()) ? DEFAULT_TENANT_CODE : coreUser.getTenantCode();
             }
@@ -196,9 +196,9 @@ public class UserController extends BaseController {
         }
 
         if (StringUtils.isNotBlank(coreUser.getTelephone())) {
-            JpowerAssert.isNull(coreUserService.selectByPhone(coreUser.getTelephone(), coreUser.getTenantCode()), JpowerError.Business, "手机号已存在");
+            JpowerAssert.isNull(coreUserService.selectByPhone(coreUser.getTelephone(), tenantCode), JpowerError.Business, "手机号已存在");
         }
-        JpowerAssert.isNull(coreUserService.selectUserLoginId(coreUser.getLoginId(), coreUser.getTenantCode()), JpowerError.Business, "当前登陆名已存在");
+        JpowerAssert.isNull(coreUserService.selectUserLoginId(coreUser.getLoginId(), tenantCode), JpowerError.Business, "当前登陆名已存在");
 
         coreUser.setPassword(DigestUtil.pwdEncrypt(MD5.md5HexToUpperCase(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD, ConstantsUtils.DEFAULT_USER_PASSWORD))));
         if (Fc.isNull(coreUser.getUserType())){

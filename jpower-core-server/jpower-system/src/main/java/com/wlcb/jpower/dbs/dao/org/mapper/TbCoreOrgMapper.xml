@@ -16,8 +16,8 @@
             <if test="org.code!=null and org.code != ''">
                 and org.code = #{org.code}
             </if>
-            <if test="org.isVirtual!=null and org.isVirtual!=''">
-                and org.is_virtual = #{org.isVirtual}
+            <if test="org.type!=null">
+                and org.type = #{org.type}
             </if>
             <if test="org.tenantCode!=null and org.tenantCode!=''">
                 and org.tenant_code = #{org.tenantCode}
