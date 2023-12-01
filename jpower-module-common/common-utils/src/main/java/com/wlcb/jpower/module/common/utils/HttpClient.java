@@ -6,6 +6,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.EntityBuilder;
@@ -52,14 +53,30 @@ public class HttpClient {
      * @return org.apache.http.client.config.RequestConfig
      **/
     private static RequestConfig requestConfig(){
-        return RequestConfig.custom()
-                // 连接主机服务超时时间
-                .setConnectTimeout(35000)
-                // 请求超时时间
-                .setConnectionRequestTimeout(35000)
-                // 数据读取超时时间
-                .setSocketTimeout(60000)
-                .build();
+
+        String proxyHost = System.getProperty("http.proxyHost");
+        int proxyPort = Fc.toInt(System.getProperty("http.proxyPort", "80"));
+
+        if (Fc.isNotBlank(proxyHost)){
+            return RequestConfig.custom()
+                    .setProxy(new HttpHost(proxyHost, proxyPort))
+                    // 连接主机服务超时时间
+                    .setConnectTimeout(35000)
+                    // 请求超时时间
+                    .setConnectionRequestTimeout(35000)
+                    // 数据读取超时时间
+                    .setSocketTimeout(60000)
+                    .build();
+        } else {
+            return RequestConfig.custom()
+                    // 连接主机服务超时时间
+                    .setConnectTimeout(35000)
+                    // 请求超时时间
+                    .setConnectionRequestTimeout(35000)
+                    // 数据读取超时时间
+                    .setSocketTimeout(60000)
+                    .build();
+        }
     }
 
     /**
