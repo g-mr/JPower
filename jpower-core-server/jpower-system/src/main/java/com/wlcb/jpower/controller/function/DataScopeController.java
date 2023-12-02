@@ -71,6 +71,23 @@ public class DataScopeController {
         return ReturnJsonUtil.ok("获取成功", list);
     }
 
+    @Function(value = "复制",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "SYSTEM_DATASCOPE_COPY",type = Menu.TYPE.BTN)
+    })
+    @ApiOperation(value = "复制")
+    @PostMapping(value = "/copy",produces="application/json")
+    public ResponseData copy(@ApiParam("主建") String id){
+
+        JpowerAssert.notEmpty(id, JpowerError.Arg,"ID 不可为空");
+
+        TbCoreDataScope dataScope = dataScopeService.getById(id);
+        JpowerAssert.notNull(dataScope, JpowerError.NotFind, "数据权限");
+
+        dataScope.setId(null);
+        CacheUtil.clear(CacheNames.DATASCOPE_KEY);
+        return ReturnJsonUtil.status(dataScopeService.save(dataScope));
+    }
+
     @Function(value = "新增",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "SYSTEM_DATASCOPE_ADD",type = Menu.TYPE.BTN)
     })
