@@ -43,6 +43,18 @@ public class FunctionController extends BaseController {
     private CoreFunctionService coreFunctionService;
     private CoreClientService clientService;
 
+    @Function(value = "菜单按钮树形",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_MENUBTN",type = Menu.TYPE.INTERFACE)
+    })
+    @ApiOperation("查询登录用户所有菜单按钮树形结构")
+    @GetMapping(value = "/treeMenuTypeByClientId", produces="application/json")
+    public ResponseData<List<Tree<String>>> treeMenuTypeByClientId(@ApiParam("客户端ID") String clientId) {
+        if (Fc.isBlank(clientId)) {
+            return ReturnJsonUtil.data(ListUtil.empty());
+        }
+        return ReturnJsonUtil.data(coreFunctionService.treeMenuTypeByClientId(ShieldUtil.getUserRole(), clientId));
+    }
+
     @Function(value = "菜单列表",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "CHILD_FUNCTION",type = Menu.TYPE.INTERFACE)
     })

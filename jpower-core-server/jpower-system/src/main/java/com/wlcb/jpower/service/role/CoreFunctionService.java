@@ -15,6 +15,16 @@ import java.util.Map;
 public interface CoreFunctionService extends BaseService<TbCoreFunction> {
 
     /**
+     * 查询功能层级树
+     *
+     * @author mr.g
+     * @param userRole
+     * @param clientId
+     * @return java.util.List<cn.hutool.core.lang.tree.Tree<java.lang.String>>
+     **/
+    List<Tree<String>> treeMenuTypeByClientId(List<String> userRole, String clientId);
+
+    /**
      * @Author 郭丁志
      * @Description //TODO map查询
      * @Date 15:33 2020-05-20
@@ -185,4 +195,6 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @return 
      **/
     List<DataFunctionVo> listDataFunction(Map<String, Object> coreFunction);
+
+
 }

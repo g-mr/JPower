@@ -52,6 +52,11 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     private TbCoreClientDao clientDao;
 
     @Override
+    public List<Tree<String>> treeMenuTypeByClientId(List<String> roleIds, String clientId) {
+        return coreFunctionDao.treeMenuTypeByClientId(roleIds, clientId);
+    }
+
+    @Override
     public List<FunctionVo> listFunction(Map<String,Object> coreFunction) {
 
         String functionType = null;
