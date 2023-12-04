@@ -46,7 +46,7 @@ public class CityController extends BaseController {
 
     @ApiOperation(value = "新增行政区域",notes = "主键不可传")
     @RequestMapping(value = "/add",method = {RequestMethod.POST},produces="application/json")
-    public ResponseData add( TbCoreCity coreCity){
+    public ResponseData<String> add( TbCoreCity coreCity){
 
         JpowerAssert.notEmpty(coreCity.getCode(),JpowerError.Arg,"编号不可为空");
         JpowerAssert.notEmpty(coreCity.getName(),JpowerError.Arg,"名称不可为空");

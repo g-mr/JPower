@@ -25,6 +25,7 @@ out
 
 ### IntelliJ IDEA ###
 .idea
+.fleet
 *.iws
 *.iml
 *.ipr
