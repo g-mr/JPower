@@ -24,7 +24,7 @@ spring:
       useGlobalDataSourceStat: true # 合并多个DruidDataSource的监控数据
 
 mybatis-plus:
-  type-aliases-package: com.wlcb..*.dbs.entity.**
+  type-aliases-package: com.*..*.dbs.entity.**
   global-config:
     db-config:
       id-type: ASSIGN_ID
