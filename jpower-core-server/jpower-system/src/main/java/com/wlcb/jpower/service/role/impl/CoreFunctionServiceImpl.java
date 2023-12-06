@@ -326,7 +326,6 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
         List<String> servers = NacosUtil.getAllServers();
         if (Fc.isNotEmpty(servers)){
             //去请求拿到所有的功能点
-            //去请求拿到所有的功能点
             List<Map> list = servers.stream().map(name-> {
                 try {
                     return restTemplate.getForObject("http://"+name+PATH,Map.class);
@@ -341,6 +340,9 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
             if (Fc.isNotEmpty(menus)){
                 //拿到所有的code
                 List<String> allCode = coreFunctionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda().select(TbCoreFunction::getCode),Fc::toStr);
+
+                //存储每个code的父级BTN的CODE
+                Map<String,String> codeMap = new HashMap<>();
 
                 //存储要保存的功能
                 List<TbCoreFunction> functionList = new ArrayList<>();
@@ -358,7 +360,11 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
                                     function.setAlias(fun.get("alias"));
                                     function.setUrl(fun.get("url"));
                                     function.setClientId(tbCoreFunction.getClientId());
-                                    function.setParentId(tbCoreFunction.getId());
+                                    if (Fc.isBlank(fun.get("btnCode"))){
+                                        function.setParentId(tbCoreFunction.getId());
+                                    }else {
+                                        codeMap.put(code, fun.get("btnCode"));
+                                    }
                                     function.setFunctionType(Fc.toInt(fun.get("type")));
                                     function.setTarget(ConstantsEnum.FUNCTION_TARGET.SELF.getValue());
                                     function.setIsHide(Boolean.FALSE);
@@ -371,7 +377,14 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
 
                 //去保存功能点
                 if (Fc.isNotEmpty(functionList)){
-                    return coreFunctionDao.addBatchSomeColumn(functionList);
+                    coreFunctionDao.addBatchSomeColumn(functionList.stream().filter(f->Fc.isNotBlank(f.getParentId())).collect(Collectors.toList()));
+
+                    List<TbCoreFunction> funcs = functionList.stream().filter(f->Fc.isBlank(f.getParentId())).collect(Collectors.toList());
+                    if (Fc.isNotEmpty(funcs)){
+                        Map<String,String> idCode = coreFunctionDao.selectIdByCode(new HashSet<>(codeMap.values()));
+                        funcs = funcs.stream().peek(f-> f.setParentId(idCode.get(codeMap.get(f.getCode())))).collect(Collectors.toList());
+                        coreFunctionDao.addBatchSomeColumn(funcs);
+                    }
                 }
             }
         }

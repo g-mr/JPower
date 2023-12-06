@@ -30,6 +30,11 @@ public @interface Menu {
     String menuCode();
 
     /**
+     * 按钮编号，如果为空则说明在菜单下面
+     **/
+    String btnCode() default "";
+
+    /**
      * 功能编号
      **/
     String code();

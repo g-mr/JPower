@@ -14,6 +14,9 @@ import com.wlcb.jpower.module.mp.support.Condition;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.wlcb.jpower.module.common.utils.constants.JpowerConstants.TOP_CODE;
 
@@ -40,6 +43,18 @@ public class TbCoreFunctionDao extends JpowerServiceImpl<TbCoreFunctionMapper, T
                         .inSql(!ShieldUtil.isRoot(),TbCoreFunction::getId, StringUtil.format(ROLE_SQL, StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE)))
                         .eq(TbCoreFunction::getClientId,clientId)
                         .orderByAsc(TbCoreFunction::getSort));
+    }
+
+    /**
+     * 获取功能的CODE和ID
+     *
+     * @author mr.g
+     * @param codes CODE
+     * @return code,id
+     **/
+    public Map<String, String> selectIdByCode(Set<String> codes) {
+        List<TbCoreFunction> functions = super.list(Condition.<TbCoreFunction>getQueryWrapper().lambda().select(TbCoreFunction::getId,TbCoreFunction::getCode).in(TbCoreFunction::getCode, codes));
+        return functions.stream().collect(Collectors.toMap(TbCoreFunction::getCode,TbCoreFunction::getId));
     }
 }
 
