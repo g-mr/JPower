@@ -1,0 +1,51 @@
+package top.jpower.jpower.service.client.impl;
+
+import top.jpower.jpower.dbs.dao.client.TbCoreClientDao;
+import top.jpower.jpower.dbs.dao.client.mapper.TbCoreClientMapper;
+import top.jpower.jpower.dbs.entity.client.TbCoreClient;
+import top.jpower.jpower.module.common.service.impl.BaseServiceImpl;
+import top.jpower.jpower.module.common.utils.Fc;
+import top.jpower.jpower.module.common.utils.RandomUtil;
+import top.jpower.jpower.module.mp.support.Condition;
+import top.jpower.jpower.service.client.CoreClientService;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
+
+/**
+ * @ClassName CoreClientServiceImpl
+ * @Description TODO 客户端service
+ * @Author 郭丁志
+ * @Date 2020-07-31 13:03
+ * @Version 1.0
+ */
+@Service
+@AllArgsConstructor
+public class CoreClientServiceImpl extends BaseServiceImpl<TbCoreClientMapper, TbCoreClient> implements CoreClientService {
+
+    private TbCoreClientDao coreClientDao;
+
+    @Override
+    public TbCoreClient loadClientByClientCode(String clientCode) {
+        return coreClientDao.getOne(Condition.<TbCoreClient>getQueryWrapper().lambda()
+                .eq(TbCoreClient::getClientCode,clientCode));
+    }
+
+    @Override
+    public String queryIdByCode(String clientCode) {
+        return coreClientDao.queryIdByCode(clientCode);
+    }
+
+    @Override
+    public boolean saveOrUpdate(TbCoreClient coreClient){
+        if (Fc.isBlank(coreClient.getId())){
+            coreClient.setClientSecret(RandomUtil.randomString(6));
+        }
+        return coreClientDao.saveOrUpdate(coreClient);
+    }
+
+    @Override
+    public boolean save(TbCoreClient coreClient){
+        coreClient.setClientSecret(RandomUtil.randomString(6));
+        return coreClientDao.save(coreClient);
+    }
+}

@@ -14,7 +14,7 @@
         <property scope="context" name="level" value="INFO" />
     </springProfile>
 
-    <contextListener class="com.wlcb.jpower.log.listener.LoggerStartupListener"/>
+    <contextListener class="top.jpower.jpower.log.listener.LoggerStartupListener"/>
 
     <!-- 彩色日志 -->
     <!-- 彩色日志依赖的渲染类 -->
@@ -71,7 +71,7 @@
     <logger name="springfox.documentation" level="info" />
     <logger name="_org.springframework.web.servlet.HandlerMapping.Mappings" level="info" />
     <logger name="_org.springframework.web.reactive.HandlerMapping.Mappings" level="info" />
-    <logger name="com.wlcb.jpower.dbs.dao" level="info" additivity="false"/>
+    <logger name="top.jpower.jpower.dbs.dao" level="info" additivity="false"/>
 
     <!-- 日志输出级别 -->
     <root level="${level}">

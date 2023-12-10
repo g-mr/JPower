@@ -11,7 +11,7 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.wlcb</groupId>
+    <groupId>top.jpower</groupId>
     <artifactId>jpower</artifactId>
     <version>2.1.9</version>
 

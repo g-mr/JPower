@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>jpower</artifactId>
-        <groupId>com.wlcb</groupId>
+        <groupId>top.jpower</groupId>
         <version>2.1.9</version>
     </parent>
     
@@ -20,37 +20,37 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.wlcb</groupId>
+            <groupId>top.jpower</groupId>
             <artifactId>common-tool</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.wlcb</groupId>
+            <groupId>top.jpower</groupId>
             <artifactId>common-swagger</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.wlcb</groupId>
+            <groupId>top.jpower</groupId>
             <artifactId>common-redis</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.wlcb</groupId>
+            <groupId>top.jpower</groupId>
             <artifactId>common-log</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.wlcb</groupId>
+            <groupId>top.jpower</groupId>
             <artifactId>common-nacos</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.wlcb</groupId>
+            <groupId>top.jpower</groupId>
             <artifactId>common-deploy</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>

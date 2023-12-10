@@ -1,3 +1,23 @@
+## 这些配置可以放到NACOS里面
+
+#通用配置
+server:
+  tomcat:
+    accept-count: 600
+    max-connections: 10000
+    threads:
+      max: 500
+  undertow:
+    # 设置IO线程数, 它主要执行非阻塞的任务,它们会负责多个连接, 默认设置每个CPU核心一个线程
+    threads:
+      io: 4
+      # 阻塞任务线程池, 当执行类似servlet请求阻塞操作, undertow会从这个线程池中取得线程,它的值设置取决于系统的负载
+      worker: 20
+    # 以下的配置会影响buffer,这些buffer会用于服务器连接的IO操作
+    buffer-size: 1024
+    # 是否分配的直接内存
+    direct-buffers: true
+
 #redis配置
 spring:
   redis:
@@ -11,6 +31,75 @@ spring:
     #cluster:
     #  nodes: 127.0.0.1:6379,127.0.0.1:6378,127.0.0.1:6377
     #  commandTimeout: 5000
+    #出现错误时, 直接抛出异常(便于异常统一处理，否则捕获不到404)
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
+  #通用配置
+  servlet:
+    multipart:
+      enabled: true
+      #单个数据的大小
+      max-file-size: 10MB
+      #总数据的大小
+      max-request-size: 20MB
+  cloud:
+    sentinel:
+      eager: true
+      log:
+        dir: ./logs/sentinel
+  security:
+    user:
+      name: "admin"
+      password: "admin"
+
+#feign配置
+feign:
+  sentinel:
+    enabled: true
+  okhttp:
+    enabled: true
+  httpclient:
+    enabled: false
+
+management:
+  endpoint:
+    shutdown:
+      #开启端点
+      enabled: true
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        #开启所有接口
+        include: "*"
+
+#knife4j配置
+knife4j:
+  #启用
+  enable: true
+  #基础认证
+  basic:
+    enable: false
+    username: jpower
+    password: jpower
+  #增强配置
+  setting:
+    enableSwaggerModels: true
+    enableDocumentManage: true
+    enableHost: false
+    enableHostText: http://localhost
+    enableRequestCache: true
+    enableFilterMultipartApis: false
+    enableFilterMultipartApiMethodType: POST
+    language: zh-CN
+    enableVersion: true
+    enableFooter: false
+    enableFooterCustom: true
+    footerCustomContent: Copyright © 2021 JPower All Rights Reserved
 
 jpower:
   server: CLOUD
@@ -30,7 +119,7 @@ jpower:
       grouplist: localhost:8091
     datasource:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/jpower?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8
+      url: jdbc:mysql://localhost:3306/jpower_bak?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&autoReconnect=true&useTimezone=true&serverTimezone=GMT%2B8
       username: root
       password: 12345678
   #   测试环境

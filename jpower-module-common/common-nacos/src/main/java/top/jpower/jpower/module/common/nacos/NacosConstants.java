@@ -1,0 +1,45 @@
+package top.jpower.jpower.module.common.nacos;
+
+import top.jpower.jpower.module.common.utils.Fc;
+import top.jpower.jpower.module.common.utils.constants.AppConstant;
+import top.jpower.jpower.module.common.utils.constants.StringPool;
+
+/**
+ * NacosConstants
+ *
+ * @author mr.g
+ **/
+public interface NacosConstants {
+
+    /** 配置文件类型 **/
+    String FILE_EXTENSION = "yaml";
+
+    /** 配置文件是否支持动态刷新 **/
+    String CONFIG_REFRESH = "true";
+
+    /** 分组 **/
+    String CONFIG_GROUP = "DEFAULT_GROUP";
+
+    /**
+     * 动态获取公共nacos地址
+     *
+     * @param profile 环境变量
+     * @return addr
+     */
+    static String nacosProfileDataId(String profile) {
+        if (Fc.isBlank(profile)){
+            profile = AppConstant.DEV_CODE;
+        }
+        return AppConstant.getInstance().getJpower().concat(StringPool.DASH).concat(profile).concat(StringPool.DOT).concat(FILE_EXTENSION);
+    }
+
+    /**
+     * 动态获取公共nacos地址
+     *
+     * @return addr
+     */
+    static String nacosDataId() {
+        return AppConstant.getInstance().getJpower().concat(StringPool.DOT).concat(FILE_EXTENSION);
+    }
+
+}
