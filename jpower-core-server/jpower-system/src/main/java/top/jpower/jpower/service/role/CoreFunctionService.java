@@ -168,7 +168,7 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @param clientId 客户端ID
      * @return java.util.List<top.jpower.jpower.dbs.entity.function.TbCoreFunction>
      **/
-    List<TbCoreFunction> listButByMenu(List<String> roleIds, String id, String clientId);
+    List<Tree<String>> treeButByMenu(List<String> roleIds, String id, String clientId);
 
     /**
      * 生成功能点
@@ -186,7 +186,7 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @param ids 主键
      * @return boolean
      **/
-    boolean saveHierarchy(String parentId, List<String> ids);
+    boolean hierarchySave(String parentId, List<String> ids);
 
     /**
      * 查询菜单列表

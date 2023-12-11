@@ -5,7 +5,9 @@ import top.jpower.jpower.module.common.utils.constants.StringPool;
 import lombok.NonNull;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -386,5 +388,29 @@ public class StringUtil extends StrUtil {
         }
 
         return template2;
+    }
+
+    /**
+     * 替换list中所有得元素
+     * e.g: 只替换匹配到得第一个
+     *
+     * @author mr.g
+     * @param str
+     * @param searchListStr
+     * @param replacement
+     * @return java.lang.String
+     **/
+    public static String replaceFirst(CharSequence str, List<? extends  CharSequence> searchListStr, CharSequence replacement) {
+
+        AtomicReference<String> newStr = new AtomicReference<>();
+
+        for (CharSequence searchStr : searchListStr) {
+            newStr.set(replace(str, searchStr, replacement));
+            if (!Fc.equalsValue(str, newStr.get())) {
+                break;
+            }
+        }
+
+        return newStr.get();
     }
 }

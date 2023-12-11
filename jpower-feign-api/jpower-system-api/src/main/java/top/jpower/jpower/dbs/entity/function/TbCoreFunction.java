@@ -31,6 +31,8 @@ public class TbCoreFunction extends BaseEntity implements Serializable {
     private String code;
     @ApiModelProperty("父级ID")
     private String parentId;
+    @ApiModelProperty("祖级ID")
+    private String ancestorId;
     @ApiModelProperty("地址")
     private String url;
     @ApiModelProperty("功能类型 字典：FUNCTION_TYPE")

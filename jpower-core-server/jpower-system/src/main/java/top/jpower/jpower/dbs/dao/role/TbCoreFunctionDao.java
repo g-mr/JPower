@@ -52,9 +52,11 @@ public class TbCoreFunctionDao extends JpowerServiceImpl<TbCoreFunctionMapper, T
      * @param codes CODE
      * @return code,id
      **/
-    public Map<String, String> selectIdByCode(Set<String> codes) {
-        List<TbCoreFunction> functions = super.list(Condition.<TbCoreFunction>getQueryWrapper().lambda().select(TbCoreFunction::getId,TbCoreFunction::getCode).in(TbCoreFunction::getCode, codes));
-        return functions.stream().collect(Collectors.toMap(TbCoreFunction::getCode,TbCoreFunction::getId));
+    public Map<String, TbCoreFunction> selectIdByCode(Set<String> codes) {
+        List<TbCoreFunction> functions = super.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
+                .select(TbCoreFunction::getId,TbCoreFunction::getCode,TbCoreFunction::getAncestorId)
+                .in(TbCoreFunction::getCode, codes));
+        return functions.stream().collect(Collectors.toMap(TbCoreFunction::getCode, f->f));
     }
 }
 

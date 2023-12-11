@@ -11,6 +11,7 @@ import top.jpower.jpower.dbs.dao.role.TbCoreRoleFunctionDao;
 import top.jpower.jpower.dbs.dao.role.mapper.TbCoreFunctionMapper;
 import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
 import top.jpower.jpower.dbs.entity.function.TbCoreFunctionMenu;
+import top.jpower.jpower.dbs.entity.org.TbCoreOrg;
 import top.jpower.jpower.dbs.entity.role.TbCoreRoleFunction;
 import top.jpower.jpower.module.common.auth.RoleConstant;
 import top.jpower.jpower.module.common.service.impl.BaseServiceImpl;
@@ -34,6 +35,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static top.jpower.jpower.module.common.utils.constants.JpowerConstants.TOP_CODE;
 import static top.jpower.jpower.module.config.BuiltController.PATH;
 
 /**
@@ -77,6 +79,12 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
 
     @Override
     public Boolean add(TbCoreFunction coreFunction) {
+        if (Fc.isBlank(coreFunction.getParentId()) || Fc.equalsValue(coreFunction.getParentId(), TOP_CODE)){
+            coreFunction.setParentId(TOP_CODE);
+            coreFunction.setAncestorId(TOP_CODE);
+        }else {
+            coreFunction.setAncestorId(coreFunction.getParentId().concat(StringPool.COMMA).concat(Fc.toStr(coreFunctionDao.getById(coreFunction.getParentId()).getAncestorId())));
+        }
         return coreFunctionDao.save(coreFunction);
     }
 
@@ -119,18 +127,40 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
             }
         }
 
+        if (Fc.isNotBlank(coreFunction.getParentId())){
+            coreFunction.setAncestorId(StringUtil.replace(function.getAncestorId(),function.getParentId(),coreFunction.getParentId()));
+        }
+
         return coreFunctionDao.updateById(coreFunction);
     }
 
     @Override
-    public boolean saveHierarchy(String parentId, List<String> ids) {
-
+    public boolean hierarchySave(String parentId, List<String> ids) {
+        //把和顶级菜单有关联得关系删除
         functionMenuDao.removeReal(Condition.<TbCoreFunctionMenu>getQueryWrapper()
                 .lambda().in(TbCoreFunctionMenu::getFunctionId,ids));
 
-        return coreFunctionDao.update(Wrappers.<TbCoreFunction>lambdaUpdate()
-                .set(TbCoreFunction::getParentId, parentId)
-                .in(TbCoreFunction::getId, ids));
+
+        List<TbCoreFunction> list = coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda().in(TbCoreFunction::getId,ids).or(or->{
+            for (String id : ids) {
+                or.like(TbCoreFunction::getAncestorId, id).or();
+            }
+        }));
+
+        TbCoreFunction parentFunction = coreFunctionDao.getById(parentId);
+
+        List<String> oldParents = list.stream().filter(f->ids.contains(f.getId())).map(TbCoreFunction::getParentId).collect(Collectors.toList());
+
+        list.forEach(f->{
+            if (ids.contains(f.getId())){
+                f.setParentId(parentId);
+                f.setAncestorId(parentFunction.getAncestorId().concat(StringPool.COMMA).concat(parentId));
+            }else {
+                f.setAncestorId(StringUtil.replaceFirst(f.getAncestorId(), oldParents, parentId));
+            }
+        });
+
+        return coreFunctionDao.updateBatchById(list);
     }
 
     /**
@@ -281,24 +311,19 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
                 .select(TbCoreFunction::getCode)
                 .eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.BTN.getValue())
                 .eq(TbCoreFunction::getClientId,clientId)
-                .and(Fc.isNotEmpty(listId),q -> q.in(TbCoreFunction::getParentId,listId).or().eq(TbCoreFunction::getParentId, JpowerConstants.TOP_CODE))
+                .and(Fc.isNotEmpty(listId),q -> q.in(TbCoreFunction::getParentId,listId).or().eq(TbCoreFunction::getParentId, TOP_CODE))
                 .inSql(!ShieldUtil.isRoot(), TbCoreFunction::getId,StringUtil.format(ROLE_SQL,inSql)),Fc::toStr);
     }
 
     @Override
-    public List<TbCoreFunction> listButByMenu(List<String> roleIds, String parentId, String clientId) {
-        LambdaQueryWrapper<TbCoreFunction> wrapper = Condition.<TbCoreFunction>getQueryWrapper()
-                .lambda()
-                .eq(TbCoreFunction::getParentId,parentId)
-                .ne(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.MENU.getValue())
-                .orderByAsc(TbCoreFunction::getFunctionType);
-
-        if (!ShieldUtil.isRoot()){
-            // 如果不是超级用户，则查出自己权限的资源
-            wrapper.inSql(TbCoreFunction::getId,StringUtil.format(ROLE_SQL,StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE)));
-        }
-
-        return coreFunctionDao.list(wrapper.eq(TbCoreFunction::getClientId,clientId).orderByAsc(TbCoreFunction::getSort));
+    public List<Tree<String>> treeButByMenu(List<String> roleIds, String parentId, String clientId) {
+        return coreFunctionDao.tree(Condition.getLambdaTreeWrapper(TbCoreFunction.class, TbCoreFunction::getId, TbCoreFunction::getParentId)
+                .select(TbCoreFunction::getFunctionName,TbCoreFunction::getAlias,TbCoreFunction::getCode,TbCoreFunction::getUrl,TbCoreFunction::getFunctionType)
+                .eq(TbCoreFunction::getClientId,clientId)
+                .eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.BTN.getValue())
+                .inSql(!ShieldUtil.isRoot(),TbCoreFunction::getId,StringUtil.format(ROLE_SQL,StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE)))
+                .like(TbCoreFunction::getAncestorId,parentId)
+                .orderByAsc(TbCoreFunction::getSort));
     }
 
     @Override
@@ -362,6 +387,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
                                     function.setClientId(tbCoreFunction.getClientId());
                                     if (Fc.isBlank(fun.get("btnCode"))){
                                         function.setParentId(tbCoreFunction.getId());
+                                        function.setAncestorId(tbCoreFunction.getAncestorId().concat(StringPool.COMMA).concat(tbCoreFunction.getId()));
                                     }else {
                                         codeMap.put(code, fun.get("btnCode"));
                                     }
@@ -381,9 +407,12 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
 
                     List<TbCoreFunction> funcs = functionList.stream().filter(f->Fc.isBlank(f.getParentId())).collect(Collectors.toList());
                     if (Fc.isNotEmpty(funcs)){
-                        Map<String,String> idCode = coreFunctionDao.selectIdByCode(new HashSet<>(codeMap.values()));
-                        funcs = funcs.stream().peek(f-> f.setParentId(idCode.get(codeMap.get(f.getCode())))).collect(Collectors.toList());
-                        coreFunctionDao.addBatchSomeColumn(funcs);
+                        Map<String,TbCoreFunction> idCode = coreFunctionDao.selectIdByCode(new HashSet<>(codeMap.values()));
+                        coreFunctionDao.addBatchSomeColumn(funcs.stream().peek(f-> {
+                            TbCoreFunction parent = idCode.get(codeMap.get(f.getCode()));
+                            f.setParentId(parent.getId());
+                            f.setAncestorId(parent.getAncestorId().concat(StringPool.COMMA).concat(parent.getId()));
+                        }).collect(Collectors.toList()));
                     }
                 }
             }

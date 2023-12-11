@@ -55,6 +55,21 @@ public class FunctionController extends BaseController {
         return ReturnJsonUtil.data(coreFunctionService.treeMenuTypeByClientId(ShieldUtil.getUserRole(), clientId));
     }
 
+
+    @Function(value = "树形按钮",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_BUT_TREE",type = Menu.TYPE.INTERFACE)
+    })
+    @ApiOperation(value = "登录用户树形按钮", notes = "当不传菜单ID时，会查出顶级按钮；单独查一个菜单时，不会把顶级按钮返回")
+    @GetMapping(value = "/treeButByMenu", produces="application/json")
+    public ResponseData<List<Tree<String>>> treeButByMenu(@ApiParam(value = "菜单Id",required = true) @RequestParam(required = false,defaultValue = TOP_CODE) String id,
+                                                            @ApiParam(value = "客户端ID",required = true) @RequestParam(required = false) String clientId){
+
+        JpowerAssert.notEmpty(clientId,JpowerError.Arg,"客户端ID不可为空");
+
+        return ReturnJsonUtil.data(coreFunctionService.treeButByMenu(ShieldUtil.getUserRole(), Fc.toStr(id, TOP_CODE), clientId));
+    }
+
+
     @Function(value = "菜单列表",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "CHILD_FUNCTION",type = Menu.TYPE.INTERFACE)
     })
@@ -110,9 +125,7 @@ public class FunctionController extends BaseController {
             return ReturnJsonUtil.print(ConstantsReturn.RECODE_BUSINESS,"该菜单已存在", false);
         }
 
-        Boolean is = coreFunctionService.add(coreFunction);
-
-        if (is){
+        if (coreFunctionService.add(coreFunction)){
             CacheUtil.clear(CacheNames.FUNCTION_KEY);
             return ReturnJsonUtil.ok("新增成功",coreFunction.getId());
         }else {
@@ -160,9 +173,7 @@ public class FunctionController extends BaseController {
             }
         }
 
-        Boolean is = coreFunctionService.update(coreFunction);
-
-        if (is){
+        if (coreFunctionService.update(coreFunction)){
             CacheUtil.clear(CacheNames.FUNCTION_KEY);
             return ReturnJsonUtil.ok("修改成功");
         }else {
@@ -179,7 +190,7 @@ public class FunctionController extends BaseController {
 
         JpowerAssert.notEmpty(ids, JpowerError.Arg, "ids不可为空");
 
-        boolean is = coreFunctionService.saveHierarchy(parentId, Fc.toStrList(Fc.toStr(ids,TOP_CODE)));
+        boolean is = coreFunctionService.hierarchySave(parentId, Fc.toStrList(Fc.toStr(ids,TOP_CODE)));
 
         if (is){
             CacheUtil.clear(CacheNames.FUNCTION_KEY);
@@ -289,23 +300,6 @@ public class FunctionController extends BaseController {
         }).collect(Collectors.toList()));
 
         return ReturnJsonUtil.data(ForestNodeMerger.mergeTree(listMap));
-    }
-
-    @Function(value = "菜单资源",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_BUT",type = Menu.TYPE.INTERFACE)
-    })
-    @ApiOperation(value = "查询登录用户一个菜单下的所有按钮接口资源", notes = "当不传菜单ID时，会查出顶级资源；单独查一个菜单时，不会把顶级按钮返回")
-    @GetMapping(value = "/listButByMenu", produces="application/json")
-    public ResponseData<List<TbCoreFunction>> listButByMenu(@ApiParam(value = "菜单Id",required = true) @RequestParam(required = false,defaultValue = TOP_CODE) String id,
-                                                            @ApiParam(value = "客户端ID",required = true) @RequestParam(required = false) String clientId){
-
-        JpowerAssert.notEmpty(clientId,JpowerError.Arg,"客户端ID不可为空");
-
-        if (Fc.isBlank(id)){
-            id = TOP_CODE;
-        }
-
-        return ReturnJsonUtil.data(coreFunctionService.listButByMenu(ShieldUtil.getUserRole(), id, clientId));
     }
 
     @Function(value = "功能点同步",alias = "同步", menus = {
