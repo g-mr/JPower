@@ -11,3 +11,68 @@ INSERT INTO tb_core_dict (id, dict_type_code, code, name, is_stop, parent_id, lo
 
 
 alter table tb_core_function add ancestor_id varchar(255) default '-1' not null comment '祖级ID' after parent_id;
+
+
+UPDATE tb_core_function
+SET ancestor_id = concat(ancestor_id,',',parent_id)
+WHERE
+        parent_id IN (
+        SELECT id
+        FROM (
+                 SELECT
+                     id
+                 FROM
+                     tb_core_function
+                 WHERE
+                         parent_id = '-1'
+             ) as tmp
+    );
+
+
+
+UPDATE tb_core_function f left join  tb_core_function f1 on f.parent_id = f1.id
+SET f.ancestor_id = concat(f1.ancestor_id,',',f.parent_id)
+WHERE
+        f.parent_id IN (
+        SELECT id
+        FROM (
+                 select id
+                 from tb_core_function where parent_id IN (
+
+                     SELECT
+                         id
+                     FROM
+                         tb_core_function
+                     WHERE
+                             parent_id = '-1'
+
+                 )) as tmp
+    );
+
+
+
+UPDATE tb_core_function f left join  tb_core_function f1 on f.parent_id = f1.id
+SET f.ancestor_id = concat(f1.ancestor_id,',',f.parent_id)
+WHERE
+        f. parent_id in (
+        SELECT id
+        FROM (
+                 select id
+                 from tb_core_function
+                 WHERE
+                         parent_id IN (
+
+                         select id
+                         from tb_core_function where parent_id IN (
+
+                             SELECT
+                                 id
+                             FROM
+                                 tb_core_function
+                             WHERE
+                                     parent_id = '-1'
+
+                         )
+                     )
+             ) as tmp
+    );
