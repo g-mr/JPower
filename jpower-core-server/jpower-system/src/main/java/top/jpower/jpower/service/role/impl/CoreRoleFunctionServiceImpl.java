@@ -13,7 +13,7 @@ import top.jpower.jpower.module.common.utils.Fc;
 import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.service.role.CoreFunctionService;
-import top.jpower.jpower.service.role.CoreRolefunctionService;
+import top.jpower.jpower.service.role.CoreRoleFunctionService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +23,8 @@ import java.util.Map;
  * @author mr.gmac
  */
 @AllArgsConstructor
-@Service("coreRolefunctionService")
-public class CoreRolefunctionServiceImpl extends BaseServiceImpl<TbCoreRoleFunctionMapper, TbCoreRoleFunction> implements CoreRolefunctionService {
+@Service("coreRoleFunctionService")
+public class CoreRoleFunctionServiceImpl extends BaseServiceImpl<TbCoreRoleFunctionMapper, TbCoreRoleFunction> implements CoreRoleFunctionService {
 
     public TbCoreRoleFunctionDao coreRoleFunctionDao;
     public CoreFunctionService coreFunctionService;
@@ -36,7 +36,7 @@ public class CoreRolefunctionServiceImpl extends BaseServiceImpl<TbCoreRoleFunct
     }
 
     @Override
-    public boolean addRolefunctions(String roleId, String functionIds) {
+    public boolean addRoleFunctions(String roleId, String functionIds, boolean isAutoSaveInterface) {
 
         //先删除角色原有权限
         coreRoleFunctionDao.removeRealByMap(ChainMap.<String,Object>create().put("role_id",roleId).build());
@@ -44,12 +44,14 @@ public class CoreRolefunctionServiceImpl extends BaseServiceImpl<TbCoreRoleFunct
         List<String> funcIds = Fc.toStrList(functionIds);
 
         //把下级的接口权限自动给
-        List<String> fIds = coreFunctionService.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
-                        .select(TbCoreFunction::getId)
-                        .eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.INTERFACE.getValue())
-                        .in(TbCoreFunction::getParentId, Fc.toStrList(functionIds)), Fc::toStr);
-        if (Fc.isNotEmpty(fIds)){
-            funcIds.addAll(fIds);
+        if (isAutoSaveInterface){
+            List<String> fIds = coreFunctionService.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
+                    .select(TbCoreFunction::getId)
+                    .eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.INTERFACE.getValue())
+                    .in(TbCoreFunction::getParentId, Fc.toStrList(functionIds)), Fc::toStr);
+            if (Fc.isNotEmpty(fIds)){
+                funcIds.addAll(fIds);
+            }
         }
 
         List<TbCoreRoleFunction> roleFunctions = new ArrayList<>();

@@ -1,6 +1,12 @@
 package top.jpower.jpower.controller.role;
 
 import cn.hutool.core.lang.tree.Tree;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.bind.annotation.*;
 import top.jpower.jpower.dbs.entity.role.TbCoreRole;
 import top.jpower.jpower.module.annotation.Function;
 import top.jpower.jpower.module.annotation.Menu;
@@ -17,14 +23,9 @@ import top.jpower.jpower.module.common.utils.ShieldUtil;
 import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
 import top.jpower.jpower.module.common.utils.constants.StringPool;
 import top.jpower.jpower.module.mp.support.Condition;
+import top.jpower.jpower.service.role.CoreFunctionService;
+import top.jpower.jpower.service.role.CoreRoleFunctionService;
 import top.jpower.jpower.service.role.CoreRoleService;
-import top.jpower.jpower.service.role.CoreRolefunctionService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import lombok.AllArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,8 @@ import static top.jpower.jpower.module.common.utils.constants.JpowerConstants.TO
 public class RoleController extends BaseController {
 
     private CoreRoleService coreRoleService;
-    private CoreRolefunctionService coreRolefunctionService;
+    private CoreFunctionService coreFunctionService;
+    private CoreRoleFunctionService coreRoleFunctionService;
 
     @Function(value = "树形角色列表",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_LIST_TREE",type = Menu.TYPE.INTERFACE)
@@ -150,7 +152,7 @@ public class RoleController extends BaseController {
 
         JpowerAssert.notEmpty(roleId, JpowerError.Arg,"角色id不可为空");
 
-        List<Map<String,Object>> roleFunction = coreRolefunctionService.selectRoleFunctionByRoleId(roleId);
+        List<Map<String,Object>> roleFunction = coreRoleFunctionService.selectRoleFunctionByRoleId(roleId);
         return ReturnJsonUtil.ok("查询成功", roleFunction);
     }
 
@@ -159,16 +161,17 @@ public class RoleController extends BaseController {
     })
     @ApiOperation("重新给角色赋权")
     @OperateLog(title = "重新给角色赋权",isSaveLog = true)
-    @RequestMapping(value = "/addFunction",method = {RequestMethod.POST},produces="application/json")
+    @PostMapping(value = "/addFunction",produces="application/json")
     public ResponseData addFunction(@ApiParam(value = "角色主键",required = true) @RequestParam String roleId,
                                     @ApiParam(value = "功能主键 多个逗号分割") @RequestParam(required = false) String functionIds,
-                                    @ApiParam(value = "顶级菜单主键 多个逗号分割") @RequestParam(required = false) String topMenuIds){
+                                    @ApiParam(value = "顶级菜单主键 多个逗号分割") @RequestParam(required = false) String topMenuIds,
+                                    @ApiParam(value = "是否自动保存接口权限", defaultValue = "false") @RequestParam(required = false, defaultValue = "true") Boolean isAutoSaveInterface){
 
         JpowerAssert.notEmpty(roleId, JpowerError.Arg,"角色id不可为空");
         JpowerAssert.notNull(coreRoleService.getById(roleId),JpowerError.Business,"该角色不存在");
 
         //保存功能权限和顶部菜单权限
-        if (coreRolefunctionService.addRolefunctions(roleId,functionIds) && coreRoleService.saveTopMenu(roleId,Fc.toStrList(topMenuIds))){
+        if (coreRoleFunctionService.addRoleFunctions(roleId, functionIds, isAutoSaveInterface) && coreRoleService.saveTopMenu(roleId,Fc.toStrList(topMenuIds))){
             TbCoreRole role = coreRoleService.getById(roleId);
             CacheUtil.clear(CacheNames.ROLE_KEY,role.getTenantCode());
             CacheUtil.clear(CacheNames.FUNCTION_KEY,role.getTenantCode());
@@ -179,7 +182,7 @@ public class RoleController extends BaseController {
     }
 
     @Function(value = "顶部菜单ID",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_TOPMENU_ID",type = Menu.TYPE.INTERFACE)
+        @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_TOPMENU_ID",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("角色关联的顶部菜单ID")
     @GetMapping(value = "/topMenuId",produces="application/json")
@@ -188,4 +191,5 @@ public class RoleController extends BaseController {
 
         return ReturnJsonUtil.data(coreRoleService.topMenuId(roleId));
     }
+
 }

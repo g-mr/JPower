@@ -1,9 +1,13 @@
 package top.jpower.jpower.service.role.impl;
 
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.lang.tree.Tree;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
 import top.jpower.jpower.dbs.dao.client.TbCoreClientDao;
 import top.jpower.jpower.dbs.dao.role.TbCoreFunctionDao;
 import top.jpower.jpower.dbs.dao.role.TbCoreFunctionMenuDao;
@@ -11,7 +15,6 @@ import top.jpower.jpower.dbs.dao.role.TbCoreRoleFunctionDao;
 import top.jpower.jpower.dbs.dao.role.mapper.TbCoreFunctionMapper;
 import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
 import top.jpower.jpower.dbs.entity.function.TbCoreFunctionMenu;
-import top.jpower.jpower.dbs.entity.org.TbCoreOrg;
 import top.jpower.jpower.dbs.entity.role.TbCoreRoleFunction;
 import top.jpower.jpower.module.common.auth.RoleConstant;
 import top.jpower.jpower.module.common.service.impl.BaseServiceImpl;
@@ -20,17 +23,12 @@ import top.jpower.jpower.module.common.utils.NacosUtil;
 import top.jpower.jpower.module.common.utils.ShieldUtil;
 import top.jpower.jpower.module.common.utils.StringUtil;
 import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
-import top.jpower.jpower.module.common.utils.constants.JpowerConstants;
 import top.jpower.jpower.module.common.utils.constants.StringPool;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.module.mp.support.LambdaTreeWrapper;
 import top.jpower.jpower.service.role.CoreFunctionService;
 import top.jpower.jpower.vo.DataFunctionVo;
 import top.jpower.jpower.vo.FunctionVo;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -180,12 +178,35 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
                 .orderByAsc(TbCoreFunction::getSort));
     }
 
+    /**
+     * 客户端下的接口资源
+     *
+     * @param roleIds  角色ID
+     * @param clientId 客户端ID
+     * @return 接口资源
+     * @author mr.g
+     **/
     @Override
-    public List<String> queryUrlIdByRole(String roleIds) {
-        return coreRoleFunctionDao.listObjs(Condition.<TbCoreRoleFunction>getQueryWrapper()
+    public List<Map<String, Object>> listInterface(List<String> roleIds, String clientId) {
+        return coreFunctionDao.listInterface(roleIds,clientId);
+    }
+
+    @Override
+    public Set<String> queryUrlIdByRole(String roleIds) {
+        return new HashSet<>(coreRoleFunctionDao.listObjs(Condition.<TbCoreRoleFunction>getQueryWrapper()
                 .lambda()
                 .select(TbCoreRoleFunction::getFunctionId)
-                .in(TbCoreRoleFunction::getRoleId,Fc.toStrList(roleIds)),Fc::toStr);
+                .in(TbCoreRoleFunction::getRoleId,Fc.toStrList(roleIds)),Fc::toStr));
+//        List<String> listFunctionId = coreRoleFunctionDao.listObjs(Condition.<TbCoreRoleFunction>getQueryWrapper()
+//                .lambda()
+//                .select(TbCoreRoleFunction::getFunctionId)
+//                .in(TbCoreRoleFunction::getRoleId,Fc.toStrList(roleIds)),Fc::toStr);
+//
+//        List<String> allMenuBtnIds = coreFunctionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
+//                .select(TbCoreFunction::getId).
+//                in(TbCoreFunction::getFunctionType, ListUtil.of(ConstantsEnum.FUNCTION_TYPE.MENU.getValue(),ConstantsEnum.FUNCTION_TYPE.BTN.getValue())), Fc::toStr);
+//
+//        return CollUtil.intersectionDistinct(listFunctionId, allMenuBtnIds);
     }
 
     @Override
@@ -317,12 +338,35 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
 
     @Override
     public List<Tree<String>> treeButByMenu(List<String> roleIds, String parentId, String clientId) {
+
+        List<String> parentIds = coreFunctionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
+                        .select(TbCoreFunction::getId)
+                        .eq(TbCoreFunction::getClientId,clientId)
+                        .eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.BTN.getValue())
+                        .eq(TbCoreFunction::getParentId,parentId)
+                        .inSql(!ShieldUtil.isRoot(),TbCoreFunction::getId,StringUtil.format(ROLE_SQL,StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE)))
+                ,Fc::toStr);
+        if (Fc.isEmpty(parentIds)){
+            return ListUtil.toList();
+        }
+
         return coreFunctionDao.tree(Condition.getLambdaTreeWrapper(TbCoreFunction.class, TbCoreFunction::getId, TbCoreFunction::getParentId)
                 .select(TbCoreFunction::getFunctionName,TbCoreFunction::getAlias,TbCoreFunction::getCode,TbCoreFunction::getUrl,TbCoreFunction::getFunctionType)
                 .eq(TbCoreFunction::getClientId,clientId)
                 .eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.BTN.getValue())
                 .inSql(!ShieldUtil.isRoot(),TbCoreFunction::getId,StringUtil.format(ROLE_SQL,StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE)))
-                .like(TbCoreFunction::getAncestorId,parentId)
+                .func(q->{
+                    if (Fc.equalsValue(parentId, TOP_CODE)){
+                        q.and(and->{
+                            and.eq(TbCoreFunction::getParentId, parentId);
+                            for (String pId: parentIds){
+                                and.or(or->or.like(TbCoreFunction::getAncestorId, pId));
+                            }
+                        });
+                    } else {
+                        q.like(TbCoreFunction::getAncestorId,parentId);
+                    }
+                })
                 .orderByAsc(TbCoreFunction::getSort));
     }
 

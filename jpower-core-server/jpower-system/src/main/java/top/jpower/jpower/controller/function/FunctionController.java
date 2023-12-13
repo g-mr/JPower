@@ -2,6 +2,11 @@ package top.jpower.jpower.controller.function;
 
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.lang.tree.Tree;
+import io.swagger.annotations.*;
+import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.jpower.dbs.entity.client.TbCoreClient;
 import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
 import top.jpower.jpower.module.annotation.Function;
@@ -18,15 +23,11 @@ import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.service.client.CoreClientService;
 import top.jpower.jpower.service.role.CoreFunctionService;
 import top.jpower.jpower.vo.FunctionVo;
-import io.swagger.annotations.*;
-import lombok.AllArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static top.jpower.jpower.module.common.utils.constants.JpowerConstants.TOP_CODE;
@@ -59,7 +60,7 @@ public class FunctionController extends BaseController {
     @Function(value = "树形按钮",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_BUT_TREE",type = Menu.TYPE.INTERFACE)
     })
-    @ApiOperation(value = "登录用户树形按钮", notes = "当不传菜单ID时，会查出顶级按钮；单独查一个菜单时，不会把顶级按钮返回")
+    @ApiOperation(value = "登录用户树形按钮接口", notes = "当不传菜单ID时，会查出顶级按钮接口；单独查一个菜单时，不会把顶级按钮接口返回")
     @GetMapping(value = "/treeButByMenu", produces="application/json")
     public ResponseData<List<Tree<String>>> treeButByMenu(@ApiParam(value = "菜单Id",required = true) @RequestParam(required = false,defaultValue = TOP_CODE) String id,
                                                             @ApiParam(value = "客户端ID",required = true) @RequestParam(required = false) String clientId){
@@ -69,6 +70,16 @@ public class FunctionController extends BaseController {
         return ReturnJsonUtil.data(coreFunctionService.treeButByMenu(ShieldUtil.getUserRole(), Fc.toStr(id, TOP_CODE), clientId));
     }
 
+    @Function(value = "接口资源",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE", btnCode = "SYSTEM_ROLE_UPDATEFUNCTION",code = "ROLE_INTERFACE_LIST",type = Menu.TYPE.INTERFACE)
+    })
+    @ApiOperation(value = "接口资源")
+    @GetMapping(value = "/listInterface", produces="application/json")
+    public ResponseData<List<Map<String, Object>>> listInterface(@ApiParam(value = "客户端ID",required = true) @RequestParam(required = false) String clientId){
+        JpowerAssert.notEmpty(clientId,JpowerError.Arg,"客户端ID不可为空");
+
+        return ReturnJsonUtil.data(coreFunctionService.listInterface(ShieldUtil.getUserRole(), clientId));
+    }
 
     @Function(value = "菜单列表",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "CHILD_FUNCTION",type = Menu.TYPE.INTERFACE)
@@ -205,8 +216,8 @@ public class FunctionController extends BaseController {
     })
     @ApiOperation("根据角色ID查询所有的权限ID")
     @RequestMapping(value = "/queryUrlIdByRole",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData<List<String>> queryUrlIdByRole(@ApiParam(value = "角色ID 多个逗号分割",required = true) @RequestParam String roleIds){
-        List<String> list = coreFunctionService.queryUrlIdByRole(roleIds);
+    public ResponseData<Set<String>> queryUrlIdByRole(@ApiParam(value = "角色ID 多个逗号分割",required = true) @RequestParam String roleIds){
+        Set<String> list = coreFunctionService.queryUrlIdByRole(roleIds);
         return ReturnJsonUtil.ok("查询成功",list);
     }
 

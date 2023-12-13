@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * @author mr.gmac
  */
-public interface CoreRolefunctionService extends BaseService<TbCoreRoleFunction> {
+public interface CoreRoleFunctionService extends BaseService<TbCoreRoleFunction> {
 
     /**
      * @author 郭丁志
@@ -28,6 +28,6 @@ public interface CoreRolefunctionService extends BaseService<TbCoreRoleFunction>
      * @param functionIds
      * @return java.lang.Integer
      */
-    boolean addRolefunctions(String roleId, String functionIds);
+    boolean addRoleFunctions(String roleId, String functionIds, boolean isAutoSaveInterface);
 
 }

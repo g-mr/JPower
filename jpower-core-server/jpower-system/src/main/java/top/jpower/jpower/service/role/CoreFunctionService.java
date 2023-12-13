@@ -8,6 +8,7 @@ import top.jpower.jpower.vo.FunctionVo;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author mr.gmac
@@ -94,7 +95,7 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @param roleIds
      * @return java.util.List<top.jpower.jpower.module.common.node.Node>
      */
-    List<String> queryUrlIdByRole(String roleIds);
+    Set<String> queryUrlIdByRole(String roleIds);
 
     /**
      * @author 郭丁志
@@ -196,5 +197,13 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      **/
     List<DataFunctionVo> listDataFunction(Map<String, Object> coreFunction);
 
-
+    /**
+     * 客户端下的接口资源
+     *
+     * @author mr.g
+     * @param roleIds 角色ID
+     * @param clientId 客户端ID
+     * @return 接口资源
+     **/
+    List<Map<String, Object>> listInterface(List<String> roleIds, String clientId);
 }
