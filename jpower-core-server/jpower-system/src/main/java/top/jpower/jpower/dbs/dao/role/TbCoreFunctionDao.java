@@ -61,7 +61,7 @@ public class TbCoreFunctionDao extends JpowerServiceImpl<TbCoreFunctionMapper, T
 
     public List<Map<String, Object>> listInterface(List<String> roleIds, String clientId) {
         List<Map<String, Object>> list = super.listMaps(Condition.<TbCoreFunction>getQueryWrapper().lambda()
-                        .select(TbCoreFunction::getId,TbCoreFunction::getParentId,TbCoreFunction::getCode,TbCoreFunction::getFunctionName,TbCoreFunction::getAlias,TbCoreFunction::getUrl)
+                        .select(TbCoreFunction::getId,TbCoreFunction::getParentId,TbCoreFunction::getCode,TbCoreFunction::getFunctionName,TbCoreFunction::getAlias,TbCoreFunction::getUrl,TbCoreFunction::getFunctionType)
                         .eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.INTERFACE.getValue())
                         .eq(TbCoreFunction::getClientId,clientId)
                         .inSql(!ShieldUtil.isRoot(), TbCoreFunction::getId, StringUtil.format("select function_id from tb_core_role_function where role_id in ({})",StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE))));
