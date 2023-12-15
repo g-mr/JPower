@@ -197,16 +197,6 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
                 .lambda()
                 .select(TbCoreRoleFunction::getFunctionId)
                 .in(TbCoreRoleFunction::getRoleId,Fc.toStrList(roleIds)),Fc::toStr));
-//        List<String> listFunctionId = coreRoleFunctionDao.listObjs(Condition.<TbCoreRoleFunction>getQueryWrapper()
-//                .lambda()
-//                .select(TbCoreRoleFunction::getFunctionId)
-//                .in(TbCoreRoleFunction::getRoleId,Fc.toStrList(roleIds)),Fc::toStr);
-//
-//        List<String> allMenuBtnIds = coreFunctionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
-//                .select(TbCoreFunction::getId).
-//                in(TbCoreFunction::getFunctionType, ListUtil.of(ConstantsEnum.FUNCTION_TYPE.MENU.getValue(),ConstantsEnum.FUNCTION_TYPE.BTN.getValue())), Fc::toStr);
-//
-//        return CollUtil.intersectionDistinct(listFunctionId, allMenuBtnIds);
     }
 
     @Override
