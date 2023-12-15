@@ -124,7 +124,7 @@ public interface CoreFunctionService extends BaseService<TbCoreFunction> {
      * @Param [roleIds]
      * @return java.util.List<top.jpower.jpower.module.dbs.entity.core.function.TbCoreFunction>
      **/
-    List<String> listBtnByRoleId(List<String> roleIds, String topMenuId);
+    List<String> listBtnByRoleId(List<String> roleIds);
 
     /**
      * @Author 郭丁志

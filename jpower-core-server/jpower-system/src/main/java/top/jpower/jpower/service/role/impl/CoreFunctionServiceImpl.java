@@ -311,28 +311,15 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     }
 
     @Override
-    public List<String> listBtnByRoleId(List<String> roleIds, String topMenuId) {
+    public List<String> listBtnByRoleId(List<String> roleIds) {
         String inSql = StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE);
 
         String clientId = clientDao.queryIdByCode(ShieldUtil.getClientCode());
-
-        Set<String> listId = new HashSet<>();
-        if (Fc.isNotBlank(topMenuId)){
-            List<TbCoreFunction> list = coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
-                    .eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.MENU.getValue())
-                    .eq(TbCoreFunction::getClientId, clientId)
-                    .inSql(!ShieldUtil.isRoot(), TbCoreFunction::getId,StringUtil.format(ROLE_SQL,inSql))
-                    .orderByAsc(TbCoreFunction::getSort));
-            //获取顶部菜单关联的左侧菜单
-            listId.addAll(functionMenuDao.listObjs(Condition.<TbCoreFunctionMenu>getQueryWrapper().lambda().select(TbCoreFunctionMenu::getFunctionId).eq(TbCoreFunctionMenu::getMenuId,topMenuId), Fc::toStr));
-            listId.addAll(findDescendants(list,listId));
-        }
 
         return coreFunctionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                 .select(TbCoreFunction::getCode)
                 .eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.BTN.getValue())
                 .eq(TbCoreFunction::getClientId,clientId)
-                .and(Fc.isNotEmpty(listId),q -> q.in(TbCoreFunction::getParentId,listId).or().eq(TbCoreFunction::getParentId, TOP_CODE))
                 .inSql(!ShieldUtil.isRoot(), TbCoreFunction::getId,StringUtil.format(ROLE_SQL,inSql)),Fc::toStr);
     }
 

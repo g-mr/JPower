@@ -242,8 +242,8 @@ public class FunctionController extends BaseController {
 
     @ApiOperation(value = "查询登录用户所有按钮接口资源（用于页面权限）", notes = "用于页面权限判断，会把顶级按钮一起返回，顶级按钮代表所有菜单都可拥有权限")
     @GetMapping(value = "/listBut", produces="application/json")
-    public ResponseData<List<String>> listBut(@ApiParam("顶部菜单ID") String topMenuId){
-        List<String> list = coreFunctionService.listBtnByRoleId(ShieldUtil.getUserRole(),topMenuId);
+    public ResponseData<List<String>> listBut(){
+        List<String> list = coreFunctionService.listBtnByRoleId(ShieldUtil.getUserRole());
         return ReturnJsonUtil.ok("查询成功", list);
     }
 
