@@ -69,8 +69,7 @@ public class TbCoreFunctionDao extends JpowerServiceImpl<TbCoreFunctionMapper, T
         return list.stream().map(map-> MapUtil.edit(map, mp -> new Map.Entry<String, Object>() {
             @Override
             public String getKey() {
-                String s = StringUtil.underlineToHump(mp.getKey());
-                return s;
+                return StringUtil.underlineToHump(mp.getKey());
             }
 
             @Override

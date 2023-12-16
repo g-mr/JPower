@@ -76,3 +76,6 @@ WHERE
                      )
              ) as tmp
     );
+
+
+alter table tb_core_data_scope drop key uk_scope_code;

@@ -124,12 +124,6 @@ public class DataScopeController {
     public ResponseData update(TbCoreDataScope dataScope){
         JpowerAssert.notEmpty(dataScope.getId(), JpowerError.Arg,"主键不可为空");
 
-        TbCoreDataScope coreDataScope = dataScopeService.getOne(Condition.<TbCoreDataScope>getQueryWrapper().lambda()
-                .eq(TbCoreDataScope::getScopeCode,dataScope.getScopeCode()));
-        if (Fc.notNull(coreDataScope) && !Fc.equalsValue(coreDataScope.getId(),dataScope.getId())){
-            return ReturnJsonUtil.fail("编号已经存在");
-        }
-
         CacheUtil.clear(CacheNames.DATASCOPE_KEY);
         return ReturnJsonUtil.status(dataScopeService.updateById(dataScope));
     }
