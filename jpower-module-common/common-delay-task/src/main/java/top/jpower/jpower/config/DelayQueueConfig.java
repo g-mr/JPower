@@ -1,0 +1,21 @@
+package top.jpower.jpower.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import top.jpower.jpower.task.DelayTask;
+
+import java.util.concurrent.DelayQueue;
+
+/**
+ * @author mr.g
+ * @date 2023/6/26 11:49 PM
+ */
+@Configuration(proxyBeanMethods = false)
+public class DelayQueueConfig {
+
+    @Bean
+    public DelayQueue<DelayTask> delayQueue(){
+        return new DelayQueue<>();
+    }
+
+}

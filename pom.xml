@@ -11,7 +11,7 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.wlcb</groupId>
+    <groupId>top.jpower</groupId>
     <artifactId>jpower</artifactId>
     <version>2.1.9</version>
 
@@ -194,18 +194,6 @@
                     <target>${java.version}</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.commonjava.maven.plugins</groupId>

@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>jpower-module-common</artifactId>
-        <groupId>com.wlcb</groupId>
+        <groupId>top.jpower</groupId>
         <version>2.1.9</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -14,14 +14,14 @@
     <dependencies>
 
         <dependency>
-            <groupId>com.wlcb</groupId>
+            <groupId>top.jpower</groupId>
             <artifactId>common-deploy</artifactId>
             <version>${com.jpower.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>com.wlcb</groupId>
+            <groupId>top.jpower</groupId>
             <artifactId>common-feign</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>

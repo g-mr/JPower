@@ -22,32 +22,32 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_city`;
 CREATE TABLE `tb_core_city`  (
-  `id` bigint(0) NOT NULL COMMENT '主键',
-  `code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '城市编码',
-  `pcode` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '上级编码',
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
-  `fullname` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '全称',
-  `rankd` int(0) NULL DEFAULT NULL COMMENT '级别 1：省份/直辖市 2：地市 3：区县 4：乡镇/街道 5：村委',
-  `lng` double(10, 6) NULL DEFAULT NULL COMMENT '经度',
-  `lat` double(10, 6) NULL DEFAULT NULL COMMENT '维度',
-  `country_code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '国家编码',
-  `city_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '城市类型1：首都、2：直辖市、3：地级市、4县级市、9：其他',
-  `note` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
-  `sort_num` int(0) NULL DEFAULT 0 COMMENT '排序',
-  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
-  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
-  `create_org` bigint(0) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `tb_core_city_code_index`(`code`) USING BTREE,
-  INDEX `tb_core_city_code_name_index`(`code`, `name`) USING BTREE,
-  INDEX `tb_core_city_pcode_index`(`pcode`) USING BTREE,
-  INDEX `tb_core_city_rankd_index`(`rankd`) USING BTREE,
-  INDEX `tb_core_city_fullname_index`(`fullname`) USING BTREE,
-  INDEX `code_index`(`code`) USING BTREE,
-  INDEX `pcode_index`(`pcode`) USING BTREE
+                                 `id` bigint(0) NOT NULL COMMENT '主键',
+                                 `code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '城市编码',
+                                 `pcode` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '上级编码',
+                                 `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
+                                 `fullname` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '全称',
+                                 `rankd` int(0) NULL DEFAULT NULL COMMENT '级别 1：省份/直辖市 2：地市 3：区县 4：乡镇/街道 5：村委',
+                                 `lng` double(10, 6) NULL DEFAULT NULL COMMENT '经度',
+                                 `lat` double(10, 6) NULL DEFAULT NULL COMMENT '维度',
+                                 `country_code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '国家编码',
+                                 `city_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '城市类型1：首都、2：直辖市、3：地级市、4县级市、9：其他',
+                                 `note` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
+                                 `sort_num` int(0) NULL DEFAULT 0 COMMENT '排序',
+                                 `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+                                 `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+                                 `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+                                 `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+                                 `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+                                 `create_org` bigint(0) NULL DEFAULT NULL,
+                                 PRIMARY KEY (`id`) USING BTREE,
+                                 INDEX `tb_core_city_code_index`(`code`) USING BTREE,
+                                 INDEX `tb_core_city_code_name_index`(`code`, `name`) USING BTREE,
+                                 INDEX `tb_core_city_pcode_index`(`pcode`) USING BTREE,
+                                 INDEX `tb_core_city_rankd_index`(`rankd`) USING BTREE,
+                                 INDEX `tb_core_city_fullname_index`(`fullname`) USING BTREE,
+                                 INDEX `code_index`(`code`) USING BTREE,
+                                 INDEX `pcode_index`(`pcode`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '城市地区表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -55,23 +55,23 @@ CREATE TABLE `tb_core_city`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_client`;
 CREATE TABLE `tb_core_client`  (
-  `id` bigint(0) NOT NULL COMMENT '主键',
-  `name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '客户端名称',
-  `client_code` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '客户端CODE，唯一约束',
-  `client_secret` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '客户端密钥',
-  `access_token_validity` int(0) NOT NULL DEFAULT 0 COMMENT 'token过期时间，单位秒',
-  `refresh_token_validity` int(0) NOT NULL DEFAULT 0 COMMENT '刷新token时间，单位秒，时间应该比token过期时间更长',
-  `login_limit` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '登录限制',
-  `sort_num` int(0) NULL DEFAULT NULL COMMENT '排序',
-  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
-  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
-  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
-  `create_org` bigint(0) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `unique_client_code`(`client_code`) USING BTREE
+                                   `id` bigint(0) NOT NULL COMMENT '主键',
+                                   `name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '客户端名称',
+                                   `client_code` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '客户端CODE，唯一约束',
+                                   `client_secret` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '客户端密钥',
+                                   `access_token_validity` int(0) NOT NULL DEFAULT 0 COMMENT 'token过期时间，单位秒',
+                                   `refresh_token_validity` int(0) NOT NULL DEFAULT 0 COMMENT '刷新token时间，单位秒，时间应该比token过期时间更长',
+                                   `login_limit` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '登录限制',
+                                   `sort_num` int(0) NULL DEFAULT NULL COMMENT '排序',
+                                   `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
+                                   `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+                                   `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+                                   `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+                                   `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+                                   `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+                                   `create_org` bigint(0) NULL DEFAULT NULL,
+                                   PRIMARY KEY (`id`) USING BTREE,
+                                   UNIQUE INDEX `unique_client_code`(`client_code`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户端系统表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -84,60 +84,60 @@ INSERT INTO `tb_core_client` VALUES (1728752347702018048, '后台管理平台', 
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_data_scope`;
 CREATE TABLE `tb_core_data_scope`  (
-  `id` bigint(0) NOT NULL COMMENT '主键',
-  `menu_id` bigint(0) NULL DEFAULT NULL COMMENT '菜单主键',
-  `scope_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '编号',
-  `scope_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '数据权限名称',
-  `scope_field` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '数据权限字段',
-  `scope_class` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '数据权限类名',
-  `scope_column` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '*' COMMENT '数据可见字段',
-  `scope_type` tinyint(1) NULL DEFAULT NULL COMMENT '数据权限类型 字典：DATA_SCOPE_TYPE',
-  `scope_value` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '数据权限值域',
-  `all_role` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否所有角色都执行',
-  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '数据权限备注',
-  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
-  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
-  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `uk_scope_code`(`scope_code`) USING BTREE
+                                       `id` bigint(0) NOT NULL COMMENT '主键',
+                                       `menu_id` bigint(0) NULL DEFAULT NULL COMMENT '菜单主键',
+                                       `scope_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '编号',
+                                       `scope_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '数据权限名称',
+                                       `scope_field` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '数据权限字段',
+                                       `scope_class` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '数据权限类名',
+                                       `scope_column` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '*' COMMENT '数据可见字段',
+                                       `scope_type` tinyint(1) NULL DEFAULT NULL COMMENT '数据权限类型 字典：DATA_SCOPE_TYPE',
+                                       `scope_value` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '数据权限值域',
+                                       `all_role` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否所有角色都执行',
+                                       `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '数据权限备注',
+                                       `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+                                       `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+                                       `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+                                       `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+                                       `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+                                       `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+                                       PRIMARY KEY (`id`) USING BTREE,
+                                       UNIQUE INDEX `uk_scope_code`(`scope_code`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '数据权限表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_core_data_scope
 -- ----------------------------
-INSERT INTO `tb_core_data_scope` VALUES (1728752350004690944, 1728752670466293760, 'FILE_ALL', '文件管理 [全部可见]', '*', 'com.wlcb.dbs.dao.mapper.selectPage', '-', 1, '', 0, NULL, 1, '2021-03-03 22:33:17', 1, '2023-11-26 12:29:34', 1728752845331021824, 0);
-INSERT INTO `tb_core_data_scope` VALUES (1728752351065849856, 1728752670466293760, 'FILE_ORG', '文件管理 [所在机构可见]', '*', 'com.wlcb.dbs.dao.mapper.selectPage', 'create_org', 3, 'create_org = {orgId}', 0, NULL, 1, '2021-03-03 22:33:17', 1, '2023-11-26 12:29:34', 1728752845331021824, 0);
-INSERT INTO `tb_core_data_scope` VALUES (1728752352655491072, 1728752670466293760, 'FILE_ORG_CHILD', '文件管理 [所在机构可见及子级可见]', '*', 'com.wlcb.dbs.dao.mapper.selectPage', 'create_org', 4, 'create_org in {orgId}', 0, NULL, 1, '2021-03-03 22:33:17', 1, '2023-11-26 12:29:34', 1728752845331021824, 0);
-INSERT INTO `tb_core_data_scope` VALUES (1728752354085748736, 1728752670466293760, 'FILE_USER', '文件管理 [本人可见]', '*', 'com.wlcb.dbs.dao.mapper.selectPage', 'create_user', 2, 'create_user = {userId}', 0, NULL, 1, '2021-03-03 22:33:17', 1, '2023-11-26 12:29:34', 1728752845331021824, 0);
-INSERT INTO `tb_core_data_scope` VALUES (1728752355893493760, 1728752697632800768, 'ORG_CHILD', '部门管理 [所在机构可见及子级可见]', NULL, 'com.wlcb.dbs.dao.org.mapper.TbCoreOrgMapper.listLazyByParent', 'id', 4, 'id in {orgId}', 0, NULL, 1, '2022-09-15 16:36:12', 1, '2023-11-26 12:29:34', 1728752845331021824, 0);
+INSERT INTO `tb_core_data_scope` VALUES (1728752350004690944, 1728752670466293760, 'FILE_ALL', '文件管理 [全部可见]', '*', 'top.jpower.dbs.dao.mapper.selectPage', '-', 1, '', 0, NULL, 1, '2021-03-03 22:33:17', 1, '2023-11-26 12:29:34', 1728752845331021824, 0);
+INSERT INTO `tb_core_data_scope` VALUES (1728752351065849856, 1728752670466293760, 'FILE_ORG', '文件管理 [所在机构可见]', '*', 'top.jpower.dbs.dao.mapper.selectPage', 'create_org', 3, 'create_org = {orgId}', 0, NULL, 1, '2021-03-03 22:33:17', 1, '2023-11-26 12:29:34', 1728752845331021824, 0);
+INSERT INTO `tb_core_data_scope` VALUES (1728752352655491072, 1728752670466293760, 'FILE_ORG_CHILD', '文件管理 [所在机构可见及子级可见]', '*', 'top.jpower.dbs.dao.mapper.selectPage', 'create_org', 4, 'create_org in {orgId}', 0, NULL, 1, '2021-03-03 22:33:17', 1, '2023-11-26 12:29:34', 1728752845331021824, 0);
+INSERT INTO `tb_core_data_scope` VALUES (1728752354085748736, 1728752670466293760, 'FILE_USER', '文件管理 [本人可见]', '*', 'top.jpower.dbs.dao.mapper.selectPage', 'create_user', 2, 'create_user = {userId}', 0, NULL, 1, '2021-03-03 22:33:17', 1, '2023-11-26 12:29:34', 1728752845331021824, 0);
+INSERT INTO `tb_core_data_scope` VALUES (1728752355893493760, 1728752697632800768, 'ORG_CHILD', '部门管理 [所在机构可见及子级可见]', NULL, 'top.jpower.dbs.dao.org.mapper.TbCoreOrgMapper.listLazyByParent', 'id', 4, 'id in {orgId}', 0, NULL, 1, '2022-09-15 16:36:12', 1, '2023-11-26 12:29:34', 1728752845331021824, 0);
 
 -- ----------------------------
 -- Table structure for tb_core_dict
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_dict`;
 CREATE TABLE `tb_core_dict`  (
-  `id` bigint(0) NOT NULL COMMENT '主键',
-  `dict_type_code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字典类型代码',
-  `code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字典代码',
-  `name` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字典名称',
-  `is_stop` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'N' COMMENT '是否停用',
-  `parent_id` bigint(0) NULL DEFAULT -1 COMMENT '上级ID',
-  `locale` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'zh' COMMENT '语言 zh en',
-  `note` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
-  `sort_num` int(0) NULL DEFAULT 0 COMMENT '排序',
-  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
-  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
-  `dict_level` int(0) NULL DEFAULT NULL COMMENT '树形字典结构的级别',
-  `pcode` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '-1' COMMENT '上级代码',
-  `tenant_code` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '000000' COMMENT '租户编码',
-  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
-  PRIMARY KEY (`id`) USING BTREE
+                                 `id` bigint(0) NOT NULL COMMENT '主键',
+                                 `dict_type_code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字典类型代码',
+                                 `code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字典代码',
+                                 `name` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字典名称',
+                                 `is_stop` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'N' COMMENT '是否停用',
+                                 `parent_id` bigint(0) NULL DEFAULT -1 COMMENT '上级ID',
+                                 `locale` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'zh' COMMENT '语言 zh en',
+                                 `note` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
+                                 `sort_num` int(0) NULL DEFAULT 0 COMMENT '排序',
+                                 `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+                                 `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+                                 `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+                                 `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+                                 `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+                                 `dict_level` int(0) NULL DEFAULT NULL COMMENT '树形字典结构的级别',
+                                 `pcode` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '-1' COMMENT '上级代码',
+                                 `tenant_code` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '000000' COMMENT '租户编码',
+                                 `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+                                 PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '字典表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -217,22 +217,22 @@ INSERT INTO `tb_core_dict` VALUES (1728752439150428160, 'PARAM_TYPE', 'query', '
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_dict_type`;
 CREATE TABLE `tb_core_dict_type`  (
-  `id` bigint(0) NOT NULL COMMENT '主键',
-  `dict_type_code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字典类型代码',
-  `dict_type_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字典类型名称',
-  `note` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '描述',
-  `del_enabled` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'N' COMMENT '是否允许删除 N:不允许 Y允许',
-  `sort_num` int(0) NULL DEFAULT 0 COMMENT '排序',
-  `parent_id` bigint(0) NULL DEFAULT -1 COMMENT '父字典类型ID',
-  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
-  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
-  `is_tree` tinyint(1) NULL DEFAULT NULL COMMENT '是否树形结构 字典YN01',
-  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `core_dict_type`(`dict_type_code`) USING BTREE
+                                      `id` bigint(0) NOT NULL COMMENT '主键',
+                                      `dict_type_code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字典类型代码',
+                                      `dict_type_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字典类型名称',
+                                      `note` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '描述',
+                                      `del_enabled` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'N' COMMENT '是否允许删除 N:不允许 Y允许',
+                                      `sort_num` int(0) NULL DEFAULT 0 COMMENT '排序',
+                                      `parent_id` bigint(0) NULL DEFAULT -1 COMMENT '父字典类型ID',
+                                      `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+                                      `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+                                      `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+                                      `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+                                      `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+                                      `is_tree` tinyint(1) NULL DEFAULT NULL COMMENT '是否树形结构 字典YN01',
+                                      `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+                                      PRIMARY KEY (`id`) USING BTREE,
+                                      UNIQUE INDEX `core_dict_type`(`dict_type_code`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '字典类型表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -264,22 +264,22 @@ INSERT INTO `tb_core_dict_type` VALUES (1728752465650040832, 'YYZL', '语言种�
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_file`;
 CREATE TABLE `tb_core_file`  (
-  `id` bigint(0) NOT NULL COMMENT '主键',
-  `name` varchar(127) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文件名称',
-  `file_size` int(0) NULL DEFAULT NULL COMMENT '文件大小 单位：字节',
-  `file_type` varchar(31) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文件类型',
-  `path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文件路径',
-  `content` longblob NULL COMMENT '文件内容',
-  `mark` varchar(156) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文件标识',
-  `storage_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'SERVER' COMMENT '存储类型 字典FILE_STORAGE_TYPE',
-  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
-  `create_user` bigint(0) NULL DEFAULT 1,
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '最后更新人',
-  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
-  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
-  PRIMARY KEY (`id`) USING BTREE
+                                 `id` bigint(0) NOT NULL COMMENT '主键',
+                                 `name` varchar(127) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文件名称',
+                                 `file_size` int(0) NULL DEFAULT NULL COMMENT '文件大小 单位：字节',
+                                 `file_type` varchar(31) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文件类型',
+                                 `path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文件路径',
+                                 `content` longblob NULL COMMENT '文件内容',
+                                 `mark` varchar(156) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文件标识',
+                                 `storage_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'SERVER' COMMENT '存储类型 字典FILE_STORAGE_TYPE',
+                                 `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
+                                 `create_user` bigint(0) NULL DEFAULT 1,
+                                 `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+                                 `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '最后更新人',
+                                 `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+                                 `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+                                 `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+                                 PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '文件表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -287,30 +287,30 @@ CREATE TABLE `tb_core_file`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_function`;
 CREATE TABLE `tb_core_function`  (
-  `id` bigint(0) NOT NULL COMMENT '主键',
-  `client_id` bigint(0) NOT NULL COMMENT '客户端ID',
-  `function_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
-  `alias` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '别名',
-  `code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '功能编码',
-  `parent_id` bigint(0) NULL DEFAULT -1 COMMENT '父级ID',
-  `url` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '资源URL',
-  `function_type` int(0) NOT NULL DEFAULT 0 COMMENT '功能类型 0：按钮 1：菜单 2：接口',
-  `is_hide` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否隐藏',
-  `icon` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '图标',
-  `target` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '_self' COMMENT '打开方式',
-  `sort` int(0) NULL DEFAULT 0 COMMENT '排序',
-  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
-  `moude_summary` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '模块概述',
-  `operate_instruction` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '操作说明',
-  `function_level` int(0) NULL DEFAULT NULL COMMENT '菜单级别',
-  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
-  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
-  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `code_index`(`code`) USING BTREE
+                                     `id` bigint(0) NOT NULL COMMENT '主键',
+                                     `client_id` bigint(0) NOT NULL COMMENT '客户端ID',
+                                     `function_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
+                                     `alias` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '别名',
+                                     `code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '功能编码',
+                                     `parent_id` bigint(0) NULL DEFAULT -1 COMMENT '父级ID',
+                                     `url` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '资源URL',
+                                     `function_type` int(0) NOT NULL DEFAULT 0 COMMENT '功能类型 0：按钮 1：菜单 2：接口',
+                                     `is_hide` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否隐藏',
+                                     `icon` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '图标',
+                                     `target` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '_self' COMMENT '打开方式',
+                                     `sort` int(0) NULL DEFAULT 0 COMMENT '排序',
+                                     `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
+                                     `moude_summary` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '模块概述',
+                                     `operate_instruction` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '操作说明',
+                                     `function_level` int(0) NULL DEFAULT NULL COMMENT '菜单级别',
+                                     `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+                                     `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+                                     `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+                                     `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+                                     `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+                                     `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+                                     PRIMARY KEY (`id`) USING BTREE,
+                                     UNIQUE INDEX `code_index`(`code`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '功能菜单表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -483,16 +483,16 @@ INSERT INTO `tb_core_function` VALUES (1728752821935194112, 1728752347702018048,
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_function_menu`;
 CREATE TABLE `tb_core_function_menu`  (
-  `id` bigint(0) NOT NULL COMMENT '主键',
-  `function_id` bigint(0) NOT NULL COMMENT '功能ID',
-  `menu_id` bigint(0) NOT NULL COMMENT '菜单ID',
-  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
-  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-  `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
-  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
-  PRIMARY KEY (`id`) USING BTREE
+                                          `id` bigint(0) NOT NULL COMMENT '主键',
+                                          `function_id` bigint(0) NOT NULL COMMENT '功能ID',
+                                          `menu_id` bigint(0) NOT NULL COMMENT '菜单ID',
+                                          `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+                                          `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+                                          `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+                                          `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+                                          `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+                                          `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+                                          PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '功能菜单顶级菜单关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -519,31 +519,31 @@ INSERT INTO `tb_core_function_menu` VALUES (1728752843896569856, 172875254448617
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_org`;
 CREATE TABLE `tb_core_org`  (
-  `id` bigint(0) NOT NULL COMMENT '主键',
-  `code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '组织机构编码',
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '组织机构名称',
-  `parent_id` bigint(0) NULL DEFAULT -1 COMMENT '父级ID',
-  `ancestor_id` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '祖级ID',
-  `icon` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '图标',
-  `sort` int(0) NULL DEFAULT 0 COMMENT '排序',
-  `head_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '负责人姓名',
-  `head_phone` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '负责人电话',
-  `head_email` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '负责人邮箱',
-  `contact_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '联系人姓名',
-  `contact_phone` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '联系人电话',
-  `contact_email` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '联系人邮箱',
-  `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '地址',
-  `is_virtual` tinyint(1) NULL DEFAULT 0 COMMENT '是否虚拟机构 0:否 1：是',
-  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
-  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
-  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
-  `tenant_code` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '000000' COMMENT '租户编码',
-  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `code_index`(`code`) USING BTREE
+                                `id` bigint(0) NOT NULL COMMENT '主键',
+                                `code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '组织机构编码',
+                                `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '组织机构名称',
+                                `parent_id` bigint(0) NULL DEFAULT -1 COMMENT '父级ID',
+                                `ancestor_id` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '祖级ID',
+                                `icon` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '图标',
+                                `sort` int(0) NULL DEFAULT 0 COMMENT '排序',
+                                `head_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '负责人姓名',
+                                `head_phone` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '负责人电话',
+                                `head_email` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '负责人邮箱',
+                                `contact_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '联系人姓名',
+                                `contact_phone` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '联系人电话',
+                                `contact_email` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '联系人邮箱',
+                                `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '地址',
+                                `is_virtual` tinyint(1) NULL DEFAULT 0 COMMENT '是否虚拟机构 0:否 1：是',
+                                `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
+                                `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+                                `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+                                `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+                                `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+                                `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+                                `tenant_code` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '000000' COMMENT '租户编码',
+                                `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+                                PRIMARY KEY (`id`) USING BTREE,
+                                INDEX `code_index`(`code`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '部门表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -558,19 +558,19 @@ INSERT INTO `tb_core_org` VALUES (1728752863471386624, 'TEST', '人事部门', 1
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_param`;
 CREATE TABLE `tb_core_param`  (
-  `id` bigint(0) NOT NULL COMMENT '主建',
-  `code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '参数code',
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '参数名称',
-  `value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '参数值',
-  `note` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
-  `create_user` bigint(0) NOT NULL DEFAULT -1 COMMENT '创建人',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_user` bigint(0) NOT NULL DEFAULT -1 COMMENT '更新人',
-  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
-  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `code_index`(`code`) USING BTREE
+                                  `id` bigint(0) NOT NULL COMMENT '主建',
+                                  `code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '参数code',
+                                  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '参数名称',
+                                  `value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '参数值',
+                                  `note` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
+                                  `create_user` bigint(0) NOT NULL DEFAULT -1 COMMENT '创建人',
+                                  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+                                  `update_user` bigint(0) NOT NULL DEFAULT -1 COMMENT '更新人',
+                                  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+                                  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+                                  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+                                  PRIMARY KEY (`id`) USING BTREE,
+                                  UNIQUE INDEX `code_index`(`code`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '系统参数表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -586,22 +586,22 @@ INSERT INTO `tb_core_param` VALUES (1728752868500357120, 'REGISTER_ROLE', '注�
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_post`;
 CREATE TABLE `tb_core_post`  (
-  `id` bigint(0) NOT NULL COMMENT '主键',
-  `code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '岗位编码',
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '岗位名称',
-  `type` int(0) NULL DEFAULT NULL COMMENT '岗位类型 字典：POST_TYPE',
-  `sort` int(0) NULL DEFAULT NULL COMMENT '排序',
-  `describe` varchar(556) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '岗位描述',
-  `condition` varchar(556) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '上岗条件',
-  `create_user` bigint(0) NOT NULL DEFAULT -1 COMMENT '创建人',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_user` bigint(0) NOT NULL DEFAULT -1 COMMENT '更新人',
-  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-  `status` tinyint(1) NULL DEFAULT 1 COMMENT '是否启用 字典：YN01',
-  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
-  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
-  `tenant_code` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '000000' COMMENT '租户编码',
-  PRIMARY KEY (`id`) USING BTREE
+                                 `id` bigint(0) NOT NULL COMMENT '主键',
+                                 `code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '岗位编码',
+                                 `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '岗位名称',
+                                 `type` int(0) NULL DEFAULT NULL COMMENT '岗位类型 字典：POST_TYPE',
+                                 `sort` int(0) NULL DEFAULT NULL COMMENT '排序',
+                                 `describe` varchar(556) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '岗位描述',
+                                 `condition` varchar(556) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '上岗条件',
+                                 `create_user` bigint(0) NOT NULL DEFAULT -1 COMMENT '创建人',
+                                 `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+                                 `update_user` bigint(0) NOT NULL DEFAULT -1 COMMENT '更新人',
+                                 `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+                                 `status` tinyint(1) NULL DEFAULT 1 COMMENT '是否启用 字典：YN01',
+                                 `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+                                 `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+                                 `tenant_code` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '000000' COMMENT '租户编码',
+                                 PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '岗位表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -615,23 +615,23 @@ INSERT INTO `tb_core_post` VALUES (1728752871381843968, 'CS', '测试', 3, 3, '�
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_role`;
 CREATE TABLE `tb_core_role`  (
-  `id` bigint(0) NOT NULL COMMENT '主建',
-  `alias` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '角色别名',
-  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '角色名称',
-  `parent_id` bigint(0) NULL DEFAULT -1 COMMENT '上级ID',
-  `icon_url` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '图标地址',
-  `is_sys_role` int(0) NULL DEFAULT 1 COMMENT '是否系统角色 0:否 1:是',
-  `ancestor_id` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '祖级ID',
-  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
-  `sort` int(0) NULL DEFAULT NULL COMMENT '排序',
-  `create_user` bigint(0) NOT NULL DEFAULT -1 COMMENT '创建人',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_user` bigint(0) NOT NULL DEFAULT -1 COMMENT '更新人',
-  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
-  `tenant_code` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '000000' COMMENT '租户编码',
-  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
-  PRIMARY KEY (`id`) USING BTREE
+                                 `id` bigint(0) NOT NULL COMMENT '主建',
+                                 `alias` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '角色别名',
+                                 `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '角色名称',
+                                 `parent_id` bigint(0) NULL DEFAULT -1 COMMENT '上级ID',
+                                 `icon_url` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '图标地址',
+                                 `is_sys_role` int(0) NULL DEFAULT 1 COMMENT '是否系统角色 0:否 1:是',
+                                 `ancestor_id` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '祖级ID',
+                                 `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
+                                 `sort` int(0) NULL DEFAULT NULL COMMENT '排序',
+                                 `create_user` bigint(0) NOT NULL DEFAULT -1 COMMENT '创建人',
+                                 `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+                                 `update_user` bigint(0) NOT NULL DEFAULT -1 COMMENT '更新人',
+                                 `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+                                 `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+                                 `tenant_code` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '000000' COMMENT '租户编码',
+                                 `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+                                 PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '角色表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -646,17 +646,17 @@ INSERT INTO `tb_core_role` VALUES (1728752872212316160, 'ADMIN', '管理员', 1,
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_role_data`;
 CREATE TABLE `tb_core_role_data`  (
-  `id` bigint(0) NOT NULL COMMENT '主键',
-  `role_id` bigint(0) NOT NULL COMMENT '角色ID',
-  `data_id` bigint(0) NOT NULL COMMENT '数据权限ID',
-  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
-  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
-  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `core_dict_type`(`role_id`, `data_id`) USING BTREE
+                                      `id` bigint(0) NOT NULL COMMENT '主键',
+                                      `role_id` bigint(0) NOT NULL COMMENT '角色ID',
+                                      `data_id` bigint(0) NOT NULL COMMENT '数据权限ID',
+                                      `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+                                      `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+                                      `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+                                      `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+                                      `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+                                      `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+                                      PRIMARY KEY (`id`) USING BTREE,
+                                      UNIQUE INDEX `core_dict_type`(`role_id`, `data_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '角色数据权限关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -664,17 +664,17 @@ CREATE TABLE `tb_core_role_data`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_role_function`;
 CREATE TABLE `tb_core_role_function`  (
-  `id` bigint(0) NOT NULL COMMENT '主键',
-  `role_id` bigint(0) NOT NULL COMMENT '角色ID',
-  `function_id` bigint(0) NOT NULL COMMENT '菜单ID',
-  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
-  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
-  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `core_dict_type`(`role_id`, `function_id`) USING BTREE
+                                          `id` bigint(0) NOT NULL COMMENT '主键',
+                                          `role_id` bigint(0) NOT NULL COMMENT '角色ID',
+                                          `function_id` bigint(0) NOT NULL COMMENT '菜单ID',
+                                          `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+                                          `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+                                          `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+                                          `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+                                          `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+                                          `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+                                          PRIMARY KEY (`id`) USING BTREE,
+                                          UNIQUE INDEX `core_dict_type`(`role_id`, `function_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '角色菜单表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -815,16 +815,16 @@ INSERT INTO `tb_core_role_function` VALUES (1728753019918925824, 2, 172875275740
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_role_menu`;
 CREATE TABLE `tb_core_role_menu`  (
-  `id` bigint(0) NOT NULL COMMENT '主键',
-  `role_id` bigint(0) NOT NULL COMMENT '角色ID',
-  `menu_id` bigint(0) NOT NULL COMMENT '菜单ID',
-  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
-  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-  `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
-  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
-  PRIMARY KEY (`id`) USING BTREE
+                                      `id` bigint(0) NOT NULL COMMENT '主键',
+                                      `role_id` bigint(0) NOT NULL COMMENT '角色ID',
+                                      `menu_id` bigint(0) NOT NULL COMMENT '菜单ID',
+                                      `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+                                      `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+                                      `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+                                      `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+                                      `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+                                      `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+                                      PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '角色顶级菜单关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -845,24 +845,24 @@ INSERT INTO `tb_core_role_menu` VALUES (1728753031096745984, 1, 1728753039409856
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_tenant`;
 CREATE TABLE `tb_core_tenant`  (
-  `id` bigint(0) NOT NULL COMMENT '主建',
-  `tenant_code` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '租户编码',
-  `tenant_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '租户名称',
-  `domain` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '域名',
-  `logo` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '租户Logo',
-  `contact_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '联系人',
-  `contact_phone` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '联系人电话',
-  `address` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '地址',
-  `account_number` int(0) NULL DEFAULT -1 COMMENT '账号额度',
-  `expire_time` datetime(0) NULL DEFAULT NULL COMMENT '过期时间',
-  `license_key` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '授权码',
-  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
-  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
-  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
-  PRIMARY KEY (`id`) USING BTREE
+                                   `id` bigint(0) NOT NULL COMMENT '主建',
+                                   `tenant_code` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '租户编码',
+                                   `tenant_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '租户名称',
+                                   `domain` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '域名',
+                                   `logo` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '租户Logo',
+                                   `contact_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '联系人',
+                                   `contact_phone` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '联系人电话',
+                                   `address` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '地址',
+                                   `account_number` int(0) NULL DEFAULT -1 COMMENT '账号额度',
+                                   `expire_time` datetime(0) NULL DEFAULT NULL COMMENT '过期时间',
+                                   `license_key` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '授权码',
+                                   `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+                                   `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+                                   `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+                                   `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+                                   `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+                                   `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+                                   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '租户表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -875,22 +875,22 @@ INSERT INTO `tb_core_tenant` VALUES (1728753032510226432, '000000', '管理组',
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_top_menu`;
 CREATE TABLE `tb_core_top_menu`  (
-  `id` bigint(0) NOT NULL COMMENT '主键',
-  `client_id` bigint(0) NOT NULL COMMENT '客户端ID',
-  `code` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '菜单编号',
-  `name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '菜单名称',
-  `icon` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '图标',
-  `router` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '首页路由',
-  `sort_num` int(0) NOT NULL DEFAULT 1 COMMENT '排序',
-  `note` varchar(525) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注说明',
-  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
-  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-  `status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '状态 1启用 0停用',
-  `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
-  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
-  PRIMARY KEY (`id`) USING BTREE
+                                     `id` bigint(0) NOT NULL COMMENT '主键',
+                                     `client_id` bigint(0) NOT NULL COMMENT '客户端ID',
+                                     `code` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '菜单编号',
+                                     `name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '菜单名称',
+                                     `icon` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '图标',
+                                     `router` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '首页路由',
+                                     `sort_num` int(0) NOT NULL DEFAULT 1 COMMENT '排序',
+                                     `note` varchar(525) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注说明',
+                                     `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+                                     `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+                                     `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+                                     `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+                                     `status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '状态 1启用 0停用',
+                                     `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+                                     `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+                                     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '顶级菜单表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -907,35 +907,35 @@ INSERT INTO `tb_core_top_menu` VALUES (1728753044619182080, 1728752347702018048,
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_user`;
 CREATE TABLE `tb_core_user`  (
-  `id` bigint(0) NOT NULL COMMENT '主建',
-  `org_id` bigint(0) NULL DEFAULT NULL COMMENT '组织机构主键',
-  `post_id` bigint(0) NULL DEFAULT NULL COMMENT '岗位ID',
-  `login_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '登录用户名',
-  `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '登录密码',
-  `avatar` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '头像',
-  `user_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '真实姓名',
-  `id_type` tinyint(1) NULL DEFAULT 1 COMMENT '证件类型 1:身份证 2:中国护照 3:台胞证 4:外国护照 5:外国人永居证',
-  `id_no` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '证件编码',
-  `user_type` tinyint(1) NULL DEFAULT 0 COMMENT '用户类型 0:系统用户 1：普通用户 2：单位用户 3:会员 9：匿名用户',
-  `birthday` datetime(0) NULL DEFAULT NULL COMMENT '出生日期',
-  `email` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '邮箱地址',
-  `telephone` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '联系电话',
-  `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '通讯地址',
-  `post_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '邮编',
-  `last_login_time` datetime(0) NULL DEFAULT NULL COMMENT '最后登录时间',
-  `login_count` int(0) NULL DEFAULT 0 COMMENT '登录次数',
-  `nick_name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '昵称',
-  `other_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '第三方平台标识',
-  `activation_status` tinyint(1) NULL DEFAULT 1 COMMENT '激活状态 1：激活 0：未激活',
-  `activation_code` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '激活码',
-  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '最后更新人',
-  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
-  `tenant_code` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '000000' COMMENT '租户编码',
-  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
-  PRIMARY KEY (`id`) USING BTREE
+                                 `id` bigint(0) NOT NULL COMMENT '主建',
+                                 `org_id` bigint(0) NULL DEFAULT NULL COMMENT '组织机构主键',
+                                 `post_id` bigint(0) NULL DEFAULT NULL COMMENT '岗位ID',
+                                 `login_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '登录用户名',
+                                 `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '登录密码',
+                                 `avatar` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '头像',
+                                 `user_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '真实姓名',
+                                 `id_type` tinyint(1) NULL DEFAULT 1 COMMENT '证件类型 1:身份证 2:中国护照 3:台胞证 4:外国护照 5:外国人永居证',
+                                 `id_no` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '证件编码',
+                                 `user_type` tinyint(1) NULL DEFAULT 0 COMMENT '用户类型 0:系统用户 1：普通用户 2：单位用户 3:会员 9：匿名用户',
+                                 `birthday` datetime(0) NULL DEFAULT NULL COMMENT '出生日期',
+                                 `email` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '邮箱地址',
+                                 `telephone` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '联系电话',
+                                 `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '通讯地址',
+                                 `post_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '邮编',
+                                 `last_login_time` datetime(0) NULL DEFAULT NULL COMMENT '最后登录时间',
+                                 `login_count` int(0) NULL DEFAULT 0 COMMENT '登录次数',
+                                 `nick_name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '昵称',
+                                 `other_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '第三方平台标识',
+                                 `activation_status` tinyint(1) NULL DEFAULT 1 COMMENT '激活状态 1：激活 0：未激活',
+                                 `activation_code` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '激活码',
+                                 `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+                                 `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+                                 `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '最后更新人',
+                                 `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+                                 `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+                                 `tenant_code` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '000000' COMMENT '租户编码',
+                                 `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+                                 PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '系统登录用户表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -950,17 +950,17 @@ INSERT INTO `tb_core_user` VALUES (1728753047802658816, 1728752845331021824, 172
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_user_role`;
 CREATE TABLE `tb_core_user_role`  (
-  `id` bigint(0) NOT NULL COMMENT '主键',
-  `role_id` bigint(0) NOT NULL COMMENT '角色ID',
-  `user_id` bigint(0) NOT NULL COMMENT '用户ID',
-  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
-  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-  `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
-  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `core_dict_type`(`role_id`, `user_id`) USING BTREE
+                                      `id` bigint(0) NOT NULL COMMENT '主键',
+                                      `role_id` bigint(0) NOT NULL COMMENT '角色ID',
+                                      `user_id` bigint(0) NOT NULL COMMENT '用户ID',
+                                      `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+                                      `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+                                      `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+                                      `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+                                      `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+                                      `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+                                      PRIMARY KEY (`id`) USING BTREE,
+                                      UNIQUE INDEX `core_dict_type`(`role_id`, `user_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户角色表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -975,61 +975,61 @@ INSERT INTO `tb_core_user_role` VALUES (1728753053506912256, 2, 2, 1, '2021-03-0
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_log_error`;
 CREATE TABLE `tb_log_error`  (
-  `id` bigint(0) NOT NULL COMMENT '主建',
-  `server_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '服务名称',
-  `server_ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '服务器ip',
-  `server_host` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '服务器名',
-  `env` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '环境',
-  `url` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '请求接口',
-  `method` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作方式',
-  `method_class` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '方法类',
-  `method_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '方法名',
-  `param` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
-  `oper_ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作IP地址',
-  `oper_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作人员',
-  `oper_user_type` tinyint(1) NULL DEFAULT NULL COMMENT '操作人员类型，是系统用户还是业务用户 0系统1业务2白名单',
-  `client_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作客户端',
-  `error` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '错误信息',
-  `line_number` int(0) NULL DEFAULT NULL COMMENT '报错行号',
-  `exception_name` varchar(258) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '异常名称',
-  `message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '异常信息',
-  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
-  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
-  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
-  PRIMARY KEY (`id`) USING BTREE
+                                 `id` bigint(0) NOT NULL COMMENT '主建',
+                                 `server_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '服务名称',
+                                 `server_ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '服务器ip',
+                                 `server_host` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '服务器名',
+                                 `env` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '环境',
+                                 `url` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '请求接口',
+                                 `method` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作方式',
+                                 `method_class` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '方法类',
+                                 `method_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '方法名',
+                                 `param` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+                                 `oper_ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作IP地址',
+                                 `oper_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作人员',
+                                 `oper_user_type` tinyint(1) NULL DEFAULT NULL COMMENT '操作人员类型，是系统用户还是业务用户 0系统1业务2白名单',
+                                 `client_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作客户端',
+                                 `error` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '错误信息',
+                                 `line_number` int(0) NULL DEFAULT NULL COMMENT '报错行号',
+                                 `exception_name` varchar(258) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '异常名称',
+                                 `message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '异常信息',
+                                 `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+                                 `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+                                 `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+                                 `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+                                 `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+                                 `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+                                 PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '错误日志表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_log_error
 -- ----------------------------
-INSERT INTO `tb_log_error` VALUES (1728803044883603457, 'jpower-system', '127.0.0.1', '127.0.0.1', 'dev', '/core/dataScope/getDataScopeByRole', 'GET', 'com.wlcb.jpower.module.common.apm.ApmHttpInfoFilter', 'doFilter', '{\"clientCode\":[\"admin\"],\"tenantCode\":[\"000000\"]}', '192.168.0.103', NULL, NULL, NULL, 'org.springframework.web.bind.MissingServletRequestParameterException: Required request parameter \'roleIds\' for method parameter type List is not present\r\n	at org.springframework.web.method.annotation.RequestParamMethodArgumentResolver.handleMissingValueInternal(RequestParamMethodArgumentResolver.java:218)\r\n	at org.springframework.web.method.annotation.RequestParamMethodArgumentResolver.handleMissingValue(RequestParamMethodArgumentResolver.java:193)\r\n	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:114)\r\n	at org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:121)\r\n	at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:179)\r\n	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:146)\r\n	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)\r\n	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895)\r\n	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808)\r\n	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)\r\n	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1067)\r\n	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:963)\r\n	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)\r\n	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:898)\r\n	at javax.servlet.http.HttpServlet.service(HttpServlet.java:655)\r\n	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)\r\n	at javax.servlet.http.HttpServlet.service(HttpServlet.java:764)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at com.wlcb.jpower.module.common.apm.ApmHttpInfoFilter.doFilter(ApmHttpInfoFilter.java:91)\r\n	at javax.servlet.http.HttpFilter.doFilter(HttpFilter.java:57)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at com.alibaba.druid.support.http.WebStatFilter.doFilter(WebStatFilter.java:124)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at com.wlcb.jpower.module.common.page.PageFilter.doFilter(PageFilter.java:38)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at com.wlcb.jpower.module.configurer.xss.XssFilter.doFilter(XssFilter.java:51)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.boot.actuate.metrics.web.servlet.WebMvcMetricsFilter.doFilterInternal(WebMvcMetricsFilter.java:96)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)\r\n	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)\r\n	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:540)\r\n	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)\r\n	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)\r\n	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)\r\n	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:357)\r\n	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:382)\r\n	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)\r\n	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:895)\r\n	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1732)\r\n	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)\r\n	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)\r\n	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)\r\n	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)\r\n	at java.lang.Thread.run(Thread.java:750)\r\n', 91, 'org.springframework.web.bind.MissingServletRequestParameterException', 'Required request parameter \'roleIds\' for method parameter type List is not present', 2, '2023-11-26 23:49:00', 2, '2023-11-26 23:49:00', NULL, 0);
-INSERT INTO `tb_log_error` VALUES (1728803047765090305, 'jpower-system', '127.0.0.1', '127.0.0.1', 'dev', '/core/function/getMenuListByRole', 'GET', 'com.wlcb.jpower.module.common.apm.ApmHttpInfoFilter', 'doFilter', '{\"clientCode\":[\"admin\"],\"tenantCode\":[\"000000\"]}', '192.168.0.103', NULL, NULL, NULL, 'org.springframework.web.bind.MissingServletRequestParameterException: Required request parameter \'roleIds\' for method parameter type List is not present\r\n	at org.springframework.web.method.annotation.RequestParamMethodArgumentResolver.handleMissingValueInternal(RequestParamMethodArgumentResolver.java:218)\r\n	at org.springframework.web.method.annotation.RequestParamMethodArgumentResolver.handleMissingValue(RequestParamMethodArgumentResolver.java:193)\r\n	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:114)\r\n	at org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:121)\r\n	at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:179)\r\n	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:146)\r\n	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)\r\n	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895)\r\n	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808)\r\n	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)\r\n	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1067)\r\n	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:963)\r\n	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)\r\n	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:898)\r\n	at javax.servlet.http.HttpServlet.service(HttpServlet.java:655)\r\n	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)\r\n	at javax.servlet.http.HttpServlet.service(HttpServlet.java:764)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at com.wlcb.jpower.module.common.apm.ApmHttpInfoFilter.doFilter(ApmHttpInfoFilter.java:91)\r\n	at javax.servlet.http.HttpFilter.doFilter(HttpFilter.java:57)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at com.alibaba.druid.support.http.WebStatFilter.doFilter(WebStatFilter.java:124)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at com.wlcb.jpower.module.common.page.PageFilter.doFilter(PageFilter.java:38)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at com.wlcb.jpower.module.configurer.xss.XssFilter.doFilter(XssFilter.java:51)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.boot.actuate.metrics.web.servlet.WebMvcMetricsFilter.doFilterInternal(WebMvcMetricsFilter.java:96)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)\r\n	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)\r\n	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:540)\r\n	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)\r\n	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)\r\n	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)\r\n	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:357)\r\n	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:382)\r\n	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)\r\n	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:895)\r\n	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1732)\r\n	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)\r\n	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)\r\n	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)\r\n	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)\r\n	at java.lang.Thread.run(Thread.java:750)\r\n', 91, 'org.springframework.web.bind.MissingServletRequestParameterException', 'Required request parameter \'roleIds\' for method parameter type List is not present', 2, '2023-11-26 23:49:01', 2, '2023-11-26 23:49:01', NULL, 0);
-INSERT INTO `tb_log_error` VALUES (1728803051443494914, 'jpower-system', '127.0.0.1', '127.0.0.1', 'dev', '/core/function/getUrlsByRoleIds', 'GET', 'com.wlcb.jpower.module.common.apm.ApmHttpInfoFilter', 'doFilter', '{\"clientCode\":[\"admin\"],\"tenantCode\":[\"000000\"]}', '192.168.0.103', NULL, NULL, NULL, 'org.springframework.web.bind.MissingServletRequestParameterException: Required request parameter \'roleIds\' for method parameter type List is not present\r\n	at org.springframework.web.method.annotation.RequestParamMethodArgumentResolver.handleMissingValueInternal(RequestParamMethodArgumentResolver.java:218)\r\n	at org.springframework.web.method.annotation.RequestParamMethodArgumentResolver.handleMissingValue(RequestParamMethodArgumentResolver.java:193)\r\n	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:114)\r\n	at org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:121)\r\n	at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:179)\r\n	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:146)\r\n	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)\r\n	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895)\r\n	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808)\r\n	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)\r\n	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1067)\r\n	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:963)\r\n	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)\r\n	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:898)\r\n	at javax.servlet.http.HttpServlet.service(HttpServlet.java:655)\r\n	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)\r\n	at javax.servlet.http.HttpServlet.service(HttpServlet.java:764)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at com.wlcb.jpower.module.common.apm.ApmHttpInfoFilter.doFilter(ApmHttpInfoFilter.java:91)\r\n	at javax.servlet.http.HttpFilter.doFilter(HttpFilter.java:57)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at com.alibaba.druid.support.http.WebStatFilter.doFilter(WebStatFilter.java:124)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at com.wlcb.jpower.module.common.page.PageFilter.doFilter(PageFilter.java:38)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at com.wlcb.jpower.module.configurer.xss.XssFilter.doFilter(XssFilter.java:51)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.boot.actuate.metrics.web.servlet.WebMvcMetricsFilter.doFilterInternal(WebMvcMetricsFilter.java:96)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)\r\n	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)\r\n	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:540)\r\n	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)\r\n	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)\r\n	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)\r\n	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:357)\r\n	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:382)\r\n	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)\r\n	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:895)\r\n	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1732)\r\n	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)\r\n	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)\r\n	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)\r\n	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)\r\n	at java.lang.Thread.run(Thread.java:750)\r\n', 91, 'org.springframework.web.bind.MissingServletRequestParameterException', 'Required request parameter \'roleIds\' for method parameter type List is not present', 2, '2023-11-26 23:49:02', 2, '2023-11-26 23:49:02', NULL, 0);
-INSERT INTO `tb_log_error` VALUES (1728809231918239745, 'jpower-system', '127.0.0.1', '127.0.0.1', 'dev', '/core/function/listByParent', 'GET', 'com.wlcb.jpower.module.common.utils.Fc', 'toLong', '{\"clientId_eq\":[\"1728752347702018000\"],\"menuId_eq\":[\"\"]}', '127.0.0.1', '超级管理员', 0, 'admin', 'java.lang.NullPointerException\r\n	at com.wlcb.jpower.module.common.utils.Fc.toLong(Fc.java:366)\r\n	at com.wlcb.jpower.controller.function.FunctionController.list(FunctionController.java:69)\r\n	at com.wlcb.jpower.controller.function.FunctionController$$FastClassBySpringCGLIB$$16b6f9be.invoke(<generated>)\r\n	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)\r\n	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:783)\r\n	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)\r\n	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:753)\r\n	at org.springframework.aop.framework.adapter.MethodBeforeAdviceInterceptor.invoke(MethodBeforeAdviceInterceptor.java:58)\r\n	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:175)\r\n	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:753)\r\n	at org.springframework.aop.aspectj.AspectJAfterThrowingAdvice.invoke(AspectJAfterThrowingAdvice.java:64)\r\n	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)\r\n	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:753)\r\n	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97)\r\n	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)\r\n	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:753)\r\n	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:698)\r\n	at com.wlcb.jpower.controller.function.FunctionController$$EnhancerBySpringCGLIB$$3028f82e.list(<generated>)\r\n	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\r\n	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\r\n	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\r\n	at java.lang.reflect.Method.invoke(Method.java:498)\r\n	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)\r\n	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150)\r\n	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)\r\n	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895)\r\n	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808)\r\n	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)\r\n	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1067)\r\n	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:963)\r\n	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)\r\n	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:898)\r\n	at javax.servlet.http.HttpServlet.service(HttpServlet.java:655)\r\n	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)\r\n	at javax.servlet.http.HttpServlet.service(HttpServlet.java:764)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at com.wlcb.jpower.module.common.apm.ApmHttpInfoFilter.doFilter(ApmHttpInfoFilter.java:91)\r\n	at javax.servlet.http.HttpFilter.doFilter(HttpFilter.java:57)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at com.alibaba.druid.support.http.WebStatFilter.doFilter(WebStatFilter.java:124)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at com.wlcb.jpower.module.common.page.PageFilter.doFilter(PageFilter.java:38)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at com.wlcb.jpower.module.configurer.xss.XssFilter.doFilter(XssFilter.java:51)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.boot.actuate.metrics.web.servlet.WebMvcMetricsFilter.doFilterInternal(WebMvcMetricsFilter.java:96)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)\r\n	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)\r\n	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:540)\r\n	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)\r\n	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)\r\n	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)\r\n	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:357)\r\n	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:382)\r\n	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)\r\n	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:895)\r\n	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1732)\r\n	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)\r\n	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)\r\n	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)\r\n	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)\r\n	at java.lang.Thread.run(Thread.java:750)\r\n', 366, 'java.lang.NullPointerException', NULL, 1, '2023-11-27 00:13:35', 1, '2023-11-27 00:13:35', 1728752845331021824, 0);
-INSERT INTO `tb_log_error` VALUES (1728812890840305666, 'jpower-system', '127.0.0.1', '127.0.0.1', 'dev', '/core/function/listByParent', 'GET', 'com.wlcb.jpower.module.common.utils.Fc', 'toLong', '{\"clientId_eq\":[\"1728752347702018048\"],\"menuId_eq\":[\"\"]}', '127.0.0.1', '超级管理员', 0, 'admin', 'java.lang.NullPointerException\r\n	at com.wlcb.jpower.module.common.utils.Fc.toLong(Fc.java:366)\r\n	at com.wlcb.jpower.controller.function.FunctionController.list(FunctionController.java:69)\r\n	at com.wlcb.jpower.controller.function.FunctionController$$FastClassBySpringCGLIB$$16b6f9be.invoke(<generated>)\r\n	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)\r\n	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:783)\r\n	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)\r\n	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:753)\r\n	at org.springframework.aop.framework.adapter.MethodBeforeAdviceInterceptor.invoke(MethodBeforeAdviceInterceptor.java:58)\r\n	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:175)\r\n	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:753)\r\n	at org.springframework.aop.aspectj.AspectJAfterThrowingAdvice.invoke(AspectJAfterThrowingAdvice.java:64)\r\n	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)\r\n	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:753)\r\n	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97)\r\n	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)\r\n	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:753)\r\n	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:698)\r\n	at com.wlcb.jpower.controller.function.FunctionController$$EnhancerBySpringCGLIB$$e16f594.list(<generated>)\r\n	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\r\n	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\r\n	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\r\n	at java.lang.reflect.Method.invoke(Method.java:498)\r\n	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)\r\n	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150)\r\n	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)\r\n	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895)\r\n	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808)\r\n	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)\r\n	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1067)\r\n	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:963)\r\n	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)\r\n	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:898)\r\n	at javax.servlet.http.HttpServlet.service(HttpServlet.java:655)\r\n	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)\r\n	at javax.servlet.http.HttpServlet.service(HttpServlet.java:764)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at com.wlcb.jpower.module.common.apm.ApmHttpInfoFilter.doFilter(ApmHttpInfoFilter.java:91)\r\n	at javax.servlet.http.HttpFilter.doFilter(HttpFilter.java:57)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at com.alibaba.druid.support.http.WebStatFilter.doFilter(WebStatFilter.java:124)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at com.wlcb.jpower.module.common.page.PageFilter.doFilter(PageFilter.java:38)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at com.wlcb.jpower.module.configurer.xss.XssFilter.doFilter(XssFilter.java:51)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.boot.actuate.metrics.web.servlet.WebMvcMetricsFilter.doFilterInternal(WebMvcMetricsFilter.java:96)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)\r\n	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)\r\n	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:540)\r\n	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)\r\n	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)\r\n	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)\r\n	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:357)\r\n	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:382)\r\n	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)\r\n	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:895)\r\n	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1732)\r\n	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)\r\n	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)\r\n	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)\r\n	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)\r\n	at java.lang.Thread.run(Thread.java:750)\r\n', 366, 'java.lang.NullPointerException', NULL, 1, '2023-11-27 00:28:08', 1, '2023-11-27 00:28:08', 1728752845331021824, 0);
+INSERT INTO `tb_log_error` VALUES (1728803044883603457, 'jpower-system', '127.0.0.1', '127.0.0.1', 'dev', '/core/dataScope/getDataScopeByRole', 'GET', 'top.jpower.jpower.module.common.apm.ApmHttpInfoFilter', 'doFilter', '{\"clientCode\":[\"admin\"],\"tenantCode\":[\"000000\"]}', '192.168.0.103', NULL, NULL, NULL, 'org.springframework.web.bind.MissingServletRequestParameterException: Required request parameter \'roleIds\' for method parameter type List is not present\r\n	at org.springframework.web.method.annotation.RequestParamMethodArgumentResolver.handleMissingValueInternal(RequestParamMethodArgumentResolver.java:218)\r\n	at org.springframework.web.method.annotation.RequestParamMethodArgumentResolver.handleMissingValue(RequestParamMethodArgumentResolver.java:193)\r\n	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:114)\r\n	at org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:121)\r\n	at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:179)\r\n	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:146)\r\n	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)\r\n	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895)\r\n	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808)\r\n	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)\r\n	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1067)\r\n	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:963)\r\n	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)\r\n	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:898)\r\n	at javax.servlet.http.HttpServlet.service(HttpServlet.java:655)\r\n	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)\r\n	at javax.servlet.http.HttpServlet.service(HttpServlet.java:764)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at top.jpower.jpower.module.common.apm.ApmHttpInfoFilter.doFilter(ApmHttpInfoFilter.java:91)\r\n	at javax.servlet.http.HttpFilter.doFilter(HttpFilter.java:57)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at com.alibaba.druid.support.http.WebStatFilter.doFilter(WebStatFilter.java:124)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at top.jpower.jpower.module.common.page.PageFilter.doFilter(PageFilter.java:38)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at top.jpower.jpower.module.configurer.xss.XssFilter.doFilter(XssFilter.java:51)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.boot.actuate.metrics.web.servlet.WebMvcMetricsFilter.doFilterInternal(WebMvcMetricsFilter.java:96)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)\r\n	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)\r\n	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:540)\r\n	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)\r\n	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)\r\n	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)\r\n	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:357)\r\n	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:382)\r\n	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)\r\n	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:895)\r\n	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1732)\r\n	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)\r\n	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)\r\n	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)\r\n	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)\r\n	at java.lang.Thread.run(Thread.java:750)\r\n', 91, 'org.springframework.web.bind.MissingServletRequestParameterException', 'Required request parameter \'roleIds\' for method parameter type List is not present', 2, '2023-11-26 23:49:00', 2, '2023-11-26 23:49:00', NULL, 0);
+INSERT INTO `tb_log_error` VALUES (1728803047765090305, 'jpower-system', '127.0.0.1', '127.0.0.1', 'dev', '/core/function/getMenuListByRole', 'GET', 'top.jpower.jpower.module.common.apm.ApmHttpInfoFilter', 'doFilter', '{\"clientCode\":[\"admin\"],\"tenantCode\":[\"000000\"]}', '192.168.0.103', NULL, NULL, NULL, 'org.springframework.web.bind.MissingServletRequestParameterException: Required request parameter \'roleIds\' for method parameter type List is not present\r\n	at org.springframework.web.method.annotation.RequestParamMethodArgumentResolver.handleMissingValueInternal(RequestParamMethodArgumentResolver.java:218)\r\n	at org.springframework.web.method.annotation.RequestParamMethodArgumentResolver.handleMissingValue(RequestParamMethodArgumentResolver.java:193)\r\n	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:114)\r\n	at org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:121)\r\n	at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:179)\r\n	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:146)\r\n	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)\r\n	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895)\r\n	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808)\r\n	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)\r\n	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1067)\r\n	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:963)\r\n	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)\r\n	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:898)\r\n	at javax.servlet.http.HttpServlet.service(HttpServlet.java:655)\r\n	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)\r\n	at javax.servlet.http.HttpServlet.service(HttpServlet.java:764)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at top.jpower.jpower.module.common.apm.ApmHttpInfoFilter.doFilter(ApmHttpInfoFilter.java:91)\r\n	at javax.servlet.http.HttpFilter.doFilter(HttpFilter.java:57)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at com.alibaba.druid.support.http.WebStatFilter.doFilter(WebStatFilter.java:124)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at top.jpower.jpower.module.common.page.PageFilter.doFilter(PageFilter.java:38)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at top.jpower.jpower.module.configurer.xss.XssFilter.doFilter(XssFilter.java:51)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.boot.actuate.metrics.web.servlet.WebMvcMetricsFilter.doFilterInternal(WebMvcMetricsFilter.java:96)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)\r\n	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)\r\n	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:540)\r\n	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)\r\n	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)\r\n	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)\r\n	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:357)\r\n	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:382)\r\n	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)\r\n	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:895)\r\n	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1732)\r\n	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)\r\n	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)\r\n	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)\r\n	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)\r\n	at java.lang.Thread.run(Thread.java:750)\r\n', 91, 'org.springframework.web.bind.MissingServletRequestParameterException', 'Required request parameter \'roleIds\' for method parameter type List is not present', 2, '2023-11-26 23:49:01', 2, '2023-11-26 23:49:01', NULL, 0);
+INSERT INTO `tb_log_error` VALUES (1728803051443494914, 'jpower-system', '127.0.0.1', '127.0.0.1', 'dev', '/core/function/getUrlsByRoleIds', 'GET', 'top.jpower.jpower.module.common.apm.ApmHttpInfoFilter', 'doFilter', '{\"clientCode\":[\"admin\"],\"tenantCode\":[\"000000\"]}', '192.168.0.103', NULL, NULL, NULL, 'org.springframework.web.bind.MissingServletRequestParameterException: Required request parameter \'roleIds\' for method parameter type List is not present\r\n	at org.springframework.web.method.annotation.RequestParamMethodArgumentResolver.handleMissingValueInternal(RequestParamMethodArgumentResolver.java:218)\r\n	at org.springframework.web.method.annotation.RequestParamMethodArgumentResolver.handleMissingValue(RequestParamMethodArgumentResolver.java:193)\r\n	at org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.resolveArgument(AbstractNamedValueMethodArgumentResolver.java:114)\r\n	at org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:121)\r\n	at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:179)\r\n	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:146)\r\n	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)\r\n	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895)\r\n	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808)\r\n	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)\r\n	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1067)\r\n	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:963)\r\n	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)\r\n	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:898)\r\n	at javax.servlet.http.HttpServlet.service(HttpServlet.java:655)\r\n	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)\r\n	at javax.servlet.http.HttpServlet.service(HttpServlet.java:764)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at top.jpower.jpower.module.common.apm.ApmHttpInfoFilter.doFilter(ApmHttpInfoFilter.java:91)\r\n	at javax.servlet.http.HttpFilter.doFilter(HttpFilter.java:57)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at com.alibaba.druid.support.http.WebStatFilter.doFilter(WebStatFilter.java:124)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at top.jpower.jpower.module.common.page.PageFilter.doFilter(PageFilter.java:38)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at top.jpower.jpower.module.configurer.xss.XssFilter.doFilter(XssFilter.java:51)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.boot.actuate.metrics.web.servlet.WebMvcMetricsFilter.doFilterInternal(WebMvcMetricsFilter.java:96)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)\r\n	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)\r\n	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:540)\r\n	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)\r\n	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)\r\n	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)\r\n	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:357)\r\n	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:382)\r\n	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)\r\n	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:895)\r\n	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1732)\r\n	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)\r\n	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)\r\n	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)\r\n	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)\r\n	at java.lang.Thread.run(Thread.java:750)\r\n', 91, 'org.springframework.web.bind.MissingServletRequestParameterException', 'Required request parameter \'roleIds\' for method parameter type List is not present', 2, '2023-11-26 23:49:02', 2, '2023-11-26 23:49:02', NULL, 0);
+INSERT INTO `tb_log_error` VALUES (1728809231918239745, 'jpower-system', '127.0.0.1', '127.0.0.1', 'dev', '/core/function/listByParent', 'GET', 'top.jpower.jpower.module.common.utils.Fc', 'toLong', '{\"clientId_eq\":[\"1728752347702018000\"],\"menuId_eq\":[\"\"]}', '127.0.0.1', '超级管理员', 0, 'admin', 'java.lang.NullPointerException\r\n	at top.jpower.jpower.module.common.utils.Fc.toLong(Fc.java:366)\r\n	at top.jpower.jpower.controller.function.FunctionController.list(FunctionController.java:69)\r\n	at top.jpower.jpower.controller.function.FunctionController$$FastClassBySpringCGLIB$$16b6f9be.invoke(<generated>)\r\n	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)\r\n	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:783)\r\n	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)\r\n	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:753)\r\n	at org.springframework.aop.framework.adapter.MethodBeforeAdviceInterceptor.invoke(MethodBeforeAdviceInterceptor.java:58)\r\n	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:175)\r\n	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:753)\r\n	at org.springframework.aop.aspectj.AspectJAfterThrowingAdvice.invoke(AspectJAfterThrowingAdvice.java:64)\r\n	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)\r\n	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:753)\r\n	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97)\r\n	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)\r\n	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:753)\r\n	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:698)\r\n	at top.jpower.jpower.controller.function.FunctionController$$EnhancerBySpringCGLIB$$3028f82e.list(<generated>)\r\n	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\r\n	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\r\n	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\r\n	at java.lang.reflect.Method.invoke(Method.java:498)\r\n	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)\r\n	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150)\r\n	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)\r\n	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895)\r\n	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808)\r\n	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)\r\n	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1067)\r\n	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:963)\r\n	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)\r\n	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:898)\r\n	at javax.servlet.http.HttpServlet.service(HttpServlet.java:655)\r\n	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)\r\n	at javax.servlet.http.HttpServlet.service(HttpServlet.java:764)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at top.jpower.jpower.module.common.apm.ApmHttpInfoFilter.doFilter(ApmHttpInfoFilter.java:91)\r\n	at javax.servlet.http.HttpFilter.doFilter(HttpFilter.java:57)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at com.alibaba.druid.support.http.WebStatFilter.doFilter(WebStatFilter.java:124)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at top.jpower.jpower.module.common.page.PageFilter.doFilter(PageFilter.java:38)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at top.jpower.jpower.module.configurer.xss.XssFilter.doFilter(XssFilter.java:51)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.boot.actuate.metrics.web.servlet.WebMvcMetricsFilter.doFilterInternal(WebMvcMetricsFilter.java:96)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)\r\n	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)\r\n	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:540)\r\n	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)\r\n	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)\r\n	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)\r\n	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:357)\r\n	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:382)\r\n	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)\r\n	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:895)\r\n	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1732)\r\n	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)\r\n	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)\r\n	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)\r\n	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)\r\n	at java.lang.Thread.run(Thread.java:750)\r\n', 366, 'java.lang.NullPointerException', NULL, 1, '2023-11-27 00:13:35', 1, '2023-11-27 00:13:35', 1728752845331021824, 0);
+INSERT INTO `tb_log_error` VALUES (1728812890840305666, 'jpower-system', '127.0.0.1', '127.0.0.1', 'dev', '/core/function/listByParent', 'GET', 'top.jpower.jpower.module.common.utils.Fc', 'toLong', '{\"clientId_eq\":[\"1728752347702018048\"],\"menuId_eq\":[\"\"]}', '127.0.0.1', '超级管理员', 0, 'admin', 'java.lang.NullPointerException\r\n	at top.jpower.jpower.module.common.utils.Fc.toLong(Fc.java:366)\r\n	at top.jpower.jpower.controller.function.FunctionController.list(FunctionController.java:69)\r\n	at top.jpower.jpower.controller.function.FunctionController$$FastClassBySpringCGLIB$$16b6f9be.invoke(<generated>)\r\n	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)\r\n	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:783)\r\n	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)\r\n	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:753)\r\n	at org.springframework.aop.framework.adapter.MethodBeforeAdviceInterceptor.invoke(MethodBeforeAdviceInterceptor.java:58)\r\n	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:175)\r\n	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:753)\r\n	at org.springframework.aop.aspectj.AspectJAfterThrowingAdvice.invoke(AspectJAfterThrowingAdvice.java:64)\r\n	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)\r\n	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:753)\r\n	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97)\r\n	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)\r\n	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:753)\r\n	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:698)\r\n	at top.jpower.jpower.controller.function.FunctionController$$EnhancerBySpringCGLIB$$e16f594.list(<generated>)\r\n	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\r\n	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\r\n	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\r\n	at java.lang.reflect.Method.invoke(Method.java:498)\r\n	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)\r\n	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150)\r\n	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)\r\n	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895)\r\n	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808)\r\n	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)\r\n	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1067)\r\n	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:963)\r\n	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)\r\n	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:898)\r\n	at javax.servlet.http.HttpServlet.service(HttpServlet.java:655)\r\n	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)\r\n	at javax.servlet.http.HttpServlet.service(HttpServlet.java:764)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:227)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at top.jpower.jpower.module.common.apm.ApmHttpInfoFilter.doFilter(ApmHttpInfoFilter.java:91)\r\n	at javax.servlet.http.HttpFilter.doFilter(HttpFilter.java:57)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at com.alibaba.druid.support.http.WebStatFilter.doFilter(WebStatFilter.java:124)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at top.jpower.jpower.module.common.page.PageFilter.doFilter(PageFilter.java:38)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at top.jpower.jpower.module.configurer.xss.XssFilter.doFilter(XssFilter.java:51)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.boot.actuate.metrics.web.servlet.WebMvcMetricsFilter.doFilterInternal(WebMvcMetricsFilter.java:96)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)\r\n	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\r\n	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)\r\n	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)\r\n	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)\r\n	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)\r\n	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:540)\r\n	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)\r\n	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)\r\n	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)\r\n	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:357)\r\n	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:382)\r\n	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)\r\n	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:895)\r\n	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1732)\r\n	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)\r\n	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)\r\n	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)\r\n	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)\r\n	at java.lang.Thread.run(Thread.java:750)\r\n', 366, 'java.lang.NullPointerException', NULL, 1, '2023-11-27 00:28:08', 1, '2023-11-27 00:28:08', 1728752845331021824, 0);
 
 -- ----------------------------
 -- Table structure for tb_log_monitor_param
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_log_monitor_param`;
 CREATE TABLE `tb_log_monitor_param`  (
-  `id` bigint(0) NOT NULL COMMENT '主建',
-  `server` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '服务名称',
-  `path` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '监控地址',
-  `method` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '请求方式',
-  `type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '参数类型 字典 PARAM_TYPE（header、path、body、query）',
-  `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '参数名称',
-  `value` varchar(258) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '参数值',
-  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
-  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
-  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
-  PRIMARY KEY (`id`) USING BTREE
+                                         `id` bigint(0) NOT NULL COMMENT '主建',
+                                         `server` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '服务名称',
+                                         `path` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '监控地址',
+                                         `method` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '请求方式',
+                                         `type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '参数类型 字典 PARAM_TYPE（header、path、body、query）',
+                                         `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '参数名称',
+                                         `value` varchar(258) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '参数值',
+                                         `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+                                         `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+                                         `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+                                         `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+                                         `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+                                         `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+                                         PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '接口监控参数表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -1037,27 +1037,27 @@ CREATE TABLE `tb_log_monitor_param`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_log_monitor_result`;
 CREATE TABLE `tb_log_monitor_result`  (
-  `id` bigint(0) NOT NULL COMMENT '主建',
-  `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '服务名称',
-  `path` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '测试地址',
-  `tags` varchar(258) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '分组',
-  `url` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '请求接口',
-  `method` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '请求方式',
-  `error` varchar(289) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '请求错误',
-  `respose` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '响应数据',
-  `respose_code` int(0) NULL DEFAULT NULL COMMENT '响应编码',
-  `restful_response` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '接口返回数据',
-  `header` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'header参数',
-  `body` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'body参数',
-  `is_success` int(0) NULL DEFAULT NULL COMMENT '是否成功 0否 1是',
-  `response_time` int(0) NULL DEFAULT NULL COMMENT '执行时长 单位毫秒',
-  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
-  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
-  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
-  PRIMARY KEY (`id`) USING BTREE
+                                          `id` bigint(0) NOT NULL COMMENT '主建',
+                                          `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '服务名称',
+                                          `path` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '测试地址',
+                                          `tags` varchar(258) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '分组',
+                                          `url` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '请求接口',
+                                          `method` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '请求方式',
+                                          `error` varchar(289) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '请求错误',
+                                          `respose` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '响应数据',
+                                          `respose_code` int(0) NULL DEFAULT NULL COMMENT '响应编码',
+                                          `restful_response` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '接口返回数据',
+                                          `header` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'header参数',
+                                          `body` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'body参数',
+                                          `is_success` int(0) NULL DEFAULT NULL COMMENT '是否成功 0否 1是',
+                                          `response_time` int(0) NULL DEFAULT NULL COMMENT '执行时长 单位毫秒',
+                                          `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+                                          `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+                                          `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+                                          `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+                                          `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+                                          `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+                                          PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '接口监控详情' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -1065,21 +1065,21 @@ CREATE TABLE `tb_log_monitor_result`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_log_monitor_setting`;
 CREATE TABLE `tb_log_monitor_setting`  (
-  `id` bigint(0) NOT NULL COMMENT '主建',
-  `server` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '服务名称',
-  `path` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '监控地址',
-  `tag` varchar(258) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '分组',
-  `method` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '请求方式',
-  `is_monitor` int(0) NULL DEFAULT 3 COMMENT '是否监控 0:否 1:是 3:未设置',
-  `code` varchar(258) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '200' COMMENT 'respose正确code,多个逗号分割',
-  `exec_js` varchar(258) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'js代码',
-  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
-  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
-  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
-  PRIMARY KEY (`id`) USING BTREE
+                                           `id` bigint(0) NOT NULL COMMENT '主建',
+                                           `server` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '服务名称',
+                                           `path` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '监控地址',
+                                           `tag` varchar(258) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '分组',
+                                           `method` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '请求方式',
+                                           `is_monitor` int(0) NULL DEFAULT 3 COMMENT '是否监控 0:否 1:是 3:未设置',
+                                           `code` varchar(258) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '200' COMMENT 'respose正确code,多个逗号分割',
+                                           `exec_js` varchar(258) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'js代码',
+                                           `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+                                           `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+                                           `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+                                           `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+                                           `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+                                           `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+                                           PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '接口监控设置表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -1087,34 +1087,34 @@ CREATE TABLE `tb_log_monitor_setting`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_log_operate`;
 CREATE TABLE `tb_log_operate`  (
-  `id` bigint(0) NOT NULL COMMENT '主建',
-  `server_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '服务名称',
-  `server_ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '服务器ip',
-  `server_host` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '服务器名',
-  `env` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '环境',
-  `url` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '请求接口',
-  `method` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作方式',
-  `method_class` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '方法类',
-  `method_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '方法名',
-  `param` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
-  `oper_ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作IP地址',
-  `oper_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作人员',
-  `oper_user_type` tinyint(1) NULL DEFAULT NULL COMMENT '操作人员类型，是系统用户还是业务用户 0系统1业务2白名单',
-  `client_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作客户端',
-  `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作标题',
-  `business_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '业务类型（OTHER=其它,INSERT=新增,UPDATE=修改,DELETE=删除,GRANT=授权,EXPORT=导出,IMPORT=导入,FORCE=强退,GENCODE=生成代码,CLEAN=清空数据,REVIEW=审核）',
-  `return_content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '记录内容',
-  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '返回内容',
-  `error_msg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '错误消息',
-  `record_id` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '记录ID',
-  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
-  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
-  `status` tinyint(1) NULL DEFAULT 1 COMMENT '操作状态（0正常 1异常）',
-  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
-  PRIMARY KEY (`id`) USING BTREE
+                                   `id` bigint(0) NOT NULL COMMENT '主建',
+                                   `server_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '服务名称',
+                                   `server_ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '服务器ip',
+                                   `server_host` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '服务器名',
+                                   `env` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '环境',
+                                   `url` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '请求接口',
+                                   `method` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作方式',
+                                   `method_class` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '方法类',
+                                   `method_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '方法名',
+                                   `param` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+                                   `oper_ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作IP地址',
+                                   `oper_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作人员',
+                                   `oper_user_type` tinyint(1) NULL DEFAULT NULL COMMENT '操作人员类型，是系统用户还是业务用户 0系统1业务2白名单',
+                                   `client_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作客户端',
+                                   `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作标题',
+                                   `business_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '业务类型（OTHER=其它,INSERT=新增,UPDATE=修改,DELETE=删除,GRANT=授权,EXPORT=导出,IMPORT=导入,FORCE=强退,GENCODE=生成代码,CLEAN=清空数据,REVIEW=审核）',
+                                   `return_content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '记录内容',
+                                   `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '返回内容',
+                                   `error_msg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '错误消息',
+                                   `record_id` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '记录ID',
+                                   `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+                                   `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+                                   `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+                                   `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+                                   `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+                                   `status` tinyint(1) NULL DEFAULT 1 COMMENT '操作状态（0正常 1异常）',
+                                   `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+                                   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '操作日志表' ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
