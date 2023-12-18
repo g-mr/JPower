@@ -1,12 +1,12 @@
 package top.jpower.jpower.feign;
 
-import top.jpower.jpower.dbs.entity.TbCoreFile;
-import top.jpower.jpower.module.base.vo.ResponseData;
-import top.jpower.jpower.module.common.utils.ReturnJsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import top.jpower.jpower.dbs.entity.TbCoreFile;
+import top.jpower.jpower.module.base.vo.ResponseData;
+import top.jpower.jpower.module.common.utils.ReturnJsonUtil;
 
 /**
  * FILE 熔断

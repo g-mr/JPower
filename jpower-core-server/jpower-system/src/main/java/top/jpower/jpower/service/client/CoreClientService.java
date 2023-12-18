@@ -24,6 +24,6 @@ public interface CoreClientService extends BaseService<TbCoreClient> {
      * @param clientCode 客户端编码
      * @return id
      **/
-    String queryIdByCode(String clientCode);
+    Long queryIdByCode(String clientCode);
 
 }

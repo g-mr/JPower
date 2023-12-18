@@ -1,6 +1,7 @@
 package top.jpower.jpower.service.impl;
 
 import cn.hutool.core.lang.Validator;
+import cn.hutool.core.util.NumberUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -8,6 +9,9 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageInfo;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import top.jpower.jpower.cache.SystemCache;
 import top.jpower.jpower.cache.UserCache;
 import top.jpower.jpower.cache.param.ParamConfig;
@@ -31,23 +35,15 @@ import top.jpower.jpower.module.common.utils.constants.ParamsConstants;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.service.CoreUserService;
 import top.jpower.jpower.vo.UserVo;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static top.jpower.jpower.module.common.cache.CacheNames.TOKEN_USER_KEY;
-import static top.jpower.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
-import static top.jpower.jpower.module.tenant.TenantConstant.TENANT_ACCOUNT_NUMBER;
-import static top.jpower.jpower.module.tenant.TenantConstant.getAccountNumber;
+import static top.jpower.jpower.module.tenant.TenantConstant.*;
 
 /**
  * @author mr.gmac
@@ -66,9 +62,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
         PaginationContext.startPage();
         List<UserVo> userVo = coreUserDao.listVo(coreUser);
         //查询用户在线信息
-        userVo.forEach(user-> {
-            user.setOnLine(redisUtil.pattern(TOKEN_USER_KEY+user.getId()).size());
-        });
+        userVo.forEach(user-> user.setOnLine(redisUtil.pattern(TOKEN_USER_KEY+user.getId()).size()));
         return new PageInfo<>(userVo);
     }
 
@@ -97,20 +91,20 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
 
 
     @Override
-    public Boolean delete(String ids) {
-        List<String> list = new ArrayList<>(Fc.toStrList(ids));
+    public Boolean delete(List<Long> ids) {
+        ids = new ArrayList<>(ids);
 
-        if(Fc.contains(list, RoleConstant.ROOT_ID) || Fc.contains(list, RoleConstant.ANONYMOUS_ID)){
-            list.removeIf(obj -> StringUtil.equals(obj,RoleConstant.ROOT_ID) || StringUtil.equals(obj,RoleConstant.ANONYMOUS_ID));
+        if(Fc.contains(ids, RoleConstant.ROOT_ID) || Fc.contains(ids, RoleConstant.ANONYMOUS_ID)){
+            ids.removeIf(obj -> NumberUtil.equals(obj,RoleConstant.ROOT_ID) || NumberUtil.equals(obj,RoleConstant.ANONYMOUS_ID));
 
-            if (list.size() <= 0){
+            if (ids.size() <= 0){
                 throw new BusinessException("超级用户和匿名用户不可删除");
             }
         }
 
-        boolean is = coreUserDao.removeByIds(list);
+        boolean is = coreUserDao.removeByIds(ids);
         if (is){
-            coreUserRoleDao.removeReal(new QueryWrapper<TbCoreUserRole>().lambda().in(TbCoreUserRole::getUserId,list));
+            coreUserRoleDao.removeReal(new QueryWrapper<TbCoreUserRole>().lambda().in(TbCoreUserRole::getUserId,ids));
         }
         return is;
     }
@@ -128,7 +122,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
             if (Fc.isNotBlank(coreUser.getTenantCode()) && !Fc.equalsValue(user.getTenantCode(),coreUser.getTenantCode())){
                 coreUser.setRoleIds(null);
             }
-            updateUsersRole(coreUser.getId(),coreUser.getRoleIds());
+            updateUsersRole(Collections.singletonList(coreUser.getId()),Fc.toLongList(coreUser.getRoleIds()));
         }
 
         return coreUserDao.updateById(coreUser);
@@ -151,13 +145,8 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     }
 
     @Override
-    public UserVo selectUserById(String id) {
+    public UserVo selectUserById(Long id) {
         return coreUserDao.conver(getBaseMapper().selectAllById(id));
-    }
-
-    @Override
-    public UserVo getById(String id) {
-        return coreUserDao.conver(super.getById(id));
     }
 
     @Override
@@ -176,12 +165,12 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     }
 
     @Override
-    public boolean saveUser(TbCoreUser user, String roleId) {
+    public boolean saveUser(TbCoreUser user, Long roleId) {
         if (coreUserDao.save(user)){
             TbCoreUserRole userRole = new TbCoreUserRole();
             userRole.setUserId(user.getId());
             userRole.setRoleId(roleId);
-            if (Fc.isNotBlank(roleId)){
+            if (Fc.notNull(roleId)){
                 return coreUserRoleDao.save(userRole);
             }
         }
@@ -189,7 +178,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     }
 
     @Override
-    public Boolean updateUserPassword(List<String> ids, String pass) {
+    public Boolean updateUserPassword(List<Long> ids, String pass) {
         return coreUserDao.update(new UpdateWrapper<TbCoreUser>().lambda().set(TbCoreUser::getPassword,pass).in(TbCoreUser::getId,ids));
     }
 
@@ -253,7 +242,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
                 user = UserCache.getUserByPhone(coreUser.getTelephone(),coreUser.getTenantCode());
                 if (Fc.notNull(user)) {
                     if (isCover) {
-                        if (Fc.isNotBlank(coreUser.getId()) && !Fc.equals(coreUser.getId(),user.getId())){
+                        if (Fc.notNull(coreUser.getId()) && !NumberUtil.equals(coreUser.getId(),user.getId())){
                             //如果loginID已经重复且不是一条数据的情况下，不进行覆盖也不新增
                             continue;
                         }
@@ -281,7 +270,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
             long accountNumber = getAccountNumber(tenant.getLicenseKey());
             if (!Fc.equals(accountNumber, TENANT_ACCOUNT_NUMBER)){
                 long count = coreUserDao.count(Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getTenantCode,tenantCode));
-                if (count >= accountNumber){
+                if (!NumberUtil.equals(accountNumber,-1L) && count >= accountNumber){
                     throw new BusinessException(tenant.getTenantName()+"租户账号额度不足");
                 }
             }
@@ -292,19 +281,16 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     }
 
     @Override
-    public Boolean updateUsersRole(String userIds, String roleIds) {
-        //先删除用户原有角色
-        List<String> uIds = Fc.toStrList(userIds);
+    public Boolean updateUsersRole(List<Long> userIds, List<Long> roleIds) {
 
-        LambdaQueryWrapper<TbCoreUserRole> wrapper = new QueryWrapper<TbCoreUserRole>().lambda().in(TbCoreUserRole::getUserId,uIds);
+        LambdaQueryWrapper<TbCoreUserRole> wrapper = new QueryWrapper<TbCoreUserRole>().lambda().in(TbCoreUserRole::getUserId,userIds);
         coreUserRoleDao.removeReal(wrapper);
 
-        if (Fc.isNotBlank(roleIds)){
-            List<String> rIds = Fc.toStrList(roleIds);
+        if (Fc.isNotEmpty(roleIds)){
 
             List<TbCoreUserRole> userRoles = new ArrayList<>();
-            for (String rId : rIds) {
-                for (String userId : uIds) {
+            for (Long rId : roleIds) {
+                for (Long userId : userIds) {
                     TbCoreUserRole userRole = new TbCoreUserRole();
                     userRole.setUserId(userId);
                     userRole.setRoleId(rId);
@@ -313,14 +299,14 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
             }
 
             //如果修改超级用户，并且角色不包含超级用户角色，则给超级用户添加超级用户角色
-            if (Fc.contains(uIds,RoleConstant.ROOT_ID) && !Fc.contains(rIds,RoleConstant.ROOT_ID)){
+            if (Fc.contains(userIds,RoleConstant.ROOT_ID) && !Fc.contains(roleIds,RoleConstant.ROOT_ID)){
                 TbCoreUserRole userRole = new TbCoreUserRole();
                 userRole.setUserId(RoleConstant.ROOT_ID);
                 userRole.setRoleId(RoleConstant.ROOT_ID);
                 userRoles.add(userRole);
             }
             //如果修改匿名用户，并且角色不包含匿名用户角色，则给匿名用户添加匿名用户角色
-            if (Fc.contains(uIds,RoleConstant.ANONYMOUS_ID) && !Fc.contains(rIds,RoleConstant.ANONYMOUS_ID)){
+            if (Fc.contains(userIds,RoleConstant.ANONYMOUS_ID) && !Fc.contains(roleIds,RoleConstant.ANONYMOUS_ID)){
                 TbCoreUserRole userRole = new TbCoreUserRole();
                 userRole.setUserId(RoleConstant.ANONYMOUS_ID);
                 userRole.setRoleId(RoleConstant.ANONYMOUS_ID);
@@ -328,15 +314,14 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
             }
 
             if (userRoles.size() > 0){
-                Boolean is = coreUserRoleDao.saveBatch(userRoles);
-                return is;
+                return coreUserRoleDao.saveBatch(userRoles);
             }
         }
         return true;
     }
 
     @Override
-    public boolean addRoleUsers(String roleId, List<String> userIds) {
+    public boolean addRoleUsers(Long roleId, List<Long> userIds) {
         List<TbCoreUserRole> list = new ArrayList<>();
         userIds.forEach((userId)->{
             TbCoreUserRole userRole = new TbCoreUserRole();
@@ -349,7 +334,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     }
 
     @Override
-    public boolean deleteRoleUsers(String roleId, List<String> userIds) {
+    public boolean deleteRoleUsers(Long roleId, List<Long> userIds) {
 
         userIds.removeIf(userId->
                 (Fc.equalsValue(roleId,RoleConstant.ROOT_ID)&&Fc.equalsValue(userId,RoleConstant.ROOT_ID))
@@ -377,7 +362,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     }
 
     @Override
-    public Boolean updateLoginInfo(String id) {
+    public Boolean updateLoginInfo(Long id) {
         return coreUserDao.update(Wrappers.<TbCoreUser>lambdaUpdate()
                 .setSql("login_count = ifnull(login_count,0)+1")
                 .set(TbCoreUser::getLastLoginTime,new Date())

@@ -1,18 +1,17 @@
 package top.jpower.jpower.dbs.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import top.jpower.jpower.module.base.annotation.Dict;
-import top.jpower.jpower.module.dbs.entity.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import top.jpower.jpower.module.base.annotation.Dict;
+import top.jpower.jpower.module.dbs.entity.base.BaseEntity;
 
 /**
- * @ClassName TbCoreFile
- * @Description TODO 文件
- * @Author 郭丁志
+ * 文件
+ *
+ * @Author mr.g
  * @Date 2020-07-13 17:20
- * @Version 1.0
  */
 @EqualsAndHashCode(callSuper = true)
 @Data

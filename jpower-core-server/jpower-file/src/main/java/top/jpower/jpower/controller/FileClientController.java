@@ -1,16 +1,5 @@
 package top.jpower.jpower.controller;
 
-import top.jpower.jpower.dbs.entity.TbCoreFile;
-import top.jpower.jpower.feign.FileClient;
-import top.jpower.jpower.module.base.enums.JpowerError;
-import top.jpower.jpower.module.base.exception.JpowerAssert;
-import top.jpower.jpower.module.base.vo.ResponseData;
-import top.jpower.jpower.module.common.utils.DesUtil;
-import top.jpower.jpower.module.common.utils.ReturnJsonUtil;
-import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
-import top.jpower.jpower.module.common.utils.constants.ConstantsUtils;
-import top.jpower.jpower.operate.FileOperateBuilder;
-import top.jpower.jpower.service.CoreFileService;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.MediaType;
@@ -20,6 +9,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
+import top.jpower.jpower.dbs.entity.TbCoreFile;
+import top.jpower.jpower.feign.FileClient;
+import top.jpower.jpower.module.base.enums.JpowerError;
+import top.jpower.jpower.module.base.exception.JpowerAssert;
+import top.jpower.jpower.module.base.vo.ResponseData;
+import top.jpower.jpower.module.common.utils.DesUtil;
+import top.jpower.jpower.module.common.utils.Fc;
+import top.jpower.jpower.module.common.utils.ReturnJsonUtil;
+import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
+import top.jpower.jpower.module.common.utils.constants.ConstantsUtils;
+import top.jpower.jpower.operate.FileOperateBuilder;
+import top.jpower.jpower.service.CoreFileService;
 
 /**
  * 文件实现
@@ -70,7 +71,7 @@ public class FileClientController implements FileClient {
         String id = DesUtil.decrypt(base, ConstantsUtils.FILE_DES_KEY);
         JpowerAssert.notEmpty(id, JpowerError.Arg,"文件标识不合法");
 
-        TbCoreFile coreFile = coreFileService.getById(id);
+        TbCoreFile coreFile = coreFileService.getById(Fc.toLong(id));
         coreFile.setContent(operateBuilder.getBuilder(coreFile.getStorageType()).getByte(coreFile));
         return ReturnJsonUtil.ok("成功",coreFile);
     }

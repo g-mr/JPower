@@ -1,10 +1,10 @@
 package top.jpower.jpower.module.common.redis;
 
-import top.jpower.jpower.module.common.utils.Fc;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.*;
+import top.jpower.jpower.module.common.utils.Fc;
 
 import java.util.List;
 import java.util.Set;

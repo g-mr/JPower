@@ -1,7 +1,7 @@
 package top.jpower.jpower.operate;
 
-import top.jpower.jpower.dbs.entity.TbCoreFile;
 import org.springframework.web.multipart.MultipartFile;
+import top.jpower.jpower.dbs.entity.TbCoreFile;
 
 import java.io.IOException;
 

@@ -1,9 +1,10 @@
 package top.jpower.jpower.dbs.entity.client;
 
-import top.jpower.jpower.module.base.annotation.Dict;
-import top.jpower.jpower.module.dbs.entity.base.BaseEntity;
+import com.baomidou.mybatisplus.annotation.OrderBy;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import top.jpower.jpower.module.base.annotation.Dict;
+import top.jpower.jpower.module.dbs.entity.base.BaseEntity;
 
 /**
  * @ClassName TbCoreClient
@@ -31,7 +32,8 @@ public class TbCoreClient extends BaseEntity {
     @ApiModelProperty("刷新token有效时长 单位秒")
     private Long refreshTokenValidity;
     @ApiModelProperty("排序")
-    private String sortNum;
+    @OrderBy(asc = true)
+    private Integer sortNum;
     @ApiModelProperty("备注")
     private String note;
 

@@ -3,6 +3,10 @@ package top.jpower.jpower.module.base.operate;
 import cn.hutool.core.lang.SimpleCache;
 import cn.hutool.core.util.EnumUtil;
 import com.alibaba.fastjson.JSON;
+import org.apache.commons.lang3.StringUtils;
+import org.aspectj.lang.JoinPoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.jpower.jpower.module.base.listener.OperateLogEvent;
 import top.jpower.jpower.module.base.model.OperateLogDto;
 import top.jpower.jpower.module.base.utils.FieldCompletionUtil;
@@ -11,10 +15,6 @@ import top.jpower.jpower.module.common.utils.Fc;
 import top.jpower.jpower.module.common.utils.SpringUtil;
 import top.jpower.jpower.module.common.utils.WebUtil;
 import top.jpower.jpower.module.dbs.config.LoginUserContext;
-import org.apache.commons.lang3.StringUtils;
-import org.aspectj.lang.JoinPoint;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author mr.g

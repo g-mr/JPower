@@ -1,11 +1,5 @@
 package top.jpower.jpower.module.config;
 
-import top.jpower.jpower.module.annotation.Function;
-import top.jpower.jpower.module.common.support.EnvBeanUtil;
-import top.jpower.jpower.module.common.utils.Fc;
-import top.jpower.jpower.module.common.utils.ShieldUtil;
-import top.jpower.jpower.module.common.utils.WebUtil;
-import top.jpower.jpower.module.common.utils.constants.AppConstant;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -16,6 +10,12 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.AnnotationUtils;
+import top.jpower.jpower.module.annotation.Function;
+import top.jpower.jpower.module.common.support.EnvBeanUtil;
+import top.jpower.jpower.module.common.utils.Fc;
+import top.jpower.jpower.module.common.utils.ShieldUtil;
+import top.jpower.jpower.module.common.utils.WebUtil;
+import top.jpower.jpower.module.common.utils.constants.AppConstant;
 import top.jpower.jpower.module.common.utils.constants.TokenConstant;
 
 import javax.servlet.http.HttpServletRequest;

@@ -1,11 +1,11 @@
 package top.jpower.jpower.dbs.dao.org.mapper;
 
 
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Component;
 import top.jpower.jpower.dbs.entity.org.TbCoreOrg;
 import top.jpower.jpower.module.dbs.dao.mapper.base.JpowerBaseMapper;
 import top.jpower.jpower.vo.OrgVo;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 

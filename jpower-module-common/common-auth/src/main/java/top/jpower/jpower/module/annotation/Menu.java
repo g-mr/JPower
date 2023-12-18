@@ -1,7 +1,7 @@
 package top.jpower.jpower.module.annotation;
 
-import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
 import lombok.Getter;
+import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
 
 import java.lang.annotation.*;
 

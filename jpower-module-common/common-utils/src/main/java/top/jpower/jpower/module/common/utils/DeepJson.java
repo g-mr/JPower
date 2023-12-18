@@ -5,9 +5,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
+import org.springframework.util.CollectionUtils;
 import top.jpower.jpower.module.common.utils.constants.CharPool;
 import top.jpower.jpower.module.common.utils.constants.StringPool;
-import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;

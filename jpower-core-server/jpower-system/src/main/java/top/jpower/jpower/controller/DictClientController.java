@@ -1,13 +1,16 @@
 package top.jpower.jpower.controller;
 
+import io.swagger.annotations.ApiOperation;
+import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.jpower.feign.DictClient;
 import top.jpower.jpower.module.base.vo.ResponseData;
 import top.jpower.jpower.module.common.utils.ReturnJsonUtil;
 import top.jpower.jpower.service.dict.CoreDictService;
-import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 import java.util.Map;

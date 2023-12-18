@@ -1,7 +1,6 @@
 package top.jpower.jpower.gateway.dynamic;
 
 import com.alibaba.nacos.common.utils.CollectionUtils;
-import top.jpower.jpower.module.common.utils.Fc;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.event.RefreshRoutesEvent;
@@ -12,6 +11,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import top.jpower.jpower.module.common.utils.Fc;
 
 import java.util.HashSet;
 import java.util.List;

@@ -1,8 +1,5 @@
 package top.jpower.jpower.feign;
 
-import top.jpower.jpower.dbs.entity.TbCoreFile;
-import top.jpower.jpower.module.base.vo.ResponseData;
-import top.jpower.jpower.module.common.utils.constants.AppConstant;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +7,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
+import top.jpower.jpower.dbs.entity.TbCoreFile;
+import top.jpower.jpower.module.base.vo.ResponseData;
+import top.jpower.jpower.module.common.utils.constants.AppConstant;
 
 /**
  * FileClient

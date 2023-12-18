@@ -1,6 +1,5 @@
 package top.jpower.jpower.module.common.utils;
 
-import top.jpower.jpower.module.common.utils.constants.CharsetKit;
 import lombok.Cleanup;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +21,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import top.jpower.jpower.module.common.utils.constants.CharsetKit;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.KeyManagerFactory;

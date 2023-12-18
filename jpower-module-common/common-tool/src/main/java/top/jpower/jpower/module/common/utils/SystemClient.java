@@ -1,11 +1,11 @@
 package top.jpower.jpower.module.common.utils;
 
-import top.jpower.jpower.module.base.vo.ResponseData;
-import top.jpower.jpower.module.common.deploy.props.JpowerProperties;
-import top.jpower.jpower.module.common.utils.constants.AppConstant;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.RestTemplate;
+import top.jpower.jpower.module.base.vo.ResponseData;
+import top.jpower.jpower.module.common.deploy.props.JpowerProperties;
+import top.jpower.jpower.module.common.utils.constants.AppConstant;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;

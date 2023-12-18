@@ -1,5 +1,11 @@
 package top.jpower.jpower.controller;
 
+import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.jpower.dbs.entity.city.TbCoreCity;
 import top.jpower.jpower.dbs.entity.client.TbCoreClient;
 import top.jpower.jpower.dbs.entity.function.TbCoreDataScope;
@@ -21,12 +27,6 @@ import top.jpower.jpower.service.role.CoreDataScopeService;
 import top.jpower.jpower.service.role.CoreFunctionService;
 import top.jpower.jpower.service.role.CoreRoleService;
 import top.jpower.jpower.service.tenant.TenantService;
-import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 
@@ -49,20 +49,20 @@ public class SystemClientController extends BaseController implements SystemClie
 
     @Override
     @GetMapping("/org/queryChildById")
-    public ResponseData<List<String>> queryChildOrgById(@RequestParam String id){
+    public ResponseData<List<Long>> queryChildOrgById(@RequestParam Long id){
         return ReturnJsonUtil.ok("查询成功",coreOrgService.queryChildById(id));
     }
 
     @Override
     @GetMapping("/function/getUrlsByRoleIds")
-    public ResponseData<List<String>> getUrlsByRoleIds(@RequestParam List<String> roleIds, @RequestParam(required = false) String clientCode) {
+    public ResponseData<List<String>> getUrlsByRoleIds(@RequestParam List<Long> roleIds, @RequestParam(required = false) String clientCode) {
         clientCode = Fc.isBlank(clientCode) ? ShieldUtil.getClientCodeFromHeader() : clientCode;
         return ReturnJsonUtil.ok("查询成功",coreFunctionService.getUrlsByRoleIds(roleIds,clientCode));
     }
 
     @Override
     @GetMapping("/function/getMenuListByRole")
-    public ResponseData<List<TbCoreFunction>> getMenuListByRole(@RequestParam List<String> roleIds, @RequestParam String clientCode, @RequestParam(required = false) String topMenuId) {
+    public ResponseData<List<TbCoreFunction>> getMenuListByRole(@RequestParam List<Long> roleIds, @RequestParam String clientCode, @RequestParam(required = false) Long topMenuId) {
         return ReturnJsonUtil.ok("查询成功",coreFunctionService.listMenuByRoleId(roleIds,clientCode, topMenuId, Boolean.FALSE));
     }
 
@@ -74,14 +74,14 @@ public class SystemClientController extends BaseController implements SystemClie
 
     @Override
     @GetMapping("/dataScope/getDataScopeByRole")
-    public ResponseData<List<TbCoreDataScope>> getDataScopeByRole(@RequestParam List<String> roleIds, @RequestParam(required = false) String clientCode) {
+    public ResponseData<List<TbCoreDataScope>> getDataScopeByRole(@RequestParam List<Long> roleIds, @RequestParam(required = false) String clientCode) {
         clientCode = Fc.isBlank(clientCode) ? ShieldUtil.getClientCodeFromHeader() : clientCode;
         return ReturnJsonUtil.ok("查询成功",coreDataScopeService.getDataScopeByRole(roleIds, clientCode));
     }
 
     @Override
     @GetMapping("/role/getRoleNameByIds")
-    public ResponseData<List<String>> getRoleNameByIds(@RequestParam List<String> roleIds) {
+    public ResponseData<List<String>> getRoleNameByIds(@RequestParam List<Long> roleIds) {
         return ReturnJsonUtil.ok("查询成功",coreRoleService.listObjs(Condition.<TbCoreRole>getQueryWrapper().lambda().select(TbCoreRole::getName).in(TbCoreRole::getId,roleIds), Fc::toStr));
     }
 
@@ -93,7 +93,7 @@ public class SystemClientController extends BaseController implements SystemClie
 
     @Override
     @GetMapping("/org/queryOrgById")
-    public ResponseData<TbCoreOrg> queryOrgById(@RequestParam String orgId) {
+    public ResponseData<TbCoreOrg> queryOrgById(@RequestParam Long orgId) {
         return ReturnJsonUtil.ok("查询成功",coreOrgService.getById(orgId));
     }
 
@@ -110,10 +110,10 @@ public class SystemClientController extends BaseController implements SystemClie
     }
 
     @GetMapping("/menu/getIdByCode")
-    public ResponseData<String> getMenuIdByCode(@RequestParam String code) {
+    public ResponseData<Long> getMenuIdByCode(@RequestParam String code) {
         return ReturnJsonUtil.data(coreFunctionService.getObj(Condition.<TbCoreFunction>getQueryWrapper()
                 .lambda()
                 .select(TbCoreFunction::getId)
-                .eq(TbCoreFunction::getCode,code) , Fc::toStr));
+                .eq(TbCoreFunction::getCode,code) , Fc::toLong));
     }
 }

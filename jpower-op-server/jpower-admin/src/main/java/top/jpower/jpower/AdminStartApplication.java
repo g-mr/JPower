@@ -1,5 +1,6 @@
 package top.jpower.jpower;
 
+import de.codecentric.boot.admin.server.config.EnableAdminServer;
 import org.springframework.boot.autoconfigure.AutoConfigurationExcludeFilter;
 import org.springframework.boot.context.TypeExcludeFilter;
 import org.springframework.context.annotation.ComponentScan;
@@ -8,7 +9,6 @@ import top.jpower.jpower.module.common.deploy.JpowerApplication;
 import top.jpower.jpower.module.common.deploy.service.annotation.JpowerCloudApplication;
 import top.jpower.jpower.module.common.jackson.JpowerJacksonConfig;
 import top.jpower.jpower.module.common.utils.constants.AppConstant;
-import de.codecentric.boot.admin.server.config.EnableAdminServer;
 
 /**
  * @ClassName AdminStartApplication

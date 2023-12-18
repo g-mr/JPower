@@ -38,7 +38,7 @@ public interface CoreOrgService extends BaseService<TbCoreOrg> {
      * @Param [ids]
      * @return java.lang.Integer
      **/
-    long listOrgByPids(String ids);
+    long listOrgByPids(List<Long> ids);
 
     /**
      * @author 郭丁志
@@ -56,7 +56,7 @@ public interface CoreOrgService extends BaseService<TbCoreOrg> {
      * @param coreOrg
      * @return java.util.List<top.jpower.jpower.module.common.node.Node>
      */
-    List<Tree<String>> tree(Map<String, Object> coreOrg);
+    List<Tree<Long>> tree(Map<String, Object> coreOrg);
 
     /**
      * @author 郭丁志
@@ -66,7 +66,7 @@ public interface CoreOrgService extends BaseService<TbCoreOrg> {
      * @param coreOrg
      * @return java.util.List<top.jpower.jpower.module.common.node.Node>
      */
-    List<Tree<String>> tree(String parentCode, Map<String, Object> coreOrg);
+    List<Tree<Long>> tree(Long parentCode, Map<String, Object> coreOrg);
 
     /**
      * @author 郭丁志
@@ -75,6 +75,6 @@ public interface CoreOrgService extends BaseService<TbCoreOrg> {
      * @param id
      * @return java.util.List<java.lang.String>
      */
-    List<String> queryChildById(String id);
+    List<Long> queryChildById(Long id);
 
 }

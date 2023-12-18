@@ -1,6 +1,5 @@
 package top.jpower.jpower.config;
 
-import top.jpower.jpower.config.properties.DataSourceProperties;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -14,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import top.jpower.jpower.config.properties.DataSourceProperties;
 
 import javax.sql.DataSource;
 

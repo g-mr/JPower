@@ -1,9 +1,9 @@
 package top.jpower.jpower.dbs.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import top.jpower.jpower.module.base.annotation.Dict;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import top.jpower.jpower.module.base.annotation.Dict;
 
 /**
  * @Author mr.g

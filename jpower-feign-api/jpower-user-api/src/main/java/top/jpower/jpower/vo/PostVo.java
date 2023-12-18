@@ -1,9 +1,9 @@
 package top.jpower.jpower.vo;
 
-import top.jpower.jpower.dbs.entity.TbCorePost;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import top.jpower.jpower.dbs.entity.TbCorePost;
 
 /**
  * @author mr.g

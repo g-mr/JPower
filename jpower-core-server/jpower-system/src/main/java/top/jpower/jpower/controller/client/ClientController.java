@@ -1,6 +1,11 @@
 package top.jpower.jpower.controller.client;
 
+import cn.hutool.core.util.NumberUtil;
 import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.*;
+import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.jpower.dbs.entity.client.TbCoreClient;
 import top.jpower.jpower.module.annotation.Function;
 import top.jpower.jpower.module.annotation.Menu;
@@ -16,10 +21,6 @@ import top.jpower.jpower.module.common.utils.Fc;
 import top.jpower.jpower.module.common.utils.ReturnJsonUtil;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.service.client.CoreClientService;
-import io.swagger.annotations.*;
-import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 import java.util.Map;
@@ -47,7 +48,7 @@ public class ClientController extends BaseController {
     @PostMapping("save")
     public ResponseData save(TbCoreClient coreClient){
 
-        if (Fc.isBlank(coreClient.getId())){
+        if (Fc.isNull(coreClient.getId())){
             JpowerAssert.notEmpty(coreClient.getClientCode(), JpowerError.Arg,"客户端Code不可为空");
             JpowerAssert.notEmpty(coreClient.getName(), JpowerError.Arg,"客户端名称不可为空");
             JpowerAssert.notTrue(coreClient.getRefreshTokenValidity() <= coreClient.getAccessTokenValidity(),JpowerError.Arg,"刷新令牌时长不可小于令牌时长");
@@ -59,17 +60,15 @@ public class ClientController extends BaseController {
         }else {
             //防止用户A在更新时，用户B做了删除操作
             TbCoreClient client =coreClientService.getById(coreClient.getId());
-            if (Fc.isNull(client)){
-                return ReturnJsonUtil.fail("该数据不存在");
-            }
+            JpowerAssert.notNull(client, JpowerError.NotFind, "客户端");
 
             long refreshTokenValidity = Fc.isNull(coreClient.getRefreshTokenValidity())?client.getRefreshTokenValidity():coreClient.getRefreshTokenValidity();
             long accessTokenValidity = Fc.isNull(coreClient.getAccessTokenValidity())?client.getAccessTokenValidity():coreClient.getAccessTokenValidity();
             JpowerAssert.notTrue(refreshTokenValidity <= accessTokenValidity,JpowerError.Arg,"刷新令牌时长不可小于令牌时长");
 
-            if (Fc.isNotBlank(coreClient.getId())){
-                TbCoreClient tbCoreClient = coreClientService.getOne(Condition.<TbCoreClient>getQueryWrapper().lambda().eq(TbCoreClient::getClientCode,coreClient.getClientCode()));
-                if (!Fc.isNull(tbCoreClient) && !Fc.equals(tbCoreClient.getId(),client.getId())){
+            if (Fc.notNull(coreClient.getId())){
+                Long id = coreClientService.getObj(Condition.<TbCoreClient>getQueryWrapper().lambda().select(TbCoreClient::getId).eq(TbCoreClient::getClientCode,coreClient.getClientCode()), Fc::toLong);
+                if (Fc.notNull(id) && !NumberUtil.equals(id,client.getId())){
                     return ReturnJsonUtil.busFail("该客户端已存在");
                 }
             }
@@ -88,7 +87,7 @@ public class ClientController extends BaseController {
     public ResponseData delete(@ApiParam(value = "主键，多个逗号分割",required = true) @RequestParam String ids){
         JpowerAssert.notEmpty(ids,JpowerError.Arg,"客户端主键不可为空");
         CacheUtil.clear(CacheNames.CLIENT_KEY,Boolean.FALSE);
-        return ReturnJsonUtil.status(coreClientService.removeByIds(Fc.toStrList(ids)));
+        return ReturnJsonUtil.status(coreClientService.removeByIds(Fc.toLongList(ids)));
     }
 
     @Function(value = "列表",menus = {
@@ -105,7 +104,7 @@ public class ClientController extends BaseController {
     public ResponseData<Pg<TbCoreClient>> list(@ApiIgnore @RequestParam Map<String,Object> coreClient){
         PaginationContext.startPage();
         List<TbCoreClient> list = coreClientService.list(Condition.getQueryWrapper(coreClient,TbCoreClient.class).lambda().orderByAsc(TbCoreClient::getSortNum));
-        return ReturnJsonUtil.ok("查询成功",new PageInfo<>(list));
+        return ReturnJsonUtil.data(new PageInfo<>(list));
     }
 
     @Function(value = "客户端下拉",menus = {

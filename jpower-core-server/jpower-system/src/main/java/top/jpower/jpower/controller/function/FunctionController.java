@@ -2,6 +2,7 @@ package top.jpower.jpower.controller.function;
 
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.util.NumberUtil;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -18,7 +19,6 @@ import top.jpower.jpower.module.common.cache.CacheNames;
 import top.jpower.jpower.module.common.controller.BaseController;
 import top.jpower.jpower.module.common.node.ForestNodeMerger;
 import top.jpower.jpower.module.common.utils.*;
-import top.jpower.jpower.module.common.utils.constants.ConstantsReturn;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.service.client.CoreClientService;
 import top.jpower.jpower.service.role.CoreFunctionService;
@@ -49,8 +49,8 @@ public class FunctionController extends BaseController {
     })
     @ApiOperation("查询登录用户所有菜单按钮树形结构")
     @GetMapping(value = "/treeMenuTypeByClientId", produces="application/json")
-    public ResponseData<List<Tree<String>>> treeMenuTypeByClientId(@ApiParam("客户端ID") String clientId) {
-        if (Fc.isBlank(clientId)) {
+    public ResponseData<List<Tree<String>>> treeMenuTypeByClientId(@ApiParam("客户端ID") Long clientId) {
+        if (Fc.isNull(clientId)) {
             return ReturnJsonUtil.data(ListUtil.empty());
         }
         return ReturnJsonUtil.data(coreFunctionService.treeMenuTypeByClientId(ShieldUtil.getUserRole(), clientId));
@@ -62,12 +62,12 @@ public class FunctionController extends BaseController {
     })
     @ApiOperation(value = "登录用户树形按钮接口", notes = "当不传菜单ID时，会查出顶级按钮接口；单独查一个菜单时，不会把顶级按钮接口返回")
     @GetMapping(value = "/treeButByMenu", produces="application/json")
-    public ResponseData<List<Tree<String>>> treeButByMenu(@ApiParam(value = "菜单Id",required = true) @RequestParam(required = false,defaultValue = TOP_CODE) String id,
-                                                            @ApiParam(value = "客户端ID",required = true) @RequestParam(required = false) String clientId){
+    public ResponseData<List<Tree<String>>> treeButByMenu(@ApiParam(value = "菜单Id",required = true) @RequestParam(required = false,defaultValue = TOP_CODE) Long id,
+                                                            @ApiParam(value = "客户端ID",required = true) @RequestParam(required = false) Long clientId){
 
-        JpowerAssert.notEmpty(clientId,JpowerError.Arg,"客户端ID不可为空");
+        JpowerAssert.notNull(clientId,JpowerError.Arg,"客户端ID不可为空");
 
-        return ReturnJsonUtil.data(coreFunctionService.treeButByMenu(ShieldUtil.getUserRole(), Fc.toStr(id, TOP_CODE), clientId));
+        return ReturnJsonUtil.data(coreFunctionService.treeButByMenu(ShieldUtil.getUserRole(), Fc.toLong(id, Fc.toLong(TOP_CODE)), clientId));
     }
 
     @Function(value = "接口资源",menus = {
@@ -75,8 +75,8 @@ public class FunctionController extends BaseController {
     })
     @ApiOperation(value = "接口资源")
     @GetMapping(value = "/listInterface", produces="application/json")
-    public ResponseData<List<Map<String, Object>>> listInterface(@ApiParam(value = "客户端ID",required = true) @RequestParam(required = false) String clientId){
-        JpowerAssert.notEmpty(clientId,JpowerError.Arg,"客户端ID不可为空");
+    public ResponseData<List<Map<String, Object>>> listInterface(@ApiParam(value = "客户端ID",required = true) @RequestParam(required = false) Long clientId){
+        JpowerAssert.notNull(clientId,JpowerError.Arg,"客户端ID不可为空");
 
         return ReturnJsonUtil.data(coreFunctionService.listInterface(ShieldUtil.getUserRole(), clientId));
     }
@@ -97,15 +97,15 @@ public class FunctionController extends BaseController {
     })
     @RequestMapping(value = "/listByParent",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
     public ResponseData<List<FunctionVo>> list(@ApiIgnore @RequestParam Map<String,Object> coreFunction){
-        JpowerAssert.notEmpty(MapUtil.getStr(coreFunction,"clientId_eq"),JpowerError.Arg,"客户端ID不可为空");
+        JpowerAssert.notNull(MapUtil.getLong(coreFunction,"clientId_eq"),JpowerError.Arg,"客户端ID不可为空");
 
         coreFunction.remove("clientId");
         coreFunction.remove("parentId");
         coreFunction.remove("functionType");
         coreFunction.remove("menuId");
 
-        if(StringUtils.isBlank(Fc.toStr(coreFunction.get("parentId_eq")))){
-            coreFunction.put("parentId_eq", TOP_CODE);
+        if(Fc.isNull(Fc.toLong(coreFunction.get("parentId_eq")))){
+            coreFunction.put("parentId_eq", Fc.toLong(TOP_CODE));
         }
 
         List<FunctionVo> list = coreFunctionService.listFunction(coreFunction);
@@ -117,15 +117,15 @@ public class FunctionController extends BaseController {
     })
     @ApiOperation("新增")
     @PostMapping(value = "/add", produces="application/json")
-    public ResponseData add(TbCoreFunction coreFunction){
+    public ResponseData<Long> add(TbCoreFunction coreFunction){
         JpowerAssert.notEmpty(coreFunction.getFunctionName(),JpowerError.Arg,"名称不可为空");
         JpowerAssert.notEmpty(coreFunction.getCode(),JpowerError.Arg,"编码不可为空");
         JpowerAssert.notEmpty(coreFunction.getUrl(),JpowerError.Arg,"URL不可为空");
-        JpowerAssert.notEmpty(coreFunction.getClientId(),JpowerError.Arg,"客户端ID不可为空");
+        JpowerAssert.notNull(coreFunction.getClientId(),JpowerError.Arg,"客户端ID不可为空");
         JpowerAssert.notNull(coreFunction.getFunctionType(),JpowerError.Arg,"功能类型不可为空");
 
-        if(StringUtils.isBlank(coreFunction.getParentId())){
-            coreFunction.setParentId("-1");
+        if(Fc.isNull(coreFunction.getParentId())){
+            coreFunction.setParentId(Fc.toLong(TOP_CODE));
         }
         if(Fc.isEmpty(coreFunction.getIsHide())){
             coreFunction.setIsHide(Boolean.FALSE);
@@ -133,7 +133,7 @@ public class FunctionController extends BaseController {
 
         TbCoreFunction function = coreFunctionService.selectFunctionByCode(coreFunction.getCode());
         if (function != null){
-            return ReturnJsonUtil.print(ConstantsReturn.RECODE_BUSINESS,"该菜单已存在", false);
+            return ReturnJsonUtil.fail("该菜单已存在");
         }
 
         if (coreFunctionService.add(coreFunction)){
@@ -153,14 +153,10 @@ public class FunctionController extends BaseController {
 
         JpowerAssert.notEmpty(ids, JpowerError.Arg, "ids不可为空");
 
-        long c = coreFunctionService.listByPids(ids);
-        if (c > 0){
-            return ReturnJsonUtil.print(ConstantsReturn.RECODE_BUSINESS,"该菜单存在下级菜单，请先删除下级菜单", false);
-        }
+        long c = coreFunctionService.listByPids(Fc.toLongList(ids));
+        JpowerAssert.geZero(c,JpowerError.Business, "该菜单存在下级菜单，请先删除下级菜单");
 
-        Boolean is = coreFunctionService.delete(ids);
-
-        if (is){
+        if (coreFunctionService.delete(Fc.toLongList(ids))){
             CacheUtil.clear(CacheNames.FUNCTION_KEY);
             return ReturnJsonUtil.ok("删除成功");
         }else {
@@ -175,16 +171,16 @@ public class FunctionController extends BaseController {
     @RequestMapping(value = "/update",method = {RequestMethod.PUT},produces="application/json")
     public ResponseData update(TbCoreFunction coreFunction){
 
-        JpowerAssert.notEmpty(coreFunction.getId(), JpowerError.Arg, "id不可为空");
+        JpowerAssert.notNull(coreFunction.getId(), JpowerError.Arg, "id不可为空");
 
         if (StringUtils.isNotBlank(coreFunction.getCode())){
             TbCoreFunction function = coreFunctionService.selectFunctionByCode(coreFunction.getCode());
-            if (function != null && !StringUtils.equals(function.getId(),function.getId())){
-                return ReturnJsonUtil.print(ConstantsReturn.RECODE_BUSINESS,"该菜单已存在", false);
+            if (function != null && !NumberUtil.equals(function.getId(),function.getId())){
+                return ReturnJsonUtil.fail("该菜单已存在");
             }
         }
 
-        if (coreFunctionService.update(coreFunction)){
+        if (coreFunctionService.update(coreFunction) ){
             CacheUtil.clear(CacheNames.FUNCTION_KEY);
             return ReturnJsonUtil.ok("修改成功");
         }else {
@@ -197,11 +193,11 @@ public class FunctionController extends BaseController {
     })
     @ApiOperation("保存层级")
     @PostMapping(value = "/saveHierarchy", produces="application/json")
-    public ResponseData saveHierarchy(@ApiParam(value = "上级ID",required = true) String parentId, @ApiParam(value = "主键，多个逗号分割",required = true) String ids){
+    public ResponseData saveHierarchy(@ApiParam(value = "上级ID",required = true) @RequestParam(defaultValue = TOP_CODE) Long parentId, @ApiParam(value = "主键，多个逗号分割",required = true) String ids){
 
         JpowerAssert.notEmpty(ids, JpowerError.Arg, "ids不可为空");
 
-        boolean is = coreFunctionService.hierarchySave(parentId, Fc.toStrList(Fc.toStr(ids,TOP_CODE)));
+        boolean is = coreFunctionService.hierarchySave(parentId, Fc.toLongList(Fc.toStr(ids,TOP_CODE)));
 
         if (is){
             CacheUtil.clear(CacheNames.FUNCTION_KEY);
@@ -216,27 +212,27 @@ public class FunctionController extends BaseController {
     })
     @ApiOperation("根据角色ID查询所有的权限ID")
     @RequestMapping(value = "/queryUrlIdByRole",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData<Set<String>> queryUrlIdByRole(@ApiParam(value = "角色ID 多个逗号分割",required = true) @RequestParam String roleIds){
-        Set<String> list = coreFunctionService.queryUrlIdByRole(roleIds);
-        return ReturnJsonUtil.ok("查询成功",list);
+    public ResponseData<Set<Long>> queryUrlIdByRole(@ApiParam(value = "角色ID 多个逗号分割",required = true) @RequestParam String roleIds){
+        Set<Long> list = coreFunctionService.queryUrlIdByRole(Fc.toLongList(roleIds));
+        return ReturnJsonUtil.data(list);
     }
 
     @ApiOperation("懒加载登录用户所有功能树形结构")
     @RequestMapping(value = "/lazyTree",method = {RequestMethod.GET},produces="application/json")
-    public ResponseData<List<Tree<String>>> lazyTree(@ApiParam(value = "父级编码",defaultValue = TOP_CODE,required = true) @RequestParam(defaultValue = TOP_CODE) String parentId){
-        List<String> roleIds = ShieldUtil.getUserRole();
-        List<Tree<String>> list = ShieldUtil.isRoot()?coreFunctionService.tree(Condition.getLambdaTreeWrapper(TbCoreFunction.class,TbCoreFunction::getId,TbCoreFunction::getParentId)
+    public ResponseData<List<Tree<Long>>> lazyTree(@ApiParam(value = "父级编码",defaultValue = TOP_CODE,required = true) @RequestParam(defaultValue = TOP_CODE) Long parentId){
+        List<Long> roleIds = ShieldUtil.getUserRole();
+        List<Tree<Long>> list = ShieldUtil.isRoot()?coreFunctionService.tree(Condition.getLambdaTreeWrapper(TbCoreFunction.class,TbCoreFunction::getId,TbCoreFunction::getParentId)
                 .lazy(parentId)
                 .select(TbCoreFunction::getFunctionName,TbCoreFunction::getUrl)
                 .orderByAsc(TbCoreFunction::getSort)):
                 coreFunctionService.lazyTreeByRole(parentId,roleIds);
-        return ReturnJsonUtil.ok("查询成功",list);
+        return ReturnJsonUtil.data(list);
     }
 
     @ApiOperation("页面菜单获取")
     @GetMapping(value = "/listMenuTree", produces="application/json")
-    public ResponseData<List<Tree<String>>> listMenuTree(@ApiParam("顶部菜单ID") String topMenuId){
-        List<String> roleIds = ShieldUtil.getUserRole();
+    public ResponseData<List<Tree<Long>>> listMenuTree(@ApiParam("顶部菜单ID") Long topMenuId){
+        List<Long> roleIds = ShieldUtil.getUserRole();
         return ReturnJsonUtil.data(ForestNodeMerger.mergeTree(BeanUtil.copyToList(coreFunctionService.listMenuByRoleId(roleIds,ShieldUtil.getClientCode(),topMenuId, Boolean.TRUE),FunctionVo.class)));
     }
 
@@ -249,12 +245,12 @@ public class FunctionController extends BaseController {
 
     @ApiOperation("查询登录用户所有功能的树形列表")
     @GetMapping(value = "/listTree", produces="application/json")
-    public ResponseData<List<Tree<String>>> listTree(){
-        List<Tree<String>> list = ShieldUtil.isRoot()?
+    public ResponseData<List<Tree<Long>>> listTree(){
+        List<Tree<Long>> list = ShieldUtil.isRoot()?
                 coreFunctionService.tree(Condition.getLambdaTreeWrapper(TbCoreFunction.class,TbCoreFunction::getId,TbCoreFunction::getParentId)
                         .eq(TbCoreFunction::getClientId,clientService.queryIdByCode(ShieldUtil.getClientCode()))):
                 coreFunctionService.listTreeByRoleId(ShieldUtil.getUserRole());
-        return ReturnJsonUtil.ok("查询成功", list);
+        return ReturnJsonUtil.data(list);
     }
 
     @Function(value = "菜单树形",menus = {
@@ -263,8 +259,8 @@ public class FunctionController extends BaseController {
     })
     @ApiOperation("查询登录用户所有菜单树形结构")
     @GetMapping(value = "/menuTree", produces="application/json")
-    public ResponseData<List<Tree<String>>> menuTree(@ApiParam("客户端ID") String clientId,@ApiParam("顶部菜单ID") String topMenuId){
-        if (Fc.isBlank(clientId)){
+    public ResponseData<List<Tree<Long>>> menuTree(@ApiParam("客户端ID") Long clientId,@ApiParam("顶部菜单ID") Long topMenuId){
+        if (Fc.isNull(clientId)){
             return ReturnJsonUtil.data(ListUtil.empty());
         }
         return ReturnJsonUtil.data(coreFunctionService.menuTreeByRoleIds(ShieldUtil.getUserRole(),clientId,topMenuId));
@@ -275,7 +271,7 @@ public class FunctionController extends BaseController {
     })
     @ApiOperation("查询登录用户所有菜单树形结构并根据客户端区分")
     @GetMapping(value = "/clientMenuTree", produces="application/json")
-    public ResponseData<List<Tree<String>>> clientMenuTree(){
+    public ResponseData<List<Tree<Long>>> clientMenuTree(){
 
         List<TbCoreFunction> list = coreFunctionService.menuByRoleIds(ShieldUtil.getUserRole());
 
@@ -289,7 +285,7 @@ public class FunctionController extends BaseController {
             map.put("disabled",Boolean.TRUE);
 
             list.forEach(f->{
-                if (Fc.equalsValue(f.getParentId(),TOP_CODE) && Fc.equalsValue(f.getClientId(),client.getId())){
+                if (NumberUtil.equals(f.getParentId(),Fc.toLong(TOP_CODE)) && NumberUtil.equals(f.getClientId(),client.getId())){
                     f.setParentId(client.getId());
                     map.put("disabled",Boolean.FALSE);
                 }
@@ -297,7 +293,7 @@ public class FunctionController extends BaseController {
 
             map.put("name",client.getName());
             map.put("id",client.getId());
-            map.put("parentId",TOP_CODE);
+            map.put("parentId",Fc.toLong(TOP_CODE));
             return map;
         }).collect(Collectors.toList()));
 
@@ -327,8 +323,8 @@ public class FunctionController extends BaseController {
     })
     @ApiOperation("菜单开关")
     @PostMapping(value = "/hide", produces="application/json")
-    public ResponseData hide(@ApiParam(value = "主键",required = true) String id,@ApiParam(value = "是否隐藏",required = true) Boolean hide){
-        JpowerAssert.notEmpty(id,JpowerError.Arg,"主键不可为空");
+    public ResponseData hide(@ApiParam(value = "主键",required = true) Long id,@ApiParam(value = "是否隐藏",required = true) Boolean hide){
+        JpowerAssert.notNull(id,JpowerError.Arg,"主键不可为空");
         JpowerAssert.notNull(hide,JpowerError.Arg,"是否隐藏不可为空");
 
         TbCoreFunction function = new TbCoreFunction();

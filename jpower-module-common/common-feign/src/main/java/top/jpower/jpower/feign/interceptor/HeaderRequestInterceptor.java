@@ -1,13 +1,13 @@
 package top.jpower.jpower.feign.interceptor;
 
-import top.jpower.jpower.module.common.auth.SecureConstant;
-import top.jpower.jpower.module.common.utils.constants.TokenConstant;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import top.jpower.jpower.module.common.auth.SecureConstant;
+import top.jpower.jpower.module.common.utils.constants.TokenConstant;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;

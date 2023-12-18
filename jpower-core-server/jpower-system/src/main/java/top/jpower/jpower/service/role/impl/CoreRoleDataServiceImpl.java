@@ -1,10 +1,10 @@
 package top.jpower.jpower.service.role.impl;
 
+import org.springframework.stereotype.Service;
 import top.jpower.jpower.dbs.dao.role.mapper.TbCoreRoleDataMapper;
 import top.jpower.jpower.dbs.entity.role.TbCoreRoleData;
 import top.jpower.jpower.module.common.service.impl.BaseServiceImpl;
 import top.jpower.jpower.service.role.CoreRoleDataService;
-import org.springframework.stereotype.Service;
 
 /**
  * @author ding

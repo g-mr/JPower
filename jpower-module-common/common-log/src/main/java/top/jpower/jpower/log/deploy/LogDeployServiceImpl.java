@@ -1,9 +1,9 @@
 package top.jpower.jpower.log.deploy;
 
-import top.jpower.jpower.module.base.annotation.LoaderService;
-import top.jpower.jpower.module.common.deploy.service.DeployService;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.core.Ordered;
+import top.jpower.jpower.module.base.annotation.LoaderService;
+import top.jpower.jpower.module.common.deploy.service.DeployService;
 
 import java.util.Properties;
 

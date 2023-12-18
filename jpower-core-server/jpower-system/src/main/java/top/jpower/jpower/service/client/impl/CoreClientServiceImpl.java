@@ -1,5 +1,7 @@
 package top.jpower.jpower.service.client.impl;
 
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 import top.jpower.jpower.dbs.dao.client.TbCoreClientDao;
 import top.jpower.jpower.dbs.dao.client.mapper.TbCoreClientMapper;
 import top.jpower.jpower.dbs.entity.client.TbCoreClient;
@@ -8,8 +10,6 @@ import top.jpower.jpower.module.common.utils.Fc;
 import top.jpower.jpower.module.common.utils.RandomUtil;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.service.client.CoreClientService;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
 
 /**
  * @ClassName CoreClientServiceImpl
@@ -31,13 +31,13 @@ public class CoreClientServiceImpl extends BaseServiceImpl<TbCoreClientMapper, T
     }
 
     @Override
-    public String queryIdByCode(String clientCode) {
+    public Long queryIdByCode(String clientCode) {
         return coreClientDao.queryIdByCode(clientCode);
     }
 
     @Override
     public boolean saveOrUpdate(TbCoreClient coreClient){
-        if (Fc.isBlank(coreClient.getId())){
+        if (Fc.isNull(coreClient.getId())){
             coreClient.setClientSecret(RandomUtil.randomString(6));
         }
         return coreClientDao.saveOrUpdate(coreClient);

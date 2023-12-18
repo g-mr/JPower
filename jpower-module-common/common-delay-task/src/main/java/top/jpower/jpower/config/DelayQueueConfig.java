@@ -1,8 +1,8 @@
 package top.jpower.jpower.config;
 
-import top.jpower.jpower.task.DelayTask;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import top.jpower.jpower.task.DelayTask;
 
 import java.util.concurrent.DelayQueue;
 

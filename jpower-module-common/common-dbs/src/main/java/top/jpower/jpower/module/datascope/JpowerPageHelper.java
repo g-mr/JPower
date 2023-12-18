@@ -4,9 +4,6 @@ import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
 import com.baomidou.mybatisplus.extension.plugins.handler.DataPermissionHandler;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.util.MSUtils;
-import top.jpower.jpower.module.common.utils.ClassUtil;
-import top.jpower.jpower.module.common.utils.Fc;
-import top.jpower.jpower.module.datascope.handler.DataScopeHandler;
 import lombok.SneakyThrows;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
@@ -16,6 +13,9 @@ import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.RowBounds;
+import top.jpower.jpower.module.common.utils.ClassUtil;
+import top.jpower.jpower.module.common.utils.Fc;
+import top.jpower.jpower.module.datascope.handler.DataScopeHandler;
 
 import java.util.Properties;
 

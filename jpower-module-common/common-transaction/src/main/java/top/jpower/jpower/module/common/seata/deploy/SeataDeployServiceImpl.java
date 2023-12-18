@@ -1,10 +1,10 @@
 package top.jpower.jpower.module.common.seata.deploy;
 
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.core.Ordered;
 import top.jpower.jpower.module.base.annotation.LoaderService;
 import top.jpower.jpower.module.common.deploy.service.DeployService;
 import top.jpower.jpower.module.common.seata.constants.SeataConstants;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.core.Ordered;
 
 import java.util.Properties;
 

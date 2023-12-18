@@ -5,9 +5,9 @@ import com.alibaba.csp.sentinel.slots.block.degrade.DegradeException;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowException;
 import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowException;
 import com.alibaba.csp.sentinel.slots.system.SystemBlockException;
-import top.jpower.jpower.module.base.vo.ResponseData;
 import lombok.SneakyThrows;
 import org.apache.http.HttpStatus;
+import top.jpower.jpower.module.base.vo.ResponseData;
 
 /**
  * @ClassName ErrorMsg

@@ -1,9 +1,9 @@
 package top.jpower.jpower.dbs.dao.dict.mapper;
 
+import org.springframework.stereotype.Component;
 import top.jpower.jpower.dbs.entity.dict.TbCoreDict;
 import top.jpower.jpower.module.dbs.dao.mapper.base.JpowerBaseMapper;
 import top.jpower.jpower.vo.DictVo;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 

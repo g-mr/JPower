@@ -1,6 +1,9 @@
 package top.jpower.jpower.operate.storage;
 
 import cn.hutool.core.io.FileTypeUtil;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 import top.jpower.jpower.dbs.entity.TbCoreFile;
 import top.jpower.jpower.module.base.enums.JpowerError;
 import top.jpower.jpower.module.base.exception.JpowerAssert;
@@ -13,9 +16,6 @@ import top.jpower.jpower.module.common.utils.constants.StringPool;
 import top.jpower.jpower.operate.FileOperate;
 import top.jpower.jpower.service.CoreFileService;
 import top.jpower.jpower.utils.FileDfsUtil;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -43,8 +43,8 @@ public class FastDfsFileOperate implements FileOperate {
 		TbCoreFile coreFile = new TbCoreFile();
 		coreFile.setFileType(FileTypeUtil.getType(file.getInputStream(),originalFileName));
 		coreFile.setFileSize(file.getSize());
-		coreFile.setId(Fc.randomUUID());
-		coreFile.setMark(DesUtil.encrypt(coreFile.getId(), ConstantsUtils.FILE_DES_KEY));
+		coreFile.setId(Fc.randomSnowFlakeId());
+		coreFile.setMark(DesUtil.encrypt(Fc.toStr(coreFile.getId()), ConstantsUtils.FILE_DES_KEY));
 		coreFile.setStorageType(FASTDFS.getValue());
 		coreFile.setPath(dfsPath);
 		coreFile.setName(originalFileName);

@@ -1,7 +1,7 @@
 package top.jpower.jpower.module.dictbind.handler;
 
-import top.jpower.jpower.module.base.annotation.Dict;
 import org.apache.ibatis.reflection.MetaObject;
+import top.jpower.jpower.module.base.annotation.Dict;
 
 /**
  * @Author mr.g

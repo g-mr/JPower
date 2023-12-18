@@ -1,8 +1,8 @@
 package top.jpower.jpower.vo;
 
-import top.jpower.jpower.dbs.entity.dict.TbCoreDictType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import top.jpower.jpower.dbs.entity.dict.TbCoreDictType;
 
 /**
  * @ClassName DictVo

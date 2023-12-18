@@ -1,13 +1,5 @@
 package top.jpower.jpower.module.common.support;
 
-import top.jpower.jpower.module.base.annotation.Excel;
-import top.jpower.jpower.module.base.exception.BusinessException;
-import top.jpower.jpower.module.base.vo.ResponseData;
-import top.jpower.jpower.module.common.utils.ExcelUtil;
-import top.jpower.jpower.module.common.utils.Fc;
-import top.jpower.jpower.module.common.utils.ReflectUtil;
-import top.jpower.jpower.module.common.utils.ReturnJsonUtil;
-import top.jpower.jpower.module.common.utils.constants.ConstantsReturn;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFFont;
@@ -18,6 +10,14 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFDataValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.jpower.jpower.module.base.annotation.Excel;
+import top.jpower.jpower.module.base.exception.BusinessException;
+import top.jpower.jpower.module.base.vo.ResponseData;
+import top.jpower.jpower.module.common.utils.ExcelUtil;
+import top.jpower.jpower.module.common.utils.Fc;
+import top.jpower.jpower.module.common.utils.ReflectUtil;
+import top.jpower.jpower.module.common.utils.ReturnJsonUtil;
+import top.jpower.jpower.module.common.utils.constants.ConstantsReturn;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -716,7 +716,9 @@ public class BeanExcelUtil<T> {
                             {
                                 propertyName = field.getName() + "." + attr.targetAttr();
                             }
-                            ReflectUtil.invokeSetter(entity, propertyName, val);
+                            if (Fc.isNotEmpty(val)){
+                                ReflectUtil.invokeSetter(entity, propertyName, val);
+                            }
                         }
                     }
                 }

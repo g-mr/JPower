@@ -1,7 +1,5 @@
 package top.jpower.jpower.module.base.error;
 
-import top.jpower.jpower.module.common.utils.ExceptionUtil;
-import top.jpower.jpower.module.common.utils.constants.StringPool;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
@@ -9,6 +7,8 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
+import top.jpower.jpower.module.common.utils.ExceptionUtil;
+import top.jpower.jpower.module.common.utils.constants.StringPool;
 
 /**
  * 异常的日志打印切面

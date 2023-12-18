@@ -31,13 +31,9 @@ public class TbCoreFunctionDao extends JpowerServiceImpl<TbCoreFunctionMapper, T
 
     private static final String ROLE_SQL = "select function_id from tb_core_role_function where role_id in ({})";
 
-    public List<Tree<String>> treeMenuTypeByClientId(List<String> roleIds, String clientId) {
+    public List<Tree<String>> treeMenuTypeByClientId(List<Long> roleIds, Long clientId) {
         return super.tree(Condition.getLambdaTreeWrapper(TbCoreFunction.class,TbCoreFunction::getId,TbCoreFunction::getParentId)
                         .select(TbCoreFunction::getFunctionName,TbCoreFunction::getFunctionType,TbCoreFunction::getSort)
-//                        .and(and->{
-//                            and.and(q-> q.in(TbCoreFunction::getFunctionType, ListUtil.of(ConstantsEnum.FUNCTION_TYPE.MENU.getValue(),ConstantsEnum.FUNCTION_TYPE.BTN.getValue())).ne(TbCoreFunction::getParentId, TOP_CODE))
-//                            .or(or-> or.eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.MENU.getValue()).eq(TbCoreFunction::getParentId, TOP_CODE));
-//                        })
                         .in(TbCoreFunction::getFunctionType, ListUtil.of(ConstantsEnum.FUNCTION_TYPE.MENU.getValue(),ConstantsEnum.FUNCTION_TYPE.BTN.getValue()))
                         // 如果不是超级用户，则查出自己权限的菜单
                         .inSql(!ShieldUtil.isRoot(),TbCoreFunction::getId, StringUtil.format(ROLE_SQL, StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE)))
@@ -59,7 +55,7 @@ public class TbCoreFunctionDao extends JpowerServiceImpl<TbCoreFunctionMapper, T
         return functions.stream().collect(Collectors.toMap(TbCoreFunction::getCode, f->f));
     }
 
-    public List<Map<String, Object>> listInterface(List<String> roleIds, String clientId) {
+    public List<Map<String, Object>> listInterface(List<Long> roleIds, Long clientId) {
         List<Map<String, Object>> list = super.listMaps(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                         .select(TbCoreFunction::getId,TbCoreFunction::getParentId,TbCoreFunction::getCode,TbCoreFunction::getFunctionName,TbCoreFunction::getAlias,TbCoreFunction::getUrl,TbCoreFunction::getFunctionType)
                         .eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.INTERFACE.getValue())

@@ -5,11 +5,10 @@ import com.baomidou.mybatisplus.core.injector.AbstractMethod;
 import com.baomidou.mybatisplus.core.injector.DefaultSqlInjector;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.extension.injector.methods.InsertBatchSomeColumn;
+import lombok.AllArgsConstructor;
 import top.jpower.jpower.module.common.utils.Fc;
 import top.jpower.jpower.module.mp.methods.*;
 import top.jpower.jpower.module.tenant.JpowerTenantProperties;
-import lombok.AllArgsConstructor;
-import top.jpower.jpower.module.mp.methods.*;
 
 import java.util.List;
 

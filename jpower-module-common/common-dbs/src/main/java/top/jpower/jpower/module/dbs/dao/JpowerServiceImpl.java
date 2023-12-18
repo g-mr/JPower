@@ -7,17 +7,17 @@ import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import top.jpower.jpower.module.common.node.ForestNodeMerger;
-import top.jpower.jpower.module.common.utils.BeanUtil;
-import top.jpower.jpower.module.common.utils.Fc;
-import top.jpower.jpower.module.common.utils.ReflectUtil;
-import top.jpower.jpower.module.common.utils.ShieldUtil;
+import top.jpower.jpower.module.common.utils.*;
 import top.jpower.jpower.module.dbs.dao.mapper.base.JpowerBaseMapper;
 import top.jpower.jpower.module.dbs.entity.base.BaseEntity;
 import top.jpower.jpower.module.tenant.TenantConstant;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -37,20 +37,17 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
      */
     private void resolveEntity(T entity,boolean isSave){
         //  这里获取实际登陆人，如果是匿名用户或者其他接口调用方，交给 mp来赋值（可应用于未登录状态，根据具体业务，接口调用方可控制这些字段来保存更加符合的值）
-        String userId = ShieldUtil.getUserId();
-        String orgId = ShieldUtil.getOrgId();
-        userId = Fc.isBlank(userId)?null:userId;
-        orgId = Fc.isBlank(orgId)?null:orgId;
-        Date now = new Date();
+        Long userId = ShieldUtil.getUserId();
+        Long orgId = ShieldUtil.getOrgId();
         if (isSave){
-            entity.setCreateTime(now);
+            entity.setCreateTime(DateUtil.date());
             entity.setCreateUser(userId);
             entity.setCreateOrg(orgId);
             entity.setIsDeleted(Boolean.FALSE);
         }
 
         entity.setUpdateUser(userId);
-        entity.setUpdateTime(now);
+        entity.setUpdateTime(DateUtil.date());
         // todo end
 
         Field field = cn.hutool.core.util.ReflectUtil.getField(entity.getClass(), TenantConstant.TENANT_CODE);
@@ -80,13 +77,13 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
 
     @Override
     public boolean saveOrUpdate(T entity) {
-        resolveEntity(entity, Fc.isBlank(entity.getId()));
+        resolveEntity(entity, Fc.isNull(entity.getId()));
         return super.saveOrUpdate(entity);
     }
 
     @Override
     public boolean saveOrUpdateBatch(Collection<T> entityList, int batchSize) {
-        entityList.forEach(e -> this.resolveEntity(e,Fc.isBlank(e.getId())));
+        entityList.forEach(e -> this.resolveEntity(e,Fc.isNull(e.getId())));
         return super.saveOrUpdateBatch(entityList,batchSize);
     }
 
@@ -182,7 +179,7 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
         return list(queryWrapper).stream().filter(Objects::nonNull).map(function).collect(Collectors.toList());
     }
 
-    public List<Tree<String>> tree(Wrapper<T> treeWrapper) {
+    public <E> List<Tree<E>> tree(Wrapper<T> treeWrapper) {
         List<Map<String,Object>> list = listMaps(treeWrapper);
         return ForestNodeMerger.mergeTree(list);
     }

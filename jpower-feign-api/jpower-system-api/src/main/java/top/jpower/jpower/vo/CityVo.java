@@ -1,9 +1,9 @@
 package top.jpower.jpower.vo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import top.jpower.jpower.dbs.entity.city.TbCoreCity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import top.jpower.jpower.dbs.entity.city.TbCoreCity;
 
 /**
  * @ClassName CityVo

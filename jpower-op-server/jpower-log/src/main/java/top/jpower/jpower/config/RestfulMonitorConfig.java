@@ -1,15 +1,15 @@
 package top.jpower.jpower.config;
 
-import top.jpower.jpower.interceptor.AuthInterceptor;
-import top.jpower.jpower.interceptor.LogInterceptor;
-import top.jpower.jpower.interceptor.RollbackInterceptor;
-import top.jpower.jpower.properties.MonitorRestfulProperties;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import top.jpower.jpower.interceptor.AuthInterceptor;
+import top.jpower.jpower.interceptor.LogInterceptor;
+import top.jpower.jpower.interceptor.RollbackInterceptor;
+import top.jpower.jpower.properties.MonitorRestfulProperties;
 
 /**
  * @Description TODO 接口监控拦截器配置

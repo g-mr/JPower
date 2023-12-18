@@ -1,9 +1,5 @@
 package top.jpower.jpower.module.config;
 
-import top.jpower.jpower.module.annotation.Function;
-import top.jpower.jpower.module.annotation.Menu;
-import top.jpower.jpower.module.common.utils.Fc;
-import top.jpower.jpower.module.common.utils.MapUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -13,6 +9,10 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import top.jpower.jpower.module.annotation.Function;
+import top.jpower.jpower.module.annotation.Menu;
+import top.jpower.jpower.module.common.utils.Fc;
+import top.jpower.jpower.module.common.utils.MapUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;

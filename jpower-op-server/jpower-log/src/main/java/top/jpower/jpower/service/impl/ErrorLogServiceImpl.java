@@ -1,11 +1,11 @@
 package top.jpower.jpower.service.impl;
 
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 import top.jpower.jpower.dbs.dao.mapper.LogErrorMapper;
 import top.jpower.jpower.dbs.entity.TbLogError;
 import top.jpower.jpower.module.common.service.impl.BaseServiceImpl;
 import top.jpower.jpower.service.ErrorLogService;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
 
 /**
  * @Author mr.g

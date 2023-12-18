@@ -1,11 +1,11 @@
 package top.jpower.jpower.feign;
 
-import top.jpower.jpower.dbs.entity.params.TbCoreParam;
-import top.jpower.jpower.module.base.vo.ResponseData;
-import top.jpower.jpower.module.common.utils.constants.AppConstant;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import top.jpower.jpower.dbs.entity.params.TbCoreParam;
+import top.jpower.jpower.module.base.vo.ResponseData;
+import top.jpower.jpower.module.common.utils.constants.AppConstant;
 
 /**
  * @author mr.gmac
@@ -31,6 +31,6 @@ public interface ParamsClient {
      * @return top.jpower.jpower.module.base.vo.ResponseData<java.lang.Boolean>
      */
     @GetMapping("/queryById")
-    TbCoreParam queryById(@RequestParam String id);
+    TbCoreParam queryById(@RequestParam Long id);
 
 }

@@ -18,5 +18,5 @@ public interface CoreUserRoleService extends BaseService<TbCoreUserRole> {
      * @date 0:04 2020/10/21 0021
      * @param userId
      */
-    List<String> queryRoleIds(String userId);
+    List<Long> queryRoleIds(Long userId);
 }

@@ -3,6 +3,10 @@ package top.jpower.jpower.controller.monitor;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import io.swagger.annotations.*;
+import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.jpower.dbs.entity.TbLogMonitorParam;
 import top.jpower.jpower.dbs.entity.TbLogMonitorSetting;
 import top.jpower.jpower.module.annotation.Function;
@@ -17,10 +21,6 @@ import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
 import top.jpower.jpower.properties.MonitorRestfulProperties;
 import top.jpower.jpower.service.MonitorSettingService;
 import top.jpower.jpower.service.TaskService;
-import io.swagger.annotations.*;
-import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,8 +128,8 @@ public class SettingController {
     @ApiOperationSupport(order = 6)
     @ApiOperation("删除接口设置")
     @DeleteMapping(value = "/delete-setup",produces="application/json")
-    public ResponseData<Boolean> deleteSetup(@ApiParam("设置ID") @RequestParam String id){
-        JpowerAssert.notEmpty(id,JpowerError.Arg,"ID不可为空");
+    public ResponseData<Boolean> deleteSetup(@ApiParam("设置ID") @RequestParam Long id){
+        JpowerAssert.notNull(id,JpowerError.Arg,"ID不可为空");
         return ReturnJsonUtil.status(monitorSettingService.removeRealById(id));
     }
 

@@ -1,11 +1,11 @@
 package top.jpower.jpower.feign.properties;
 
-import top.jpower.jpower.module.common.support.EnvBeanUtil;
-import top.jpower.jpower.module.common.utils.Fc;
-import top.jpower.jpower.module.common.utils.constants.AppConstant;
 import feign.Logger;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import top.jpower.jpower.module.common.support.EnvBeanUtil;
+import top.jpower.jpower.module.common.utils.Fc;
+import top.jpower.jpower.module.common.utils.constants.AppConstant;
 
 import java.util.concurrent.TimeUnit;
 

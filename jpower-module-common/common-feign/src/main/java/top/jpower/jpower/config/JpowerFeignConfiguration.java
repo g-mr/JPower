@@ -1,12 +1,12 @@
 package top.jpower.jpower.config;
 
 import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.BlockExceptionHandler;
-import top.jpower.jpower.sentinel.handler.OriginParserHandler;
-import top.jpower.jpower.sentinel.handler.UrlBlockHandler;
-import top.jpower.jpower.sentinel.handler.UrlCleanerHandler;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import top.jpower.jpower.sentinel.handler.OriginParserHandler;
+import top.jpower.jpower.sentinel.handler.UrlBlockHandler;
+import top.jpower.jpower.sentinel.handler.UrlCleanerHandler;
 
 /**
  * @author goo

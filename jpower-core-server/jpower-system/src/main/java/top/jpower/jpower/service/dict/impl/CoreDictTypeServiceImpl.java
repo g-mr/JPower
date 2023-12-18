@@ -4,6 +4,8 @@ import cn.hutool.core.lang.tree.Tree;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 import top.jpower.jpower.dbs.dao.dict.TbCoreDictTypeDao;
 import top.jpower.jpower.dbs.dao.dict.mapper.TbCoreDictTypeMapper;
 import top.jpower.jpower.dbs.entity.dict.TbCoreDict;
@@ -15,11 +17,8 @@ import top.jpower.jpower.module.common.utils.Fc;
 import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
 import top.jpower.jpower.module.common.utils.constants.JpowerConstants;
 import top.jpower.jpower.module.mp.support.Condition;
-import top.jpower.jpower.module.mp.support.LambdaTreeWrapper;
 import top.jpower.jpower.service.dict.CoreDictService;
 import top.jpower.jpower.service.dict.CoreDictTypeService;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -34,17 +33,15 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
     private CoreDictService coreDictService;
 
     @Override
-    public List<Tree<String>> tree() {
-        LambdaTreeWrapper<TbCoreDictType> queryWrapper = Condition.getLambdaTreeWrapper(TbCoreDictType.class,TbCoreDictType::getId,
-                TbCoreDictType::getParentId)
+    public List<Tree<Long>> tree() {
+        return coreDictTypeDao.tree(Condition.getLambdaTreeWrapper(TbCoreDictType.class, TbCoreDictType::getId, TbCoreDictType::getParentId)
                 .select(TbCoreDictType::getDictTypeName,
                         TbCoreDictType::getDictTypeCode,
-                        TbCoreDictType::getIsTree);
-        return coreDictTypeDao.tree(queryWrapper.orderByAsc(TbCoreDictType::getSortNum));
+                        TbCoreDictType::getIsTree).orderByAsc(TbCoreDictType::getSortNum));
     }
 
     @Override
-    public Boolean deleteDictType(List<String> ids) {
+    public Boolean deleteDictType(List<Long> ids) {
         List<TbCoreDictType> listType = coreDictTypeDao.list(Condition.<TbCoreDictType>getQueryWrapper().lambda()
                 .in(TbCoreDictType::getId,ids)
                 .eq(TbCoreDictType::getDelEnabled, ConstantsEnum.YN.Y.getValue()));
@@ -69,7 +66,7 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
 
     @Override
     public Boolean addDictType(TbCoreDictType dictType) {
-        dictType.setParentId(Fc.isBlank(dictType.getParentId())? JpowerConstants.TOP_CODE:dictType.getParentId());
+        dictType.setParentId(Fc.isNull(dictType.getParentId())? Fc.toLong(JpowerConstants.TOP_CODE):dictType.getParentId());
         dictType.setDelEnabled(Fc.isBlank(dictType.getDelEnabled())? ConstantsEnum.YN.Y.getValue() :dictType.getDelEnabled());
 
         LambdaQueryWrapper<TbCoreDictType> queryWrapper = Condition.<TbCoreDictType>getQueryWrapper().lambda().eq(TbCoreDictType::getDictTypeCode,dictType.getDictTypeCode());

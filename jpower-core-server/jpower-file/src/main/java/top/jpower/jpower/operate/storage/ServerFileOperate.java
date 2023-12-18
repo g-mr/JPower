@@ -1,6 +1,12 @@
 package top.jpower.jpower.operate.storage;
 
 import cn.hutool.core.io.FileTypeUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 import top.jpower.jpower.dbs.entity.TbCoreFile;
 import top.jpower.jpower.module.base.enums.JpowerError;
 import top.jpower.jpower.module.base.exception.BusinessException;
@@ -12,11 +18,6 @@ import top.jpower.jpower.module.common.utils.WebUtil;
 import top.jpower.jpower.module.common.utils.constants.ConstantsUtils;
 import top.jpower.jpower.operate.FileOperate;
 import top.jpower.jpower.service.CoreFileService;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +30,7 @@ import static top.jpower.jpower.operate.storage.ServerFileOperate.STORAGE_TYPE;
  * @Author mr.g
  **/
 @Component(STORAGE_TYPE)
+@RefreshScope
 public class ServerFileOperate implements FileOperate {
 
 	public static final String STORAGE_TYPE = "SERVER";
@@ -49,8 +51,8 @@ public class ServerFileOperate implements FileOperate {
 		coreFile.setStorageType(SERVER.getValue());
 		coreFile.setFileType(FileTypeUtil.getType(saveFile));
 		coreFile.setFileSize(file.getSize());
-		coreFile.setId(Fc.randomUUID());
-		coreFile.setMark(DesUtil.encrypt(coreFile.getId(), ConstantsUtils.FILE_DES_KEY));
+		coreFile.setId(Fc.randomSnowFlakeId());
+		coreFile.setMark(DesUtil.encrypt(Fc.toStr(coreFile.getId()), ConstantsUtils.FILE_DES_KEY));
 
 		try {
 			if (!coreFileService.add(coreFile)){

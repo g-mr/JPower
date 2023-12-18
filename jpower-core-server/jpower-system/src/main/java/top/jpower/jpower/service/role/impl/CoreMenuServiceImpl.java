@@ -1,5 +1,7 @@
 package top.jpower.jpower.service.role.impl;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import top.jpower.jpower.dbs.dao.client.TbCoreClientDao;
 import top.jpower.jpower.dbs.dao.role.TbCoreFunctionMenuDao;
 import top.jpower.jpower.dbs.dao.role.TbCoreTopMenuDao;
@@ -13,11 +15,8 @@ import top.jpower.jpower.module.common.utils.Fc;
 import top.jpower.jpower.module.common.utils.ShieldUtil;
 import top.jpower.jpower.module.common.utils.StringUtil;
 import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
-import top.jpower.jpower.module.common.utils.constants.StringPool;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.service.role.CoreMenuService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,12 +39,12 @@ public class CoreMenuServiceImpl extends BaseServiceImpl<TbCoreTopMenuMapper, Tb
     private final String ROLE_MENU_ID = "select menu_id from tb_core_role_menu where role_id in ({})";
 
     @Override
-    public List<String> listFunctionId(String menuId) {
-        return functionMenuDao.listObjs(Condition.<TbCoreFunctionMenu>getQueryWrapper().lambda().select(TbCoreFunctionMenu::getFunctionId).eq(TbCoreFunctionMenu::getMenuId,menuId), Fc::toStr);
+    public List<Long> listFunctionId(Long menuId) {
+        return functionMenuDao.listObjs(Condition.<TbCoreFunctionMenu>getQueryWrapper().lambda().select(TbCoreFunctionMenu::getFunctionId).eq(TbCoreFunctionMenu::getMenuId,menuId), Fc::toLong);
     }
 
     @Override
-    public boolean saveFunction(String menuId, List<String> functions) {
+    public boolean saveFunction(Long menuId, List<Long> functions) {
 
         functionMenuDao.removeReal(Condition.<TbCoreFunctionMenu>getQueryWrapper().lambda().eq(TbCoreFunctionMenu::getMenuId,menuId));
 
@@ -66,25 +65,22 @@ public class CoreMenuServiceImpl extends BaseServiceImpl<TbCoreTopMenuMapper, Tb
 
     @Override
     public List<Map<String, Object>> roleMenu() {
-        JpowerAssert.notEmpty(ShieldUtil.getUserId(), JpowerError.Auth, "未登录");
+        JpowerAssert.notNull(ShieldUtil.getUserId(), JpowerError.Auth, "未登录");
 
-        String sql = StringUtil.format(ROLE_MENU_ID, StringPool.SINGLE_QUOTE.concat(Fc.join(ShieldUtil.getUserRole(),StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE));
         return menuDao.listMaps(Condition.<TbCoreTopMenu>getQueryWrapper().lambda()
                         .select(TbCoreTopMenu::getId,TbCoreTopMenu::getName,TbCoreTopMenu::getCode,TbCoreTopMenu::getIcon,TbCoreTopMenu::getRouter)
                         .eq(TbCoreTopMenu::getStatus, ConstantsEnum.YN01.Y.getValue())
                         .eq(TbCoreTopMenu::getClientId,clientDao.queryIdByCode(ShieldUtil.getClientCode()))
-                        .inSql(!ShieldUtil.isRoot(),TbCoreTopMenu::getId,sql).orderByAsc(TbCoreTopMenu::getSortNum));
+                        .inSql(!ShieldUtil.isRoot(),TbCoreTopMenu::getId, StringUtil.format(ROLE_MENU_ID, Fc.join(ShieldUtil.getUserRole()))).orderByAsc(TbCoreTopMenu::getSortNum));
     }
 
     @Override
-    public List<Map<String, Object>> selectList(String clientId) {
-        JpowerAssert.notEmpty(ShieldUtil.getUserId(), JpowerError.Auth, "未登录");
-
-        String sql = StringUtil.format(ROLE_MENU_ID, StringPool.SINGLE_QUOTE.concat(Fc.join(ShieldUtil.getUserRole(),StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE));
+    public List<Map<String, Object>> selectList(Long clientId) {
+        JpowerAssert.notNull(ShieldUtil.getUserId(), JpowerError.Auth, "未登录");
 
         return menuDao.listMaps(Condition.<TbCoreTopMenu>getQueryWrapper().lambda()
                 .select(TbCoreTopMenu::getId, TbCoreTopMenu::getName, TbCoreTopMenu::getClientId)
-                .eq(Fc.isNotBlank(clientId), TbCoreTopMenu::getClientId, clientId)
-                .inSql(!ShieldUtil.isRoot(), TbCoreTopMenu::getId, sql));
+                .eq(Fc.notNull(clientId), TbCoreTopMenu::getClientId, clientId)
+                .inSql(!ShieldUtil.isRoot(), TbCoreTopMenu::getId, StringUtil.format(ROLE_MENU_ID, Fc.join(ShieldUtil.getUserRole()))));
     }
 }

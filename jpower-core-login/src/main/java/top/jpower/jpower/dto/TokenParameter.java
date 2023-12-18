@@ -1,10 +1,10 @@
 package top.jpower.jpower.dto;
 
-import top.jpower.jpower.module.common.auth.SecureConstant;
-import top.jpower.jpower.utils.TokenUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import top.jpower.jpower.module.common.auth.SecureConstant;
+import top.jpower.jpower.utils.TokenUtil;
 
 import java.io.Serializable;
 

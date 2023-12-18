@@ -1,5 +1,8 @@
 package top.jpower.jpower.auth.granter;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import top.jpower.jpower.auth.AuthUserInfo;
 import top.jpower.jpower.auth.TokenGranter;
 import top.jpower.jpower.cache.UserCache;
@@ -9,9 +12,6 @@ import top.jpower.jpower.feign.UserClient;
 import top.jpower.jpower.module.common.auth.UserInfo;
 import top.jpower.jpower.module.common.utils.Fc;
 import top.jpower.jpower.utils.UserUtil;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import static top.jpower.jpower.auth.granter.PasswordTokenGranter.GRANT_TYPE;
 

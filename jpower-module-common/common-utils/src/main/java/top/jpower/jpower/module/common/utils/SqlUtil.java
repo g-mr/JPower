@@ -2,7 +2,6 @@ package top.jpower.jpower.module.common.utils;
 
 
 import cn.hutool.core.bean.BeanDesc;
-import top.jpower.jpower.module.common.utils.constants.StringPool;
 import lombok.SneakyThrows;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserManager;
@@ -10,6 +9,7 @@ import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.select.SelectItem;
 import org.apache.commons.lang3.StringUtils;
+import top.jpower.jpower.module.common.utils.constants.StringPool;
 
 import java.io.Serializable;
 import java.io.StringReader;

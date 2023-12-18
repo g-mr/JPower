@@ -1,8 +1,8 @@
 package top.jpower.jpower.dbs.entity.params;
 
-import top.jpower.jpower.module.dbs.entity.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import top.jpower.jpower.module.dbs.entity.base.BaseEntity;
 
 import java.io.Serializable;
 

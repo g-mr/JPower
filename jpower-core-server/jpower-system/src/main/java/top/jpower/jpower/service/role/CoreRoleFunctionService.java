@@ -18,7 +18,7 @@ public interface CoreRoleFunctionService extends BaseService<TbCoreRoleFunction>
      * @param roleId 角色ID
      * @return top.jpower.jpower.module.dbs.entity.core.role.TbCoreRoleFunction
      */
-    List<Map<String,Object>> selectRoleFunctionByRoleId(String roleId);
+    List<Map<String,Object>> selectRoleFunctionByRoleId(Long roleId);
 
     /**
      * @author 郭丁志
@@ -28,6 +28,6 @@ public interface CoreRoleFunctionService extends BaseService<TbCoreRoleFunction>
      * @param functionIds
      * @return java.lang.Integer
      */
-    boolean addRoleFunctions(String roleId, String functionIds, boolean isAutoSaveInterface);
+    boolean addRoleFunctions(Long roleId, List<Long> functionIds, boolean isAutoSaveInterface);
 
 }

@@ -1,6 +1,5 @@
 package top.jpower.jpower.gateway.config;
 
-import top.jpower.jpower.gateway.utils.HttpRequestContextHolder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.Ordered;
@@ -9,6 +8,7 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
+import top.jpower.jpower.gateway.utils.HttpRequestContextHolder;
 
 /**
  * 存储请求上下文

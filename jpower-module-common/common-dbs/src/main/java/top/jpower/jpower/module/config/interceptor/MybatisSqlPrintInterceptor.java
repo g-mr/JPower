@@ -2,13 +2,6 @@ package top.jpower.jpower.module.config.interceptor;
 
 
 import cn.hutool.core.annotation.AnnotationUtil;
-import top.jpower.jpower.module.annotation.NoSqlLog;
-import top.jpower.jpower.module.common.utils.*;
-import top.jpower.jpower.module.common.utils.constants.CharPool;
-import top.jpower.jpower.module.common.utils.constants.StringPool;
-import top.jpower.jpower.module.config.interceptor.chain.ChainFilter;
-import top.jpower.jpower.module.config.interceptor.chain.MybatisInterceptor;
-import top.jpower.jpower.module.config.properties.MybatisProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.statement.StatementHandler;
@@ -20,12 +13,20 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
+import top.jpower.jpower.module.annotation.NoSqlLog;
 import top.jpower.jpower.module.common.utils.*;
+import top.jpower.jpower.module.common.utils.constants.CharPool;
+import top.jpower.jpower.module.config.interceptor.chain.ChainFilter;
+import top.jpower.jpower.module.config.interceptor.chain.MybatisInterceptor;
+import top.jpower.jpower.module.config.properties.MybatisProperties;
 
 import java.sql.Statement;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
+
+import static top.jpower.jpower.module.common.utils.constants.StringPool.NEWLINE;
+import static top.jpower.jpower.module.common.utils.constants.StringPool.TAB;
 
 /**
  * @author mr.g
@@ -51,16 +52,24 @@ public class MybatisSqlPrintInterceptor implements MybatisInterceptor {
 
         if (isLog(mpId)){
             long startTime = System.currentTimeMillis();
-            Object rest = chainFilter.proceed();
+            Object rest = null;
+            String error = null;
             try {
+                rest = chainFilter.proceed();
+            } catch (Exception e){
+                error = ExceptionUtil.getRootCauseMessage(e);
+                throw e;
+            } finally {
+                try {
 
-                long time = System.currentTimeMillis() - startTime;
-                // 超过超时时长则打印
-                if(time >= sqlProperties.getPrintTimeout()) {
-                    printSql(boundSql,configuration,mpId,time,rest,isUpdate);
+                    long time = System.currentTimeMillis() - startTime;
+                    // 超过超时时长则打印
+                    if(time >= sqlProperties.getPrintTimeout()) {
+                        printSql(boundSql,configuration,mpId,time,rest,isUpdate,error);
+                    }
+                } catch (Exception e) {
+                    log.error("==> 打印sql 日志异常 {}", NEWLINE+ExceptionUtil.getStackTraceAsString(e));
                 }
-            } catch (Exception e) {
-                log.error("==> 打印sql 日志异常 {}", StringPool.NEWLINE+ ExceptionUtil.getStackTraceAsString(e));
             }
             return rest;
         }
@@ -68,30 +77,34 @@ public class MybatisSqlPrintInterceptor implements MybatisInterceptor {
         return chainFilter.proceed();
     }
 
-    public void printSql(BoundSql boundSql,Configuration configuration,String sqlId,long time,Object rest, boolean isUpdate) {
+    public void printSql(BoundSql boundSql,Configuration configuration,String sqlId,long time,Object rest, boolean isUpdate,String error) {
         // 替换参数格式化Sql语句，去除换行符
         String sql = formatSql(boundSql, configuration).concat(";");
 
         String[] mappers = getMapper(sqlId);
 
-        StringBuilder sb = new StringBuilder(StringPool.NEWLINE)
-                .append(StringPool.TAB).append("==> Mapper name：").append(mappers[0]).append(StringPool.NEWLINE)
-                .append(StringPool.TAB).append("==> Mapper method：").append(mappers[1]).append(StringPool.NEWLINE)
-                .append(StringPool.TAB).append("==> Execute SQL：").append(sql).append(StringPool.NEWLINE)
-                .append(StringPool.TAB).append("<== Time：").append(time).append(" ms ").append(StringPool.NEWLINE);
+        StringBuilder sb = new StringBuilder(NEWLINE)
+                .append(TAB).append("==> Mapper name：").append(mappers[0]).append(NEWLINE)
+                .append(TAB).append("==> Mapper method：").append(mappers[1]).append(NEWLINE)
+                .append(TAB).append("==> Execute SQL：").append(sql).append(NEWLINE)
+                .append(TAB).append("<== Time：").append(time).append(" ms ").append(NEWLINE);
 
         if (isUpdate){
-            sb.append(StringPool.TAB).append("<== Updates: ").append(rest).append(StringPool.NEWLINE);
+            sb.append(TAB).append("<== Updates: ").append(rest).append(NEWLINE);
         }else {
             if (rest instanceof List){
                 List list = (List) rest;
                 if (list.size() == 1){
-                    sb.append(StringPool.TAB).append("<== Result: ").append(list.get(0)).append(StringPool.NEWLINE);
+                    sb.append(TAB).append("<== Result: ").append(list.get(0)).append(NEWLINE);
                 }
-                sb.append(StringPool.TAB).append("<== Total: ").append(((List) rest).size()).append(StringPool.NEWLINE);
+                sb.append(TAB).append("<== Total: ").append(((List) rest).size()).append(NEWLINE);
             }else {
-                sb.append(StringPool.TAB).append("<== Result: ").append(rest).append(StringPool.NEWLINE);
+                sb.append(TAB).append("<== Result: ").append(rest).append(NEWLINE);
             }
+        }
+
+        if (Fc.isNotBlank(error)){
+            sb.append(TAB).append("<== errorSqlInfo: ").append(error).append(NEWLINE);
         }
         log.info(sb.toString());
     }

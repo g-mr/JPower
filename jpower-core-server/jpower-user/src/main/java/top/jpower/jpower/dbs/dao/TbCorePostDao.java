@@ -1,5 +1,7 @@
 package top.jpower.jpower.dbs.dao;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 import top.jpower.jpower.dbs.dao.mapper.TbCorePostMapper;
 import top.jpower.jpower.dbs.dao.mapper.TbCoreUserMapper;
 import top.jpower.jpower.dbs.entity.TbCorePost;
@@ -10,8 +12,6 @@ import top.jpower.jpower.module.dbs.dao.BaseDaoWrapper;
 import top.jpower.jpower.module.dbs.dao.JpowerServiceImpl;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.vo.PostVo;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
 
 /**
  * @author mr.g

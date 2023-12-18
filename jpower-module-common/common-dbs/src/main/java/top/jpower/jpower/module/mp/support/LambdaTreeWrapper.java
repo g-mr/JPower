@@ -13,8 +13,6 @@ import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import top.jpower.jpower.module.common.node.ForestNodeMerger;
 import top.jpower.jpower.module.common.utils.Fc;
-import top.jpower.jpower.module.common.utils.StringUtil;
-import top.jpower.jpower.module.common.utils.constants.JpowerConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -147,12 +145,16 @@ public class LambdaTreeWrapper<T> extends AbstractLambdaWrapper<T, LambdaTreeWra
         return typedThis;
     }
 
-    public LambdaTreeWrapper<T> lazy(String parentIdValue){
+    public LambdaTreeWrapper<T> lazy(Object parentIdValue){
         String tableName = TableInfoHelper.getTableInfo(getEntityClass()).getTableName();
 
         this.hasChildren = "( SELECT CASE WHEN count( 1 ) > 0 THEN 1 ELSE 0 END FROM "+tableName+" as c WHERE "+columnToString(this.parentId,false)+" = "+tableName+"."+columnToString(this.id,false)+" ) AS "+ForestNodeMerger.HAS_CHILDREN;
         select(ArrayUtil.toArray(this.list,String.class));
-        eq(this.parentId, StringUtil.isBlank(parentIdValue)? JpowerConstants.TOP_CODE:parentIdValue);
+        if (Fc.isNull(parentIdValue)){
+            isNull(this.parentId);
+        } else {
+            eq(this.parentId, parentIdValue);
+        }
         return typedThis;
     }
 

@@ -1,8 +1,5 @@
 package top.jpower.jpower.module.common.deploy;
 
-import top.jpower.jpower.module.common.deploy.service.DeployService;
-import top.jpower.jpower.module.common.utils.constants.AppConstant;
-import top.jpower.jpower.module.common.utils.constants.JpowerConstants;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -10,6 +7,9 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.*;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+import top.jpower.jpower.module.common.deploy.service.DeployService;
+import top.jpower.jpower.module.common.utils.constants.AppConstant;
+import top.jpower.jpower.module.common.utils.constants.JpowerConstants;
 
 import java.util.*;
 import java.util.stream.Collectors;

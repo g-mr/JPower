@@ -5,7 +5,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import top.jpower.jpower.dbs.entity.role.TbCoreRole;
 import top.jpower.jpower.module.annotation.Function;
@@ -47,10 +46,10 @@ public class RoleController extends BaseController {
     })
     @ApiOperation("查询角色树结构列表")
     @RequestMapping(value = "/listTree",method = {RequestMethod.GET,RequestMethod.POST},produces="application/json")
-    public ResponseData<List<Tree<String>>> listTree(TbCoreRole coreRole){
-        List<Tree<String>> list = coreRoleService.tree(Condition.getLambdaTreeWrapper(coreRole,TbCoreRole::getId,TbCoreRole::getParentId)
+    public ResponseData<List<Tree<Long>>> listTree(TbCoreRole coreRole){
+        List<Tree<Long>> list = coreRoleService.tree(Condition.getLambdaTreeWrapper(coreRole,TbCoreRole::getId,TbCoreRole::getParentId)
                         .orderByAsc(TbCoreRole::getCreateTime));
-        return ReturnJsonUtil.ok("获取成功", list);
+        return ReturnJsonUtil.data(list);
     }
 
     @Function(value = "角色树形",menus = {
@@ -58,19 +57,19 @@ public class RoleController extends BaseController {
     })
     @ApiOperation("查询角色树结构")
     @GetMapping(value = "/tree",produces="application/json")
-    public ResponseData<List<Tree<String>>> tree(TbCoreRole coreRole){
-        List<Tree<String>> list = coreRoleService.tree(Condition.getLambdaTreeWrapper(coreRole,TbCoreRole::getId,TbCoreRole::getParentId)
+    public ResponseData<List<Tree<Long>>> tree(TbCoreRole coreRole){
+        List<Tree<Long>> list = coreRoleService.tree(Condition.getLambdaTreeWrapper(coreRole,TbCoreRole::getId,TbCoreRole::getParentId)
                 .select(TbCoreRole::getAlias,TbCoreRole::getName)
                 .func(q->{
                     if (!ShieldUtil.isRoot()){
-                        List<String> roleId = ShieldUtil.getUserRole();
+                        List<Long> roleId = ShieldUtil.getUserRole();
                         q.apply("ancestor_id regexp '"+Fc.join(roleId, StringPool.SPILT)+"'")
                                 .or()
                                 .in(TbCoreRole::getId,roleId);
                     }
                 })
                 .orderByAsc(TbCoreRole::getCreateTime));
-        return ReturnJsonUtil.ok("获取成功", list);
+        return ReturnJsonUtil.data(list);
     }
 
     @Function(value = "新增",menus = {
@@ -81,8 +80,8 @@ public class RoleController extends BaseController {
     public ResponseData add(TbCoreRole coreRole){
         JpowerAssert.notEmpty(coreRole.getName(),JpowerError.Arg,"名称不可为空");
 
-        if (StringUtils.isBlank(coreRole.getParentId())){
-            coreRole.setParentId(TOP_CODE);
+        if (Fc.isNull(coreRole.getParentId())){
+            coreRole.setParentId(Fc.toLong(TOP_CODE));
         }
 
         if (Fc.isNull(coreRole.getIsSysRole())){
@@ -110,17 +109,15 @@ public class RoleController extends BaseController {
         JpowerAssert.notEmpty(ids, JpowerError.Arg,"ids不可为空");
 
         List<String> tenants = coreRoleService.listObjs(Condition.<TbCoreRole>getQueryWrapper().lambda().select(TbCoreRole::getTenantCode).in(TbCoreRole::getId,Fc.toStrList(ids)),Fc::toStr);
-        long c = coreRoleService.listByPids(ids);
-        if (c > 0){
-            return ReturnJsonUtil.busFail("该角色存在下级角色，请先删除下级角色");
-        }
+        long c = coreRoleService.listByPids(Fc.toLongList(ids));
+        JpowerAssert.geZero(c, JpowerError.Business, "该角色存在下级角色，请先删除下级角色");
 
         CacheUtil.clear(CacheNames.ROLE_KEY,tenants.toArray(new String[tenants.size()]));
         CacheUtil.clear(CacheNames.FUNCTION_KEY);
         CacheUtil.clear(CacheNames.DATASCOPE_KEY);
         CacheUtil.clear(CacheNames.USER_KEY);
         return ReturnJsonUtil.status(coreRoleService.remove(Condition.<TbCoreRole>getQueryWrapper().lambda()
-                .in(TbCoreRole::getId,Fc.toStrList(ids))
+                .in(TbCoreRole::getId,Fc.toLongList(ids))
                 .eq(TbCoreRole::getIsSysRole,ConstantsEnum.YN01.N.getValue())));
     }
 
@@ -131,9 +128,9 @@ public class RoleController extends BaseController {
     @RequestMapping(value = "/update",method = {RequestMethod.PUT},produces="application/json")
     public ResponseData update(TbCoreRole coreRole){
 
-        JpowerAssert.notEmpty(coreRole.getId(), JpowerError.Arg,"id不可为空");
+        JpowerAssert.notNull(coreRole.getId(), JpowerError.Arg,"id不可为空");
 
-        if (Fc.isNotBlank(coreRole.getParentId())){
+        if (Fc.notNull(coreRole.getParentId())){
             String ancestorId = TOP_CODE;
             if (!Fc.equalsValue(coreRole.getParentId(),TOP_CODE)){
                 ancestorId = coreRoleService.getObj(Condition.<TbCoreRole>getQueryWrapper().lambda().select(TbCoreRole::getAncestorId).eq(TbCoreRole::getId,coreRole.getParentId()),Fc::toStr);
@@ -143,14 +140,14 @@ public class RoleController extends BaseController {
         }
 
         CacheUtil.clear(CacheNames.ROLE_KEY,coreRole.getTenantCode());
-        return ReturnJsonUtil.status(coreRoleService.update(coreRole));
+        return ReturnJsonUtil.status(coreRoleService.updateById(coreRole));
     }
 
     @ApiOperation("查询角色的权限")
     @GetMapping(value = "/roleFunction",produces="application/json")
-    public ResponseData<List<Map<String,Object>>> roleFunction(@ApiParam(value = "角色主键",required = true) @RequestParam String roleId){
+    public ResponseData<List<Map<String,Object>>> roleFunction(@ApiParam(value = "角色主键",required = true) @RequestParam Long roleId){
 
-        JpowerAssert.notEmpty(roleId, JpowerError.Arg,"角色id不可为空");
+        JpowerAssert.notNull(roleId, JpowerError.Arg,"角色id不可为空");
 
         List<Map<String,Object>> roleFunction = coreRoleFunctionService.selectRoleFunctionByRoleId(roleId);
         return ReturnJsonUtil.ok("查询成功", roleFunction);
@@ -162,16 +159,16 @@ public class RoleController extends BaseController {
     @ApiOperation("重新给角色赋权")
     @OperateLog(title = "重新给角色赋权",isSaveLog = true)
     @PostMapping(value = "/addFunction",produces="application/json")
-    public ResponseData addFunction(@ApiParam(value = "角色主键",required = true) @RequestParam String roleId,
+    public ResponseData addFunction(@ApiParam(value = "角色主键",required = true) @RequestParam Long roleId,
                                     @ApiParam(value = "功能主键 多个逗号分割") @RequestParam(required = false) String functionIds,
                                     @ApiParam(value = "顶级菜单主键 多个逗号分割") @RequestParam(required = false) String topMenuIds,
                                     @ApiParam(value = "是否自动保存接口权限", defaultValue = "false") @RequestParam(required = false, defaultValue = "true") Boolean isAutoSaveInterface){
 
-        JpowerAssert.notEmpty(roleId, JpowerError.Arg,"角色id不可为空");
+        JpowerAssert.notNull(roleId, JpowerError.Arg,"角色id不可为空");
         JpowerAssert.notNull(coreRoleService.getById(roleId),JpowerError.Business,"该角色不存在");
 
         //保存功能权限和顶部菜单权限
-        if (coreRoleFunctionService.addRoleFunctions(roleId, functionIds, isAutoSaveInterface) && coreRoleService.saveTopMenu(roleId,Fc.toStrList(topMenuIds))){
+        if (coreRoleFunctionService.addRoleFunctions(roleId, Fc.toLongList(functionIds), isAutoSaveInterface) && coreRoleService.saveTopMenu(roleId,Fc.toLongList(topMenuIds))){
             TbCoreRole role = coreRoleService.getById(roleId);
             CacheUtil.clear(CacheNames.ROLE_KEY,role.getTenantCode());
             CacheUtil.clear(CacheNames.FUNCTION_KEY,role.getTenantCode());
@@ -186,8 +183,8 @@ public class RoleController extends BaseController {
     })
     @ApiOperation("角色关联的顶部菜单ID")
     @GetMapping(value = "/topMenuId",produces="application/json")
-    public ResponseData<List<String>> topMenuId(@ApiParam(value = "角色ID") String roleId){
-        JpowerAssert.notEmpty(roleId,JpowerError.Arg,"角色ID不可为空");
+    public ResponseData<List<Long>> topMenuId(@ApiParam(value = "角色ID") Long roleId){
+        JpowerAssert.notNull(roleId,JpowerError.Arg,"角色ID不可为空");
 
         return ReturnJsonUtil.data(coreRoleService.topMenuId(roleId));
     }

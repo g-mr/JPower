@@ -2,10 +2,10 @@ package top.jpower.jpower.dbs.entity.function;
 
 import com.baomidou.mybatisplus.annotation.OrderBy;
 import com.baomidou.mybatisplus.annotation.TableField;
-import top.jpower.jpower.module.base.annotation.Dict;
-import top.jpower.jpower.module.dbs.entity.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import top.jpower.jpower.module.base.annotation.Dict;
+import top.jpower.jpower.module.dbs.entity.base.BaseEntity;
 
 import java.io.Serializable;
 
@@ -22,7 +22,7 @@ public class TbCoreFunction extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 7093626905745914312L;
 
     @ApiModelProperty("客户端ID")
-    private String clientId;
+    private Long clientId;
     @ApiModelProperty("功能名称")
     private String functionName;
     @ApiModelProperty("别名")
@@ -30,7 +30,7 @@ public class TbCoreFunction extends BaseEntity implements Serializable {
     @ApiModelProperty("编码")
     private String code;
     @ApiModelProperty("父级ID")
-    private String parentId;
+    private Long parentId;
     @ApiModelProperty("祖级ID")
     private String ancestorId;
     @ApiModelProperty("地址")

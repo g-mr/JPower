@@ -13,7 +13,6 @@
         create_time,
         update_user,
         update_time,
-        status,
         is_deleted
     </sql>
 
@@ -45,10 +44,10 @@
                 value=#{value,jdbcType=VARCHAR},
             </if>
             <if test="updateUser != null and updateUser != '' ">
-                update_user=#{updateUser,jdbcType=VARCHAR},
+                update_user=#{updateUser,jdbcType=BIGINT},
             </if>
         </set>
-        WHERE id = #{id,jdbcType=VARCHAR} and is_deleted = 0
+        WHERE id = #{id,jdbcType=BIGINT} and is_deleted = 0
     </update>
 
 </mapper>

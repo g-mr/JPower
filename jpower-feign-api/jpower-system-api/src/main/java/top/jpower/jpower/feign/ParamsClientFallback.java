@@ -1,10 +1,10 @@
 package top.jpower.jpower.feign;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import top.jpower.jpower.dbs.entity.params.TbCoreParam;
 import top.jpower.jpower.module.base.vo.ResponseData;
 import top.jpower.jpower.module.common.utils.ReturnJsonUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 /**
  * @ClassName ParamsClientFallback
@@ -23,7 +23,7 @@ public class ParamsClientFallback implements ParamsClient {
     }
 
     @Override
-    public TbCoreParam queryById(String id) {
+    public TbCoreParam queryById(Long id) {
         log.error("feign->>查询系统参数详情失败:{}",id);
         return null;
     }

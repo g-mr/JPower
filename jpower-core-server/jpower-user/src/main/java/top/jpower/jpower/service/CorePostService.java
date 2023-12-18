@@ -29,5 +29,5 @@ public interface CorePostService extends BaseService<TbCorePost> {
      * @param ids
      * @return boolean
      **/
-    boolean delete(List<String> ids);
+    boolean delete(List<Long> ids);
 }

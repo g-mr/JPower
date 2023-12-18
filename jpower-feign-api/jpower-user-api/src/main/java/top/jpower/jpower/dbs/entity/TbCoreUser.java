@@ -4,11 +4,11 @@ import cn.hutool.core.date.DatePattern;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 import top.jpower.jpower.module.base.annotation.Dict;
 import top.jpower.jpower.module.base.annotation.Excel;
 import top.jpower.jpower.module.tenant.entity.TenantEntity;
-import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -85,9 +85,9 @@ public class TbCoreUser extends TenantEntity implements Serializable {
     private String activationCode;
     @ApiModelProperty("部门主键")
     @Excel(name = "部门ID",type = Excel.Type.IMPORT)
-    private String orgId;
+    private Long orgId;
     @ApiModelProperty("岗位ID")
-    private String postId;
+    private Long postId;
 
     @ApiModelProperty("角色ID，多个逗号分割")
     @TableField(exist = false)

@@ -1,6 +1,9 @@
 package top.jpower.jpower.service.dict.impl;
 
+import cn.hutool.core.util.NumberUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import top.jpower.jpower.dbs.dao.dict.TbCoreDictDao;
 import top.jpower.jpower.dbs.dao.dict.mapper.TbCoreDictMapper;
 import top.jpower.jpower.dbs.entity.dict.TbCoreDict;
@@ -9,13 +12,10 @@ import top.jpower.jpower.module.base.exception.JpowerAssert;
 import top.jpower.jpower.module.common.service.impl.BaseServiceImpl;
 import top.jpower.jpower.module.common.utils.Fc;
 import top.jpower.jpower.module.common.utils.ShieldUtil;
-import top.jpower.jpower.module.common.utils.StringUtil;
 import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.service.dict.CoreDictService;
 import top.jpower.jpower.vo.DictVo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
@@ -46,13 +46,13 @@ public class CoreDictServiceImpl extends BaseServiceImpl<TbCoreDictMapper, TbCor
     @Override
     public Boolean saveDict(TbCoreDict dict) {
         TbCoreDict coreDictType = queryDictTypeByCode(dict.getDictTypeCode(),dict.getCode());
-        if(Fc.isBlank(dict.getId())){
+        if(Fc.isNull(dict.getId())){
             dict.setLocale(Fc.isBlank(dict.getLocale())? ConstantsEnum.YYZL.CHINA.getValue() :dict.getLocale());
             dict.setIsStop(Fc.isBlank(dict.getIsStop())? ConstantsEnum.YN.N.getValue() : dict.getIsStop());
-            dict.setParentId(Fc.isNotBlank(dict.getParentId())?dict.getParentId():TOP_CODE);
+            dict.setParentId(Fc.notNull(dict.getParentId())?dict.getParentId():Fc.toLong(TOP_CODE));
             JpowerAssert.notTrue(coreDictType != null, JpowerError.Business,"该字典已存在");
         }else {
-            JpowerAssert.notTrue(coreDictType != null && !StringUtil.equals(dict.getId(),coreDictType.getId()), JpowerError.Business,"该字典已存在");
+            JpowerAssert.notTrue(coreDictType != null && !NumberUtil.equals(dict.getId(),coreDictType.getId()), JpowerError.Business,"该字典已存在");
         }
 
         return dictDao.saveOrUpdate(dict);
@@ -68,14 +68,11 @@ public class CoreDictServiceImpl extends BaseServiceImpl<TbCoreDictMapper, TbCor
 
     @Override
     public List<Map<String, Object>> listByTypeCode(String dictTypeCode) {
-        LambdaQueryWrapper<TbCoreDict> queryWrapper = Condition.<TbCoreDict>getQueryWrapper().lambda()
-                .select(TbCoreDict::getCode,TbCoreDict::getName,TbCoreDict::getLocale)
-                .eq(TbCoreDict::getDictTypeCode,dictTypeCode);
-        if (ShieldUtil.isRoot()){
-            queryWrapper.eq(TbCoreDict::getTenantCode,DEFAULT_TENANT_CODE);
-        }
         //这里不能返回实体类，不然会造成字典回写的死循环
-        return dictDao.listMaps(queryWrapper);
+        return dictDao.listMaps(Condition.<TbCoreDict>getQueryWrapper().lambda()
+                .select(TbCoreDict::getCode,TbCoreDict::getName,TbCoreDict::getLocale)
+                .eq(TbCoreDict::getDictTypeCode,dictTypeCode)
+                .eq(ShieldUtil.isRoot(), TbCoreDict::getTenantCode, DEFAULT_TENANT_CODE));
     }
 
 }

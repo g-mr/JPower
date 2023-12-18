@@ -1,7 +1,7 @@
 package top.jpower.jpower.properties;
 
-import top.jpower.jpower.module.common.utils.constants.StringPool;
 import lombok.Data;
+import top.jpower.jpower.module.common.utils.constants.StringPool;
 
 import java.util.concurrent.TimeUnit;
 

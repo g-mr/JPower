@@ -187,6 +187,6 @@ public class TokenUtil {
         if (Fc.isNotBlank(oldToken)){
             redisUtil.remove(TOKEN_USER_KEY+authInfo.getUser().getUserId()+ StringPool.COLON+oldToken);
         }
-        redisUtil.set(TOKEN_USER_KEY+authInfo.getUser().getUserId()+ StringPool.COLON+authInfo.getAccessToken(),ChainMap.<String,String>create().put("client",client.getClientCode()).put("ip", WebUtil.getIp()).put("date", DateUtil.now()).build(),authInfo.getExpiresIn(), TimeUnit.SECONDS);
+        redisUtil.set(TOKEN_USER_KEY+authInfo.getUser().getUserId()+ StringPool.COLON+authInfo.getAccessToken(),ChainMap.<String,Object>create().put("client",client.getClientCode()).put("ip", WebUtil.getIp()).put("date", DateUtil.now()).build(),authInfo.getExpiresIn(), TimeUnit.SECONDS);
     }
 }

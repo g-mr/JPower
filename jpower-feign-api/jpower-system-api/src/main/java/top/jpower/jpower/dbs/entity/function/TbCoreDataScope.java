@@ -1,10 +1,10 @@
 package top.jpower.jpower.dbs.entity.function;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import top.jpower.jpower.module.base.annotation.Dict;
-import top.jpower.jpower.module.dbs.entity.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import top.jpower.jpower.module.base.annotation.Dict;
+import top.jpower.jpower.module.dbs.entity.base.BaseEntity;
 
 /**
  * @ClassName TbCoreDataScope
@@ -18,7 +18,7 @@ public class TbCoreDataScope extends BaseEntity {
     private static final long serialVersionUID = 8094637801080068005L;
 
     @ApiModelProperty("菜单ID")
-    private String menuId;
+    private Long menuId;
     @ApiModelProperty("权限编号")
     private String scopeCode;
     @ApiModelProperty("数据权限名称")

@@ -19,7 +19,7 @@ public interface CoreMenuService extends BaseService<TbCoreTopMenu> {
      * @param menuId 顶部菜单ID
      * @return java.util.List<java.lang.String>
      **/
-    List<String> listFunctionId(String menuId);
+    List<Long> listFunctionId(Long menuId);
 
     /**
      * 保存关联的一级菜单
@@ -29,7 +29,7 @@ public interface CoreMenuService extends BaseService<TbCoreTopMenu> {
      * @param functions 功能ID
      * @return boolean
      **/
-    boolean saveFunction(String menuId, List<String> functions);
+    boolean saveFunction(Long menuId, List<Long> functions);
 
     /**
      * 查询当前登录用户的顶部菜单
@@ -47,5 +47,5 @@ public interface CoreMenuService extends BaseService<TbCoreTopMenu> {
      * @param clientId
      * @return java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
      **/
-    List<Map<String,Object>> selectList(String clientId);
+    List<Map<String,Object>> selectList(Long clientId);
 }

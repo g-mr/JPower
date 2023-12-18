@@ -1,8 +1,8 @@
 package top.jpower.jpower.module.base.operate;
 
-import top.jpower.jpower.module.base.annotation.OperateLog;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import top.jpower.jpower.module.base.annotation.OperateLog;
 
 /**
  * @author mr.g

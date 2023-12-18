@@ -1,8 +1,8 @@
 package top.jpower.jpower.module.common.utils.constants;
 
-import top.jpower.jpower.module.common.utils.Fc;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import top.jpower.jpower.module.common.utils.Fc;
 
 import java.util.Arrays;
 

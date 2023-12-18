@@ -1,5 +1,12 @@
 package top.jpower.jpower.feign;
 
+import io.swagger.annotations.Api;
+import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.jpower.dbs.entity.TbLogError;
 import top.jpower.jpower.dbs.entity.TbLogOperate;
 import top.jpower.jpower.module.base.model.ErrorLogDto;
@@ -9,13 +16,6 @@ import top.jpower.jpower.module.common.utils.BeanUtil;
 import top.jpower.jpower.module.common.utils.ReturnJsonUtil;
 import top.jpower.jpower.service.ErrorLogService;
 import top.jpower.jpower.service.OperateLogService;
-import io.swagger.annotations.Api;
-import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * @Author mr.g

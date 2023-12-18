@@ -1,6 +1,10 @@
 package top.jpower.jpower.controller.city;
 
 import cn.hutool.core.lang.tree.Tree;
+import io.swagger.annotations.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.web.bind.annotation.*;
 import top.jpower.jpower.dbs.entity.city.TbCoreCity;
 import top.jpower.jpower.module.annotation.Function;
 import top.jpower.jpower.module.annotation.Menu;
@@ -16,10 +20,6 @@ import top.jpower.jpower.module.common.utils.constants.JpowerConstants;
 import top.jpower.jpower.module.mp.support.WrapperKeyword;
 import top.jpower.jpower.service.city.CoreCityService;
 import top.jpower.jpower.vo.CityVo;
-import io.swagger.annotations.*;
-import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -46,7 +46,7 @@ public class CityController extends BaseController {
 
     @ApiOperation(value = "新增行政区域",notes = "主键不可传")
     @RequestMapping(value = "/add",method = {RequestMethod.POST},produces="application/json")
-    public ResponseData<String> add( TbCoreCity coreCity){
+    public ResponseData<Long> add( TbCoreCity coreCity){
 
         JpowerAssert.notEmpty(coreCity.getCode(),JpowerError.Arg,"编号不可为空");
         JpowerAssert.notEmpty(coreCity.getName(),JpowerError.Arg,"名称不可为空");
@@ -63,7 +63,7 @@ public class CityController extends BaseController {
     @ApiOperation(value = "修改行政区域",notes = "主键必传")
     @RequestMapping(value = "/update",method = {RequestMethod.PUT},produces="application/json")
     public ResponseData update( TbCoreCity coreCity){
-        JpowerAssert.notEmpty(coreCity.getId(),JpowerError.Arg,"主键不可为空");
+        JpowerAssert.notNull(coreCity.getId(),JpowerError.Arg,"主键不可为空");
 
         return ReturnJsonUtil.status(coreCityService.update(coreCity));
     }
@@ -74,7 +74,7 @@ public class CityController extends BaseController {
     @ApiOperation(value = "保存行政区域",notes = "主键传是修改，不传是新增")
     @PostMapping(value = "/save", produces="application/json")
     public ResponseData save( TbCoreCity coreCity){
-        return Fc.isNotBlank(coreCity.getId())?update(coreCity):add(coreCity);
+        return Fc.notNull(coreCity.getId())?update(coreCity):add(coreCity);
     }
 
     @Function(value = "删除",menus = {
@@ -83,7 +83,7 @@ public class CityController extends BaseController {
     @ApiOperation("删除行政区域")
     @RequestMapping(value = "/delete",method = {RequestMethod.DELETE},produces="application/json")
     public ResponseData delete(@ApiParam(value = "主键，多个逗号分割",required = true) @RequestParam String ids){
-        return ReturnJsonUtil.status(coreCityService.deleteBatch(Fc.toStrList(ids)));
+        return ReturnJsonUtil.status(coreCityService.deleteBatch(Fc.toLongList(ids)));
     }
 
     @Function(value = "详情",menus = {
@@ -91,7 +91,7 @@ public class CityController extends BaseController {
     })
     @ApiOperation("查询行政区域详情")
     @GetMapping(value = "/get", produces="application/json")
-    public ResponseData<CityVo> get(@ApiParam(value = "主键",required = true) @RequestParam String id){
+    public ResponseData<CityVo> get(@ApiParam(value = "主键",required = true) @RequestParam Long id){
         return ReturnJsonUtil.ok("成功", coreCityService.getById(id));
     }
 

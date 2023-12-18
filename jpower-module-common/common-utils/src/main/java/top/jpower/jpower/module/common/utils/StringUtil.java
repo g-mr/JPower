@@ -1,8 +1,8 @@
 package top.jpower.jpower.module.common.utils;
 
 import cn.hutool.core.util.StrUtil;
-import top.jpower.jpower.module.common.utils.constants.StringPool;
 import lombok.NonNull;
+import top.jpower.jpower.module.common.utils.constants.StringPool;
 
 import java.util.Collection;
 import java.util.List;

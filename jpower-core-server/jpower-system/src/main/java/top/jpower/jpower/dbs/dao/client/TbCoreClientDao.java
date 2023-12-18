@@ -1,11 +1,11 @@
 package top.jpower.jpower.dbs.dao.client;
 
+import org.springframework.stereotype.Repository;
 import top.jpower.jpower.dbs.dao.client.mapper.TbCoreClientMapper;
 import top.jpower.jpower.dbs.entity.client.TbCoreClient;
 import top.jpower.jpower.module.common.utils.Fc;
 import top.jpower.jpower.module.dbs.dao.JpowerServiceImpl;
 import top.jpower.jpower.module.mp.support.Condition;
-import org.springframework.stereotype.Repository;
 
 /**
  * @ClassName TbCoreClientDao
@@ -24,8 +24,8 @@ public class TbCoreClientDao extends JpowerServiceImpl<TbCoreClientMapper, TbCor
      * @param code 客户端编码
      * @return id
      **/
-    public String queryIdByCode(String code){
-        return super.getObj(Condition.<TbCoreClient>getQueryWrapper().lambda().select(TbCoreClient::getId).eq(TbCoreClient::getClientCode, code), Fc::toStr);
+    public Long queryIdByCode(String code){
+        return super.getObj(Condition.<TbCoreClient>getQueryWrapper().lambda().select(TbCoreClient::getId).eq(TbCoreClient::getClientCode, code), Fc::toLong);
     }
 
 }

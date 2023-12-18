@@ -1,11 +1,11 @@
 package top.jpower.jpower.cache.param;
 
+import org.apache.commons.lang3.StringUtils;
 import top.jpower.jpower.feign.ParamsClient;
 import top.jpower.jpower.module.common.cache.CacheNames;
 import top.jpower.jpower.module.common.utils.CacheUtil;
 import top.jpower.jpower.module.common.utils.Fc;
 import top.jpower.jpower.module.common.utils.SpringUtil;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * 系统参数缓存

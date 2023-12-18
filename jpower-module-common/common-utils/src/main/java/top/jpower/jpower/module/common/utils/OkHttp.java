@@ -1,13 +1,13 @@
 package top.jpower.jpower.module.common.utils;
 
 import com.google.common.base.Joiner;
-import top.jpower.jpower.module.common.utils.constants.StringPool;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import okio.Buffer;
 import org.apache.http.HttpException;
+import top.jpower.jpower.module.common.utils.constants.StringPool;
 
 import java.util.Map;
 

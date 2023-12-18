@@ -1,9 +1,9 @@
 package top.jpower.jpower.dbs.dao;
 
+import org.springframework.stereotype.Repository;
 import top.jpower.jpower.dbs.dao.mapper.LogErrorMapper;
 import top.jpower.jpower.dbs.entity.TbLogError;
 import top.jpower.jpower.module.dbs.dao.JpowerServiceImpl;
-import org.springframework.stereotype.Repository;
 
 /**
  * @author mr.g

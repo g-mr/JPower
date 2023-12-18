@@ -1,6 +1,5 @@
 package top.jpower.jpower.interceptor;
 
-import top.jpower.jpower.module.common.utils.Fc;
 import io.seata.core.context.RootContext;
 import io.seata.core.exception.TransactionException;
 import io.seata.tm.api.GlobalTransaction;
@@ -10,6 +9,7 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
+import top.jpower.jpower.module.common.utils.Fc;
 
 import java.io.IOException;
 

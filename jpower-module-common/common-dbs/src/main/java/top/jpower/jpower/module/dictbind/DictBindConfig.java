@@ -1,15 +1,15 @@
 package top.jpower.jpower.module.dictbind;
 
-import top.jpower.jpower.module.common.utils.Fc;
-import top.jpower.jpower.module.config.interceptor.JpowerMybatisInterceptor;
-import top.jpower.jpower.module.dictbind.handler.IDictBindHandler;
-import top.jpower.jpower.module.dictbind.interceptor.DictBindInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import top.jpower.jpower.module.common.utils.Fc;
+import top.jpower.jpower.module.config.interceptor.JpowerMybatisInterceptor;
+import top.jpower.jpower.module.dictbind.handler.IDictBindHandler;
+import top.jpower.jpower.module.dictbind.interceptor.DictBindInterceptor;
 
 /**
  * @Author mr.g

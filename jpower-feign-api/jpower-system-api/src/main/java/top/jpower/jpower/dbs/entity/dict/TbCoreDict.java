@@ -1,9 +1,9 @@
 package top.jpower.jpower.dbs.entity.dict;
 
-import top.jpower.jpower.module.base.annotation.Dict;
-import top.jpower.jpower.module.tenant.entity.TenantEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import top.jpower.jpower.module.base.annotation.Dict;
+import top.jpower.jpower.module.tenant.entity.TenantEntity;
 
 /**
  * @ClassName TbCoreDict
@@ -33,7 +33,7 @@ public class TbCoreDict extends TenantEntity {
     @ApiModelProperty("排序")
     private Integer sortNum;
     @ApiModelProperty("父级ID")
-    private String parentId;
+    private Long parentId;
     @ApiModelProperty("级别")
     private Integer dictLevel;
 

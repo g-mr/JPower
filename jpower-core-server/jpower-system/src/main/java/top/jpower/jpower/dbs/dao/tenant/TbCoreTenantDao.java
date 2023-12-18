@@ -1,9 +1,9 @@
 package top.jpower.jpower.dbs.dao.tenant;
 
+import org.springframework.stereotype.Repository;
 import top.jpower.jpower.dbs.dao.tenant.mapper.TbCoreTenantMapper;
 import top.jpower.jpower.dbs.entity.tenant.TbCoreTenant;
 import top.jpower.jpower.module.dbs.dao.JpowerServiceImpl;
-import org.springframework.stereotype.Repository;
 
 /**
  * @ClassName TbCoreTenantDao

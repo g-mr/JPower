@@ -1,8 +1,8 @@
 package top.jpower.jpower.auth;
 
+import org.springframework.context.annotation.Configuration;
 import top.jpower.jpower.dto.TokenParameter;
 import top.jpower.jpower.module.common.auth.UserInfo;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * 授权需求实现<br/>
@@ -48,7 +48,7 @@ public interface AuthUserInfo {
      * @param userId 用户ID
      * @return 返回用户信息
      **/
-    UserInfo getRefreshUserInfo(String userType,String userId);
+    UserInfo getRefreshUserInfo(String userType,Long userId);
 
     /**
      * 手机号登录

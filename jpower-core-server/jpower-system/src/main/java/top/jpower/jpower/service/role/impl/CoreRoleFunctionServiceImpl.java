@@ -31,34 +31,32 @@ public class CoreRoleFunctionServiceImpl extends BaseServiceImpl<TbCoreRoleFunct
     public RedisUtil redisUtil;
 
     @Override
-    public List<Map<String,Object>> selectRoleFunctionByRoleId(String roleId) {
+    public List<Map<String,Object>> selectRoleFunctionByRoleId(Long roleId) {
         return coreRoleFunctionDao.getBaseMapper().selectRoleFunctionByRoleId(roleId);
     }
 
     @Override
-    public boolean addRoleFunctions(String roleId, String functionIds, boolean isAutoSaveInterface) {
+    public boolean addRoleFunctions(Long roleId, List<Long> funcIds, boolean isAutoSaveInterface) {
 
         //先删除角色原有权限
         coreRoleFunctionDao.removeRealByMap(ChainMap.<String,Object>create().put("role_id",roleId).build());
 
-        List<String> funcIds = Fc.toStrList(functionIds);
-
         //把下级的接口权限自动给
         if (isAutoSaveInterface){
-            List<String> fIds = coreFunctionService.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
+            List<Long> fIds = coreFunctionService.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                     .select(TbCoreFunction::getId)
                     .eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.INTERFACE.getValue())
-                    .in(TbCoreFunction::getParentId, Fc.toStrList(functionIds)), Fc::toStr);
+                    .in(TbCoreFunction::getParentId, funcIds), Fc::toLong);
             if (Fc.isNotEmpty(fIds)){
                 funcIds.addAll(fIds);
             }
         }
 
         List<TbCoreRoleFunction> roleFunctions = new ArrayList<>();
-        if (Fc.isNotBlank(functionIds)){
-            for (String fId : funcIds) {
+        if (Fc.isNotEmpty(funcIds)){
+            for (Long fId : funcIds) {
                 TbCoreRoleFunction roleFunction = new TbCoreRoleFunction();
-                roleFunction.setId(Fc.randomUUID());
+                roleFunction.setId(Fc.randomSnowFlakeId());
                 roleFunction.setFunctionId(fId);
                 roleFunction.setRoleId(roleId);
                 roleFunctions.add(roleFunction);

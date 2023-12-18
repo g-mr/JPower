@@ -1,7 +1,5 @@
 package top.jpower.jpower.feign.config;
 
-import top.jpower.jpower.feign.interceptor.HttpLogInterceptor;
-import top.jpower.jpower.feign.properties.FeignHttpProperties;
 import okhttp3.ConnectionPool;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -12,6 +10,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import top.jpower.jpower.feign.interceptor.HttpLogInterceptor;
+import top.jpower.jpower.feign.properties.FeignHttpProperties;
 
 import javax.annotation.PreDestroy;
 import java.util.concurrent.TimeUnit;

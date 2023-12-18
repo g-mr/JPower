@@ -1,16 +1,15 @@
 package top.jpower.jpower.module.configurer.client;
 
 import com.alibaba.fastjson.JSON;
-import top.jpower.jpower.module.common.auth.UserInfo;
-import top.jpower.jpower.module.common.utils.*;
-import top.jpower.jpower.module.common.utils.*;
-import top.jpower.jpower.module.common.utils.constants.TokenConstant;
-import top.jpower.jpower.module.properties.AuthProperties;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.HandlerInterceptor;
+import top.jpower.jpower.module.common.auth.UserInfo;
+import top.jpower.jpower.module.common.utils.*;
+import top.jpower.jpower.module.common.utils.constants.TokenConstant;
+import top.jpower.jpower.module.properties.AuthProperties;
 
 import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;

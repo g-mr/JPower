@@ -1,8 +1,8 @@
 package top.jpower.jpower.feign;
 
+import org.springframework.stereotype.Component;
 import top.jpower.jpower.module.base.vo.ResponseData;
 import top.jpower.jpower.module.common.utils.ReturnJsonUtil;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;

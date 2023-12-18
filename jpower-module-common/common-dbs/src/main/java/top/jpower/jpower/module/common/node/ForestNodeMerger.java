@@ -1,20 +1,22 @@
 package top.jpower.jpower.module.common.node;
 
+import cn.hutool.core.convert.ConvertException;
+import cn.hutool.core.lang.TypeReference;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.hutool.core.lang.tree.TreeUtil;
-import cn.hutool.core.map.MapUtil;
-import top.jpower.jpower.module.common.utils.BeanUtil;
-import top.jpower.jpower.module.common.utils.Fc;
-import top.jpower.jpower.module.common.utils.StringUtil;
-import top.jpower.jpower.module.common.utils.constants.JpowerConstants;
+import cn.hutool.core.util.TypeUtil;
+import top.jpower.jpower.module.common.utils.*;
 import top.jpower.jpower.module.common.utils.constants.StringPool;
 
+import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
+
+import static top.jpower.jpower.module.common.utils.constants.StringPool.*;
 
 /**
  * @author mr.g
@@ -32,18 +34,23 @@ public class ForestNodeMerger {
         CONFIG.setWeightKey(StringPool.SORT);
     }
 
-    public static <T> List<Tree<String>> mergeTree(List<T> list) {
-        List<Tree<String>> listTree = TreeUtil.build( list, getRootId(list), CONFIG,  (bean, tree) -> {
+    @SuppressWarnings("unchecked")
+    public static <T,E> List<Tree<E>> mergeTree(List<T> list) {
+        if (Fc.isEmpty(list)){
+            return new ArrayList<>();
+        }
+
+        List<Tree<E>> listTree = TreeUtil.build( list, getRootId(list), CONFIG,  (bean, tree) -> {
             Map<String, Object> extra;
             if (bean instanceof Map){
                 extra = (Map<String, Object>) bean;
-            }else {
+            } else {
                 extra = BeanUtil.beanToMap(bean);
             }
 
-            if (extra.containsKey(StringPool.SORTNUM)){
-                extra.put(StringPool.SORT,extra.get(StringPool.SORTNUM));
-                extra.remove(StringPool.SORTNUM);
+            if (!extra.containsKey(SORT) && MapUtil.containsAnyKey(extra, SORTNUM, SORT_NUM)){
+                extra.put(SORT, MapUtil.getAny(extra, SORTNUM, SORT_NUM).get(SORTNUM));
+                MapUtil.removeAny(extra, SORTNUM, SORT_NUM);
             }
 
             if(MapUtil.isNotEmpty(extra)){
@@ -61,7 +68,7 @@ public class ForestNodeMerger {
         return listTree;
     }
 
-    private static List<Tree<String>> completionHasChildren(List<Tree<String>> listTree) {
+    private static <E> List<Tree<E>> completionHasChildren(List<Tree<E>> listTree) {
 
         if (Fc.isEmpty(listTree)){
             return new ArrayList<>();
@@ -83,22 +90,28 @@ public class ForestNodeMerger {
      * @param list
      * @return java.lang.String
      **/
-    private static <T> String getRootId(List<T> list) {
-        AtomicReference<String> rootId = new AtomicReference<>(JpowerConstants.TOP_CODE);
-        if (Fc.isNotEmpty(list)){
-            list.stream().forEach(t -> {
-                Map<String, Object> map = beanToMap(t);
-                long count = list.stream().filter(i->{
+    private static <T,E extends Serializable> E getRootId(List<T> list) {
+        List<E> rootIds =  list.parallelStream().map(ForestNodeMerger::beanToMap).filter(map -> list.stream().noneMatch(i->{
                     Map<String, Object> map1 = beanToMap(i);
-                    return Fc.equals(map1.get(CONFIG.getIdKey()),map.get(CONFIG.getParentIdKey()));
-                }).count();
-                if (count <= 0){
-                    rootId.set(Fc.toStr(map.get(CONFIG.getParentIdKey()),JpowerConstants.TOP_CODE));
-                    return;
-                }
-            });
+                    return Fc.equalsValue(map1.get(CONFIG.getIdKey()),map.get(CONFIG.getParentIdKey()));
+                }))
+                .map(map->{
+                    return MapUtil.get(map, CONFIG.getParentIdKey(), new TypeReference<E>() {
+                        public Type getType() {
+                            return TypeUtil.getReturnType(ReflectUtil.getMethodByName(ForestNodeMerger.class, "getRootId"));
+                        }
+                    });
+                }).distinct().collect(Collectors.toList());
+
+        if (Fc.isEmpty(rootIds)){
+            throw new ConvertException("list to tree =>> rootId not found, suspect circular dependency");
         }
-        return rootId.get();
+        if (rootIds.size() > 1){
+            throw new ConvertException("list to tree =>> Suspect the existence of multiple rootId");
+        }
+
+        return rootIds.get(0);
+
     }
 
     /**

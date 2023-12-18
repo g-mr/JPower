@@ -1,10 +1,6 @@
 package top.jpower.jpower.module.common.redis;
 
 import com.alibaba.fastjson.support.spring.FastJsonRedisSerializer;
-import top.jpower.jpower.module.common.properties.RedisProperties;
-import top.jpower.jpower.module.common.utils.Fc;
-import top.jpower.jpower.module.common.utils.MapUtil;
-import top.jpower.jpower.module.common.utils.constants.StringPool;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -21,6 +17,10 @@ import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import top.jpower.jpower.module.common.properties.RedisProperties;
+import top.jpower.jpower.module.common.utils.Fc;
+import top.jpower.jpower.module.common.utils.MapUtil;
+import top.jpower.jpower.module.common.utils.constants.StringPool;
 
 import java.util.Map;
 import java.util.Optional;

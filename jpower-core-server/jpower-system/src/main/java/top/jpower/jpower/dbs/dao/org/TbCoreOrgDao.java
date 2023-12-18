@@ -1,10 +1,10 @@
 package top.jpower.jpower.dbs.dao.org;
 
 
+import org.springframework.stereotype.Repository;
 import top.jpower.jpower.dbs.dao.org.mapper.TbCoreOrgMapper;
 import top.jpower.jpower.dbs.entity.org.TbCoreOrg;
 import top.jpower.jpower.module.dbs.dao.JpowerServiceImpl;
-import org.springframework.stereotype.Repository;
 
 /**
  * @author mr.gmac

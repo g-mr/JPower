@@ -1,8 +1,15 @@
 package top.jpower.jpower.controller;
 
 import cn.hutool.core.lang.Validator;
+import cn.hutool.core.util.NumberUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.wf.captcha.SpecCaptcha;
+import io.swagger.annotations.*;
+import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.jpower.auth.TokenGranterBuilder;
 import top.jpower.jpower.auth.granter.RefreshTokenGranter;
 import top.jpower.jpower.cache.SystemCache;
@@ -30,12 +37,6 @@ import top.jpower.jpower.module.common.utils.constants.StringPool;
 import top.jpower.jpower.module.tenant.JpowerTenantProperties;
 import top.jpower.jpower.utils.SmsUtil;
 import top.jpower.jpower.utils.TokenUtil;
-import io.swagger.annotations.*;
-import lombok.AllArgsConstructor;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Date;
 import java.util.Map;
@@ -107,7 +108,7 @@ public class AuthController extends BaseController {
 
         UserInfo userInfo = granterBuilder.getGranter(parameter.getGrantType()).grant(parameter);
 
-        if (Fc.isNull(userInfo) || Fc.isBlank(userInfo.getUserId())) {
+        if (Fc.isNull(userInfo) || Fc.isNull(userInfo.getUserId())) {
             return ReturnJsonUtil.fail(TokenUtil.USER_NOT_FOUND);
         }
 
@@ -116,7 +117,7 @@ public class AuthController extends BaseController {
         if (StringUtil.equalsIgnoreCase(client.getLoginLimit(), ConstantsEnum.LOGIN_LIMIT.ONE.getValue())){
             Set<String> keys = redisUtil.pattern(TOKEN_USER_KEY+userInfo.getUserId());
             keys.forEach(key->{
-                Map<String,String> map = (Map<String, String>) redisUtil.get(key);
+                Map<String,Object> map = (Map<String, Object>) redisUtil.get(key);
                 if (Fc.equalsValue(MapUtil.getStr(map,"client"),client.getClientCode())){
                     JpowerAssert.createException(JpowerError.RateLimit);
                 }
@@ -124,7 +125,7 @@ public class AuthController extends BaseController {
         } else if(StringUtil.equalsIgnoreCase(client.getLoginLimit(), ConstantsEnum.LOGIN_LIMIT.SQUEEZE.getValue())){
             Set<String> keys = redisUtil.pattern(TOKEN_USER_KEY+userInfo.getUserId());
             keys.forEach(key->{
-                Map<String,String> map = (Map<String, String>) redisUtil.get(key);
+                Map<String,Object> map = (Map<String, Object>) redisUtil.get(key);
                 if (Fc.equalsValue(MapUtil.getStr(map,"client"),client.getClientCode())){
                     String token = StringUtil.split(key,StringPool.COLON).get(4);
                     redisUtil.remove(CacheNames.TOKEN_URL_KEY+token);
@@ -144,10 +145,10 @@ public class AuthController extends BaseController {
 
     @ApiOperation(value = "退出登录")
     @RequestMapping(value = "/loginOut",method = RequestMethod.POST,produces="application/json")
-    public ResponseData<String> loginOut(@ApiParam(value = "用户ID",required = true)@RequestParam String userId) {
-        JpowerAssert.notEmpty(userId, JpowerError.Arg,"用户ID不可为空");
+    public ResponseData<String> loginOut(@ApiParam(value = "用户ID",required = true)@RequestParam Long userId) {
+        JpowerAssert.notNull(userId, JpowerError.Arg,"用户ID不可为空");
         UserInfo user = ShieldUtil.getUser();
-        if(Fc.notNull(user) && Fc.equals(userId,user.getUserId())){
+        if(Fc.notNull(user) && NumberUtil.equals(userId, user.getUserId())){
             getRequest().getSession().invalidate();
             redisUtil.remove(CacheNames.TOKEN_URL_KEY+ JwtUtil.getToken(getRequest()));
             redisUtil.remove(CacheNames.TOKEN_DATA_SCOPE_KEY+JwtUtil.getToken(getRequest()));
@@ -227,7 +228,7 @@ public class AuthController extends BaseController {
         }
 
         user.setPassword(DigestUtil.pwdEncrypt(coreUser.getPassword()));
-        return userClient.saveUser(coreUser, ParamConfig.getString(ParamsConstants.REGISTER_ROLE_ID));
+        return userClient.saveUser(coreUser, ParamConfig.getLong(ParamsConstants.REGISTER_ROLE_ID));
     }
 
 }

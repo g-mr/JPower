@@ -1,10 +1,10 @@
 package top.jpower.jpower.dbs.entity.role;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import top.jpower.jpower.module.base.annotation.Dict;
-import top.jpower.jpower.module.tenant.entity.TenantEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import top.jpower.jpower.module.base.annotation.Dict;
+import top.jpower.jpower.module.tenant.entity.TenantEntity;
 
 import java.io.Serializable;
 
@@ -25,7 +25,7 @@ public class TbCoreRole extends TenantEntity implements Serializable {
     @ApiModelProperty("角色名称")
     private String name;
     @ApiModelProperty("角色父级ID")
-    private String parentId;
+    private Long parentId;
     @ApiModelProperty("角色祖级ID")
     private String ancestorId;
     @ApiModelProperty("是否系统角色 字典YN01")

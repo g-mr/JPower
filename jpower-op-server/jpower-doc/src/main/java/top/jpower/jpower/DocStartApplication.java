@@ -1,8 +1,8 @@
 package top.jpower.jpower;
 
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import top.jpower.jpower.module.common.deploy.JpowerApplication;
 import top.jpower.jpower.module.common.utils.constants.AppConstant;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * @ClassName AdminStartApplication

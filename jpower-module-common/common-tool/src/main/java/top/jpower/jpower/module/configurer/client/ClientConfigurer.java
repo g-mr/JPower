@@ -1,11 +1,11 @@
 package top.jpower.jpower.module.configurer.client;
 
-import top.jpower.jpower.module.properties.AuthProperties;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import top.jpower.jpower.module.properties.AuthProperties;
 
 import java.util.ArrayList;
 import java.util.HashSet;

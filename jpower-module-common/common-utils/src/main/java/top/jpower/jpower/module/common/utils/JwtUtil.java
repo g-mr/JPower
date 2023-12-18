@@ -1,10 +1,10 @@
 package top.jpower.jpower.module.common.utils;
 
 import cn.hutool.core.util.URLUtil;
-import top.jpower.jpower.module.common.utils.constants.StringPool;
-import top.jpower.jpower.module.common.utils.constants.TokenConstant;
 import io.jsonwebtoken.*;
 import lombok.NonNull;
+import top.jpower.jpower.module.common.utils.constants.StringPool;
+import top.jpower.jpower.module.common.utils.constants.TokenConstant;
 
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;

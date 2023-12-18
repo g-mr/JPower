@@ -1,10 +1,10 @@
 package top.jpower.jpower.dbs.entity;
 
-import top.jpower.jpower.module.dbs.entity.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import top.jpower.jpower.module.dbs.entity.base.BaseEntity;
 
 /**
  * @Author mr.g

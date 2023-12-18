@@ -1,10 +1,10 @@
 package top.jpower.jpower.operate;
 
+import org.springframework.stereotype.Component;
 import top.jpower.jpower.module.base.enums.JpowerError;
 import top.jpower.jpower.module.base.exception.JpowerAssert;
 import top.jpower.jpower.module.common.utils.Fc;
 import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
-import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

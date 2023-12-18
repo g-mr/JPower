@@ -1,6 +1,10 @@
 package top.jpower.jpower.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import io.swagger.annotations.*;
+import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
 import top.jpower.jpower.dbs.entity.TbCoreUserRole;
 import top.jpower.jpower.module.annotation.Function;
@@ -20,10 +24,6 @@ import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.service.CoreUserRoleService;
 import top.jpower.jpower.service.CoreUserService;
 import top.jpower.jpower.vo.UserVo;
-import io.swagger.annotations.*;
-import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +50,7 @@ public class RoleUserController extends BaseController {
         JpowerAssert.notTrue(Fc.toStrArray(userIds).length <= 0, JpowerError.Arg, "userIds不可为空");
 
         CacheUtil.clear(CacheNames.USER_KEY);
-        return ReturnJsonUtil.status(coreUserService.updateUsersRole(userIds, roleIds));
+        return ReturnJsonUtil.status(coreUserService.updateUsersRole(Fc.toLongList(userIds), Fc.toLongList(roleIds)));
     }
 
     @Function(value = "角色新增用户",menus = {
@@ -59,14 +59,14 @@ public class RoleUserController extends BaseController {
     @ApiOperation(value = "给角色新增用户")
     @PutMapping(value = "/addRoleUser", produces = "application/json")
     public ResponseData addRoleUser(@ApiParam(value = "用户主键 多个逗号分割", required = true) @RequestParam String userIds,
-                                @ApiParam(value = "角色主键") @RequestParam String roleId) {
+                                @ApiParam(value = "角色主键") @RequestParam Long roleId) {
 
         JpowerAssert.notEmpty(userIds, JpowerError.Arg, "userIds不可为空");
         JpowerAssert.notTrue(Fc.toStrArray(userIds).length <= 0, JpowerError.Arg, "userIds不可为空");
-        JpowerAssert.notEmpty(roleId, JpowerError.Arg, "roleId不可为空");
+        JpowerAssert.notNull(roleId, JpowerError.Arg, "roleId不可为空");
 
         CacheUtil.clear(CacheNames.USER_KEY);
-        return ReturnJsonUtil.status(coreUserService.addRoleUsers(roleId, new ArrayList<>(Fc.toStrList(userIds))));
+        return ReturnJsonUtil.status(coreUserService.addRoleUsers(roleId, new ArrayList<>(Fc.toLongList(userIds))));
     }
 
     @Function(value = "角色去除用户",menus = {
@@ -75,23 +75,23 @@ public class RoleUserController extends BaseController {
     @ApiOperation(value = "给角色去除用户")
     @DeleteMapping(value = "/deleteRoleUser", produces = "application/json")
     public ResponseData deleteRoleUser(@ApiParam(value = "用户主键 多个逗号分割", required = true) @RequestParam String userIds,
-                                    @ApiParam(value = "角色主键") @RequestParam String roleId) {
+                                    @ApiParam(value = "角色主键") @RequestParam Long roleId) {
 
         JpowerAssert.notEmpty(userIds, JpowerError.Arg, "userIds不可为空");
         JpowerAssert.notTrue(Fc.toStrArray(userIds).length <= 0, JpowerError.Arg, "userIds不可为空");
-        JpowerAssert.notEmpty(roleId, JpowerError.Arg, "roleId不可为空");
+        JpowerAssert.notNull(roleId, JpowerError.Arg, "roleId不可为空");
 
         CacheUtil.clear(CacheNames.USER_KEY);
-        return ReturnJsonUtil.status(coreUserService.deleteRoleUsers(roleId, new ArrayList<>(Fc.toStrList(userIds))));
+        return ReturnJsonUtil.status(coreUserService.deleteRoleUsers(roleId, new ArrayList<>(Fc.toLongList(userIds))));
     }
 
     @ApiOperation(value = "查询用户所有角色ID")
     @GetMapping(value = "/userRole", produces = "application/json")
-    public ResponseData<List<String>> userRole(@ApiParam(value = "用户主键", required = true) @RequestParam String userId) {
+    public ResponseData<List<Long>> userRole(@ApiParam(value = "用户主键", required = true) @RequestParam Long userId) {
 
-        JpowerAssert.notEmpty(userId, JpowerError.Arg, "用户ID不可为空");
+        JpowerAssert.notNull(userId, JpowerError.Arg, "用户ID不可为空");
 
-        List<String> userRoleList = coreUserRoleService.listObjs(Condition.<TbCoreUserRole>getQueryWrapper().lambda().select(TbCoreUserRole::getRoleId).eq(TbCoreUserRole::getUserId, userId), Fc::toStr);
+        List<Long> userRoleList = coreUserRoleService.listObjs(Condition.<TbCoreUserRole>getQueryWrapper().lambda().select(TbCoreUserRole::getRoleId).eq(TbCoreUserRole::getUserId, userId), Fc::toLong);
         return ReturnJsonUtil.ok("查询成功", userRoleList);
     }
 
@@ -111,15 +111,15 @@ public class RoleUserController extends BaseController {
             @ApiImplicitParam(name = "telephone", value = "电话", paramType = "query", required = false)
     })
     @GetMapping(value = "/listByRole", produces = "application/json")
-    public ResponseData<Pg<UserVo>> listByRole(@ApiParam(value = "角色主键", required = true) @RequestParam String roleId,
+    public ResponseData<Pg<UserVo>> listByRole(@ApiParam(value = "角色主键", required = true) @RequestParam Long roleId,
                                                @ApiParam(value = "是否查询相等该角色", required = false) @RequestParam(required = false, defaultValue = "Y") String isEq,
                                                @ApiIgnore @RequestParam Map<String,Object> map) {
         map.remove("roleId");
         map.remove("isEq");
-        JpowerAssert.notEmpty(roleId, JpowerError.Arg, "角色ID不可为空");
+        JpowerAssert.notNull(roleId, JpowerError.Arg, "角色ID不可为空");
 
         StringBuffer buffer = new StringBuffer("select user_id from tb_core_user_role ");
-        buffer.append("where role_id = '").append(roleId).append("'");
+        buffer.append("where role_id = ").append(roleId);
 
         LambdaQueryWrapper<TbCoreUser> wrapper = Condition.getQueryWrapper(map,TbCoreUser.class)
                 .lambda()

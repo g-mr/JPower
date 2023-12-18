@@ -2,14 +2,14 @@ package top.jpower.jpower.module.dynatable;
 
 import com.baomidou.mybatisplus.extension.plugins.handler.TableNameHandler;
 import com.baomidou.mybatisplus.extension.plugins.inner.DynamicTableNameInnerInterceptor;
-import top.jpower.jpower.module.config.MybatisPlusConfig;
-import top.jpower.jpower.module.dynatable.handler.DynamicTableNameHandler;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import top.jpower.jpower.module.config.MybatisPlusConfig;
+import top.jpower.jpower.module.dynatable.handler.DynamicTableNameHandler;
 
 /**
  * 动态表名配置

@@ -1,8 +1,8 @@
 package top.jpower.jpower.vo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import top.jpower.jpower.dbs.entity.org.TbCoreOrg;
 import lombok.Data;
+import top.jpower.jpower.dbs.entity.org.TbCoreOrg;
 
 /**
  * @ClassName OrgVo

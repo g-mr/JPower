@@ -1,10 +1,10 @@
 package top.jpower.jpower.dbs.entity.dict;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import top.jpower.jpower.module.base.annotation.Dict;
-import top.jpower.jpower.module.dbs.entity.base.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import top.jpower.jpower.module.base.annotation.Dict;
+import top.jpower.jpower.module.dbs.entity.base.BaseEntity;
 
 /**
  * @ClassName TbCoreDictType
@@ -30,7 +30,7 @@ public class TbCoreDictType extends BaseEntity {
     @ApiModelProperty("排序")
     private Integer sortNum;
     @ApiModelProperty("父级ID")
-    private String parentId;
+    private Long parentId;
     @ApiModelProperty("是否树形结构 字典YN01")
     @Dict(name = "YN01",attributes = "isTreeStr")
     private Integer isTree;

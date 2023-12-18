@@ -1,15 +1,15 @@
 package top.jpower.jpower.feign;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.openfeign.FallbackFactory;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestParam;
 import top.jpower.jpower.dbs.entity.TbCorePost;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
 import top.jpower.jpower.module.base.vo.ResponseData;
 import top.jpower.jpower.module.common.utils.ReturnJsonUtil;
 import top.jpower.jpower.module.common.utils.constants.ConstantsReturn;
 import top.jpower.jpower.vo.UserVo;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.cloud.openfeign.FallbackFactory;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -33,12 +33,12 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
             }
 
             @Override
-            public ResponseData<List<String>> getRoleIds(String userId) {
+            public ResponseData<List<Long>> getRoleIds(Long userId) {
                 return ReturnJsonUtil.fail("查询失败");
             }
 
             @Override
-            public ResponseData updateUserLoginInfo(@RequestParam String userId) {
+            public ResponseData updateUserLoginInfo(@RequestParam Long userId) {
                 log.error("调用updateUserLoginInfo失败，参数：{}，e={}", userId, cause);
                 return ReturnJsonUtil.fail("更新失败");
             }
@@ -49,7 +49,7 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
             }
 
             @Override
-            public ResponseData<UserVo> get(String id) {
+            public ResponseData<UserVo> get(Long id) {
                 return ReturnJsonUtil.fail("查询失败");
             }
 
@@ -59,7 +59,7 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
             }
 
             @Override
-            public ResponseData saveUser(TbCoreUser user, String roleId) {
+            public ResponseData saveUser(TbCoreUser user, Long roleId) {
                 log.error("调用saveUser失败，参数：user={}，roleId={} ，e={}", user, roleId, cause);
                 return ReturnJsonUtil.print(ConstantsReturn.RECODE_API, cause.getMessage(), false);
             }
@@ -71,7 +71,7 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
             }
 
             @Override
-            public ResponseData<TbCorePost> queryPostById(String postId) {
+            public ResponseData<TbCorePost> queryPostById(Long postId) {
                 log.error("调用queryPostById失败，参数：postId={}", postId);
                 return ReturnJsonUtil.print(ConstantsReturn.RECODE_API, cause.getMessage(), false);
             }

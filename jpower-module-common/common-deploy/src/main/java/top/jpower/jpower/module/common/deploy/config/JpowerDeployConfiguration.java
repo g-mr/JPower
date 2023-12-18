@@ -1,7 +1,5 @@
 package top.jpower.jpower.module.common.deploy.config;
 
-import top.jpower.jpower.module.common.deploy.props.JpowerProperties;
-import top.jpower.jpower.module.common.utils.Fc;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
@@ -9,6 +7,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import top.jpower.jpower.module.common.deploy.props.JpowerProperties;
+import top.jpower.jpower.module.common.utils.Fc;
 
 import java.net.InetAddress;
 

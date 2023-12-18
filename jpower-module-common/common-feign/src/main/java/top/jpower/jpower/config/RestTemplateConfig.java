@@ -1,9 +1,6 @@
 package top.jpower.jpower.config;
 
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
-import top.jpower.jpower.module.common.auth.SecureConstant;
-import top.jpower.jpower.module.common.utils.WebUtil;
-import top.jpower.jpower.module.common.utils.constants.TokenConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -16,6 +13,9 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
+import top.jpower.jpower.module.common.auth.SecureConstant;
+import top.jpower.jpower.module.common.utils.WebUtil;
+import top.jpower.jpower.module.common.utils.constants.TokenConstant;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;

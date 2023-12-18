@@ -2,6 +2,11 @@ package top.jpower.jpower.service.city.impl;
 
 import cn.hutool.core.lang.tree.Tree;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
+import org.springframework.stereotype.Service;
 import top.jpower.jpower.dbs.dao.city.TbCoreCityDao;
 import top.jpower.jpower.dbs.dao.city.mapper.TbCoreCityMapper;
 import top.jpower.jpower.dbs.entity.city.TbCoreCity;
@@ -17,11 +22,6 @@ import top.jpower.jpower.module.common.utils.constants.JpowerConstants;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.service.city.CoreCityService;
 import top.jpower.jpower.vo.CityVo;
-import lombok.AllArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
@@ -85,7 +85,7 @@ public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper, TbCor
 
     @Override
     @CacheEvict(value = {CacheNames.CITY_PARENT_REDIS_KEY,CacheNames.CITY_PARENT_LIST_REDIS_KEY,CacheNames.CITY_PARENT_CODE_REDIS_KEY},allEntries = true)
-    public Boolean deleteBatch(List<String> ids) {
+    public Boolean deleteBatch(List<Long> ids) {
 
         List<Object> listCode = coreCityDao.listObjs(Condition.<TbCoreCity>getQueryWrapper().lambda().select(TbCoreCity::getCode).in(TbCoreCity::getId,ids));
         if(listCode.size()>0){
@@ -125,7 +125,7 @@ public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper, TbCor
     }
 
     @Override
-    public CityVo getById(String id) {
+    public CityVo getById(Long id) {
         return coreCityDao.conver(super.getById(id));
     }
 

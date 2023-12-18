@@ -1,10 +1,10 @@
 package top.jpower.jpower.vo;
 
-import top.jpower.jpower.dbs.entity.TbCoreUser;
-import top.jpower.jpower.module.base.annotation.Excel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import top.jpower.jpower.dbs.entity.TbCoreUser;
+import top.jpower.jpower.module.base.annotation.Excel;
 
 /**
  * @ClassName UserVo

@@ -1,5 +1,7 @@
 package top.jpower.jpower.service.role.impl;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import top.jpower.jpower.dbs.dao.role.TbCoreFunctionDao;
 import top.jpower.jpower.dbs.dao.role.TbCoreRoleDao;
 import top.jpower.jpower.dbs.dao.role.TbCoreRoleFunctionDao;
@@ -15,8 +17,6 @@ import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
 import top.jpower.jpower.module.common.utils.constants.JpowerConstants;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.service.role.CoreRoleService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ public class CoreRoleServiceImpl extends BaseServiceImpl<TbCoreRoleMapper, TbCor
     @Override
     public Boolean add(TbCoreRole coreRole) {
         if (coreRoleDao.save(coreRole)){
-            List<String> functionIds = coreFunctionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda().select(TbCoreFunction::getId).eq(TbCoreFunction::getParentId, JpowerConstants.TOP_CODE).ne(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.MENU.getValue()), Fc::toStr);
+            List<Long> functionIds = coreFunctionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda().select(TbCoreFunction::getId).eq(TbCoreFunction::getParentId, Fc.toLong(JpowerConstants.TOP_CODE)).ne(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.MENU.getValue()), Fc::toLong);
             List<TbCoreRoleFunction> roleFunctions = new ArrayList<>();
             functionIds.forEach(functionId -> {
                 TbCoreRoleFunction roleFunction = new TbCoreRoleFunction();
@@ -50,17 +50,12 @@ public class CoreRoleServiceImpl extends BaseServiceImpl<TbCoreRoleMapper, TbCor
     }
 
     @Override
-    public long listByPids(String ids) {
-        return coreRoleDao.count(Condition.<TbCoreRole>getQueryWrapper().lambda().in(TbCoreRole::getParentId, Fc.toStrList(ids)).notIn(TbCoreRole::getId,Fc.toStrList(ids)));
+    public long listByPids(List<Long> ids) {
+        return coreRoleDao.count(Condition.<TbCoreRole>getQueryWrapper().lambda().in(TbCoreRole::getParentId, ids).notIn(TbCoreRole::getId,ids));
     }
 
     @Override
-    public Boolean update(TbCoreRole coreRole) {
-        return coreRoleDao.updateById(coreRole);
-    }
-
-    @Override
-    public boolean saveTopMenu(String roleId, List<String> menuIds) {
+    public boolean saveTopMenu(Long roleId, List<Long> menuIds) {
 
         coreRoleMenuDao.removeReal(Condition.<TbCoreRoleMenu>getQueryWrapper().lambda().eq(TbCoreRoleMenu::getRoleId,roleId));
 
@@ -80,10 +75,10 @@ public class CoreRoleServiceImpl extends BaseServiceImpl<TbCoreRoleMapper, TbCor
     }
 
     @Override
-    public List<String> topMenuId(String roleId) {
+    public List<Long> topMenuId(Long roleId) {
         return coreRoleMenuDao.listObjs(Condition.<TbCoreRoleMenu>getQueryWrapper()
                 .lambda()
                 .select(TbCoreRoleMenu::getMenuId)
-                .eq(TbCoreRoleMenu::getRoleId,roleId), Fc::toStr);
+                .eq(TbCoreRoleMenu::getRoleId,roleId), Fc::toLong);
     }
 }

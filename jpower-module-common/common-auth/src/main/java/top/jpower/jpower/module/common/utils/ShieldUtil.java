@@ -2,7 +2,11 @@ package top.jpower.jpower.module.common.utils;
 
 
 import cn.hutool.core.codec.Base64Decoder;
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.date.DateUnit;
+import io.jsonwebtoken.Claims;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import top.jpower.jpower.module.common.auth.RoleConstant;
 import top.jpower.jpower.module.common.auth.SecureConstant;
 import top.jpower.jpower.module.common.auth.UserInfo;
@@ -11,13 +15,9 @@ import top.jpower.jpower.module.common.utils.constants.CharPool;
 import top.jpower.jpower.module.common.utils.constants.CharsetKit;
 import top.jpower.jpower.module.common.utils.constants.StringPool;
 import top.jpower.jpower.module.common.utils.constants.TokenConstant;
-import io.jsonwebtoken.Claims;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -66,8 +66,7 @@ public class ShieldUtil {
     public static UserInfo getUser(Claims claims) {
         UserInfo user = new UserInfo();
         if (Fc.notNull(claims)) {
-            BeanUtil.getFieldList(UserInfo.class).forEach(field -> BeanUtil.setFieldValue(user,field.getName(),claims.get(field.getName(),field.getType())));
-            user.setClientCode(Fc.toStr(claims.get(TokenConstant.CLIENT_CODE)));
+            user = BeanUtil.toBean(claims, UserInfo.class);
         }
         return user.isEmpty()?null:user;
     }
@@ -96,9 +95,9 @@ public class ShieldUtil {
      *
      * @return userId
      */
-    public static String getUserId() {
+    public static Long getUserId() {
         UserInfo user = getUser();
-        return (null == user) ? StringPool.EMPTY : user.getUserId();
+        return (null == user) ? null : user.getUserId();
     }
 
     /**
@@ -106,9 +105,9 @@ public class ShieldUtil {
      *
      * @return orgId
      */
-    public static String getOrgId() {
+    public static Long getOrgId() {
         UserInfo user = getUser();
-        return (null == user) ? StringPool.EMPTY : user.getOrgId();
+        return (null == user) ? null : user.getOrgId();
     }
 
     /**
@@ -136,12 +135,10 @@ public class ShieldUtil {
      *
      * @return userName
      */
-    public static List<String> getUserRole() {
+    public static List<Long> getUserRole() {
         UserInfo user = getUser();
         if (Fc.isNull(user)) {
-            List<String> list = new ArrayList<>();
-            list.add(RoleConstant.ANONYMOUS_ID);
-            return list;
+            return ListUtil.of(RoleConstant.ANONYMOUS_ID);
         }
         return user.getRoleIds();
     }

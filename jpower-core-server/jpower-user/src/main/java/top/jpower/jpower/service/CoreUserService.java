@@ -40,7 +40,7 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
      * @Param [ids]
      * @return java.lang.Integer
      **/
-    Boolean delete(String ids);
+    Boolean delete(List<Long> ids);
 
     /**
      * @Author 郭丁志
@@ -67,7 +67,7 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
      * @param id 用户id
      * @return top.jpower.jpower.module.dbs.entity.core.user.TbCoreUser
      */
-    UserVo selectUserById(String id);
+    UserVo selectUserById(Long id);
 
     /**
      * @author 郭丁志
@@ -77,7 +77,7 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
      * @param pass 用户加密后密码
      * @return java.lang.Integer
      */
-    Boolean updateUserPassword(List<String> ids, String pass);
+    Boolean updateUserPassword(List<Long> ids, String pass);
 
     /**
      * @author 郭丁志
@@ -96,7 +96,7 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
      * @param roleIds  角色ID 多个逗号分隔
      * @return java.lang.Integer
      */
-    Boolean updateUsersRole(String userIds, String roleIds);
+    Boolean updateUsersRole(List<Long> userIds, List<Long> roleIds);
 
     /**
      * @Author 郭丁志
@@ -113,7 +113,7 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
      * @date 0:02 2020/10/21 0021
      * @param id
      */
-    Boolean updateLoginInfo(String id);
+    Boolean updateLoginInfo(Long id);
 
     /**
      * @Author 郭丁志
@@ -139,13 +139,11 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
      * @param user 用户信息
      * @param roleId 角色ID
      */
-    boolean saveUser(TbCoreUser user, String roleId);
+    boolean saveUser(TbCoreUser user, Long roleId);
 
-    boolean addRoleUsers(String roleId, List<String> userIds);
+    boolean addRoleUsers(Long roleId, List<Long> userIds);
 
-    boolean deleteRoleUsers(String roleId, List<String> toStrList);
-
-    UserVo getById(String id);
+    boolean deleteRoleUsers(Long roleId, List<Long> userIds);
 
     Page<UserVo> page(Page<TbCoreUser> page, Wrapper<TbCoreUser> queryWrapper);
 

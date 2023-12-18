@@ -1,8 +1,8 @@
 package top.jpower.jpower.dbs.entity.role;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import top.jpower.jpower.module.dbs.entity.base.BaseEntity;
 import lombok.Data;
+import top.jpower.jpower.module.dbs.entity.base.BaseEntity;
 
 import java.io.Serializable;
 
@@ -18,8 +18,8 @@ public class TbCoreRoleFunction extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private String roleId;
-    private String functionId;
+    private Long roleId;
+    private Long functionId;
 
     @TableField(exist = false)
     private String functionName;

@@ -3,13 +3,13 @@ package top.jpower.jpower.module.tenant;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
-import top.jpower.jpower.module.common.utils.Fc;
-import top.jpower.jpower.module.common.utils.ShieldUtil;
-import top.jpower.jpower.module.common.utils.WebUtil;
 import lombok.AllArgsConstructor;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.StringValue;
 import org.springframework.beans.factory.SmartInitializingSingleton;
+import top.jpower.jpower.module.common.utils.Fc;
+import top.jpower.jpower.module.common.utils.ShieldUtil;
+import top.jpower.jpower.module.common.utils.WebUtil;
 
 import java.util.ArrayList;
 import java.util.List;

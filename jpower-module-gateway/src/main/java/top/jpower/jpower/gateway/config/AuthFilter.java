@@ -4,18 +4,6 @@ import cn.hutool.core.collection.ListUtil;
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import top.jpower.jpower.gateway.service.RoleService;
-import top.jpower.jpower.gateway.utils.ExculdesUrl;
-import top.jpower.jpower.gateway.utils.IpUtil;
-import top.jpower.jpower.gateway.utils.TokenUtil;
-import top.jpower.jpower.module.common.cache.CacheNames;
-import top.jpower.jpower.module.common.redis.RedisUtil;
-import top.jpower.jpower.module.common.support.ChainMap;
-import top.jpower.jpower.module.common.utils.Fc;
-import top.jpower.jpower.module.common.utils.JwtUtil;
-import top.jpower.jpower.module.common.utils.constants.StringPool;
-import top.jpower.jpower.module.common.utils.constants.TokenConstant;
-import top.jpower.jpower.module.properties.AuthProperties;
 import io.jsonwebtoken.Claims;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,15 +24,26 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import top.jpower.jpower.gateway.service.RoleService;
+import top.jpower.jpower.gateway.utils.ExculdesUrl;
+import top.jpower.jpower.gateway.utils.IpUtil;
+import top.jpower.jpower.gateway.utils.TokenUtil;
+import top.jpower.jpower.module.common.cache.CacheNames;
+import top.jpower.jpower.module.common.redis.RedisUtil;
+import top.jpower.jpower.module.common.support.ChainMap;
+import top.jpower.jpower.module.common.utils.CollectionUtil;
+import top.jpower.jpower.module.common.utils.Fc;
+import top.jpower.jpower.module.common.utils.JwtUtil;
+import top.jpower.jpower.module.common.utils.constants.StringPool;
+import top.jpower.jpower.module.common.utils.constants.TokenConstant;
+import top.jpower.jpower.module.properties.AuthProperties;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static top.jpower.jpower.module.common.auth.RoleConstant.ANONYMOUS;
-import static top.jpower.jpower.module.common.auth.RoleConstant.ANONYMOUS_ID;
-import static top.jpower.jpower.module.common.auth.RoleConstant.ROOT_ID;
+import static top.jpower.jpower.module.common.auth.RoleConstant.*;
 import static top.jpower.jpower.module.common.utils.constants.TokenConstant.HEADER_MENU;
 
 /**
@@ -119,8 +118,8 @@ public class AuthFilter implements GlobalFilter, Ordered {
      * @return boolean
      **/
     private boolean isAuth(Claims claims, String token,String currentPath){
-        List roleIds = claims.get("roleIds",List.class);
-        if (Fc.isNotEmpty(roleIds) && roleIds.contains(ROOT_ID)){
+        List<Long> roleIds = claims.get("roleIds",List.class);
+        if (Fc.isNotEmpty(roleIds) && CollectionUtil.containsValue(roleIds,ROOT_ID)){
             return true;
         }
 

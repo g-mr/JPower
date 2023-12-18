@@ -1,13 +1,13 @@
 package top.jpower.jpower.module.base.listener;
 
-import top.jpower.jpower.module.base.feign.LogClient;
-import top.jpower.jpower.module.base.model.ErrorLogDto;
-import top.jpower.jpower.module.base.utils.FieldCompletionUtil;
-import top.jpower.jpower.module.common.deploy.props.JpowerProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
+import top.jpower.jpower.module.base.feign.LogClient;
+import top.jpower.jpower.module.base.model.ErrorLogDto;
+import top.jpower.jpower.module.base.utils.FieldCompletionUtil;
+import top.jpower.jpower.module.common.deploy.props.JpowerProperties;
 
 /**
  * 异步监听操作日志

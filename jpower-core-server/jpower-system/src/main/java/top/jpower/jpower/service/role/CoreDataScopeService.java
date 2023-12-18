@@ -30,7 +30,7 @@ public interface CoreDataScopeService extends BaseService<TbCoreDataScope> {
      * @param dataIds
      * @return boolean
      **/
-    boolean roleDataScope(String roleId, String dataIds);
+    boolean roleDataScope(Long roleId, List<Long> dataIds);
 
     /**
      * 查询所有角色都可执行得数据权限
@@ -48,5 +48,5 @@ public interface CoreDataScopeService extends BaseService<TbCoreDataScope> {
      * @param roleIds 角色ID
      * @return java.util.List<top.jpower.jpower.dbs.entity.function.TbCoreDataScope>
      */
-    List<TbCoreDataScope> getDataScopeByRole(List<String> roleIds,String clientCode);
+    List<TbCoreDataScope> getDataScopeByRole(List<Long> roleIds,String clientCode);
 }

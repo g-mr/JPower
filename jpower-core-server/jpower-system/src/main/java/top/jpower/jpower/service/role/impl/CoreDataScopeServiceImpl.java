@@ -10,10 +10,8 @@ import top.jpower.jpower.dbs.dao.role.mapper.TbCoreDataScopeMapper;
 import top.jpower.jpower.dbs.entity.function.TbCoreDataScope;
 import top.jpower.jpower.dbs.entity.role.TbCoreRoleData;
 import top.jpower.jpower.module.common.service.impl.BaseServiceImpl;
-import top.jpower.jpower.module.common.utils.Fc;
 import top.jpower.jpower.module.common.utils.StringUtil;
 import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
-import top.jpower.jpower.module.common.utils.constants.StringPool;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.service.role.CoreDataScopeService;
 
@@ -41,14 +39,13 @@ public class CoreDataScopeServiceImpl extends BaseServiceImpl<TbCoreDataScopeMap
     }
 
     @Override
-    public boolean roleDataScope(String roleId, String dataIds) {
+    public boolean roleDataScope(Long roleId, List<Long> dataIds) {
 
         roleDataDao.removeReal(Condition.<TbCoreRoleData>getQueryWrapper().lambda()
                                 .eq(TbCoreRoleData::getRoleId,roleId));
-        List<String> dataScopeIds = Fc.toStrList(dataIds);
-        if (dataScopeIds.size() > 0){
+        if (dataIds.size() > 0){
             List<TbCoreRoleData> list = new ArrayList<>();
-            dataScopeIds.forEach(dataId -> {
+            dataIds.forEach(dataId -> {
                 TbCoreRoleData roleData = new TbCoreRoleData();
                 roleData.setDataId(dataId);
                 roleData.setRoleId(roleId);
@@ -65,10 +62,10 @@ public class CoreDataScopeServiceImpl extends BaseServiceImpl<TbCoreDataScopeMap
     }
 
     @Override
-    public List<TbCoreDataScope> getDataScopeByRole(List<String> roleIds,String clientCode) {
-        String inSql = StringUtils.collectionToDelimitedString(roleIds, StringPool.COMMA, StringPool.SINGLE_QUOTE, StringPool.SINGLE_QUOTE);
+    public List<TbCoreDataScope> getDataScopeByRole(List<Long> roleIds,String clientCode) {
+        String inSql = StringUtils.collectionToCommaDelimitedString(roleIds);
         return dataScopeDao.list(Condition.<TbCoreDataScope>getQueryWrapper().lambda()
-                .inSql(TbCoreDataScope::getMenuId,"select id from tb_core_function where client_id = '" + clientDao.queryIdByCode(clientCode) + "' and function_type = " + ConstantsEnum.FUNCTION_TYPE.MENU.getValue())
+                .inSql(TbCoreDataScope::getMenuId,"select id from tb_core_function where client_id = " + clientDao.queryIdByCode(clientCode) + " and function_type = " + ConstantsEnum.FUNCTION_TYPE.MENU.getValue())
                 .and(query-> query.inSql(TbCoreDataScope::getId, StringUtil.format(sql,inSql))
                         .or().eq(TbCoreDataScope::getAllRole,ConstantsEnum.YN01.Y.getValue())));
     }

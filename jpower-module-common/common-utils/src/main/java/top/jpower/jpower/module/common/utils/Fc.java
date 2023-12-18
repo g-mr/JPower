@@ -5,9 +5,9 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.EscapeUtil;
 import cn.hutool.core.util.NumberUtil;
-import top.jpower.jpower.module.common.utils.constants.StringPool;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.lang.Nullable;
+import top.jpower.jpower.module.common.utils.constants.StringPool;
 
 import java.io.Closeable;
 import java.io.InputStream;
@@ -339,8 +339,11 @@ public class Fc {
      * @param value 对象
      * @return int
      **/
-    public static int toInt(final Object value) {
-        return Convert.toInt(value,-1);
+    public static Integer toInt(final Object value) {
+        if (ObjectUtil.isNull(value)){
+            return null;
+        }
+        return Convert.toInt(value);
     }
 
     /**
@@ -362,7 +365,10 @@ public class Fc {
      * @param value 对象
      * @return long
      **/
-    public static long toLong(final Object value) {
+    public static Long toLong(final Object value) {
+        if (ObjectUtil.isNull(value)){
+            return null;
+        }
         return Convert.toLong(value);
     }
 
@@ -382,6 +388,9 @@ public class Fc {
      * 转换成Double
      */
     public static Double toDouble(Object value) {
+        if (ObjectUtil.isNull(value)){
+            return null;
+        }
         return Convert.toDouble(value);
     }
 
@@ -396,6 +405,9 @@ public class Fc {
      * 转换成Float
      */
     public static Float toFloat(Object value) {
+        if (ObjectUtil.isNull(value)){
+            return null;
+        }
         return Convert.toFloat(value);
     }
 
@@ -410,6 +422,9 @@ public class Fc {
      * 转换成Boolean
      */
     public static Boolean toBoolean(Object value) {
+        if (ObjectUtil.isNull(value)){
+            return null;
+        }
         return toBoolean(value, null);
     }
 
@@ -440,6 +455,9 @@ public class Fc {
      * 转换失败不会报错
      */
     public static Boolean toBool(Object value) {
+        if (ObjectUtil.isNull(value)){
+            return null;
+        }
         return toBool(value, null);
     }
 
@@ -642,6 +660,16 @@ public class Fc {
         return Convert.toBigDecimal(value);
     }
 
+    /**
+     * 将 {@code Collection} 转换为带分隔符的 {@code String}（例如 CSV）。
+     * <p>对 {@code toString()} 实现有用。
+     *
+     * @param coll  the {@code Collection} to convert
+     * @return the delimited {@code String}
+     */
+    public static String join(Collection<?> coll) {
+        return StringUtil.join(coll, StringPool.COMMA);
+    }
 
     /**
      * 将 {@code Collection} 转换为带分隔符的 {@code String}（例如 CSV）。

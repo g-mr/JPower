@@ -1,7 +1,7 @@
 package top.jpower.jpower.module.datascope.annotation;
 
-import top.jpower.jpower.module.common.utils.constants.StringPool;
 import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
+import top.jpower.jpower.module.common.utils.constants.StringPool;
 
 import java.lang.annotation.*;
 

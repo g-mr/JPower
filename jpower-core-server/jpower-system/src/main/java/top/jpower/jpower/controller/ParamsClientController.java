@@ -1,5 +1,10 @@
 package top.jpower.jpower.controller;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.jpower.dbs.entity.params.TbCoreParam;
 import top.jpower.jpower.feign.ParamsClient;
 import top.jpower.jpower.module.base.enums.JpowerError;
@@ -7,11 +12,6 @@ import top.jpower.jpower.module.base.exception.JpowerAssert;
 import top.jpower.jpower.module.base.vo.ResponseData;
 import top.jpower.jpower.module.common.utils.ReturnJsonUtil;
 import top.jpower.jpower.service.params.CoreParamService;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * @author mr.gmac
@@ -42,7 +42,7 @@ public class ParamsClientController implements ParamsClient {
     @ApiOperation(value = "通过Id获取参数详情")
     @Override
     @GetMapping("/queryById")
-    public TbCoreParam queryById(@ApiParam("主键ID") @RequestParam String id){
+    public TbCoreParam queryById(@ApiParam("主键ID") @RequestParam Long id){
         return paramService.getById(id);
     }
 

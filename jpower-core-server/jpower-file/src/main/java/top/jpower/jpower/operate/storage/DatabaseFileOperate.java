@@ -1,6 +1,9 @@
 package top.jpower.jpower.operate.storage;
 
 import cn.hutool.core.io.FileTypeUtil;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 import top.jpower.jpower.dbs.entity.TbCoreFile;
 import top.jpower.jpower.module.common.utils.DesUtil;
 import top.jpower.jpower.module.common.utils.Fc;
@@ -10,9 +13,6 @@ import top.jpower.jpower.module.common.utils.constants.ConstantsUtils;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.operate.FileOperate;
 import top.jpower.jpower.service.CoreFileService;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -39,8 +39,8 @@ public class DatabaseFileOperate implements FileOperate {
 		TbCoreFile coreFile = new TbCoreFile();
 		coreFile.setFileType(FileTypeUtil.getType(file.getInputStream(),originalFileName));
 		coreFile.setFileSize(file.getSize());
-		coreFile.setId(Fc.randomUUID());
-		coreFile.setMark(DesUtil.encrypt(coreFile.getId(), ConstantsUtils.FILE_DES_KEY));
+		coreFile.setId(Fc.randomSnowFlakeId());
+		coreFile.setMark(DesUtil.encrypt(Fc.toStr(coreFile.getId()), ConstantsUtils.FILE_DES_KEY));
 		coreFile.setStorageType(DATABASE.getValue());
 		coreFile.setContent(file.getBytes());
 		coreFile.setName(originalFileName);

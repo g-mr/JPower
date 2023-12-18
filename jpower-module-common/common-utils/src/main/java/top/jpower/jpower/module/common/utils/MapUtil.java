@@ -12,6 +12,22 @@ import java.util.Map;
  */
 public class MapUtil extends cn.hutool.core.map.MapUtil {
 
+    public static boolean containsKey(Map<?, ?> map, Object key){
+        return containsAnyKey(map, key);
+    }
+
+    public static boolean containsAnyKey(Map<?, ?> map, Object... keys){
+        if (isEmpty(map)){
+            return Boolean.FALSE;
+        }
+        for (Object key : keys) {
+            if (map.containsKey(key)){
+                return Boolean.TRUE;
+            }
+        }
+        return Boolean.FALSE;
+    }
+
     /**
      * 获取Map指定key的值，并转换为字符串后删除指定的Key
      *

@@ -1,9 +1,9 @@
 package top.jpower.jpower.dbs.entity.org;
 
-import top.jpower.jpower.module.base.annotation.Dict;
-import top.jpower.jpower.module.tenant.entity.TenantEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import top.jpower.jpower.module.base.annotation.Dict;
+import top.jpower.jpower.module.tenant.entity.TenantEntity;
 
 /**
  * @ClassName TbCoreUser
@@ -22,7 +22,7 @@ public class TbCoreOrg extends TenantEntity {
     @ApiModelProperty("名称")
     private String name;
     @ApiModelProperty("父级ID")
-    private String parentId;
+    private Long parentId;
     @ApiModelProperty("祖级ID")
     private String ancestorId;
     @ApiModelProperty("图标")

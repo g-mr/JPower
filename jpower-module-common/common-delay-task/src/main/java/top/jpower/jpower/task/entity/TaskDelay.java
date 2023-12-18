@@ -5,10 +5,10 @@ import cn.hutool.core.date.DatePattern;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import top.jpower.jpower.annotation.JEntity;
-import top.jpower.jpower.annotation.JId;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import top.jpower.jpower.annotation.JEntity;
+import top.jpower.jpower.annotation.JId;
 
 import java.io.Serializable;
 import java.util.Date;

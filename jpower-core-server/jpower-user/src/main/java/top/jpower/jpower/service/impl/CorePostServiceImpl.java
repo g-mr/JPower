@@ -2,6 +2,8 @@ package top.jpower.jpower.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import top.jpower.jpower.dbs.dao.TbCorePostDao;
 import top.jpower.jpower.dbs.dao.TbCoreUserDao;
 import top.jpower.jpower.dbs.dao.mapper.TbCorePostMapper;
@@ -15,8 +17,6 @@ import top.jpower.jpower.module.common.utils.ShieldUtil;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.service.CorePostService;
 import top.jpower.jpower.vo.PostVo;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
@@ -43,7 +43,7 @@ public class CorePostServiceImpl extends BaseServiceImpl<TbCorePostMapper, TbCor
     }
 
     @Override
-    public boolean delete(List<String> ids) {
+    public boolean delete(List<Long> ids) {
 
         if (postDao.removeRealByIds(ids)){
             userDao.update(Wrappers.<TbCoreUser>lambdaUpdate()

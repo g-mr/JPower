@@ -3,14 +3,14 @@ package top.jpower.jpower.module.datascope;
 import com.baomidou.mybatisplus.extension.plugins.handler.DataPermissionHandler;
 import com.baomidou.mybatisplus.extension.plugins.inner.DataPermissionInterceptor;
 import com.github.pagehelper.autoconfigure.PageHelperProperties;
-import top.jpower.jpower.module.config.MybatisPlusConfig;
-import top.jpower.jpower.module.datascope.handler.DataScopeHandler;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import top.jpower.jpower.module.config.MybatisPlusConfig;
+import top.jpower.jpower.module.datascope.handler.DataScopeHandler;
 
 /**
  * @ClassName 数据权限配置

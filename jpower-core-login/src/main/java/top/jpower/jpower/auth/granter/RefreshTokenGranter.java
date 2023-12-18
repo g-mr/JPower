@@ -1,5 +1,9 @@
 package top.jpower.jpower.auth.granter;
 
+import io.jsonwebtoken.Claims;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import top.jpower.jpower.auth.AuthUserInfo;
 import top.jpower.jpower.auth.TokenGranter;
 import top.jpower.jpower.cache.UserCache;
@@ -12,10 +16,6 @@ import top.jpower.jpower.module.common.utils.constants.TokenConstant;
 import top.jpower.jpower.utils.TokenUtil;
 import top.jpower.jpower.utils.UserUtil;
 import top.jpower.jpower.vo.UserVo;
-import io.jsonwebtoken.Claims;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 
 import static top.jpower.jpower.auth.granter.RefreshTokenGranter.GRANT_TYPE;
 
@@ -47,7 +47,7 @@ public class RefreshTokenGranter implements TokenGranter {
 			}
 			String tokenType = Fc.toStr(claims.get(TokenConstant.TOKEN_TYPE));
 			if (tokenType.equals(TokenConstant.REFRESH_TOKEN)) {
-				String userId = Fc.toStr(claims.get(TokenConstant.USER_ID));
+				Long userId = Fc.toLong(claims.get(TokenConstant.USER_ID));
 
 				if (!Fc.isNull(authUserInfo)){
 					return authUserInfo.getRefreshUserInfo(userType,userId);

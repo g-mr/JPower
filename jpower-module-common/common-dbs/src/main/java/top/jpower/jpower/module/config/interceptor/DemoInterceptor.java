@@ -1,14 +1,14 @@
 package top.jpower.jpower.module.config.interceptor;
 
 import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
-import top.jpower.jpower.module.common.utils.Fc;
-import top.jpower.jpower.module.common.utils.WebUtil;
-import top.jpower.jpower.module.config.properties.DemoProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.springframework.util.AntPathMatcher;
+import top.jpower.jpower.module.common.utils.Fc;
+import top.jpower.jpower.module.common.utils.WebUtil;
+import top.jpower.jpower.module.config.properties.DemoProperties;
 
 /**
  * @ClassName DemoInterceptor

@@ -2,11 +2,11 @@ package top.jpower.jpower.dbs.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.TableField;
-import top.jpower.jpower.module.base.annotation.Dict;
-import top.jpower.jpower.module.tenant.entity.TenantEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import top.jpower.jpower.module.base.annotation.Dict;
+import top.jpower.jpower.module.tenant.entity.TenantEntity;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

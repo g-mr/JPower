@@ -1,5 +1,7 @@
 package top.jpower.jpower.wrapper;
 
+import org.apache.ibatis.reflection.MetaObject;
+import org.springframework.stereotype.Component;
 import top.jpower.jpower.cache.dict.DictCache;
 import top.jpower.jpower.module.base.annotation.Dict;
 import top.jpower.jpower.module.common.utils.Fc;
@@ -9,8 +11,6 @@ import top.jpower.jpower.module.common.utils.WebUtil;
 import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
 import top.jpower.jpower.module.common.utils.constants.StringPool;
 import top.jpower.jpower.module.dictbind.handler.IDictBindHandler;
-import org.apache.ibatis.reflection.MetaObject;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;

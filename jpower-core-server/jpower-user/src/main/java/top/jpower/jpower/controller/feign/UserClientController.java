@@ -1,5 +1,10 @@
 package top.jpower.jpower.controller.feign;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.jpower.dbs.entity.TbCorePost;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
 import top.jpower.jpower.feign.UserClient;
@@ -10,11 +15,6 @@ import top.jpower.jpower.service.CorePostService;
 import top.jpower.jpower.service.CoreUserRoleService;
 import top.jpower.jpower.service.CoreUserService;
 import top.jpower.jpower.vo.UserVo;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 
@@ -45,14 +45,14 @@ public class UserClientController implements UserClient {
     @ApiOperation(value = "通过用户ID查询所有角色ID")
     @Override
     @GetMapping("/getRoleIdsByUserId")
-    public ResponseData<List<String>> getRoleIds(@RequestParam String userId){
+    public ResponseData<List<Long>> getRoleIds(@RequestParam Long userId){
         return ReturnJsonUtil.ok("查询成功",coreUserRoleService.queryRoleIds(userId));
     }
 
     @ApiOperation(value = "更新用户登陆信息")
     @Override
     @PutMapping("/updateUserLoginInfo")
-    public ResponseData updateUserLoginInfo(@RequestParam String userId){
+    public ResponseData updateUserLoginInfo(@RequestParam Long userId){
         return ReturnJsonUtil.status(coreUserService.updateLoginInfo(userId));
     }
 
@@ -66,7 +66,7 @@ public class UserClientController implements UserClient {
     @ApiOperation("查询用户详情")
     @Override
     @GetMapping(value = "/get")
-    public ResponseData<UserVo> get(@RequestParam String id){
+    public ResponseData<UserVo> get(@RequestParam Long id){
         return ReturnJsonUtil.ok("查询成功", coreUserService.selectUserById(id));
     }
 
@@ -80,7 +80,7 @@ public class UserClientController implements UserClient {
 
     @Override
     @PostMapping("/saveUser")
-    public ResponseData saveUser(@RequestBody TbCoreUser user,@RequestParam String roleId) {
+    public ResponseData saveUser(@RequestBody TbCoreUser user,@RequestParam Long roleId) {
         return coreUserService.saveUser(user,roleId)?ReturnJsonUtil.ok("用户创建成功"):ReturnJsonUtil.fail("用户创建失败");
     }
 
@@ -94,7 +94,7 @@ public class UserClientController implements UserClient {
 
     @Override
     @GetMapping("/queryPostById")
-    public ResponseData<TbCorePost> queryPostById(@RequestParam String postId) {
+    public ResponseData<TbCorePost> queryPostById(@RequestParam Long postId) {
         return ReturnJsonUtil.data(corePostService.getById(postId));
     }
 

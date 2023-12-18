@@ -1,17 +1,17 @@
 package top.jpower.jpower.auth.granter;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import top.jpower.jpower.auth.AuthUserInfo;
 import top.jpower.jpower.auth.TokenGranter;
 import top.jpower.jpower.dto.TokenParameter;
-import top.jpower.jpower.utils.TokenUtil;
 import top.jpower.jpower.module.base.exception.BusinessException;
 import top.jpower.jpower.module.common.auth.UserInfo;
 import top.jpower.jpower.module.common.cache.CacheNames;
 import top.jpower.jpower.module.common.redis.RedisUtil;
 import top.jpower.jpower.module.common.utils.Fc;
 import top.jpower.jpower.module.common.utils.StringUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import top.jpower.jpower.utils.TokenUtil;
 
 import static top.jpower.jpower.auth.granter.CaptchaTokenGranter.GRANT_TYPE;
 
@@ -44,7 +44,7 @@ public class CaptchaTokenGranter implements TokenGranter {
 			throw new BusinessException(TokenUtil.CAPTCHA_NOT_CORRECT);
 		}
 
-		if (!Fc.isNull(authUserInfo)){
+		if (Fc.notNull(authUserInfo)){
 			if (Fc.isNoneBlank(tokenParameter.getLoginId(), tokenParameter.getPassWord())) {
 				return authUserInfo.getCaptchaUserInfo(tokenParameter);
 			}
