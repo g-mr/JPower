@@ -41,12 +41,18 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
         Long orgId = ShieldUtil.getOrgId();
         if (isSave){
             entity.setCreateTime(DateUtil.date());
-            entity.setCreateUser(userId);
-            entity.setCreateOrg(orgId);
+            if (Fc.isNull(entity.getCreateUser()) && Fc.notNull(userId)){
+                entity.setCreateUser(userId);
+            }
+            if (Fc.isNull(entity.getCreateOrg()) && Fc.notNull(orgId)){
+                entity.setCreateOrg(orgId);
+            }
             entity.setIsDeleted(Boolean.FALSE);
         }
 
-        entity.setUpdateUser(userId);
+        if (Fc.isNull(entity.getUpdateUser()) && Fc.notNull(userId)){
+            entity.setUpdateUser(userId);
+        }
         entity.setUpdateTime(DateUtil.date());
         // todo end
 
