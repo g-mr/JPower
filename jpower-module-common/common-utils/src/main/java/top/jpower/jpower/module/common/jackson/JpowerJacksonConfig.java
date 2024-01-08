@@ -2,8 +2,11 @@ package top.jpower.jpower.module.common.jackson;
 
 import cn.hutool.core.date.DatePattern;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -21,14 +24,17 @@ import org.springframework.boot.web.servlet.filter.OrderedCharacterEncodingFilte
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import top.jpower.jpower.module.common.support.ChainMap;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 /**
  * java 8 时间默认序列化
@@ -55,17 +61,41 @@ public class JpowerJacksonConfig{
         return filter;
     }
 
+    /**
+     * 日期格式化
+     *
+     * @author mr.g
+     * @param
+     * @return top.jpower.jpower.module.common.jackson.DateJacksonConverter
+     **/
     @Bean
     @ConditionalOnMissingBean(DateJacksonConverter.class)
     public DateJacksonConverter dateJacksonConverter() {
         return new DateJacksonConverter();
     }
 
+    /**
+     * 16位或以上long转String
+     *
+     * @author mr.g
+     * @param
+     * @return top.jpower.jpower.module.common.jackson.Long2StringJacksonConverter
+     **/
+    @Bean
+    @ConditionalOnMissingBean(Long2StringJacksonConverter.class)
+    public Long2StringJacksonConverter long2StringJacksonConverter() {
+        return new Long2StringJacksonConverter();
+    }
+
     @Bean
     @ConditionalOnMissingBean(Jackson2ObjectMapperFactoryBean.class)
-    public Jackson2ObjectMapperFactoryBean jackson2ObjectMapperFactoryBean(@Autowired DateJacksonConverter dateJacksonConverter) {
+    public Jackson2ObjectMapperFactoryBean jackson2ObjectMapperFactoryBean(@Autowired DateJacksonConverter dateJacksonConverter,@Autowired Long2StringJacksonConverter long2StringJacksonConverter) {
         Jackson2ObjectMapperFactoryBean jackson2ObjectMapperFactoryBean = new Jackson2ObjectMapperFactoryBean();
 
+        jackson2ObjectMapperFactoryBean.setSerializersByType(ChainMap.<Class<?>, JsonSerializer<?>>create()
+                .put(Long.TYPE ,long2StringJacksonConverter)
+                .put(Long.class ,long2StringJacksonConverter)
+                .build());
         jackson2ObjectMapperFactoryBean.setDeserializers(dateJacksonConverter);
         return jackson2ObjectMapperFactoryBean;
     }
@@ -73,7 +103,7 @@ public class JpowerJacksonConfig{
 
     @Bean
     @ConditionalOnMissingBean(MappingJackson2HttpMessageConverter.class)
-    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(@Autowired ObjectMapper objectMapper) {
+    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(@Autowired ObjectMapper objectMapper,@Autowired DateJacksonConverter dateJacksonConverter) {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
 
         // 忽略json字符串中不识别的属性
