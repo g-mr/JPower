@@ -211,7 +211,8 @@ INSERT INTO `tb_core_dict` VALUES (1728752435941785600, 'PARAM_TYPE', 'body', 'b
 INSERT INTO `tb_core_dict` VALUES (1728752436977778688, 'POST_TYPE', '2', '普工', 'N', -1, 'zh', NULL, 0, 1, '2022-09-17 15:37:49', 1, '2023-11-26 12:29:32', 0, NULL, '-1', '000000', 1728752845331021824);
 INSERT INTO `tb_core_dict` VALUES (1728752438118629376, 'POST_TYPE', '3', '技工', 'N', -1, 'zh', NULL, 0, 1, '2022-09-17 15:38:00', 1, '2023-11-26 12:29:32', 0, NULL, '-1', '000000', 1728752845331021824);
 INSERT INTO `tb_core_dict` VALUES (1728752439150428160, 'PARAM_TYPE', 'query', 'query', 'N', -1, 'zh', '', 4, 1, '2021-04-27 17:16:08', 1, '2023-11-26 12:29:32', 0, NULL, '-1', '000000', 1728752845331021824);
-
+INSERT INTO tb_core_dict (id, dict_type_code, code, name, is_stop, parent_id, locale, note, sort_num, create_user, create_time, update_user, update_time, is_deleted, dict_level, pcode, tenant_code, create_org) VALUES (1744757031669059586, 'ORG_TYPE', '0', '实体机构', 'N', -1, 'zh', null, 0, 1, '2024-01-10 00:24:27', 1, '2024-01-10 00:24:27', 0, null, '-1', '000000', 1728752845331021824);
+INSERT INTO tb_core_dict (id, dict_type_code, code, name, is_stop, parent_id, locale, note, sort_num, create_user, create_time, update_user, update_time, is_deleted, dict_level, pcode, tenant_code, create_org) VALUES (1744757065437401090, 'ORG_TYPE', '1', '虚拟机构', 'N', -1, 'zh', null, 0, 1, '2024-01-10 00:24:35', 1, '2024-01-10 00:24:35', 0, null, '-1', '000000', 1728752845331021824);
 -- ----------------------------
 -- Table structure for tb_core_dict_type
 -- ----------------------------
@@ -258,6 +259,7 @@ INSERT INTO `tb_core_dict_type` VALUES (1728752461275381760, 'XBIE', '性别', N
 INSERT INTO `tb_core_dict_type` VALUES (1728752462391066624, 'YN', '是否', NULL, 'N', 3, 1728752458242899968, 1, '2021-03-03 22:33:28', 1, '2023-11-26 12:29:35', 0, 0, 1728752845331021824);
 INSERT INTO `tb_core_dict_type` VALUES (1728752464215588864, 'YN01', '是否01', NULL, 'N', 3, 1728752458242899968, 1, '2021-03-03 22:33:28', 1, '2023-11-26 12:29:35', 0, 0, 1728752845331021824);
 INSERT INTO `tb_core_dict_type` VALUES (1728752465650040832, 'YYZL', '语言种类', NULL, 'N', 2, 1728752458242899968, 1, '2021-03-03 22:33:28', 1, '2023-11-26 12:29:35', 0, 0, 1728752845331021824);
+INSERT INTO tb_core_dict_type (id, dict_type_code, dict_type_name, note, del_enabled, sort_num, parent_id, create_user, create_time, update_user, update_time, is_deleted, is_tree, create_org) VALUES (1744756904501956610, 'ORG_TYPE', '机构类型', null, 'Y', 1, 1728752458242899968, 1, '2024-01-10 00:23:57', 1, '2024-01-10 00:23:57', 0, 0, 1728752845331021824);
 
 -- ----------------------------
 -- Table structure for tb_core_file
