@@ -402,7 +402,7 @@ public class UserController extends BaseController {
 
         TbCoreUser user = coreUserService.getById(userInfo.getUserId());
 
-        if (Fc.isNull(user) || !DigestUtil.checkPwd(oldPw,user.getPassword())) {
+        if (Fc.isNull(user) || !coreUserService.validatePassword(user.getLoginId(), oldPw, user.getTenantCode())) {
             return ReturnJsonUtil.fail("原密码错误");
         }
         CacheUtil.clear(CacheNames.USER_KEY);
