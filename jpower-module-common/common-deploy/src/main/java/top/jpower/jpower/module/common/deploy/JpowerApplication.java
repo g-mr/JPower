@@ -1,5 +1,6 @@
 package top.jpower.jpower.module.common.deploy;
 
+import cn.hutool.core.util.ArrayUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
@@ -8,15 +9,20 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.*;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileUrlResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import top.jpower.jpower.module.common.deploy.service.DeployService;
+import top.jpower.jpower.module.common.utils.ExceptionUtil;
 import top.jpower.jpower.module.common.utils.Fc;
 import top.jpower.jpower.module.common.utils.FileUtil;
 import top.jpower.jpower.module.common.utils.constants.AppConstant;
 import top.jpower.jpower.module.common.utils.constants.JpowerConstants;
+import top.jpower.jpower.module.common.utils.constants.StringPool;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -58,24 +64,6 @@ public class JpowerApplication {
         propertySources.addLast(new MapPropertySource("systemProperties", environment.getSystemProperties()));
         propertySources.addLast(new SystemEnvironmentPropertySource("systemEnvironment", environment.getSystemEnvironment()));
 
-
-        Properties properties = new Properties();
-        YamlPropertiesFactoryBean yaml = new YamlPropertiesFactoryBean();
-        yaml.setResources(new ClassPathResource("bootstrap.yml", source));
-        if (Fc.notNull(yaml.getObject())){
-            properties.putAll(yaml.getObject());
-        }
-
-        yaml = new YamlPropertiesFactoryBean();
-        yaml.setResources(new FileUrlResource(FileUtil.getSysRootPath() + File.separator + "bootstrap.yml"));
-        if (Fc.notNull(yaml.getObject())){
-            properties.putAll(yaml.getObject());
-        }
-
-
-
-
-
         // 获取配置的环境变量
         String[] activeProfiles = environment.getActiveProfiles();
 
@@ -116,13 +104,74 @@ public class JpowerApplication {
         //seata启用,默认关闭
         props.setProperty("seata.enabled", "${jpower.seata.enabled:false}");
 
+        Properties properties = getYmlProperties();
+
         List<DeployService> deployServiceList = new ArrayList<>();
         ServiceLoader.load(DeployService.class).forEach(deployServiceList::add);
         deployServiceList.stream().sorted(Comparator.comparing(DeployService::getOrder)).collect(Collectors.toList())
-                .forEach(deployService -> deployService.deploy(builder, appName, profile));
+                .forEach(deployService -> deployService.deploy(builder, properties, appName, profile));
 
         log.info("{}项目已启动,运行环境：{}",appName,profile);
         return builder;
+    }
+
+    /**
+     * 获取项目配置
+     *
+     * @author mr.g
+     * @return java.util.Properties 配置
+     **/
+    private static Properties getYmlProperties() throws IOException {
+        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        Resource[] resources = resolver.getResources("classpath:/*.yml");
+        Resource[] resourcesConfig = resolver.getResources("classpath:/config/*.yml");
+
+        Properties properties = new Properties();
+        YamlPropertiesFactoryBean yaml = new YamlPropertiesFactoryBean();
+        yaml.setResources(ArrayUtil.append(resources, resourcesConfig));
+        properties.putAll(yaml.getObject());
+
+        try {
+            yaml = new YamlPropertiesFactoryBean();
+            yaml.setResources(new FileUrlResource(FileUtil.getSysRootPath() + File.separator + "application.yml"));
+            if (Fc.notNull(yaml.getObject())){
+                properties.putAll(yaml.getObject());
+            }
+        } catch (IllegalStateException e){
+            log.warn("读取配置文件报错==={}", e.getMessage());
+        }
+
+        try {
+            yaml = new YamlPropertiesFactoryBean();
+            yaml.setResources(new FileUrlResource(FileUtil.getSysRootPath() + File.separator + "bootstrap.yml"));
+            if (Fc.notNull(yaml.getObject())){
+                properties.putAll(yaml.getObject());
+            }
+        } catch (IllegalStateException e){
+            log.warn("读取配置文件报错==={}", e.getMessage());
+        }
+
+        try {
+            yaml = new YamlPropertiesFactoryBean();
+            yaml.setResources(new FileUrlResource(FileUtil.getSysRootResourcePath() + File.separator + "application.yml"));
+            if (Fc.notNull(yaml.getObject())){
+                properties.putAll(yaml.getObject());
+            }
+        } catch (IllegalStateException e){
+            log.warn("读取配置文件报错==={}", e.getMessage());
+        }
+
+        try {
+            yaml = new YamlPropertiesFactoryBean();
+            yaml.setResources(new FileUrlResource(FileUtil.getSysRootResourcePath() + File.separator + "bootstrap.yml"));
+            if (Fc.notNull(yaml.getObject())){
+                properties.putAll(yaml.getObject());
+            }
+        } catch (IllegalStateException e){
+            log.warn("读取配置文件报错==={}", e.getMessage());
+        }
+
+        return properties;
     }
 
     /**

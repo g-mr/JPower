@@ -19,7 +19,7 @@ import java.util.Properties;
 public class SeataDeployServiceImpl implements DeployService {
 
     @Override
-    public void deploy(SpringApplicationBuilder builder, String appName, String profile) {
+    public void deploy(SpringApplicationBuilder builder, Properties properties, String appName, String profile) {
         Properties props = System.getProperties();
         //seata配置
         props.setProperty("seata.tx-service-group", appName.concat(SeataConstants.SUFFIX_SEATA_GROUP));

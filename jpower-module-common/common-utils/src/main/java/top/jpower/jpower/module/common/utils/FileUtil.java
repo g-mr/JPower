@@ -179,6 +179,17 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
      * @author mr.g
      * @return 目录
      **/
+    public static String getSysRootResourcePath() {
+        // 项目所在的目录
+        return getSysRootPath() + File.separator + "config";
+    }
+
+    /**
+     * 如果已打成jar包，则返回jar包所在目录;如果未打成jar，则返回resources所在目录
+     *
+     * @author mr.g
+     * @return 目录
+     **/
     public static String getSysRootPath() {
         // 项目的编译文件的根目录
         String path;
@@ -196,7 +207,6 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
             path = path.substring(0, i);
             path = path.replaceFirst("file:", "");
             path = new File(path).getParentFile().getAbsolutePath();
-            path = path + File.separator + "config";
         }
         // 项目所在的目录
         return new File(path).getAbsolutePath();
