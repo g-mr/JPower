@@ -2,15 +2,22 @@ package top.jpower.jpower.module.common.deploy;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.*;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileUrlResource;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import top.jpower.jpower.module.common.deploy.service.DeployService;
+import top.jpower.jpower.module.common.utils.Fc;
+import top.jpower.jpower.module.common.utils.FileUtil;
 import top.jpower.jpower.module.common.utils.constants.AppConstant;
 import top.jpower.jpower.module.common.utils.constants.JpowerConstants;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -40,7 +47,7 @@ public class JpowerApplication {
         return context;
     }
 
-    private static SpringApplicationBuilder springApplicationBuilder(String appName, Class source, String[] args) {
+    private static SpringApplicationBuilder springApplicationBuilder(String appName, Class source, String[] args) throws IOException {
         Assert.hasText(appName, "服务名(appName)不能为空");
         SpringApplicationBuilder builder = new SpringApplicationBuilder(source);
 
@@ -50,6 +57,24 @@ public class JpowerApplication {
         propertySources.addFirst(new SimpleCommandLinePropertySource(args));
         propertySources.addLast(new MapPropertySource("systemProperties", environment.getSystemProperties()));
         propertySources.addLast(new SystemEnvironmentPropertySource("systemEnvironment", environment.getSystemEnvironment()));
+
+
+        Properties properties = new Properties();
+        YamlPropertiesFactoryBean yaml = new YamlPropertiesFactoryBean();
+        yaml.setResources(new ClassPathResource("bootstrap.yml", source));
+        if (Fc.notNull(yaml.getObject())){
+            properties.putAll(yaml.getObject());
+        }
+
+        yaml = new YamlPropertiesFactoryBean();
+        yaml.setResources(new FileUrlResource(FileUtil.getSysRootPath() + File.separator + "bootstrap.yml"));
+        if (Fc.notNull(yaml.getObject())){
+            properties.putAll(yaml.getObject());
+        }
+
+
+
+
 
         // 获取配置的环境变量
         String[] activeProfiles = environment.getActiveProfiles();

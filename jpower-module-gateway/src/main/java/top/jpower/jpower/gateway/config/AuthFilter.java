@@ -84,7 +84,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
 
             Claims claims = JwtUtil.parseJwt(token);
             if (!redisUtil.exists(CacheNames.TOKEN_URL_KEY + token)){
-                return proxyAuthenticationRequired(exchange.getResponse(), "令牌已过期，请重新登陆");
+                return proxyAuthenticationRequired(exchange.getResponse(), "令牌已过期，请重新登录");
             }
 
             if (Fc.isNull(claims) || !isAuth(claims, token, currentPath)) {
