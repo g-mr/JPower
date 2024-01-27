@@ -171,6 +171,15 @@ public class JpowerApplication {
             log.warn("读取配置文件报错==={}", e.getMessage());
         }
 
+        try {
+            Properties systemProperties = System.getProperties();
+            if(Fc.isNotEmpty(systemProperties)){
+                properties.putAll(systemProperties);
+            }
+        } catch (IllegalStateException e){
+            log.warn("读取系统配置报错==={}", e.getMessage());
+        }
+
         return properties;
     }
 
