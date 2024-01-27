@@ -7,19 +7,16 @@ import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.*;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileUrlResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import top.jpower.jpower.module.common.deploy.service.DeployService;
-import top.jpower.jpower.module.common.utils.ExceptionUtil;
 import top.jpower.jpower.module.common.utils.Fc;
 import top.jpower.jpower.module.common.utils.FileUtil;
 import top.jpower.jpower.module.common.utils.constants.AppConstant;
 import top.jpower.jpower.module.common.utils.constants.JpowerConstants;
-import top.jpower.jpower.module.common.utils.constants.StringPool;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -124,11 +121,16 @@ public class JpowerApplication {
     private static Properties getYmlProperties() throws IOException {
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         Resource[] resources = resolver.getResources("classpath:/*.yml");
-        Resource[] resourcesConfig = resolver.getResources("classpath:/config/*.yml");
+        try {
+            Resource[] resourcesConfig = resolver.getResources("classpath:/config/*.yml");
+            resources = ArrayUtil.append(resources, resourcesConfig);
+        } catch (FileNotFoundException e){
+            log.warn("读取配置文件报错==={}", e.getMessage());
+        }
 
         Properties properties = new Properties();
         YamlPropertiesFactoryBean yaml = new YamlPropertiesFactoryBean();
-        yaml.setResources(ArrayUtil.append(resources, resourcesConfig));
+        yaml.setResources(resources);
         properties.putAll(yaml.getObject());
 
         try {
