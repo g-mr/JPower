@@ -41,7 +41,7 @@ public class FileClientController implements FileClient {
     public ResponseData serverUpload(@RequestParam("file") MultipartFile file){
         TbCoreFile coreFile = operateBuilder
                 .getBuilder(ConstantsEnum.FILE_STORAGE_TYPE.SERVER.getValue())
-                .upload(file);
+                .upload(file.getBytes(), file.getOriginalFilename(), file.getSize());
         return ReturnJsonUtil.ok("成功",coreFile.getMark());
     }
 
@@ -51,7 +51,7 @@ public class FileClientController implements FileClient {
     public ResponseData fastDfsUpload(@RequestParam("file") MultipartFile file) {
         TbCoreFile coreFile = operateBuilder
                 .getBuilder(ConstantsEnum.FILE_STORAGE_TYPE.FASTDFS.getValue())
-                .upload(file);
+                .upload(file.getBytes(), file.getOriginalFilename(), file.getSize());
         return ReturnJsonUtil.ok("成功",coreFile.getMark());
     }
 
@@ -61,7 +61,7 @@ public class FileClientController implements FileClient {
     public ResponseData databaseUpload(@RequestParam("file") MultipartFile file) {
         TbCoreFile coreFile = operateBuilder
                 .getBuilder(ConstantsEnum.FILE_STORAGE_TYPE.DATABASE.getValue())
-                .upload(file);
+                .upload(file.getBytes(), file.getOriginalFilename(), file.getSize());
         return ReturnJsonUtil.ok("成功",coreFile.getMark());
     }
 

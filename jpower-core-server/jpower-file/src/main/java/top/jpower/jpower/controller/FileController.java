@@ -57,7 +57,7 @@ public class FileController extends BaseController {
                                @ApiParam(value = "存储类型 字典FILE_STORAGE_TYPE",defaultValue = "SERVER") @RequestParam(required = false,defaultValue = "SERVER") String storageType){
         JpowerAssert.notTrue(file == null || file.isEmpty(),JpowerError.Arg,"文件不可为空");
         try {
-            TbCoreFile coreFile = operateBuilder.getBuilder(storageType).upload(file);
+            TbCoreFile coreFile = operateBuilder.getBuilder(storageType).upload(file.getBytes(), file.getOriginalFilename(), file.getSize());
             if (Fc.notNull(coreFile)){
                 CacheUtil.clear(CacheNames.FILE_KEY);
                 return ReturnJsonUtil.ok("上传成功", coreFile.getMark());

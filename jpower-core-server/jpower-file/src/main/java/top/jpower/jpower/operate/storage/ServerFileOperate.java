@@ -1,12 +1,13 @@
 package top.jpower.jpower.operate.storage;
 
 import cn.hutool.core.io.FileTypeUtil;
+import cn.hutool.core.io.file.FileNameUtil;
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 import top.jpower.jpower.dbs.entity.TbCoreFile;
 import top.jpower.jpower.module.base.enums.JpowerError;
 import top.jpower.jpower.module.base.exception.BusinessException;
@@ -40,17 +41,18 @@ public class ServerFileOperate implements FileOperate {
 	private CoreFileService coreFileService;
 
 	@Override
-	public TbCoreFile upload(MultipartFile file) throws IOException {
+	@SneakyThrows(IOException.class)
+	public TbCoreFile upload(byte[] bytes, String name, Long size) {
 		JpowerAssert.notEmpty(fileParentPath, JpowerError.Unknown,"未配置文件保存路径");
 
-		File saveFile = FileUtil.saveFile(file,fileParentPath);
+		File saveFile = FileUtil.saveFile(bytes, FileNameUtil.getPrefix(name), fileParentPath);
 
 		TbCoreFile coreFile = new TbCoreFile();
 		coreFile.setPath(saveFile.getAbsolutePath());
 		coreFile.setName(saveFile.getName());
 		coreFile.setStorageType(SERVER.getValue());
 		coreFile.setFileType(FileTypeUtil.getType(saveFile));
-		coreFile.setFileSize(file.getSize());
+		coreFile.setFileSize(size);
 		coreFile.setId(Fc.randomSnowFlakeId());
 		coreFile.setMark(DesUtil.encrypt(Fc.toStr(coreFile.getId()), ConstantsUtils.FILE_DES_KEY));
 

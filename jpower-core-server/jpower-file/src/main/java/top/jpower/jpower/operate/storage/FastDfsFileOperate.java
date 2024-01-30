@@ -1,9 +1,10 @@
 package top.jpower.jpower.operate.storage;
 
 import cn.hutool.core.io.FileTypeUtil;
+import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.io.file.FileNameUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 import top.jpower.jpower.dbs.entity.TbCoreFile;
 import top.jpower.jpower.module.base.enums.JpowerError;
 import top.jpower.jpower.module.base.exception.JpowerAssert;
@@ -12,7 +13,6 @@ import top.jpower.jpower.module.common.utils.Fc;
 import top.jpower.jpower.module.common.utils.FileUtil;
 import top.jpower.jpower.module.common.utils.WebUtil;
 import top.jpower.jpower.module.common.utils.constants.ConstantsUtils;
-import top.jpower.jpower.module.common.utils.constants.StringPool;
 import top.jpower.jpower.operate.FileOperate;
 import top.jpower.jpower.service.CoreFileService;
 import top.jpower.jpower.utils.FileDfsUtil;
@@ -35,19 +35,18 @@ public class FastDfsFileOperate implements FileOperate {
 
 
 	@Override
-	public TbCoreFile upload(MultipartFile file) throws IOException {
+	public TbCoreFile upload(byte[] bytes, String name, Long size) {
 
-		String originalFileName = file.getOriginalFilename();
-		String dfsPath = FileDfsUtil.upload(file.getBytes(),file.getSize(),originalFileName.substring(originalFileName.lastIndexOf(StringPool.DOT)));
+		String dfsPath = FileDfsUtil.upload(bytes,size, FileNameUtil.getPrefix(name));
 
 		TbCoreFile coreFile = new TbCoreFile();
-		coreFile.setFileType(FileTypeUtil.getType(file.getInputStream(),originalFileName));
-		coreFile.setFileSize(file.getSize());
+		coreFile.setFileType(FileTypeUtil.getType(IoUtil.toStream(bytes), name));
+		coreFile.setFileSize(size);
 		coreFile.setId(Fc.randomSnowFlakeId());
 		coreFile.setMark(DesUtil.encrypt(Fc.toStr(coreFile.getId()), ConstantsUtils.FILE_DES_KEY));
 		coreFile.setStorageType(FASTDFS.getValue());
 		coreFile.setPath(dfsPath);
-		coreFile.setName(originalFileName);
+		coreFile.setName(name);
 
 		try {
 			if (!coreFileService.add(coreFile)){

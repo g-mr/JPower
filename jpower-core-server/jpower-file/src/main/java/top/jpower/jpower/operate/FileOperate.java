@@ -1,6 +1,5 @@
 package top.jpower.jpower.operate;
 
-import org.springframework.web.multipart.MultipartFile;
 import top.jpower.jpower.dbs.entity.TbCoreFile;
 
 import java.io.IOException;
@@ -17,7 +16,7 @@ public interface FileOperate {
 	 * @param file 上传文件
 	 * @return TbCoreFile
 	 */
-	TbCoreFile upload(MultipartFile file) throws IOException;
+	TbCoreFile upload(byte[] bytes, String name, Long size);
 
 	/**
 	 * 下载文件

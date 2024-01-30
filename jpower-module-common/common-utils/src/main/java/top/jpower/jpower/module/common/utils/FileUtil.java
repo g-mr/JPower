@@ -1,6 +1,8 @@
 package top.jpower.jpower.module.common.utils;
 
+import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.io.IORuntimeException;
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.NumberUtil;
@@ -299,6 +301,36 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
         multipartFile.transferTo(file);
 
         log.info("文件保存成功，文件路径={}",file.getAbsolutePath());
+
+        return new File(savePath + File.separator + DateUtil.today() + File.separator + file.getName());
+    }
+
+    /**
+     * 保存文件
+     *
+     * @author mr.g
+     * @param bytes 上传文件
+     * @param savePath 保存路径
+     * @param fileName 文件名称
+     * @return 文件路径
+     **/
+    public static File saveFile(byte[] bytes,String fileName,String savePath) throws IOException {
+
+        if (Fc.isBlank(fileName)){
+            fileName = DateUtil.today();
+        }
+
+        File file = FileUtil.rename(new File(savePath+File.separator+DateUtil.today() + File.separator + fileName + "." + FileTypeUtil.getType(IoUtil.toStream(bytes))));
+
+        assert file != null;
+        if(!file.getParentFile().exists()){
+            //noinspection ResultOfMethodCallIgnored
+            file.getParentFile().mkdirs();
+        }
+
+        cn.hutool.core.io.FileUtil.writeBytes(bytes, file);
+
+        log.info("文件保存成功，文件路径={}", file.getAbsolutePath());
 
         return new File(savePath + File.separator + DateUtil.today() + File.separator + file.getName());
     }
