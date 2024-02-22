@@ -28,6 +28,11 @@ public class AuthProperties {
      */
     private List<Client> client = new ArrayList<>();
 
+    /**
+     * 是否使用cookie
+     */
+    private Boolean cookie = Boolean.TRUE;
+
     @Data
     public static class Client{
         /** 客户端编码 */

@@ -5,6 +5,7 @@ import io.jsonwebtoken.*;
 import lombok.NonNull;
 import top.jpower.jpower.module.common.utils.constants.StringPool;
 import top.jpower.jpower.module.common.utils.constants.TokenConstant;
+import top.jpower.jpower.module.properties.AuthProperties;
 
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
@@ -78,9 +79,12 @@ public class JwtUtil {
             return parsingToken(auth);
         }
 
-        String cookieVal = WebUtil.getCookieVal(request,TokenConstant.HEADER);
-        if (Fc.isNotBlank(cookieVal)){
-            return parsingToken(URLUtil.decode(cookieVal));
+        AuthProperties properties = SpringUtil.getBean(AuthProperties.class);
+        if (Fc.notNull(properties) && properties.getCookie()){
+            String cookieVal = WebUtil.getCookieVal(request,TokenConstant.HEADER);
+            if (Fc.isNotBlank(cookieVal)){
+                return parsingToken(URLUtil.decode(cookieVal));
+            }
         }
 
         String parameter = request.getParameter(TokenConstant.HEADER);
