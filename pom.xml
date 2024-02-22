@@ -13,13 +13,13 @@
 
     <groupId>top.jpower</groupId>
     <artifactId>jpower</artifactId>
-    <version>3.0.0</version>
+    <version>2.2.0</version>
 
     <packaging>pom</packaging>
 
     <properties>
         <java.version>1.8</java.version>
-        <com.jpower.version>3.0.0</com.jpower.version>
+        <com.jpower.version>2.2.0</com.jpower.version>
 
         <springboot.data.redis.version>1.5.8.RELEASE</springboot.data.redis.version>
         <mybatis-plus.version>3.4.3.4</mybatis-plus.version>
@@ -134,7 +134,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
-                    <version>3.0.0</version>
+                    <version>2.2.0</version>
                     <configuration>
                         <failOnMissingWebXml>false</failOnMissingWebXml>
                         <warName>${project.build.finalName}</warName>
