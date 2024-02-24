@@ -2,7 +2,7 @@ package top.jpower.jpower.gateway.service;
 
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.thread.ThreadUtil;
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSON;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;

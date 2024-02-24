@@ -1,6 +1,6 @@
 package top.jpower.jpower.handler;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import top.jpower.jpower.dbs.entity.TbLogMonitorParam;
 
 import java.util.List;

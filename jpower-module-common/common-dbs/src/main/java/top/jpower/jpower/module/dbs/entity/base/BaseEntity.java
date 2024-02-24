@@ -1,7 +1,7 @@
 package top.jpower.jpower.module.dbs.entity.base;
 
 import cn.hutool.core.date.DatePattern;
-import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson2.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;

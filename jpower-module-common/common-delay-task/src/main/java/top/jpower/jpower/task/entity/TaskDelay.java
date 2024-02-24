@@ -2,7 +2,7 @@ package top.jpower.jpower.task.entity;
 
 
 import cn.hutool.core.date.DatePattern;
-import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson2.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;

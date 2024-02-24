@@ -1,8 +1,7 @@
 package top.jpower.jpower.module.common.utils;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 import org.springframework.util.CollectionUtils;
@@ -12,6 +11,7 @@ import top.jpower.jpower.module.common.utils.constants.StringPool;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -32,7 +32,7 @@ public class DeepJson {
      * @return java.lang.Object
      **/
     public static Object find(JSONObject jsonObject,String keys) {
-        JSON json = fd(jsonObject, keys);
+        Object json = fd(jsonObject, keys);
         Object key = queryEndKey(keys);
         return Fc.isNull(json)?null:json instanceof JSONObject?((JSONObject) json).get(key):((JSONArray) json).get(Fc.toInt(key));
     }
@@ -46,7 +46,7 @@ public class DeepJson {
      * @return java.lang.Integer
      **/
     public static Integer findInteger(JSONObject jsonObject, String keys) {
-        JSON json = fd(jsonObject, keys);
+        Object json = fd(jsonObject, keys);
         Object key = queryEndKey(keys);
         return Fc.isNull(json)?null:json instanceof JSONObject?((JSONObject) json).getInteger(Fc.toStr(key)):((JSONArray) json).getInteger(Fc.toInt(key));
     }
@@ -60,7 +60,7 @@ public class DeepJson {
      * @return java.lang.Integer
      **/
     public static int findIntValue(JSONObject jsonObject, String keys) {
-        JSON json = fd(jsonObject, keys);
+        Object json = fd(jsonObject, keys);
         Object key = queryEndKey(keys);
         return Fc.isNull(json)?0:json instanceof JSONObject?((JSONObject) json).getIntValue(Fc.toStr(key)):((JSONArray) json).getIntValue(Fc.toInt(key));
     }
@@ -74,7 +74,7 @@ public class DeepJson {
      * @return java.lang.Integer
      **/
     public static Long findLong(JSONObject jsonObject, String keys) {
-        JSON json = fd(jsonObject, keys);
+        Object json = fd(jsonObject, keys);
         Object key = queryEndKey(keys);
         return Fc.isNull(json)?null:json instanceof JSONObject?((JSONObject) json).getLong(Fc.toStr(key)):((JSONArray) json).getLong(Fc.toInt(key));
     }
@@ -88,7 +88,7 @@ public class DeepJson {
      * @return java.lang.Integer
      **/
     public static long findLongValue(JSONObject jsonObject, String keys) {
-        JSON json = fd(jsonObject, keys);
+        Object json = fd(jsonObject, keys);
         Object key = queryEndKey(keys);
         return Fc.isNull(json)?0L:json instanceof JSONObject?((JSONObject) json).getLongValue(Fc.toStr(key)):((JSONArray) json).getLongValue(Fc.toInt(key));
     }
@@ -102,7 +102,7 @@ public class DeepJson {
      * @return java.lang.Integer
      **/
     public static Float findFloat(JSONObject jsonObject, String keys) {
-        JSON json = fd(jsonObject, keys);
+        Object json = fd(jsonObject, keys);
         Object key = queryEndKey(keys);
         return Fc.isNull(json)?null:json instanceof JSONObject?((JSONObject) json).getFloat(Fc.toStr(key)):((JSONArray) json).getFloat(Fc.toInt(key));
     }
@@ -116,7 +116,7 @@ public class DeepJson {
      * @return java.lang.Integer
      **/
     public static float findFloatValue(JSONObject jsonObject, String keys) {
-        JSON json = fd(jsonObject, keys);
+        Object json = fd(jsonObject, keys);
         Object key = queryEndKey(keys);
         return Fc.isNull(json)?0F:json instanceof JSONObject?((JSONObject) json).getFloatValue(Fc.toStr(key)):((JSONArray) json).getFloatValue(Fc.toInt(key));
     }
@@ -130,7 +130,7 @@ public class DeepJson {
      * @return java.lang.Integer
      **/
     public static Double findDouble(JSONObject jsonObject, String keys) {
-        JSON json = fd(jsonObject, keys);
+        Object json = fd(jsonObject, keys);
         Object key = queryEndKey(keys);
         return Fc.isNull(json)?null:json instanceof JSONObject?((JSONObject) json).getDouble(Fc.toStr(key)):((JSONArray) json).getDouble(Fc.toInt(key));
     }
@@ -144,7 +144,7 @@ public class DeepJson {
      * @return java.lang.Integer
      **/
     public static double findDoubleValue(JSONObject jsonObject, String keys) {
-        JSON json = fd(jsonObject, keys);
+        Object json = fd(jsonObject, keys);
         Object key = queryEndKey(keys);
         return Fc.isNull(json)?0D:json instanceof JSONObject?((JSONObject) json).getDoubleValue(Fc.toStr(key)):((JSONArray) json).getDoubleValue(Fc.toInt(key));
     }
@@ -158,7 +158,7 @@ public class DeepJson {
      * @return java.lang.Integer
      **/
     public static BigDecimal findBigDecimal(JSONObject jsonObject, String keys) {
-        JSON json = fd(jsonObject, keys);
+        Object json = fd(jsonObject, keys);
         Object key = queryEndKey(keys);
         return Fc.isNull(json)?null:json instanceof JSONObject?((JSONObject) json).getBigDecimal(Fc.toStr(key)):((JSONArray) json).getBigDecimal(Fc.toInt(key));
     }
@@ -172,7 +172,7 @@ public class DeepJson {
      * @return java.lang.Integer
      **/
     public static BigInteger findBigInteger(JSONObject jsonObject, String keys) {
-        JSON json = fd(jsonObject, keys);
+        Object json = fd(jsonObject, keys);
         Object key = queryEndKey(keys);
         return Fc.isNull(json)?null:json instanceof JSONObject?((JSONObject) json).getBigInteger(Fc.toStr(key)):((JSONArray) json).getBigInteger(Fc.toInt(key));
     }
@@ -186,7 +186,7 @@ public class DeepJson {
      * @return java.lang.Integer
      **/
     public static String findString(JSONObject jsonObject, String keys) {
-        JSON json = fd(jsonObject, keys);
+        Object json = fd(jsonObject, keys);
         Object key = queryEndKey(keys);
         return Fc.isNull(json)?null:json instanceof JSONObject?((JSONObject) json).getString(Fc.toStr(key)):((JSONArray) json).getString(Fc.toInt(key));
     }
@@ -200,7 +200,7 @@ public class DeepJson {
      * @return java.lang.Integer
      **/
     public static Date findDate(JSONObject jsonObject, String keys) {
-        JSON json = fd(jsonObject, keys);
+        Object json = fd(jsonObject, keys);
         Object key = queryEndKey(keys);
         return Fc.isNull(json)?null:json instanceof JSONObject?((JSONObject) json).getDate(Fc.toStr(key)):((JSONArray) json).getDate(Fc.toInt(key));
     }
@@ -214,9 +214,9 @@ public class DeepJson {
      * @return java.lang.Integer
      **/
     public static java.sql.Date findSqlDate(JSONObject jsonObject, String keys) {
-        JSON json = fd(jsonObject, keys);
+        Object json = fd(jsonObject, keys);
         Object key = queryEndKey(keys);
-        return Fc.isNull(json)?null:json instanceof JSONObject?((JSONObject) json).getSqlDate(Fc.toStr(key)):((JSONArray) json).getSqlDate(Fc.toInt(key));
+        return Fc.isNull(json)?null:json instanceof JSONObject?((JSONObject) json).getObject(Fc.toStr(key), java.sql.Date.class):((JSONArray) json).getObject(Fc.toInt(key), java.sql.Date.class);
     }
 
     /**
@@ -228,9 +228,9 @@ public class DeepJson {
      * @return java.lang.Integer
      **/
     public static java.sql.Timestamp findTimestamp(JSONObject jsonObject, String keys) {
-        JSON json = fd(jsonObject, keys);
+        Object json = fd(jsonObject, keys);
         Object key = queryEndKey(keys);
-        return Fc.isNull(json)?null:json instanceof JSONObject?((JSONObject) json).getTimestamp(Fc.toStr(key)):((JSONArray) json).getTimestamp(Fc.toInt(key));
+        return Fc.isNull(json)?null:json instanceof JSONObject?((JSONObject) json).getObject(Fc.toStr(key), Timestamp.class):((JSONArray) json).getObject(Fc.toInt(key), Timestamp.class);
     }
 
     /**
@@ -242,7 +242,7 @@ public class DeepJson {
      * @return java.lang.Integer
      **/
     public static Boolean findBoolean(JSONObject jsonObject, String keys) {
-        JSON json = fd(jsonObject, keys);
+        Object json = fd(jsonObject, keys);
         Object key = queryEndKey(keys);
         return Fc.isNull(json)?null:json instanceof JSONObject?((JSONObject) json).getBoolean(Fc.toStr(key)):((JSONArray) json).getBoolean(Fc.toInt(key));
     }
@@ -256,7 +256,7 @@ public class DeepJson {
      * @return java.lang.Integer
      **/
     public static boolean findBooleanValue(JSONObject jsonObject, String keys) {
-        JSON json = fd(jsonObject, keys);
+        Object json = fd(jsonObject, keys);
         Object key = queryEndKey(keys);
         return !Fc.isNull(json) && (json instanceof JSONObject ? ((JSONObject) json).getBooleanValue(Fc.toStr(key)) : ((JSONArray) json).getBooleanValue(Fc.toInt(key)));
     }
@@ -270,7 +270,7 @@ public class DeepJson {
      * @return java.lang.Integer
      **/
     public static Byte findByte(JSONObject jsonObject, String keys) {
-        JSON json = fd(jsonObject, keys);
+        Object json = fd(jsonObject, keys);
         Object key = queryEndKey(keys);
         return Fc.isNull(json) ? null : json instanceof JSONObject ? ((JSONObject) json).getByte(Fc.toStr(key)) : ((JSONArray) json).getByte(Fc.toInt(key));
     }
@@ -284,7 +284,7 @@ public class DeepJson {
      * @return java.lang.Integer
      **/
     public static byte findByteValue(JSONObject jsonObject, String keys) {
-        JSON json = fd(jsonObject, keys);
+        Object json = fd(jsonObject, keys);
         Object key = queryEndKey(keys);
         return Fc.isNull(json) ? 0 : json instanceof JSONObject ? ((JSONObject) json).getByteValue(Fc.toStr(key)) : ((JSONArray) json).getByteValue(Fc.toInt(key));
     }
@@ -298,7 +298,7 @@ public class DeepJson {
      * @return java.lang.Integer
      **/
     public static Short findShort(JSONObject jsonObject, String keys) {
-        JSON json = fd(jsonObject, keys);
+        Object json = fd(jsonObject, keys);
         Object key = queryEndKey(keys);
         return Fc.isNull(json) ? null : json instanceof JSONObject ? ((JSONObject) json).getShort(Fc.toStr(key)) : ((JSONArray) json).getShort(Fc.toInt(key));
     }
@@ -312,7 +312,7 @@ public class DeepJson {
      * @return java.lang.Integer
      **/
     public static short findShortValue(JSONObject jsonObject, String keys) {
-        JSON json = fd(jsonObject, keys);
+        Object json = fd(jsonObject, keys);
         Object key = queryEndKey(keys);
         return Fc.isNull(json) ? 0 : json instanceof JSONObject ? ((JSONObject) json).getShortValue(Fc.toStr(key)) : ((JSONArray) json).getShortValue(Fc.toInt(key));
     }
@@ -326,7 +326,7 @@ public class DeepJson {
      * @return java.lang.Integer
      **/
     public static JSONObject findJsonObject(JSONObject jsonObject, String keys) {
-        JSON json = fd(jsonObject, keys);
+        Object json = fd(jsonObject, keys);
         Object key = queryEndKey(keys);
         return Fc.isNull(json)?null:json instanceof JSONObject?((JSONObject) json).getJSONObject(Fc.toStr(key)):((JSONArray) json).getJSONObject(Fc.toInt(key));
     }
@@ -340,7 +340,7 @@ public class DeepJson {
      * @return java.lang.Integer
      **/
     public static JSONArray findJsonArray(JSONObject jsonObject, String keys) {
-        JSON json = fd(jsonObject, keys);
+        Object json = fd(jsonObject, keys);
         Object key = queryEndKey(keys);
         return Fc.isNull(json)?null:json instanceof JSONObject?((JSONObject) json).getJSONArray(Fc.toStr(key)):((JSONArray) json).getJSONArray(Fc.toInt(key));
     }
@@ -355,7 +355,7 @@ public class DeepJson {
      * @return java.lang.Integer
      **/
     public static <T> T findObject(JSONObject jsonObject, String keys, Class<T> clazz) {
-        JSON json = fd(jsonObject, keys);
+        Object json = fd(jsonObject, keys);
         Object key = queryEndKey(keys);
         return Fc.isNull(json)?null:json instanceof JSONObject?((JSONObject) json).getObject(Fc.toStr(key), clazz):((JSONArray) json).getObject(Fc.toInt(key), clazz);
     }
@@ -370,7 +370,7 @@ public class DeepJson {
      * @return java.lang.Integer
      **/
     public static <T> T findObject(JSONObject jsonObject, String keys, Type type) {
-        JSON json = fd(jsonObject, keys);
+        Object json = fd(jsonObject, keys);
         Object key = queryEndKey(keys);
         return Fc.isNull(json)?null:json instanceof JSONObject?((JSONObject) json).getObject(Fc.toStr(key), type):((JSONArray) json).getObject(Fc.toInt(key), type);
     }
@@ -396,9 +396,9 @@ public class DeepJson {
      * @author mr.g
      * @param jsonObject JSON
      * @param keys 查找的key
-     * @return com.alibaba.fastjson.JSON
+     * @return com.alibaba.fastjson2.JSON
      */
-    private static JSON fd(JSONObject jsonObject, String keys) {
+    private static Object fd(JSONObject jsonObject, String keys) {
         if (Fc.isNull(jsonObject) || Fc.isBlank(keys)){
             return null;
         }

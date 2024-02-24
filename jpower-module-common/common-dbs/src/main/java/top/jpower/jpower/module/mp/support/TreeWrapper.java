@@ -8,9 +8,7 @@ import com.baomidou.mybatisplus.core.conditions.query.Query;
 import com.baomidou.mybatisplus.core.conditions.segments.MergeSegments;
 import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
-import com.baomidou.mybatisplus.core.toolkit.ArrayUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import top.jpower.jpower.module.common.node.ForestNodeMerger;
 import top.jpower.jpower.module.common.utils.Fc;
 import top.jpower.jpower.module.common.utils.StringUtil;
@@ -98,30 +96,40 @@ public class TreeWrapper<T> extends AbstractWrapper<T, String, TreeWrapper<T>>
         this.list = list;
     }
 
+    /**
+     * 指定查询字段
+     *
+     * @param condition 执行条件
+     * @param columns   字段列表
+     * @return children
+     */
     @Override
-    public TreeWrapper<T> select(String... columns) {
-        if (ArrayUtils.isNotEmpty(columns)) {
-            this.list = ListUtil.toList(columns);
-        }
+    public TreeWrapper<T> select(boolean condition, List<String> columns) {
+        if (condition){
+            if (Fc.isNotEmpty(columns)) {
+                this.list = ListUtil.toList(columns);
+            }
 
-        List<String> list = ListUtil.toCopyOnWriteArrayList(this.list);
-        if (Fc.isNoneBlank(id,parentId)){
-            list.remove(id);
-            list.add(id+" AS "+idAlias);
-            list.remove(parentId);
-            list.add(parentId+" AS "+parentIdAlias);
-        }
+            List<String> list = ListUtil.toCopyOnWriteArrayList(columns);
+            if (Fc.isNoneBlank(id,parentId)){
+                list.remove(id);
+                list.add(id+" AS "+idAlias);
+                list.remove(parentId);
+                list.add(parentId+" AS "+parentIdAlias);
+            }
 
-        if (Fc.isNoneBlank(hasChildren)){
-            list.add(hasChildren);
-        }
+            if (Fc.isNoneBlank(hasChildren)){
+                list.add(hasChildren);
+            }
 
-        if (Fc.isNotEmpty(list)) {
-            this.sqlSelect.setStringValue(Fc.join(list,StringPool.COMMA));
-        }
+            if (Fc.isNotEmpty(list)) {
+                this.sqlSelect.setStringValue(Fc.join(list,StringPool.COMMA));
+            }
 
+        }
         return typedThis;
     }
+
 
     @Override
     public TreeWrapper<T> select(Class<T> entityClass, Predicate<TableFieldInfo> predicate) {
@@ -159,11 +167,6 @@ public class TreeWrapper<T> extends AbstractWrapper<T, String, TreeWrapper<T>>
     @Override
     public String getSqlSelect() {
         return sqlSelect.getStringValue();
-    }
-
-    @Override
-    protected String columnSqlInjectFilter(String column) {
-        return StringUtils.sqlInjectionReplaceBlank(column);
     }
 
     /**

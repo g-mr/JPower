@@ -16,7 +16,7 @@ services:
         ipv4_address: 172.16.238.90
 
   skywalking-oap:
-    image: apache/skywalking-oap-server:8.9.1
+    image: apache/skywalking-oap-server:9.7.0
     privileged: true
     restart: always
     volumes:
@@ -37,7 +37,7 @@ services:
       - jpower_net
 
   skywalking-ui:
-    image: apache/skywalking-ui:8.9.1
+    image: apache/skywalking-ui:9.7.0
     privileged: true
     depends_on:
       - skywalking-oap
@@ -53,7 +53,7 @@ services:
       - jpower_net
 
   nacos:
-    image: "nacos/nacos-server:v2.0.4"
+    image: "nacos/nacos-server:v2.2.0"
     hostname: "nacos-standalone"
     privileged: true
     depends_on:
@@ -81,7 +81,7 @@ services:
         ipv4_address: 172.16.238.50
 
   sentinel:
-    image: "jpowerplus/sentinel-dashboard:1.8.3"
+    image: "jpowerplus/sentinel-dashboard:1.8.6"
     hostname: "sentinel-standalone"
     privileged: true
     volumes:
@@ -94,7 +94,7 @@ services:
         ipv4_address: 172.16.238.51
 
   seata:
-    image: seataio/seata-server:1.4.2
+    image: seataio/seata-server:1.6.1
     privileged: true
     hostname: seata-server
     ports:

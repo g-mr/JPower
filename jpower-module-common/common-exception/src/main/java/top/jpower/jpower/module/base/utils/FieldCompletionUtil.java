@@ -1,6 +1,6 @@
 package top.jpower.jpower.module.base.utils;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import top.jpower.jpower.module.base.model.LogDto;
 import top.jpower.jpower.module.common.auth.UserInfo;
 import top.jpower.jpower.module.common.deploy.props.JpowerProperties;

@@ -103,12 +103,12 @@ public class LoginUserContext {
                     user.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_ANONYMOUS.getValue());
                     if (Fc.equals(header, RoleConstant.ANONYMOUS)){
                         user.setUserId(RoleConstant.ANONYMOUS_ID);
-                        user.setIsSysUser(UserInfo.TBALE_USER_TYPE_CORE);
+                        user.setIsSysUser(UserInfo.TABLE_USER_TYPE_CORE);
                         user.setUserName(RoleConstant.ANONYMOUS_NAME);
                         user.setRoleIds(Collections.singletonList(RoleConstant.ANONYMOUS_ID));
                     }else {
                         user.setUserId(0L);
-                        user.setIsSysUser(UserInfo.TBALE_USER_TYPE_WHILT);
+                        user.setIsSysUser(UserInfo.TABLE_USER_TYPE_WHILT);
                         user.setUserName(header);
                     }
                 }

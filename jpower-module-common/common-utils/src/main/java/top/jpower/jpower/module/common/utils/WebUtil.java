@@ -1,11 +1,12 @@
 package top.jpower.jpower.module.common.utils;
 
 
+import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.util.ArrayUtil;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONWriter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
@@ -197,8 +198,8 @@ public class WebUtil extends org.springframework.web.util.WebUtils {
         response.setCharacterEncoding(StringPool.UTF_8);
         response.setContentType(contentType);
         try (PrintWriter writer = response.getWriter()) {
-            writer.append(JSON.toJSONString(result, SerializerFeature.WriteMapNullValue,
-                    SerializerFeature.WriteDateUseDateFormat));
+
+            writer.append(JSON.toJSONString(result, DatePattern.NORM_DATETIME_PATTERN, JSONWriter.Feature.WriteMapNullValue));
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }

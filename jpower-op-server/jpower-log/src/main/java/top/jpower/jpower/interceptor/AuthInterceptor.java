@@ -1,8 +1,8 @@
 package top.jpower.jpower.interceptor;
 
 import cn.hutool.core.util.URLUtil;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.google.common.base.Splitter;
 import io.micrometer.core.instrument.config.InvalidConfigurationException;
 import lombok.AllArgsConstructor;
@@ -13,6 +13,7 @@ import org.apache.commons.lang.NullArgumentException;
 import org.apache.http.HttpException;
 import org.jetbrains.annotations.NotNull;
 import top.jpower.jpower.module.base.exception.BusinessException;
+import top.jpower.jpower.module.common.utils.OkHttp;
 import top.jpower.jpower.module.common.utils.*;
 import top.jpower.jpower.module.common.utils.constants.StringPool;
 import top.jpower.jpower.properties.AuthInfoConfiguration;
@@ -137,6 +138,7 @@ public final class AuthInterceptor implements Interceptor {
                 .entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> URLUtil.decode(entry.getValue(),Charset.defaultCharset())));
         Map<String, String> forms = Fc.isBlank(authInfo.getParams())?null:Splitter.on(StringPool.AMPERSAND).withKeyValueSeparator(StringPool.EQUALS).split(authInfo.getParams())
                 .entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> URLUtil.decode(entry.getValue(),Charset.defaultCharset())));
+
 
         OkHttp okHttp;
         switch (authInfo.getMethod()) {

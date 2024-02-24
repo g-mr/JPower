@@ -2,7 +2,7 @@ package top.jpower.jpower.controller;
 
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.NumberUtil;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import com.wf.captcha.SpecCaptcha;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;

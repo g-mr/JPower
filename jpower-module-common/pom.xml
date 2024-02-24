@@ -58,9 +58,8 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-annotations</artifactId>
-            <version>${knife4j.version}</version>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
         </dependency>
 
         <dependency>
@@ -100,8 +99,8 @@
             </dependency>
 
             <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>fastjson</artifactId>
+                <groupId>com.alibaba.fastjson2</groupId>
+                <artifactId>fastjson2</artifactId>
                 <version>${fastjson.version}</version>
             </dependency>
 
@@ -125,7 +124,7 @@
 
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-micro-spring-boot-starter</artifactId>
+                <artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
                 <version>${knife4j.version}</version>
             </dependency>
 

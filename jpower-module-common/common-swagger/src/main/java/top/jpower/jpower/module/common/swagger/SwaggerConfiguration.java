@@ -49,11 +49,13 @@ public class SwaggerConfiguration {
     /**
      * JPower配置
      **/
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     private final JpowerProperties properties;
 
     /**
      * 引入Knife4j扩展类
      */
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     private final OpenApiExtensionResolver openApiExtensionResolver;
 
     private Predicate<RequestHandler> basePackage(final List<String> basePackage) {

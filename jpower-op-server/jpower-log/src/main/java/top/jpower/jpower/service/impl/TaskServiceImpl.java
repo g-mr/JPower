@@ -1,10 +1,9 @@
 package top.jpower.jpower.service.impl;
 
 import cn.hutool.core.thread.ThreadUtil;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.nacos.common.utils.HttpMethod;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import lombok.AllArgsConstructor;
@@ -115,7 +114,7 @@ public class TaskServiceImpl implements TaskService {
                 JSONObject paths = restFulInfo.getJSONObject(PATHS);
 
                 //这里异步执行去和数据库比对，把已经不存在配置删除掉
-                ThreadUtil.execAsync(() -> monitorSettingService.deleteSetting(route.getName(),paths.getInnerMap(),restFulInfo.getJSONArray(TAGS)));
+                ThreadUtil.execAsync(() -> monitorSettingService.deleteSetting(route.getName(),paths,restFulInfo.getJSONArray(TAGS)));
 
                 RestCache.set(route.getName(),restFulInfo);
                 log.info("---> [{}] SERVER RESTFUL SUM={}",  route.getName(), paths.size());
@@ -236,18 +235,18 @@ public class TaskServiceImpl implements TaskService {
 
         OkHttp okHttp;
         switch (method.toUpperCase()) {
-            case HttpMethod.HEAD :
+            case "HEAD" :
                 okHttp = OkHttp.head(httpUrl,headers,forms);
                 break;
-            case HttpMethod.GET :
+            case "GET" :
                 okHttp = OkHttp.get(httpUrl,headers,forms);
                 break;
-            case HttpMethod.DELETE :
-            case HttpMethod.PATCH :
-            case HttpMethod.OPTIONS :
-            case HttpMethod.TRACE :
-            case HttpMethod.PUT :
-            case HttpMethod.POST :
+            case "DELETE" :
+            case "PATCH" :
+            case "OPTIONS" :
+            case "TRACE" :
+            case "PUT" :
+            case "POST" :
                 if (bodys.size() == 1) {
                     StringBuffer sb = new StringBuffer();
                     if (forms != null && forms.keySet().size() > 0) {
@@ -315,7 +314,7 @@ public class TaskServiceImpl implements TaskService {
      * @Author mr.g
      * @param paths
      * @param tag
-     * @return com.alibaba.fastjson.JSONArray
+     * @return com.alibaba.fastjson2.JSONArray
      **/
     private JSONArray getTagChildren(Map<String, Object> paths, String tag) {
         JSONArray array = new JSONArray();

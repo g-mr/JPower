@@ -29,6 +29,10 @@ import org.apache.ibatis.mapping.SqlSource;
  */
 public class DeleteReal extends AbstractMethod {
 
+    public DeleteReal() {
+        super("deleteReal");
+    }
+
     @Override
     public MappedStatement injectMappedStatement(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
         SqlMethod sqlMethod = SqlMethod.DELETE;
@@ -36,6 +40,6 @@ public class DeleteReal extends AbstractMethod {
             sqlWhereEntityWrapper(true, tableInfo),
             sqlComment());
         SqlSource sqlSource = languageDriver.createSqlSource(configuration, sql, modelClass);
-        return this.addDeleteMappedStatement(mapperClass, "deleteReal", sqlSource);
+        return this.addDeleteMappedStatement(mapperClass, this.methodName, sqlSource);
     }
 }

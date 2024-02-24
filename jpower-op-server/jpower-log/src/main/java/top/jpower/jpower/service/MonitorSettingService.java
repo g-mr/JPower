@@ -1,6 +1,6 @@
 package top.jpower.jpower.service;
 
-import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson2.JSONArray;
 import top.jpower.jpower.dbs.entity.TbLogMonitorParam;
 import top.jpower.jpower.dbs.entity.TbLogMonitorSetting;
 import top.jpower.jpower.module.common.service.BaseService;

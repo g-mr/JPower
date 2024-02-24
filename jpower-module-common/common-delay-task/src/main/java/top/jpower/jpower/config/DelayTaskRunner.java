@@ -1,7 +1,7 @@
 package top.jpower.jpower.config;
 
 import cn.hutool.core.thread.ThreadUtil;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;

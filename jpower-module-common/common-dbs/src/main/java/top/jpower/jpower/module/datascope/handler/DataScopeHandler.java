@@ -2,7 +2,7 @@ package top.jpower.jpower.module.datascope.handler;
 
 import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.toolkit.LambdaUtils;
 import com.baomidou.mybatisplus.extension.plugins.handler.DataPermissionHandler;
 import lombok.SneakyThrows;

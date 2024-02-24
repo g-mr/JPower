@@ -26,7 +26,7 @@ public class UserUtil {
 
             userInfo = new UserInfo();
             userInfo.setUserId(result.getId());
-            userInfo.setIsSysUser(UserInfo.TBALE_USER_TYPE_CORE);
+            userInfo.setIsSysUser(UserInfo.TABLE_USER_TYPE_CORE);
             userInfo.setAvatar(result.getAvatar());
             userInfo.setOrgId(result.getOrgId());
             userInfo.setOrgName(SystemCache.getOrgName(result.getOrgId()));

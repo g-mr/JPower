@@ -1,6 +1,6 @@
 package top.jpower.jpower.service;
 
-import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson2.JSONArray;
 import top.jpower.jpower.properties.MonitorRestfulProperties;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public interface TaskService {
     /**
      * 获取一个监控得树形列表
      * @author mr.g
-     * @return com.alibaba.fastjson.JSONArray
+     * @return com.alibaba.fastjson2.JSONArray
      * @param route
      */
     JSONArray tree(MonitorRestfulProperties.Route route);

@@ -1,8 +1,8 @@
 package top.jpower.jpower.handler;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import lombok.AllArgsConstructor;
 import top.jpower.jpower.dbs.entity.TbLogMonitorParam;
 import top.jpower.jpower.module.common.utils.DateUtil;
@@ -100,7 +100,7 @@ public class HttpInfoHandler {
      * 获取所有参数
      * @Author mr.g
      * @param method 请求方式
-     * @return com.alibaba.fastjson.JSONArray
+     * @return com.alibaba.fastjson2.JSONArray
      **/
     private JSONArray listParams(String method){
 

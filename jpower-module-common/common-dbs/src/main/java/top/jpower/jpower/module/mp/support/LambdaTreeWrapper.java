@@ -110,6 +110,22 @@ public class LambdaTreeWrapper<T> extends AbstractLambdaWrapper<T, LambdaTreeWra
     }
 
     /**
+     * 指定查询字段
+     *
+     * @param condition 执行条件
+     * @param columns   字段列表
+     * @return children
+     */
+    @Override
+    public LambdaTreeWrapper<T> select(boolean condition, List<SFunction<T, ?>> columns) {
+        if (condition){
+            String select = columnsToString(false, columns);
+            select(Fc.toStrArray(select));
+        }
+        return typedThis;
+    }
+
+    /**
      * SELECT 部分 SQL 设置
      *
      * @param columns 查询字段

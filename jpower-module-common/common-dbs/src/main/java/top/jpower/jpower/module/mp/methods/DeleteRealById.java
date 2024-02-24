@@ -29,12 +29,16 @@ import org.apache.ibatis.mapping.SqlSource;
  */
 public class DeleteRealById extends AbstractMethod {
 
+    public DeleteRealById() {
+        super("deleteRealById");
+    }
+
     @Override
     public MappedStatement injectMappedStatement(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
         SqlMethod sqlMethod = SqlMethod.DELETE_BY_ID;
         String sql = String.format(sqlMethod.getSql(), tableInfo.getTableName(), tableInfo.getKeyColumn(),
             tableInfo.getKeyProperty());
         SqlSource sqlSource = languageDriver.createSqlSource(configuration, sql, Object.class);
-        return this.addDeleteMappedStatement(mapperClass, "deleteRealById", sqlSource);
+        return this.addDeleteMappedStatement(mapperClass, this.methodName, sqlSource);
     }
 }

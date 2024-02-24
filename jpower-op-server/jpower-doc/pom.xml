@@ -16,7 +16,6 @@
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-aggregation-spring-boot-starter</artifactId>
-            <version>${knife4j.version}</version>
         </dependency>
     </dependencies>
 

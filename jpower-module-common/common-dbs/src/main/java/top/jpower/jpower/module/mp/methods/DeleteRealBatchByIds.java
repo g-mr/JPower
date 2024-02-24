@@ -30,12 +30,16 @@ import org.apache.ibatis.mapping.SqlSource;
  */
 public class DeleteRealBatchByIds extends AbstractMethod {
 
+    public DeleteRealBatchByIds() {
+        super("deleteRealBatchIds");
+    }
+
     @Override
     public MappedStatement injectMappedStatement(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
         SqlMethod sqlMethod = SqlMethod.DELETE_BATCH_BY_IDS;
         String sql = String.format(sqlMethod.getSql(), tableInfo.getTableName(), tableInfo.getKeyColumn(),
-            SqlScriptUtils.convertForeach("#{item}", COLLECTION, null, "item", COMMA));
+            SqlScriptUtils.convertForeach("#{item}", COLL, null, "item", COMMA));
         SqlSource sqlSource = languageDriver.createSqlSource(configuration, sql, Object.class);
-        return this.addDeleteMappedStatement(mapperClass, "deleteRealBatchIds", sqlSource);
+        return this.addDeleteMappedStatement(mapperClass, this.methodName, sqlSource);
     }
 }

@@ -1,7 +1,7 @@
 package top.jpower.jpower.module.common.auth;
 
 import cn.hutool.core.date.DatePattern;
-import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson2.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -23,11 +23,11 @@ public class UserInfo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /** core_user表 **/
-    public static final Integer TBALE_USER_TYPE_CORE = 0;
+    public static final Integer TABLE_USER_TYPE_CORE = 0;
     /** 其他表 **/
-    public static final Integer TBALE_USER_TYPE_BUSS = 1;
+    public static final Integer TABLE_USER_TYPE_BUSS = 1;
     /** 白名单 **/
-    public static final Integer TBALE_USER_TYPE_WHILT = 2;
+    public static final Integer TABLE_USER_TYPE_WHILT = 2;
 
     @ApiModelProperty("租户CODE")
     private String tenantCode;
@@ -100,7 +100,7 @@ public class UserInfo implements Serializable {
     private List<Long> childOrgId;
 
     @ApiModelProperty("用来表示是core_user表数据还是其他表映射的数据 0core_user系统表 1业务表 2白名单")
-    private Integer isSysUser = TBALE_USER_TYPE_CORE;
+    private Integer isSysUser = TABLE_USER_TYPE_CORE;
 
     @ApiModelProperty("扩展属性")
     private Map<String,Object> info;

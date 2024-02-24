@@ -17,6 +17,10 @@ public class SwaggerDeployServiceImpl implements DeployService {
 	@Override
 	public void deploy(SpringApplicationBuilder builder, Properties properties, String appName, String profile) {
 		Properties props = System.getProperties();
+
+		props.setProperty("knife4j.enable", "true");
+		props.setProperty("spring.mvc.pathmatch.matching-strategy", "ANT_PATH_MATCHER");
+
 		if (profile.equals(AppConstant.PROD_CODE)) {
 			props.setProperty("knife4j.production", "true");
 		}

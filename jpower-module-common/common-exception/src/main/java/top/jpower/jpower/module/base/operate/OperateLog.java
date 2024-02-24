@@ -2,7 +2,7 @@ package top.jpower.jpower.module.base.operate;
 
 import cn.hutool.core.lang.SimpleCache;
 import cn.hutool.core.util.EnumUtil;
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSON;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.slf4j.Logger;

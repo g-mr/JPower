@@ -1,6 +1,5 @@
 package top.jpower.jpower.module.common.redis;
 
-import com.alibaba.fastjson.support.spring.FastJsonRedisSerializer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -16,6 +15,7 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import top.jpower.jpower.module.common.properties.RedisProperties;
 import top.jpower.jpower.module.common.utils.Fc;
@@ -45,9 +45,9 @@ public class RedisConfig {
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         // value 序列化
-        FastJsonRedisSerializer fastJsonRedisSerializer = new FastJsonRedisSerializer(Object.class);
-        redisTemplate.setValueSerializer(fastJsonRedisSerializer);
-        redisTemplate.setHashValueSerializer(fastJsonRedisSerializer);
+        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
+        redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
+        redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         // key 序列化
         StringRedisSerializer redisKeySerializer = new StringRedisSerializer();
