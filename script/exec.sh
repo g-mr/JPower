@@ -32,9 +32,9 @@ case "$1" in
         fi
 
         echo "Starting $PROG ..."
-# 这里要修改自己得地址
-	export SW_AGENT_COLLECTOR_BACKEND_SERVICES=${skywalking地址}:11800
-	export SW_AGENT_NAME=${SERVER_NAME}	
+        # 这里要修改自己得地址
+        export SW_AGENT_COLLECTOR_BACKEND_SERVICES=${skywalking地址}:11800
+        export SW_AGENT_NAME=${SERVER_NAME}
 
         nohup java -javaagent:./docker/skywalking/agent/skywalking-agent.jar -server -XX:+DisableExplicitGC -XX:+UseParNewGC  -Djava.awt.headless=true -Dspring.profiles.active=test -Dserver.port=80 -jar ${PROG}.jar > logs/log.log 2>&1 &
         RETVAL=$?
