@@ -36,7 +36,7 @@ case "$1" in
 	export SW_AGENT_COLLECTOR_BACKEND_SERVICES=${skywalking地址}:11800
 	export SW_AGENT_NAME=${SERVER_NAME}	
 
-        nohup java -javaagent:/root/config/skywalking/skywalking-apm/agent/skywalking-agent.jar -server -XX:+DisableExplicitGC -XX:+UseParNewGC  -Djava.awt.headless=true -Dspring.profiles.active=test -Dserver.port=80 -jar ${PROG}.jar > logs/log.log 2>&1 &
+        nohup java -javaagent:./docker/skywalking/agent/skywalking-agent.jar -server -XX:+DisableExplicitGC -XX:+UseParNewGC  -Djava.awt.headless=true -Dspring.profiles.active=test -Dserver.port=80 -jar ${PROG}.jar > logs/log.log 2>&1 &
         RETVAL=$?
         if [ $RETVAL -eq 0 ]; then
             echo "$PROG is started"

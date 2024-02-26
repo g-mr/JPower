@@ -83,6 +83,8 @@ public class JpowerApplication {
             throw new RuntimeException("同时存在环境变量:[" + StringUtils.arrayToCommaDelimitedString(activeProfiles) + "]");
         }
 
+        Properties properties = getYmlProperties();
+
         Properties props = System.getProperties();
         props.setProperty("jpower.applicationName", appName);
         props.setProperty("jpower.env", profile);
@@ -97,11 +99,11 @@ public class JpowerApplication {
         props.setProperty("spring.cloud.nacos.discovery.namespace", "${jpower.".concat(profile).concat(".nacos.namespace:}"));
         props.setProperty("spring.cloud.nacos.config.namespace", "${jpower.".concat(profile).concat(".nacos.namespace:}"));
         //sentinel配置
+        props.setProperty("csp.sentinel.dashboard.server", properties.getProperty("jpower."+profile+".sentinel.dashboard"));
+        props.setProperty("csp.sentinel.app.name",appName);
         props.setProperty("spring.cloud.sentinel.transport.dashboard", "${jpower.".concat(profile).concat(".sentinel.dashboard:}"));
         //seata启用,默认关闭
         props.setProperty("seata.enabled", "${jpower.seata.enabled:false}");
-
-        Properties properties = getYmlProperties();
 
         List<DeployService> deployServiceList = new ArrayList<>();
         ServiceLoader.load(DeployService.class).forEach(deployServiceList::add);
