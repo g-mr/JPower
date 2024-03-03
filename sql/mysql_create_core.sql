@@ -1124,4 +1124,22 @@ CREATE TABLE `tb_log_operate`  (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '操作日志表' ROW_FORMAT = Dynamic;
 
+CREATE TABLE `tb_resource_sms` (
+    `id` bigint NOT NULL COMMENT '主键',
+    `category` varchar(10)  NOT NULL COMMENT '分类 字典：SMS_CATEGORY',
+    `code` varchar(100)  DEFAULT NULL COMMENT '编号',
+    `template` int DEFAULT NULL COMMENT '模板ID',
+    `accessKey` varchar(100)  DEFAULT NULL COMMENT 'accessKey',
+    `secretKey` varchar(100)  DEFAULT NULL COMMENT 'secretKey',
+    `sign` varchar(50) COMMENT '短信签名',
+    `params` varchar(255)  DEFAULT NULL COMMENT '发送参数',
+    `create_user` bigint DEFAULT '1' COMMENT '创建用户',
+    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_user` bigint NOT NULL DEFAULT '1' COMMENT '最后更新人',
+    `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `is_deleted` tinyint(1) DEFAULT '0' COMMENT '是否删除 0否 1是',
+    `create_org` bigint DEFAULT NULL COMMENT '创建部门',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='短信配置表'
+
 SET FOREIGN_KEY_CHECKS = 1;
