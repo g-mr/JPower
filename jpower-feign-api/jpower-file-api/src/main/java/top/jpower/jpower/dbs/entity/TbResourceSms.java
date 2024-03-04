@@ -1,11 +1,12 @@
 package top.jpower.jpower.dbs.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import top.jpower.jpower.module.base.annotation.Dict;
 import top.jpower.jpower.module.dbs.entity.base.BaseEntity;
+
+import javax.validation.constraints.NotBlank;
 
 /**
  * 短信
@@ -17,12 +18,14 @@ import top.jpower.jpower.module.dbs.entity.base.BaseEntity;
 @Data
 public class TbResourceSms extends BaseEntity {
 
-    private static final long serialVersionUID = -6889020017108014146L;
+    private static final long serialVersionUID = 4002497583099907671L;
 
     @ApiModelProperty("分类 字典：SMS_CATEGORY")
+    @NotBlank(message = "分类 不能为空")
     @Dict(name = "SMS_CATEGORY")
     private String category;
     @ApiModelProperty("编号")
+    @NotBlank(message = "编码 不能为空")
     private String code;
     @ApiModelProperty("模板ID")
     private String template;
