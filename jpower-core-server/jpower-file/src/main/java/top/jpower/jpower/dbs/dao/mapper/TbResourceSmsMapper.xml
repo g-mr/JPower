@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="top.jpower.jpower.dbs.dao.rou.mapper.TbResourceSmsMapper">
+<mapper namespace="top.jpower.jpower.dbs.dao.mapper.TbResourceSmsMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="top.jpower.jpower.dbs.entity.rou.TbResourceSms">
+    <resultMap id="BaseResultMap" type="top.jpower.jpower.dbs.entity.TbResourceSms">
         <result column="id" property="id" />
         <result column="create_user" property="createUser" />
         <result column="create_time" property="createTime" />
@@ -14,10 +14,10 @@
         <result column="category" property="category" />
         <result column="code" property="code" />
         <result column="template" property="template" />
-        <result column="accessKey" property="accesskey" />
-        <result column="secretKey" property="secretkey" />
+        <result column="access_key" property="accessKey" />
+        <result column="secret_key" property="secretKey" />
         <result column="sign" property="sign" />
-        <result column="params" property="params" />
+        <result column="parameters" property="parameters" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -29,7 +29,7 @@
         update_time,
         is_deleted,
         create_org,
-        category, code, template, accessKey, secretKey, sign, params
+        category, code, template, access_key, secret_key, sign, parameters
     </sql>
 
 </mapper>

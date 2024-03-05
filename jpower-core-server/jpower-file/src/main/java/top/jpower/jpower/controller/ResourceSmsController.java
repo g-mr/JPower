@@ -1,12 +1,14 @@
 package top.jpower.jpower.controller;
 
-
+import cn.hutool.core.lang.Validator;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.jpower.dbs.entity.TbResourceSms;
+import top.jpower.jpower.module.annotation.Function;
+import top.jpower.jpower.module.annotation.Menu;
 import top.jpower.jpower.module.base.enums.JpowerError;
 import top.jpower.jpower.module.base.exception.JpowerAssert;
 import top.jpower.jpower.module.base.vo.Pg;
@@ -30,12 +32,15 @@ import java.util.Map;
  */
 @Api(tags = "短信配置")
 @RestController
-@RequestMapping("/rou/resourceSms")
+@RequestMapping("/sms")
 @RequiredArgsConstructor
 public class ResourceSmsController extends BaseController {
 
     private final ResourceSmsService resourceSmsService;
 
+    @Function(value = "列表",menus = {
+        @Menu(client = "admin",menuCode = "SMS",code = "SMS_LIST", type = Menu.TYPE.INTERFACE)
+    })
     @ApiOperation("分页查询")
     @ApiImplicitParams({
         @ApiImplicitParam(name = "pageNum",value = "第几页",defaultValue = "1",paramType = "query",dataTypeClass = Integer.class,required = true),
@@ -46,13 +51,26 @@ public class ResourceSmsController extends BaseController {
         return ReturnJsonUtil.data(resourceSmsService.page(PaginationContext.getMpPage(), Condition.getQueryWrapper(map,TbResourceSms.class)));
     }
 
+    @Function(value = "编辑",menus = {
+            @Menu(client = "admin",menuCode = "SMS",code = "SMS_UPDATE", type = Menu.TYPE.BTN)
+    })
     @ApiOperation("更新")
     @PutMapping(value = "/update", produces = "application/json")
     public ResponseData update(@RequestBody TbResourceSms resourceSms){
         JpowerAssert.notNull(resourceSms.getId(), JpowerError.Arg,"主键不可为空");
+        if (Fc.isNotBlank(resourceSms.getCode())){
+            boolean is = resourceSmsService.exists(Condition.<TbResourceSms>getQueryWrapper().lambda()
+                    .eq(TbResourceSms::getCode, resourceSms.getCode())
+                    .ne(TbResourceSms::getId, resourceSms.getId()));
+            JpowerAssert.notTrue(is, JpowerError.Business, "该编码已存在");
+        }
+
         return ReturnJsonUtil.status(resourceSmsService.updateById(resourceSms));
     }
 
+    @Function(value = "删除",menus = {
+            @Menu(client = "admin",menuCode = "SMS",code = "SMS_DEL", type = Menu.TYPE.BTN)
+    })
     @ApiOperation("删除")
     @DeleteMapping(value = "/delete", produces = "application/json")
     public ResponseData delete(@ApiParam("主键，多个逗号分隔") @RequestParam String ids){
@@ -60,6 +78,9 @@ public class ResourceSmsController extends BaseController {
         return ReturnJsonUtil.status(resourceSmsService.removeByIds(Fc.toLongList(ids)));
     }
 
+    @Function(value = "新增",menus = {
+            @Menu(client = "admin",menuCode = "SMS",code = "SMS_ADD", type = Menu.TYPE.BTN)
+    })
     @ApiOperation("新增")
     @PostMapping(value = "/add", produces = "application/json")
     public ResponseData add(@Validated @RequestBody TbResourceSms resourceSms){
@@ -69,6 +90,18 @@ public class ResourceSmsController extends BaseController {
         JpowerAssert.notTrue(is, JpowerError.Business, "该编码已存在");
 
         return ReturnJsonUtil.status(resourceSmsService.save(resourceSms));
+    }
+
+    @Function(value = "调试",menus = {
+            @Menu(client = "admin",menuCode = "SMS",code = "SMS_TEST", type = Menu.TYPE.BTN)
+    })
+    @ApiOperation("调试")
+    @PostMapping(value = "/test", produces = "application/json")
+    public ResponseData test(@RequestBody Map<String, String> map){
+        JpowerAssert.notEmpty(map.get("phone"), JpowerError.Arg, "手机号 不能为空");
+        JpowerAssert.isTrue(Validator.isMobile(map.get("phone")), JpowerError.Arg, "手机号 不合法");
+
+        return ReturnJsonUtil.status(true);
     }
 
 }

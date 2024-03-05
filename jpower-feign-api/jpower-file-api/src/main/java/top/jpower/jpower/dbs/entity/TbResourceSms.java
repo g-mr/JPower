@@ -35,6 +35,8 @@ public class TbResourceSms extends BaseEntity {
     private String secretKey;
     @ApiModelProperty("短信签名")
     private String sign;
+    @ApiModelProperty("区域ID")
+    private String regionId;
     @ApiModelProperty("发送参数")
-    private String params;
+    private String parameters;
 }

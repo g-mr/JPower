@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import top.jpower.jpower.dbs.dao.client.TbCoreClientDao;
@@ -366,6 +367,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     }
 
     @Override
+    @Transactional
     public boolean generateFunction() {
         List<String> servers = NacosUtil.getAllServers();
         if (Fc.isNotEmpty(servers)){
@@ -406,7 +408,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
                                     function.setClientId(tbCoreFunction.getClientId());
                                     if (Fc.isBlank(fun.get("btnCode"))){
                                         function.setParentId(tbCoreFunction.getId());
-                                        function.setAncestorId(tbCoreFunction.getAncestorId().concat(StringPool.COMMA).concat(Fc.toStr(tbCoreFunction.getId())));
+                                        function.setAncestorId(Fc.toStr(tbCoreFunction.getAncestorId(), TOP_CODE).concat(StringPool.COMMA).concat(Fc.toStr(tbCoreFunction.getId())));
                                     }else {
                                         codeMap.put(code, fun.get("btnCode"));
                                     }
@@ -422,7 +424,10 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
 
                 //去保存功能点
                 if (Fc.isNotEmpty(functionList)){
-                    coreFunctionDao.addBatchSomeColumn(functionList.stream().filter(f->Fc.notNull(f.getParentId())).collect(Collectors.toList()));
+                    List<TbCoreFunction> notNullFunctions = functionList.stream().filter(f->Fc.notNull(f.getParentId())).collect(Collectors.toList());
+                    if (Fc.isNotEmpty(notNullFunctions)){
+                        coreFunctionDao.addBatchSomeColumn(notNullFunctions);
+                    }
 
                     List<TbCoreFunction> funcs = functionList.stream().filter(f->Fc.isNull(f.getParentId())).collect(Collectors.toList());
                     if (Fc.isNotEmpty(funcs)){
@@ -430,7 +435,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
                         coreFunctionDao.addBatchSomeColumn(funcs.stream().peek(f-> {
                             TbCoreFunction parent = idCode.get(codeMap.get(f.getCode()));
                             f.setParentId(parent.getId());
-                            f.setAncestorId(parent.getAncestorId().concat(StringPool.COMMA).concat(Fc.toStr(parent.getId())));
+                            f.setAncestorId(Fc.toStr(parent.getAncestorId(), TOP_CODE).concat(StringPool.COMMA).concat(Fc.toStr(parent.getId())));
                         }).collect(Collectors.toList()));
                     }
                 }
