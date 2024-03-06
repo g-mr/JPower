@@ -13,4 +13,12 @@ import top.jpower.jpower.module.common.service.BaseService;
  */
 public interface ResourceSmsService extends BaseService<TbResourceSms> {
 
+    /**
+     * 通过code查询
+     * @author mr.g
+     * @param code
+     * @return
+     **/
+    TbResourceSms getByCode(String code);
+
 }

@@ -1136,6 +1136,7 @@ CREATE TABLE `tb_log_operate`  (
 
 CREATE TABLE `tb_resource_sms` (
     `id` bigint NOT NULL COMMENT '主键',
+    `name` varchar(255)  NOT NULL COMMENT '名称',
     `category` varchar(10)  NOT NULL COMMENT '分类 字典：SMS_CATEGORY',
     `code` varchar(100)  DEFAULT NULL COMMENT '编号',
     `template` varchar(500) DEFAULT NULL COMMENT '模板ID',

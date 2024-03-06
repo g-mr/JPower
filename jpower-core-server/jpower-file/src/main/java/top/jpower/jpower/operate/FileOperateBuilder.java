@@ -22,10 +22,10 @@ public class FileOperateBuilder {
     /**
      * FileUpload缓存池
      */
-    private Map<String, FileOperate> uploadPool = new ConcurrentHashMap<>();
+    private final Map<String, FileOperate> uploadPool = new ConcurrentHashMap<>();
 
     public FileOperateBuilder(Map<String, FileOperate> uploadPool) {
-        uploadPool.forEach(this.uploadPool::put);
+        this.uploadPool.putAll(uploadPool);
     }
 
     /**

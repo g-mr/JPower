@@ -20,6 +20,9 @@ public class TbResourceSms extends BaseEntity {
 
     private static final long serialVersionUID = 4002497583099907671L;
 
+    @ApiModelProperty("名称")
+    @NotBlank(message = "名称 不可为空")
+    private String name;
     @ApiModelProperty("分类 字典：SMS_CATEGORY")
     @NotBlank(message = "分类 不能为空")
     @Dict(name = "SMS_CATEGORY")

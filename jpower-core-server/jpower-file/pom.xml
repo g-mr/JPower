@@ -20,6 +20,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>dysmsapi20170525</artifactId>
+            <version>${aliyun.sms.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-system-api</artifactId>
             <version>${com.jpower.version}</version>
