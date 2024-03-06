@@ -20,6 +20,7 @@ import top.jpower.jpower.dbs.entity.client.TbCoreClient;
 import top.jpower.jpower.dbs.entity.tenant.TbCoreTenant;
 import top.jpower.jpower.dto.AuthInfo;
 import top.jpower.jpower.dto.TokenParameter;
+import top.jpower.jpower.feign.SmsClient;
 import top.jpower.jpower.feign.UserClient;
 import top.jpower.jpower.module.base.enums.JpowerError;
 import top.jpower.jpower.module.base.exception.JpowerAssert;
@@ -65,6 +66,9 @@ public class AuthController extends BaseController {
     private JpowerTenantProperties tenantProperties;
     private TokenGranterBuilder granterBuilder;
     private UserClient userClient;
+    private final SmsClient smsClient;
+
+    private final String VALIDATE_SMS_CODE = "validate";
 
     @ApiOperation(value = "用户登录",notes = "Authorization（客户端识别码）：由clientCode+\":\"+clientSecret组成字符串后用base64编码后获得值，再由Basic +base64编码后的值组成客户端识别码； <br/>" +
             "&nbsp;&nbsp;&nbsp;clientCode和clientSecret的值由后端统一提供，不同的登录客户端值也不一样。<br/>" +
@@ -196,14 +200,10 @@ public class AuthController extends BaseController {
 
         String code = RandomStringUtils.randomNumeric(6);
 
-        JSONObject json = SmsUtil.send(phone,code);
+        smsClient.sendSingleThrow(VALIDATE_SMS_CODE, ChainMap.<String, String>create().put("code", code).build(), phone);
 
-        if (json.getBoolean("isSuccess")){
-            redisUtil.set(CacheNames.PHONE_KEY+phone+tenantCode,code,5L, TimeUnit.MINUTES);
-            return ReturnJsonUtil.ok(user.getLoginId()+"的验证码发送成功");
-        } else {
-            return ReturnJsonUtil.fail("验证码发送失败");
-        }
+        redisUtil.set(CacheNames.PHONE_KEY+phone+tenantCode,code,5L, TimeUnit.MINUTES);
+        return ReturnJsonUtil.ok("验证码发送成功");
     }
 
     @ApiOperation(value = "用户注册")
