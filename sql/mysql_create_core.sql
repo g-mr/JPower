@@ -11,44 +11,11 @@
  Target Server Version : 80027
  File Encoding         : 65001
 
- Date: 26/02/2024 22:18:23
+ Date: 06/03/2024 23:12:06
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
-
--- ----------------------------
--- Table structure for tb_core_city
--- ----------------------------
-DROP TABLE IF EXISTS `tb_core_city`;
-CREATE TABLE `tb_core_city`  (
-  `id` bigint(0) NOT NULL COMMENT '主键',
-  `code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '城市编码',
-  `pcode` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '上级编码',
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
-  `fullname` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '全称',
-  `rankd` int(0) NULL DEFAULT NULL COMMENT '级别 1：省份/直辖市 2：地市 3：区县 4：乡镇/街道 5：村委',
-  `lng` double(10, 6) NULL DEFAULT NULL COMMENT '经度',
-  `lat` double(10, 6) NULL DEFAULT NULL COMMENT '维度',
-  `country_code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '国家编码',
-  `city_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '城市类型1：首都、2：直辖市、3：地级市、4县级市、9：其他',
-  `note` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
-  `sort_num` int(0) NULL DEFAULT 0 COMMENT '排序',
-  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
-  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
-  `create_org` bigint(0) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `tb_core_city_code_index`(`code`) USING BTREE,
-  INDEX `tb_core_city_code_name_index`(`code`, `name`) USING BTREE,
-  INDEX `tb_core_city_pcode_index`(`pcode`) USING BTREE,
-  INDEX `tb_core_city_rankd_index`(`rankd`) USING BTREE,
-  INDEX `tb_core_city_fullname_index`(`fullname`) USING BTREE,
-  INDEX `code_index`(`code`) USING BTREE,
-  INDEX `pcode_index`(`pcode`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '城市地区表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for tb_core_client
@@ -213,7 +180,7 @@ INSERT INTO `tb_core_dict` VALUES (1728752438118629376, 'POST_TYPE', '3', '技�
 INSERT INTO `tb_core_dict` VALUES (1728752439150428160, 'PARAM_TYPE', 'query', 'query', 'N', -1, 'zh', '', 4, 1, '2021-04-27 17:16:08', 1, '2023-11-26 12:29:32', 0, NULL, '-1', '000000', 1728752845331021824);
 INSERT INTO `tb_core_dict` VALUES (1744757031669059586, 'ORG_TYPE', '0', '实体机构', 'N', -1, 'zh', NULL, 0, 1, '2024-01-10 00:24:27', 1, '2024-01-10 00:24:27', 0, NULL, '-1', '000000', 1728752845331021824);
 INSERT INTO `tb_core_dict` VALUES (1744757065437401090, 'ORG_TYPE', '1', '虚拟机构', 'N', -1, 'zh', NULL, 0, 1, '2024-01-10 00:24:35', 1, '2024-01-10 00:24:35', 0, NULL, '-1', '000000', 1728752845331021824);
-INSERT INTO tb_core_dict (id, dict_type_code, code, name, is_stop, parent_id, locale, note, sort_num, create_user, create_time, update_user, update_time, is_deleted, dict_level, pcode, tenant_code, create_org) VALUES (1764851365206581250, 'SMS_CATEGORY', 'ali', '阿里', 'N', -1, 'zh', null, 0, 1, '2024-03-05 11:12:09', 1, '2024-03-05 11:12:09', 0, null, '-1', '000000', 1728752845331021824);
+INSERT INTO `tb_core_dict` VALUES (1764851365206581250, 'SMS_CATEGORY', 'ali', '阿里', 'N', -1, 'zh', NULL, 0, 1, '2024-03-05 11:12:09', 1, '2024-03-05 11:12:09', 0, NULL, '-1', '000000', 1728752845331021824);
 
 -- ----------------------------
 -- Table structure for tb_core_dict_type
@@ -262,8 +229,7 @@ INSERT INTO `tb_core_dict_type` VALUES (1728752462391066624, 'YN', '是否', NUL
 INSERT INTO `tb_core_dict_type` VALUES (1728752464215588864, 'YN01', '是否01', NULL, 'N', 3, 1728752458242899968, 1, '2021-03-03 22:33:28', 1, '2023-11-26 12:29:35', 0, 0, 1728752845331021824);
 INSERT INTO `tb_core_dict_type` VALUES (1728752465650040832, 'YYZL', '语言种类', NULL, 'N', 2, 1728752458242899968, 1, '2021-03-03 22:33:28', 1, '2023-11-26 12:29:35', 0, 0, 1728752845331021824);
 INSERT INTO `tb_core_dict_type` VALUES (1744756904501956610, 'ORG_TYPE', '机构类型', NULL, 'Y', 1, 1728752458242899968, 1, '2024-01-10 00:23:57', 1, '2024-01-10 00:23:57', 0, 0, 1728752845331021824);
-INSERT INTO tb_core_dict_type (id, dict_type_code, dict_type_name, note, del_enabled, sort_num, parent_id, create_user, create_time, update_user, update_time, is_deleted, is_tree, create_org) VALUES (1764851320730181633, 'SMS_CATEGORY', '短信分类', null, 'Y', 0, 1728752458242899968, 1, '2024-03-05 11:11:59', 1, '2024-03-05 11:11:59', 0, 0, 1728752845331021824);
-
+INSERT INTO `tb_core_dict_type` VALUES (1764851320730181633, 'SMS_CATEGORY', '短信分类', NULL, 'Y', 0, 1728752458242899968, 1, '2024-03-05 11:11:59', 1, '2024-03-05 11:11:59', 0, 0, 1728752845331021824);
 
 -- ----------------------------
 -- Table structure for tb_core_file
@@ -484,13 +450,13 @@ INSERT INTO `tb_core_function` VALUES (1728752815874424832, 1728752347702018048,
 INSERT INTO `tb_core_function` VALUES (1728752817375985664, 1728752347702018048, '踢下线', '踢下线', 'USER_OFFLINE', 1728752767056920576, '-1,1728752544486178816,1728752767056920576', '/core/user/offline', 0, 0, NULL, '_self', NULL, NULL, NULL, NULL, NULL, 1, '2023-04-23 15:36:55', 1, '2024-01-08 13:15:32', 0, 1728752845331021824);
 INSERT INTO `tb_core_function` VALUES (1728752819838042112, 1728752347702018048, '用户在线信息', '用户在线信息', 'USER_ONLINE', 1728752767056920576, '-1,1728752544486178816,1728752767056920576', '/core/user/online', 0, 0, NULL, '_self', NULL, NULL, NULL, NULL, NULL, 1, '2023-04-23 15:36:55', 1, '2024-01-08 13:15:32', 0, 1728752845331021824);
 INSERT INTO `tb_core_function` VALUES (1728752821935194112, 1728752347702018048, '角色树形', '角色树形', 'USER_ROLE_TREE', 1728752767056920576, '-1,1728752544486178816,1728752767056920576', '/core/role/tree', 2, 0, NULL, '_self', NULL, NULL, NULL, NULL, NULL, 1, '2023-04-23 15:36:55', 1, '2024-01-08 13:15:32', 0, 1728752845331021824);
-INSERT INTO tb_core_function (id, client_id, function_name, alias, code, parent_id, url, function_type, is_hide, icon, target, sort, remark, moude_summary, operate_instruction, function_level, create_user, create_time, update_user, update_time, is_deleted, create_org, ancestor_id) VALUES (1764842401228152834, 1728752347702018048, '资源管理', '资源', 'RESOURCE', -1, '/resource', 1, 0, 'iconfont iconicon_study', '_self', 4, null, null, null, null, 1, '2024-03-05 10:36:32', 1, '2024-03-05 10:40:57', 0, 1728752845331021824, '-1');
-INSERT INTO tb_core_function (id, client_id, function_name, alias, code, parent_id, url, function_type, is_hide, icon, target, sort, remark, moude_summary, operate_instruction, function_level, create_user, create_time, update_user, update_time, is_deleted, create_org, ancestor_id) VALUES (1764843053698277377, 1728752347702018048, '短信配置', 'SMS', 'SMS', 1764842401228152834, '/resource/sms', 1, 0, 'iconfont iconicon_sms', '_self', 1, null, null, null, null, 1, '2024-03-05 10:39:08', 1, '2024-03-05 10:41:10', 0, 1728752845331021824, '1764842401228152834,-1');
-INSERT INTO tb_core_function (id, client_id, function_name, alias, code, parent_id, url, function_type, is_hide, icon, target, sort, remark, moude_summary, operate_instruction, function_level, create_user, create_time, update_user, update_time, is_deleted, create_org, ancestor_id) VALUES (1764846846305394691, 1728752347702018048, '删除', '删除', 'SMS_DEL', 1764843053698277377, '/sms/delete', 0, 0, null, '_self', null, null, null, null, null, 1, '2024-03-05 10:54:12', 1, '2024-03-05 10:54:12', 0, 1728752845331021824, '1764842401228152834,-1,1764843053698277377');
-INSERT INTO tb_core_function (id, client_id, function_name, alias, code, parent_id, url, function_type, is_hide, icon, target, sort, remark, moude_summary, operate_instruction, function_level, create_user, create_time, update_user, update_time, is_deleted, create_org, ancestor_id) VALUES (1764846846313783297, 1728752347702018048, '新增', '新增', 'SMS_ADD', 1764843053698277377, '/sms/add', 0, 0, null, '_self', null, null, null, null, null, 1, '2024-03-05 10:54:12', 1, '2024-03-05 10:54:12', 0, 1728752845331021824, '1764842401228152834,-1,1764843053698277377');
-INSERT INTO tb_core_function (id, client_id, function_name, alias, code, parent_id, url, function_type, is_hide, icon, target, sort, remark, moude_summary, operate_instruction, function_level, create_user, create_time, update_user, update_time, is_deleted, create_org, ancestor_id) VALUES (1764846846313783298, 1728752347702018048, '编辑', '编辑', 'SMS_UPDATE', 1764843053698277377, '/sms/update', 0, 0, null, '_self', null, null, null, null, null, 1, '2024-03-05 10:54:12', 1, '2024-03-05 10:54:12', 0, 1728752845331021824, '1764842401228152834,-1,1764843053698277377');
-INSERT INTO tb_core_function (id, client_id, function_name, alias, code, parent_id, url, function_type, is_hide, icon, target, sort, remark, moude_summary, operate_instruction, function_level, create_user, create_time, update_user, update_time, is_deleted, create_org, ancestor_id) VALUES (1764846846313783299, 1728752347702018048, '列表', '列表', 'SMS_LIST', 1764843053698277377, '/sms/list', 2, 0, null, '_self', null, null, null, null, null, 1, '2024-03-05 10:54:12', 1, '2024-03-05 10:54:12', 0, 1728752845331021824, '1764842401228152834,-1,1764843053698277377');
-INSERT INTO tb_core_function (id, client_id, function_name, alias, code, parent_id, ancestor_id, url, function_type, target, is_hide, icon, sort, remark, moude_summary, operate_instruction, create_org, create_user, create_time, update_user, update_time, is_deleted) VALUES (1764952105904267265, 1728752347702018048, '调试', '调试', 'SMS_TEST', 1764843053698277377, '1764842401228152834,-1,1764843053698277377', '/sms/test', 0, '_self', false, null, null, null, null, null, 1728752845331021824, 1, '2024-03-05 17:52:27', 1, '2024-03-05 17:52:27', false);
+INSERT INTO `tb_core_function` VALUES (1764842401228152834, 1728752347702018048, '资源管理', '资源', 'RESOURCE', -1, '-1', '/resource', 1, 0, 'iconfont iconicon_study', '_self', 4, NULL, NULL, NULL, NULL, 1, '2024-03-05 10:36:32', 1, '2024-03-05 10:40:57', 0, 1728752845331021824);
+INSERT INTO `tb_core_function` VALUES (1764843053698277377, 1728752347702018048, '短信配置', 'SMS', 'SMS', 1764842401228152834, '1764842401228152834,-1', '/resource/sms', 1, 0, 'iconfont iconicon_sms', '_self', 1, NULL, NULL, NULL, NULL, 1, '2024-03-05 10:39:08', 1, '2024-03-05 10:41:10', 0, 1728752845331021824);
+INSERT INTO `tb_core_function` VALUES (1764846846305394691, 1728752347702018048, '删除', '删除', 'SMS_DEL', 1764843053698277377, '1764842401228152834,-1,1764843053698277377', '/sms/delete', 0, 0, NULL, '_self', NULL, NULL, NULL, NULL, NULL, 1, '2024-03-05 10:54:12', 1, '2024-03-05 10:54:12', 0, 1728752845331021824);
+INSERT INTO `tb_core_function` VALUES (1764846846313783297, 1728752347702018048, '新增', '新增', 'SMS_ADD', 1764843053698277377, '1764842401228152834,-1,1764843053698277377', '/sms/add', 0, 0, NULL, '_self', NULL, NULL, NULL, NULL, NULL, 1, '2024-03-05 10:54:12', 1, '2024-03-05 10:54:12', 0, 1728752845331021824);
+INSERT INTO `tb_core_function` VALUES (1764846846313783298, 1728752347702018048, '编辑', '编辑', 'SMS_UPDATE', 1764843053698277377, '1764842401228152834,-1,1764843053698277377', '/sms/update', 0, 0, NULL, '_self', NULL, NULL, NULL, NULL, NULL, 1, '2024-03-05 10:54:12', 1, '2024-03-05 10:54:12', 0, 1728752845331021824);
+INSERT INTO `tb_core_function` VALUES (1764846846313783299, 1728752347702018048, '列表', '列表', 'SMS_LIST', 1764843053698277377, '1764842401228152834,-1,1764843053698277377', '/sms/list', 2, 0, NULL, '_self', NULL, NULL, NULL, NULL, NULL, 1, '2024-03-05 10:54:12', 1, '2024-03-05 10:54:12', 0, 1728752845331021824);
+INSERT INTO `tb_core_function` VALUES (1764952105904267265, 1728752347702018048, '调试', '调试', 'SMS_TEST', 1764843053698277377, '1764842401228152834,-1,1764843053698277377', '/sms/test', 0, 0, NULL, '_self', NULL, NULL, NULL, NULL, NULL, 1, '2024-03-05 17:52:27', 1, '2024-03-05 17:52:27', 0, 1728752845331021824);
 
 -- ----------------------------
 -- Table structure for tb_core_function_menu
@@ -547,7 +513,7 @@ CREATE TABLE `tb_core_org`  (
   `contact_phone` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '联系人电话',
   `contact_email` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '联系人邮箱',
   `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '地址',
-  `type` int(6) NULL DEFAULT 0 COMMENT '机构类型',
+  `type` int(0) NULL DEFAULT 0 COMMENT '机构类型',
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
   `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
   `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
@@ -955,7 +921,7 @@ CREATE TABLE `tb_core_user`  (
 -- ----------------------------
 -- Records of tb_core_user
 -- ----------------------------
-INSERT INTO `tb_core_user` VALUES (1, 1728752845331021824, NULL, 'root', '$2a$05$zQGxuIbCA/nulLcaVhyvfebr3vtlA/I5nrS9U1dK7zcsSn27q4M.2', 'a553156685aae3282f38837e2d9684b9748527e247e8f480c5718931aba5d6cfe1adcbbd3f07dbd9', '超级管理员', 1, NULL, 0, NULL, '1634566606@qq.com', '15011071226', '内蒙古', '012000', '2024-02-26 22:15:02', 1538, '超级用户', '', 1, '', 1, '2021-03-03 22:34:20', 2, '2024-02-26 22:15:02', 0, '000000', 1728752845331021824);
+INSERT INTO `tb_core_user` VALUES (1, 1728752845331021824, NULL, 'root', '$2a$05$zQGxuIbCA/nulLcaVhyvfebr3vtlA/I5nrS9U1dK7zcsSn27q4M.2', 'a553156685aae3282f38837e2d9684b9748527e247e8f480c5718931aba5d6cfe1adcbbd3f07dbd9', '超级管理员', 1, NULL, 0, NULL, '1634566606@qq.com', '15011071226', '内蒙古', '012000', '2024-03-06 21:58:04', 1539, '超级用户', '', 1, '', 1, '2021-03-03 22:34:20', 2, '2024-03-06 21:58:04', 0, '000000', 1728752845331021824);
 INSERT INTO `tb_core_user` VALUES (2, 1728752845331021824, NULL, 'anonymous', '', NULL, '匿名用户', 1, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, 0, '匿名用户', NULL, 1, NULL, 1, '2021-03-03 22:34:20', 1, '2023-11-26 12:29:33', 0, '000000', 1728752845331021824);
 INSERT INTO `tb_core_user` VALUES (1728753047802658816, 1728752845331021824, 1728752869339217920, 'admin', '$2a$05$JdGqOXozOpWLV5fhDncCNue7vrWcZS/OKyEYUMPDGTmkOYSd6akQy', NULL, NULL, 1, NULL, 0, NULL, NULL, NULL, NULL, NULL, '2023-04-23 15:45:16', 10, '管理员', NULL, 1, NULL, 1, '2022-09-16 16:57:32', 2, '2023-11-26 12:30:19', 0, '000000', 1728752845331021824);
 
@@ -1134,24 +1100,66 @@ CREATE TABLE `tb_log_operate`  (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '操作日志表' ROW_FORMAT = Dynamic;
 
-CREATE TABLE `tb_resource_sms` (
-    `id` bigint NOT NULL COMMENT '主键',
-    `name` varchar(255)  NOT NULL COMMENT '名称',
-    `category` varchar(10)  NOT NULL COMMENT '分类 字典：SMS_CATEGORY',
-    `code` varchar(100)  DEFAULT NULL COMMENT '编号',
-    `template` varchar(500) DEFAULT NULL COMMENT '模板ID',
-    `access_key` varchar(100)  DEFAULT NULL COMMENT 'accessKey',
-    `secret_key` varchar(100)  DEFAULT NULL COMMENT 'secretKey',
-    `sign` varchar(50) COMMENT '短信签名',
-    `parameters` varchar(255)  DEFAULT NULL COMMENT '发送参数',
-    `region_id` varchar(100)  DEFAULT NULL COMMENT '区域ID',
-    `create_user` bigint DEFAULT '1' COMMENT '创建用户',
-    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_user` bigint NOT NULL DEFAULT '1' COMMENT '最后更新人',
-    `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    `is_deleted` tinyint(1) DEFAULT '0' COMMENT '是否删除 0否 1是',
-    `create_org` bigint DEFAULT NULL COMMENT '创建部门',
-    PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='短信配置表';
+-- ----------------------------
+-- Table structure for tb_resource_sms
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_resource_sms`;
+CREATE TABLE `tb_resource_sms`  (
+  `id` bigint(0) NOT NULL COMMENT '主键',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
+  `category` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '分类 字典：SMS_CATEGORY',
+  `code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '编号',
+  `template` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '模板ID',
+  `access_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'accessKey',
+  `secret_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'secretKey',
+  `sign` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '短信签名',
+  `parameters` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '发送参数',
+  `region_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '区域ID',
+  `create_user` bigint(0) NULL DEFAULT 1 COMMENT '创建用户',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '最后更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '短信配置表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of tb_resource_sms
+-- ----------------------------
+INSERT INTO `tb_resource_sms` VALUES (1765378108889784322, '验证码', 'ali', 'validate', '1', '1', '1', 'JPower', 'code', NULL, 1, '2024-03-06 22:05:15', 1, '2024-03-06 22:10:19', 0, 1728752845331021824);
+
+-- ----------------------------
+-- Table structure for tb_core_city
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_core_city`;
+CREATE TABLE `tb_core_city`  (
+  `id` bigint(0) NOT NULL COMMENT '主键',
+  `code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '城市编码',
+  `pcode` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '上级编码',
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
+  `fullname` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '全称',
+  `rankd` int(0) NULL DEFAULT NULL COMMENT '级别 1：省份/直辖市 2：地市 3：区县 4：乡镇/街道 5：村委',
+  `lng` double(20, 16) NULL DEFAULT NULL COMMENT '经度',
+  `lat` double(20, 16) NULL DEFAULT NULL COMMENT '维度',
+  `country_code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '国家编码',
+  `city_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '城市类型1：首都、2：直辖市、3：地级市、4县级市、9：其他',
+  `note` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
+  `sort_num` int(0) NULL DEFAULT 0 COMMENT '排序',
+  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+  `create_org` bigint(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `tb_core_city_code_index`(`code`) USING BTREE,
+  INDEX `tb_core_city_code_name_index`(`code`, `name`) USING BTREE,
+  INDEX `tb_core_city_pcode_index`(`pcode`) USING BTREE,
+  INDEX `tb_core_city_rankd_index`(`rankd`) USING BTREE,
+  INDEX `tb_core_city_fullname_index`(`fullname`) USING BTREE,
+  INDEX `code_index`(`code`) USING BTREE,
+  INDEX `pcode_index`(`pcode`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '城市地区表' ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
