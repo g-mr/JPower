@@ -29,7 +29,7 @@
         update_time,
         is_deleted,
         create_org,
-        category, code, template, access_key, secret_key, sign, parameters
+        category, code, template, access_key, secret_key, sign, parameters, name
     </sql>
 
 </mapper>
