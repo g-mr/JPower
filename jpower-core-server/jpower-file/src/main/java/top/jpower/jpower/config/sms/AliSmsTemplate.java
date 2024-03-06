@@ -2,8 +2,8 @@ package top.jpower.jpower.config.sms;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import top.jpower.jpower.config.sms.mode.SmsResponse;
 import top.jpower.jpower.config.sms.properties.AliSmsProperties;
+import top.jpower.jpower.dto.SmsResponse;
 
 import java.util.List;
 import java.util.Map;
