@@ -4,13 +4,11 @@ import com.alibaba.fastjson2.JSON;
 import com.aliyun.dysmsapi20170525.Client;
 import com.aliyun.dysmsapi20170525.models.SendSmsRequest;
 import com.aliyun.dysmsapi20170525.models.SendSmsResponse;
-import com.aliyun.tea.TeaException;
 import com.aliyun.teaopenapi.models.Config;
 import com.aliyun.teautil.models.RuntimeOptions;
-import com.aliyun.teautil.models.TeaUtilException;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import top.jpower.jpower.config.sms.properties.AliSmsProperties;
 import top.jpower.jpower.dto.SmsResponse;
 import top.jpower.jpower.module.base.exception.JpowerException;
@@ -25,6 +23,7 @@ import java.util.Map;
  * @author mr.g
  * @date 2024/3/6 11:42 AM
  */
+@Slf4j
 public class AliSmsTemplate implements SmsTemplate {
 
     @Getter
@@ -72,12 +71,14 @@ public class AliSmsTemplate implements SmsTemplate {
             if (Fc.equalsValue(sendSmsResponse.statusCode, ConstantsReturn.RECODE_SUCCESS) && Fc.equalsValue(sendSmsResponse.body.code, StringPool.OK)){
                 return new SmsResponse(Boolean.TRUE, sendSmsResponse.statusCode, sendSmsResponse.body.message);
             } else {
+                log.error("短信发送失败==>>{}", JSON.toJSONString(sendSmsResponse));
                 if (isThrow){
                     throw new JpowerException(sendSmsResponse.body.message);
                 }
                 return new SmsResponse(Boolean.FALSE, sendSmsResponse.statusCode, sendSmsResponse.body.message);
             }
         } catch (Exception error){
+            log.error("短信发送失败==>>{}", error.getMessage());
             if (isThrow){
                 throw new JpowerException(error.getMessage());
             }
