@@ -36,7 +36,6 @@ import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
 import top.jpower.jpower.module.common.utils.constants.ParamsConstants;
 import top.jpower.jpower.module.common.utils.constants.StringPool;
 import top.jpower.jpower.module.tenant.JpowerTenantProperties;
-import top.jpower.jpower.utils.SmsUtil;
 import top.jpower.jpower.utils.TokenUtil;
 
 import java.util.Date;
