@@ -20,7 +20,7 @@ public enum SmsCategoryEnum {
     private final String val;
 
     public static SmsCategoryEnum getEnum(String code){
-        return Arrays.stream(values()).filter(e-> Fc.equalsValue(e.code, code)).findFirst().orElse(null);
+        return Arrays.stream(values()).filter(e-> Fc.equalsValue(e.code, code)).findFirst().orElseThrow(() -> new RuntimeException("短信类型不合法"));
     }
 
 }

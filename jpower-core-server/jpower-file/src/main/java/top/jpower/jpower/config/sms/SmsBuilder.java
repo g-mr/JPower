@@ -38,7 +38,7 @@ public class SmsBuilder {
         }
 
         TbResourceSms resourceSms = resourceSmsDao.getByCode(code);
-        switch (SmsCategoryEnum.getEnum(resourceSms.getCode())) {
+        switch (SmsCategoryEnum.getEnum(resourceSms.getCategory())) {
             case ALI:
                 smsTemplate = new AliSmsTemplate(BeanUtil.copyProperties(resourceSms, AliSmsProperties.class));
                 cache.put(code, smsTemplate);

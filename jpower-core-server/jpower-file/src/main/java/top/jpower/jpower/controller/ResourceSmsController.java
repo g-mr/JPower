@@ -103,7 +103,7 @@ public class ResourceSmsController extends BaseController {
         JpowerAssert.notEmpty(map.get("phone"), JpowerError.Arg, "手机号 不能为空");
         JpowerAssert.isTrue(Validator.isMobile(map.get("phone")), JpowerError.Arg, "手机号 不合法");
 
-        String code = map.remove("code");
+        String code = map.remove("codeName");
         String phone = map.remove("phone");
 
         smsBuilder.getTemplate(code).sendSingleThrow(map, phone);

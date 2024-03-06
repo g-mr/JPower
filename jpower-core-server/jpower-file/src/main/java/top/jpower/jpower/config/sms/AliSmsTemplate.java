@@ -1,9 +1,22 @@
 package top.jpower.jpower.config.sms;
 
+import com.alibaba.fastjson2.JSON;
+import com.aliyun.dysmsapi20170525.Client;
+import com.aliyun.dysmsapi20170525.models.SendSmsRequest;
+import com.aliyun.dysmsapi20170525.models.SendSmsResponse;
+import com.aliyun.tea.TeaException;
+import com.aliyun.teaopenapi.models.Config;
+import com.aliyun.teautil.models.RuntimeOptions;
+import com.aliyun.teautil.models.TeaUtilException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import top.jpower.jpower.config.sms.properties.AliSmsProperties;
 import top.jpower.jpower.dto.SmsResponse;
+import top.jpower.jpower.module.base.exception.JpowerException;
+import top.jpower.jpower.module.common.utils.Fc;
+import top.jpower.jpower.module.common.utils.constants.ConstantsReturn;
+import top.jpower.jpower.module.common.utils.constants.StringPool;
 
 import java.util.List;
 import java.util.Map;
@@ -12,11 +25,31 @@ import java.util.Map;
  * @author mr.g
  * @date 2024/3/6 11:42 AM
  */
-@AllArgsConstructor
 public class AliSmsTemplate implements SmsTemplate {
 
     @Getter
     private final AliSmsProperties properties;
+
+    private final Client client;
+
+    public AliSmsTemplate(AliSmsProperties properties){
+        this.properties = properties;
+        client = createClient();
+    }
+
+    /**
+     * 使用AK&SK初始化账号Client
+     * @return Client
+     */
+    @SneakyThrows
+    private Client createClient() {
+        Config config = new Config()
+                .setEndpoint("dysmsapi.aliyuncs.com")
+                .setRegionId(properties.getRegionId())
+                .setAccessKeyId(properties.getAccessKey())
+                .setAccessKeySecret(properties.getSecretKey());
+        return new Client(config);
+    }
 
     /**
      * 发送短信
@@ -29,8 +62,27 @@ public class AliSmsTemplate implements SmsTemplate {
      **/
     @Override
     public SmsResponse sendMessage(Map<String, String> param, List<String> phones, boolean isThrow) {
-        System.out.println(properties);
-
-        return null;
+        SendSmsRequest sendSmsRequest = new SendSmsRequest()
+                .setSignName(properties.getSign())
+                .setTemplateCode(properties.getTemplate())
+                .setPhoneNumbers(Fc.join(phones))
+                .setTemplateParam(JSON.toJSONString(param));
+        try {
+            SendSmsResponse sendSmsResponse = client.sendSmsWithOptions(sendSmsRequest, new RuntimeOptions());
+            if (Fc.equalsValue(sendSmsResponse.statusCode, ConstantsReturn.RECODE_SUCCESS) && Fc.equalsValue(sendSmsResponse.body.code, StringPool.OK)){
+                return new SmsResponse(Boolean.TRUE, sendSmsResponse.statusCode, sendSmsResponse.body.message);
+            } else {
+                if (isThrow){
+                    throw new JpowerException(sendSmsResponse.body.message);
+                }
+                return new SmsResponse(Boolean.FALSE, sendSmsResponse.statusCode, sendSmsResponse.body.message);
+            }
+        } catch (Exception error){
+            if (isThrow){
+                throw new JpowerException(error.getMessage());
+            }
+            return new SmsResponse(Boolean.FALSE, ConstantsReturn.RECODE_SYSTEM, error.getMessage());
+        }
     }
+
 }

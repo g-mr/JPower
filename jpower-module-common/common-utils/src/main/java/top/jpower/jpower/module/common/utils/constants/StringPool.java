@@ -45,5 +45,5 @@ public interface StringPool extends StrPool {
     String SORT				= "sort";
     String SORTNUM			= "sortNum";
     String SORT_NUM			= "sort_num";
-
+    String OK               = "OK";
 }

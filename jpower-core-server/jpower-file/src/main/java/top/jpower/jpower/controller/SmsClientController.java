@@ -29,14 +29,38 @@ public class SmsClientController implements SmsClient {
     private final SmsBuilder smsBuilder;
 
     @Override
+    @PostMapping(value = "/sendSms",produces =  MediaType.APPLICATION_JSON_VALUE)
+    public SmsResponse sendSms(@RequestParam String code, @RequestParam Map<String,String> map, @RequestParam List<String> phones) {
+        return smsBuilder.getTemplate(code).sendSms(map, phones);
+    }
+
+    @Override
+    @PostMapping(value = "/sendSingleSms",produces =  MediaType.APPLICATION_JSON_VALUE)
+    public SmsResponse sendSingleSms(@RequestParam String code, @RequestParam Map<String,String> map, @RequestParam String phone) {
+        return smsBuilder.getTemplate(code).sendSingleSms(map, phone);
+    }
+
+    @Override
     @PostMapping(value = "/send",produces =  MediaType.APPLICATION_JSON_VALUE)
-    public ResponseData<SmsResponse> send(@RequestParam String code, @RequestParam Map<String,String> map, @RequestParam List<String> phones) {
-        return ReturnJsonUtil.data(smsBuilder.getTemplate(code).sendSms(map, phones));
+    public boolean send(@RequestParam String code,@RequestParam Map<String, String> param,@RequestParam List<String> phones) {
+        return smsBuilder.getTemplate(code).send(param, phones);
     }
 
     @Override
     @PostMapping(value = "/sendSingle",produces =  MediaType.APPLICATION_JSON_VALUE)
-    public ResponseData<SmsResponse> sendSingle(@RequestParam String code, @RequestParam Map<String,String> map, @RequestParam String phone) {
-        return ReturnJsonUtil.data(smsBuilder.getTemplate(code).sendSingleSms(map, phone));
+    public boolean sendSingle(@RequestParam String code,@RequestParam Map<String, String> param,@RequestParam String phone) {
+        return smsBuilder.getTemplate(code).sendSingle(param, phone);
+    }
+
+    @Override
+    @PostMapping(value = "/sendThrow",produces =  MediaType.APPLICATION_JSON_VALUE)
+    public void sendThrow(@RequestParam String code,@RequestParam Map<String, String> param,@RequestParam List<String> phones) {
+        smsBuilder.getTemplate(code).sendThrow(param, phones);
+    }
+
+    @Override
+    @PostMapping(value = "/sendSingleThrow",produces =  MediaType.APPLICATION_JSON_VALUE)
+    public void sendSingleThrow(@RequestParam String code, @RequestParam Map<String, String> param, @RequestParam String phone) {
+        smsBuilder.getTemplate(code).sendSingleThrow(param, phone);
     }
 }
