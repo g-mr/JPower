@@ -271,6 +271,30 @@ public class Fc {
     }
 
     /**
+     * 判断俩个类型的值是否不相等
+     *
+     * @author mr.g
+     * @param o1 要比较的第一个对象
+     * @param o2 要比较的第二个对象
+     * @return 给定的对象值是否相等
+     **/
+    public static boolean notEqualsValue(@Nullable CharSequence o1, @Nullable CharSequence o2) {
+        return !equalsValue(o1, o2);
+    }
+
+    /**
+     * 判断俩个类型的值是否不相等
+     *
+     * @author mr.g
+     * @param o1 要比较的第一个对象
+     * @param o2 要比较的第二个对象
+     * @return 给定的对象值是否相等
+     **/
+    public static boolean notEqualsValue(@Nullable Object o1, @Nullable Object o2) {
+        return !equalsValue(o1, o2);
+    }
+
+    /**
      * 判断给定的数组是否包含指定的元素
      *
      * @author mr.g

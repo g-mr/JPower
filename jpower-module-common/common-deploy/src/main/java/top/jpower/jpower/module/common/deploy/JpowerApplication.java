@@ -99,8 +99,11 @@ public class JpowerApplication {
         props.setProperty("spring.cloud.nacos.discovery.namespace", "${jpower.".concat(profile).concat(".nacos.namespace:}"));
         props.setProperty("spring.cloud.nacos.config.namespace", "${jpower.".concat(profile).concat(".nacos.namespace:}"));
         //sentinel配置
-        props.setProperty("csp.sentinel.dashboard.server", properties.getProperty("jpower."+profile+".sentinel.dashboard"));
-        props.setProperty("csp.sentinel.app.name",appName);
+        String sentinelServer = properties.getProperty("jpower."+profile+".sentinel.dashboard");
+        if (Fc.isNotBlank(sentinelServer)) {
+            props.setProperty("csp.sentinel.dashboard.server", sentinelServer);
+            props.setProperty("csp.sentinel.app.name",appName);
+        }
         props.setProperty("spring.cloud.sentinel.transport.dashboard", "${jpower.".concat(profile).concat(".sentinel.dashboard:}"));
         //seata启用,默认关闭
         props.setProperty("seata.enabled", "${jpower.seata.enabled:false}");
