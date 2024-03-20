@@ -5,11 +5,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import top.jpower.jpower.module.common.auth.SecureConstant;
-import top.jpower.jpower.module.common.utils.Fc;
-import top.jpower.jpower.module.common.utils.JwtUtil;
-import top.jpower.jpower.module.common.utils.ShieldUtil;
-import top.jpower.jpower.module.common.utils.StringUtil;
+import top.jpower.jpower.module.common.utils.*;
+import top.jpower.jpower.module.common.utils.constants.StringPool;
 import top.jpower.jpower.module.common.utils.constants.TokenConstant;
+import top.jpower.jpower.module.properties.AuthProperties;
 
 import static top.jpower.jpower.module.common.auth.SecureConstant.BASIC_HEADER_PREFIX;
 
@@ -32,8 +31,14 @@ public class TokenUtil {
     public static String getToken(ServerHttpRequest request) {
         String header = request.getHeaders().getFirst(TokenConstant.HEADER);
 
-        HttpCookie httpCookie = request.getCookies().getFirst(TokenConstant.HEADER);
-        String cookies = Fc.isNull(httpCookie)?null:httpCookie.getValue();
+        AuthProperties properties = SpringUtil.getBean(AuthProperties.class);
+
+        // 打开cookie就去验证cookie
+        String cookies = StringPool.EMPTY;
+        if (Fc.notNull(properties) && properties.getCookie()){
+            HttpCookie httpCookie = request.getCookies().getFirst(TokenConstant.HEADER);
+            cookies = Fc.isNull(httpCookie)?null:httpCookie.getValue();
+        }
 
         if (StringUtils.isAllBlank(header,cookies)){
             String param = request.getQueryParams().getFirst(TokenConstant.HEADER);
