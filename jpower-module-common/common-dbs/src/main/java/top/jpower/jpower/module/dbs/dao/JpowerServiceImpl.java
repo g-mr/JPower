@@ -185,7 +185,7 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
         return list(queryWrapper).stream().filter(Objects::nonNull).map(function).collect(Collectors.toList());
     }
 
-    public <E> List<Tree<E>> tree(Wrapper<T> treeWrapper) {
+    public <E extends Serializable> List<Tree<E>> tree(Wrapper<T> treeWrapper) {
         List<Map<String,Object>> list = listMaps(treeWrapper);
         return ForestNodeMerger.mergeTree(list);
     }

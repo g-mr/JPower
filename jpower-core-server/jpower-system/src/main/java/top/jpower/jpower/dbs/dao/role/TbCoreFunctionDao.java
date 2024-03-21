@@ -3,6 +3,7 @@ package top.jpower.jpower.dbs.dao.role;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.lang.tree.Tree;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 import top.jpower.jpower.dbs.dao.role.mapper.TbCoreFunctionMapper;
 import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
 import top.jpower.jpower.module.common.utils.Fc;
@@ -10,6 +11,7 @@ import top.jpower.jpower.module.common.utils.MapUtil;
 import top.jpower.jpower.module.common.utils.ShieldUtil;
 import top.jpower.jpower.module.common.utils.StringUtil;
 import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
+import top.jpower.jpower.module.common.utils.constants.JpowerConstants;
 import top.jpower.jpower.module.common.utils.constants.StringPool;
 import top.jpower.jpower.module.dbs.dao.JpowerServiceImpl;
 import top.jpower.jpower.module.mp.support.Condition;
@@ -79,6 +81,18 @@ public class TbCoreFunctionDao extends JpowerServiceImpl<TbCoreFunctionMapper, T
             }
 
         })).collect(Collectors.toList());
+    }
+
+    public List<Long> queryIdByTopChild() {
+        List<Long> functionIds = super.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda().select(TbCoreFunction::getId)
+                .eq(TbCoreFunction::getParentId, Fc.toLong(JpowerConstants.TOP_CODE))
+                .ne(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.MENU.getValue()), Fc::toLong);
+
+        String where = StringUtil.concat("ancestor_id REGEXP ",StringPool.SINGLE_QUOTE,StringPool.LEFT_BRACKET,StringUtil.join(functionIds, StringPool.SPILT),StringPool.RIGHT_BRACKET,StringPool.SINGLE_QUOTE);
+        functionIds.addAll(super.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
+                .select(TbCoreFunction::getId)
+                .apply(where)));
+        return functionIds;
     }
 }
 

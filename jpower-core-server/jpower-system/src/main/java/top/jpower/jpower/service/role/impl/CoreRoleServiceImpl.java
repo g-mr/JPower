@@ -2,6 +2,7 @@ package top.jpower.jpower.service.role.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import top.jpower.jpower.dbs.dao.role.TbCoreFunctionDao;
 import top.jpower.jpower.dbs.dao.role.TbCoreRoleDao;
 import top.jpower.jpower.dbs.dao.role.TbCoreRoleFunctionDao;
@@ -13,8 +14,10 @@ import top.jpower.jpower.dbs.entity.role.TbCoreRoleFunction;
 import top.jpower.jpower.dbs.entity.role.TbCoreRoleMenu;
 import top.jpower.jpower.module.common.service.impl.BaseServiceImpl;
 import top.jpower.jpower.module.common.utils.Fc;
+import top.jpower.jpower.module.common.utils.StringUtil;
 import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
 import top.jpower.jpower.module.common.utils.constants.JpowerConstants;
+import top.jpower.jpower.module.common.utils.constants.StringPool;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.service.role.CoreRoleService;
 
@@ -36,15 +39,8 @@ public class CoreRoleServiceImpl extends BaseServiceImpl<TbCoreRoleMapper, TbCor
     @Override
     public Boolean add(TbCoreRole coreRole) {
         if (coreRoleDao.save(coreRole)){
-            List<Long> functionIds = coreFunctionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda().select(TbCoreFunction::getId).eq(TbCoreFunction::getParentId, Fc.toLong(JpowerConstants.TOP_CODE)).ne(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.MENU.getValue()), Fc::toLong);
-            List<TbCoreRoleFunction> roleFunctions = new ArrayList<>();
-            functionIds.forEach(functionId -> {
-                TbCoreRoleFunction roleFunction = new TbCoreRoleFunction();
-                roleFunction.setFunctionId(functionId);
-                roleFunction.setRoleId(coreRole.getId());
-                roleFunctions.add(roleFunction);
-            });
-            return coreRoleFunctionDao.saveBatch(roleFunctions);
+            List<Long> functionIds = coreFunctionDao.queryIdByTopChild();
+            return coreRoleFunctionDao.saveFunctions(functionIds,coreRole.getId());
         }
         return false;
     }

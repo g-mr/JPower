@@ -113,22 +113,12 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
             roleDao.save(role);
             //创建租户初始权限
 
-            List<Long> functionIds = functionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
-                    .select(TbCoreFunction::getId)
-                    .eq(TbCoreFunction::getParentId,Fc.toLong(TOP_CODE))
-                    .ne(TbCoreFunction::getFunctionType,ConstantsEnum.FUNCTION_TYPE.MENU.getValue()),Fc::toLong);
+            List<Long> functionIds = functionDao.queryIdByTopChild();
 
             if (Fc.isNotEmpty(functionCodes)){
                 functionIds.addAll(getFunctions(functionCodes,new LinkedList<>()));
             }
-            List<TbCoreRoleFunction> roleFunctionList = new ArrayList<>();
-            functionIds.forEach(id -> {
-                TbCoreRoleFunction roleFunction = new TbCoreRoleFunction();
-                roleFunction.setFunctionId(id);
-                roleFunction.setRoleId(role.getId());
-                roleFunctionList.add(roleFunction);
-            });
-            roleFunctionDao.saveBatch(roleFunctionList);
+            roleFunctionDao.saveFunctions(functionIds, role.getId());
 
             //创建租户默认字典
             ThreadUtil.execute(()->{

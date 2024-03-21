@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import top.jpower.jpower.dbs.dao.role.TbCoreFunctionDao;
+import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
 import top.jpower.jpower.dbs.entity.role.TbCoreRole;
 import top.jpower.jpower.module.annotation.Function;
 import top.jpower.jpower.module.annotation.Menu;
@@ -38,7 +40,6 @@ import static top.jpower.jpower.module.common.utils.constants.JpowerConstants.TO
 public class RoleController extends BaseController {
 
     private CoreRoleService coreRoleService;
-    private CoreFunctionService coreFunctionService;
     private CoreRoleFunctionService coreRoleFunctionService;
 
     @Function(value = "树形角色列表",menus = {

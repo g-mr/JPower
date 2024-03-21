@@ -21,7 +21,7 @@ public interface BaseService<T> extends IService<T> {
      * @date 23:22 2020/10/21 0021
      * @param treeWrapper 查询条件
      */
-    <E> List<Tree<E>> tree(Wrapper<T> treeWrapper);
+    <E extends Serializable> List<Tree<E>> tree(Wrapper<T> treeWrapper);
 
     /**
      * @author 郭丁志
