@@ -1,23 +1,19 @@
 package top.jpower.jpower.module.common.node;
 
-import cn.hutool.core.comparator.CompareUtil;
-import cn.hutool.core.convert.Convert;
-import cn.hutool.core.convert.ConvertException;
 import cn.hutool.core.lang.TypeReference;
-import cn.hutool.core.lang.tree.Node;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.hutool.core.lang.tree.TreeUtil;
 import cn.hutool.core.util.TypeUtil;
-import org.apache.poi.ss.formula.functions.T;
-import top.jpower.jpower.module.common.utils.*;
-import top.jpower.jpower.module.common.utils.constants.JpowerConstants;
+import top.jpower.jpower.module.common.utils.BeanUtil;
+import top.jpower.jpower.module.common.utils.Fc;
+import top.jpower.jpower.module.common.utils.MapUtil;
+import top.jpower.jpower.module.common.utils.StringUtil;
 import top.jpower.jpower.module.common.utils.constants.StringPool;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -98,19 +94,6 @@ public class ForestNodeMerger {
     }
 
     /**
-     * 获取顶级列表
-     * @Author mr.g
-     * @param list
-     * @return java.lang.String
-     **/
-    private static <T> List<Map<String, Object>> getRootList(List<T> list) {
-        return  list.parallelStream().map(ForestNodeMerger::beanToMap).filter(map -> list.stream().noneMatch(i->{
-            Map<String, Object> map1 = beanToMap(i);
-            return Fc.equalsValue(map1.get(CONFIG.getIdKey()),map.get(CONFIG.getParentIdKey()));
-        })).collect(Collectors.toList());
-    }
-
-    /**
      * 获取顶级ID
      * @Author mr.g
      * @param list
@@ -129,8 +112,9 @@ public class ForestNodeMerger {
                 }))
                 .map(map->{
                     return MapUtil.get(map, CONFIG.getParentIdKey(), new TypeReference<E>() {
+                        @Override
                         public Type getType() {
-                            return TypeUtil.getReturnType(ReflectUtil.getMethodByName(ForestNodeMerger.class, "getRootId"));
+                            return TypeUtil.getTypeArgument(list.getClass());
                         }
                     });
                 }).distinct().collect(Collectors.toList());
