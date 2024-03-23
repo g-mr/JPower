@@ -424,6 +424,11 @@ public class UserController extends BaseController {
         JpowerAssert.isTrue(Validator.isMobile(phone), JpowerError.Business, "手机号不合法");
         JpowerAssert.isTrue(smsClient.validate(VALIDATE_SMS_CODE, phone, phoneCode), JpowerError.Business, "验证码错误");
 
+        boolean is = coreUserService.exists(Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getTelephone, phone));
+        if (is){
+            return ReturnJsonUtil.fail("该手机号已被绑定");
+        }
+
         CacheUtil.clear(CacheNames.USER_KEY);
         return ReturnJsonUtil.status(coreUserService.updatePhone(phone, userInfo.getUserId()));
     }
@@ -438,6 +443,11 @@ public class UserController extends BaseController {
         JpowerAssert.isTrue(Validator.isEmail(email), JpowerError.Business, "邮箱 不合法");
         String code = Fc.toStr(redisUtil.get("email:"+email+":"+msgId));
         JpowerAssert.notTrue(Fc.notEqualsValue(code, emailCode), JpowerError.Business, "验证码错误");
+
+        boolean is = coreUserService.exists(Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getEmail, email));
+        if (is){
+            return ReturnJsonUtil.fail("该邮箱已被绑定");
+        }
 
         CacheUtil.clear(CacheNames.USER_KEY);
         return ReturnJsonUtil.status(coreUserService.updateEmail(email, userInfo.getUserId()));
