@@ -10,8 +10,6 @@ import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.jpower.config.sms.SmsBuilder;
 import top.jpower.jpower.dto.SmsResponse;
 import top.jpower.jpower.feign.SmsClient;
-import top.jpower.jpower.module.base.vo.ResponseData;
-import top.jpower.jpower.module.common.utils.ReturnJsonUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -62,5 +60,17 @@ public class SmsClientController implements SmsClient {
     @PostMapping(value = "/sendSingleThrow",produces =  MediaType.APPLICATION_JSON_VALUE)
     public void sendSingleThrow(@RequestParam String code, @RequestParam Map<String, String> param, @RequestParam String phone) {
         smsBuilder.getTemplate(code).sendSingleThrow(param, phone);
+    }
+
+    @Override
+    @PostMapping(value = "/sendValidate",produces =  MediaType.APPLICATION_JSON_VALUE)
+    public boolean sendValidate(@RequestParam String code, @RequestParam String phone) {
+        return smsBuilder.getTemplate(code).sendValidate(phone);
+    }
+
+    @Override
+    @PostMapping(value = "/sendValidate",produces =  MediaType.APPLICATION_JSON_VALUE)
+    public boolean validate(@RequestParam String code, @RequestParam String phone, @RequestParam String phoneCode) {
+        return smsBuilder.getTemplate(code).validate(phone, phoneCode);
     }
 }

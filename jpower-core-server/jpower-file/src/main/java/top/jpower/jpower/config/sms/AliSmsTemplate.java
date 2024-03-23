@@ -28,11 +28,14 @@ public class AliSmsTemplate implements SmsTemplate {
 
     @Getter
     private final AliSmsProperties properties;
+    @Getter
+    private final List<String> parameters;
 
     private final Client client;
 
     public AliSmsTemplate(AliSmsProperties properties){
         this.properties = properties;
+        this.parameters = Fc.toStrList(properties.getParameters());
         client = createClient();
     }
 

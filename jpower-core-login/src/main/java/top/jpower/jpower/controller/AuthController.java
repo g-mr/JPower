@@ -2,12 +2,11 @@ package top.jpower.jpower.controller;
 
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.NumberUtil;
-import com.alibaba.fastjson2.JSONObject;
+import cn.hutool.extra.mail.MailUtil;
 import com.wf.captcha.SpecCaptcha;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.jpower.auth.TokenGranterBuilder;
@@ -174,35 +173,22 @@ public class AuthController extends BaseController {
         return ReturnJsonUtil.ok("操作成功",ChainMap.create().put("key", key).put("image", specCaptcha.toBase64()).build());
     }
 
-    @ApiOperation(value = "发送手机登录验证码")
-    @RequestMapping(value = "/phoneCaptcha",method = RequestMethod.GET,produces="application/json")
-    public ResponseData<String> loginVercode(@ApiParam(value = "租户编号",required = false) @RequestParam(required = false) String tenantCode,
-                                             @ApiParam(value = "手机号",required = true) @RequestParam String phone) {
-        if (tenantProperties.getEnable()){
-            JpowerAssert.notNull(tenantCode,JpowerError.Arg,"租户编码不可为空");
-        }
+    @ApiOperation(value = "发送手机验证码")
+    @PostMapping(value = "/captcha/{phone}",produces="application/json")
+    public ResponseData phoneCaptcha(@ApiParam(value = "手机号", required = true) @PathVariable("phone") String phone) {
+        return ReturnJsonUtil.status(smsClient.sendValidate(VALIDATE_SMS_CODE, phone));
+    }
 
-        if (StringUtils.isBlank(phone) || !Validator.isMobile(phone)){
-            return ReturnJsonUtil.fail("手机号不合法");
-        }
+    @ApiOperation(value = "发送邮箱验证码")
+    @PostMapping(value = "/sendEmailCode/{email}",produces="application/json")
+    public ResponseData<String> sendEmailCode(@ApiParam(value = "手机号", required = true) @PathVariable("email") String email) {
 
-        if (redisUtil.getExpire(CacheNames.PHONE_KEY+phone+tenantCode,TimeUnit.MINUTES) >= 4){
-            return ReturnJsonUtil.fail("该验证码已经发送，请一分钟后重试");
-        }
-
-        TbCoreUser user = UserCache.getUserByPhone(phone,tenantCode);
-
-        if (Fc.isNull(user)){
-            //用户空则返回
-            return ReturnJsonUtil.notFind("手机号不存在");
-        }
+        JpowerAssert.isTrue(Validator.isEmail(email), JpowerError.Business, "邮箱 不合法");
 
         String code = RandomStringUtils.randomNumeric(6);
-
-        smsClient.sendSingleThrow(VALIDATE_SMS_CODE, ChainMap.<String, String>create().put("code", code).build(), phone);
-
-        redisUtil.set(CacheNames.PHONE_KEY+phone+tenantCode,code,5L, TimeUnit.MINUTES);
-        return ReturnJsonUtil.ok("验证码发送成功");
+        String msgId = MailUtil.sendText(email,"Jpower邮件","您得验证码："+code);
+        redisUtil.set("email:"+email+":"+msgId, code ,5L, TimeUnit.MINUTES);
+        return ReturnJsonUtil.data(msgId);
     }
 
     @ApiOperation(value = "用户注册")

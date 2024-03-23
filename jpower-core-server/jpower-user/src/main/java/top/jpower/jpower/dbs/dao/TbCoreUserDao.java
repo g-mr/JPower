@@ -1,6 +1,7 @@
 package top.jpower.jpower.dbs.dao;
 
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.springframework.stereotype.Repository;
 import top.jpower.jpower.cache.SystemCache;
 import top.jpower.jpower.cache.UserCache;
@@ -66,5 +67,32 @@ public class TbCoreUserDao extends JpowerServiceImpl<TbCoreUserMapper, TbCoreUse
                 .select(TbCoreUser::getPassword)
                 .eq(TbCoreUser::getLoginId, account)
                 .eq(ShieldUtil.isRoot(), TbCoreUser::getTenantCode, Fc.isBlank(tenantCode)?DEFAULT_TENANT_CODE:tenantCode), Fc::toStr);
+    }
+
+    /**
+     * 修改用户手机号
+     * @author mr.g
+     * @param userId
+     * @param phone
+     * @return
+     **/
+    public boolean updatePhone(Long userId, String phone) {
+        return super.update(Wrappers.<TbCoreUser>lambdaUpdate()
+                .set(TbCoreUser::getTelephone, phone)
+                .eq(TbCoreUser::getId, userId));
+    }
+
+    /**
+     * 修改用户邮箱
+     *
+     * @author mr.g
+     * @param email 邮箱
+     * @param userId 用户ID
+     * @return 是否成功
+     **/
+    public boolean updateEmail(Long userId, String email) {
+        return super.update(Wrappers.<TbCoreUser>lambdaUpdate()
+                .set(TbCoreUser::getEmail, email)
+                .eq(TbCoreUser::getId, userId));
     }
 }

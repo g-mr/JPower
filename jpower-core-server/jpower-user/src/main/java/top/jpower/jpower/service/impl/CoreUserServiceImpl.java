@@ -369,4 +369,22 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
                 .eq(TbCoreUser::getId,id));
     }
 
+    /**
+     * 修改用户手机号
+     *
+     * @author mr.g
+     * @param userId 用户ID
+     * @param phone 要修改的手机号
+     * @return 是否成功
+     **/
+    @Override
+    public boolean updatePhone(String phone, Long userId) {
+        return coreUserDao.updatePhone(userId, phone);
+    }
+
+    @Override
+    public boolean updateEmail(String email, Long userId) {
+        return coreUserDao.updateEmail(userId, email);
+    }
+
 }

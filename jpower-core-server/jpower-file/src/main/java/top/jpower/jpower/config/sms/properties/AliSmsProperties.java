@@ -36,4 +36,9 @@ public class AliSmsProperties implements Serializable {
      * 区域ID
      **/
     private String regionId;
+
+    /**
+     * 模板参数
+     **/
+    private String parameters;
 }

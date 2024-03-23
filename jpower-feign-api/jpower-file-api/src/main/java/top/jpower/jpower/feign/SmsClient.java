@@ -5,10 +5,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import top.jpower.jpower.dto.SmsResponse;
-import top.jpower.jpower.module.base.vo.ResponseData;
 import top.jpower.jpower.module.common.utils.constants.AppConstant;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -86,4 +84,23 @@ public interface SmsClient {
      **/
     @PostMapping(value = "/sendSingleThrow",produces =  MediaType.APPLICATION_JSON_VALUE)
     void sendSingleThrow(@RequestParam String code,@RequestParam Map<String, String> param,@RequestParam String phone);
+
+    /**
+     * 发送验证码
+     *
+     * @author mr.g
+     * @param code 编码
+     * @param phone 手机号
+     **/
+    @PostMapping(value = "/sendValidate",produces =  MediaType.APPLICATION_JSON_VALUE)
+    boolean sendValidate(@RequestParam String code,@RequestParam String phone);
+
+    /**
+     * 验证码验证
+     *
+     * @author mr.g
+     * @param phone 手机号
+     **/
+    @PostMapping(value = "/validate",produces =  MediaType.APPLICATION_JSON_VALUE)
+    boolean validate(@RequestParam String code, @RequestParam String phone, @RequestParam String phoneCode);
 }

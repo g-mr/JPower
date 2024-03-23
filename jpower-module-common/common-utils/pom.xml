@@ -80,7 +80,7 @@
 
         <dependency>
             <groupId>cn.hutool</groupId>
-            <artifactId>hutool-crypto</artifactId>
+            <artifactId>hutool-all</artifactId>
         </dependency>
 
         <dependency>

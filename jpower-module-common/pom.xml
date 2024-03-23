@@ -200,7 +200,7 @@
 
             <dependency>
                 <groupId>cn.hutool</groupId>
-                <artifactId>hutool-crypto</artifactId>
+                <artifactId>hutool-all</artifactId>
                 <version>${hutool.version}</version>
             </dependency>
         </dependencies>

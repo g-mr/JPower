@@ -1,14 +1,12 @@
 package top.jpower.jpower.controller;
 
 import cn.hutool.core.lang.Validator;
-import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.NumberUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
-import okhttp3.HttpUrl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +15,7 @@ import top.jpower.jpower.cache.SystemCache;
 import top.jpower.jpower.cache.param.ParamConfig;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
 import top.jpower.jpower.dbs.entity.tenant.TbCoreTenant;
+import top.jpower.jpower.feign.SmsClient;
 import top.jpower.jpower.module.annotation.Function;
 import top.jpower.jpower.module.annotation.Menu;
 import top.jpower.jpower.module.base.annotation.OperateLog;
@@ -30,7 +29,6 @@ import top.jpower.jpower.module.common.cache.CacheNames;
 import top.jpower.jpower.module.common.controller.BaseController;
 import top.jpower.jpower.module.common.redis.RedisUtil;
 import top.jpower.jpower.module.common.support.BeanExcelUtil;
-import top.jpower.jpower.module.common.support.ChainMap;
 import top.jpower.jpower.module.common.support.EnvBeanUtil;
 import top.jpower.jpower.module.common.utils.*;
 import top.jpower.jpower.module.common.utils.constants.*;
@@ -47,7 +45,10 @@ import java.util.*;
 import static top.jpower.jpower.module.base.annotation.OperateLog.BusinessType.DELETE;
 import static top.jpower.jpower.module.base.annotation.OperateLog.BusinessType.UPDATE;
 import static top.jpower.jpower.module.common.cache.CacheNames.TOKEN_USER_KEY;
-import static top.jpower.jpower.module.tenant.TenantConstant.*;
+import static top.jpower.jpower.module.common.utils.constants.JpowerConstants.VALIDATE_SMS_CODE;
+import static top.jpower.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
+import static top.jpower.jpower.module.tenant.TenantConstant.TENANT_ACCOUNT_NUMBER;
+import static top.jpower.jpower.module.tenant.TenantConstant.getAccountNumber;
 
 @Api(tags = "用户管理")
 @RestController
@@ -57,6 +58,7 @@ public class UserController extends BaseController {
 
     private CoreUserService coreUserService;
     private RedisUtil redisUtil;
+    private SmsClient smsClient;
 
     @ApiOperation("查询当前登录用户信息")
     @GetMapping(value = "/getLoginInfo", produces = "application/json")
@@ -411,6 +413,34 @@ public class UserController extends BaseController {
         }
         CacheUtil.clear(CacheNames.USER_KEY);
         return ReturnJsonUtil.status(coreUserService.updateUserPassword(Collections.singletonList(user.getId()), DigestUtil.pwdEncrypt(newPw)));
+    }
+
+    @ApiOperation(value = "修改手机号")
+    @PostMapping(value = "/updatePhone")
+    public ResponseData updatePhone(@ApiParam(value = "手机号", required = true) @RequestSingleBody String phone,
+                                    @ApiParam(value = "验证码", required = true) @RequestSingleBody String phoneCode) {
+        UserInfo userInfo = ShieldUtil.getUser();
+        JpowerAssert.notNull(userInfo, JpowerError.Business, "请登录");
+        JpowerAssert.isTrue(Validator.isMobile(phone), JpowerError.Business, "手机号不合法");
+        JpowerAssert.isTrue(smsClient.validate(VALIDATE_SMS_CODE, phone, phoneCode), JpowerError.Business, "验证码错误");
+
+        CacheUtil.clear(CacheNames.USER_KEY);
+        return ReturnJsonUtil.status(coreUserService.updatePhone(phone, userInfo.getUserId()));
+    }
+
+    @ApiOperation(value = "修改邮箱")
+    @PostMapping(value = "/updateEmail")
+    public ResponseData updateEmail(@ApiParam(value = "邮箱", required = true) @RequestSingleBody String email,
+                                    @ApiParam(value = "邮箱消息ID", required = true) @RequestSingleBody String msgId,
+                                    @ApiParam(value = "验证码", required = true) @RequestSingleBody String emailCode) {
+        UserInfo userInfo = ShieldUtil.getUser();
+        JpowerAssert.notNull(userInfo, JpowerError.Business, "请登录");
+        JpowerAssert.isTrue(Validator.isEmail(email), JpowerError.Business, "邮箱 不合法");
+        String code = Fc.toStr(redisUtil.get("email:"+email+":"+msgId));
+        JpowerAssert.notTrue(Fc.notEqualsValue(code, emailCode), JpowerError.Business, "验证码错误");
+
+        CacheUtil.clear(CacheNames.USER_KEY);
+        return ReturnJsonUtil.status(coreUserService.updateEmail(email, userInfo.getUserId()));
     }
 
 }

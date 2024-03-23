@@ -157,4 +157,24 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
      * @return 密码是否正确
      **/
     boolean validatePassword(String account, String password, String tenantCode);
+
+    /**
+     * 修改用户手机号
+     *
+     * @author mr.g
+     * @param userId 用户ID
+     * @param phone 要修改的手机号
+     * @return 是否成功
+     **/
+    boolean updatePhone(String phone, Long userId);
+
+    /**
+     * 修改用户邮箱
+     *
+     * @author mr.g
+     * @param email 邮箱
+     * @param userId 用户ID
+     * @return 是否成功
+     **/
+    boolean updateEmail(String email, Long userId);
 }
