@@ -1,5 +1,9 @@
 package top.jpower.jpower.module.configurer.argument;
 
+import cn.hutool.core.lang.Validator;
+import cn.hutool.core.net.NetUtil;
+import cn.hutool.core.net.url.UrlQuery;
+import cn.hutool.core.util.URLUtil;
 import com.alibaba.fastjson2.JSONObject;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -16,9 +20,12 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor;
 import top.jpower.jpower.module.common.utils.Fc;
 import top.jpower.jpower.module.common.utils.JsonUtil;
+import top.jpower.jpower.module.common.utils.constants.CharsetKit;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * RequestSingleBody参数解析器
@@ -27,6 +34,9 @@ import java.util.List;
  * @author mr.g
  */
 public class RequestBodyHandlerMethodArgumentResolver extends RequestResponseBodyMethodProcessor {
+
+    private static final ThreadLocal<Object> BODY = new ThreadLocal<>();
+    private static final ThreadLocal<Long> BODY_PARAM_COUNT = new ThreadLocal<>();
 
     /**
      * Basic constructor with converters only. Suitable for resolving
@@ -110,11 +120,28 @@ public class RequestBodyHandlerMethodArgumentResolver extends RequestResponseBod
             return null;
         }
 
+        // 存储遍历次数
+        BODY_PARAM_COUNT.set(Fc.toLong(BODY_PARAM_COUNT.get(), 0)+1);
+
         String name = (singleBody != null && StringUtils.hasLength(singleBody.name()) ?
                 singleBody.name() : parameter.getParameterName());
         Assert.state(name != null, "Unresolvable parameter name");
 
-        Object arg = readWithMessageConverters(webRequest, parameter, parameter.getNestedGenericParameterType());
+        Object arg = BODY.get();
+        if (Fc.isNull(arg)){
+            arg = readWithMessageConverters(webRequest, parameter, parameter.getNestedGenericParameterType());
+            BODY.set(arg);
+        }
+
+        long count = Arrays.stream(Objects.requireNonNull(parameter.getMethod()).getParameters()).filter(p->p.isAnnotationPresent(RequestSingleBody.class)).count();
+        // 如果是最后一次，就去清空
+        if (Fc.equalsValue(count, BODY_PARAM_COUNT.get())){
+            // TODO: 2024/3/23 这里最好是写到这个处理得生命周期结束部分，目前没找到暂时先这样，谁知道可以告知下哈
+            BODY.remove();
+            BODY_PARAM_COUNT.remove();
+        }
+
+
         if (Fc.notNull(arg)){
             String body = Fc.toStr(arg);
             if (JsonUtil.isJsonObject(body)){
@@ -124,6 +151,13 @@ public class RequestBodyHandlerMethodArgumentResolver extends RequestResponseBod
                             parameter.getExecutable().toGenericString(), new ServletServerHttpRequest(request));
                 }
                 return jsonObject.get(name);
+            } else {
+                 UrlQuery query = UrlQuery.of(body, CharsetKit.CHARSET_UTF_8);
+                if (!query.getQueryMap().containsKey(name) && checkRequired(parameter)) {
+                    throw new HttpMessageNotReadableException("Required request body["+name+"] is missing: " +
+                            parameter.getExecutable().toGenericString(), new ServletServerHttpRequest(request));
+                }
+                return query.get(name);
             }
         }
         return arg;

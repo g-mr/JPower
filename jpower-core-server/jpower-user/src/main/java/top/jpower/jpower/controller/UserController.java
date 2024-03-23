@@ -1,12 +1,14 @@
 package top.jpower.jpower.controller;
 
 import cn.hutool.core.lang.Validator;
+import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.NumberUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
+import okhttp3.HttpUrl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,9 +30,11 @@ import top.jpower.jpower.module.common.cache.CacheNames;
 import top.jpower.jpower.module.common.controller.BaseController;
 import top.jpower.jpower.module.common.redis.RedisUtil;
 import top.jpower.jpower.module.common.support.BeanExcelUtil;
+import top.jpower.jpower.module.common.support.ChainMap;
 import top.jpower.jpower.module.common.support.EnvBeanUtil;
 import top.jpower.jpower.module.common.utils.*;
 import top.jpower.jpower.module.common.utils.constants.*;
+import top.jpower.jpower.module.configurer.argument.RequestSingleBody;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.service.CoreUserService;
 import top.jpower.jpower.vo.UserVo;
@@ -408,4 +412,5 @@ public class UserController extends BaseController {
         CacheUtil.clear(CacheNames.USER_KEY);
         return ReturnJsonUtil.status(coreUserService.updateUserPassword(Collections.singletonList(user.getId()), DigestUtil.pwdEncrypt(newPw)));
     }
+
 }
