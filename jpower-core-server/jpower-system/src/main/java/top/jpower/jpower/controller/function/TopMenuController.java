@@ -131,7 +131,7 @@ public class TopMenuController extends BaseController {
     }
 
     @Function(value = "客户端顶部菜单树",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_CLIENT_TOPMENU",type = Menu.TYPE.INTERFACE)
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_DATASCOPE_LIST",code = "ROLE_CLIENT_TOPMENU",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("客户端顶部菜单树")
     @GetMapping(value = "/listName",produces="application/json")
@@ -164,7 +164,7 @@ public class TopMenuController extends BaseController {
         return ReturnJsonUtil.data(menuService.listFunctionId(menuId));
     }
 
-    @Function(value = "一级菜单",menus = {
+    @Function(value = "关联菜单",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_FUNCTION",type = Menu.TYPE.BTN)
     })
     @ApiOperation("一级菜单列表")
@@ -199,7 +199,7 @@ public class TopMenuController extends BaseController {
     @Function(value = "顶级菜单选项",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "FUNCTION_TOPMENU_SELECT",type = Menu.TYPE.INTERFACE),
             @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "DATASCOPE_TOPMENU_SELECT",type = Menu.TYPE.INTERFACE),
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_TOPMENU",type = Menu.TYPE.INTERFACE),
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_ROLE_SELECT_URL",code = "ROLE_TOPMENU",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation(value = "获取顶级菜单下拉框",notes = "只获取当前用户的权限")
     @GetMapping(value = "/select",produces="application/json")

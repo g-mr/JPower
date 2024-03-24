@@ -21,7 +21,6 @@ import top.jpower.jpower.module.common.utils.Fc;
 import top.jpower.jpower.module.common.utils.ReturnJsonUtil;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.service.client.CoreClientService;
-import top.jpower.jpower.vo.UserVo;
 
 import java.util.List;
 import java.util.Map;
@@ -42,8 +41,8 @@ public class ClientController extends BaseController {
      * @return top.jpower.jpower.module.base.vo.ResponseData
      **/
     @Function(value = "保存",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_CLIENT",code = "SYSTEM_CLIENT_SAVE",type = Menu.TYPE.BTN),
-            @Menu(client = "admin",menuCode = "SYSTEM_CLIENT",code = "SYSTEM_CLIENT_ADD",type = Menu.TYPE.BTN)
+            @Menu(name = "编辑",client = "admin",menuCode = "SYSTEM_CLIENT",code = "SYSTEM_CLIENT_SAVE",type = Menu.TYPE.BTN),
+            @Menu(name = "新增",client = "admin",menuCode = "SYSTEM_CLIENT",code = "SYSTEM_CLIENT_ADD",type = Menu.TYPE.BTN)
     })
     @ApiOperation("保存或者更新客户端信息")
     @PostMapping("save")
@@ -110,7 +109,7 @@ public class ClientController extends BaseController {
 
     @Function(value = "客户端下拉",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "FUNCTION_CLIENT_SELECT",type = Menu.TYPE.INTERFACE),
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_CLIENT_SELECT",type = Menu.TYPE.INTERFACE),
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_ROLE_SELECT_URL",code = "ROLE_CLIENT_SELECT",type = Menu.TYPE.INTERFACE),
             @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "DATASCOPE_CLIENT_SELECT",type = Menu.TYPE.INTERFACE),
             @Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_CLIENT_SELECT",type = Menu.TYPE.INTERFACE)
     })

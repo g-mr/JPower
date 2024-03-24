@@ -72,7 +72,7 @@ public class DataScopeController {
     }
 
     @Function(value = "复制",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "SYSTEM_DATASCOPE_COPY",type = Menu.TYPE.BTN)
+            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE", btnCode = "SYSTEM_DATASCOPE_LISTPAGE",code = "SYSTEM_DATASCOPE_COPY",type = Menu.TYPE.BTN)
     })
     @ApiOperation(value = "复制")
     @PostMapping(value = "/copy",produces="application/json")
@@ -89,7 +89,7 @@ public class DataScopeController {
     }
 
     @Function(value = "新增",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "SYSTEM_DATASCOPE_ADD",type = Menu.TYPE.BTN)
+            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE", btnCode = "SYSTEM_DATASCOPE_LISTPAGE",code = "SYSTEM_DATASCOPE_ADD",type = Menu.TYPE.BTN)
     })
     @ApiOperation(value = "新增",notes = "主键ID不可传")
     @PostMapping(value = "/add",produces="application/json")
@@ -117,7 +117,7 @@ public class DataScopeController {
     }
 
     @Function(value = "修改",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "SYSTEM_DATASCOPE_UPDATE",type = Menu.TYPE.BTN)
+            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE", btnCode = "SYSTEM_DATASCOPE_LISTPAGE",code = "SYSTEM_DATASCOPE_UPDATE",type = Menu.TYPE.BTN)
     })
     @ApiOperation("修改")
     @PutMapping(value = "/update",produces="application/json")
@@ -129,7 +129,7 @@ public class DataScopeController {
     }
 
     @Function(value = "删除",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "SYSTEM_DATASCOPE_DELETE",type = Menu.TYPE.BTN)
+            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE", btnCode = "SYSTEM_DATASCOPE_LISTPAGE",code = "SYSTEM_DATASCOPE_DELETE",type = Menu.TYPE.BTN)
     })
     @ApiOperation("删除")
     @DeleteMapping(value = "/delete",produces="application/json")
@@ -140,7 +140,7 @@ public class DataScopeController {
     }
 
     @Function(value = "详情",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "SYSTEM_DATASCOPE_DETAIL",type = Menu.TYPE.BTN)
+            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE", btnCode = "SYSTEM_DATASCOPE_LISTPAGE",code = "SYSTEM_DATASCOPE_DETAIL",type = Menu.TYPE.BTN)
     })
     @ApiOperation("详情")
     @GetMapping(value = "/queryById",produces="application/json")
@@ -178,7 +178,7 @@ public class DataScopeController {
     }
 
     @Function(value = "数据权限ID",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_DATASCOPE_LISTID",type = Menu.TYPE.INTERFACE)
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_DATASCOPE_LIST",code = "SYSTEM_DATASCOPE_LISTID",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("通过角色ID查询所有数据权限ID")
     @GetMapping(value = "/listIdByRoleId",produces="application/json")
@@ -190,7 +190,7 @@ public class DataScopeController {
     }
 
     @Function(value = "数据赋权",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_DATASCOPE_ROLE",type = Menu.TYPE.BTN)
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_DATASCOPE_LIST",code = "SYSTEM_DATASCOPE_ROLE",type = Menu.TYPE.BTN)
     })
     @ApiOperation("角色赋权")
     @PostMapping(value = "/roleDataScope",produces="application/json")

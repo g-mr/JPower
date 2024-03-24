@@ -58,7 +58,7 @@ public class FunctionController extends BaseController {
 
 
     @Function(value = "树形按钮",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_BUT_TREE",type = Menu.TYPE.INTERFACE)
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_ROLE_SELECT_URL",code = "SYSTEM_ROLE_BUT_TREE",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation(value = "登录用户树形按钮接口", notes = "当不传菜单ID时，会查出顶级按钮接口；单独查一个菜单时，不会把顶级按钮接口返回")
     @GetMapping(value = "/treeButByMenu", produces="application/json")
@@ -71,7 +71,7 @@ public class FunctionController extends BaseController {
     }
 
     @Function(value = "接口资源",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE", btnCode = "SYSTEM_ROLE_UPDATEFUNCTION",code = "ROLE_INTERFACE_LIST",type = Menu.TYPE.INTERFACE)
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE", btnCode = "SYSTEM_ROLE_SELECT_URL",code = "ROLE_INTERFACE_LIST",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation(value = "接口资源")
     @GetMapping(value = "/listInterface", produces="application/json")
@@ -207,7 +207,7 @@ public class FunctionController extends BaseController {
         }
     }
 
-    @Function(value = "角色权限",menus = {
+    @Function(value = "功能权限",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_SELECT_URL",type = Menu.TYPE.BTN)
     })
     @ApiOperation("根据角色ID查询所有的权限ID")
@@ -254,7 +254,7 @@ public class FunctionController extends BaseController {
     }
 
     @Function(value = "菜单树形",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_MENU_TREE",type = Menu.TYPE.INTERFACE),
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_ROLE_SELECT_URL",code = "ROLE_MENU_TREE",type = Menu.TYPE.INTERFACE),
             @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_MENU",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("查询登录用户所有菜单树形结构")

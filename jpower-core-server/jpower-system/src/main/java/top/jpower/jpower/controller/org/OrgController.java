@@ -116,7 +116,7 @@ public class OrgController extends BaseController {
     @Function(value = "树形部门",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_ORG",code = "SYSTEM_ORG_TREE",type = Menu.TYPE.INTERFACE),
             @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_ORG",type = Menu.TYPE.INTERFACE),
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_ORG",type = Menu.TYPE.INTERFACE)
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_DATASCOPE_LIST",code = "SYSTEM_ROLE_ORG",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("加载组织机构树形菜单")
     @ApiImplicitParams({

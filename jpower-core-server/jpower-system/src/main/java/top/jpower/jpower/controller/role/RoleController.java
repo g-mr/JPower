@@ -6,8 +6,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import top.jpower.jpower.dbs.dao.role.TbCoreFunctionDao;
-import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
 import top.jpower.jpower.dbs.entity.role.TbCoreRole;
 import top.jpower.jpower.module.annotation.Function;
 import top.jpower.jpower.module.annotation.Menu;
@@ -24,7 +22,6 @@ import top.jpower.jpower.module.common.utils.ShieldUtil;
 import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
 import top.jpower.jpower.module.common.utils.constants.StringPool;
 import top.jpower.jpower.module.mp.support.Condition;
-import top.jpower.jpower.service.role.CoreFunctionService;
 import top.jpower.jpower.service.role.CoreRoleFunctionService;
 import top.jpower.jpower.service.role.CoreRoleService;
 
@@ -54,7 +51,7 @@ public class RoleController extends BaseController {
     }
 
     @Function(value = "角色树形",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "USER_ROLE_TREE",type = Menu.TYPE.INTERFACE)
+            @Menu(client = "admin",menuCode = "SYSTEM_USER",btnCode = "SYSTEM_USER_UPDATEROLE",code = "USER_ROLE_TREE",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("查询角色树结构")
     @GetMapping(value = "/tree",produces="application/json")
@@ -180,7 +177,7 @@ public class RoleController extends BaseController {
     }
 
     @Function(value = "顶部菜单ID",menus = {
-        @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "ROLE_TOPMENU_ID",type = Menu.TYPE.INTERFACE)
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_ROLE_SELECT_URL",code = "ROLE_TOPMENU_ID",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("角色关联的顶部菜单ID")
     @GetMapping(value = "/topMenuId",produces="application/json")

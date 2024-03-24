@@ -69,7 +69,7 @@ public class UserController extends BaseController {
     }
 
     @Function(value = "用户在线信息",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "USER_ONLINE",type = Menu.TYPE.BTN)
+            @Menu(client = "admin",menuCode = "SYSTEM_USER", btnCode = "USER_OFFLINE",code = "USER_ONLINE",type = Menu.TYPE.BTN)
     })
     @ApiOperation("查询用户在线信息")
     @GetMapping(value = "/online", produces = "application/json")
@@ -372,7 +372,7 @@ public class UserController extends BaseController {
     }
 
     @Function(value = "模板下载",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_DOWNLOADTEMPLATE",type = Menu.TYPE.INTERFACE)
+            @Menu(client = "admin",menuCode = "SYSTEM_USER", btnCode = "SYSTEM_USER_IMPORTUSER",code = "SYSTEM_USER_DOWNLOADTEMPLATE",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation(value = "用户上传模板下载")
     @GetMapping(value = "/downloadTemplate")

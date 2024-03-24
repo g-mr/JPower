@@ -54,7 +54,7 @@ public class RoleUserController extends BaseController {
     }
 
     @Function(value = "角色新增用户",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_ADDUSER",type = Menu.TYPE.BTN)
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_ROLE_USER",code = "SYSTEM_ROLE_ADDUSER",type = Menu.TYPE.BTN)
     })
     @ApiOperation(value = "给角色新增用户")
     @PutMapping(value = "/addRoleUser", produces = "application/json")
@@ -70,7 +70,7 @@ public class RoleUserController extends BaseController {
     }
 
     @Function(value = "角色去除用户",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_DELUSER",type = Menu.TYPE.BTN)
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_ROLE_USER",code = "SYSTEM_ROLE_DELUSER",type = Menu.TYPE.BTN)
     })
     @ApiOperation(value = "给角色去除用户")
     @DeleteMapping(value = "/deleteRoleUser", produces = "application/json")
@@ -95,7 +95,7 @@ public class RoleUserController extends BaseController {
         return ReturnJsonUtil.ok("查询成功", userRoleList);
     }
 
-    @Function(value = "角色用户列表",menus = {
+    @Function(value = "角色成员",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_USER",type = Menu.TYPE.BTN)
     })
     @ApiOperation(value = "通过角色查询用户列表")
