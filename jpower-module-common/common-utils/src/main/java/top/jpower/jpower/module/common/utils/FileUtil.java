@@ -97,7 +97,8 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
             response.setHeader("content-type", "application/octet-stream");
             response.setContentType("application/octet-stream");
             // 下载文件能正常显示中文
-            response.setHeader("Content-Disposition", "attachment;filename=" + new String(URLEncoder.encode(fileName, CharsetKit.UTF_8).getBytes(CharsetKit.CHARSET_UTF_8), CharsetKit.CHARSET_ISO_8859_1));
+            fileName = new String(URLEncoder.encode(fileName, CharsetKit.UTF_8).getBytes(CharsetKit.CHARSET_UTF_8), CharsetKit.CHARSET_ISO_8859_1);
+            response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
             response.setHeader("filename", fileName);
             OutputStream os = null;
             try {
@@ -130,8 +131,9 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
                 response.setHeader("content-type", "application/octet-stream");
                 response.setContentType("application/octet-stream");
                 // 下载文件能正常显示中文
-                response.setHeader("Content-Disposition", "attachment;filename=" + new String(URLEncoder.encode(fileName, CharsetKit.UTF_8).getBytes(CharsetKit.CHARSET_UTF_8), CharsetKit.CHARSET_ISO_8859_1));
-                response.setHeader("filename",URLEncoder.encode(fileName, "UTF-8"));
+                fileName = new String(URLEncoder.encode(fileName, CharsetKit.UTF_8).getBytes(CharsetKit.CHARSET_UTF_8), CharsetKit.CHARSET_ISO_8859_1);
+                response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
+                response.setHeader("filename", fileName);
                 // 实现文件下载
                 byte[] buffer = new byte[1024];
                 FileInputStream fis = null;
