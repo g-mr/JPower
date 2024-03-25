@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import top.jpower.jpower.module.common.support.FileType;
+import top.jpower.jpower.module.common.utils.constants.CharsetKit;
 import top.jpower.jpower.module.common.utils.constants.StringPool;
 
 import javax.servlet.http.HttpServletResponse;
@@ -96,14 +97,17 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
             response.setHeader("content-type", "application/octet-stream");
             response.setContentType("application/octet-stream");
             // 下载文件能正常显示中文
-            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
+            response.setHeader("Content-Disposition", "attachment;filename=" + new String(URLEncoder.encode(fileName, CharsetKit.UTF_8).getBytes(CharsetKit.CHARSET_UTF_8), CharsetKit.CHARSET_ISO_8859_1));
+            response.setHeader("filename", fileName);
+            OutputStream os = null;
             try {
-                OutputStream os = response.getOutputStream();
+                os = response.getOutputStream();
                 os.write(bytes);
-                Fc.closeQuietly(os);
                 return true;
             } catch (IOException e) {
                 log.error("下载byte文件错误，{}error={}", StringPool.NEWLINE,ExceptionUtil.getStackTraceAsString(e));
+            } finally {
+                Fc.closeQuietly(os);
             }
         }
         return false;
@@ -126,7 +130,7 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
                 response.setHeader("content-type", "application/octet-stream");
                 response.setContentType("application/octet-stream");
                 // 下载文件能正常显示中文
-                response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
+                response.setHeader("Content-Disposition", "attachment;filename=" + new String(URLEncoder.encode(fileName, CharsetKit.UTF_8).getBytes(CharsetKit.CHARSET_UTF_8), CharsetKit.CHARSET_ISO_8859_1));
                 response.setHeader("filename",URLEncoder.encode(fileName, "UTF-8"));
                 // 实现文件下载
                 byte[] buffer = new byte[1024];
