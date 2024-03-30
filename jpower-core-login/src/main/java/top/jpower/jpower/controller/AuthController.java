@@ -117,7 +117,7 @@ public class AuthController extends BaseController {
         //判断单端登录
         TbCoreClient client = SystemCache.getClientByClientCode(ShieldUtil.getClientCodeFromHeader());
         if (StringUtil.equalsIgnoreCase(client.getLoginLimit(), ConstantsEnum.LOGIN_LIMIT.ONE.getValue())){
-            Set<String> keys = redisUtil.pattern(TOKEN_USER_KEY+userInfo.getUserId());
+            Set<String> keys = redisUtil.pattern(TOKEN_USER_KEY+userInfo.getUserId()+ StringPool.COLON);
             keys.forEach(key->{
                 Map<String,Object> map = (Map<String, Object>) redisUtil.get(key);
                 if (Fc.equalsValue(MapUtil.getStr(map,"client"),client.getClientCode())){
@@ -125,7 +125,7 @@ public class AuthController extends BaseController {
                 }
             });
         } else if(StringUtil.equalsIgnoreCase(client.getLoginLimit(), ConstantsEnum.LOGIN_LIMIT.SQUEEZE.getValue())){
-            Set<String> keys = redisUtil.pattern(TOKEN_USER_KEY+userInfo.getUserId());
+            Set<String> keys = redisUtil.pattern(TOKEN_USER_KEY+userInfo.getUserId()+ StringPool.COLON);
             keys.forEach(key->{
                 Map<String,Object> map = (Map<String, Object>) redisUtil.get(key);
                 if (Fc.equalsValue(MapUtil.getStr(map,"client"),client.getClientCode())){

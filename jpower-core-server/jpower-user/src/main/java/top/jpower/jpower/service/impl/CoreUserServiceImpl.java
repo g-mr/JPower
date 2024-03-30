@@ -32,6 +32,7 @@ import top.jpower.jpower.module.common.utils.*;
 import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
 import top.jpower.jpower.module.common.utils.constants.ConstantsUtils;
 import top.jpower.jpower.module.common.utils.constants.ParamsConstants;
+import top.jpower.jpower.module.common.utils.constants.StringPool;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.service.CoreUserService;
 import top.jpower.jpower.vo.UserVo;
@@ -62,7 +63,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
         PaginationContext.startPage();
         List<UserVo> userVo = coreUserDao.listVo(coreUser);
         //查询用户在线信息
-        userVo.forEach(user-> user.setOnLine(redisUtil.pattern(TOKEN_USER_KEY+user.getId()).size()));
+        userVo.forEach(user-> user.setOnLine(redisUtil.pattern(TOKEN_USER_KEY+user.getId() + StringPool.COLON).size()));
         return new PageInfo<>(userVo);
     }
 

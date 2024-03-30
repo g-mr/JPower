@@ -76,7 +76,7 @@ public class UserController extends BaseController {
     public ResponseData<List<Map<String,String>>> online(Long userId) {
         JpowerAssert.notNull(userId,JpowerError.Arg,"用户ID不可为空");
 
-        Set<String> keys = redisUtil.pattern(TOKEN_USER_KEY+userId);
+        Set<String> keys = redisUtil.pattern(TOKEN_USER_KEY+userId+StringPool.COLON);
         List<Map<String,Object>> list = new ArrayList<>();
         keys.forEach(key -> {
             Map<String,Object> map = (Map<String, Object>) redisUtil.get(key);
