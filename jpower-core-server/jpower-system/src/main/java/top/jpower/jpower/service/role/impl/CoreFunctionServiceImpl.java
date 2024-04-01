@@ -69,7 +69,6 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
 
         LambdaQueryWrapper<TbCoreFunction> wrapper =
                 Condition.getQueryWrapper(coreFunction,TbCoreFunction.class).lambda()
-                        .inSql(!ShieldUtil.isRoot(),TbCoreFunction::getId,StringUtil.format(ROLE_SQL,Fc.join(ShieldUtil.getUserRole())))
                         .inSql(Fc.notNull(menuId),TbCoreFunction::getId,StringUtil.format("select function_id from tb_core_function_menu where menu_id = {}",menuId))
                         .orderByAsc(TbCoreFunction::getSort);
 
