@@ -20,10 +20,7 @@ import top.jpower.jpower.module.common.cache.CacheNames;
 import top.jpower.jpower.module.common.controller.BaseController;
 import top.jpower.jpower.module.common.page.PaginationContext;
 import top.jpower.jpower.module.common.support.ChainMap;
-import top.jpower.jpower.module.common.utils.CacheUtil;
-import top.jpower.jpower.module.common.utils.Fc;
-import top.jpower.jpower.module.common.utils.ReturnJsonUtil;
-import top.jpower.jpower.module.common.utils.ShieldUtil;
+import top.jpower.jpower.module.common.utils.*;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.service.tenant.TenantService;
 
@@ -158,11 +155,15 @@ public class TenantController extends BaseController {
     @GetMapping("/queryByDomain")
     public ResponseData<Map<String,Object>> queryByDomain(@ApiParam(value = "域名",required = true) @RequestParam String domain){
         JpowerAssert.notEmpty(domain, JpowerError.Arg,"域名不可为空");
-        TbCoreTenant tenant = tenantService.getOne(Condition.<TbCoreTenant>getQueryWrapper().lambda().eq(TbCoreTenant::getDomain,domain));
+        domain = StringUtil.removeAllSuffix(domain, "/");
+        List<TbCoreTenant> tenants = tenantService.list(Condition.<TbCoreTenant>getQueryWrapper().apply("length(domain) > 0").apply("{0} like concat('%', domain)", domain));
+
         ChainMap<String,Object> map = ChainMap.create();
-        if (Fc.notNull(tenant)){
+        if (Fc.isNotEmpty(tenants) && Fc.equalsValue(tenants.size(), 1)){
+            TbCoreTenant tenant = tenants.get(0);
             map.put("tenantCode",tenant.getTenantCode())
                     .put("domain",tenant.getDomain())
+                    .put("title",tenant.getTenantName())
                     .put("logo",tenant.getLogo());
         }
         return ReturnJsonUtil.ok("查询成功",map.build());
