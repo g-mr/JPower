@@ -193,4 +193,14 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
         return tenantDao.updateBatchById(tenantList);
     }
 
+    @Override
+    public Map<String, String> config(Long id) {
+        return tenantDao.config(id);
+    }
+
+    @Override
+    public boolean updateConfig(Long id, Map<String, String> config) {
+        return tenantDao.updateConfig(id, config);
+    }
+
 }

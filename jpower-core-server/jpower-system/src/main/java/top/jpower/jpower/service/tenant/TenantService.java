@@ -5,6 +5,7 @@ import top.jpower.jpower.module.common.service.BaseService;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -38,4 +39,23 @@ public interface TenantService extends BaseService<TbCoreTenant> {
      * @param expireTime 过期时间
      */
     boolean setting(List<Long> ids, Integer accountNumber, Date expireTime);
+
+    /**
+     * 查询租户得设置
+     *
+     * @author mr.g
+     * @param id
+     * @return java.util.Map<java.lang.String,java.lang.String>
+     **/
+    Map<String, String> config(Long id);
+
+    /**
+     * 租户设置
+     *
+     * @author mr.g
+     * @param id 租户ID
+     * @param config 设置内容
+     * @return boolean 是否成功
+     **/
+    boolean updateConfig(Long id, Map<String, String> config);
 }

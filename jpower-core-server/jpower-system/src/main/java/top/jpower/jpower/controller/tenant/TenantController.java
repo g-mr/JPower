@@ -151,6 +151,25 @@ public class TenantController extends BaseController {
         return ReturnJsonUtil.status(tenantService.setting(ids,accountNumber,expireTime));
     }
 
+    @Function(value = "查询租户配置",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "TENANT_CONFIG",type = Menu.TYPE.INTERFACE, btnCode = "TENANT_UPDATE_CONFIG")
+    })
+    @ApiOperation("查询租户配置")
+    @GetMapping(value = "/config",produces = "application/json")
+    public ResponseData<Map<String, String>> config(@ApiParam(value = "租户ID",required = true) @RequestParam Long id){
+        return ReturnJsonUtil.data(tenantService.config(id));
+    }
+
+    @Function(value = "修改租户配置",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "TENANT_UPDATE_CONFIG",type = Menu.TYPE.BTN)
+    })
+    @ApiOperation("修改租户配置")
+    @PutMapping(value = "/updateConfig/{id}",produces = "application/json")
+    public ResponseData updateConfig(@ApiParam(value = "租户ID",required = true) @PathVariable("id") Long id,
+                                     @ApiParam(value = "设置内容",required = true) @RequestBody Map<String, String> config){
+        return ReturnJsonUtil.status(tenantService.updateConfig(id, config));
+    }
+
     @ApiOperation("通过域名查询租户")
     @GetMapping("/queryByDomain")
     public ResponseData<Map<String,Object>> queryByDomain(@ApiParam(value = "域名",required = true) @RequestParam String domain){
@@ -161,10 +180,11 @@ public class TenantController extends BaseController {
         ChainMap<String,Object> map = ChainMap.create();
         if (Fc.isNotEmpty(tenants) && Fc.equalsValue(tenants.size(), 1)){
             TbCoreTenant tenant = tenants.get(0);
+
             map.put("tenantCode",tenant.getTenantCode())
                     .put("domain",tenant.getDomain())
                     .put("title",tenant.getTenantName())
-                    .put("logo",tenant.getLogo());
+                    .put("config", tenantService.config(tenant.getId()));
         }
         return ReturnJsonUtil.ok("查询成功",map.build());
     }

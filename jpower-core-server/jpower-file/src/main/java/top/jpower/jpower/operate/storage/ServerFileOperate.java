@@ -74,11 +74,13 @@ public class ServerFileOperate implements FileOperate {
 	public Boolean download(TbCoreFile coreFile) throws IOException {
 		String path = coreFile.getPath();
 		if(StringUtils.isBlank(path)){
+			WebUtil.getResponse().setHeader("iserror", "true");
 			throw new BusinessException("文件不存在，无法下载");
 		}
 
 		File file = new File(path);
 		if (!file.exists()){
+			WebUtil.getResponse().setHeader("iserror", "true");
 			throw new BusinessException(file.getName()+"文件不存在，无法下载");
 		}
 		return FileUtil.download(file, WebUtil.getResponse(),coreFile.getName());

@@ -4,6 +4,8 @@ import cn.hutool.core.date.DatePattern;
 import com.alibaba.fastjson2.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -11,6 +13,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import top.jpower.jpower.module.dbs.entity.base.BaseEntity;
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  * @ClassName TbCoreTenant
@@ -20,6 +23,7 @@ import java.util.Date;
  * @Version 1.0
  */
 @Data
+@TableName(autoResultMap = true)
 public class TbCoreTenant extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -30,8 +34,6 @@ public class TbCoreTenant extends BaseEntity {
     private String tenantName;
     @ApiModelProperty(value = "域名地址")
     private String domain;
-    @ApiModelProperty(value = "租户LOGO")
-    private String logo;
     @ApiModelProperty(value = "联系人")
     private String contactName;
     @ApiModelProperty(value = "联系电话")
@@ -44,9 +46,12 @@ public class TbCoreTenant extends BaseEntity {
     @JsonFormat(shape = JsonFormat.Shape.STRING,timezone = "GMT+8", pattern = DatePattern.NORM_DATETIME_PATTERN,locale = "zh_CN")
     @JSONField(format= DatePattern.NORM_DATETIME_PATTERN)
     @ApiModelProperty(value = "过期时间")
-    @TableField(updateStrategy = FieldStrategy.IGNORED)
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private Date expireTime;
     @ApiModelProperty(value = "授权码",hidden = true)
     private String licenseKey;
+    @ApiModelProperty(value = "设置内容")
+    @TableField(value = "`config`", typeHandler = JacksonTypeHandler.class, select = false)
+    private Map<String, String> config;
 
 }
