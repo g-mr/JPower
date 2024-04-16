@@ -15,6 +15,7 @@ import top.jpower.jpower.cache.SystemCache;
 import top.jpower.jpower.cache.param.ParamConfig;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
 import top.jpower.jpower.dbs.entity.tenant.TbCoreTenant;
+import top.jpower.jpower.dto.ValidateDto;
 import top.jpower.jpower.feign.SmsClient;
 import top.jpower.jpower.module.annotation.Function;
 import top.jpower.jpower.module.annotation.Menu;
@@ -422,7 +423,7 @@ public class UserController extends BaseController {
         UserInfo userInfo = ShieldUtil.getUser();
         JpowerAssert.notNull(userInfo, JpowerError.Business, "请登录");
         JpowerAssert.isTrue(Validator.isMobile(phone), JpowerError.Business, "手机号不合法");
-        JpowerAssert.isTrue(smsClient.validate(VALIDATE_SMS_CODE, phone, phoneCode), JpowerError.Business, "验证码错误");
+        JpowerAssert.isTrue(smsClient.validate(new ValidateDto().setCode(VALIDATE_SMS_CODE).setPhone(phone).setPhoneCode(phoneCode)), JpowerError.Business, "验证码错误");
 
         boolean is = coreUserService.exists(Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getTelephone, phone));
         if (is){

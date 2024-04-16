@@ -3,11 +3,8 @@ package top.jpower.jpower.feign;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
-import top.jpower.jpower.dto.SmsResponse;
+import top.jpower.jpower.dto.*;
 import top.jpower.jpower.exception.JpowerFeignException;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author mr.g
@@ -21,42 +18,42 @@ public class SmsClientFallback implements FallbackFactory<SmsClient> {
         return new SmsClient() {
 
             @Override
-            public SmsResponse sendSms(String code, Map<String, String> map, List<String> phones) {
+            public SmsResponse sendSms(SmsRequestDto requestDto) {
                 throw new JpowerFeignException("短信发送失败==>"+cause.getMessage());
             }
 
             @Override
-            public SmsResponse sendSingleSms(String code, Map<String, String> map, String phone) {
+            public SmsResponse sendSingleSms(SmsRequestSingleDto requestSingleDto) {
                 throw new JpowerFeignException("短信发送失败==>"+cause.getMessage());
             }
 
             @Override
-            public boolean send(String code, Map<String, String> param, List<String> phones) {
+            public boolean send(SmsRequestDto requestDto) {
                 throw new JpowerFeignException("短信发送失败==>"+cause.getMessage());
             }
 
             @Override
-            public boolean sendSingle(String code, Map<String, String> param, String phone) {
+            public boolean sendSingle(SmsRequestSingleDto requestSingleDto) {
                 throw new JpowerFeignException("短信发送失败==>"+cause.getMessage());
             }
 
             @Override
-            public void sendThrow(String code, Map<String, String> param, List<String> phones) {
+            public void sendThrow(SmsRequestDto requestDto) {
                 throw new JpowerFeignException("短信发送失败==>"+cause.getMessage());
             }
 
             @Override
-            public void sendSingleThrow(String code, Map<String, String> param, String phone) {
+            public void sendSingleThrow(SmsRequestSingleDto requestSingleDto) {
                 throw new JpowerFeignException("短信发送失败==>"+cause.getMessage());
             }
 
             @Override
-            public boolean sendValidate(String code, String phone) {
+            public boolean sendValidate(SmsValidateDto smsValidateDto) {
                 throw new JpowerFeignException("短信发送失败==>"+cause.getMessage());
             }
 
             @Override
-            public boolean validate(String code, String phone, String phoneCode) {
+            public boolean validate(ValidateDto validateDto) {
                 throw new JpowerFeignException("短信验证失败==>"+cause.getMessage());
             }
         };

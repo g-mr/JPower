@@ -7,6 +7,7 @@ import top.jpower.jpower.auth.TokenGranter;
 import top.jpower.jpower.cache.UserCache;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
 import top.jpower.jpower.dto.TokenParameter;
+import top.jpower.jpower.dto.ValidateDto;
 import top.jpower.jpower.feign.SmsClient;
 import top.jpower.jpower.module.base.enums.JpowerError;
 import top.jpower.jpower.module.base.exception.BusinessException;
@@ -42,7 +43,7 @@ public class PhoneTokenGranter implements TokenGranter {
         String phone = tokenParameter.getPhone();
         String phoneCode = tokenParameter.getPhoneCode();
         String tenantCode = tokenParameter.getTenantCode();
-        if (!smsClient.validate(VALIDATE_SMS_CODE, phone, phoneCode)){
+        if (!smsClient.validate(new ValidateDto().setCode(VALIDATE_SMS_CODE).setPhone(phone).setPhoneCode(phoneCode))){
             throw new BusinessException(TokenUtil.PHONE_NOT_CORRECT);
         }
 

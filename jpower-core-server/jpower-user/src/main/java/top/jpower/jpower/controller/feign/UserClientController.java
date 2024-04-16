@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.jpower.dbs.entity.TbCorePost;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
+import top.jpower.jpower.dto.ValidatePasswordDto;
 import top.jpower.jpower.feign.UserClient;
 import top.jpower.jpower.module.base.vo.ResponseData;
 import top.jpower.jpower.module.common.utils.ReturnJsonUtil;
@@ -51,8 +52,8 @@ public class UserClientController implements UserClient {
 
     @ApiOperation(value = "更新用户登陆信息")
     @Override
-    @PutMapping("/updateUserLoginInfo")
-    public ResponseData updateUserLoginInfo(@RequestParam Long userId){
+    @PutMapping("/updateUserLoginInfo/{userId}")
+    public ResponseData updateUserLoginInfo(@PathVariable("userId") Long userId){
         return ReturnJsonUtil.status(coreUserService.updateLoginInfo(userId));
     }
 
@@ -80,8 +81,8 @@ public class UserClientController implements UserClient {
 
     @Override
     @PostMapping("/saveUser")
-    public ResponseData saveUser(@RequestBody TbCoreUser user,@RequestParam Long roleId) {
-        return coreUserService.saveUser(user,roleId)?ReturnJsonUtil.ok("用户创建成功"):ReturnJsonUtil.fail("用户创建失败");
+    public ResponseData saveUser(@RequestBody TbCoreUser user) {
+        return coreUserService.saveUser(user)?ReturnJsonUtil.ok("用户创建成功"):ReturnJsonUtil.fail("用户创建失败");
     }
 
 
@@ -100,7 +101,7 @@ public class UserClientController implements UserClient {
 
     @Override
     @PostMapping("/validatePassword")
-    public boolean validatePassword(@RequestParam String account,@RequestParam String password,@RequestParam String tenantCode) {
-        return coreUserService.validatePassword(account,password,tenantCode);
+    public boolean validatePassword(@RequestBody ValidatePasswordDto validatePasswordDto) {
+        return coreUserService.validatePassword(validatePasswordDto.getAccount(), validatePasswordDto.getPassword(), validatePasswordDto.getTenantCode());
     }
 }

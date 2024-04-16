@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestParam;
 import top.jpower.jpower.dbs.entity.TbCorePost;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
+import top.jpower.jpower.dto.ValidatePasswordDto;
 import top.jpower.jpower.module.base.vo.ResponseData;
 import top.jpower.jpower.module.common.utils.ReturnJsonUtil;
 import top.jpower.jpower.module.common.utils.constants.ConstantsReturn;
@@ -59,8 +60,8 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
             }
 
             @Override
-            public ResponseData saveUser(TbCoreUser user, Long roleId) {
-                log.error("调用saveUser失败，参数：user={}，roleId={} ，e={}", user, roleId, cause);
+            public ResponseData saveUser(TbCoreUser user) {
+                log.error("调用saveUser失败，参数：user={} ，e={}", user, cause);
                 return ReturnJsonUtil.print(ConstantsReturn.RECODE_API, cause.getMessage(), false);
             }
 
@@ -79,15 +80,13 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
             /**
              * 验证帐号密码是否正确
              *
-             * @param account
-             * @param password
-             * @param tenantCode
+             * @param validatePasswordDto
              * @return
              * @author mr.g
              **/
             @Override
-            public boolean validatePassword(String account, String password, String tenantCode) {
-                log.error("调用validatePassword失败，参数：account={},password={},tenantCode={}", account, password, tenantCode);
+            public boolean validatePassword(ValidatePasswordDto validatePasswordDto) {
+                log.error("调用validatePassword失败，参数：validatePasswordDto={}", validatePasswordDto);
                 return false;
             }
         };

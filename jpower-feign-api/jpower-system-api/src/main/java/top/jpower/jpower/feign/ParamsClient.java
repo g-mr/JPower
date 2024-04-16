@@ -21,7 +21,7 @@ public interface ParamsClient {
      * @return top.jpower.jpower.module.base.vo.ResponseData<java.lang.Boolean>
      */
     @GetMapping("/queryByCode")
-    ResponseData<String> queryByCode(@RequestParam String code);
+    ResponseData<String> queryByCode(@RequestParam("code") String code);
 
     /**
      * @author 郭丁志
@@ -31,6 +31,6 @@ public interface ParamsClient {
      * @return top.jpower.jpower.module.base.vo.ResponseData<java.lang.Boolean>
      */
     @GetMapping("/queryById")
-    TbCoreParam queryById(@RequestParam Long id);
+    TbCoreParam queryById(@RequestParam("id") Long id);
 
 }

@@ -4,6 +4,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 import top.jpower.jpower.dbs.entity.TbCorePost;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
+import top.jpower.jpower.dto.ValidatePasswordDto;
 import top.jpower.jpower.module.base.vo.ResponseData;
 import top.jpower.jpower.module.common.utils.constants.AppConstant;
 import top.jpower.jpower.vo.UserVo;
@@ -25,28 +26,28 @@ import java.util.List;
 public interface UserClient {
 
     @GetMapping("/queryUserByLoginId")
-    ResponseData<TbCoreUser> queryUserByLoginId(@RequestParam String loginId, @RequestParam String tenantCode);
+    ResponseData<TbCoreUser> queryUserByLoginId(@RequestParam("loginId") String loginId, @RequestParam("tenantCode") String tenantCode);
 
     @GetMapping("/getRoleIdsByUserId")
-    ResponseData<List<Long>> getRoleIds(@RequestParam Long userId);
+    ResponseData<List<Long>> getRoleIds(@RequestParam("userId") Long userId);
 
-    @PutMapping("/updateUserLoginInfo")
-    ResponseData updateUserLoginInfo(@RequestParam Long userId);
+    @PutMapping("/updateUserLoginInfo/{userId}")
+    ResponseData updateUserLoginInfo(@PathVariable("userId") Long userId);
 
     @GetMapping("/queryUserByCode")
-    ResponseData<TbCoreUser> queryUserByCode(@RequestParam String otherCode, @RequestParam String tenantCode);
+    ResponseData<TbCoreUser> queryUserByCode(@RequestParam("otherCode") String otherCode, @RequestParam("tenantCode") String tenantCode);
 
     @GetMapping("/get")
-    ResponseData<UserVo> get(@RequestParam Long id);
+    ResponseData<UserVo> get(@RequestParam("id") Long id);
 
     @GetMapping("/queryUserByPhone")
-    ResponseData<TbCoreUser> queryUserByPhone(@RequestParam String phone, @RequestParam String tenantCode);
+    ResponseData<TbCoreUser> queryUserByPhone(@RequestParam("phone") String phone, @RequestParam("tenantCode") String tenantCode);
 
     @PostMapping("/saveUser")
-    ResponseData saveUser(@RequestBody TbCoreUser user, @RequestParam Long roleId);
+    ResponseData saveUser(@RequestBody TbCoreUser user);
 
     @GetMapping("/listByUserType")
-    ResponseData<List<TbCoreUser>> listByUserType(@RequestParam Integer userType);
+    ResponseData<List<TbCoreUser>> listByUserType(@RequestParam("userType") Integer userType);
 
     /**
      * 通过ID查询岗位信息
@@ -56,17 +57,15 @@ public interface UserClient {
      * @return 岗位信息
      **/
     @GetMapping("/queryPostById")
-    ResponseData<TbCorePost> queryPostById(@RequestParam Long postId);
+    ResponseData<TbCorePost> queryPostById(@RequestParam("postId") Long postId);
 
     /**
      * 验证帐号密码是否正确
      * @author mr.g
-     * @param account
-     * @param password
-     * @param tenantCode
-     * @return
+     * @param validatePasswordDto
+     * @return 是否正确
      **/
     @PostMapping("/validatePassword")
-    boolean validatePassword(@RequestParam String account,@RequestParam  String password,@RequestParam String tenantCode);
+    boolean validatePassword(@RequestBody ValidatePasswordDto validatePasswordDto);
 
 }

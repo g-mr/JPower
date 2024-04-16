@@ -150,8 +150,9 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
             user.setActivationStatus(ConstantsEnum.YN01.Y.getValue());
             user.setOrgId(org.getId());
             user.setTenantCode(tenant.getTenantCode());
+            user.setRoleIds(Fc.toStr(role.getId()));
 
-            ResponseData data = userClient.saveUser(user,role.getId());
+            ResponseData data = userClient.saveUser(user);
             JpowerAssert.isTrue(data.isStatus(), JpowerError.Rpc, data.getCode(), data.getMessage());
             return true;
         }

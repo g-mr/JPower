@@ -52,5 +52,5 @@ public interface FileClient {
      * @return ResponseData
      **/
     @GetMapping(value = "/getFileDetail",produces="application/json")
-    ResponseData<TbCoreFile> getFileDetail(@RequestParam String base);
+    ResponseData<TbCoreFile> getFileDetail(@RequestParam("base") String base);
 }

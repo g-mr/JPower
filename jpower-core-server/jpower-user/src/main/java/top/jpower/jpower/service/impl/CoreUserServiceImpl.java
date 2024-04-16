@@ -166,13 +166,18 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     }
 
     @Override
-    public boolean saveUser(TbCoreUser user, Long roleId) {
+    public boolean saveUser(TbCoreUser user) {
         if (coreUserDao.save(user)){
-            TbCoreUserRole userRole = new TbCoreUserRole();
-            userRole.setUserId(user.getId());
-            userRole.setRoleId(roleId);
-            if (Fc.notNull(roleId)){
-                return coreUserRoleDao.save(userRole);
+            List<TbCoreUserRole> userRoleList = new ArrayList<>();
+            Fc.toLongList(user.getRoleIds()).forEach(roleId->{
+                TbCoreUserRole userRole = new TbCoreUserRole();
+                userRole.setUserId(user.getId());
+                userRole.setRoleId(roleId);
+                userRoleList.add(userRole);
+            });
+
+            if (Fc.isNotEmpty(userRoleList)){
+                return coreUserRoleDao.saveBatch(userRoleList);
             }
         }
         return false;

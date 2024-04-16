@@ -137,9 +137,8 @@ public interface CoreUserService extends BaseService<TbCoreUser> {
      * @Description // 创建管理员用户
      * @date 0:09 2020/10/25 0025
      * @param user 用户信息
-     * @param roleId 角色ID
      */
-    boolean saveUser(TbCoreUser user, Long roleId);
+    boolean saveUser(TbCoreUser user);
 
     boolean addRoleUsers(Long roleId, List<Long> userIds);
 

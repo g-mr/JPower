@@ -3,12 +3,9 @@ package top.jpower.jpower.feign;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import top.jpower.jpower.dto.SmsResponse;
+import org.springframework.web.bind.annotation.RequestBody;
+import top.jpower.jpower.dto.*;
 import top.jpower.jpower.module.common.utils.constants.AppConstant;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author mr.g
@@ -21,86 +18,75 @@ public interface SmsClient {
      * 发送短信
      *
      * @author mr.g
-     * @param code 编号
-     * @param param 参数
-     * @param phones 手机号
+     * @param requestDto 请求参数
      * @return SmsResponse
      **/
     @PostMapping(value = "/sendSms",produces =  MediaType.APPLICATION_JSON_VALUE)
-    SmsResponse sendSms(@RequestParam String code, @RequestParam Map<String,String> param, @RequestParam List<String> phones);
+    SmsResponse sendSms(@RequestBody SmsRequestDto requestDto);
 
     /**
      * 发送短信
      *
      * @author mr.g
-     * @param code 编号
-     * @param param 参数
-     * @param phone 手机号
+     * @param requestSingleDto 请求参数
      * @return SmsResponse
      **/
     @PostMapping(value = "/sendSingleSms",produces =  MediaType.APPLICATION_JSON_VALUE)
-    SmsResponse sendSingleSms(@RequestParam String code,@RequestParam Map<String,String> param,@RequestParam String phone);
+    SmsResponse sendSingleSms(@RequestBody SmsRequestSingleDto requestSingleDto);
 
     /**
      * 发送短信
      *
      * @author mr.g
-     * @param code 编号
-     * @param param 参数
-     * @param phones 手机号
+     * @param requestDto 参数
      * @return boolean
      **/
     @PostMapping(value = "/send",produces =  MediaType.APPLICATION_JSON_VALUE)
-    boolean send(@RequestParam String code,@RequestParam Map<String, String> param,@RequestParam List<String> phones);
+    boolean send(@RequestBody SmsRequestDto requestDto);
 
     /**
      * 发送短信
      *
      * @author mr.g
-     * @param code 编号
-     * @param param 参数
-     * @param phone 手机号
+     * @param requestSingleDto 参数
      * @return boolean
      **/
     @PostMapping(value = "/sendSingle",produces =  MediaType.APPLICATION_JSON_VALUE)
-    boolean sendSingle(@RequestParam String code,@RequestParam Map<String, String> param,@RequestParam String phone);
+    boolean sendSingle(@RequestBody SmsRequestSingleDto requestSingleDto);
 
     /**
      * 给多个手机号发送短信，发送失败抛出异常
      *
      * @author mr.g
-     * @param param 参数
-     * @param phones 手机号
+     * @param requestDto 参数
      **/
     @PostMapping(value = "/sendThrow",produces =  MediaType.APPLICATION_JSON_VALUE)
-    void sendThrow(@RequestParam String code,@RequestParam Map<String, String> param,@RequestParam List<String> phones);
+    void sendThrow(@RequestBody SmsRequestDto requestDto);
 
     /**
      * 给一个手机号发送短信，发送失败抛出异常
      *
      * @author mr.g
-     * @param param 参数
-     * @param phone 手机号
+     * @param requestSingleDto 参数
      **/
     @PostMapping(value = "/sendSingleThrow",produces =  MediaType.APPLICATION_JSON_VALUE)
-    void sendSingleThrow(@RequestParam String code,@RequestParam Map<String, String> param,@RequestParam String phone);
+    void sendSingleThrow(@RequestBody SmsRequestSingleDto requestSingleDto);
 
     /**
      * 发送验证码
      *
      * @author mr.g
-     * @param code 编码
-     * @param phone 手机号
+     * @param smsValidateDto 参数
      **/
     @PostMapping(value = "/sendValidate",produces =  MediaType.APPLICATION_JSON_VALUE)
-    boolean sendValidate(@RequestParam String code,@RequestParam String phone);
+    boolean sendValidate(@RequestBody SmsValidateDto smsValidateDto);
 
     /**
      * 验证码验证
      *
      * @author mr.g
-     * @param phone 手机号
+     * @param validateDto 参数
      **/
     @PostMapping(value = "/validate",produces =  MediaType.APPLICATION_JSON_VALUE)
-    boolean validate(@RequestParam String code, @RequestParam String phone, @RequestParam String phoneCode);
+    boolean validate(@RequestBody ValidateDto validateDto);
 }

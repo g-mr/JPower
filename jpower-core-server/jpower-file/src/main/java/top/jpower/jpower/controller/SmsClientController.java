@@ -2,17 +2,11 @@ package top.jpower.jpower.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.jpower.config.sms.SmsBuilder;
-import top.jpower.jpower.dto.SmsResponse;
+import top.jpower.jpower.dto.*;
 import top.jpower.jpower.feign.SmsClient;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author mr.g
@@ -28,49 +22,49 @@ public class SmsClientController implements SmsClient {
 
     @Override
     @PostMapping(value = "/sendSms",produces =  MediaType.APPLICATION_JSON_VALUE)
-    public SmsResponse sendSms(@RequestParam String code, @RequestParam Map<String,String> map, @RequestParam List<String> phones) {
-        return smsBuilder.getTemplate(code).sendSms(map, phones);
+    public SmsResponse sendSms(@RequestBody SmsRequestDto requestDto) {
+        return smsBuilder.getTemplate(requestDto.getCode()).sendSms(requestDto.getMap(), requestDto.getPhones());
     }
 
     @Override
     @PostMapping(value = "/sendSingleSms",produces =  MediaType.APPLICATION_JSON_VALUE)
-    public SmsResponse sendSingleSms(@RequestParam String code, @RequestParam Map<String,String> map, @RequestParam String phone) {
-        return smsBuilder.getTemplate(code).sendSingleSms(map, phone);
+    public SmsResponse sendSingleSms(@RequestBody SmsRequestSingleDto requestSingleDto) {
+        return smsBuilder.getTemplate(requestSingleDto.getCode()).sendSingleSms(requestSingleDto.getMap(), requestSingleDto.getPhone());
     }
 
     @Override
     @PostMapping(value = "/send",produces =  MediaType.APPLICATION_JSON_VALUE)
-    public boolean send(@RequestParam String code,@RequestParam Map<String, String> param,@RequestParam List<String> phones) {
-        return smsBuilder.getTemplate(code).send(param, phones);
+    public boolean send(@RequestBody SmsRequestDto requestDto) {
+        return smsBuilder.getTemplate(requestDto.getCode()).send(requestDto.getMap(), requestDto.getPhones());
     }
 
     @Override
     @PostMapping(value = "/sendSingle",produces =  MediaType.APPLICATION_JSON_VALUE)
-    public boolean sendSingle(@RequestParam String code,@RequestParam Map<String, String> param,@RequestParam String phone) {
-        return smsBuilder.getTemplate(code).sendSingle(param, phone);
+    public boolean sendSingle(@RequestBody SmsRequestSingleDto requestSingleDto) {
+        return smsBuilder.getTemplate(requestSingleDto.getCode()).sendSingle(requestSingleDto.getMap(), requestSingleDto.getPhone());
     }
 
     @Override
     @PostMapping(value = "/sendThrow",produces =  MediaType.APPLICATION_JSON_VALUE)
-    public void sendThrow(@RequestParam String code,@RequestParam Map<String, String> param,@RequestParam List<String> phones) {
-        smsBuilder.getTemplate(code).sendThrow(param, phones);
+    public void sendThrow(@RequestBody SmsRequestDto requestDto) {
+        smsBuilder.getTemplate(requestDto.getCode()).sendThrow(requestDto.getMap(), requestDto.getPhones());
     }
 
     @Override
     @PostMapping(value = "/sendSingleThrow",produces =  MediaType.APPLICATION_JSON_VALUE)
-    public void sendSingleThrow(@RequestParam String code, @RequestParam Map<String, String> param, @RequestParam String phone) {
-        smsBuilder.getTemplate(code).sendSingleThrow(param, phone);
+    public void sendSingleThrow(@RequestBody SmsRequestSingleDto requestSingleDto) {
+        smsBuilder.getTemplate(requestSingleDto.getCode()).sendSingleThrow(requestSingleDto.getMap(), requestSingleDto.getPhone());
     }
 
     @Override
     @PostMapping(value = "/sendValidate",produces =  MediaType.APPLICATION_JSON_VALUE)
-    public boolean sendValidate(@RequestParam String code, @RequestParam String phone) {
-        return smsBuilder.getTemplate(code).sendValidate(phone);
+    public boolean sendValidate(@RequestBody SmsValidateDto smsValidateDto) {
+        return smsBuilder.getTemplate(smsValidateDto.getCode()).sendValidate(smsValidateDto.getPhone());
     }
 
     @Override
-    @PostMapping(value = "/sendValidate",produces =  MediaType.APPLICATION_JSON_VALUE)
-    public boolean validate(@RequestParam String code, @RequestParam String phone, @RequestParam String phoneCode) {
-        return smsBuilder.getTemplate(code).validate(phone, phoneCode);
+    @PostMapping(value = "/validate",produces =  MediaType.APPLICATION_JSON_VALUE)
+    public boolean validate(@RequestBody ValidateDto validateDto) {
+        return smsBuilder.getTemplate(validateDto.getCode()).validate(validateDto.getPhone(), validateDto.getPhoneCode());
     }
 }

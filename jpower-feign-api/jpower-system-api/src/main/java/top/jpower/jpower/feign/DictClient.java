@@ -21,5 +21,5 @@ public interface DictClient {
      * @date 16:42 2020/8/30 0030
      */
     @GetMapping("/queryDictByType")
-    ResponseData<List<Map<String, Object>>> queryDictByType(@RequestParam String dictTypeCode);
+    ResponseData<List<Map<String, Object>>> queryDictByType(@RequestParam("dictTypeCode") String dictTypeCode);
 }

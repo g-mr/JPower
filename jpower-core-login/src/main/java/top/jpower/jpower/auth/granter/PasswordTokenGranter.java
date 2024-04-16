@@ -8,6 +8,7 @@ import top.jpower.jpower.auth.TokenGranter;
 import top.jpower.jpower.cache.UserCache;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
 import top.jpower.jpower.dto.TokenParameter;
+import top.jpower.jpower.dto.ValidatePasswordDto;
 import top.jpower.jpower.feign.UserClient;
 import top.jpower.jpower.module.common.auth.UserInfo;
 import top.jpower.jpower.module.common.utils.Fc;
@@ -40,7 +41,7 @@ public class PasswordTokenGranter implements TokenGranter {
 			if (!Fc.isNull(authUserInfo)){
 				return authUserInfo.getPasswordUserInfo(tokenParameter);
 			}else {
-				if (userClient.validatePassword(account,password,tenantCode)){
+				if (userClient.validatePassword(new ValidatePasswordDto().setPassword(password).setAccount(account).setTenantCode(tenantCode))){
 					TbCoreUser result = UserCache.getUserByLoginId(account, tenantCode);
 					return UserUtil.toUserInfo(result);
 				}
