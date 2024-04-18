@@ -1,5 +1,6 @@
 package top.jpower.jpower.module.configurer.argument;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.net.url.UrlQuery;
 import com.alibaba.fastjson2.JSONObject;
 import org.springframework.core.MethodParameter;
@@ -126,7 +127,7 @@ public class RequestBodyHandlerMethodArgumentResolver extends RequestResponseBod
 
         Object arg = BODY.get();
         if (Fc.isNull(arg)){
-            arg = readWithMessageConverters(webRequest, parameter, parameter.getNestedGenericParameterType());
+            arg = readWithMessageConverters(webRequest, parameter, String.class);
             BODY.set(arg);
         }
 
@@ -147,14 +148,14 @@ public class RequestBodyHandlerMethodArgumentResolver extends RequestResponseBod
                     throw new HttpMessageNotReadableException("Required request body["+name+"] is missing: " +
                             parameter.getExecutable().toGenericString(), new ServletServerHttpRequest(request));
                 }
-                return jsonObject.get(name);
+                return jsonObject.getObject(name, parameter.getNestedGenericParameterType());
             } else {
                  UrlQuery query = UrlQuery.of(body, CharsetKit.CHARSET_UTF_8);
                 if (!query.getQueryMap().containsKey(name) && checkRequired(parameter)) {
                     throw new HttpMessageNotReadableException("Required request body["+name+"] is missing: " +
                             parameter.getExecutable().toGenericString(), new ServletServerHttpRequest(request));
                 }
-                return query.get(name);
+                return Convert.convert(parameter.getNestedGenericParameterType(), query.get(name));
             }
         }
         return arg;
