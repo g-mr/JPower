@@ -37,7 +37,7 @@ public class FastDfsFileOperate implements FileOperate {
 	@Override
 	public TbCoreFile upload(byte[] bytes, String name, Long size) {
 
-		String dfsPath = FileDfsUtil.upload(bytes,size, FileNameUtil.getPrefix(name));
+		String dfsPath = FileDfsUtil.upload(bytes, size, FileNameUtil.getPrefix(name));
 
 		TbCoreFile coreFile = new TbCoreFile();
 		coreFile.setFileType(FileTypeUtil.getType(IoUtil.toStream(bytes), name));
