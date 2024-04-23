@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
+import top.jpower.jpower.cache.dict.DictCache;
 import top.jpower.jpower.dbs.entity.TbCoreFile;
 import top.jpower.jpower.module.annotation.Function;
 import top.jpower.jpower.module.annotation.Menu;
@@ -24,6 +25,7 @@ import top.jpower.jpower.module.common.utils.constants.ConstantsUtils;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.operate.FileOperateBuilder;
 import top.jpower.jpower.service.CoreFileService;
+import top.jpower.jpower.service.OssService;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -50,6 +52,8 @@ public class FileController extends BaseController {
     private CoreFileService coreFileService;
     @Resource
     private FileOperateBuilder operateBuilder;
+    @Resource
+    private OssService ossService;
 
     @ApiOperation("上传文件")
     @PostMapping(value = "/upload",produces="application/json")
@@ -161,6 +165,17 @@ public class FileController extends BaseController {
 
         CacheUtil.clear(CacheNames.FILE_KEY);
         return ReturnJsonUtil.status(coreFileService.updateById(file));
+    }
+
+    @Function(value = "上传类型",menus = {
+        @Menu(client = "admin",menuCode = "SYSTEM_FILE",code = "FILE_STORAGE_TYPE",type = Menu.TYPE.BTN)
+    })
+    @ApiOperation("上传类型")
+    @GetMapping(value = "/storageType",produces="application/json")
+    public ResponseData storageType(){
+        List<Map<String, Object>> list = DictCache.getDictByType("FILE_STORAGE_TYPE");
+        list.addAll(ossService.listCodeName());
+        return ReturnJsonUtil.data(list);
     }
 
     @ApiOperation(value = "对导出文件进行下载",hidden = true)

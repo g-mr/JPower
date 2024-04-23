@@ -35,7 +35,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/sms")
 @RequiredArgsConstructor
-public class ResourceSmsController extends BaseController {
+public class SmsController extends BaseController {
 
     private final ResourceSmsService resourceSmsService;
     private final SmsBuilder smsBuilder;

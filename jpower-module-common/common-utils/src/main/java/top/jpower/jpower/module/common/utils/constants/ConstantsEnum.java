@@ -1,12 +1,17 @@
 package top.jpower.jpower.module.common.utils.constants;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import top.jpower.jpower.module.common.utils.Fc;
+
+import java.util.Arrays;
+
 /**
  * 字典 枚举
  *
  * @author mr.g
  **/
 public class ConstantsEnum {
-
 
     /**
      * @Author 郭丁志
@@ -411,6 +416,42 @@ public class ConstantsEnum {
                 }
             }
             return null;
+        }
+    }
+
+    /**
+     * OSS 类型
+     * @Author mr.g
+     **/
+    @Getter
+    @AllArgsConstructor
+    public enum OSS_CATEGORY {
+
+        /**
+         * 阿里云
+         **/
+        ALI("ali", "阿里云"),
+        /**
+         * 七牛云
+         **/
+        QN("qiniu", "七牛云");
+
+        private final String value;
+        private final String name;
+
+        public static String getName(String value) {
+            OSS_CATEGORY[] businessModeEnums = values();
+            for (OSS_CATEGORY businessModeEnum : businessModeEnums) {
+                if (businessModeEnum.value.equals(value)) {
+                    return businessModeEnum.name;
+                }
+            }
+            return null;
+        }
+
+        public static OSS_CATEGORY getEnum(String value) {
+            return Arrays.stream(values()).filter(e-> Fc.equalsValue(e.value, value)).findFirst()
+                    .orElseThrow(()->new NullPointerException("未找到OSS_TYPE="+value));
         }
     }
 

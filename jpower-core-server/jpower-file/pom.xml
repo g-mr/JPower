@@ -32,6 +32,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.qiniu</groupId>
+            <artifactId>qiniu-java-sdk</artifactId>
+            <version>${qiniu.oss.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-system-api</artifactId>
             <version>${com.jpower.version}</version>

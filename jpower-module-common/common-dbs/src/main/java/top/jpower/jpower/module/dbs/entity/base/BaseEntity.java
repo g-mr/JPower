@@ -7,7 +7,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import top.jpower.jpower.module.common.validated.UpdateGroup;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
@@ -25,6 +27,7 @@ public class BaseEntity implements Serializable {
 
     @ApiModelProperty("主键")
     @TableId(value = "id",type = IdType.ASSIGN_ID)
+    @NotNull(message = "ID 不可为空", groups = UpdateGroup.class)
     private Long id;
 
     @ApiModelProperty(value = "创建部门",hidden=true)

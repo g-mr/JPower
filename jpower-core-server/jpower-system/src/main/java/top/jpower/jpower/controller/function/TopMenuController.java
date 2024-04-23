@@ -85,7 +85,7 @@ public class TopMenuController extends BaseController {
         long c = menuService.count(Condition.<TbCoreTopMenu>getQueryWrapper().lambda().eq(TbCoreTopMenu::getCode,topMenu.getCode()).ne(TbCoreTopMenu::getId,topMenu.getId()));
         JpowerAssert.geZero(c,JpowerError.Business, "菜单编号不可重复");
 
-        return ReturnJsonUtil.status(menuService.updateById(topMenu));
+        return ReturnJsonUtil.status(menuService.updateAllById(topMenu));
     }
 
     @Function(value = "菜单开关",menus = {

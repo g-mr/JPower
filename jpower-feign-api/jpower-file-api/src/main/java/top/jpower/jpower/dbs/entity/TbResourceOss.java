@@ -3,7 +3,10 @@ package top.jpower.jpower.dbs.entity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import top.jpower.jpower.module.base.annotation.Dict;
 import top.jpower.jpower.module.dbs.entity.base.BaseEntity;
+
+import javax.validation.constraints.NotBlank;
 
 /**
  * @author mr.g
@@ -13,6 +16,14 @@ import top.jpower.jpower.module.dbs.entity.base.BaseEntity;
 @Data
 public class TbResourceOss extends BaseEntity {
     private static final long serialVersionUID = -1613026851565115477L;
+
+    @ApiModelProperty("OSS类型 字典：OSS_CATEGORY")
+    @Dict(name = "OSS_CATEGORY")
+    @NotBlank(message = "OSS类型 不可为空")
+    private String category;
+
+    @ApiModelProperty("名称")
+    private String name;
 
     @ApiModelProperty("编码")
     private String code;
@@ -30,5 +41,6 @@ public class TbResourceOss extends BaseEntity {
     private String externalAddress;
 
     @ApiModelProperty("空间名称")
+    @NotBlank(message = "空间名称 不可为空")
     private String bucketName;
 }

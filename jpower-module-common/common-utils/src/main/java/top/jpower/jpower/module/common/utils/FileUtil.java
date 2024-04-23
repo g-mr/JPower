@@ -82,6 +82,15 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
         }
     }
 
+    private static void downloadHeader(HttpServletResponse response,String fileName) throws UnsupportedEncodingException {
+        response.setHeader("content-type", "application/octet-stream");
+        response.setContentType("application/octet-stream");
+        // 下载文件能正常显示中文
+        fileName = new String(URLEncoder.encode(fileName, CharsetKit.UTF_8).getBytes(CharsetKit.CHARSET_UTF_8), CharsetKit.CHARSET_ISO_8859_1);
+        response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
+        response.setHeader("filename", fileName);
+    }
+
     /**
      * 文件下载
      *
@@ -94,12 +103,7 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
     public static Boolean download(byte[] bytes, HttpServletResponse response,String fileName) throws UnsupportedEncodingException {
 
         if (Fc.isNotEmpty(bytes)){
-            response.setHeader("content-type", "application/octet-stream");
-            response.setContentType("application/octet-stream");
-            // 下载文件能正常显示中文
-            fileName = new String(URLEncoder.encode(fileName, CharsetKit.UTF_8).getBytes(CharsetKit.CHARSET_UTF_8), CharsetKit.CHARSET_ISO_8859_1);
-            response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
-            response.setHeader("filename", fileName);
+            downloadHeader(response, fileName);
             OutputStream os = null;
             try {
                 os = response.getOutputStream();
@@ -128,26 +132,14 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
             // 如果文件存在，则进行下载
             if (file.exists()) {
                 // 配置文件下载
-                response.setHeader("content-type", "application/octet-stream");
-                response.setContentType("application/octet-stream");
-                // 下载文件能正常显示中文
-                fileName = new String(URLEncoder.encode(fileName, CharsetKit.UTF_8).getBytes(CharsetKit.CHARSET_UTF_8), CharsetKit.CHARSET_ISO_8859_1);
-                response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
-                response.setHeader("filename", fileName);
+                downloadHeader(response, fileName);
                 // 实现文件下载
-                byte[] buffer = new byte[1024];
                 FileInputStream fis = null;
                 BufferedInputStream bis = null;
                 try {
                     fis = new FileInputStream(file);
                     bis = new BufferedInputStream(fis);
-                    OutputStream os = response.getOutputStream();
-                    int i = bis.read(buffer);
-                    while (i != -1) {
-                        os.write(buffer, 0, i);
-                        i = bis.read(buffer);
-                    }
-                    return true;
+                    return writeResponse(bis, response);
                 } catch (Exception e) {
                     log.error("下载文件错误，{}error={}",StringPool.NEWLINE,ExceptionUtil.getStackTraceAsString(e));
                 } finally {
@@ -157,6 +149,47 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
             }
         }
         return false;
+    }
+
+    /**
+     * 文件下载
+     *
+     * @author mr.g
+     * @param inputStream 流
+     * @param response HttpServletResponse
+     * @param fileName 下载后的文件名
+     * @return 是否下载成功
+     **/
+    public static boolean download(InputStream inputStream, HttpServletResponse response,String fileName) throws IOException {
+        if (fileName != null) {
+            // 如果文件存在，则进行下载
+            if (Fc.isNotEmpty(inputStream)) {
+                // 配置文件下载
+                downloadHeader(response, fileName);
+                // 实现文件下载
+                BufferedInputStream bis = null;
+                try {
+                    bis = new BufferedInputStream(inputStream);
+                    return writeResponse(bis, response);
+                } catch (Exception e) {
+                    log.error("下载文件错误，{}error={}",StringPool.NEWLINE,ExceptionUtil.getStackTraceAsString(e));
+                } finally {
+                    Fc.closeQuietly(bis);
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean writeResponse(BufferedInputStream bis, HttpServletResponse response) throws Exception {
+        byte[] buffer = new byte[1024];
+        OutputStream os = response.getOutputStream();
+        int i = bis.read(buffer);
+        while (i != -1) {
+            os.write(buffer, 0, i);
+            i = bis.read(buffer);
+        }
+        return true;
     }
 
     /**
