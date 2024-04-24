@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : localhost_mysql
+ Source Server         : localhost
  Source Server Type    : MySQL
- Source Server Version : 80018
+ Source Server Version : 80027
  Source Host           : localhost:3306
  Source Schema         : jpower
 
  Target Server Type    : MySQL
- Target Server Version : 80018
+ Target Server Version : 80027
  File Encoding         : 65001
 
- Date: 24/04/2024 16:43:38
+ Date: 24/04/2024 23:52:41
 */
 
 SET NAMES utf8mb4;
@@ -21,102 +21,97 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- Table structure for tb_core_client
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_client`;
-CREATE TABLE `tb_core_client` (
-  `id` bigint(20) NOT NULL COMMENT '主键',
-  `name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '客户端名称',
+CREATE TABLE `tb_core_client`  (
+  `id` bigint(0) NOT NULL COMMENT '主键',
+  `name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '客户端名称',
   `client_code` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '客户端CODE，唯一约束',
   `client_secret` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '客户端密钥',
-  `access_token_validity` int(11) NOT NULL DEFAULT '0' COMMENT 'token过期时间，单位秒',
-  `refresh_token_validity` int(11) NOT NULL DEFAULT '0' COMMENT '刷新token时间，单位秒，时间应该比token过期时间更长',
-  `login_limit` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '登录限制',
-  `sort_num` int(11) DEFAULT NULL COMMENT '排序',
-  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
-  `create_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '创建人',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '更新人',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `is_deleted` tinyint(1) DEFAULT '0' COMMENT '是否删除 0否 1是',
-  `create_org` bigint(20) DEFAULT NULL,
+  `access_token_validity` int(0) NOT NULL DEFAULT 0 COMMENT 'token过期时间，单位秒',
+  `refresh_token_validity` int(0) NOT NULL DEFAULT 0 COMMENT '刷新token时间，单位秒，时间应该比token过期时间更长',
+  `login_limit` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '登录限制',
+  `sort_num` int(0) NULL DEFAULT NULL COMMENT '排序',
+  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
+  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+  `create_org` bigint(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `unique_client_code` (`client_code`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='客户端系统表';
+  UNIQUE INDEX `unique_client_code`(`client_code`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '客户端系统表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_core_client
 -- ----------------------------
-BEGIN;
 INSERT INTO `tb_core_client` VALUES (1728752347702018048, '后台管理平台', 'admin', 'SCewmm', 1800, 2400, 'NONE', 1, NULL, 1, '2021-03-03 22:33:10', 1, '2024-02-26 08:56:51', 0, 1728752845331021824);
-COMMIT;
 
 -- ----------------------------
 -- Table structure for tb_core_data_scope
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_data_scope`;
-CREATE TABLE `tb_core_data_scope` (
-  `id` bigint(20) NOT NULL COMMENT '主键',
-  `menu_id` bigint(20) DEFAULT NULL COMMENT '菜单主键',
-  `scope_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '编号',
-  `scope_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '数据权限名称',
-  `scope_field` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '数据权限字段',
-  `scope_class` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '数据权限类名',
-  `scope_column` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '*' COMMENT '数据可见字段',
-  `scope_type` tinyint(1) DEFAULT NULL COMMENT '数据权限类型 字典：DATA_SCOPE_TYPE',
-  `scope_value` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '数据权限值域',
-  `all_role` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否所有角色都执行',
-  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '数据权限备注',
-  `create_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '创建人',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '更新人',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `create_org` bigint(20) DEFAULT NULL COMMENT '创建部门',
-  `is_deleted` tinyint(1) DEFAULT '0' COMMENT '是否删除 0否 1是',
+CREATE TABLE `tb_core_data_scope`  (
+  `id` bigint(0) NOT NULL COMMENT '主键',
+  `menu_id` bigint(0) NULL DEFAULT NULL COMMENT '菜单主键',
+  `scope_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '编号',
+  `scope_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '数据权限名称',
+  `scope_field` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '数据权限字段',
+  `scope_class` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '数据权限类名',
+  `scope_column` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '*' COMMENT '数据可见字段',
+  `scope_type` tinyint(1) NULL DEFAULT NULL COMMENT '数据权限类型 字典：DATA_SCOPE_TYPE',
+  `scope_value` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '数据权限值域',
+  `all_role` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否所有角色都执行',
+  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '数据权限备注',
+  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `uk_scope_code` (`scope_code`) USING BTREE,
-  KEY `menu_id_pk` (`menu_id`),
+  UNIQUE INDEX `uk_scope_code`(`scope_code`) USING BTREE,
+  INDEX `menu_id_pk`(`menu_id`) USING BTREE,
   CONSTRAINT `menu_id_pk` FOREIGN KEY (`menu_id`) REFERENCES `tb_core_function` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='数据权限表';
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '数据权限表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_core_data_scope
 -- ----------------------------
-BEGIN;
 INSERT INTO `tb_core_data_scope` VALUES (1728752350004690944, 1728752670466293760, 'FILE_ALL', '文件管理 [全部可见]', '*', 'top.jpower.dbs.dao.mapper.selectPage', '-', 1, '', 0, NULL, 1, '2021-03-03 22:33:17', 1, '2023-11-26 12:29:34', 1728752845331021824, 0);
 INSERT INTO `tb_core_data_scope` VALUES (1728752351065849856, 1728752670466293760, 'FILE_ORG', '文件管理 [所在机构可见]', '*', 'top.jpower.dbs.dao.mapper.selectPage', 'create_org', 3, 'create_org = {orgId}', 0, NULL, 1, '2021-03-03 22:33:17', 1, '2023-11-26 12:29:34', 1728752845331021824, 0);
 INSERT INTO `tb_core_data_scope` VALUES (1728752352655491072, 1728752670466293760, 'FILE_ORG_CHILD', '文件管理 [所在机构可见及子级可见]', '*', 'top.jpower.dbs.dao.mapper.selectPage', 'create_org', 4, 'create_org in {orgId}', 0, NULL, 1, '2021-03-03 22:33:17', 1, '2023-11-26 12:29:34', 1728752845331021824, 0);
 INSERT INTO `tb_core_data_scope` VALUES (1728752354085748736, 1728752670466293760, 'FILE_USER', '文件管理 [本人可见]', '*', 'top.jpower.dbs.dao.mapper.selectPage', 'create_user', 2, 'create_user = {userId}', 0, NULL, 1, '2021-03-03 22:33:17', 1, '2023-11-26 12:29:34', 1728752845331021824, 0);
 INSERT INTO `tb_core_data_scope` VALUES (1728752355893493760, 1728752697632800768, 'ORG_CHILD', '部门管理 [所在机构可见及子级可见]', NULL, 'top.jpower.dbs.dao.org.mapper.TbCoreOrgMapper.listLazyByParent', 'id', 4, 'id in {orgId}', 0, NULL, 1, '2022-09-15 16:36:12', 1, '2023-11-26 12:29:34', 1728752845331021824, 0);
-COMMIT;
 
 -- ----------------------------
 -- Table structure for tb_core_dict
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_dict`;
-CREATE TABLE `tb_core_dict` (
-  `id` bigint(20) NOT NULL COMMENT '主键',
+CREATE TABLE `tb_core_dict`  (
+  `id` bigint(0) NOT NULL COMMENT '主键',
   `dict_type_code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字典类型代码',
   `code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字典代码',
   `name` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字典名称',
   `is_stop` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'N' COMMENT '是否停用',
-  `parent_id` bigint(20) DEFAULT '-1' COMMENT '上级ID',
+  `parent_id` bigint(0) NULL DEFAULT -1 COMMENT '上级ID',
   `locale` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'zh' COMMENT '语言 zh en',
-  `note` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
-  `sort_num` int(11) DEFAULT '0' COMMENT '排序',
-  `create_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '创建人',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '更新人',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `is_deleted` tinyint(1) DEFAULT '0' COMMENT '是否删除 0否 1是',
-  `dict_level` int(11) DEFAULT NULL COMMENT '树形字典结构的级别',
-  `pcode` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '-1' COMMENT '上级代码',
+  `note` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
+  `sort_num` int(0) NULL DEFAULT 0 COMMENT '排序',
+  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+  `dict_level` int(0) NULL DEFAULT NULL COMMENT '树形字典结构的级别',
+  `pcode` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '-1' COMMENT '上级代码',
   `tenant_code` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '000000' COMMENT '租户编码',
-  `create_org` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='字典表';
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '字典表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_core_dict
 -- ----------------------------
-BEGIN;
 INSERT INTO `tb_core_dict` VALUES (1728752358502350848, 'DKFS', '_parent', '_parent', 'N', -1, 'zh', '', 0, 1, '2021-03-03 22:33:23', 1, '2023-11-26 12:29:32', 0, NULL, '-1', '000000', 1728752845331021824);
 INSERT INTO `tb_core_dict` VALUES (1728752359534149632, 'DATA_SCOPE_TYPE', '1', '全部可见', 'N', -1, 'zh', '', 0, 1, '2021-03-03 22:33:23', 1, '2023-11-26 12:29:32', 0, NULL, '-1', '000000', 1728752845331021824);
 INSERT INTO `tb_core_dict` VALUES (1728752360570142720, 'DKFS', '_top', '_top', 'N', -1, 'zh', '', 0, 1, '2021-03-03 22:33:23', 1, '2023-11-26 12:29:32', 0, NULL, '-1', '000000', 1728752845331021824);
@@ -189,35 +184,33 @@ INSERT INTO `tb_core_dict` VALUES (1728752439150428160, 'PARAM_TYPE', 'query', '
 INSERT INTO `tb_core_dict` VALUES (1764851365206581250, 'SMS_CATEGORY', 'ali', '阿里', 'N', -1, 'zh', NULL, 0, 1, '2024-03-05 11:12:09', 1, '2024-03-05 11:12:09', 0, NULL, '-1', '000000', 1728752845331021824);
 INSERT INTO `tb_core_dict` VALUES (1782694643767443457, 'OSS_CATEGORY', 'ali', '阿里云', 'N', -1, 'zh', NULL, 0, 1, '2024-04-23 16:54:59', 1, '2024-04-23 16:54:59', 0, NULL, '-1', '000000', 1728752845331021824);
 INSERT INTO `tb_core_dict` VALUES (1782694777007898626, 'OSS_CATEGORY', 'qiniu', '七牛云', 'N', -1, 'zh', NULL, 1, 1, '2024-04-23 16:55:30', 1, '2024-04-23 16:55:30', 0, NULL, '-1', '000000', 1728752845331021824);
-COMMIT;
 
 -- ----------------------------
 -- Table structure for tb_core_dict_type
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_dict_type`;
-CREATE TABLE `tb_core_dict_type` (
-  `id` bigint(20) NOT NULL COMMENT '主键',
+CREATE TABLE `tb_core_dict_type`  (
+  `id` bigint(0) NOT NULL COMMENT '主键',
   `dict_type_code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字典类型代码',
   `dict_type_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字典类型名称',
-  `note` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '描述',
+  `note` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '描述',
   `del_enabled` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'N' COMMENT '是否允许删除 N:不允许 Y允许',
-  `sort_num` int(11) DEFAULT '0' COMMENT '排序',
-  `parent_id` bigint(20) DEFAULT '-1' COMMENT '父字典类型ID',
-  `create_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '创建人',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '更新人',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `is_deleted` tinyint(1) DEFAULT '0' COMMENT '是否删除 0否 1是',
-  `is_tree` tinyint(1) DEFAULT NULL COMMENT '是否树形结构 字典YN01',
-  `create_org` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `sort_num` int(0) NULL DEFAULT 0 COMMENT '排序',
+  `parent_id` bigint(0) NULL DEFAULT -1 COMMENT '父字典类型ID',
+  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+  `is_tree` tinyint(1) NULL DEFAULT NULL COMMENT '是否树形结构 字典YN01',
+  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `core_dict_type` (`dict_type_code`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='字典类型表';
+  UNIQUE INDEX `core_dict_type`(`dict_type_code`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '字典类型表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_core_dict_type
 -- ----------------------------
-BEGIN;
 INSERT INTO `tb_core_dict_type` VALUES (1728752440236752896, 'BUSINESS_TYPE', '操作日志业务类型', NULL, 'N', 2, 1728752454979731456, 1, '2022-05-10 23:30:28', 1, '2023-11-26 12:29:35', 0, 0, 1728752845331021824);
 INSERT INTO `tb_core_dict_type` VALUES (1728752441574735872, 'CITY_LEVEL', '行政区级别', NULL, 'N', 1, 1728752458242899968, 1, '2021-03-03 22:33:28', 1, '2023-11-26 12:29:35', 0, 0, 1728752845331021824);
 INSERT INTO `tb_core_dict_type` VALUES (1728752442744946688, 'CITY_TYPE', '城市类型', NULL, 'N', 1, 1728752458242899968, 1, '2021-03-03 22:33:28', 1, '2023-11-26 12:29:35', 0, 0, 1728752845331021824);
@@ -240,46 +233,67 @@ INSERT INTO `tb_core_dict_type` VALUES (1728752464215588864, 'YN01', '是否01',
 INSERT INTO `tb_core_dict_type` VALUES (1728752465650040832, 'YYZL', '语言种类', NULL, 'N', 2, 1728752458242899968, 1, '2021-03-03 22:33:28', 1, '2023-11-26 12:29:35', 0, 0, 1728752845331021824);
 INSERT INTO `tb_core_dict_type` VALUES (1764851320730181633, 'SMS_CATEGORY', '短信分类', NULL, 'Y', 0, 1728752458242899968, 1, '2024-03-05 11:11:59', 1, '2024-03-05 11:11:59', 0, 0, 1728752845331021824);
 INSERT INTO `tb_core_dict_type` VALUES (1782694566495780866, 'OSS_CATEGORY', '对象存储类型', NULL, 'Y', 3, 1728752458242899968, 1, '2024-04-23 16:54:40', 1, '2024-04-23 16:54:40', 0, 0, 1728752845331021824);
-COMMIT;
+
+-- ----------------------------
+-- Table structure for tb_core_file
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_core_file`;
+CREATE TABLE `tb_core_file`  (
+  `id` bigint(0) NOT NULL COMMENT '主键',
+  `name` varchar(127) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文件名称',
+  `file_size` int(0) NULL DEFAULT NULL COMMENT '文件大小 单位：字节',
+  `file_type` varchar(31) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文件类型',
+  `path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文件路径',
+  `content` longblob NULL COMMENT '文件内容',
+  `mark` varchar(156) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文件标识',
+  `storage_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'SERVER' COMMENT '存储类型 字典FILE_STORAGE_TYPE',
+  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
+  `create_user` bigint(0) NULL DEFAULT 1,
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '最后更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '文件表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for tb_core_function
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_function`;
-CREATE TABLE `tb_core_function` (
-  `id` bigint(20) NOT NULL COMMENT '主键',
-  `client_id` bigint(20) NOT NULL COMMENT '客户端ID',
+CREATE TABLE `tb_core_function`  (
+  `id` bigint(0) NOT NULL COMMENT '主键',
+  `client_id` bigint(0) NOT NULL COMMENT '客户端ID',
   `function_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
-  `alias` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '别名',
+  `alias` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '别名',
   `code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '功能编码',
-  `parent_id` bigint(20) DEFAULT '-1' COMMENT '父级ID',
-  `url` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '资源URL',
-  `function_type` int(11) NOT NULL DEFAULT '0' COMMENT '功能类型 0：按钮 1：菜单 2：接口',
-  `is_hide` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否隐藏',
-  `icon` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '图标',
-  `target` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '_self' COMMENT '打开方式',
-  `sort` int(11) DEFAULT '0' COMMENT '排序',
-  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
-  `moude_summary` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '模块概述',
-  `operate_instruction` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '操作说明',
-  `function_level` int(11) DEFAULT NULL COMMENT '菜单级别',
-  `create_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '创建人',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '更新人',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `is_deleted` tinyint(1) DEFAULT '0' COMMENT '是否删除 0否 1是',
-  `create_org` bigint(20) DEFAULT NULL COMMENT '创建部门',
-  `ancestor_id` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `parent_id` bigint(0) NULL DEFAULT -1 COMMENT '父级ID',
+  `url` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '资源URL',
+  `function_type` int(0) NOT NULL DEFAULT 0 COMMENT '功能类型 0：按钮 1：菜单 2：接口',
+  `is_hide` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否隐藏',
+  `icon` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '图标',
+  `target` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '_self' COMMENT '打开方式',
+  `sort` int(0) NULL DEFAULT 0 COMMENT '排序',
+  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
+  `moude_summary` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '模块概述',
+  `operate_instruction` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '操作说明',
+  `function_level` int(0) NULL DEFAULT NULL COMMENT '菜单级别',
+  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+  `ancestor_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `code_index` (`code`) USING BTREE,
-  KEY `client_id_fk` (`client_id`),
-  CONSTRAINT `client_id_fk` FOREIGN KEY (`client_id`) REFERENCES `tb_core_client` (`id`) ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='功能菜单表';
+  UNIQUE INDEX `code_index`(`code`) USING BTREE,
+  INDEX `client_id_fk`(`client_id`) USING BTREE,
+  CONSTRAINT `client_id_fk` FOREIGN KEY (`client_id`) REFERENCES `tb_core_client` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '功能菜单表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_core_function
 -- ----------------------------
-BEGIN;
 INSERT INTO `tb_core_function` VALUES (1728752466925109248, 1728752347702018048, '在线文档', '文档', '/kanyun', 1728752510478761984, 'https://www.kancloud.cn/guodingzhi/jpower/', 1, 0, 'iconfont iconicon_study', '_blank', 0, '', '', '', NULL, 1, '2021-03-04 00:56:46', 1, '2023-11-26 12:29:34', 0, 1728752845331021824, NULL);
 INSERT INTO `tb_core_function` VALUES (1728752468548304896, 1728752347702018048, '权限设置', '权限', 'AUTHORITY', -1, '/authority', 1, 0, 'iconfont iconicon_safety', '_self', 2, '', '', '', NULL, 1, '2021-03-03 22:33:41', 1, '2023-11-26 12:29:34', 0, 1728752845331021824, NULL);
 INSERT INTO `tb_core_function` VALUES (1728752473178816512, 1728752347702018048, '菜单列表', '菜单列表', 'CHILD_FUNCTION', 1728752684378800128, '/core/function/listByParent', 2, 0, NULL, '_self', NULL, NULL, NULL, NULL, NULL, 1, '2023-04-23 15:36:55', 1, '2023-11-26 12:29:34', 0, 1728752845331021824, NULL);
@@ -290,7 +304,7 @@ INSERT INTO `tb_core_function` VALUES (1728752481009582080, 1728752347702018048,
 INSERT INTO `tb_core_function` VALUES (1728752482834104320, 1728752347702018048, '顶级菜单选项', '顶级菜单选项', 'DATASCOPE_TOPMENU_SELECT', 1728752623653666816, '/core/menu/select', 2, 0, NULL, '_self', NULL, NULL, NULL, NULL, NULL, 1, '2023-04-23 15:36:55', 1, '2023-11-26 12:29:34', 0, 1728752845331021824, NULL);
 INSERT INTO `tb_core_function` VALUES (1728752485220663296, 1728752347702018048, '字典查询', '字典查询', 'DICT_SELECT', -1, '/core/dict/getDictListByType', 2, 0, NULL, '_self', 100, NULL, NULL, NULL, NULL, 1, '2022-10-27 20:00:42', 1, '2023-11-26 12:29:34', 0, 1728752845331021824, NULL);
 INSERT INTO `tb_core_function` VALUES (1728752487330398208, 1728752347702018048, '接口文档', '接口', 'DOC', 1728752510478761984, 'http://doc.top', 1, 0, 'iconfont iconicon_compile', '_blank', 0, '', '', '', NULL, 1, '2021-03-04 00:54:13', 1, '2023-11-26 12:29:34', 0, 1728752845331021824, NULL);
-INSERT INTO `tb_core_function` VALUES (1728752488563523584, 1728752347702018048, '文件下载', '下载', 'DOWNLOAD', -1, '/core/file/download/{base}', 2, 0, '', '_self', 105, '', '', '', 0, 1, '2021-03-03 22:33:41', 1, '2024-04-24 11:44:31', 0, 1728752845331021824, NULL);
+INSERT INTO `tb_core_function` VALUES (1728752488563523584, 1728752347702018048, '文件下载', '下载', 'DOWNLOAD', -1, '/resource/file/download/{base}', 2, 0, '', '_self', 105, '', '', '', 0, 1, '2021-03-03 22:33:41', 1, '2024-04-24 23:49:43', 0, 1728752845331021824, NULL);
 INSERT INTO `tb_core_function` VALUES (1728752490606149632, 1728752347702018048, 'ELK监控', 'ELK', 'ELK', 1728752516157849600, 'http://elk.top', 1, 0, 'iconfont icon-biaodan', '_blank', 0, '', '', '', NULL, 1, '2021-03-04 00:47:25', 1, '2023-11-26 12:29:34', 0, 1728752845331021824, NULL);
 INSERT INTO `tb_core_function` VALUES (1728752491759583232, 1728752347702018048, '错误日志', '错误日志', 'ERROR_LOG', 1728752512726908928, '/log/error', 1, 0, 'iconfont iconicon_doc', '_self', 5, '', '', '', NULL, 1, '2022-05-10 23:30:56', 1, '2023-11-26 12:29:34', 0, 1728752845331021824, NULL);
 INSERT INTO `tb_core_function` VALUES (1728752494343274496, 1728752347702018048, '错误日志', '错误日志', 'ERROR_LOG_LIST', 1728752491759583232, '/log/error/list', 2, 0, NULL, '_self', NULL, NULL, NULL, NULL, NULL, 1, '2023-04-23 15:36:55', 1, '2023-11-26 12:29:34', 0, 1728752845331021824, NULL);
@@ -369,11 +383,11 @@ INSERT INTO `tb_core_function` VALUES (1728752665244385280, 1728752347702018048,
 INSERT INTO `tb_core_function` VALUES (1728752666892746752, 1728752347702018048, '字典类型详情', '字典类型详情', 'SYSTEM_DICT_TYPE_DETAIL', 1728752646332268544, '/core/dict/getDictType', 2, 0, NULL, '_self', NULL, NULL, NULL, NULL, NULL, 1, '2023-04-23 15:36:55', 1, '2023-11-26 12:29:34', 0, 1728752845331021824, NULL);
 INSERT INTO `tb_core_function` VALUES (1728752668935372800, 1728752347702018048, '修改字典类型', '修改字典类型', 'SYSTEM_DICT_TYPE_UPDATE', 1728752646332268544, '/core/dict/update', 0, 0, NULL, '_self', NULL, NULL, NULL, NULL, NULL, 1, '2023-04-23 15:36:55', 1, '2023-11-26 12:29:34', 0, 1728752845331021824, NULL);
 INSERT INTO `tb_core_function` VALUES (1728752670466293760, 1728752347702018048, '文件管理', '文件列表', 'SYSTEM_FILE', 1764842401228152834, '/resource/file', 1, 0, 'iconfont iconicon_doc', '_self', 3, '', '', '', 2, 1, '2021-03-03 22:33:41', 1, '2024-04-23 16:47:47', 0, 1728752845331021824, '-1,1764842401228152834');
-INSERT INTO `tb_core_function` VALUES (1728752674559934464, 1728752347702018048, '文件上传', '上传', 'FILE_ADD', -1, '/core/file/upload', 2, 0, '', '_self', 106, NULL, NULL, NULL, 3, 1, '2021-03-03 22:33:41', 1, '2024-04-24 09:26:04', 0, 1728752845331021824, NULL);
-INSERT INTO `tb_core_function` VALUES (1728752676334125056, 1728752347702018048, '批量删除', '批量删除', 'SYSTEM_FILE_DELETE', 1728752670466293760, '/core/file/delete', 0, 0, NULL, '_self', NULL, NULL, NULL, NULL, NULL, 1, '2023-04-23 15:36:55', 1, '2023-11-26 12:29:34', 0, 1728752845331021824, NULL);
-INSERT INTO `tb_core_function` VALUES (1728752678917816320, 1728752347702018048, '文件详情', '文件详情', 'SYSTEM_FILE_DETAIL', 1728752670466293760, '/core/file/get', 0, 0, NULL, '_self', NULL, NULL, NULL, NULL, NULL, 1, '2023-04-23 15:36:55', 1, '2023-11-26 12:29:34', 0, 1728752845331021824, NULL);
-INSERT INTO `tb_core_function` VALUES (1728752680771698688, 1728752347702018048, '文件列表', '文件列表', 'SYSTEM_FILE_LIST', 1728752670466293760, '/core/file/listPage', 2, 0, NULL, '_self', NULL, NULL, NULL, NULL, NULL, 1, '2023-04-23 15:36:55', 1, '2023-11-26 12:29:34', 0, 1728752845331021824, NULL);
-INSERT INTO `tb_core_function` VALUES (1728752682763993088, 1728752347702018048, '修改文件', '修改文件', 'SYSTEM_FILE_UPDATE', 1728752670466293760, '/core/file/update', 0, 0, NULL, '_self', NULL, NULL, NULL, NULL, NULL, 1, '2023-04-23 15:36:55', 1, '2023-11-26 12:29:34', 0, 1728752845331021824, NULL);
+INSERT INTO `tb_core_function` VALUES (1728752674559934464, 1728752347702018048, '文件上传', '上传', 'FILE_ADD', -1, '/resource/file/upload', 2, 0, '', '_self', 106, NULL, NULL, NULL, 3, 1, '2021-03-03 22:33:41', 1, '2024-04-24 23:51:02', 0, 1728752845331021824, NULL);
+INSERT INTO `tb_core_function` VALUES (1728752676334125056, 1728752347702018048, '批量删除', '批量删除', 'SYSTEM_FILE_DELETE', 1728752670466293760, '/resource/file/delete', 0, 0, NULL, '_self', 0, NULL, NULL, NULL, NULL, 1, '2023-04-23 15:36:55', 1, '2024-04-24 23:50:13', 0, 1728752845331021824, NULL);
+INSERT INTO `tb_core_function` VALUES (1728752678917816320, 1728752347702018048, '文件详情', '文件详情', 'SYSTEM_FILE_DETAIL', 1728752670466293760, '/resource/file/get', 0, 0, NULL, '_self', 0, NULL, NULL, NULL, NULL, 1, '2023-04-23 15:36:55', 1, '2024-04-24 23:50:19', 0, 1728752845331021824, NULL);
+INSERT INTO `tb_core_function` VALUES (1728752680771698688, 1728752347702018048, '文件列表', '文件列表', 'SYSTEM_FILE_LIST', 1728752670466293760, '/resource/file/listPage', 2, 0, NULL, '_self', 0, NULL, NULL, NULL, NULL, 1, '2023-04-23 15:36:55', 1, '2024-04-24 23:50:24', 0, 1728752845331021824, NULL);
+INSERT INTO `tb_core_function` VALUES (1728752682763993088, 1728752347702018048, '修改文件', '修改文件', 'SYSTEM_FILE_UPDATE', 1728752670466293760, '/resource/file/update', 0, 0, NULL, '_self', 0, NULL, NULL, NULL, NULL, 1, '2023-04-23 15:36:55', 1, '2024-04-24 23:50:30', 0, 1728752845331021824, NULL);
 INSERT INTO `tb_core_function` VALUES (1728752684378800128, 1728752347702018048, '功能管理', '功能列表', 'SYSTEM_FUNCTION', 1728752599901323264, '/core/function', 1, 0, 'iconfont icon-caidan', '_self', 5, NULL, NULL, NULL, 2, 1, '2021-03-03 22:33:41', 1, '2023-11-26 12:29:34', 0, 1728752845331021824, NULL);
 INSERT INTO `tb_core_function` VALUES (1728752686949908480, 1728752347702018048, '新增', '新增', 'SYSTEM_FUNCTION_ADD', 1728752684378800128, '/core/function/add', 0, 0, NULL, '_self', NULL, NULL, NULL, NULL, NULL, 1, '2023-04-23 15:36:55', 1, '2023-11-26 12:29:34', 0, 1728752845331021824, NULL);
 INSERT INTO `tb_core_function` VALUES (1728752688317251584, 1728752347702018048, '删除', '删除', 'SYSTEM_FUNCTION_DELETE', 1728752684378800128, '/core/function/delete', 0, 0, NULL, '_self', NULL, NULL, NULL, NULL, NULL, 1, '2023-04-23 15:36:55', 1, '2023-11-26 12:29:34', 0, 1728752845331021824, NULL);
@@ -462,35 +476,33 @@ INSERT INTO `tb_core_function` VALUES (1782700222615388163, 1728752347702018048,
 INSERT INTO `tb_core_function` VALUES (1782700222615388164, 1728752347702018048, '列表', '列表', 'OSS_LIST', 1782695353636618241, '/oss/list', 2, 0, NULL, '_self', NULL, NULL, NULL, NULL, NULL, 1, '2024-04-23 17:17:09', 1, '2024-04-23 17:17:09', 0, 1728752845331021824, '1764842401228152834,-1,1782695353636618241');
 INSERT INTO `tb_core_function` VALUES (1782700222804131841, 1728752347702018048, '查询租户配置', '查询租户配置', 'TENANT_CONFIG', 1782700222611193857, '/core/tenant/config', 2, 0, NULL, '_self', NULL, NULL, NULL, NULL, NULL, 1, '2024-04-23 17:17:09', 1, '2024-04-23 17:17:09', 0, 1728752845331021824, '-1,1728752752674652160,1782700222611193857');
 INSERT INTO `tb_core_function` VALUES (1782942278277402626, 1728752347702018048, '上传类型', '上传类型', 'FILE_STORAGE_TYPE', 1782944188829011970, '/core/file/storageType', 2, 0, NULL, '_self', 0, NULL, NULL, NULL, NULL, 1, '2024-04-24 09:18:59', 1, '2024-04-24 09:26:57', 0, 1728752845331021824, '-1,1764842401228152834,1782944188829011970');
-INSERT INTO `tb_core_function` VALUES (1782944188829011970, 1728752347702018048, '文件上传', '文件上传', 'SYSTEM_FILE_ADD', 1728752670466293760, '/core/file/upload', 0, 0, NULL, '_self', 1, NULL, NULL, NULL, NULL, 1, '2024-04-24 09:26:35', 1, '2024-04-24 09:26:35', 0, 1728752845331021824, '1728752670466293760,-1,1764842401228152834');
-INSERT INTO `tb_core_function` VALUES (1782979167181602817, 1728752347702018048, '文件外链', '文件外链', 'FILE_URL', -1, '/core/file/url/{base}', 2, 0, NULL, '_self', 107, NULL, NULL, NULL, NULL, 1, '2024-04-24 11:45:34', 1, '2024-04-24 11:45:34', 0, 1728752845331021824, '-1');
-COMMIT;
+INSERT INTO `tb_core_function` VALUES (1782944188829011970, 1728752347702018048, '文件上传', '文件上传', 'SYSTEM_FILE_ADD', 1728752670466293760, '/resource/file/upload', 0, 0, NULL, '_self', 1, NULL, NULL, NULL, NULL, 1, '2024-04-24 09:26:35', 1, '2024-04-24 23:50:36', 0, 1728752845331021824, '1728752670466293760,-1,1764842401228152834');
+INSERT INTO `tb_core_function` VALUES (1782979167181602817, 1728752347702018048, '文件外链', '文件外链', 'FILE_URL', -1, '/resource/file/url/{base}', 2, 0, NULL, '_self', 107, NULL, NULL, NULL, NULL, 1, '2024-04-24 11:45:34', 1, '2024-04-24 23:49:53', 0, 1728752845331021824, '-1');
 
 -- ----------------------------
 -- Table structure for tb_core_function_menu
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_function_menu`;
-CREATE TABLE `tb_core_function_menu` (
-  `id` bigint(20) NOT NULL COMMENT '主键',
-  `function_id` bigint(20) NOT NULL COMMENT '功能ID',
-  `menu_id` bigint(20) NOT NULL COMMENT '菜单ID',
-  `create_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '创建人',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '更新人',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `is_deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除 0否 1是',
-  `create_org` bigint(20) DEFAULT NULL COMMENT '创建部门',
+CREATE TABLE `tb_core_function_menu`  (
+  `id` bigint(0) NOT NULL COMMENT '主键',
+  `function_id` bigint(0) NOT NULL COMMENT '功能ID',
+  `menu_id` bigint(0) NOT NULL COMMENT '菜单ID',
+  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
   PRIMARY KEY (`id`) USING BTREE,
-  KEY `function_id_fk` (`function_id`),
-  KEY `menu_id_fk` (`menu_id`),
-  CONSTRAINT `function_id_fk` FOREIGN KEY (`function_id`) REFERENCES `tb_core_function` (`id`) ON UPDATE RESTRICT,
-  CONSTRAINT `menu_id_fk` FOREIGN KEY (`menu_id`) REFERENCES `tb_core_top_menu` (`id`) ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='功能菜单顶级菜单关联表';
+  INDEX `function_id_fk`(`function_id`) USING BTREE,
+  INDEX `menu_id_fk`(`menu_id`) USING BTREE,
+  CONSTRAINT `function_id_fk` FOREIGN KEY (`function_id`) REFERENCES `tb_core_function` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `menu_id_fk` FOREIGN KEY (`menu_id`) REFERENCES `tb_core_top_menu` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '功能菜单顶级菜单关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_core_function_menu
 -- ----------------------------
-BEGIN;
 INSERT INTO `tb_core_function_menu` VALUES (1728752827031273472, 1728752544486178816, 1728753037014908928, 1, '2022-10-27 00:47:37', 1, '2023-11-26 12:30:17', 0, 1728752845331021824);
 INSERT INTO `tb_core_function_menu` VALUES (1728752829493329920, 1728752468548304896, 1728753037014908928, 1, '2022-10-27 00:47:37', 1, '2023-11-26 12:30:17', 0, 1728752845331021824);
 INSERT INTO `tb_core_function_menu` VALUES (1728752830302830592, 1728752506099908608, 1728753042182291456, 1, '2022-10-27 19:08:34', 1, '2023-11-26 12:30:18', 0, 1728752845331021824);
@@ -509,189 +521,179 @@ INSERT INTO `tb_core_function_menu` VALUES (1782691445619032065, 172875251047876
 INSERT INTO `tb_core_function_menu` VALUES (1782694272441516034, 1728752599901323264, 1728753039409856512, 1, '2024-04-23 16:53:30', 1, '2024-04-23 16:53:30', 0, 1728752845331021824);
 INSERT INTO `tb_core_function_menu` VALUES (1782694272441516035, 1764842401228152834, 1728753039409856512, 1, '2024-04-23 16:53:30', 1, '2024-04-23 16:53:30', 0, 1728752845331021824);
 INSERT INTO `tb_core_function_menu` VALUES (1782694272441516036, 1728752512726908928, 1728753039409856512, 1, '2024-04-23 16:53:30', 1, '2024-04-23 16:53:30', 0, 1728752845331021824);
-COMMIT;
 
 -- ----------------------------
 -- Table structure for tb_core_org
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_org`;
-CREATE TABLE `tb_core_org` (
-  `id` bigint(20) NOT NULL COMMENT '主键',
-  `code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '组织机构编码',
+CREATE TABLE `tb_core_org`  (
+  `id` bigint(0) NOT NULL COMMENT '主键',
+  `code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '组织机构编码',
   `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '组织机构名称',
-  `parent_id` bigint(20) DEFAULT '-1' COMMENT '父级ID',
-  `ancestor_id` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '祖级ID',
-  `icon` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '图标',
-  `sort` int(11) DEFAULT '0' COMMENT '排序',
-  `head_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '负责人姓名',
-  `head_phone` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '负责人电话',
-  `head_email` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '负责人邮箱',
-  `contact_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '联系人姓名',
-  `contact_phone` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '联系人电话',
-  `contact_email` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '联系人邮箱',
-  `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '地址',
-  `type` int(3) DEFAULT '0' COMMENT '机构类型',
-  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
-  `create_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '创建人',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '更新人',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `is_deleted` tinyint(1) DEFAULT '0' COMMENT '是否删除 0否 1是',
+  `parent_id` bigint(0) NULL DEFAULT -1 COMMENT '父级ID',
+  `ancestor_id` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '祖级ID',
+  `icon` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '图标',
+  `sort` int(0) NULL DEFAULT 0 COMMENT '排序',
+  `head_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '负责人姓名',
+  `head_phone` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '负责人电话',
+  `head_email` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '负责人邮箱',
+  `contact_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '联系人姓名',
+  `contact_phone` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '联系人电话',
+  `contact_email` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '联系人邮箱',
+  `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '地址',
+  `type` int(0) NULL DEFAULT 0 COMMENT '机构类型',
+  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
+  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
   `tenant_code` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '000000' COMMENT '租户编码',
-  `create_org` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
   PRIMARY KEY (`id`) USING BTREE,
-  KEY `code_index` (`code`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='部门表';
+  INDEX `code_index`(`code`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '部门表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_core_org
 -- ----------------------------
-BEGIN;
 INSERT INTO `tb_core_org` VALUES (1728752845331021824, '000000', '牛逼科技', -1, '-1', NULL, 0, NULL, NULL, NULL, '公司老大', '11011071100', NULL, NULL, 1, NULL, 1, '2021-03-03 22:33:52', 1, '2023-11-26 12:29:32', 0, '000000', 1728752845331021824);
 INSERT INTO `tb_core_org` VALUES (1728752862460559360, 'programmer', '程序员部门', 1728752845331021824, '1728752845331021824,-1', NULL, 0, '', '', '', '秃顶老大', '12012011200', '', '', 1, '', 1, '2021-03-03 22:33:52', 1, '2023-11-26 12:29:35', 0, '000000', 1728752845331021824);
 INSERT INTO `tb_core_org` VALUES (1728752863471386624, 'TEST', '人事部门', 1728752845331021824, '1728752845331021824,-1', NULL, 0, '', '', '', '老大手下', '11011011001', '', '', 1, '', 1, '2021-03-03 22:33:52', 1, '2023-11-26 12:29:35', 0, '000000', 1728752845331021824);
-COMMIT;
 
 -- ----------------------------
 -- Table structure for tb_core_param
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_param`;
-CREATE TABLE `tb_core_param` (
-  `id` bigint(20) NOT NULL COMMENT '主建',
+CREATE TABLE `tb_core_param`  (
+  `id` bigint(0) NOT NULL COMMENT '主建',
   `code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '参数code',
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '参数名称',
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '参数名称',
   `value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '参数值',
-  `note` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
-  `create_user` bigint(20) NOT NULL DEFAULT '-1' COMMENT '创建人',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_user` bigint(20) NOT NULL DEFAULT '-1' COMMENT '更新人',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `is_deleted` tinyint(1) DEFAULT '0' COMMENT '是否删除 0否 1是',
-  `create_org` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `note` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
+  `create_user` bigint(0) NOT NULL DEFAULT -1 COMMENT '创建人',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` bigint(0) NOT NULL DEFAULT -1 COMMENT '更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `code_index` (`code`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='系统参数表';
+  UNIQUE INDEX `code_index`(`code`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '系统参数表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_core_param
 -- ----------------------------
-BEGIN;
 INSERT INTO `tb_core_param` VALUES (1728752864696123392, 'JPOWER_IS_ACTIVATION', '新增用户默认是否激活', '1', '注册用户默认是否激活：1代表是，0代表否', 1, '2021-03-03 22:33:47', 1, '2023-11-26 12:29:36', 0, 1728752845331021824);
 INSERT INTO `tb_core_param` VALUES (1728752866197684224, 'JPOWER_IS_REGISTER', '是否开启注册', 'false', '是否开启注册', 1, '2022-06-08 16:05:14', 1, '2023-11-26 13:19:11', 0, NULL);
 INSERT INTO `tb_core_param` VALUES (1728752867351117824, 'JPOWER_USER_DEFAULT_PASSWORD', '用户默认登录密码', '123456', '系统用户默认登录密码', 1, '2021-03-03 22:33:47', 1, '2023-11-26 12:29:36', 0, 1728752845331021824);
 INSERT INTO `tb_core_param` VALUES (1728752868500357120, 'REGISTER_ROLE', '注册用户角色ID', '', '注册用户角色ID', 1, '2022-06-08 16:10:18', 1, '2023-11-26 13:19:11', 0, NULL);
-COMMIT;
 
 -- ----------------------------
 -- Table structure for tb_core_post
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_post`;
-CREATE TABLE `tb_core_post` (
-  `id` bigint(20) NOT NULL COMMENT '主键',
+CREATE TABLE `tb_core_post`  (
+  `id` bigint(0) NOT NULL COMMENT '主键',
   `code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '岗位编码',
   `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '岗位名称',
-  `type` int(11) DEFAULT NULL COMMENT '岗位类型 字典：POST_TYPE',
-  `sort` int(11) DEFAULT NULL COMMENT '排序',
-  `describe` varchar(556) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '岗位描述',
-  `condition` varchar(556) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '上岗条件',
-  `create_user` bigint(20) NOT NULL DEFAULT '-1' COMMENT '创建人',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_user` bigint(20) NOT NULL DEFAULT '-1' COMMENT '更新人',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `status` tinyint(1) DEFAULT '1' COMMENT '是否启用 字典：YN01',
-  `is_deleted` tinyint(1) DEFAULT '0' COMMENT '是否删除 0否 1是',
-  `create_org` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `type` int(0) NULL DEFAULT NULL COMMENT '岗位类型 字典：POST_TYPE',
+  `sort` int(0) NULL DEFAULT NULL COMMENT '排序',
+  `describe` varchar(556) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '岗位描述',
+  `condition` varchar(556) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '上岗条件',
+  `create_user` bigint(0) NOT NULL DEFAULT -1 COMMENT '创建人',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` bigint(0) NOT NULL DEFAULT -1 COMMENT '更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `status` tinyint(1) NULL DEFAULT 1 COMMENT '是否启用 字典：YN01',
+  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
   `tenant_code` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '000000' COMMENT '租户编码',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='岗位表';
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '岗位表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_core_post
 -- ----------------------------
-BEGIN;
 INSERT INTO `tb_core_post` VALUES (1728752869339217920, 'JAVA', 'JAVA', 3, 1, '会写JAVA得程序员', '会JAVA', 1, '2022-09-17 16:01:52', 1, '2023-11-26 12:29:37', 1, 0, 1728752845331021824, '000000');
 INSERT INTO `tb_core_post` VALUES (1728752871381843968, 'CS', '测试', 3, 3, '测试程序是否正常', '会测试', 1, '2022-09-17 16:02:39', 1, '2023-11-26 12:29:37', 0, 0, 1728752845331021824, '000000');
-COMMIT;
 
 -- ----------------------------
 -- Table structure for tb_core_role
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_role`;
-CREATE TABLE `tb_core_role` (
-  `id` bigint(20) NOT NULL COMMENT '主建',
-  `alias` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '角色别名',
+CREATE TABLE `tb_core_role`  (
+  `id` bigint(0) NOT NULL COMMENT '主建',
+  `alias` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '角色别名',
   `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '角色名称',
-  `parent_id` bigint(20) DEFAULT '-1' COMMENT '上级ID',
-  `icon_url` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '图标地址',
-  `is_sys_role` int(11) DEFAULT '1' COMMENT '是否系统角色 0:否 1:是',
-  `ancestor_id` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '祖级ID',
-  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
-  `sort` int(11) DEFAULT NULL COMMENT '排序',
-  `create_user` bigint(20) NOT NULL DEFAULT '-1' COMMENT '创建人',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_user` bigint(20) NOT NULL DEFAULT '-1' COMMENT '更新人',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `is_deleted` tinyint(1) DEFAULT '0' COMMENT '是否删除 0否 1是',
+  `parent_id` bigint(0) NULL DEFAULT -1 COMMENT '上级ID',
+  `icon_url` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '图标地址',
+  `is_sys_role` int(0) NULL DEFAULT 1 COMMENT '是否系统角色 0:否 1:是',
+  `ancestor_id` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '祖级ID',
+  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
+  `sort` int(0) NULL DEFAULT NULL COMMENT '排序',
+  `create_user` bigint(0) NOT NULL DEFAULT -1 COMMENT '创建人',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` bigint(0) NOT NULL DEFAULT -1 COMMENT '更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
   `tenant_code` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '000000' COMMENT '租户编码',
-  `create_org` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='角色表';
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '角色表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_core_role
 -- ----------------------------
-BEGIN;
 INSERT INTO `tb_core_role` VALUES (1, 'root', '超级管理员', -1, NULL, 1, '-1', '这是系统内置角色，不要删除，会影响功能', 1, 1, '2021-03-03 22:34:00', 1, '2023-11-26 12:29:33', 0, '000000', 1728752845331021824);
 INSERT INTO `tb_core_role` VALUES (2, 'anonymous', '匿名用户', -1, NULL, 1, '-1', '这是系统内置角色，不要删除，会影响功能', 1, 1, '2021-03-03 22:34:00', 1, '2023-11-26 12:29:33', 0, '000000', 1728752845331021824);
 INSERT INTO `tb_core_role` VALUES (1728752872212316160, 'ADMIN', '管理员', 1, NULL, 0, '-1,1', NULL, 0, 1, '2022-09-16 16:53:57', 1, '2023-11-26 12:29:38', 0, '000000', 1728752845331021824);
-COMMIT;
 
 -- ----------------------------
 -- Table structure for tb_core_role_data
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_role_data`;
-CREATE TABLE `tb_core_role_data` (
-  `id` bigint(20) NOT NULL COMMENT '主键',
-  `role_id` bigint(20) NOT NULL COMMENT '角色ID',
-  `data_id` bigint(20) NOT NULL COMMENT '数据权限ID',
-  `create_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '创建人',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '更新人',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `create_org` bigint(20) DEFAULT NULL COMMENT '创建部门',
-  `is_deleted` tinyint(1) DEFAULT '0' COMMENT '是否删除 0否 1是',
+CREATE TABLE `tb_core_role_data`  (
+  `id` bigint(0) NOT NULL COMMENT '主键',
+  `role_id` bigint(0) NOT NULL COMMENT '角色ID',
+  `data_id` bigint(0) NOT NULL COMMENT '数据权限ID',
+  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `core_dict_type` (`role_id`,`data_id`) USING BTREE,
-  KEY `data_id_fk` (`data_id`),
-  CONSTRAINT `data_id_fk` FOREIGN KEY (`data_id`) REFERENCES `tb_core_data_scope` (`id`) ON UPDATE RESTRICT,
-  CONSTRAINT `role_id_fk` FOREIGN KEY (`role_id`) REFERENCES `tb_core_role` (`id`) ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='角色数据权限关联表';
+  UNIQUE INDEX `core_dict_type`(`role_id`, `data_id`) USING BTREE,
+  INDEX `data_id_fk`(`data_id`) USING BTREE,
+  CONSTRAINT `data_id_fk` FOREIGN KEY (`data_id`) REFERENCES `tb_core_data_scope` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `role_id_fk` FOREIGN KEY (`role_id`) REFERENCES `tb_core_role` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '角色数据权限关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for tb_core_role_function
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_role_function`;
-CREATE TABLE `tb_core_role_function` (
-  `id` bigint(20) NOT NULL COMMENT '主键',
-  `role_id` bigint(20) NOT NULL COMMENT '角色ID',
-  `function_id` bigint(20) NOT NULL COMMENT '菜单ID',
-  `create_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '创建人',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '更新人',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `is_deleted` tinyint(1) DEFAULT '0' COMMENT '是否删除 0否 1是',
-  `create_org` bigint(20) DEFAULT NULL COMMENT '创建部门',
+CREATE TABLE `tb_core_role_function`  (
+  `id` bigint(0) NOT NULL COMMENT '主键',
+  `role_id` bigint(0) NOT NULL COMMENT '角色ID',
+  `function_id` bigint(0) NOT NULL COMMENT '菜单ID',
+  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `core_dict_type` (`role_id`,`function_id`) USING BTREE,
-  KEY `role_function_id_fk` (`function_id`),
-  CONSTRAINT `role_function_id_fk` FOREIGN KEY (`function_id`) REFERENCES `tb_core_function` (`id`) ON UPDATE RESTRICT,
-  CONSTRAINT `role_role_id_fk` FOREIGN KEY (`role_id`) REFERENCES `tb_core_role` (`id`) ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='角色菜单表';
+  UNIQUE INDEX `core_dict_type`(`role_id`, `function_id`) USING BTREE,
+  INDEX `role_function_id_fk`(`function_id`) USING BTREE,
+  CONSTRAINT `role_function_id_fk` FOREIGN KEY (`function_id`) REFERENCES `tb_core_function` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `role_role_id_fk` FOREIGN KEY (`role_id`) REFERENCES `tb_core_role` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '角色菜单表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_core_role_function
 -- ----------------------------
-BEGIN;
 INSERT INTO `tb_core_role_function` VALUES (1728752876196904960, 1728752872212316160, 1728752468548304896, 1, '2023-04-23 15:44:54', 1, '2023-11-26 12:29:39', 0, 1728752845331021824);
 INSERT INTO `tb_core_role_function` VALUES (1728752877522305024, 1728752872212316160, 1728752473178816512, 1, '2023-04-23 15:44:54', 1, '2023-11-26 12:29:39', 0, 1728752845331021824);
 INSERT INTO `tb_core_role_function` VALUES (1728752879279718400, 1728752872212316160, 1728752475166916608, 1, '2023-04-23 15:44:54', 1, '2023-11-26 12:29:39', 0, 1728752845331021824);
@@ -819,34 +821,34 @@ INSERT INTO `tb_core_role_function` VALUES (1728753014915121152, 172875287221231
 INSERT INTO `tb_core_role_function` VALUES (1728753016152440832, 1728752872212316160, 1728752817375985664, 1, '2023-04-23 15:44:54', 1, '2023-11-26 12:30:12', 0, 1728752845331021824);
 INSERT INTO `tb_core_role_function` VALUES (1728753017515589632, 1728752872212316160, 1728752819838042112, 1, '2023-04-23 15:44:54', 1, '2023-11-26 12:30:12', 0, 1728752845331021824);
 INSERT INTO `tb_core_role_function` VALUES (1728753018731937792, 1728752872212316160, 1728752821935194112, 1, '2023-04-23 15:44:54', 1, '2023-11-26 12:30:13', 0, 1728752845331021824);
-INSERT INTO `tb_core_role_function` VALUES (1728753019918925824, 2, 1728752757401632768, 1, '2023-04-23 15:21:53', 1, '2023-11-26 12:30:13', 0, 1728752845331021824);
-COMMIT;
+INSERT INTO `tb_core_role_function` VALUES (1783161836127281152, 2, 1728752757401632768, 1, '2024-04-24 23:51:26', 1, '2024-04-24 23:51:26', 0, 1728752845331021824);
+INSERT INTO `tb_core_role_function` VALUES (1783161836127281153, 2, 1728752488563523584, 1, '2024-04-24 23:51:26', 1, '2024-04-24 23:51:26', 0, 1728752845331021824);
+INSERT INTO `tb_core_role_function` VALUES (1783161836127281154, 2, 1782979167181602817, 1, '2024-04-24 23:51:26', 1, '2024-04-24 23:51:26', 0, 1728752845331021824);
 
 -- ----------------------------
 -- Table structure for tb_core_role_menu
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_role_menu`;
-CREATE TABLE `tb_core_role_menu` (
-  `id` bigint(20) NOT NULL COMMENT '主键',
-  `role_id` bigint(20) NOT NULL COMMENT '角色ID',
-  `menu_id` bigint(20) NOT NULL COMMENT '菜单ID',
-  `create_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '创建人',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '更新人',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `is_deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除 0否 1是',
-  `create_org` bigint(20) DEFAULT NULL COMMENT '创建部门',
+CREATE TABLE `tb_core_role_menu`  (
+  `id` bigint(0) NOT NULL COMMENT '主键',
+  `role_id` bigint(0) NOT NULL COMMENT '角色ID',
+  `menu_id` bigint(0) NOT NULL COMMENT '菜单ID',
+  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
   PRIMARY KEY (`id`) USING BTREE,
-  KEY `menu_role_id_fk` (`role_id`),
-  KEY `role_menu_menu_id_fk` (`menu_id`),
-  CONSTRAINT `menu_role_id_fk` FOREIGN KEY (`role_id`) REFERENCES `tb_core_role` (`id`) ON UPDATE RESTRICT,
-  CONSTRAINT `role_menu_menu_id_fk` FOREIGN KEY (`menu_id`) REFERENCES `tb_core_top_menu` (`id`) ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='角色顶级菜单关联表';
+  INDEX `menu_role_id_fk`(`role_id`) USING BTREE,
+  INDEX `role_menu_menu_id_fk`(`menu_id`) USING BTREE,
+  CONSTRAINT `menu_role_id_fk` FOREIGN KEY (`role_id`) REFERENCES `tb_core_role` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `role_menu_menu_id_fk` FOREIGN KEY (`menu_id`) REFERENCES `tb_core_top_menu` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '角色顶级菜单关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_core_role_menu
 -- ----------------------------
-BEGIN;
 INSERT INTO `tb_core_role_menu` VALUES (1728753021584064512, 1728752872212316160, 1728753044619182080, 1, '2023-04-23 15:44:54', 1, '2023-11-26 12:30:19', 0, 1728752845331021824);
 INSERT INTO `tb_core_role_menu` VALUES (1728753022657806336, 1, 1728753034091479040, 1, '2023-04-23 12:29:47', 1, '2023-11-26 12:30:17', 0, 1728752845331021824);
 INSERT INTO `tb_core_role_menu` VALUES (1728753023349866496, 1, 1728753042182291456, 1, '2023-04-23 12:29:47', 1, '2023-11-26 12:30:18', 0, 1728752845331021824);
@@ -856,369 +858,359 @@ INSERT INTO `tb_core_role_menu` VALUES (1728753027363815424, 1728752872212316160
 INSERT INTO `tb_core_role_menu` VALUES (1728753028232036352, 1728752872212316160, 1728753034091479040, 1, '2023-04-23 15:44:54', 1, '2023-11-26 12:30:17', 0, 1728752845331021824);
 INSERT INTO `tb_core_role_menu` VALUES (1728753029255446528, 1728752872212316160, 1728753037014908928, 1, '2023-04-23 15:44:54', 1, '2023-11-26 12:30:17', 0, 1728752845331021824);
 INSERT INTO `tb_core_role_menu` VALUES (1728753031096745984, 1, 1728753039409856512, 1, '2023-04-23 12:29:47', 1, '2023-11-26 12:30:18', 0, 1728752845331021824);
-COMMIT;
 
 -- ----------------------------
 -- Table structure for tb_core_tenant
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_tenant`;
-CREATE TABLE `tb_core_tenant` (
-  `id` bigint(20) NOT NULL COMMENT '主建',
+CREATE TABLE `tb_core_tenant`  (
+  `id` bigint(0) NOT NULL COMMENT '主建',
   `tenant_code` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '租户编码',
   `tenant_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '租户名称',
-  `domain` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '域名',
-  `logo` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '租户Logo',
-  `contact_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '联系人',
-  `contact_phone` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '联系人电话',
-  `address` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '地址',
-  `account_number` int(11) DEFAULT '-1' COMMENT '账号额度',
-  `expire_time` datetime DEFAULT NULL COMMENT '过期时间',
-  `license_key` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '授权码',
-  `create_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '创建人',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '更新人',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `is_deleted` tinyint(1) DEFAULT '0' COMMENT '是否删除 0否 1是',
-  `create_org` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `domain` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '域名',
+  `logo` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '租户Logo',
+  `contact_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '联系人',
+  `contact_phone` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '联系人电话',
+  `address` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '地址',
+  `account_number` int(0) NULL DEFAULT -1 COMMENT '账号额度',
+  `expire_time` datetime(0) NULL DEFAULT NULL COMMENT '过期时间',
+  `license_key` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '授权码',
+  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='租户表';
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '租户表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_core_tenant
 -- ----------------------------
-BEGIN;
 INSERT INTO `tb_core_tenant` VALUES (1728753032510226432, '000000', '管理组', '', '', '老总', '15011071226', '', -1, NULL, 'e15fca1478f6e9b4', 1, '2021-03-03 22:34:15', 1, '2023-11-26 12:30:16', 0, 1728752845331021824);
-COMMIT;
 
 -- ----------------------------
 -- Table structure for tb_core_top_menu
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_top_menu`;
-CREATE TABLE `tb_core_top_menu` (
-  `id` bigint(20) NOT NULL COMMENT '主键',
-  `client_id` bigint(20) NOT NULL COMMENT '客户端ID',
+CREATE TABLE `tb_core_top_menu`  (
+  `id` bigint(0) NOT NULL COMMENT '主键',
+  `client_id` bigint(0) NOT NULL COMMENT '客户端ID',
   `code` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '菜单编号',
   `name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '菜单名称',
-  `icon` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '图标',
-  `router` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '首页路由',
-  `sort_num` int(11) NOT NULL DEFAULT '1' COMMENT '排序',
-  `note` varchar(525) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注说明',
-  `create_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '创建人',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '更新人',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态 1启用 0停用',
-  `is_deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除 0否 1是',
-  `create_org` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `icon` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '图标',
+  `router` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '首页路由',
+  `sort_num` int(0) NOT NULL DEFAULT 1 COMMENT '排序',
+  `note` varchar(525) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注说明',
+  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '状态 1启用 0停用',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
   PRIMARY KEY (`id`) USING BTREE,
-  KEY `menu_client_id_fk` (`client_id`),
-  CONSTRAINT `menu_client_id_fk` FOREIGN KEY (`client_id`) REFERENCES `tb_core_client` (`id`) ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='顶级菜单表';
+  INDEX `menu_client_id_fk`(`client_id`) USING BTREE,
+  CONSTRAINT `menu_client_id_fk` FOREIGN KEY (`client_id`) REFERENCES `tb_core_client` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '顶级菜单表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_core_top_menu
 -- ----------------------------
-BEGIN;
 INSERT INTO `tb_core_top_menu` VALUES (1728753034091479040, 1728752347702018048, 'ALL', '全部', 'iconfont iconicon_work', '', 0, NULL, 1, '2022-10-26 21:51:19', 1, '2024-04-23 16:40:31', 1, 0, 1728752845331021824);
 INSERT INTO `tb_core_top_menu` VALUES (1728753037014908928, 1728752347702018048, 'QX', '权限管理', 'iconfont icon-yanzhengma', '', 0, NULL, 1, '2022-10-27 00:11:35', 1, '2024-04-23 16:40:34', 1, 0, 1728752845331021824);
 INSERT INTO `tb_core_top_menu` VALUES (1728753039409856512, 1728752347702018048, 'SYSTEM', '系统设置', 'iconfont iconicon_setting', '', 3, NULL, 1, '2022-10-27 19:04:32', 1, '2024-04-23 16:40:38', 1, 0, 1728752845331021824);
 INSERT INTO `tb_core_top_menu` VALUES (1728753042182291456, 1728752347702018048, 'JPOWER', 'Jpower介绍', 'iconfont iconicon_affiliations_li', '', 10, NULL, 1, '2022-10-27 19:08:13', 1, '2024-04-23 16:40:48', 1, 0, 1728752845331021824);
 INSERT INTO `tb_core_top_menu` VALUES (1728753044619182080, 1728752347702018048, 'FUWU', '服务监控', 'iconfont icon-wxbgongju', '', 4, NULL, 1, '2022-10-27 19:09:21', 1, '2024-04-23 16:40:42', 1, 0, 1728752845331021824);
-COMMIT;
 
 -- ----------------------------
 -- Table structure for tb_core_user
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_user`;
-CREATE TABLE `tb_core_user` (
-  `id` bigint(20) NOT NULL COMMENT '主建',
-  `org_id` bigint(20) DEFAULT NULL COMMENT '组织机构主键',
-  `post_id` bigint(20) DEFAULT NULL COMMENT '岗位ID',
+CREATE TABLE `tb_core_user`  (
+  `id` bigint(0) NOT NULL COMMENT '主建',
+  `org_id` bigint(0) NULL DEFAULT NULL COMMENT '组织机构主键',
+  `post_id` bigint(0) NULL DEFAULT NULL COMMENT '岗位ID',
   `login_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '登录用户名',
   `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '登录密码',
-  `avatar` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '头像',
-  `user_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '真实姓名',
-  `id_type` tinyint(1) DEFAULT '1' COMMENT '证件类型 1:身份证 2:中国护照 3:台胞证 4:外国护照 5:外国人永居证',
-  `id_no` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '证件编码',
-  `user_type` tinyint(1) DEFAULT '0' COMMENT '用户类型 0:系统用户 1：普通用户 2：单位用户 3:会员 9：匿名用户',
-  `birthday` datetime DEFAULT NULL COMMENT '出生日期',
-  `email` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '邮箱地址',
-  `telephone` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '联系电话',
-  `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '通讯地址',
-  `post_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '邮编',
-  `last_login_time` datetime DEFAULT NULL COMMENT '最后登录时间',
-  `login_count` int(11) DEFAULT '0' COMMENT '登录次数',
-  `nick_name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '昵称',
-  `other_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '第三方平台标识',
-  `activation_status` tinyint(1) DEFAULT '1' COMMENT '激活状态 1：激活 0：未激活',
-  `activation_code` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '激活码',
-  `create_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '创建人',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '最后更新人',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `is_deleted` tinyint(1) DEFAULT '0' COMMENT '是否删除 0否 1是',
-  `tenant_code` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '000000' COMMENT '租户编码',
-  `create_org` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `avatar` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '头像',
+  `user_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '真实姓名',
+  `id_type` tinyint(1) NULL DEFAULT 1 COMMENT '证件类型 1:身份证 2:中国护照 3:台胞证 4:外国护照 5:外国人永居证',
+  `id_no` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '证件编码',
+  `user_type` tinyint(1) NULL DEFAULT 0 COMMENT '用户类型 0:系统用户 1：普通用户 2：单位用户 3:会员 9：匿名用户',
+  `birthday` datetime(0) NULL DEFAULT NULL COMMENT '出生日期',
+  `email` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '邮箱地址',
+  `telephone` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '联系电话',
+  `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '通讯地址',
+  `post_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '邮编',
+  `last_login_time` datetime(0) NULL DEFAULT NULL COMMENT '最后登录时间',
+  `login_count` int(0) NULL DEFAULT 0 COMMENT '登录次数',
+  `nick_name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '昵称',
+  `other_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '第三方平台标识',
+  `activation_status` tinyint(1) NULL DEFAULT 1 COMMENT '激活状态 1：激活 0：未激活',
+  `activation_code` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '激活码',
+  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '最后更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+  `tenant_code` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '000000' COMMENT '租户编码',
+  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
   PRIMARY KEY (`id`) USING BTREE,
-  KEY `post_id_fk` (`post_id`),
-  KEY `org_id_fk` (`org_id`),
+  INDEX `post_id_fk`(`post_id`) USING BTREE,
+  INDEX `org_id_fk`(`org_id`) USING BTREE,
   CONSTRAINT `org_id_fk` FOREIGN KEY (`org_id`) REFERENCES `tb_core_org` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT,
   CONSTRAINT `post_id_fk` FOREIGN KEY (`post_id`) REFERENCES `tb_core_post` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='系统登录用户表';
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '系统登录用户表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_core_user
 -- ----------------------------
-BEGIN;
-INSERT INTO `tb_core_user` VALUES (1, 1728752845331021824, NULL, 'root', '$2a$05$zQGxuIbCA/nulLcaVhyvfebr3vtlA/I5nrS9U1dK7zcsSn27q4M.2', '', '超级管理员', 1, NULL, 0, NULL, '1634566606@qq.com', '15011071226', '内蒙古', '012000', '2024-04-24 16:17:16', 1549, '超级用户', '', 1, '', 1, '2021-03-03 22:34:20', 2, '2024-04-24 16:17:16', 0, '000000', 1728752845331021824);
+INSERT INTO `tb_core_user` VALUES (1, 1728752845331021824, NULL, 'root', '$2a$05$zQGxuIbCA/nulLcaVhyvfebr3vtlA/I5nrS9U1dK7zcsSn27q4M.2', '', '超级管理员', 1, NULL, 0, NULL, '1634566606@qq.com', '15011071226', '内蒙古', '012000', '2024-04-24 23:49:11', 1550, '超级用户', '', 1, '', 1, '2021-03-03 22:34:20', 2, '2024-04-24 23:49:11', 0, '000000', 1728752845331021824);
 INSERT INTO `tb_core_user` VALUES (2, 1728752845331021824, NULL, 'anonymous', '', NULL, '匿名用户', 1, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, 0, '匿名用户', NULL, 1, NULL, 1, '2021-03-03 22:34:20', 1, '2023-11-26 12:29:33', 0, '000000', 1728752845331021824);
 INSERT INTO `tb_core_user` VALUES (1728753047802658816, 1728752845331021824, 1728752869339217920, 'admin', '$2a$05$JdGqOXozOpWLV5fhDncCNue7vrWcZS/OKyEYUMPDGTmkOYSd6akQy', NULL, NULL, 1, NULL, 0, NULL, NULL, NULL, NULL, NULL, '2023-04-23 15:45:16', 10, '管理员', NULL, 1, NULL, 1, '2022-09-16 16:57:32', 2, '2023-11-26 12:30:19', 0, '000000', 1728752845331021824);
-COMMIT;
 
 -- ----------------------------
 -- Table structure for tb_core_user_role
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_core_user_role`;
-CREATE TABLE `tb_core_user_role` (
-  `id` bigint(20) NOT NULL COMMENT '主键',
-  `role_id` bigint(20) NOT NULL COMMENT '角色ID',
-  `user_id` bigint(20) NOT NULL COMMENT '用户ID',
-  `create_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '创建人',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '更新人',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `is_deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除 0否 1是',
-  `create_org` bigint(20) DEFAULT NULL COMMENT '创建部门',
+CREATE TABLE `tb_core_user_role`  (
+  `id` bigint(0) NOT NULL COMMENT '主键',
+  `role_id` bigint(0) NOT NULL COMMENT '角色ID',
+  `user_id` bigint(0) NOT NULL COMMENT '用户ID',
+  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `core_dict_type` (`role_id`,`user_id`) USING BTREE,
-  KEY `user_user_id_fk` (`user_id`),
-  CONSTRAINT `user_role_id_fk` FOREIGN KEY (`role_id`) REFERENCES `tb_core_role` (`id`) ON UPDATE RESTRICT,
-  CONSTRAINT `user_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `tb_core_user` (`id`) ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='用户角色表';
+  UNIQUE INDEX `core_dict_type`(`role_id`, `user_id`) USING BTREE,
+  INDEX `user_user_id_fk`(`user_id`) USING BTREE,
+  CONSTRAINT `user_role_id_fk` FOREIGN KEY (`role_id`) REFERENCES `tb_core_role` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `user_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `tb_core_user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户角色表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_core_user_role
 -- ----------------------------
-BEGIN;
 INSERT INTO `tb_core_user_role` VALUES (1728753051489452032, 1, 1, 1, '2021-03-03 22:34:25', 1, '2023-11-26 12:30:20', 0, 1728752845331021824);
 INSERT INTO `tb_core_user_role` VALUES (1728753052286369792, 1728752872212316160, 1728753047802658816, 1, '2022-09-17 16:30:25', 1, '2023-11-26 12:30:21', 0, 1728752845331021824);
 INSERT INTO `tb_core_user_role` VALUES (1728753053506912256, 2, 2, 1, '2021-03-03 22:34:25', 1, '2023-11-26 12:30:21', 0, 1728752845331021824);
-COMMIT;
 
 -- ----------------------------
 -- Table structure for tb_log_error
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_log_error`;
-CREATE TABLE `tb_log_error` (
-  `id` bigint(20) NOT NULL COMMENT '主建',
+CREATE TABLE `tb_log_error`  (
+  `id` bigint(0) NOT NULL COMMENT '主建',
   `server_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '服务名称',
-  `server_ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '服务器ip',
-  `server_host` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '服务器名',
-  `env` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '环境',
-  `url` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '请求接口',
-  `method` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '操作方式',
-  `method_class` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '方法类',
-  `method_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '方法名',
-  `param` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `oper_ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '操作IP地址',
-  `oper_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '操作人员',
-  `oper_user_type` tinyint(1) DEFAULT NULL COMMENT '操作人员类型，是系统用户还是业务用户 0系统1业务2白名单',
-  `client_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '操作客户端',
-  `error` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '错误信息',
-  `line_number` int(11) DEFAULT NULL COMMENT '报错行号',
-  `exception_name` varchar(258) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '异常名称',
-  `message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '异常信息',
-  `create_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '创建人',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '更新人',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `create_org` bigint(20) DEFAULT NULL COMMENT '创建部门',
-  `is_deleted` tinyint(1) DEFAULT '0' COMMENT '是否删除 0否 1是',
+  `server_ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '服务器ip',
+  `server_host` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '服务器名',
+  `env` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '环境',
+  `url` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '请求接口',
+  `method` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作方式',
+  `method_class` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '方法类',
+  `method_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '方法名',
+  `param` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `oper_ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作IP地址',
+  `oper_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作人员',
+  `oper_user_type` tinyint(1) NULL DEFAULT NULL COMMENT '操作人员类型，是系统用户还是业务用户 0系统1业务2白名单',
+  `client_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作客户端',
+  `error` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '错误信息',
+  `line_number` int(0) NULL DEFAULT NULL COMMENT '报错行号',
+  `exception_name` varchar(258) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '异常名称',
+  `message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '异常信息',
+  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='错误日志表';
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '错误日志表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for tb_log_monitor_param
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_log_monitor_param`;
-CREATE TABLE `tb_log_monitor_param` (
-  `id` bigint(20) NOT NULL COMMENT '主建',
+CREATE TABLE `tb_log_monitor_param`  (
+  `id` bigint(0) NOT NULL COMMENT '主建',
   `server` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '服务名称',
-  `path` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '监控地址',
-  `method` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '请求方式',
-  `type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '参数类型 字典 PARAM_TYPE（header、path、body、query）',
-  `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '参数名称',
-  `value` varchar(258) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '参数值',
-  `create_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '创建人',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '更新人',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `create_org` bigint(20) DEFAULT NULL COMMENT '创建部门',
-  `is_deleted` tinyint(1) DEFAULT '0' COMMENT '是否删除 0否 1是',
+  `path` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '监控地址',
+  `method` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '请求方式',
+  `type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '参数类型 字典 PARAM_TYPE（header、path、body、query）',
+  `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '参数名称',
+  `value` varchar(258) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '参数值',
+  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='接口监控参数表';
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '接口监控参数表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for tb_log_monitor_result
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_log_monitor_result`;
-CREATE TABLE `tb_log_monitor_result` (
-  `id` bigint(20) NOT NULL COMMENT '主建',
+CREATE TABLE `tb_log_monitor_result`  (
+  `id` bigint(0) NOT NULL COMMENT '主建',
   `name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '服务名称',
   `path` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '测试地址',
-  `tags` varchar(258) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '分组',
-  `url` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '请求接口',
-  `method` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '请求方式',
-  `error` varchar(289) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '请求错误',
-  `respose` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '响应数据',
-  `respose_code` int(11) DEFAULT NULL COMMENT '响应编码',
-  `restful_response` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '接口返回数据',
-  `header` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'header参数',
-  `body` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'body参数',
-  `is_success` int(11) DEFAULT NULL COMMENT '是否成功 0否 1是',
-  `response_time` int(11) DEFAULT NULL COMMENT '执行时长 单位毫秒',
-  `create_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '创建人',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '更新人',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `create_org` bigint(20) DEFAULT NULL COMMENT '创建部门',
-  `is_deleted` tinyint(1) DEFAULT '0' COMMENT '是否删除 0否 1是',
+  `tags` varchar(258) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '分组',
+  `url` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '请求接口',
+  `method` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '请求方式',
+  `error` varchar(289) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '请求错误',
+  `respose` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '响应数据',
+  `respose_code` int(0) NULL DEFAULT NULL COMMENT '响应编码',
+  `restful_response` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '接口返回数据',
+  `header` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'header参数',
+  `body` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'body参数',
+  `is_success` int(0) NULL DEFAULT NULL COMMENT '是否成功 0否 1是',
+  `response_time` int(0) NULL DEFAULT NULL COMMENT '执行时长 单位毫秒',
+  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='接口监控详情';
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '接口监控详情' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for tb_log_monitor_setting
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_log_monitor_setting`;
-CREATE TABLE `tb_log_monitor_setting` (
-  `id` bigint(20) NOT NULL COMMENT '主建',
+CREATE TABLE `tb_log_monitor_setting`  (
+  `id` bigint(0) NOT NULL COMMENT '主建',
   `server` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '服务名称',
-  `path` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '监控地址',
-  `tag` varchar(258) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '分组',
-  `method` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '请求方式',
-  `is_monitor` int(11) DEFAULT '3' COMMENT '是否监控 0:否 1:是 3:未设置',
-  `code` varchar(258) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '200' COMMENT 'respose正确code,多个逗号分割',
-  `exec_js` varchar(258) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'js代码',
-  `create_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '创建人',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '更新人',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `create_org` bigint(20) DEFAULT NULL COMMENT '创建部门',
-  `is_deleted` tinyint(1) DEFAULT '0' COMMENT '是否删除 0否 1是',
+  `path` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '监控地址',
+  `tag` varchar(258) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '分组',
+  `method` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '请求方式',
+  `is_monitor` int(0) NULL DEFAULT 3 COMMENT '是否监控 0:否 1:是 3:未设置',
+  `code` varchar(258) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '200' COMMENT 'respose正确code,多个逗号分割',
+  `exec_js` varchar(258) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'js代码',
+  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='接口监控设置表';
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '接口监控设置表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for tb_log_operate
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_log_operate`;
-CREATE TABLE `tb_log_operate` (
-  `id` bigint(20) NOT NULL COMMENT '主建',
+CREATE TABLE `tb_log_operate`  (
+  `id` bigint(0) NOT NULL COMMENT '主建',
   `server_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '服务名称',
-  `server_ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '服务器ip',
-  `server_host` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '服务器名',
-  `env` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '环境',
-  `url` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '请求接口',
-  `method` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '操作方式',
-  `method_class` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '方法类',
-  `method_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '方法名',
-  `param` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `oper_ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '操作IP地址',
-  `oper_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '操作人员',
-  `oper_user_type` tinyint(1) DEFAULT NULL COMMENT '操作人员类型，是系统用户还是业务用户 0系统1业务2白名单',
-  `client_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '操作客户端',
-  `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '操作标题',
-  `business_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '业务类型（OTHER=其它,INSERT=新增,UPDATE=修改,DELETE=删除,GRANT=授权,EXPORT=导出,IMPORT=导入,FORCE=强退,GENCODE=生成代码,CLEAN=清空数据,REVIEW=审核）',
-  `return_content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '记录内容',
-  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '返回内容',
-  `error_msg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '错误消息',
-  `record_id` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '记录ID',
-  `create_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '创建人',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '更新人',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `create_org` bigint(20) DEFAULT NULL COMMENT '创建部门',
-  `status` tinyint(1) DEFAULT '1' COMMENT '操作状态（0正常 1异常）',
-  `is_deleted` tinyint(1) DEFAULT '0' COMMENT '是否删除 0否 1是',
+  `server_ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '服务器ip',
+  `server_host` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '服务器名',
+  `env` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '环境',
+  `url` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '请求接口',
+  `method` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作方式',
+  `method_class` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '方法类',
+  `method_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '方法名',
+  `param` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `oper_ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作IP地址',
+  `oper_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作人员',
+  `oper_user_type` tinyint(1) NULL DEFAULT NULL COMMENT '操作人员类型，是系统用户还是业务用户 0系统1业务2白名单',
+  `client_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作客户端',
+  `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作标题',
+  `business_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '业务类型（OTHER=其它,INSERT=新增,UPDATE=修改,DELETE=删除,GRANT=授权,EXPORT=导出,IMPORT=导入,FORCE=强退,GENCODE=生成代码,CLEAN=清空数据,REVIEW=审核）',
+  `return_content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '记录内容',
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '返回内容',
+  `error_msg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '错误消息',
+  `record_id` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '记录ID',
+  `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
+  `status` tinyint(1) NULL DEFAULT 1 COMMENT '操作状态（0正常 1异常）',
+  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='操作日志表';
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '操作日志表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for tb_resource_file
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_resource_file`;
-CREATE TABLE `tb_resource_file` (
-  `id` bigint(20) NOT NULL COMMENT '主键',
-  `name` varchar(127) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '文件名称',
-  `file_size` int(11) DEFAULT NULL COMMENT '文件大小 单位：字节',
-  `file_type` varchar(31) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '文件类型',
-  `path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '文件路径',
-  `content` longblob COMMENT '文件内容',
-  `mark` varchar(156) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '文件标识',
-  `storage_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'SERVER' COMMENT '存储类型 字典FILE_STORAGE_TYPE',
-  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
-  `create_user` bigint(20) DEFAULT '1',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '最后更新人',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `is_deleted` tinyint(1) DEFAULT '0' COMMENT '是否删除 0否 1是',
-  `create_org` bigint(20) DEFAULT NULL COMMENT '创建部门',
+CREATE TABLE `tb_resource_file`  (
+  `id` bigint(0) NOT NULL COMMENT '主键',
+  `name` varchar(127) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文件名称',
+  `file_size` int(0) NULL DEFAULT NULL COMMENT '文件大小 单位：字节',
+  `file_type` varchar(31) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文件类型',
+  `path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文件路径',
+  `content` longblob NULL COMMENT '文件内容',
+  `mark` varchar(156) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文件标识',
+  `storage_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'SERVER' COMMENT '存储类型 字典FILE_STORAGE_TYPE',
+  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
+  `create_user` bigint(0) NULL DEFAULT 1,
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '最后更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='文件表';
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '文件表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for tb_resource_oss
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_resource_oss`;
-CREATE TABLE `tb_resource_oss` (
-  `id` bigint(19) NOT NULL COMMENT '主键',
+CREATE TABLE `tb_resource_oss`  (
+  `id` bigint(0) NOT NULL COMMENT '主键',
   `category` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '分类 字典：OSS_CATEGORY',
-  `name` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '名称',
-  `code` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '编号',
-  `access_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'accessKey',
-  `secret_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'secretKey',
-  `internal_address` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '内网资源地址',
-  `external_address` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '外链地址',
-  `bucket_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '存储桶',
-  `create_user` bigint(20) DEFAULT '1' COMMENT '创建用户',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '最后更新人',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `is_deleted` tinyint(1) DEFAULT '0' COMMENT '是否删除 0否 1是',
-  `create_org` bigint(20) DEFAULT NULL COMMENT '创建部门',
+  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '名称',
+  `code` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '编号',
+  `access_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'accessKey',
+  `secret_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'secretKey',
+  `internal_address` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '内网资源地址',
+  `external_address` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '外链地址',
+  `bucket_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '存储桶',
+  `create_user` bigint(0) NULL DEFAULT 1 COMMENT '创建用户',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '最后更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='OSS配置表';
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'OSS配置表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for tb_resource_sms
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_resource_sms`;
-CREATE TABLE `tb_resource_sms` (
-  `id` bigint(20) NOT NULL COMMENT '主键',
-  `name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
-  `category` varchar(10) COLLATE utf8mb4_general_ci NOT NULL COMMENT '分类 字典：SMS_CATEGORY',
-  `code` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '编号',
-  `template` varchar(500) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '模板ID',
-  `access_key` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'accessKey',
-  `secret_key` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'secretKey',
-  `sign` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '短信签名',
-  `parameters` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '发送参数',
-  `region_id` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '区域ID',
-  `create_user` bigint(20) DEFAULT '1' COMMENT '创建用户',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_user` bigint(20) NOT NULL DEFAULT '1' COMMENT '最后更新人',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `is_deleted` tinyint(1) DEFAULT '0' COMMENT '是否删除 0否 1是',
-  `create_org` bigint(20) DEFAULT NULL COMMENT '创建部门',
+CREATE TABLE `tb_resource_sms`  (
+  `id` bigint(0) NOT NULL COMMENT '主键',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '名称',
+  `category` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '分类 字典：SMS_CATEGORY',
+  `code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '编号',
+  `template` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '模板ID',
+  `access_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'accessKey',
+  `secret_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'secretKey',
+  `sign` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '短信签名',
+  `parameters` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '发送参数',
+  `region_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '区域ID',
+  `create_user` bigint(0) NULL DEFAULT 1 COMMENT '创建用户',
+  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '最后更新人',
+  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `is_deleted` tinyint(1) NULL DEFAULT 0 COMMENT '是否删除 0否 1是',
+  `create_org` bigint(0) NULL DEFAULT NULL COMMENT '创建部门',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='短信配置表';
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '短信配置表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tb_resource_sms
 -- ----------------------------
-BEGIN;
 INSERT INTO `tb_resource_sms` VALUES (1765182328482582529, '测试', 'ali', 'validate', 'fewfew', 'dsfsdfes', 'fewr2332r', 'grfg', 'fgrefgre,ewe3', 'ergerg', 1, '2024-03-06 09:07:17', 1, '2024-04-23 16:44:27', 0, 1728752845331021824);
-COMMIT;
+
 
 CREATE TABLE `tb_core_city` (
     `id` bigint(20) NOT NULL COMMENT '主键',
@@ -1248,5 +1240,6 @@ CREATE TABLE `tb_core_city` (
     KEY `code_index` (`code`) USING BTREE,
     KEY `pcode_index` (`pcode`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='城市地区表'
+
 
 SET FOREIGN_KEY_CHECKS = 1;
