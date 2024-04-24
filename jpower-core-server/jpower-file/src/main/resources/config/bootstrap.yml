@@ -12,3 +12,14 @@ fdfs:
     height: 150
   tracker-list:
     - 219.148.186.235:22122
+
+jpower:
+  file:
+    server:
+      # 服务器文件外链访问地址
+      domain: http://xxx.xxx.xxx/file
+      # 服务器文件保存路径
+      path: /xxx/xxx/xxx
+    fastDfs:
+      # FastDfs文件外链访问地址
+      domain: http://xxx.xxx.xxx

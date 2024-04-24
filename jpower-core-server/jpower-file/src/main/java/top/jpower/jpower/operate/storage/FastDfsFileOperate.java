@@ -2,18 +2,16 @@ package top.jpower.jpower.operate.storage;
 
 import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.io.file.FileNameUtil;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import top.jpower.jpower.dbs.entity.TbCoreFile;
 import top.jpower.jpower.module.base.enums.JpowerError;
 import top.jpower.jpower.module.base.exception.JpowerAssert;
-import top.jpower.jpower.module.common.utils.DesUtil;
-import top.jpower.jpower.module.common.utils.Fc;
-import top.jpower.jpower.module.common.utils.FileUtil;
-import top.jpower.jpower.module.common.utils.WebUtil;
+import top.jpower.jpower.module.common.utils.*;
 import top.jpower.jpower.module.common.utils.constants.ConstantsUtils;
+import top.jpower.jpower.module.common.utils.constants.StringPool;
 import top.jpower.jpower.operate.FileOperate;
+import top.jpower.jpower.operate.properties.FileProperties;
 import top.jpower.jpower.service.CoreFileService;
 import top.jpower.jpower.utils.FileDfsUtil;
 
@@ -27,20 +25,23 @@ import static top.jpower.jpower.operate.storage.FastDfsFileOperate.STORAGE_TYPE;
  * @Author mr.g
  **/
 @Component(STORAGE_TYPE)
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class FastDfsFileOperate implements FileOperate {
 
 	public static final String STORAGE_TYPE = "FASTDFS";
-	private CoreFileService coreFileService;
+	private final FileProperties fileProperties;
+	private final CoreFileService coreFileService;
 
 
 	@Override
 	public TbCoreFile upload(byte[] bytes, String name, Long size) {
 
-		String dfsPath = FileDfsUtil.upload(bytes, size, FileNameUtil.getPrefix(name));
+		String type = FileTypeUtil.getType(IoUtil.toStream(bytes), name);
+
+		String dfsPath = FileDfsUtil.upload(bytes, size, type);
 
 		TbCoreFile coreFile = new TbCoreFile();
-		coreFile.setFileType(FileTypeUtil.getType(IoUtil.toStream(bytes), name));
+		coreFile.setFileType(type);
 		coreFile.setFileSize(size);
 		coreFile.setId(Fc.randomSnowFlakeId());
 		coreFile.setMark(DesUtil.encrypt(Fc.toStr(coreFile.getId()), ConstantsUtils.FILE_DES_KEY));
@@ -78,5 +79,18 @@ public class FastDfsFileOperate implements FileOperate {
 	public Boolean deleteFile(TbCoreFile coreFile) {
 		JpowerAssert.notEmpty(coreFile.getPath(), JpowerError.Parser, "文件不存在");
 		return FileDfsUtil.deleteFile(coreFile.getPath());
+	}
+
+	/**
+	 * 获取文件外链
+	 *
+	 * @param coreFile 文件
+	 * @return 外链
+	 * @author mr.g
+	 **/
+	@Override
+	public String getUrl(TbCoreFile coreFile) {
+		String domain = StringUtil.removeAllSuffix(fileProperties.getFastDfs().getDomain(), StringPool.SLASH);
+		return domain+coreFile.getPath();
 	}
 }

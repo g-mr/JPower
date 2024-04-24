@@ -1,6 +1,7 @@
 package top.jpower.jpower.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.jpower.jpower.dbs.dao.TbCoreFileDao;
@@ -9,6 +10,8 @@ import top.jpower.jpower.dbs.entity.TbCoreFile;
 import top.jpower.jpower.module.common.service.impl.BaseServiceImpl;
 import top.jpower.jpower.module.common.utils.Fc;
 import top.jpower.jpower.service.CoreFileService;
+
+import java.util.Map;
 
 /**
  * @author mr.gmac
@@ -33,5 +36,10 @@ public class CoreFileServiceImpl extends BaseServiceImpl<TbCoreFileMapper, TbCor
     @Override
     public String getPathById(Long id) {
         return coreFileDao.getObj(new QueryWrapper<TbCoreFile>().lambda().select(TbCoreFile::getPath).eq(TbCoreFile::getId, id), Fc::toStr);
+    }
+
+    @Override
+    public Page<TbCoreFile> listPage(Map<String, Object> map) {
+        return coreFileDao.listPage(map);
     }
 }

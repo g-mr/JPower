@@ -147,6 +147,15 @@ public class OssAliFileOperate implements FileOperate {
         return Boolean.TRUE;
     }
 
+    /**
+     * 获取文件外链
+     **/
+    @Override
+    public String getUrl(TbCoreFile coreFile) {
+        String domain = StringUtil.removeAllSuffix(Fc.toStr(resourceOss.getExternalAddress(), resourceOss.getInternalAddress()), StringPool.SLASH);
+        return StringUtil.concat(domain, StringPool.SLASH, coreFile.getPath());
+    }
+
     @Override
     protected void finalize() throws Throwable {
         log.info("阿里云OSS客户端关闭......");

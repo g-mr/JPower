@@ -33,11 +33,9 @@ public class TbCoreFile extends BaseEntity {
     @ApiModelProperty("文件标识")
     private String mark;
     @ApiModelProperty("存储类型")
-    @Dict(name = "FILE_STORAGE_TYPE",attributes = "storageTypeStr")
+    @Dict(name = "FILE_STORAGE_TYPE")
     private String storageType;
     @ApiModelProperty("备注")
     private String note;
 
-    @TableField(exist = false)
-    private String storageTypeStr;
 }

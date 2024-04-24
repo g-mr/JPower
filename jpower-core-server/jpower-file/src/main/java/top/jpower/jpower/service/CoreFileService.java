@@ -1,8 +1,11 @@
 package top.jpower.jpower.service;
 
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import top.jpower.jpower.dbs.entity.TbCoreFile;
 import top.jpower.jpower.module.common.service.BaseService;
+
+import java.util.Map;
 
 /**
  * @author mr.gmac
@@ -28,4 +31,6 @@ public interface CoreFileService extends BaseService<TbCoreFile> {
      * @return top.jpower.jpower.module.dbs.entity.core.file.TbCoreFile
      **/
     String getPathById(Long id);
+
+    Page<TbCoreFile> listPage(Map<String, Object> map);
 }

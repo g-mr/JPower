@@ -20,10 +20,10 @@ import java.io.IOException;
 @Slf4j
 public class FileDfsUtil {
 
-    static private FastFileStorageClient storageClient;
+    static private final FastFileStorageClient STORAGE_CLIENT;
 
     static {
-        storageClient = SpringUtil.getBean(DefaultFastFileStorageClient.class);
+        STORAGE_CLIENT = SpringUtil.getBean(DefaultFastFileStorageClient.class);
     }
 
     /**
@@ -35,7 +35,7 @@ public class FileDfsUtil {
         String originalFilename = multipartFile.getOriginalFilename().
                 substring(multipartFile.getOriginalFilename().
                         lastIndexOf(".") + 1);
-        StorePath storePath = storageClient.uploadImageAndCrtThumbImage(
+        StorePath storePath = STORAGE_CLIENT.uploadImageAndCrtThumbImage(
                 multipartFile.getInputStream(),
                 multipartFile.getSize(),originalFilename , null);
         return storePath.getFullPath() ;
@@ -52,7 +52,7 @@ public class FileDfsUtil {
      */
     public static String upload(byte[] bytes, long fileSize, String extension) {
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-        StorePath storePath = storageClient.uploadFile(byteArrayInputStream, fileSize, extension, null);
+        StorePath storePath = STORAGE_CLIENT.uploadFile(byteArrayInputStream, fileSize, extension, null);
         return storePath.getFullPath();
     }
 
@@ -67,7 +67,7 @@ public class FileDfsUtil {
         String group = fileUrl.substring(0, fileUrl.indexOf("/"));
         String path = fileUrl.substring(fileUrl.indexOf("/") + 1);
         DownloadByteArray downloadByteArray = new DownloadByteArray();
-        byte[] bytes = storageClient.downloadFile(group, path, downloadByteArray);
+        byte[] bytes = STORAGE_CLIENT.downloadFile(group, path, downloadByteArray);
         return bytes;
     }
 
@@ -80,7 +80,7 @@ public class FileDfsUtil {
             return false;
         }
         StorePath storePath = StorePath.parseFromUrl(fileUrl);
-        storageClient.deleteFile(storePath.getGroup(), storePath.getPath());
+        STORAGE_CLIENT.deleteFile(storePath.getGroup(), storePath.getPath());
         return true;
     }
 }

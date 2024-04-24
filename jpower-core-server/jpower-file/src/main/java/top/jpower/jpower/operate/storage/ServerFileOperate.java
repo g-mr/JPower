@@ -1,23 +1,20 @@
 package top.jpower.jpower.operate.storage;
 
 import cn.hutool.core.io.FileTypeUtil;
-import cn.hutool.core.io.file.FileNameUtil;
-import lombok.SneakyThrows;
+import cn.hutool.core.util.IdUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 import top.jpower.jpower.dbs.entity.TbCoreFile;
 import top.jpower.jpower.module.base.enums.JpowerError;
 import top.jpower.jpower.module.base.exception.BusinessException;
 import top.jpower.jpower.module.base.exception.JpowerAssert;
-import top.jpower.jpower.module.common.utils.DesUtil;
-import top.jpower.jpower.module.common.utils.Fc;
-import top.jpower.jpower.module.common.utils.FileUtil;
-import top.jpower.jpower.module.common.utils.WebUtil;
+import top.jpower.jpower.module.common.utils.*;
 import top.jpower.jpower.module.common.utils.constants.ConstantsUtils;
+import top.jpower.jpower.module.common.utils.constants.StringPool;
 import top.jpower.jpower.operate.FileOperate;
+import top.jpower.jpower.operate.properties.FileProperties;
 import top.jpower.jpower.service.CoreFileService;
 
 import java.io.File;
@@ -35,21 +32,20 @@ import static top.jpower.jpower.operate.storage.ServerFileOperate.STORAGE_TYPE;
 public class ServerFileOperate implements FileOperate {
 
 	public static final String STORAGE_TYPE = "SERVER";
-	@Value("${jpower.fileParentPath:}")
-	private String fileParentPath;
+	@Autowired
+	private FileProperties fileProperties;
 	@Autowired
 	private CoreFileService coreFileService;
 
 	@Override
-	@SneakyThrows(IOException.class)
 	public TbCoreFile upload(byte[] bytes, String name, Long size) {
-		JpowerAssert.notEmpty(fileParentPath, JpowerError.Unknown,"未配置文件保存路径");
+		JpowerAssert.notEmpty(fileProperties.getServer().getPath(), JpowerError.Unknown,"未配置文件保存路径");
 
-		File saveFile = FileUtil.saveFile(bytes, FileNameUtil.getPrefix(name), fileParentPath);
+		File saveFile = FileUtil.saveFile(bytes, IdUtil.objectId(), fileProperties.getServer().getPath());
 
 		TbCoreFile coreFile = new TbCoreFile();
 		coreFile.setPath(saveFile.getAbsolutePath());
-		coreFile.setName(saveFile.getName());
+		coreFile.setName(name);
 		coreFile.setStorageType(SERVER.getValue());
 		coreFile.setFileType(FileTypeUtil.getType(saveFile));
 		coreFile.setFileSize(size);
@@ -104,5 +100,19 @@ public class ServerFileOperate implements FileOperate {
 		File file = new File(tbCoreFile.getPath());
 		FileUtil.deleteFile(file);
 		return true;
+	}
+
+	/**
+	 * 获取文件外链
+	 *
+	 * @param coreFile 文件
+	 * @return 外链
+	 * @author mr.g
+	 **/
+	@Override
+	public String getUrl(TbCoreFile coreFile) {
+		String domain = StringUtil.removeAllSuffix(fileProperties.getServer().getDomain(), StringPool.SLASH);
+		File file = new File(coreFile.getPath());
+		return StringUtil.concat(domain, StringPool.SLASH, file.getParentFile().getName(), StringPool.SLASH, file.getName());
 	}
 }

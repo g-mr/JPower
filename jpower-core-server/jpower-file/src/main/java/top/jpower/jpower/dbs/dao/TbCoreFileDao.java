@@ -1,9 +1,21 @@
 package top.jpower.jpower.dbs.dao;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import top.jpower.jpower.dbs.dao.mapper.TbCoreFileMapper;
 import top.jpower.jpower.dbs.entity.TbCoreFile;
+import top.jpower.jpower.dbs.entity.TbResourceOss;
+import top.jpower.jpower.module.common.page.PaginationContext;
+import top.jpower.jpower.module.common.utils.Fc;
+import top.jpower.jpower.module.common.utils.GuavaCache;
+import top.jpower.jpower.module.common.utils.MapUtil;
 import top.jpower.jpower.module.dbs.dao.JpowerServiceImpl;
+import top.jpower.jpower.module.mp.support.Condition;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @ClassName TbCoreParamsDao
@@ -13,7 +25,29 @@ import top.jpower.jpower.module.dbs.dao.JpowerServiceImpl;
  * @Version 1.0
  */
 @Repository
+@RequiredArgsConstructor
 public class TbCoreFileDao extends JpowerServiceImpl<TbCoreFileMapper, TbCoreFile> {
 
+    private final TbResourceOssDao resourceOssDao;
+    private final GuavaCache<TbResourceOss> cache = GuavaCache.getInstance(5L, TimeUnit.MINUTES);
 
+    public Page<TbCoreFile> listPage(Map<String, Object> map) {
+        Page<TbCoreFile> page = super.page(PaginationContext.getMpPage(), Condition.getQueryWrapper(map,TbCoreFile.class).lambda().orderByDesc(TbCoreFile::getCreateTime));
+        page.getRecords().forEach(f->{
+            if (!MapUtil.containsKey(f.getParams(), "storageType") || Fc.isBlank(MapUtil.getStr(f.getParams(), "storageType"))){
+                Map<String, Object> mapParams = f.getParams();
+                if (Fc.isNull(mapParams)){
+                    mapParams = new HashMap<>(1);
+                }
+                TbResourceOss resourceOss = cache.isExist(f.getStorageType()) ? cache.get(f.getStorageType())
+                        : resourceOssDao.getByCode(f.getStorageType());
+                if (Fc.notNull(resourceOss)){
+                    mapParams.put("storageType", resourceOss.getName());
+                    f.setParams(mapParams);
+                    cache.put(f.getStorageType(), resourceOss);
+                }
+            }
+        });
+        return page;
+    }
 }

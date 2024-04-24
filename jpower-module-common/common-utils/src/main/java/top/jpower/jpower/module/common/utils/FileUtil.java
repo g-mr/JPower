@@ -1,5 +1,6 @@
 package top.jpower.jpower.module.common.utils;
 
+import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.io.IORuntimeException;
 import cn.hutool.core.io.IoUtil;
@@ -353,13 +354,11 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
      * @param fileName 文件名称
      * @return 文件路径
      **/
-    public static File saveFile(byte[] bytes,String fileName,String savePath) throws IOException {
+    public static File saveFile(byte[] bytes,String fileName,String savePath){
 
-        if (Fc.isBlank(fileName)){
-            fileName = DateUtil.today();
-        }
+        String dir = DateUtil.format(DateUtil.date(), DatePattern.PURE_DATE_PATTERN);
 
-        File file = FileUtil.rename(new File(savePath+File.separator+DateUtil.today() + File.separator + fileName + "." + FileTypeUtil.getType(IoUtil.toStream(bytes))));
+        File file = FileUtil.rename(new File(savePath+File.separator + dir + File.separator + fileName + StringPool.DOT + FileTypeUtil.getType(IoUtil.toStream(bytes))));
 
         assert file != null;
         if(!file.getParentFile().exists()){
@@ -367,11 +366,11 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
             file.getParentFile().mkdirs();
         }
 
-        cn.hutool.core.io.FileUtil.writeBytes(bytes, file);
+        FileUtil.writeBytes(bytes, file);
 
         log.info("文件保存成功，文件路径={}", file.getAbsolutePath());
 
-        return new File(savePath + File.separator + DateUtil.today() + File.separator + file.getName());
+        return file;
     }
 
     /**

@@ -1,6 +1,5 @@
 package top.jpower.jpower.controller;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +17,6 @@ import top.jpower.jpower.module.base.vo.Pg;
 import top.jpower.jpower.module.base.vo.ResponseData;
 import top.jpower.jpower.module.common.cache.CacheNames;
 import top.jpower.jpower.module.common.controller.BaseController;
-import top.jpower.jpower.module.common.page.PaginationContext;
 import top.jpower.jpower.module.common.utils.*;
 import top.jpower.jpower.module.common.utils.constants.ConstantsReturn;
 import top.jpower.jpower.module.common.utils.constants.ConstantsUtils;
@@ -78,8 +76,8 @@ public class FileController extends BaseController {
     }
 
     @ApiOperation("下载文件")
-    @GetMapping(value = "/download",produces="application/json")
-    public void download(@ApiParam(value = "文件标识",required = true) @RequestParam String base){
+    @GetMapping(value = "/download/{base}",produces="application/json")
+    public void download(@ApiParam(value = "文件标识",required = true) @PathVariable("base") String base){
         JpowerAssert.notEmpty(base,JpowerError.Arg,"文件标识不可为空");
         String id = DesUtil.decrypt(base,ConstantsUtils.FILE_DES_KEY);
         JpowerAssert.notEmpty(id,JpowerError.Arg,"文件标识不合法");
@@ -96,6 +94,21 @@ public class FileController extends BaseController {
             logger.error("文件下载失败，e={}",e.getMessage());
             throw new BusinessException(coreFile.getName()+"文件下载失败");
         }
+    }
+
+    @ApiOperation("获取文件外链")
+    @GetMapping(value = "/url/{base}",produces="application/json")
+    public ResponseData<String> url(@ApiParam(value = "文件标识",required = true) @PathVariable("base") String base){
+        JpowerAssert.notEmpty(base, JpowerError.Arg, "文件标识不可为空");
+        String id = DesUtil.decrypt(base,ConstantsUtils.FILE_DES_KEY);
+        JpowerAssert.notEmpty(id,JpowerError.Arg,"文件标识不合法");
+
+        TbCoreFile coreFile = coreFileService.getOne(Condition.<TbCoreFile>getQueryWrapper().lambda()
+                .select(TbCoreFile::getPath,TbCoreFile::getContent,TbCoreFile::getName,TbCoreFile::getStorageType)
+                .eq(TbCoreFile::getId,id));
+        JpowerAssert.notNull(coreFile,JpowerError.Unknown,"未查到文件数据");
+
+        return ReturnJsonUtil.data(operateBuilder.getBuilder(coreFile.getStorageType()).getUrl(coreFile));
     }
 
     @Function(value = "文件列表",menus = {
@@ -115,8 +128,7 @@ public class FileController extends BaseController {
     })
     @GetMapping(value = "/listPage",produces="application/json")
     public ResponseData<Pg<TbCoreFile>> listPage(@ApiIgnore @RequestParam Map<String,Object> map){
-        Page<TbCoreFile> page = coreFileService.page(PaginationContext.getMpPage(), Condition.getQueryWrapper(map,TbCoreFile.class).lambda().orderByDesc(TbCoreFile::getCreateTime));
-        return ReturnJsonUtil.ok("获取成功", page);
+        return ReturnJsonUtil.ok("获取成功", coreFileService.listPage(map));
     }
 
     @Function(value = "文件详情",menus = {
@@ -168,7 +180,7 @@ public class FileController extends BaseController {
     }
 
     @Function(value = "上传类型",menus = {
-        @Menu(client = "admin",menuCode = "SYSTEM_FILE",code = "FILE_STORAGE_TYPE",type = Menu.TYPE.BTN)
+        @Menu(client = "admin",menuCode = "SYSTEM_FILE",btnCode = "SYSTEM_FILE_ADD",code = "FILE_STORAGE_TYPE",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperation("上传类型")
     @GetMapping(value = "/storageType",produces="application/json")

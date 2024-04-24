@@ -103,7 +103,7 @@ public class OssQnFileOperate implements FileOperate {
         return list.get(0);
     }
 
-    private String getKeyByPath(String path){
+    private String getFileNameByPath(String path){
         List<String> list = StringUtil.split(path, File.separator, 2, Boolean.TRUE, Boolean.TRUE);
         return list.get(1);
     }
@@ -145,14 +145,16 @@ public class OssQnFileOperate implements FileOperate {
     @SneakyThrows(QiniuException.class)
     public Boolean deleteFile(TbCoreFile coreFile) {
         BucketManager bucketManager = new BucketManager(auth, cfg);
-        @Cleanup Response response = bucketManager.delete(getBucketNameByPath(coreFile.getPath()), getKeyByPath(coreFile.getPath()));
+        @Cleanup Response response = bucketManager.delete(getBucketNameByPath(coreFile.getPath()), getFileNameByPath(coreFile.getPath()));
         return response.isOK();
     }
 
     /**
      * 获取文件外链
      **/
+    @Override
     public String getUrl(TbCoreFile coreFile) {
-        return Fc.toStr(resourceOss.getExternalAddress(), resourceOss.getInternalAddress()) + File.separator + coreFile.getPath();
+        String domain = StringUtil.removeAllSuffix(resourceOss.getExternalAddress(), StringPool.SLASH);
+        return StringUtil.concat(domain, StringPool.SLASH, getFileNameByPath(coreFile.getPath()));
     }
 }

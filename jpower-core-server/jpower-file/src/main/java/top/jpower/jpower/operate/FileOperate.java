@@ -41,4 +41,12 @@ public interface FileOperate {
 	 * @return java.lang.Boolean
 	 **/
 	Boolean deleteFile(TbCoreFile tbCoreFile);
+
+	/**
+	 * 获取文件外链
+	 * @author mr.g
+	 * @param coreFile 文件
+	 * @return 外链
+	 **/
+	String getUrl(TbCoreFile coreFile);
 }

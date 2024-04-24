@@ -1,6 +1,7 @@
 package top.jpower.jpower.operate;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 import top.jpower.jpower.dbs.dao.TbCoreFileDao;
 import top.jpower.jpower.dbs.dao.TbResourceOssDao;
@@ -9,6 +10,7 @@ import top.jpower.jpower.module.base.enums.JpowerError;
 import top.jpower.jpower.module.base.exception.JpowerAssert;
 import top.jpower.jpower.module.common.utils.Fc;
 import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
+import top.jpower.jpower.operate.properties.FileProperties;
 import top.jpower.jpower.operate.storage.OssAliFileOperate;
 import top.jpower.jpower.operate.storage.OssQnFileOperate;
 
@@ -22,6 +24,7 @@ import java.util.Map;
  * @Version 1.0
  */
 @Component
+@EnableConfigurationProperties(FileProperties.class)
 @RequiredArgsConstructor
 public class FileOperateBuilder {
 

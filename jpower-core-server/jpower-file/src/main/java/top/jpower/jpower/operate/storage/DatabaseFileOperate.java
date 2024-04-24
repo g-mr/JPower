@@ -5,10 +5,7 @@ import cn.hutool.core.io.IoUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import top.jpower.jpower.dbs.entity.TbCoreFile;
-import top.jpower.jpower.module.common.utils.DesUtil;
-import top.jpower.jpower.module.common.utils.Fc;
-import top.jpower.jpower.module.common.utils.FileUtil;
-import top.jpower.jpower.module.common.utils.WebUtil;
+import top.jpower.jpower.module.common.utils.*;
 import top.jpower.jpower.module.common.utils.constants.ConstantsUtils;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.operate.FileOperate;
@@ -64,5 +61,18 @@ public class DatabaseFileOperate implements FileOperate {
 	@Override
 	public Boolean deleteFile(TbCoreFile tbCoreFile) {
 		return true;
+	}
+
+	/**
+	 * 获取文件外链
+	 *
+	 * @param coreFile 文件
+	 * @return 外链
+	 * @author mr.g
+	 **/
+	@Override
+	public String getUrl(TbCoreFile coreFile) {
+		String url = WebUtil.getRequest().getRequestURI();
+		return StringUtil.replace(url, "/url/", "/download/");
 	}
 }
