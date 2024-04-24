@@ -2,7 +2,7 @@ package top.jpower.jpower.service;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import top.jpower.jpower.dbs.entity.TbCoreFile;
+import top.jpower.jpower.dbs.entity.TbResourceFile;
 import top.jpower.jpower.module.common.service.BaseService;
 
 import java.util.Map;
@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * @author mr.gmac
  */
-public interface CoreFileService extends BaseService<TbCoreFile> {
+public interface ResourceFileService extends BaseService<TbResourceFile> {
 
     /**
      * @Author 郭丁志
@@ -19,9 +19,9 @@ public interface CoreFileService extends BaseService<TbCoreFile> {
      * @Param [coreFile]
      * @return java.lang.Boolean
      **/
-    Boolean add(TbCoreFile coreFile);
+    Boolean add(TbResourceFile coreFile);
 
-    TbCoreFile getById(Long id);
+    TbResourceFile getById(Long id);
 
     /**
      * @Author 郭丁志
@@ -32,5 +32,5 @@ public interface CoreFileService extends BaseService<TbCoreFile> {
      **/
     String getPathById(Long id);
 
-    Page<TbCoreFile> listPage(Map<String, Object> map);
+    Page<TbResourceFile> listPage(Map<String, Object> map);
 }

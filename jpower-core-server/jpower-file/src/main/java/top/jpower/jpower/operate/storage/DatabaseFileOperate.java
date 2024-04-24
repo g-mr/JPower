@@ -4,12 +4,12 @@ import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.io.IoUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import top.jpower.jpower.dbs.entity.TbCoreFile;
+import top.jpower.jpower.dbs.entity.TbResourceFile;
 import top.jpower.jpower.module.common.utils.*;
 import top.jpower.jpower.module.common.utils.constants.ConstantsUtils;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.operate.FileOperate;
-import top.jpower.jpower.service.CoreFileService;
+import top.jpower.jpower.service.ResourceFileService;
 
 import java.io.IOException;
 
@@ -25,13 +25,13 @@ import static top.jpower.jpower.operate.storage.DatabaseFileOperate.STORAGE_TYPE
 public class DatabaseFileOperate implements FileOperate {
 
 	public static final String STORAGE_TYPE = "DATABASE";
-	private CoreFileService coreFileService;
+	private ResourceFileService coreFileService;
 
 
 	@Override
-	public TbCoreFile upload(byte[] bytes, String name, Long size) {
+	public TbResourceFile upload(byte[] bytes, String name, Long size) {
 
-		TbCoreFile coreFile = new TbCoreFile();
+		TbResourceFile coreFile = new TbResourceFile();
 		coreFile.setFileType(FileTypeUtil.getType(IoUtil.toStream(bytes),name));
 		coreFile.setFileSize(size);
 		coreFile.setId(Fc.randomSnowFlakeId());
@@ -46,20 +46,20 @@ public class DatabaseFileOperate implements FileOperate {
 	}
 
 	@Override
-	public Boolean download(TbCoreFile coreFile) throws IOException {
+	public Boolean download(TbResourceFile coreFile) throws IOException {
 		return FileUtil.download(coreFile.getContent(), WebUtil.getResponse(), coreFile.getName());
 	}
 
 	@Override
-	public byte[] getByte(TbCoreFile coreFile) {
-		return coreFileService.getOne(Condition.<TbCoreFile>getQueryWrapper()
+	public byte[] getByte(TbResourceFile coreFile) {
+		return coreFileService.getOne(Condition.<TbResourceFile>getQueryWrapper()
 				.lambda()
-				.select(TbCoreFile::getContent)
-				.eq(TbCoreFile::getId,coreFile.getId())).getContent();
+				.select(TbResourceFile::getContent)
+				.eq(TbResourceFile::getId,coreFile.getId())).getContent();
 	}
 
 	@Override
-	public Boolean deleteFile(TbCoreFile tbCoreFile) {
+	public Boolean deleteFile(TbResourceFile tbCoreFile) {
 		return true;
 	}
 
@@ -71,7 +71,7 @@ public class DatabaseFileOperate implements FileOperate {
 	 * @author mr.g
 	 **/
 	@Override
-	public String getUrl(TbCoreFile coreFile) {
+	public String getUrl(TbResourceFile coreFile) {
 		String url = WebUtil.getRequest().getRequestURI();
 		return StringUtil.replace(url, "/url/", "/download/");
 	}

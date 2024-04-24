@@ -15,7 +15,7 @@ import top.jpower.jpower.module.dbs.entity.base.BaseEntity;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class TbCoreFile extends BaseEntity {
+public class TbResourceFile extends BaseEntity {
 
     private static final long serialVersionUID = -6889020017108014146L;
 

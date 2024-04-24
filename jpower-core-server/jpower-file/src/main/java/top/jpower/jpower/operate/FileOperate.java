@@ -1,6 +1,6 @@
 package top.jpower.jpower.operate;
 
-import top.jpower.jpower.dbs.entity.TbCoreFile;
+import top.jpower.jpower.dbs.entity.TbResourceFile;
 
 import java.io.IOException;
 
@@ -16,7 +16,7 @@ public interface FileOperate {
 	 * @param file 上传文件
 	 * @return TbCoreFile
 	 */
-	TbCoreFile upload(byte[] bytes, String name, Long size);
+	TbResourceFile upload(byte[] bytes, String name, Long size);
 
 	/**
 	 * 下载文件
@@ -24,7 +24,7 @@ public interface FileOperate {
 	 * @param coreFile
 	 * @return java.lang.Boolean
 	 **/
-	Boolean download(TbCoreFile coreFile) throws IOException;
+	Boolean download(TbResourceFile coreFile) throws IOException;
 
 	/**
 	 * 获取文件字节
@@ -32,7 +32,7 @@ public interface FileOperate {
 	 * @param coreFile
 	 * @return byte[]
 	 **/
-	byte[] getByte(TbCoreFile coreFile);
+	byte[] getByte(TbResourceFile coreFile);
 
 	/**
 	 * 删除文件
@@ -40,7 +40,7 @@ public interface FileOperate {
 	 * @param tbCoreFile
 	 * @return java.lang.Boolean
 	 **/
-	Boolean deleteFile(TbCoreFile tbCoreFile);
+	Boolean deleteFile(TbResourceFile tbCoreFile);
 
 	/**
 	 * 获取文件外链
@@ -48,5 +48,5 @@ public interface FileOperate {
 	 * @param coreFile 文件
 	 * @return 外链
 	 **/
-	String getUrl(TbCoreFile coreFile);
+	String getUrl(TbResourceFile coreFile);
 }

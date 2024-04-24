@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.jpower.cache.dict.DictCache;
-import top.jpower.jpower.dbs.entity.TbCoreFile;
+import top.jpower.jpower.dbs.entity.TbResourceFile;
 import top.jpower.jpower.module.annotation.Function;
 import top.jpower.jpower.module.annotation.Menu;
 import top.jpower.jpower.module.base.enums.JpowerError;
@@ -22,8 +22,8 @@ import top.jpower.jpower.module.common.utils.constants.ConstantsReturn;
 import top.jpower.jpower.module.common.utils.constants.ConstantsUtils;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.operate.FileOperateBuilder;
-import top.jpower.jpower.service.CoreFileService;
 import top.jpower.jpower.service.OssService;
+import top.jpower.jpower.service.ResourceFileService;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -47,7 +47,7 @@ public class FileController extends BaseController {
     private String downloadPath;
 
     @Resource
-    private CoreFileService coreFileService;
+    private ResourceFileService coreFileService;
     @Resource
     private FileOperateBuilder operateBuilder;
     @Resource
@@ -59,7 +59,7 @@ public class FileController extends BaseController {
                                @ApiParam(value = "存储类型 字典FILE_STORAGE_TYPE",defaultValue = "SERVER") @RequestParam(required = false,defaultValue = "SERVER") String storageType){
         JpowerAssert.notTrue(file == null || file.isEmpty(),JpowerError.Arg,"文件不可为空");
         try {
-            TbCoreFile coreFile = operateBuilder.getBuilder(storageType).upload(file.getBytes(), file.getOriginalFilename(), file.getSize());
+            TbResourceFile coreFile = operateBuilder.getBuilder(storageType).upload(file.getBytes(), file.getOriginalFilename(), file.getSize());
             if (Fc.notNull(coreFile)){
                 CacheUtil.clear(CacheNames.FILE_KEY);
                 return ReturnJsonUtil.ok("上传成功", coreFile.getMark());
@@ -82,9 +82,9 @@ public class FileController extends BaseController {
         String id = DesUtil.decrypt(base,ConstantsUtils.FILE_DES_KEY);
         JpowerAssert.notEmpty(id,JpowerError.Arg,"文件标识不合法");
 
-        TbCoreFile coreFile = coreFileService.getOne(Condition.<TbCoreFile>getQueryWrapper().lambda()
-                .select(TbCoreFile::getPath,TbCoreFile::getContent,TbCoreFile::getName,TbCoreFile::getStorageType)
-                .eq(TbCoreFile::getId,id));
+        TbResourceFile coreFile = coreFileService.getOne(Condition.<TbResourceFile>getQueryWrapper().lambda()
+                .select(TbResourceFile::getPath,TbResourceFile::getContent,TbResourceFile::getName,TbResourceFile::getStorageType)
+                .eq(TbResourceFile::getId,id));
         JpowerAssert.notNull(coreFile,JpowerError.Unknown,"未查到文件数据");
 
         try {
@@ -103,9 +103,9 @@ public class FileController extends BaseController {
         String id = DesUtil.decrypt(base,ConstantsUtils.FILE_DES_KEY);
         JpowerAssert.notEmpty(id,JpowerError.Arg,"文件标识不合法");
 
-        TbCoreFile coreFile = coreFileService.getOne(Condition.<TbCoreFile>getQueryWrapper().lambda()
-                .select(TbCoreFile::getPath,TbCoreFile::getContent,TbCoreFile::getName,TbCoreFile::getStorageType)
-                .eq(TbCoreFile::getId,id));
+        TbResourceFile coreFile = coreFileService.getOne(Condition.<TbResourceFile>getQueryWrapper().lambda()
+                .select(TbResourceFile::getPath,TbResourceFile::getContent,TbResourceFile::getName,TbResourceFile::getStorageType)
+                .eq(TbResourceFile::getId,id));
         JpowerAssert.notNull(coreFile,JpowerError.Unknown,"未查到文件数据");
 
         return ReturnJsonUtil.data(operateBuilder.getBuilder(coreFile.getStorageType()).getUrl(coreFile));
@@ -127,7 +127,7 @@ public class FileController extends BaseController {
             @ApiImplicitParam(name = "createTime_datelt",value = "上传时间最大值",paramType = "query",required = false)
     })
     @GetMapping(value = "/listPage",produces="application/json")
-    public ResponseData<Pg<TbCoreFile>> listPage(@ApiIgnore @RequestParam Map<String,Object> map){
+    public ResponseData<Pg<TbResourceFile>> listPage(@ApiIgnore @RequestParam Map<String,Object> map){
         return ReturnJsonUtil.ok("获取成功", coreFileService.listPage(map));
     }
 
@@ -136,7 +136,7 @@ public class FileController extends BaseController {
     })
     @ApiOperation("详情")
     @GetMapping(value = "/get",produces="application/json")
-    public ResponseData<TbCoreFile> get(@RequestParam Long id){
+    public ResponseData<TbResourceFile> get(@RequestParam Long id){
         JpowerAssert.notNull(id,JpowerError.Arg,"主键不可为空");
         return ReturnJsonUtil.ok("获取成功",coreFileService.getById(id));
     }
@@ -167,7 +167,7 @@ public class FileController extends BaseController {
             @ApiImplicitParam(name = "note",value = "备注",paramType = "query",required = false)
     })
     @PutMapping(value = "/update",produces="application/json")
-    public ResponseData update(@ApiIgnore TbCoreFile file){
+    public ResponseData update(@ApiIgnore TbResourceFile file){
         JpowerAssert.notNull(file.getId(),JpowerError.Arg,"主键不可为空");
 
         //不可修改项

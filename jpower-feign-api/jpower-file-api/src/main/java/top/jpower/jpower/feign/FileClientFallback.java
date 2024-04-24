@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import top.jpower.jpower.dbs.entity.TbCoreFile;
+import top.jpower.jpower.dbs.entity.TbResourceFile;
 import top.jpower.jpower.module.base.vo.ResponseData;
 import top.jpower.jpower.module.common.utils.ReturnJsonUtil;
 
@@ -35,7 +35,7 @@ public class FileClientFallback implements FallbackFactory<FileClient> {
             }
 
             @Override
-            public ResponseData<TbCoreFile> getFileDetail(String base) {
+            public ResponseData<TbResourceFile> getFileDetail(String base) {
                 return ReturnJsonUtil.fail("获取文件详情失败");
             }
         };

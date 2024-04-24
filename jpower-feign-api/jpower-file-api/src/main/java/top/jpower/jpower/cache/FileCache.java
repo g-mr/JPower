@@ -1,6 +1,6 @@
 package top.jpower.jpower.cache;
 
-import top.jpower.jpower.dbs.entity.TbCoreFile;
+import top.jpower.jpower.dbs.entity.TbResourceFile;
 import top.jpower.jpower.feign.FileClient;
 import top.jpower.jpower.module.base.vo.ResponseData;
 import top.jpower.jpower.module.common.cache.CacheNames;
@@ -22,9 +22,9 @@ public class FileCache {
         fileClient = SpringUtil.getBean(FileClient.class);
     }
 
-    public static TbCoreFile getFileDetail(String base) {
+    public static TbResourceFile getFileDetail(String base) {
         return CacheUtil.get(CacheNames.FILE_KEY,CacheNames.FILE_BASE_KEY, base,() -> {
-            ResponseData<TbCoreFile> responseData = fileClient.getFileDetail(base);
+            ResponseData<TbResourceFile> responseData = fileClient.getFileDetail(base);
             return responseData.getData();
         });
     }

@@ -18,8 +18,8 @@ import com.qiniu.util.Auth;
 import lombok.Cleanup;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import top.jpower.jpower.dbs.dao.TbCoreFileDao;
-import top.jpower.jpower.dbs.entity.TbCoreFile;
+import top.jpower.jpower.dbs.dao.TbResourceFileDao;
+import top.jpower.jpower.dbs.entity.TbResourceFile;
 import top.jpower.jpower.dbs.entity.TbResourceOss;
 import top.jpower.jpower.module.common.utils.*;
 import top.jpower.jpower.module.common.utils.constants.ConstantsUtils;
@@ -47,9 +47,9 @@ public class OssQnFileOperate implements FileOperate {
     private final Auth auth;
 
     private final TbResourceOss resourceOss;
-    private final TbCoreFileDao fileDao;
+    private final TbResourceFileDao fileDao;
 
-    public OssQnFileOperate(TbResourceOss resourceOss, TbCoreFileDao fileDao){
+    public OssQnFileOperate(TbResourceOss resourceOss, TbResourceFileDao fileDao){
         // 指定分片上传版本
         cfg.resumableUploadAPIVersion = Configuration.ResumableUploadAPIVersion.V2;
         this.auth = Auth.create(resourceOss.getAccessKey(), resourceOss.getSecretKey());
@@ -68,7 +68,7 @@ public class OssQnFileOperate implements FileOperate {
      */
     @Override
     @SneakyThrows(QiniuException.class)
-    public TbCoreFile upload(byte[] bytes, String name, Long size) {
+    public TbResourceFile upload(byte[] bytes, String name, Long size) {
         String type = FileTypeUtil.getType(IoUtil.toStream(bytes), name);
 
         String key = DateUtil.format(DateUtil.date(), DatePattern.PURE_DATE_PATTERN) + File.separator + IdUtil.objectId() + StringPool.DOT + type;
@@ -81,7 +81,7 @@ public class OssQnFileOperate implements FileOperate {
 
         log.info("七牛云上传完成===>{},{}", putRet.key, putRet.hash);
 
-        TbCoreFile coreFile = new TbCoreFile();
+        TbResourceFile coreFile = new TbResourceFile();
         coreFile.setFileType(type);
         coreFile.setFileSize(size);
         coreFile.setId(Fc.randomSnowFlakeId());
@@ -116,7 +116,7 @@ public class OssQnFileOperate implements FileOperate {
      * @Author mr.g
      **/
     @Override
-    public Boolean download(TbCoreFile coreFile) throws IOException {
+    public Boolean download(TbResourceFile coreFile) throws IOException {
         HttpConnection connection = HttpConnection.create(getUrl(coreFile), Proxy.NO_PROXY);
         return FileUtil.download(connection.connect().getInputStream(), WebUtil.getResponse(), coreFile.getName());
     }
@@ -129,7 +129,7 @@ public class OssQnFileOperate implements FileOperate {
      * @Author mr.g
      **/
     @Override
-    public byte[] getByte(TbCoreFile coreFile) {
+    public byte[] getByte(TbResourceFile coreFile) {
         return HttpUtil.downloadBytes(getUrl(coreFile));
     }
 
@@ -143,7 +143,7 @@ public class OssQnFileOperate implements FileOperate {
      **/
     @Override
     @SneakyThrows(QiniuException.class)
-    public Boolean deleteFile(TbCoreFile coreFile) {
+    public Boolean deleteFile(TbResourceFile coreFile) {
         BucketManager bucketManager = new BucketManager(auth, cfg);
         @Cleanup Response response = bucketManager.delete(getBucketNameByPath(coreFile.getPath()), getFileNameByPath(coreFile.getPath()));
         return response.isOK();
@@ -153,7 +153,7 @@ public class OssQnFileOperate implements FileOperate {
      * 获取文件外链
      **/
     @Override
-    public String getUrl(TbCoreFile coreFile) {
+    public String getUrl(TbResourceFile coreFile) {
         String domain = StringUtil.removeAllSuffix(resourceOss.getExternalAddress(), StringPool.SLASH);
         return StringUtil.concat(domain, StringPool.SLASH, getFileNameByPath(coreFile.getPath()));
     }

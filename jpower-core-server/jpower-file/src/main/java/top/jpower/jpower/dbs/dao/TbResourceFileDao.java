@@ -3,8 +3,8 @@ package top.jpower.jpower.dbs.dao;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import top.jpower.jpower.dbs.dao.mapper.TbCoreFileMapper;
-import top.jpower.jpower.dbs.entity.TbCoreFile;
+import top.jpower.jpower.dbs.dao.mapper.TbResourceFileMapper;
+import top.jpower.jpower.dbs.entity.TbResourceFile;
 import top.jpower.jpower.dbs.entity.TbResourceOss;
 import top.jpower.jpower.module.common.page.PaginationContext;
 import top.jpower.jpower.module.common.utils.Fc;
@@ -26,13 +26,13 @@ import java.util.concurrent.TimeUnit;
  */
 @Repository
 @RequiredArgsConstructor
-public class TbCoreFileDao extends JpowerServiceImpl<TbCoreFileMapper, TbCoreFile> {
+public class TbResourceFileDao extends JpowerServiceImpl<TbResourceFileMapper, TbResourceFile> {
 
     private final TbResourceOssDao resourceOssDao;
     private final GuavaCache<TbResourceOss> cache = GuavaCache.getInstance(5L, TimeUnit.MINUTES);
 
-    public Page<TbCoreFile> listPage(Map<String, Object> map) {
-        Page<TbCoreFile> page = super.page(PaginationContext.getMpPage(), Condition.getQueryWrapper(map,TbCoreFile.class).lambda().orderByDesc(TbCoreFile::getCreateTime));
+    public Page<TbResourceFile> listPage(Map<String, Object> map) {
+        Page<TbResourceFile> page = super.page(PaginationContext.getMpPage(), Condition.getQueryWrapper(map,TbResourceFile.class).lambda().orderByDesc(TbResourceFile::getCreateTime));
         page.getRecords().forEach(f->{
             if (!MapUtil.containsKey(f.getParams(), "storageType") || Fc.isBlank(MapUtil.getStr(f.getParams(), "storageType"))){
                 Map<String, Object> mapParams = f.getParams();

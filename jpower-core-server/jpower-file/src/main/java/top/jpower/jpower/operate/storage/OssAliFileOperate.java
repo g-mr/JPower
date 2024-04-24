@@ -14,8 +14,8 @@ import com.aliyun.oss.model.PutObjectResult;
 import lombok.Cleanup;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import top.jpower.jpower.dbs.dao.TbCoreFileDao;
-import top.jpower.jpower.dbs.entity.TbCoreFile;
+import top.jpower.jpower.dbs.dao.TbResourceFileDao;
+import top.jpower.jpower.dbs.entity.TbResourceFile;
 import top.jpower.jpower.dbs.entity.TbResourceOss;
 import top.jpower.jpower.module.common.utils.*;
 import top.jpower.jpower.module.common.utils.constants.ConstantsUtils;
@@ -39,9 +39,9 @@ public class OssAliFileOperate implements FileOperate {
 
     private final OSS ossClient;
     private final TbResourceOss resourceOss;
-    private final TbCoreFileDao fileDao;
+    private final TbResourceFileDao fileDao;
 
-    public OssAliFileOperate(TbResourceOss resourceOss, TbCoreFileDao fileDao){
+    public OssAliFileOperate(TbResourceOss resourceOss, TbResourceFileDao fileDao){
         ossClient = new OSSClientBuilder().build(resourceOss.getInternalAddress(), CredentialsProviderFactory.newDefaultCredentialProvider(resourceOss.getAccessKey(),resourceOss.getSecretKey()));
         this.resourceOss = resourceOss;
         this.fileDao = fileDao;
@@ -56,7 +56,7 @@ public class OssAliFileOperate implements FileOperate {
      * @return TbCoreFile
      */
     @Override
-    public TbCoreFile upload(byte[] bytes, String name, Long size) {
+    public TbResourceFile upload(byte[] bytes, String name, Long size) {
 
         String type = FileTypeUtil.getType(IoUtil.toStream(bytes), name);
 
@@ -70,7 +70,7 @@ public class OssAliFileOperate implements FileOperate {
 
         log.info("阿里云上传完成===>{}", JSON.toJSONString(result));
 
-        TbCoreFile coreFile = new TbCoreFile();
+        TbResourceFile coreFile = new TbResourceFile();
         coreFile.setFileType(type);
         coreFile.setFileSize(size);
         coreFile.setId(Fc.randomSnowFlakeId());
@@ -104,7 +104,7 @@ public class OssAliFileOperate implements FileOperate {
      * @Author mr.g
      **/
     @Override
-    public Boolean download(TbCoreFile coreFile) throws IOException {
+    public Boolean download(TbResourceFile coreFile) throws IOException {
         String bucketName = getBucketNameByPath(coreFile.getPath());
         String objectName = getObjectNameByPath(coreFile.getPath());
 
@@ -123,7 +123,7 @@ public class OssAliFileOperate implements FileOperate {
      **/
     @Override
     @SneakyThrows(IOException.class)
-    public byte[] getByte(TbCoreFile coreFile) {
+    public byte[] getByte(TbResourceFile coreFile) {
 
         String bucketName = getBucketNameByPath(coreFile.getPath());
         String objectName = getObjectNameByPath(coreFile.getPath());
@@ -142,7 +142,7 @@ public class OssAliFileOperate implements FileOperate {
      * @Author mr.g
      **/
     @Override
-    public Boolean deleteFile(TbCoreFile coreFile) {
+    public Boolean deleteFile(TbResourceFile coreFile) {
         ossClient.deleteObject(getBucketNameByPath(coreFile.getPath()), getObjectNameByPath(coreFile.getPath()));
         return Boolean.TRUE;
     }
@@ -151,7 +151,7 @@ public class OssAliFileOperate implements FileOperate {
      * 获取文件外链
      **/
     @Override
-    public String getUrl(TbCoreFile coreFile) {
+    public String getUrl(TbResourceFile coreFile) {
         String domain = StringUtil.removeAllSuffix(Fc.toStr(resourceOss.getExternalAddress(), resourceOss.getInternalAddress()), StringPool.SLASH);
         return StringUtil.concat(domain, StringPool.SLASH, coreFile.getPath());
     }

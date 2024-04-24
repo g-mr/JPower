@@ -1,7 +1,7 @@
 package top.jpower.jpower.dbs.dao.mapper;
 
-import org.springframework.stereotype.Component;
-import top.jpower.jpower.dbs.entity.TbCoreFile;
+import org.apache.ibatis.annotations.Mapper;
+import top.jpower.jpower.dbs.entity.TbResourceFile;
 import top.jpower.jpower.module.dbs.dao.mapper.base.JpowerBaseMapper;
 
 /**
@@ -11,7 +11,7 @@ import top.jpower.jpower.module.dbs.dao.mapper.base.JpowerBaseMapper;
  * @Date 2020-07-03 13:30
  * @Version 1.0
  */
-@Component("tbCoreFileMapper")
-public interface TbCoreFileMapper extends JpowerBaseMapper<TbCoreFile> {
+@Mapper
+public interface TbResourceFileMapper extends JpowerBaseMapper<TbResourceFile> {
 
 }

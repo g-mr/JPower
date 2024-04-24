@@ -3,7 +3,7 @@ package top.jpower.jpower.operate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
-import top.jpower.jpower.dbs.dao.TbCoreFileDao;
+import top.jpower.jpower.dbs.dao.TbResourceFileDao;
 import top.jpower.jpower.dbs.dao.TbResourceOssDao;
 import top.jpower.jpower.dbs.entity.TbResourceOss;
 import top.jpower.jpower.module.base.enums.JpowerError;
@@ -32,7 +32,7 @@ public class FileOperateBuilder {
      * FileUpload缓存池
      */
     private final Map<String, FileOperate> uploadPool;
-    private final TbCoreFileDao coreFileDao;
+    private final TbResourceFileDao resourceFileDao;
     private final TbResourceOssDao resourceOssDao;
 
     /**
@@ -48,11 +48,11 @@ public class FileOperateBuilder {
             TbResourceOss resourceOss = resourceOssDao.getByCode(storageType);
             switch (ConstantsEnum.OSS_CATEGORY.getEnum(resourceOss.getCategory())){
                 case ALI:
-                    fileUpload = new OssAliFileOperate(resourceOss, coreFileDao);
+                    fileUpload = new OssAliFileOperate(resourceOss, resourceFileDao);
                     uploadPool.put(resourceOss.getCode(), fileUpload);
                     break;
                 case QN:
-                    fileUpload = new OssQnFileOperate(resourceOss, coreFileDao);
+                    fileUpload = new OssQnFileOperate(resourceOss, resourceFileDao);
                     uploadPool.put(resourceOss.getCode(), fileUpload);
                     break;
                 default:

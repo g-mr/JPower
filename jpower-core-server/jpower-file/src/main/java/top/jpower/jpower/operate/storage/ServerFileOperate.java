@@ -6,7 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
-import top.jpower.jpower.dbs.entity.TbCoreFile;
+import top.jpower.jpower.dbs.entity.TbResourceFile;
 import top.jpower.jpower.module.base.enums.JpowerError;
 import top.jpower.jpower.module.base.exception.BusinessException;
 import top.jpower.jpower.module.base.exception.JpowerAssert;
@@ -15,7 +15,7 @@ import top.jpower.jpower.module.common.utils.constants.ConstantsUtils;
 import top.jpower.jpower.module.common.utils.constants.StringPool;
 import top.jpower.jpower.operate.FileOperate;
 import top.jpower.jpower.operate.properties.FileProperties;
-import top.jpower.jpower.service.CoreFileService;
+import top.jpower.jpower.service.ResourceFileService;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,15 +35,15 @@ public class ServerFileOperate implements FileOperate {
 	@Autowired
 	private FileProperties fileProperties;
 	@Autowired
-	private CoreFileService coreFileService;
+	private ResourceFileService coreFileService;
 
 	@Override
-	public TbCoreFile upload(byte[] bytes, String name, Long size) {
+	public TbResourceFile upload(byte[] bytes, String name, Long size) {
 		JpowerAssert.notEmpty(fileProperties.getServer().getPath(), JpowerError.Unknown,"未配置文件保存路径");
 
 		File saveFile = FileUtil.saveFile(bytes, IdUtil.objectId(), fileProperties.getServer().getPath());
 
-		TbCoreFile coreFile = new TbCoreFile();
+		TbResourceFile coreFile = new TbResourceFile();
 		coreFile.setPath(saveFile.getAbsolutePath());
 		coreFile.setName(name);
 		coreFile.setStorageType(SERVER.getValue());
@@ -67,7 +67,7 @@ public class ServerFileOperate implements FileOperate {
 	}
 
 	@Override
-	public Boolean download(TbCoreFile coreFile) throws IOException {
+	public Boolean download(TbResourceFile coreFile) throws IOException {
 		String path = coreFile.getPath();
 		if(StringUtils.isBlank(path)){
 			WebUtil.getResponse().setHeader("iserror", "true");
@@ -83,7 +83,7 @@ public class ServerFileOperate implements FileOperate {
 	}
 
 	@Override
-	public byte[] getByte(TbCoreFile coreFile){
+	public byte[] getByte(TbResourceFile coreFile){
 		String path = coreFile.getPath();
 		JpowerAssert.notEmpty(path,JpowerError.Parser,"文件路径不存在");
 
@@ -96,7 +96,7 @@ public class ServerFileOperate implements FileOperate {
 	}
 
 	@Override
-	public Boolean deleteFile(TbCoreFile tbCoreFile) {
+	public Boolean deleteFile(TbResourceFile tbCoreFile) {
 		File file = new File(tbCoreFile.getPath());
 		FileUtil.deleteFile(file);
 		return true;
@@ -110,7 +110,7 @@ public class ServerFileOperate implements FileOperate {
 	 * @author mr.g
 	 **/
 	@Override
-	public String getUrl(TbCoreFile coreFile) {
+	public String getUrl(TbResourceFile coreFile) {
 		String domain = StringUtil.removeAllSuffix(fileProperties.getServer().getDomain(), StringPool.SLASH);
 		File file = new File(coreFile.getPath());
 		return StringUtil.concat(domain, StringPool.SLASH, file.getParentFile().getName(), StringPool.SLASH, file.getName());

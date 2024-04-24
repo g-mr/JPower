@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
-import top.jpower.jpower.dbs.entity.TbCoreFile;
+import top.jpower.jpower.dbs.entity.TbResourceFile;
 import top.jpower.jpower.module.base.vo.ResponseData;
 import top.jpower.jpower.module.common.utils.constants.AppConstant;
 
@@ -52,5 +52,5 @@ public interface FileClient {
      * @return ResponseData
      **/
     @GetMapping(value = "/getFileDetail",produces="application/json")
-    ResponseData<TbCoreFile> getFileDetail(@RequestParam("base") String base);
+    ResponseData<TbResourceFile> getFileDetail(@RequestParam("base") String base);
 }
