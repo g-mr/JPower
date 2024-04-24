@@ -23,7 +23,7 @@ import top.jpower.jpower.module.common.utils.ReturnJsonUtil;
 import top.jpower.jpower.module.common.validated.UpdateGroup;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.operate.FileOperateBuilder;
-import top.jpower.jpower.service.OssService;
+import top.jpower.jpower.service.ResourceOssService;
 
 import javax.validation.groups.Default;
 import java.util.List;
@@ -39,7 +39,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class OssController extends BaseController {
 
-    private final OssService ossService;
+    private final ResourceOssService ossService;
     private final FileOperateBuilder operateBuilder;
 
     @Function(value = "列表",menus = {

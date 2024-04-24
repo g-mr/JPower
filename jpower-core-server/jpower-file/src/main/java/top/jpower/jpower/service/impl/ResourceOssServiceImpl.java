@@ -6,7 +6,7 @@ import top.jpower.jpower.dbs.dao.TbResourceOssDao;
 import top.jpower.jpower.dbs.dao.mapper.TbResourceOssMapper;
 import top.jpower.jpower.dbs.entity.TbResourceOss;
 import top.jpower.jpower.module.common.service.impl.BaseServiceImpl;
-import top.jpower.jpower.service.OssService;
+import top.jpower.jpower.service.ResourceOssService;
 
 import java.util.List;
 import java.util.Map;
@@ -17,7 +17,7 @@ import java.util.Map;
  */
 @Service
 @RequiredArgsConstructor
-public class OssServiceImpl extends BaseServiceImpl<TbResourceOssMapper, TbResourceOss> implements OssService {
+public class ResourceOssServiceImpl extends BaseServiceImpl<TbResourceOssMapper, TbResourceOss> implements ResourceOssService {
 
     private final TbResourceOssDao resourceOssDao;
 

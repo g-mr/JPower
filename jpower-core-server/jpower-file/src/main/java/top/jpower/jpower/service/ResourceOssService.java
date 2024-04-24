@@ -10,7 +10,7 @@ import java.util.Map;
  * @author mr.g
  * @date 2024/4/23 3:03 PM
  */
-public interface OssService extends BaseService<TbResourceOss> {
+public interface ResourceOssService extends BaseService<TbResourceOss> {
 
     /**
      * 列表

@@ -22,8 +22,8 @@ import top.jpower.jpower.module.common.utils.constants.ConstantsReturn;
 import top.jpower.jpower.module.common.utils.constants.ConstantsUtils;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.operate.FileOperateBuilder;
-import top.jpower.jpower.service.OssService;
 import top.jpower.jpower.service.ResourceFileService;
+import top.jpower.jpower.service.ResourceOssService;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -51,7 +51,7 @@ public class FileController extends BaseController {
     @Resource
     private FileOperateBuilder operateBuilder;
     @Resource
-    private OssService ossService;
+    private ResourceOssService ossService;
 
     @ApiOperation("上传文件")
     @PostMapping(value = "/upload",produces="application/json")

@@ -30,7 +30,7 @@ public class FileDfsUtil {
      * 上传图片文件
      * 生成缩列图
      */
-    @SneakyThrows
+    @SneakyThrows(Exception.class)
     public static String uploadImg(MultipartFile multipartFile) {
         String originalFilename = multipartFile.getOriginalFilename().
                 substring(multipartFile.getOriginalFilename().

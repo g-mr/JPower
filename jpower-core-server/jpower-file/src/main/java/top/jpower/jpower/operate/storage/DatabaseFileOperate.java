@@ -2,7 +2,7 @@ package top.jpower.jpower.operate.storage;
 
 import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.io.IoUtil;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import top.jpower.jpower.dbs.entity.TbResourceFile;
 import top.jpower.jpower.module.common.utils.*;
@@ -21,12 +21,11 @@ import static top.jpower.jpower.operate.storage.DatabaseFileOperate.STORAGE_TYPE
  * @Author mr.g
  **/
 @Component(STORAGE_TYPE)
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class DatabaseFileOperate implements FileOperate {
 
 	public static final String STORAGE_TYPE = "DATABASE";
-	private ResourceFileService coreFileService;
-
+	private final ResourceFileService coreFileService;
 
 	@Override
 	public TbResourceFile upload(byte[] bytes, String name, Long size) {
@@ -72,7 +71,7 @@ public class DatabaseFileOperate implements FileOperate {
 	 **/
 	@Override
 	public String getUrl(TbResourceFile coreFile) {
-		String url = WebUtil.getRequest().getRequestURI();
+		String url = WebUtil.getRequest().getRequestURL().toString();
 		return StringUtil.replace(url, "/url/", "/download/");
 	}
 }

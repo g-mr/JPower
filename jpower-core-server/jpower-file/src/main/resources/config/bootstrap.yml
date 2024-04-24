@@ -19,7 +19,7 @@ jpower:
       # 服务器文件外链访问地址
       domain: http://xxx.xxx.xxx/file
       # 服务器文件保存路径
-      path: /xxx/xxx/xxx
+      path: ./file
     fastDfs:
       # FastDfs文件外链访问地址
       domain: http://xxx.xxx.xxx

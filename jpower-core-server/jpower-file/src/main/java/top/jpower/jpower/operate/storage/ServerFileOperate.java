@@ -2,9 +2,9 @@ package top.jpower.jpower.operate.storage;
 
 import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.util.IdUtil;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 import top.jpower.jpower.dbs.entity.TbResourceFile;
 import top.jpower.jpower.module.base.enums.JpowerError;
@@ -28,14 +28,14 @@ import static top.jpower.jpower.operate.storage.ServerFileOperate.STORAGE_TYPE;
  * @Author mr.g
  **/
 @Component(STORAGE_TYPE)
-@RefreshScope
+@RequiredArgsConstructor
 public class ServerFileOperate implements FileOperate {
 
 	public static final String STORAGE_TYPE = "SERVER";
 	@Autowired
-	private FileProperties fileProperties;
+	private final FileProperties fileProperties;
 	@Autowired
-	private ResourceFileService coreFileService;
+	private final ResourceFileService coreFileService;
 
 	@Override
 	public TbResourceFile upload(byte[] bytes, String name, Long size) {
