@@ -6,16 +6,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
 import top.jpower.jpower.dbs.entity.TbResourceFile;
 import top.jpower.jpower.module.base.vo.ResponseData;
 import top.jpower.jpower.module.common.utils.constants.AppConstant;
+
+import java.io.File;
 
 /**
  * FileClient
  * @Author mr.g
  **/
-@FeignClient(value = AppConstant.JPOWER_FILE, fallbackFactory = FileClientFallback.class, path = "/core/file")
+@FeignClient(value = AppConstant.JPOWER_FILE, fallbackFactory = FileClientFallback.class, path = "/resource/file")
 public interface FileClient {
 
     /**
@@ -24,26 +25,17 @@ public interface FileClient {
      * @param file
      * @return ResponseData
      **/
-    @PostMapping(value = "/serverUpload",consumes = MediaType.MULTIPART_FORM_DATA_VALUE,produces =  MediaType.APPLICATION_PROBLEM_JSON_VALUE)
-    ResponseData serverUpload(@RequestPart("file") MultipartFile file);
+    @PostMapping(value = "/uploadFile",consumes = MediaType.MULTIPART_FORM_DATA_VALUE,produces =  MediaType.APPLICATION_PROBLEM_JSON_VALUE)
+    ResponseData uploadFile(@RequestPart("file") File file,@RequestParam("storageType") String storageType);
 
     /**
-     * 向FASTDFS保存文件
-     * @Author mr.g
-     * @param file
-     * @return ResponseData
+     * 获取文件外链
+     * @author mr.g
+     * @param base
+     * @return
      **/
-    @PostMapping(value = "/fastDfsUpload",consumes = MediaType.MULTIPART_FORM_DATA_VALUE,produces =  MediaType.APPLICATION_PROBLEM_JSON_VALUE)
-    ResponseData fastDfsUpload(@RequestPart("file") MultipartFile file);
-
-    /**
-     * 向数据库保存文件
-     * @Author mr.g
-     * @param file
-     * @return ResponseData
-     **/
-    @PostMapping(value = "/databaseUpload",consumes = MediaType.MULTIPART_FORM_DATA_VALUE,produces =  MediaType.APPLICATION_PROBLEM_JSON_VALUE)
-    ResponseData databaseUpload(@RequestPart("file") MultipartFile file);
+    @GetMapping(value = "/fileUrl",produces="application/json")
+    ResponseData<String> fileUrl(@RequestParam("base") String base);
 
     /**
      * 获取文件内容

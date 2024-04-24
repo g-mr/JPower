@@ -3,10 +3,11 @@ package top.jpower.jpower.feign;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 import top.jpower.jpower.dbs.entity.TbResourceFile;
 import top.jpower.jpower.module.base.vo.ResponseData;
 import top.jpower.jpower.module.common.utils.ReturnJsonUtil;
+
+import java.io.File;
 
 /**
  * FILE 熔断
@@ -20,18 +21,20 @@ public class FileClientFallback implements FallbackFactory<FileClient> {
         return new FileClient() {
 
             @Override
-            public ResponseData serverUpload(MultipartFile file) {
+            public ResponseData uploadFile(File file, String storageType) {
                 return ReturnJsonUtil.fail("上传服务器失败");
             }
 
+            /**
+             * 获取文件外链
+             *
+             * @param base
+             * @return
+             * @author mr.g
+             **/
             @Override
-            public ResponseData fastDfsUpload(MultipartFile file) {
-                return ReturnJsonUtil.fail("上传FASTDFS失败");
-            }
-
-            @Override
-            public ResponseData databaseUpload(MultipartFile file) {
-                return ReturnJsonUtil.fail("上传数据库失败");
+            public ResponseData<String> fileUrl(String base) {
+                return ReturnJsonUtil.fail("获取文件外链失败");
             }
 
             @Override

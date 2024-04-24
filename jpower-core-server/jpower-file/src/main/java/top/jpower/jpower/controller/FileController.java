@@ -40,7 +40,7 @@ import java.util.Map;
  */
 @Api(tags = "文件管理")
 @RestController
-@RequestMapping("/core/file")
+@RequestMapping("/resource/file")
 public class FileController extends BaseController {
 
     @Value("${jpower.downloadPath:}")
