@@ -69,12 +69,12 @@
     </properties>
 
     <modules>
-        <module>jpower-module-common</module>
-        <module>jpower-module-gateway</module>
-        <module>jpower-feign-api</module>
-        <module>jpower-core-login</module>
-        <module>jpower-core-server</module>
-        <module>jpower-op-server</module>
+        <module>jpower-auth</module>
+        <module>jpower-common</module>
+        <module>jpower-gateway</module>
+        <module>jpower-api</module>
+        <module>jpower-upms</module>
+        <module>jpower-ops</module>
     </modules>
 
     <dependencies>
@@ -83,18 +83,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -135,6 +123,7 @@
                 <scope>import</scope>
             </dependency>
 
+            <!-- knife4j -->
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-dependencies</artifactId>
@@ -143,6 +132,7 @@
                 <scope>import</scope>
             </dependency>
 
+            <!-- spring-boot-admin -->
             <dependency>
                 <groupId>de.codecentric</groupId>
                 <artifactId>spring-boot-admin-starter-server</artifactId>
