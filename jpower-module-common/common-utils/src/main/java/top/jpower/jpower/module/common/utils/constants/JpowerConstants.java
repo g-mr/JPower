@@ -15,7 +15,7 @@ public class JpowerConstants {
     public static final String COUNTRY_CODE = "CHN";
 
     /** 框架版本 **/
-    public static final String JPOWER_VESION = "2.2.0";
+    public static final String JPOWER_VESION = "2.1.10";
     /**
      * 测试环境验证码
      **/
