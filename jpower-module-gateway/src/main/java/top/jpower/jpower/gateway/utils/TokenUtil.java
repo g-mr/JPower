@@ -1,6 +1,5 @@
 package top.jpower.jpower.gateway.utils;
 
-import cn.hutool.core.util.URLUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -49,13 +48,7 @@ public class TokenUtil {
             return null;
         }
 
-        String token = Fc.isBlank(header)? URLUtil.decode(cookies):header;
-        if (StringUtil.isNotBlank(token)) {
-            return JwtUtil.parsingToken(token);
-        }
-
-
-        return null;
+        return Fc.isBlank(header) ? cookies : JwtUtil.parsingToken(header);
     }
 
 

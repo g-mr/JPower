@@ -30,7 +30,7 @@ public class AuthProperties {
 
     /**
      * 是否使用cookie
-     * e.g: 开启cookie之后不同的子域名下会共享token，如果是不同的子域名对应不同的租户，就会造成token混乱，这种情况不能打开cookie。只有不同的租户对应不同的主体域名情况下才开打开cookie
+     * <br> 开启cookie之后不同的子域名下会共享token，如果是不同的子域名对应不同的租户，就会造成token混乱，这种情况不能打开cookie。只有不同的租户对应不同的主体域名情况下才开打开cookie </br>
      */
     private Boolean cookie = Boolean.FALSE;
 

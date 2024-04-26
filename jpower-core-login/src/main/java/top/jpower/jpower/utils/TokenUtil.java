@@ -1,5 +1,6 @@
 package top.jpower.jpower.utils;
 
+import cn.hutool.extra.servlet.ServletUtil;
 import top.jpower.jpower.cache.SystemCache;
 import top.jpower.jpower.dbs.entity.client.TbCoreClient;
 import top.jpower.jpower.dbs.entity.function.TbCoreDataScope;
@@ -15,6 +16,7 @@ import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
 import top.jpower.jpower.module.common.utils.constants.StringPool;
 import top.jpower.jpower.module.common.utils.constants.TokenConstant;
 import top.jpower.jpower.module.datascope.DataScope;
+import top.jpower.jpower.module.properties.AuthProperties;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,9 +44,11 @@ public class TokenUtil {
 
 
     private static final RedisUtil redisUtil;
+    private static final AuthProperties AUTH_PROPERTIES;
 
     static {
         redisUtil = SpringUtil.getBean(RedisUtil.class);
+        AUTH_PROPERTIES = SpringUtil.getBean(AuthProperties.class);
     }
 
     /**
@@ -188,5 +192,10 @@ public class TokenUtil {
             redisUtil.remove(TOKEN_USER_KEY+authInfo.getUser().getUserId()+ StringPool.COLON+oldToken);
         }
         redisUtil.set(TOKEN_USER_KEY+authInfo.getUser().getUserId()+ StringPool.COLON+authInfo.getAccessToken(),ChainMap.<String,Object>create().put("client",client.getClientCode()).put("ip", WebUtil.getIp()).put("date", DateUtil.now()).build(),authInfo.getExpiresIn(), TimeUnit.SECONDS);
+
+        // cookie
+        if (AUTH_PROPERTIES.getCookie()){
+            ServletUtil.addCookie(WebUtil.getResponse(), TokenConstant.HEADER, authInfo.getAccessToken(), Fc.toInt(authInfo.getExpiresIn(), 0));
+        }
     }
 }

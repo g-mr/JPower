@@ -83,7 +83,7 @@ public class JwtUtil {
         if (Fc.notNull(properties) && properties.getCookie()){
             String cookieVal = WebUtil.getCookieVal(request,TokenConstant.HEADER);
             if (Fc.isNotBlank(cookieVal)){
-                return parsingToken(URLUtil.decode(cookieVal));
+                return cookieVal;
             }
         }
 
