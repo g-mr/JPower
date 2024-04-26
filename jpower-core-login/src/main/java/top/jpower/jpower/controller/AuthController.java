@@ -35,6 +35,7 @@ import top.jpower.jpower.module.common.utils.*;
 import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
 import top.jpower.jpower.module.common.utils.constants.ParamsConstants;
 import top.jpower.jpower.module.common.utils.constants.StringPool;
+import top.jpower.jpower.module.common.utils.constants.TokenConstant;
 import top.jpower.jpower.module.tenant.JpowerTenantProperties;
 import top.jpower.jpower.utils.TokenUtil;
 
@@ -60,6 +61,7 @@ import static top.jpower.jpower.module.tenant.TenantConstant.getExpireTime;
 @RequestMapping("/auth")
 @AllArgsConstructor
 public class AuthController extends BaseController {
+
 
     private RedisUtil redisUtil;
     private JpowerTenantProperties tenantProperties;
@@ -156,6 +158,10 @@ public class AuthController extends BaseController {
             redisUtil.remove(CacheNames.TOKEN_URL_KEY+ JwtUtil.getToken(getRequest()));
             redisUtil.remove(CacheNames.TOKEN_DATA_SCOPE_KEY+JwtUtil.getToken(getRequest()));
             redisUtil.remove(TOKEN_USER_KEY+userId+ StringPool.COLON +JwtUtil.getToken(getRequest()));
+            String cookieToken = WebUtil.getCookieVal(TokenConstant.HEADER);
+            if (Fc.isNotBlank(cookieToken)){
+                WebUtil.removeCookie(WebUtil.getResponse(), TokenConstant.HEADER);
+            }
             return ReturnJsonUtil.ok("退出成功");
         }else{
             return ReturnJsonUtil.fail("该用户暂未登录");
