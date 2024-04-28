@@ -70,20 +70,15 @@
 
     <modules>
         <module>jpower-auth</module>
-        <module>jpower-common</module>
+        <module>jpower-core</module>
         <module>jpower-gateway</module>
         <module>jpower-api</module>
         <module>jpower-upms</module>
         <module>jpower-ops</module>
+        <module>jpower-common</module>
     </modules>
 
     <dependencies>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
-        </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>

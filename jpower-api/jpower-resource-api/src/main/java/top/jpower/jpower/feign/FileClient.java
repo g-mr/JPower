@@ -16,7 +16,7 @@ import java.io.File;
  * FileClient
  * @Author mr.g
  **/
-@FeignClient(value = AppConstant.JPOWER_FILE, fallbackFactory = FileClientFallback.class, path = "/resource/file")
+@FeignClient(value = AppConstant.JPOWER_RESOURCE, fallbackFactory = FileClientFallback.class, path = "/resource/file")
 public interface FileClient {
 
     /**

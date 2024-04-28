@@ -35,7 +35,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static top.jpower.jpower.module.common.utils.constants.JpowerConstants.TOP_CODE;
-import static top.jpower.jpower.module.config.BuiltController.PATH;
+import static top.jpower.jpower.module.config.BuiltEndpoint.PATH;
 
 /**
  * @author mr.gmac

@@ -20,6 +20,7 @@ import top.jpower.jpower.vo.DictVo;
 import java.util.List;
 import java.util.Map;
 
+import static top.jpower.jpower.module.common.utils.constants.ConstantsEnum.YYZL.CHINA;
 import static top.jpower.jpower.module.common.utils.constants.JpowerConstants.TOP_CODE;
 import static top.jpower.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
 
@@ -47,7 +48,7 @@ public class CoreDictServiceImpl extends BaseServiceImpl<TbCoreDictMapper, TbCor
     public Boolean saveDict(TbCoreDict dict) {
         TbCoreDict coreDictType = queryDictTypeByCode(dict.getDictTypeCode(),dict.getCode());
         if(Fc.isNull(dict.getId())){
-            dict.setLocale(Fc.isBlank(dict.getLocale())? ConstantsEnum.YYZL.CHINA.getValue() :dict.getLocale());
+            dict.setLocale(Fc.isBlank(dict.getLocale())? CHINA.getValue() :dict.getLocale());
             dict.setIsStop(Fc.isBlank(dict.getIsStop())? ConstantsEnum.YN.N.getValue() : dict.getIsStop());
             dict.setParentId(Fc.notNull(dict.getParentId())?dict.getParentId():Fc.toLong(TOP_CODE));
             JpowerAssert.notTrue(coreDictType != null, JpowerError.Business,"该字典已存在");
@@ -70,8 +71,8 @@ public class CoreDictServiceImpl extends BaseServiceImpl<TbCoreDictMapper, TbCor
     public List<Map<String, Object>> listByTypeCode(String dictTypeCode) {
         //这里不能返回实体类，不然会造成字典回写的死循环
         return dictDao.listMaps(Condition.<TbCoreDict>getQueryWrapper().lambda()
-                .select(TbCoreDict::getCode,TbCoreDict::getName,TbCoreDict::getLocale)
-                .eq(TbCoreDict::getDictTypeCode,dictTypeCode)
+                .select(TbCoreDict::getCode,TbCoreDict::getName)
+                .eq(TbCoreDict::getDictTypeCode, dictTypeCode)
                 .eq(ShieldUtil.isRoot(), TbCoreDict::getTenantCode, DEFAULT_TENANT_CODE));
     }
 

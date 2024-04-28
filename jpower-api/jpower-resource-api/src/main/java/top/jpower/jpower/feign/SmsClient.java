@@ -11,7 +11,7 @@ import top.jpower.jpower.module.common.utils.constants.AppConstant;
  * @author mr.g
  * @date 2024/3/6 5:54 PM
  */
-@FeignClient(value = AppConstant.JPOWER_FILE, fallbackFactory = SmsClientFallback.class, path = "/resource/sms")
+@FeignClient(value = AppConstant.JPOWER_RESOURCE, fallbackFactory = SmsClientFallback.class, path = "/resource/sms")
 public interface SmsClient {
 
     /**

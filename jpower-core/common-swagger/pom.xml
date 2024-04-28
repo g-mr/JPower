@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>jpower-core</artifactId>
+        <groupId>top.jpower</groupId>
+        <version>2.2.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>common-swagger</artifactId>
+
+    <packaging>jar</packaging>
+    <dependencies>
+
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>${swagger-annotations.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>top.jpower</groupId>
+            <artifactId>common-deploy</artifactId>
+            <version>${com.jpower.version}</version>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>top.jpower</groupId>
+            <artifactId>jpower-core-utils</artifactId>
+            <version>${com.jpower.version}</version>
+        </dependency>
+    </dependencies>
+
+</project>
