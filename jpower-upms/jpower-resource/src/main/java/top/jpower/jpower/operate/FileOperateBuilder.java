@@ -3,7 +3,8 @@ package top.jpower.jpower.operate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
-import top.jpower.core.utils.constants.ConstantsEnum;
+import top.jpower.common.enums.FileStorageTypeEnum;
+import top.jpower.common.enums.OssCategoryEnum;
 import top.jpower.core.utils.utils.Fc;
 import top.jpower.jpower.dbs.dao.TbResourceFileDao;
 import top.jpower.jpower.dbs.dao.TbResourceOssDao;
@@ -42,11 +43,11 @@ public class FileOperateBuilder {
      * @return FileUpload
      */
     public synchronized FileOperate getBuilder(String storageType) {
-        FileOperate fileUpload = uploadPool.get(Fc.toStr(storageType, ConstantsEnum.FILE_STORAGE_TYPE.SERVER.getValue()));
+        FileOperate fileUpload = uploadPool.get(Fc.toStr(storageType, FileStorageTypeEnum.SERVER.getValue()));
 
         if (Fc.isEmpty(fileUpload)){
             TbResourceOss resourceOss = resourceOssDao.getByCode(storageType);
-            switch (ConstantsEnum.OSS_CATEGORY.getEnum(resourceOss.getCategory())){
+            switch (OssCategoryEnum.getEnum(resourceOss.getCategory())){
                 case ALI:
                     fileUpload = new OssAliFileOperate(resourceOss, resourceFileDao);
                     uploadPool.put(resourceOss.getCode(), fileUpload);

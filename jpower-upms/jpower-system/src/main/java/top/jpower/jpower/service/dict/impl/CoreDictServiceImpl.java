@@ -4,7 +4,7 @@ import cn.hutool.core.util.NumberUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import top.jpower.core.utils.constants.ConstantsEnum;
+import top.jpower.common.enums.YNEnum;
 import top.jpower.core.utils.utils.Fc;
 import top.jpower.jpower.dbs.dao.dict.TbCoreDictDao;
 import top.jpower.jpower.dbs.dao.dict.mapper.TbCoreDictMapper;
@@ -20,7 +20,7 @@ import top.jpower.jpower.vo.DictVo;
 import java.util.List;
 import java.util.Map;
 
-import static top.jpower.core.utils.constants.ConstantsEnum.YYZL.CHINA;
+import static top.jpower.common.enums.YYZLEnum.CHINA;
 import static top.jpower.core.utils.constants.JpowerConstants.TOP_CODE;
 import static top.jpower.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
 
@@ -49,7 +49,7 @@ public class CoreDictServiceImpl extends BaseServiceImpl<TbCoreDictMapper, TbCor
         TbCoreDict coreDictType = queryDictTypeByCode(dict.getDictTypeCode(),dict.getCode());
         if(Fc.isNull(dict.getId())){
             dict.setLocale(Fc.isBlank(dict.getLocale())? CHINA.getValue() :dict.getLocale());
-            dict.setIsStop(Fc.isBlank(dict.getIsStop())? ConstantsEnum.YN.N.getValue() : dict.getIsStop());
+            dict.setIsStop(Fc.isBlank(dict.getIsStop())? YNEnum.N.getValue() : dict.getIsStop());
             dict.setParentId(Fc.notNull(dict.getParentId())?dict.getParentId():Fc.toLong(TOP_CODE));
             JpowerAssert.notTrue(coreDictType != null, JpowerError.Business,"该字典已存在");
         }else {

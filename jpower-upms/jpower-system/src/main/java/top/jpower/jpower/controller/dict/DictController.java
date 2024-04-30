@@ -8,7 +8,9 @@ import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
-import top.jpower.core.utils.constants.ConstantsEnum;
+import top.jpower.common.enums.ConstantsEnum;
+import top.jpower.common.enums.YNEnum;
+import top.jpower.common.enums.YYZLEnum;
 import top.jpower.core.utils.utils.Fc;
 import top.jpower.core.utils.utils.ReturnJsonUtil;
 import top.jpower.jpower.dbs.entity.dict.TbCoreDict;
@@ -227,9 +229,9 @@ public class DictController extends BaseController {
         }
 
         //只查询未停用的
-        dict.setIsStop(ConstantsEnum.YN.N.getValue());
+        dict.setIsStop(YNEnum.N.getValue());
         //查询的语言
-        dict.setLocale(Fc.toStr(getRequest().getHeader(I18N_KEY), ConstantsEnum.YYZL.CHINA.getValue()));
+        dict.setLocale(Fc.toStr(getRequest().getHeader(I18N_KEY), YYZLEnum.CHINA.getValue()));
 
         return ReturnJsonUtil.data(coreDictService.listByType(dict));
     }

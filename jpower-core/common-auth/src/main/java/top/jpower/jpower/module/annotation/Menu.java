@@ -1,8 +1,5 @@
 package top.jpower.jpower.module.annotation;
 
-import lombok.Getter;
-import top.jpower.core.utils.constants.ConstantsEnum;
-
 import java.lang.annotation.*;
 
 /**
@@ -49,20 +46,12 @@ public @interface Menu {
         /**
          * 按钮
          */
-        BTN(ConstantsEnum.FUNCTION_TYPE.BTN.getValue()),
+        BTN,
 
         /**
          * 接口
          */
-        INTERFACE(ConstantsEnum.FUNCTION_TYPE.INTERFACE.getValue()),
-        ;
-
-        TYPE(int value) {
-            this.value = value;
-        }
-
-        @Getter
-        private final Integer value;
+        INTERFACE
     }
 
 }

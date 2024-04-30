@@ -1,7 +1,7 @@
 package top.jpower.jpower.module.datascope.annotation;
 
-import top.jpower.core.utils.constants.ConstantsEnum;
 import top.jpower.core.utils.constants.StringPool;
+import top.jpower.jpower.module.constants.DataScopeConstant;
 
 import java.lang.annotation.*;
 
@@ -26,7 +26,7 @@ public @interface DataScope {
     /**
      * 权限类型
      **/
-    ConstantsEnum.DATA_SCOPE_TYPE type() default ConstantsEnum.DATA_SCOPE_TYPE.ALL;
+    int type() default DataScopeConstant.ALL;
 
     /**
      * 自定义SQL

@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
+import top.jpower.common.constants.DefaultValConstants;
 import top.jpower.core.utils.constants.ConstantsReturn;
-import top.jpower.core.utils.constants.ConstantsUtils;
 import top.jpower.core.utils.utils.DesUtil;
 import top.jpower.core.utils.utils.Fc;
 import top.jpower.core.utils.utils.FileUtil;
@@ -83,7 +83,7 @@ public class FileController extends BaseController {
     @GetMapping(value = "/download/{base}",produces="application/json")
     public void download(@ApiParam(value = "文件标识",required = true) @PathVariable("base") String base){
         JpowerAssert.notEmpty(base,JpowerError.Arg,"文件标识不可为空");
-        String id = DesUtil.decrypt(base,ConstantsUtils.FILE_DES_KEY);
+        String id = DesUtil.decrypt(base, DefaultValConstants.FILE_DES_KEY);
         JpowerAssert.notEmpty(id,JpowerError.Arg,"文件标识不合法");
 
         TbResourceFile coreFile = coreFileService.getOne(Condition.<TbResourceFile>getQueryWrapper().lambda()
@@ -104,7 +104,7 @@ public class FileController extends BaseController {
     @GetMapping(value = "/url/{base}",produces="application/json")
     public ResponseData<String> url(@ApiParam(value = "文件标识",required = true) @PathVariable("base") String base){
         JpowerAssert.notEmpty(base, JpowerError.Arg, "文件标识不可为空");
-        String id = DesUtil.decrypt(base,ConstantsUtils.FILE_DES_KEY);
+        String id = DesUtil.decrypt(base, DefaultValConstants.FILE_DES_KEY);
         JpowerAssert.notEmpty(id,JpowerError.Arg,"文件标识不合法");
 
         TbResourceFile coreFile = coreFileService.getOne(Condition.<TbResourceFile>getQueryWrapper().lambda()

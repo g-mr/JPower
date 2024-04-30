@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.apache.http.entity.ContentType;
 import org.springframework.stereotype.Service;
-import top.jpower.core.utils.constants.ConstantsEnum;
+import top.jpower.common.enums.ConstantsEnum;
 import top.jpower.core.utils.constants.StringPool;
 import top.jpower.core.utils.utils.*;
 import top.jpower.jpower.dbs.dao.LogMonitorResultDao;

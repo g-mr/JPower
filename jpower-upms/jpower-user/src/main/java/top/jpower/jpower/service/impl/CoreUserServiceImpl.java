@@ -12,9 +12,11 @@ import com.github.pagehelper.PageInfo;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import top.jpower.common.constants.DefaultValConstants;
 import top.jpower.common.constants.ParamsConstants;
-import top.jpower.core.utils.constants.ConstantsEnum;
-import top.jpower.core.utils.constants.ConstantsUtils;
+import top.jpower.common.enums.ActivationStatusEnum;
+import top.jpower.common.enums.IdTypeEnum;
+import top.jpower.common.enums.UserTypeEnum;
 import top.jpower.core.utils.constants.StringPool;
 import top.jpower.core.utils.utils.DigestUtil;
 import top.jpower.core.utils.utils.Fc;
@@ -86,13 +88,13 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
 
     private void setActivationStatus(TbCoreUser coreUser) {
         if (Fc.isNull(coreUser.getActivationStatus())){
-            Integer isActivation = ParamConfig.getInt(ParamsConstants.IS_ACTIVATION, ConstantsUtils.DEFAULT_USER_ACTIVATION);
+            Integer isActivation = ParamConfig.getInt(ParamsConstants.IS_ACTIVATION, DefaultValConstants.DEFAULT_USER_ACTIVATION);
             coreUser.setActivationStatus(isActivation);
         }
 
-        if (!ConstantsEnum.ACTIVATION_STATUS.ACTIVATION_YES.getValue().equals(coreUser.getActivationStatus())){
+        if (!ActivationStatusEnum.ACTIVATION_YES.getValue().equals(coreUser.getActivationStatus())){
             coreUser.setActivationCode(UuidUtil.create10UUidNum());
-            coreUser.setActivationStatus(ConstantsEnum.ACTIVATION_STATUS.ACTIVATION_NO.getValue());
+            coreUser.setActivationStatus(ActivationStatusEnum.ACTIVATION_NO.getValue());
         }
     }
 
@@ -213,7 +215,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
 
         List<TbCoreUser> userList = new ArrayList<>();
 
-        String password = DigestUtil.pwdEncrypt(MD5.md5HexToUpperCase(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD,ConstantsUtils.DEFAULT_USER_PASSWORD)));
+        String password = DigestUtil.pwdEncrypt(MD5.md5HexToUpperCase(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD, DefaultValConstants.DEFAULT_USER_PASSWORD)));
 
         for (TbCoreUser coreUser : list) {
             if (Fc.isBlank(coreUser.getLoginId())){
@@ -225,12 +227,12 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
             if (Fc.isNotBlank(coreUser.getEmail()) && !Validator.isEmail(coreUser.getEmail())){
                 continue;
             }
-            if (Fc.isNotBlank(coreUser.getIdNo()) && ConstantsEnum.ID_TYPE.ID_CARD.getValue().equals(coreUser.getIdType()) && !Validator.isCitizenId(coreUser.getIdNo())){
+            if (Fc.isNotBlank(coreUser.getIdNo()) && IdTypeEnum.ID_CARD.getValue().equals(coreUser.getIdType()) && !Validator.isCitizenId(coreUser.getIdNo())){
                 continue;
             }
 
             coreUser.setPassword(password);
-            coreUser.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_SYSTEM.getValue());
+            coreUser.setUserType(UserTypeEnum.USER_TYPE_SYSTEM.getValue());
 
             if (ShieldUtil.isRoot()){
                 coreUser.setTenantCode(Fc.isBlank(coreUser.getTenantCode())? Fc.toStr(ShieldUtil.getTenantCode(),DEFAULT_TENANT_CODE):coreUser.getTenantCode());

@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
-import top.jpower.core.utils.constants.ConstantsEnum;
-import top.jpower.core.utils.constants.ConstantsUtils;
+import top.jpower.common.constants.DefaultValConstants;
+import top.jpower.common.enums.FileStorageTypeEnum;
 import top.jpower.core.utils.utils.DesUtil;
 import top.jpower.core.utils.utils.Fc;
 import top.jpower.core.utils.utils.FileUtil;
@@ -47,19 +47,19 @@ public class FileClientController implements FileClient {
     @Override
     @GetMapping(value = "/fileUrl",produces="application/json")
     public ResponseData<String> fileUrl(@RequestParam String base){
-        String id = DesUtil.decrypt(base, ConstantsUtils.FILE_DES_KEY);
+        String id = DesUtil.decrypt(base, DefaultValConstants.FILE_DES_KEY);
         JpowerAssert.notEmpty(id, JpowerError.Arg,"文件标识不合法");
 
         TbResourceFile coreFile = coreFileService.getById(Fc.toLong(id));
         return ReturnJsonUtil.data(operateBuilder
-                .getBuilder(ConstantsEnum.FILE_STORAGE_TYPE.SERVER.getValue())
+                .getBuilder(FileStorageTypeEnum.SERVER.getValue())
                 .getUrl(coreFile));
     }
 
     @Override
     @GetMapping(value = "/getFileDetail",produces="application/json")
     public ResponseData<TbResourceFile> getFileDetail(@RequestParam String base) {
-        String id = DesUtil.decrypt(base, ConstantsUtils.FILE_DES_KEY);
+        String id = DesUtil.decrypt(base, DefaultValConstants.FILE_DES_KEY);
         JpowerAssert.notEmpty(id, JpowerError.Arg,"文件标识不合法");
 
         TbResourceFile coreFile = coreFileService.getById(Fc.toLong(id));

@@ -4,9 +4,11 @@ import cn.hutool.core.thread.ThreadUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import top.jpower.common.constants.DefaultValConstants;
 import top.jpower.common.constants.ParamsConstants;
-import top.jpower.core.utils.constants.ConstantsEnum;
-import top.jpower.core.utils.constants.ConstantsUtils;
+import top.jpower.common.enums.FunctionTypeEnum;
+import top.jpower.common.enums.UserTypeEnum;
+import top.jpower.common.enums.YN01Enum;
 import top.jpower.core.utils.utils.DigestUtil;
 import top.jpower.core.utils.utils.Fc;
 import top.jpower.core.utils.utils.MD5;
@@ -105,7 +107,7 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
             orgDao.save(org);
             //创建租户默认角色
             TbCoreRole role = new TbCoreRole();
-            role.setIsSysRole(ConstantsEnum.YN01.Y.getValue());
+            role.setIsSysRole(YN01Enum.Y.getValue());
             role.setName(tenant.getTenantName()+"-管理员");
             role.setParentId(Fc.toLong(TOP_CODE));
             role.setRemark("这是系统内置角色，不要删除，会影响功能");
@@ -144,12 +146,12 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
             //创建租户默认用户 (必须放到最后创建，因为没有启动分布式事务)
             TbCoreUser user = new TbCoreUser();
             user.setLoginId("admin");
-            user.setPassword(DigestUtil.pwdEncrypt(MD5.md5HexToUpperCase(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD, ConstantsUtils.DEFAULT_USER_PASSWORD))));
+            user.setPassword(DigestUtil.pwdEncrypt(MD5.md5HexToUpperCase(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD, DefaultValConstants.DEFAULT_USER_PASSWORD))));
             user.setNickName(tenant.getTenantName()+"-管理员");
             user.setUserName(tenant.getTenantName()+"-管理员");
-            user.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_SYSTEM.getValue());
+            user.setUserType(UserTypeEnum.USER_TYPE_SYSTEM.getValue());
             user.setBirthday(new Date());
-            user.setActivationStatus(ConstantsEnum.YN01.Y.getValue());
+            user.setActivationStatus(YN01Enum.Y.getValue());
             user.setOrgId(org.getId());
             user.setTenantCode(tenant.getTenantCode());
             user.setRoleIds(Fc.toStr(role.getId()));
@@ -172,7 +174,7 @@ public class TenantServiceImpl extends BaseServiceImpl<TbCoreTenantMapper, TbCor
 
             List<Long> btnIds = functionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                     .select(TbCoreFunction::getId)
-                    .ne(TbCoreFunction::getFunctionType,ConstantsEnum.FUNCTION_TYPE.MENU.getValue())
+                    .ne(TbCoreFunction::getFunctionType, FunctionTypeEnum.MENU.getValue())
                     .eq(TbCoreFunction::getParentId,id),Fc::toLong);
 
             functionIds.addAll(btnIds);

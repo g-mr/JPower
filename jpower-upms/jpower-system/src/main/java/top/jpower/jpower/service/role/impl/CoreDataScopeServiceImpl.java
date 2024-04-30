@@ -3,7 +3,8 @@ package top.jpower.jpower.service.role.impl;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import top.jpower.core.utils.constants.ConstantsEnum;
+import top.jpower.common.enums.FunctionTypeEnum;
+import top.jpower.common.enums.YN01Enum;
 import top.jpower.core.utils.utils.StringUtil;
 import top.jpower.jpower.dbs.dao.client.TbCoreClientDao;
 import top.jpower.jpower.dbs.dao.role.TbCoreDataScopeDao;
@@ -58,16 +59,16 @@ public class CoreDataScopeServiceImpl extends BaseServiceImpl<TbCoreDataScopeMap
 
     @Override
     public List<TbCoreDataScope> getAllRoleDataScope() {
-        return dataScopeDao.list(Condition.<TbCoreDataScope>getQueryWrapper().lambda().eq(TbCoreDataScope::getAllRole, ConstantsEnum.YN01.Y.getValue()));
+        return dataScopeDao.list(Condition.<TbCoreDataScope>getQueryWrapper().lambda().eq(TbCoreDataScope::getAllRole, YN01Enum.Y.getValue()));
     }
 
     @Override
     public List<TbCoreDataScope> getDataScopeByRole(List<Long> roleIds,String clientCode) {
         String inSql = StringUtils.collectionToCommaDelimitedString(roleIds);
         return dataScopeDao.list(Condition.<TbCoreDataScope>getQueryWrapper().lambda()
-                .inSql(TbCoreDataScope::getMenuId,"select id from tb_core_function where client_id = " + clientDao.queryIdByCode(clientCode) + " and function_type = " + ConstantsEnum.FUNCTION_TYPE.MENU.getValue())
+                .inSql(TbCoreDataScope::getMenuId,"select id from tb_core_function where client_id = " + clientDao.queryIdByCode(clientCode) + " and function_type = " + FunctionTypeEnum.MENU.getValue())
                 .and(query-> query.inSql(TbCoreDataScope::getId, StringUtil.format(sql,inSql))
-                        .or().eq(TbCoreDataScope::getAllRole,ConstantsEnum.YN01.Y.getValue())));
+                        .or().eq(TbCoreDataScope::getAllRole,YN01Enum.Y.getValue())));
     }
 
 }

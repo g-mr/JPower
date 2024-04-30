@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import top.jpower.core.utils.constants.ConstantsEnum;
+import top.jpower.common.enums.ConstantsEnum;
 import top.jpower.core.utils.constants.StringPool;
 import top.jpower.core.utils.utils.Fc;
 import top.jpower.core.utils.utils.MapUtil;

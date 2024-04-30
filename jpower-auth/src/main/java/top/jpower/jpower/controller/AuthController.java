@@ -10,7 +10,8 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.common.constants.ParamsConstants;
-import top.jpower.core.utils.constants.ConstantsEnum;
+import top.jpower.common.enums.LoginLimitEnum;
+import top.jpower.common.enums.UserTypeEnum;
 import top.jpower.core.utils.constants.StringPool;
 import top.jpower.core.utils.constants.TokenConstant;
 import top.jpower.core.utils.utils.*;
@@ -121,7 +122,7 @@ public class AuthController extends BaseController {
 
         //判断单端登录
         TbCoreClient client = SystemCache.getClientByClientCode(ShieldUtil.getClientCodeFromHeader());
-        if (StringUtil.equalsIgnoreCase(client.getLoginLimit(), ConstantsEnum.LOGIN_LIMIT.ONE.getValue())){
+        if (StringUtil.equalsIgnoreCase(client.getLoginLimit(), LoginLimitEnum.ONE.getValue())){
             Set<String> keys = redisUtil.pattern(TOKEN_USER_KEY+userInfo.getUserId()+ StringPool.COLON);
             keys.forEach(key->{
                 Map<String,Object> map = (Map<String, Object>) redisUtil.get(key);
@@ -129,7 +130,7 @@ public class AuthController extends BaseController {
                     JpowerAssert.createException(JpowerError.RateLimit);
                 }
             });
-        } else if(StringUtil.equalsIgnoreCase(client.getLoginLimit(), ConstantsEnum.LOGIN_LIMIT.SQUEEZE.getValue())){
+        } else if(StringUtil.equalsIgnoreCase(client.getLoginLimit(), LoginLimitEnum.SQUEEZE.getValue())){
             Set<String> keys = redisUtil.pattern(TOKEN_USER_KEY+userInfo.getUserId()+ StringPool.COLON);
             keys.forEach(key->{
                 Map<String,Object> map = (Map<String, Object>) redisUtil.get(key);
@@ -214,7 +215,7 @@ public class AuthController extends BaseController {
         if (tenantProperties.getEnable()){
             JpowerAssert.notEmpty(tenantCode,JpowerError.Arg,"租户不可为空");
         }
-        coreUser.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_GENERAL.getValue());
+        coreUser.setUserType(UserTypeEnum.USER_TYPE_GENERAL.getValue());
 
         TbCoreUser user = UserCache.getUserByLoginId(coreUser.getLoginId(),tenantCode);
         if (Fc.notNull(user)){

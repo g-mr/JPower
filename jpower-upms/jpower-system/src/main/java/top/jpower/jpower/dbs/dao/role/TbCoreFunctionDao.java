@@ -3,7 +3,7 @@ package top.jpower.jpower.dbs.dao.role;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.lang.tree.Tree;
 import org.springframework.stereotype.Repository;
-import top.jpower.core.utils.constants.ConstantsEnum;
+import top.jpower.common.enums.FunctionTypeEnum;
 import top.jpower.core.utils.constants.JpowerConstants;
 import top.jpower.core.utils.constants.StringPool;
 import top.jpower.core.utils.utils.Fc;
@@ -35,7 +35,7 @@ public class TbCoreFunctionDao extends JpowerServiceImpl<TbCoreFunctionMapper, T
     public List<Tree<String>> treeMenuTypeByClientId(List<Long> roleIds, Long clientId) {
         return super.tree(Condition.getLambdaTreeWrapper(TbCoreFunction.class,TbCoreFunction::getId,TbCoreFunction::getParentId)
                         .select(TbCoreFunction::getFunctionName,TbCoreFunction::getFunctionType,TbCoreFunction::getSort)
-                        .in(TbCoreFunction::getFunctionType, ListUtil.of(ConstantsEnum.FUNCTION_TYPE.MENU.getValue(),ConstantsEnum.FUNCTION_TYPE.BTN.getValue()))
+                        .in(TbCoreFunction::getFunctionType, ListUtil.of(FunctionTypeEnum.MENU.getValue(),FunctionTypeEnum.BTN.getValue()))
                         // 如果不是超级用户，则查出自己权限的菜单
                         .inSql(!ShieldUtil.isRoot(),TbCoreFunction::getId, StringUtil.format(ROLE_SQL, StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE)))
                         .eq(TbCoreFunction::getClientId,clientId)
@@ -59,7 +59,7 @@ public class TbCoreFunctionDao extends JpowerServiceImpl<TbCoreFunctionMapper, T
     public List<Map<String, Object>> listInterface(List<Long> roleIds, Long clientId) {
         List<Map<String, Object>> list = super.listMaps(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                         .select(TbCoreFunction::getId,TbCoreFunction::getParentId,TbCoreFunction::getCode,TbCoreFunction::getFunctionName,TbCoreFunction::getAlias,TbCoreFunction::getUrl,TbCoreFunction::getFunctionType)
-                        .eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.INTERFACE.getValue())
+                        .eq(TbCoreFunction::getFunctionType, FunctionTypeEnum.INTERFACE.getValue())
                         .eq(TbCoreFunction::getClientId,clientId)
                         .inSql(!ShieldUtil.isRoot(), TbCoreFunction::getId, StringUtil.format("select function_id from tb_core_role_function where role_id in ({})",StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE))));
 
@@ -85,7 +85,7 @@ public class TbCoreFunctionDao extends JpowerServiceImpl<TbCoreFunctionMapper, T
     public List<Long> queryIdByTopChild() {
         List<Long> functionIds = super.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda().select(TbCoreFunction::getId)
                 .eq(TbCoreFunction::getParentId, Fc.toLong(JpowerConstants.TOP_CODE))
-                .ne(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.MENU.getValue()), Fc::toLong);
+                .ne(TbCoreFunction::getFunctionType, FunctionTypeEnum.MENU.getValue()), Fc::toLong);
 
         String where = StringUtil.concat("ancestor_id REGEXP ",StringPool.SINGLE_QUOTE,StringPool.LEFT_BRACKET,StringUtil.join(functionIds, StringPool.SPILT),StringPool.RIGHT_BRACKET,StringPool.SINGLE_QUOTE);
         functionIds.addAll(super.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()

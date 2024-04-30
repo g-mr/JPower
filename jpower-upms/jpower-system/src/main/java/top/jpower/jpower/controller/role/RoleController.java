@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import top.jpower.core.utils.constants.ConstantsEnum;
+import top.jpower.common.enums.ConstantsEnum;
 import top.jpower.core.utils.constants.StringPool;
 import top.jpower.core.utils.utils.Fc;
 import top.jpower.core.utils.utils.ReturnJsonUtil;

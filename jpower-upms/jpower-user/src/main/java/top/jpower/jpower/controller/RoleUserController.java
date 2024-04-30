@@ -5,7 +5,7 @@ import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
-import top.jpower.core.utils.constants.ConstantsEnum;
+import top.jpower.common.enums.ConstantsEnum;
 import top.jpower.core.utils.utils.Fc;
 import top.jpower.core.utils.utils.ReturnJsonUtil;
 import top.jpower.jpower.dbs.entity.TbCoreUser;

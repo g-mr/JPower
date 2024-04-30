@@ -1,6 +1,6 @@
 package top.jpower.jpower.utils;
 
-import top.jpower.core.utils.constants.ConstantsEnum;
+import top.jpower.common.enums.ConstantsEnum;
 import top.jpower.core.utils.utils.Fc;
 import top.jpower.jpower.cache.SystemCache;
 import top.jpower.jpower.cache.UserCache;

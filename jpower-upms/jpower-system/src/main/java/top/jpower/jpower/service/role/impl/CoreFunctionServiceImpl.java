@@ -9,9 +9,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
-import top.jpower.core.utils.constants.ConstantsEnum;
+import top.jpower.common.enums.FunctionTargetEnum;
+import top.jpower.common.enums.FunctionTypeEnum;
+import top.jpower.common.enums.YN01Enum;
 import top.jpower.core.utils.constants.StringPool;
 import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.utils.utils.MapUtil;
 import top.jpower.core.utils.utils.StringUtil;
 import top.jpower.jpower.dbs.dao.client.TbCoreClientDao;
 import top.jpower.jpower.dbs.dao.role.TbCoreFunctionDao;
@@ -21,6 +24,7 @@ import top.jpower.jpower.dbs.dao.role.mapper.TbCoreFunctionMapper;
 import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
 import top.jpower.jpower.dbs.entity.function.TbCoreFunctionMenu;
 import top.jpower.jpower.dbs.entity.role.TbCoreRoleFunction;
+import top.jpower.jpower.module.annotation.Menu;
 import top.jpower.jpower.module.common.auth.RoleConstant;
 import top.jpower.jpower.module.common.service.impl.BaseServiceImpl;
 import top.jpower.jpower.module.common.utils.NacosUtil;
@@ -227,9 +231,9 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
         }
 
         List<TbCoreFunction> list = coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
-                .eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.MENU.getValue())
+                .eq(TbCoreFunction::getFunctionType, FunctionTypeEnum.MENU.getValue())
                 .eq(TbCoreFunction::getClientId,clientDao.queryIdByCode(clientCode))
-                .eq(isHide, TbCoreFunction::getIsHide, ConstantsEnum.YN01.N.getValue())
+                .eq(isHide, TbCoreFunction::getIsHide, YN01Enum.N.getValue())
                 .inSql(!ShieldUtil.isRoot(), TbCoreFunction::getId,StringUtil.format(ROLE_SQL, StringUtil.join(roleIds)))
                 .orderByAsc(TbCoreFunction::getSort));
 
@@ -265,7 +269,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     public List<Tree<Long>> menuTreeByRoleIds(List<Long> roleIds, Long clientId, Long topMenuId) {
         LambdaTreeWrapper<TbCoreFunction> wrapper = Condition.getLambdaTreeWrapper(TbCoreFunction.class,TbCoreFunction::getId,TbCoreFunction::getParentId)
                 .select(TbCoreFunction::getFunctionName,TbCoreFunction::getCode,TbCoreFunction::getUrl,TbCoreFunction::getSort)
-                .eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.MENU.getValue())
+                .eq(TbCoreFunction::getFunctionType, FunctionTypeEnum.MENU.getValue())
                 // 如果不是超级用户，则查出自己权限的菜单
                 .inSql(!ShieldUtil.isRoot(),TbCoreFunction::getId,StringUtil.format(ROLE_SQL,Fc.join(roleIds)));
 
@@ -290,7 +294,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
 
         return coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper()
                 .lambda()
-                .eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.MENU.getValue())
+                .eq(TbCoreFunction::getFunctionType, FunctionTypeEnum.MENU.getValue())
                 .func(q->{
                     if (!ShieldUtil.isRoot()){
                         q.inSql(TbCoreFunction::getId,StringUtil.format(ROLE_SQL, Fc.join(ShieldUtil.getUserRole())));
@@ -307,7 +311,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
 
         return coreFunctionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                 .select(TbCoreFunction::getCode)
-                .eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.BTN.getValue())
+                .eq(TbCoreFunction::getFunctionType, FunctionTypeEnum.BTN.getValue())
                 .eq(TbCoreFunction::getClientId,clientId)
                 .inSql(!ShieldUtil.isRoot(), TbCoreFunction::getId,StringUtil.format(ROLE_SQL,inSql)),Fc::toStr);
     }
@@ -318,7 +322,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
         List<String> parentIds = coreFunctionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                         .select(TbCoreFunction::getId)
                         .eq(TbCoreFunction::getClientId,clientId)
-                        .eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.BTN.getValue())
+                        .eq(TbCoreFunction::getFunctionType, FunctionTypeEnum.BTN.getValue())
                         .eq(TbCoreFunction::getParentId,parentId)
                         .inSql(!ShieldUtil.isRoot(),TbCoreFunction::getId,StringUtil.format(ROLE_SQL,StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE)))
                 ,Fc::toStr);
@@ -329,7 +333,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
         return coreFunctionDao.tree(Condition.getLambdaTreeWrapper(TbCoreFunction.class, TbCoreFunction::getId, TbCoreFunction::getParentId)
                 .select(TbCoreFunction::getFunctionName,TbCoreFunction::getAlias,TbCoreFunction::getCode,TbCoreFunction::getUrl,TbCoreFunction::getFunctionType)
                 .eq(TbCoreFunction::getClientId,clientId)
-                .eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.BTN.getValue())
+                .eq(TbCoreFunction::getFunctionType, FunctionTypeEnum.BTN.getValue())
                 .inSql(!ShieldUtil.isRoot(),TbCoreFunction::getId,StringUtil.format(ROLE_SQL,StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE)))
                 .func(q->{
                     if (Fc.equalsValue(parentId, TOP_CODE)){
@@ -366,21 +370,21 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public boolean generateFunction() {
         List<String> servers = NacosUtil.getAllServers();
         if (Fc.isNotEmpty(servers)){
             //去请求拿到所有的功能点
             List<Map> list = servers.stream().map(name-> {
                 try {
-                    return restTemplate.getForObject("http://"+name+PATH,Map.class);
+                    return restTemplate.getForObject("http://"+name+PATH, Map.class);
                 }catch (Exception e){
                     return new HashMap();
                 }
             }).collect(Collectors.toList());
 
             //拿到所有的菜单
-            List<TbCoreFunction> menus = coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda().eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.MENU.getValue()));
+            List<TbCoreFunction> menus = coreFunctionDao.list(Condition.<TbCoreFunction>getQueryWrapper().lambda().eq(TbCoreFunction::getFunctionType, FunctionTypeEnum.MENU.getValue()));
 
             if (Fc.isNotEmpty(menus)){
                 //拿到所有的code
@@ -395,24 +399,24 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
                     if (Fc.isNotEmpty(map)){
                         map.forEach((menuCode,functions)->{
                             Optional<TbCoreFunction> menu = menus.stream().filter(f->Fc.equalsValue(f.getCode(),menuCode)).findAny();
-                            menu.ifPresent(tbCoreFunction -> ((List<Map<String,String>>)functions).forEach(fun -> {
-                                String code = fun.get("code");
+                            menu.ifPresent(tbCoreFunction -> ((List<Map<String,Object>>)functions).forEach(fun -> {
+                                String code = MapUtil.getStr(fun, "code");
                                 //只要不重复的code才去存储
                                 if (functionList.stream().noneMatch(f -> Fc.equalsValue(f.getCode(), code)) && !allCode.contains(code)) {
                                     TbCoreFunction function = new TbCoreFunction();
                                     function.setCode(code);
-                                    function.setFunctionName(fun.get("name"));
-                                    function.setAlias(fun.get("alias"));
-                                    function.setUrl(fun.get("url"));
+                                    function.setFunctionName(MapUtil.getStr(fun, "name"));
+                                    function.setAlias(MapUtil.getStr(fun, "alias"));
+                                    function.setUrl(MapUtil.getStr(fun, "url"));
                                     function.setClientId(tbCoreFunction.getClientId());
-                                    if (Fc.isBlank(fun.get("btnCode"))){
+                                    if (Fc.isEmpty(fun.get("btnCode"))){
                                         function.setParentId(tbCoreFunction.getId());
                                         function.setAncestorId(Fc.toStr(tbCoreFunction.getAncestorId(), TOP_CODE).concat(StringPool.COMMA).concat(Fc.toStr(tbCoreFunction.getId())));
                                     }else {
-                                        codeMap.put(code, fun.get("btnCode"));
+                                        codeMap.put(code, MapUtil.getStr(fun, "btnCode"));
                                     }
-                                    function.setFunctionType(Fc.toInt(fun.get("type")));
-                                    function.setTarget(ConstantsEnum.FUNCTION_TARGET.SELF.getValue());
+                                    function.setFunctionType(Objects.requireNonNull(FunctionTypeEnum.getEnumByType(MapUtil.get(fun, "type", Menu.TYPE.class)), "未找到枚举[FunctionTypeEnum]").getValue());
+                                    function.setTarget(FunctionTargetEnum.SELF.getValue());
                                     function.setIsHide(Boolean.FALSE);
                                     functionList.add(function);
                                 }

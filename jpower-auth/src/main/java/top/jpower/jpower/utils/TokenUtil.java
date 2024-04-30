@@ -1,7 +1,7 @@
 package top.jpower.jpower.utils;
 
 import cn.hutool.extra.servlet.ServletUtil;
-import top.jpower.core.utils.constants.ConstantsEnum;
+import top.jpower.common.enums.ConstantsEnum;
 import top.jpower.core.utils.constants.StringPool;
 import top.jpower.core.utils.constants.TokenConstant;
 import top.jpower.core.utils.utils.*;

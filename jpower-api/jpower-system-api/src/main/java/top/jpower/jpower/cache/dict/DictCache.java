@@ -1,6 +1,6 @@
 package top.jpower.jpower.cache.dict;
 
-import top.jpower.core.utils.constants.ConstantsEnum;
+import top.jpower.common.enums.YYZLEnum;
 import top.jpower.core.utils.constants.StringPool;
 import top.jpower.core.utils.utils.Fc;
 import top.jpower.core.utils.utils.MapUtil;
@@ -46,9 +46,9 @@ public class DictCache {
         return list.stream()
                 .filter(map -> {
 
-                    String requestLocale = ConstantsEnum.YYZL.CHINA.getValue();
+                    String requestLocale = YYZLEnum.CHINA.getValue();
                     if (Fc.notNull(WebUtil.getRequest())){
-                        requestLocale = Fc.toStr(Objects.requireNonNull(WebUtil.getRequest()).getHeader(I18N_KEY), ConstantsEnum.YYZL.CHINA.getValue());
+                        requestLocale = Fc.toStr(Objects.requireNonNull(WebUtil.getRequest()).getHeader(I18N_KEY), YYZLEnum.CHINA.getValue());
                     }
 
                     return Fc.equalsValue(MapUtil.getStr(map,"code"),code) && Fc.equalsValue(MapUtil.getStr(map,"locale"), requestLocale);

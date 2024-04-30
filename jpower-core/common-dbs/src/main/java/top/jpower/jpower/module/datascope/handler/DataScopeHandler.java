@@ -19,13 +19,13 @@ import net.sf.jsqlparser.schema.Column;
 import org.apache.ibatis.reflection.property.PropertyNamer;
 import org.springframework.util.StringUtils;
 import top.jpower.core.utils.constants.CharPool;
-import top.jpower.core.utils.constants.ConstantsEnum;
 import top.jpower.core.utils.constants.StringPool;
 import top.jpower.core.utils.constants.TokenConstant;
 import top.jpower.core.utils.utils.*;
 import top.jpower.jpower.module.common.auth.UserInfo;
 import top.jpower.jpower.module.common.support.ChainMap;
 import top.jpower.jpower.module.common.utils.ShieldUtil;
+import top.jpower.jpower.module.constants.DataScopeConstant;
 import top.jpower.jpower.module.datascope.DataScope;
 import top.jpower.jpower.module.dbs.config.LoginUserContext;
 
@@ -60,12 +60,12 @@ public class DataScopeHandler implements DataPermissionHandler {
             }
 
             // 查询全部
-            if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.ALL.getValue())){
+            if (Fc.equalsValue(dataScope.getScopeType(), DataScopeConstant.ALL)){
                 return where;
             }
 
             Expression andWhere;
-            if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.CUSTOM.getValue())){
+            if (Fc.equalsValue(dataScope.getScopeType(), DataScopeConstant.CUSTOM)){
                 Map<String,Object> userMap = ChainMap.<String,Object>create().build();
 
                 BeanUtil.beanToMap(LoginUserContext.get(),userMap,new CopyOptions(){
@@ -114,11 +114,11 @@ public class DataScopeHandler implements DataPermissionHandler {
                 userMap.put(PropertyNamer.methodToProperty(LambdaUtils.extract(UserInfo::getChildOrgId).getImplMethodName()), StringUtils.collectionToDelimitedString(listOrgId, StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE));
 
                 andWhere = CCJSqlParserUtil.parseCondExpression(StringUtil.formatMap(Fc.toStr(dataScope.getScopeValue(),"1=1"),userMap));
-            }else if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.OWN.getValue())){
+            }else if (Fc.equalsValue(dataScope.getScopeType(), DataScopeConstant.OWN)){
                 andWhere = new EqualsTo().withLeftExpression(new Column(dataScope.getScopeColumn())).withRightExpression(new LongValue(Fc.toLong(LoginUserContext.getUserId(), -1L)));
-            }else if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.OWN_ORG.getValue())){
+            }else if (Fc.equalsValue(dataScope.getScopeType(), DataScopeConstant.OWN_ORG)){
                 andWhere = new EqualsTo().withLeftExpression(new Column(dataScope.getScopeColumn())).withRightExpression(new LongValue(Fc.toLong(LoginUserContext.getOrgId(), -1L)));
-            }else if (Fc.equals(dataScope.getScopeType(), ConstantsEnum.DATA_SCOPE_TYPE.OWN_ORG_CHILD.getValue())){
+            }else if (Fc.equalsValue(dataScope.getScopeType(), DataScopeConstant.OWN_ORG_CHILD)){
                 Set<Long> listOrgId = CollectionUtil.newHashSet(LoginUserContext.get().getChildOrgId());
                 listOrgId.add(LoginUserContext.getOrgId());
                 //如果没有部门就什么都不要查出来
@@ -167,7 +167,7 @@ public class DataScopeHandler implements DataPermissionHandler {
             top.jpower.jpower.module.datascope.annotation.DataScope dataScopeAnnotation = AnnotationUtil.getAnnotation(ReflectUtil.getMethodByName(Class.forName(className),methodName), top.jpower.jpower.module.datascope.annotation.DataScope.class);
             if (Fc.notNull(dataScopeAnnotation)){
                 DataScope dataScope = new DataScope();
-                dataScope.setScopeType(dataScopeAnnotation.type().getValue());
+                dataScope.setScopeType(dataScopeAnnotation.type());
                 dataScope.setScopeColumn(dataScopeAnnotation.column());
                 dataScope.setScopeClass(mapperId);
                 dataScope.setScopeValue(dataScopeAnnotation.sql());

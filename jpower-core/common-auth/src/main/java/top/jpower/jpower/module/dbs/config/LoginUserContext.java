@@ -1,7 +1,6 @@
 package top.jpower.jpower.module.dbs.config;
 
 import lombok.extern.slf4j.Slf4j;
-import top.jpower.core.utils.constants.ConstantsEnum;
 import top.jpower.core.utils.constants.StringPool;
 import top.jpower.core.utils.constants.TokenConstant;
 import top.jpower.core.utils.utils.Fc;
@@ -12,6 +11,8 @@ import top.jpower.jpower.module.common.utils.ShieldUtil;
 
 import java.util.Collections;
 import java.util.Objects;
+
+import static top.jpower.jpower.module.common.auth.RoleConstant.ANONYMOUS_UESR_TYPE;
 
 /**
  * 当前登陆用户信息<br/>
@@ -100,7 +101,7 @@ public class LoginUserContext {
                     try { user.setClientCode(ShieldUtil.getClientCodeFromHeader()); }catch (Exception ignored){}
                     user.setLoginId(header);
                     user.setNickName(header);
-                    user.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_ANONYMOUS.getValue());
+                    user.setUserType(ANONYMOUS_UESR_TYPE);
                     if (Fc.equals(header, RoleConstant.ANONYMOUS)){
                         user.setUserId(RoleConstant.ANONYMOUS_ID);
                         user.setIsSysUser(UserInfo.TABLE_USER_TYPE_CORE);

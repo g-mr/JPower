@@ -4,7 +4,8 @@ import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.io.IoUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import top.jpower.core.utils.constants.ConstantsUtils;
+import top.jpower.common.constants.DefaultValConstants;
+import top.jpower.common.enums.FileStorageTypeEnum;
 import top.jpower.core.utils.utils.*;
 import top.jpower.jpower.dbs.entity.TbResourceFile;
 import top.jpower.jpower.module.mp.support.Condition;
@@ -13,7 +14,6 @@ import top.jpower.jpower.service.ResourceFileService;
 
 import java.io.IOException;
 
-import static top.jpower.core.utils.constants.ConstantsEnum.FILE_STORAGE_TYPE.DATABASE;
 import static top.jpower.jpower.operate.storage.DatabaseFileOperate.STORAGE_TYPE;
 
 /**
@@ -34,8 +34,8 @@ public class DatabaseFileOperate implements FileOperate {
 		coreFile.setFileType(FileTypeUtil.getType(IoUtil.toStream(bytes),name));
 		coreFile.setFileSize(size);
 		coreFile.setId(Fc.randomSnowFlakeId());
-		coreFile.setMark(DesUtil.encrypt(Fc.toStr(coreFile.getId()), ConstantsUtils.FILE_DES_KEY));
-		coreFile.setStorageType(DATABASE.getValue());
+		coreFile.setMark(DesUtil.encrypt(Fc.toStr(coreFile.getId()), DefaultValConstants.FILE_DES_KEY));
+		coreFile.setStorageType(FileStorageTypeEnum.DATABASE.getValue());
 		coreFile.setContent(bytes);
 		coreFile.setName(name);
 

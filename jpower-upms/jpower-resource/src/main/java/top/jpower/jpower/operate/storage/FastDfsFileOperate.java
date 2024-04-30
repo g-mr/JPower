@@ -4,7 +4,8 @@ import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.io.IoUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import top.jpower.core.utils.constants.ConstantsUtils;
+import top.jpower.common.constants.DefaultValConstants;
+import top.jpower.common.enums.FileStorageTypeEnum;
 import top.jpower.core.utils.constants.StringPool;
 import top.jpower.core.utils.utils.*;
 import top.jpower.jpower.dbs.entity.TbResourceFile;
@@ -17,7 +18,6 @@ import top.jpower.jpower.utils.FileDfsUtil;
 
 import java.io.IOException;
 
-import static top.jpower.core.utils.constants.ConstantsEnum.FILE_STORAGE_TYPE.FASTDFS;
 import static top.jpower.jpower.operate.storage.FastDfsFileOperate.STORAGE_TYPE;
 
 /**
@@ -44,8 +44,8 @@ public class FastDfsFileOperate implements FileOperate {
 		file.setFileType(type);
 		file.setFileSize(size);
 		file.setId(Fc.randomSnowFlakeId());
-		file.setMark(DesUtil.encrypt(Fc.toStr(file.getId()), ConstantsUtils.FILE_DES_KEY));
-		file.setStorageType(FASTDFS.getValue());
+		file.setMark(DesUtil.encrypt(Fc.toStr(file.getId()), DefaultValConstants.FILE_DES_KEY));
+		file.setStorageType(FileStorageTypeEnum.FASTDFS.getValue());
 		file.setPath(dfsPath);
 		file.setName(name);
 

@@ -2,7 +2,7 @@ package top.jpower.jpower.service.role.impl;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import top.jpower.core.utils.constants.ConstantsEnum;
+import top.jpower.common.enums.ConstantsEnum;
 import top.jpower.core.utils.utils.Fc;
 import top.jpower.jpower.dbs.dao.role.TbCoreRoleFunctionDao;
 import top.jpower.jpower.dbs.dao.role.mapper.TbCoreRoleFunctionMapper;

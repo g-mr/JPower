@@ -19,7 +19,7 @@ public class BuiltEndpoint {
 
 
     @GetMapping(value = PATH)
-    public Map<String,List<Map<String,String>>> getAllFunction(){
+    public Map<String,List<Map<String,Object>>> getAllFunction(){
         return FunctionGenerate.functions;
     }
 

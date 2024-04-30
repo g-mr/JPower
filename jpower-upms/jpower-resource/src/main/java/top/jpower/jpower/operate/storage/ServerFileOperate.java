@@ -6,7 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import top.jpower.core.utils.constants.ConstantsUtils;
+import top.jpower.common.constants.DefaultValConstants;
+import top.jpower.common.enums.FileStorageTypeEnum;
 import top.jpower.core.utils.constants.StringPool;
 import top.jpower.core.utils.utils.*;
 import top.jpower.jpower.dbs.entity.TbResourceFile;
@@ -20,7 +21,6 @@ import top.jpower.jpower.service.ResourceFileService;
 import java.io.File;
 import java.io.IOException;
 
-import static top.jpower.core.utils.constants.ConstantsEnum.FILE_STORAGE_TYPE.SERVER;
 import static top.jpower.jpower.operate.storage.ServerFileOperate.STORAGE_TYPE;
 
 /**
@@ -46,11 +46,11 @@ public class ServerFileOperate implements FileOperate {
 		TbResourceFile coreFile = new TbResourceFile();
 		coreFile.setPath(saveFile.getAbsolutePath());
 		coreFile.setName(name);
-		coreFile.setStorageType(SERVER.getValue());
+		coreFile.setStorageType(FileStorageTypeEnum.SERVER.getValue());
 		coreFile.setFileType(FileTypeUtil.getType(saveFile));
 		coreFile.setFileSize(size);
 		coreFile.setId(Fc.randomSnowFlakeId());
-		coreFile.setMark(DesUtil.encrypt(Fc.toStr(coreFile.getId()), ConstantsUtils.FILE_DES_KEY));
+		coreFile.setMark(DesUtil.encrypt(Fc.toStr(coreFile.getId()), DefaultValConstants.FILE_DES_KEY));
 
 		try {
 			if (!coreFileService.add(coreFile)){

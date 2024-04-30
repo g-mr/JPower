@@ -6,7 +6,8 @@ import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
-import top.jpower.core.utils.constants.ConstantsEnum;
+import top.jpower.common.enums.FunctionTypeEnum;
+import top.jpower.common.enums.YN01Enum;
 import top.jpower.core.utils.utils.Fc;
 import top.jpower.core.utils.utils.MapUtil;
 import top.jpower.core.utils.utils.ReturnJsonUtil;
@@ -64,7 +65,7 @@ public class TopMenuController extends BaseController {
         JpowerAssert.geZero(c,JpowerError.Business, "菜单编号不可重复");
 
         if (Fc.isNull(topMenu.getStatus())){
-            topMenu.setStatus(ConstantsEnum.YN01.Y.getValue());
+            topMenu.setStatus(YN01Enum.Y.getValue());
         }
 
         if (Fc.isNull(topMenu.getSortNum())){
@@ -97,7 +98,7 @@ public class TopMenuController extends BaseController {
         JpowerAssert.notNull(id, JpowerError.Arg,"主键不可为空");
         JpowerAssert.notNull(status, JpowerError.Arg,"开关状态不可为空");
 
-        JpowerAssert.isTrue(ConstantsEnum.YN01.isExist(status), JpowerError.Arg,"开关状态值不合法");
+        JpowerAssert.isTrue(YN01Enum.isExist(status), JpowerError.Arg,"开关状态值不合法");
 
         return ReturnJsonUtil.status(menuService.update(Wrappers.<TbCoreTopMenu>lambdaUpdate()
                 .set(TbCoreTopMenu::getStatus,status)
@@ -175,7 +176,7 @@ public class TopMenuController extends BaseController {
         return ReturnJsonUtil.data(functionService.listMaps(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                         .select(TbCoreFunction::getId,TbCoreFunction::getFunctionName)
                         .eq(TbCoreFunction::getParentId, Fc.toLong(TOP_CODE))
-                        .eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.MENU.getValue())
+                        .eq(TbCoreFunction::getFunctionType, FunctionTypeEnum.MENU.getValue())
                         .eq(TbCoreFunction::getClientId,clientId)));
     }
 

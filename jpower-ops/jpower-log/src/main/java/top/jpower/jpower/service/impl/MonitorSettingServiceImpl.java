@@ -5,7 +5,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import top.jpower.core.utils.constants.ConstantsEnum;
+import top.jpower.common.enums.ConstantsEnum;
 import top.jpower.core.utils.utils.Fc;
 import top.jpower.jpower.dbs.dao.LogMonitorParamDao;
 import top.jpower.jpower.dbs.dao.LogMonitorSettingDao;

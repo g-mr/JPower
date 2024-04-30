@@ -11,8 +11,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
+import top.jpower.common.constants.DefaultValConstants;
 import top.jpower.common.constants.ParamsConstants;
-import top.jpower.core.utils.constants.*;
+import top.jpower.common.enums.IdTypeEnum;
+import top.jpower.common.enums.UserTypeEnum;
+import top.jpower.core.utils.constants.ConstantsReturn;
+import top.jpower.core.utils.constants.ImportExportConstants;
+import top.jpower.core.utils.constants.StringPool;
 import top.jpower.core.utils.utils.*;
 import top.jpower.jpower.cache.SystemCache;
 import top.jpower.jpower.cache.param.ParamConfig;
@@ -50,7 +55,9 @@ import static top.jpower.core.utils.constants.JpowerConstants.VALIDATE_SMS_CODE;
 import static top.jpower.jpower.module.base.annotation.OperateLog.BusinessType.DELETE;
 import static top.jpower.jpower.module.base.annotation.OperateLog.BusinessType.UPDATE;
 import static top.jpower.jpower.module.common.cache.CacheNames.TOKEN_USER_KEY;
-import static top.jpower.jpower.module.tenant.TenantConstant.*;
+import static top.jpower.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
+import static top.jpower.jpower.module.tenant.TenantConstant.TENANT_ACCOUNT_NUMBER;
+import static top.jpower.jpower.module.tenant.TenantConstant.getAccountNumber;
 
 @Api(tags = "用户管理")
 @RestController
@@ -171,7 +178,7 @@ public class UserController extends BaseController {
 
         JpowerAssert.notEmpty(coreUser.getLoginId(), JpowerError.Arg, "用户名不可为空");
 
-        if (coreUser.getIdType() != null && ConstantsEnum.ID_TYPE.ID_CARD.getValue().equals(coreUser.getIdType())) {
+        if (coreUser.getIdType() != null && IdTypeEnum.ID_CARD.getValue().equals(coreUser.getIdType())) {
             if (Fc.isNotBlank(coreUser.getIdNo()) && !Validator.isCitizenId(coreUser.getIdNo())) {
                 return ReturnJsonUtil.busFail("身份证不合法");
             }
@@ -207,9 +214,9 @@ public class UserController extends BaseController {
         }
         JpowerAssert.isNull(coreUserService.selectUserLoginId(coreUser.getLoginId(), tenantCode), JpowerError.Business, "当前登陆名已存在");
 
-        coreUser.setPassword(DigestUtil.pwdEncrypt(MD5.md5HexToUpperCase(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD, ConstantsUtils.DEFAULT_USER_PASSWORD))));
+        coreUser.setPassword(DigestUtil.pwdEncrypt(MD5.md5HexToUpperCase(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD, DefaultValConstants.DEFAULT_USER_PASSWORD))));
         if (Fc.isNull(coreUser.getUserType())){
-            coreUser.setUserType(ConstantsEnum.USER_TYPE.USER_TYPE_SYSTEM.getValue());
+            coreUser.setUserType(UserTypeEnum.USER_TYPE_SYSTEM.getValue());
         }
         CacheUtil.clear(CacheNames.USER_KEY);
         return ReturnJsonUtil.status(coreUserService.save(coreUser));
@@ -243,7 +250,7 @@ public class UserController extends BaseController {
 
         JpowerAssert.notNull(coreUser.getId(), JpowerError.Arg, "用户ID不可为空");
 
-        if (Fc.notNull(coreUser.getIdType()) && ConstantsEnum.ID_TYPE.ID_CARD.getValue().equals(coreUser.getIdType())) {
+        if (Fc.notNull(coreUser.getIdType()) && IdTypeEnum.ID_CARD.getValue().equals(coreUser.getIdType())) {
             if (Fc.isNotBlank(coreUser.getIdNo()) && !Validator.isCitizenId(coreUser.getIdNo())) {
                 return ReturnJsonUtil.busFail("身份证不合法");
             }
@@ -293,7 +300,7 @@ public class UserController extends BaseController {
         JpowerAssert.notNull(coreUser.getId(), JpowerError.Arg, "用户ID不可为空");
         JpowerAssert.notNull(ShieldUtil.getUser(), JpowerError.Arg, "用户未登录");
 
-        if (coreUser.getIdType() != null && ConstantsEnum.ID_TYPE.ID_CARD.getValue().equals(coreUser.getIdType())) {
+        if (coreUser.getIdType() != null && IdTypeEnum.ID_CARD.getValue().equals(coreUser.getIdType())) {
             if (Fc.isNotBlank(coreUser.getIdNo()) && !Validator.isCitizenId(coreUser.getIdNo())) {
                 return ReturnJsonUtil.busFail("身份证不合法");
             }
@@ -319,7 +326,7 @@ public class UserController extends BaseController {
     @PutMapping(value = "/resetPassword", produces = "application/json")
     public ResponseData resetPassword(@ApiParam(value = "主键 多个逗号分割", required = true) @RequestParam String ids) {
 
-        String pass = DigestUtil.pwdEncrypt(MD5.md5HexToUpperCase(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD, ConstantsUtils.DEFAULT_USER_PASSWORD)));
+        String pass = DigestUtil.pwdEncrypt(MD5.md5HexToUpperCase(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD, DefaultValConstants.DEFAULT_USER_PASSWORD)));
 
         JpowerAssert.notEmpty(ids, JpowerError.Arg, "用户ids不可为空");
 

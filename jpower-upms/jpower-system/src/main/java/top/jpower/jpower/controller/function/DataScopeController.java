@@ -4,7 +4,8 @@ import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
-import top.jpower.core.utils.constants.ConstantsEnum;
+import top.jpower.common.enums.DataScopeTypeEnum;
+import top.jpower.common.enums.YN01Enum;
 import top.jpower.core.utils.constants.StringPool;
 import top.jpower.core.utils.utils.Fc;
 import top.jpower.core.utils.utils.MapUtil;
@@ -103,12 +104,12 @@ public class DataScopeController {
             dataScope.setScopeColumn(StringPool.ASTERISK);
         }
         if(Fc.isEmpty(dataScope.getScopeType())){
-            dataScope.setScopeType(ConstantsEnum.DATA_SCOPE_TYPE.ALL.getValue());
+            dataScope.setScopeType(DataScopeTypeEnum.ALL.getValue());
         }
         if(Fc.isEmpty(dataScope.getAllRole())){
-            dataScope.setScopeType(ConstantsEnum.YN01.N.getValue());
+            dataScope.setScopeType(YN01Enum.N.getValue());
         }
-        if (Fc.equals(dataScope.getScopeType(),ConstantsEnum.DATA_SCOPE_TYPE.CUSTOM.getValue())){
+        if (Fc.equals(dataScope.getScopeType(),DataScopeTypeEnum.CUSTOM.getValue())){
             JpowerAssert.notEmpty(dataScope.getScopeValue(), JpowerError.Arg,"数据权限值域不可为空");
         }
 

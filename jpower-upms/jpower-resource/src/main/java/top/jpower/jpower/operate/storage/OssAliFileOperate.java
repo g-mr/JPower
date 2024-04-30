@@ -14,7 +14,7 @@ import com.aliyun.oss.model.PutObjectResult;
 import lombok.Cleanup;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import top.jpower.core.utils.constants.ConstantsUtils;
+import top.jpower.common.constants.DefaultValConstants;
 import top.jpower.core.utils.constants.StringPool;
 import top.jpower.core.utils.utils.*;
 import top.jpower.jpower.dbs.dao.TbResourceFileDao;
@@ -74,7 +74,7 @@ public class OssAliFileOperate implements FileOperate {
         coreFile.setFileType(type);
         coreFile.setFileSize(size);
         coreFile.setId(Fc.randomSnowFlakeId());
-        coreFile.setMark(DesUtil.encrypt(Fc.toStr(coreFile.getId()), ConstantsUtils.FILE_DES_KEY));
+        coreFile.setMark(DesUtil.encrypt(Fc.toStr(coreFile.getId()), DefaultValConstants.FILE_DES_KEY));
         coreFile.setStorageType(resourceOss.getCode());
         coreFile.setPath(resourceOss.getBucketName() + File.separator + objectName);
         coreFile.setName(name);
@@ -137,7 +137,7 @@ public class OssAliFileOperate implements FileOperate {
     /**
      * 删除文件
      *
-     * @param tbCoreFile
+     * @param coreFile
      * @return java.lang.Boolean
      * @Author mr.g
      **/
