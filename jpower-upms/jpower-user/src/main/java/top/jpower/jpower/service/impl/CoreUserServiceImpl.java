@@ -12,9 +12,9 @@ import com.github.pagehelper.PageInfo;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import top.jpower.common.constants.ParamsConstants;
 import top.jpower.core.utils.constants.ConstantsEnum;
 import top.jpower.core.utils.constants.ConstantsUtils;
-import top.jpower.core.utils.constants.ParamsConstants;
 import top.jpower.core.utils.constants.StringPool;
 import top.jpower.core.utils.utils.DigestUtil;
 import top.jpower.core.utils.utils.Fc;
@@ -48,7 +48,9 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static top.jpower.jpower.module.common.cache.CacheNames.TOKEN_USER_KEY;
-import static top.jpower.jpower.module.tenant.TenantConstant.*;
+import static top.jpower.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
+import static top.jpower.jpower.module.tenant.TenantConstant.TENANT_ACCOUNT_NUMBER;
+import static top.jpower.jpower.module.tenant.TenantConstant.getAccountNumber;
 
 /**
  * @author mr.gmac

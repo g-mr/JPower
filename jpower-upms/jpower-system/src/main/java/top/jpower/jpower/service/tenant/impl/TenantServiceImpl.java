@@ -4,9 +4,9 @@ import cn.hutool.core.thread.ThreadUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import top.jpower.common.constants.ParamsConstants;
 import top.jpower.core.utils.constants.ConstantsEnum;
 import top.jpower.core.utils.constants.ConstantsUtils;
-import top.jpower.core.utils.constants.ParamsConstants;
 import top.jpower.core.utils.utils.DigestUtil;
 import top.jpower.core.utils.utils.Fc;
 import top.jpower.core.utils.utils.MD5;
@@ -38,7 +38,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static top.jpower.core.utils.constants.JpowerConstants.TOP_CODE;
-import static top.jpower.jpower.module.tenant.TenantConstant.*;
+import static top.jpower.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
+import static top.jpower.jpower.module.tenant.TenantConstant.TENANT_ACCOUNT_NUMBER;
+import static top.jpower.jpower.module.tenant.TenantConstant.getLicenseKey;
+import static top.jpower.jpower.module.tenant.TenantConstant.tenantCode;
 
 /**
  * @ClassName TenantServiceImpl

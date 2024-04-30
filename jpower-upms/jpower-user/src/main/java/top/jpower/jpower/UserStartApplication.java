@@ -1,7 +1,7 @@
 package top.jpower.jpower;
 
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import top.jpower.core.utils.constants.AppConstant;
+import top.jpower.common.constants.AppConstant;
 import top.jpower.jpower.annotation.EnableJpowerFeignClients;
 import top.jpower.jpower.module.common.deploy.JpowerApplication;
 import top.jpower.jpower.module.common.deploy.service.annotation.JpowerCloudApplication;
@@ -19,7 +19,7 @@ import top.jpower.jpower.module.common.deploy.service.annotation.JpowerCloudAppl
 public class UserStartApplication {
 
     public static void main(String[] args) {
-        JpowerApplication.run(AppConstant.getInstance().getJpowerUser(),UserStartApplication.class,args);
+        JpowerApplication.run(AppConstant.JPOWER_USER,UserStartApplication.class,args);
     }
 
 }

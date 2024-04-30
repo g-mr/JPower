@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.AutoConfigurationExcludeFilter;
 import org.springframework.boot.context.TypeExcludeFilter;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
-import top.jpower.core.utils.constants.AppConstant;
+import top.jpower.common.constants.AppConstant;
 import top.jpower.jpower.module.common.deploy.JpowerApplication;
 import top.jpower.jpower.module.common.deploy.service.annotation.JpowerCloudApplication;
 import top.jpower.jpower.module.common.jackson.JpowerJacksonConfig;
@@ -34,7 +34,7 @@ import top.jpower.jpower.module.common.jackson.JpowerJacksonConfig;
 public class AdminStartApplication {
 
     public static void main(String[] args) {
-        JpowerApplication.run(AppConstant.getInstance().getJpowerAdmin(),AdminStartApplication.class,args);
+        JpowerApplication.run(AppConstant.JPOWER_ADMIN,AdminStartApplication.class,args);
     }
 
 }
