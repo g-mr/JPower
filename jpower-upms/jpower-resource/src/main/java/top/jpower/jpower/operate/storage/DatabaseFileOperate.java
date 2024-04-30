@@ -4,16 +4,16 @@ import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.io.IoUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import top.jpower.core.utils.constants.ConstantsUtils;
+import top.jpower.core.utils.utils.*;
 import top.jpower.jpower.dbs.entity.TbResourceFile;
-import top.jpower.jpower.module.common.utils.*;
-import top.jpower.jpower.module.common.utils.constants.ConstantsUtils;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.operate.FileOperate;
 import top.jpower.jpower.service.ResourceFileService;
 
 import java.io.IOException;
 
-import static top.jpower.jpower.module.common.utils.constants.ConstantsEnum.FILE_STORAGE_TYPE.DATABASE;
+import static top.jpower.core.utils.constants.ConstantsEnum.FILE_STORAGE_TYPE.DATABASE;
 import static top.jpower.jpower.operate.storage.DatabaseFileOperate.STORAGE_TYPE;
 
 /**

@@ -4,14 +4,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.RestTemplate;
+import top.jpower.core.utils.utils.ExceptionUtil;
+import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.utils.utils.SpringUtil;
+import top.jpower.jpower.module.base.constants.LogConstant;
 import top.jpower.jpower.module.base.model.ErrorLogDto;
 import top.jpower.jpower.module.base.model.OperateLogDto;
 import top.jpower.jpower.module.base.vo.ResponseData;
 import top.jpower.jpower.module.common.deploy.props.JpowerProperties;
-import top.jpower.jpower.module.common.utils.ExceptionUtil;
-import top.jpower.jpower.module.common.utils.Fc;
-import top.jpower.jpower.module.common.utils.SpringUtil;
-import top.jpower.jpower.module.common.utils.constants.AppConstant;
 
 /**
  * Feign接口类
@@ -61,7 +61,7 @@ public class LogClient {
 
 			}else {
 				try {
-					ResponseData responseData = SpringUtil.getBean(RestTemplate.class).postForObject("http://"+ AppConstant.getInstance().getJpowerLog()+"/log/saveOperateLog",operateLog,ResponseData.class);
+					ResponseData responseData = SpringUtil.getBean(RestTemplate.class).postForObject("http://"+ LogConstant.getInstance().getJpowerLog()+"/log/saveOperateLog",operateLog,ResponseData.class);
 					if (Fc.isNull(responseData) || !responseData.isStatus()){
 						log.error("操作日志保存失败={}",responseData);
 					}
@@ -81,7 +81,7 @@ public class LogClient {
 	 * @return top.jpower.jpower.module.base.vo.ResponseData<java.lang.Boolean>
 	 */
 	public void saveErrorLog(ErrorLogDto errorLog){
-		if (Fc.equalsValue(errorLog.getServerName(),AppConstant.getInstance().getJpowerLog()) &&
+		if (Fc.equalsValue(errorLog.getServerName(), LogConstant.getInstance().getJpowerLog()) &&
 			Fc.equalsValue(errorLog.getMethodClass(),"top.jpower.jpower.feign.LogClientController") &&
 			Fc.equalsValue(errorLog.getMethodName(),"saveErrorLog") &&
 			Fc.equalsValue(errorLog.getUrl(),"/log/saveErrorLog")){
@@ -105,7 +105,7 @@ public class LogClient {
 				}
 			}else {
 				try {
-					ResponseData responseData = SpringUtil.getBean(RestTemplate.class).postForObject("http://"+ AppConstant.getInstance().getJpowerLog()+"/log/saveErrorLog",errorLog,ResponseData.class);
+					ResponseData responseData = SpringUtil.getBean(RestTemplate.class).postForObject("http://"+ LogConstant.getInstance().getJpowerLog()+"/log/saveErrorLog",errorLog,ResponseData.class);
 					if (Fc.isNull(responseData) || !responseData.isStatus()){
 						log.error("错误日志保存失败={}",responseData);
 					}

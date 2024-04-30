@@ -1,9 +1,9 @@
 package top.jpower.jpower;
 
+import top.jpower.common.constants.AppConstant;
 import top.jpower.jpower.annotation.EnableJpowerFeignClients;
 import top.jpower.jpower.module.common.deploy.JpowerApplication;
 import top.jpower.jpower.module.common.deploy.service.annotation.JpowerCloudApplication;
-import top.jpower.jpower.module.common.utils.constants.AppConstant;
 
 /**
  * @ClassName SpringBootStartApplication
@@ -17,7 +17,7 @@ import top.jpower.jpower.module.common.utils.constants.AppConstant;
 public class SystemStartApplication {
 
     public static void main(String[] args) {
-        JpowerApplication.run(AppConstant.getInstance().getJpowerSystem(),SystemStartApplication.class,args);
+        JpowerApplication.run(AppConstant.JPOWER_SYSTEM,SystemStartApplication.class,args);
     }
 
 }

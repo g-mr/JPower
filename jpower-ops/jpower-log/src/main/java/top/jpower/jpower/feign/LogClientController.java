@@ -7,13 +7,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
+import top.jpower.core.utils.utils.BeanUtil;
+import top.jpower.core.utils.utils.ReturnJsonUtil;
 import top.jpower.jpower.dbs.entity.TbLogError;
 import top.jpower.jpower.dbs.entity.TbLogOperate;
 import top.jpower.jpower.module.base.model.ErrorLogDto;
 import top.jpower.jpower.module.base.model.OperateLogDto;
 import top.jpower.jpower.module.base.vo.ResponseData;
-import top.jpower.jpower.module.common.utils.BeanUtil;
-import top.jpower.jpower.module.common.utils.ReturnJsonUtil;
 import top.jpower.jpower.service.ErrorLogService;
 import top.jpower.jpower.service.OperateLogService;
 

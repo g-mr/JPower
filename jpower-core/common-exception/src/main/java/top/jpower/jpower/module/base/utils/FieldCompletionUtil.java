@@ -1,11 +1,11 @@
 package top.jpower.jpower.module.base.utils;
 
 import com.alibaba.fastjson2.JSONObject;
+import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.utils.utils.WebUtil;
 import top.jpower.jpower.module.base.model.LogDto;
 import top.jpower.jpower.module.common.auth.UserInfo;
 import top.jpower.jpower.module.common.deploy.props.JpowerProperties;
-import top.jpower.jpower.module.common.utils.Fc;
-import top.jpower.jpower.module.common.utils.WebUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;

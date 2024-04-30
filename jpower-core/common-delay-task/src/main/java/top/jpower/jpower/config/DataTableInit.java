@@ -4,9 +4,9 @@ import cn.hutool.core.collection.CollUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import top.jpower.core.utils.utils.*;
 import top.jpower.jpower.annotation.JEntity;
 import top.jpower.jpower.annotation.JId;
-import top.jpower.jpower.module.common.utils.*;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Field;

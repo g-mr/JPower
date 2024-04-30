@@ -2,6 +2,10 @@ package top.jpower.jpower.config.sms;
 
 import cn.hutool.core.util.PhoneUtil;
 import org.apache.commons.lang3.RandomStringUtils;
+import top.jpower.core.utils.constants.JpowerConstants;
+import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.utils.utils.SpringUtil;
+import top.jpower.core.utils.utils.StringUtil;
 import top.jpower.jpower.dto.SmsResponse;
 import top.jpower.jpower.module.base.enums.JpowerError;
 import top.jpower.jpower.module.base.exception.JpowerAssert;
@@ -10,17 +14,13 @@ import top.jpower.jpower.module.common.cache.CacheNames;
 import top.jpower.jpower.module.common.deploy.props.JpowerProperties;
 import top.jpower.jpower.module.common.redis.RedisUtil;
 import top.jpower.jpower.module.common.support.ChainMap;
-import top.jpower.jpower.module.common.utils.Fc;
-import top.jpower.jpower.module.common.utils.SpringUtil;
-import top.jpower.jpower.module.common.utils.StringUtil;
-import top.jpower.jpower.module.common.utils.constants.AppConstant;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static top.jpower.jpower.module.common.utils.constants.JpowerConstants.CODE_TEST;
+import static top.jpower.core.utils.constants.JpowerConstants.CODE_TEST;
 
 /**
  * 短信发送模板
@@ -150,8 +150,8 @@ public interface SmsTemplate {
         if (Fc.isBlank(code)){
             return Boolean.FALSE;
         }
-        if (Fc.notEqualsValue(jpowerProperties.getEnv(), AppConstant.DEV_CODE)){
-            if (Fc.equalsValue(jpowerProperties.getEnv(), AppConstant.TEST_CODE)){
+        if (Fc.notEqualsValue(jpowerProperties.getEnv(), JpowerConstants.DEV_CODE)){
+            if (Fc.equalsValue(jpowerProperties.getEnv(), JpowerConstants.TEST_CODE)){
                 // 测试环境固定0000
                 if (!StringUtil.equalsIgnoreCase(CODE_TEST, code) && !StringUtil.equalsIgnoreCase(redisCode, code)) {
                     return Boolean.FALSE;

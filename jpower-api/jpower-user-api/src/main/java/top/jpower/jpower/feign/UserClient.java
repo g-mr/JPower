@@ -2,11 +2,11 @@ package top.jpower.jpower.feign;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
+import top.jpower.common.constants.AppConstant;
 import top.jpower.jpower.dbs.entity.TbCorePost;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
 import top.jpower.jpower.dto.ValidatePasswordDto;
 import top.jpower.jpower.module.base.vo.ResponseData;
-import top.jpower.jpower.module.common.utils.constants.AppConstant;
 import top.jpower.jpower.vo.UserVo;
 
 import java.util.List;

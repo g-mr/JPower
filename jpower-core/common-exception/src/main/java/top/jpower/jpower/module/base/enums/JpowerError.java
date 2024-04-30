@@ -1,6 +1,6 @@
 package top.jpower.jpower.module.base.enums;
 
-import top.jpower.jpower.module.common.utils.constants.ConstantsReturn;
+import top.jpower.core.utils.constants.ConstantsReturn;
 
 /**
  * 异常信息

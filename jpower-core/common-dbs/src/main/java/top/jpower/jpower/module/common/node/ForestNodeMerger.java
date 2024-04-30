@@ -5,11 +5,10 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.hutool.core.lang.tree.TreeUtil;
 import cn.hutool.core.util.TypeUtil;
-import top.jpower.jpower.module.common.utils.BeanUtil;
-import top.jpower.jpower.module.common.utils.Fc;
-import top.jpower.jpower.module.common.utils.MapUtil;
-import top.jpower.jpower.module.common.utils.StringUtil;
-import top.jpower.jpower.module.common.utils.constants.StringPool;
+import top.jpower.core.utils.utils.BeanUtil;
+import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.utils.utils.MapUtil;
+import top.jpower.core.utils.utils.StringUtil;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
@@ -18,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static top.jpower.jpower.module.common.utils.constants.StringPool.*;
+import static top.jpower.core.utils.constants.StringPool.*;
 
 /**
  * @author mr.g
@@ -33,7 +32,7 @@ public class ForestNodeMerger {
 
 
     static {
-        CONFIG.setWeightKey(StringPool.SORT);
+        CONFIG.setWeightKey(SORT);
     }
 
     @SuppressWarnings("unchecked")

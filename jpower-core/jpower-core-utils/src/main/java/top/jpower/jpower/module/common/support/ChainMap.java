@@ -2,7 +2,7 @@ package top.jpower.jpower.module.common.support;
 
 import cn.hutool.core.map.MapBuilder;
 import cn.hutool.core.map.MapUtil;
-import top.jpower.jpower.module.common.utils.Fc;
+import top.jpower.core.utils.utils.Fc;
 
 import java.util.Map;
 

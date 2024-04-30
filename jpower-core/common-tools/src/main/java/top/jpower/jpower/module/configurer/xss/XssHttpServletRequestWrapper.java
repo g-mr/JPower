@@ -2,12 +2,12 @@ package top.jpower.jpower.module.configurer.xss;
 
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
-import top.jpower.jpower.module.common.utils.Fc;
+import top.jpower.core.utils.constants.StringPool;
+import top.jpower.core.utils.constants.TokenConstant;
+import top.jpower.core.utils.enums.Header;
+import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.utils.utils.StringUtil;
 import top.jpower.jpower.module.common.utils.SqlInjectionUtil;
-import top.jpower.jpower.module.common.utils.StringUtil;
-import top.jpower.jpower.module.common.utils.constants.Header;
-import top.jpower.jpower.module.common.utils.constants.StringPool;
-import top.jpower.jpower.module.common.utils.constants.TokenConstant;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;

@@ -13,9 +13,9 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
+import top.jpower.core.utils.constants.TokenConstant;
+import top.jpower.core.utils.utils.WebUtil;
 import top.jpower.jpower.module.common.auth.SecureConstant;
-import top.jpower.jpower.module.common.utils.WebUtil;
-import top.jpower.jpower.module.common.utils.constants.TokenConstant;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;

@@ -12,17 +12,18 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+import top.jpower.core.utils.constants.JpowerConstants;
+import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.utils.utils.FileUtil;
 import top.jpower.jpower.module.common.deploy.service.DeployService;
-import top.jpower.jpower.module.common.utils.Fc;
-import top.jpower.jpower.module.common.utils.FileUtil;
-import top.jpower.jpower.module.common.utils.constants.AppConstant;
-import top.jpower.jpower.module.common.utils.constants.JpowerConstants;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static top.jpower.core.utils.constants.StringPool.LINUX;
 
 /**
  * @ClassName JpowerApplication
@@ -66,13 +67,13 @@ public class JpowerApplication {
 
         // 判断环境:dev、test、prod
         List<String> profiles = Arrays.asList(activeProfiles);
-        List<String> presetProfiles = new ArrayList(Arrays.asList("dev", "test", "prod"));
+        List<String> presetProfiles = new ArrayList(Arrays.asList(JpowerConstants.DEV_CODE, JpowerConstants.TEST_CODE, JpowerConstants.PROD_CODE));
         presetProfiles.retainAll(profiles);
         List<String> activeProfileList = new ArrayList<>(presetProfiles);
         String profile;
         if (activeProfileList.isEmpty()) {
             // 默认dev开发
-            profile = AppConstant.DEV_CODE;
+            profile = JpowerConstants.DEV_CODE;
             activeProfileList.add(profile);
             builder.profiles(profile);
 
@@ -198,6 +199,6 @@ public class JpowerApplication {
      **/
     public static boolean isLocalDev() {
         String osName = System.getProperty("os.name");
-        return StringUtils.hasText(osName) && !(AppConstant.OS_NAME_LINUX.equals(osName.toUpperCase()));
+        return StringUtils.hasText(osName) && !(LINUX.equals(osName.toUpperCase()));
     }
 }

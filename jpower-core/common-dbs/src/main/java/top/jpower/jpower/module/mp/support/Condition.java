@@ -2,8 +2,8 @@ package top.jpower.jpower.module.mp.support;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
+import top.jpower.core.utils.utils.BeanUtil;
 import top.jpower.jpower.module.common.support.ChainMap;
-import top.jpower.jpower.module.common.utils.BeanUtil;
 
 import java.util.Map;
 

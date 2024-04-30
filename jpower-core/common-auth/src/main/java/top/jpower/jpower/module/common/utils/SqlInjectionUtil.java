@@ -3,7 +3,8 @@ package top.jpower.jpower.module.common.utils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.jpower.jpower.module.common.utils.constants.StringPool;
+import top.jpower.core.utils.constants.StringPool;
+import top.jpower.core.utils.utils.WebUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,7 +52,7 @@ public class SqlInjectionUtil {
         }
 
         if( !str0.equals(str) ){
-            logger.warn("检测到非法字符并已过滤。\n请求地址：{}\n原字符：{} \n新字符：{}",WebUtil.getRequest().getServletPath(),str0,str);
+            logger.warn("检测到非法字符并已过滤。\n请求地址：{}\n原字符：{} \n新字符：{}", WebUtil.getRequest().getServletPath(),str0,str);
         }
         return str;
     }

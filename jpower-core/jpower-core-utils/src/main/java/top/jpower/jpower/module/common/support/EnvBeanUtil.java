@@ -3,7 +3,7 @@ package top.jpower.jpower.module.common.support;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-import top.jpower.jpower.module.common.utils.Fc;
+import top.jpower.core.utils.utils.Fc;
 
 /**
  * 环境变量获取

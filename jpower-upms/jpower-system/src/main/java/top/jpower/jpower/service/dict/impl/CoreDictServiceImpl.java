@@ -4,15 +4,15 @@ import cn.hutool.core.util.NumberUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import top.jpower.core.utils.constants.ConstantsEnum;
+import top.jpower.core.utils.utils.Fc;
 import top.jpower.jpower.dbs.dao.dict.TbCoreDictDao;
 import top.jpower.jpower.dbs.dao.dict.mapper.TbCoreDictMapper;
 import top.jpower.jpower.dbs.entity.dict.TbCoreDict;
 import top.jpower.jpower.module.base.enums.JpowerError;
 import top.jpower.jpower.module.base.exception.JpowerAssert;
 import top.jpower.jpower.module.common.service.impl.BaseServiceImpl;
-import top.jpower.jpower.module.common.utils.Fc;
 import top.jpower.jpower.module.common.utils.ShieldUtil;
-import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.service.dict.CoreDictService;
 import top.jpower.jpower.vo.DictVo;
@@ -20,8 +20,8 @@ import top.jpower.jpower.vo.DictVo;
 import java.util.List;
 import java.util.Map;
 
-import static top.jpower.jpower.module.common.utils.constants.ConstantsEnum.YYZL.CHINA;
-import static top.jpower.jpower.module.common.utils.constants.JpowerConstants.TOP_CODE;
+import static top.jpower.core.utils.constants.ConstantsEnum.YYZL.CHINA;
+import static top.jpower.core.utils.constants.JpowerConstants.TOP_CODE;
 import static top.jpower.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
 
 /**

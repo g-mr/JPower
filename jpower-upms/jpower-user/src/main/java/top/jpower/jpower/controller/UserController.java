@@ -11,6 +11,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
+import top.jpower.common.constants.ParamsConstants;
+import top.jpower.core.utils.constants.*;
+import top.jpower.core.utils.utils.*;
 import top.jpower.jpower.cache.SystemCache;
 import top.jpower.jpower.cache.param.ParamConfig;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
@@ -31,8 +34,8 @@ import top.jpower.jpower.module.common.controller.BaseController;
 import top.jpower.jpower.module.common.redis.RedisUtil;
 import top.jpower.jpower.module.common.support.BeanExcelUtil;
 import top.jpower.jpower.module.common.support.EnvBeanUtil;
-import top.jpower.jpower.module.common.utils.*;
-import top.jpower.jpower.module.common.utils.constants.*;
+import top.jpower.jpower.module.common.utils.CacheUtil;
+import top.jpower.jpower.module.common.utils.ShieldUtil;
 import top.jpower.jpower.module.configurer.argument.RequestSingleBody;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.service.CoreUserService;
@@ -43,10 +46,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import static top.jpower.core.utils.constants.JpowerConstants.VALIDATE_SMS_CODE;
 import static top.jpower.jpower.module.base.annotation.OperateLog.BusinessType.DELETE;
 import static top.jpower.jpower.module.base.annotation.OperateLog.BusinessType.UPDATE;
 import static top.jpower.jpower.module.common.cache.CacheNames.TOKEN_USER_KEY;
-import static top.jpower.jpower.module.common.utils.constants.JpowerConstants.VALIDATE_SMS_CODE;
 import static top.jpower.jpower.module.tenant.TenantConstant.*;
 
 @Api(tags = "用户管理")
@@ -75,11 +78,11 @@ public class UserController extends BaseController {
     public ResponseData<List<Map<String,String>>> online(Long userId) {
         JpowerAssert.notNull(userId,JpowerError.Arg,"用户ID不可为空");
 
-        Set<String> keys = redisUtil.pattern(TOKEN_USER_KEY+userId+StringPool.COLON);
+        Set<String> keys = redisUtil.pattern(TOKEN_USER_KEY+userId+ StringPool.COLON);
         List<Map<String,Object>> list = new ArrayList<>();
         keys.forEach(key -> {
             Map<String,Object> map = (Map<String, Object>) redisUtil.get(key);
-            map.put("token",StringUtil.split(key,StringPool.COLON).get(4));
+            map.put("token", StringUtil.split(key,StringPool.COLON).get(4));
             map.put("userId",userId);
             list.add(map);
         });

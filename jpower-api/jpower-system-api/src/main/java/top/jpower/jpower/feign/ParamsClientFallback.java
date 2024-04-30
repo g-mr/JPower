@@ -2,9 +2,9 @@ package top.jpower.jpower.feign;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import top.jpower.core.utils.utils.ReturnJsonUtil;
 import top.jpower.jpower.dbs.entity.params.TbCoreParam;
 import top.jpower.jpower.module.base.vo.ResponseData;
-import top.jpower.jpower.module.common.utils.ReturnJsonUtil;
 
 /**
  * @ClassName ParamsClientFallback

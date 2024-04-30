@@ -8,6 +8,10 @@ import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
+import top.jpower.core.utils.utils.BeanUtil;
+import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.utils.utils.MapUtil;
+import top.jpower.core.utils.utils.ReturnJsonUtil;
 import top.jpower.jpower.dbs.entity.client.TbCoreClient;
 import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
 import top.jpower.jpower.module.annotation.Function;
@@ -18,7 +22,8 @@ import top.jpower.jpower.module.base.vo.ResponseData;
 import top.jpower.jpower.module.common.cache.CacheNames;
 import top.jpower.jpower.module.common.controller.BaseController;
 import top.jpower.jpower.module.common.node.ForestNodeMerger;
-import top.jpower.jpower.module.common.utils.*;
+import top.jpower.jpower.module.common.utils.CacheUtil;
+import top.jpower.jpower.module.common.utils.ShieldUtil;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.service.client.CoreClientService;
 import top.jpower.jpower.service.role.CoreFunctionService;
@@ -30,7 +35,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static top.jpower.jpower.module.common.utils.constants.JpowerConstants.TOP_CODE;
+import static top.jpower.core.utils.constants.JpowerConstants.TOP_CODE;
 
 /**
  * @author mr.gmac

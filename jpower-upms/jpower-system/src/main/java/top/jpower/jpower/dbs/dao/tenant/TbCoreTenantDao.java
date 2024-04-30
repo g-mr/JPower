@@ -2,9 +2,9 @@ package top.jpower.jpower.dbs.dao.tenant;
 
 import com.alibaba.fastjson2.JSON;
 import org.springframework.stereotype.Repository;
+import top.jpower.core.utils.utils.Fc;
 import top.jpower.jpower.dbs.dao.tenant.mapper.TbCoreTenantMapper;
 import top.jpower.jpower.dbs.entity.tenant.TbCoreTenant;
-import top.jpower.jpower.module.common.utils.Fc;
 import top.jpower.jpower.module.dbs.dao.JpowerServiceImpl;
 import top.jpower.jpower.module.mp.support.Condition;
 

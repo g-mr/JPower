@@ -4,12 +4,12 @@ import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.io.IoUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import top.jpower.core.utils.constants.ConstantsUtils;
+import top.jpower.core.utils.constants.StringPool;
+import top.jpower.core.utils.utils.*;
 import top.jpower.jpower.dbs.entity.TbResourceFile;
 import top.jpower.jpower.module.base.enums.JpowerError;
 import top.jpower.jpower.module.base.exception.JpowerAssert;
-import top.jpower.jpower.module.common.utils.*;
-import top.jpower.jpower.module.common.utils.constants.ConstantsUtils;
-import top.jpower.jpower.module.common.utils.constants.StringPool;
 import top.jpower.jpower.operate.FileOperate;
 import top.jpower.jpower.operate.properties.FileProperties;
 import top.jpower.jpower.service.ResourceFileService;
@@ -17,7 +17,7 @@ import top.jpower.jpower.utils.FileDfsUtil;
 
 import java.io.IOException;
 
-import static top.jpower.jpower.module.common.utils.constants.ConstantsEnum.FILE_STORAGE_TYPE.FASTDFS;
+import static top.jpower.core.utils.constants.ConstantsEnum.FILE_STORAGE_TYPE.FASTDFS;
 import static top.jpower.jpower.operate.storage.FastDfsFileOperate.STORAGE_TYPE;
 
 /**

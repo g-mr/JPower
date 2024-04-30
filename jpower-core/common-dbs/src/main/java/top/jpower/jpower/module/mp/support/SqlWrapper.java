@@ -2,9 +2,9 @@ package top.jpower.jpower.module.mp.support;
 
 import cn.hutool.core.util.ArrayUtil;
 import com.baomidou.mybatisplus.core.conditions.AbstractWrapper;
-import top.jpower.jpower.module.common.utils.Fc;
+import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.utils.utils.StringUtil;
 import top.jpower.jpower.module.common.utils.SqlInjectionUtil;
-import top.jpower.jpower.module.common.utils.StringUtil;
 
 import java.util.Map;
 

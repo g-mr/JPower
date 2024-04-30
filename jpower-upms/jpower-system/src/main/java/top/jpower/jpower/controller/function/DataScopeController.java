@@ -4,6 +4,11 @@ import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
+import top.jpower.core.utils.constants.ConstantsEnum;
+import top.jpower.core.utils.constants.StringPool;
+import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.utils.utils.MapUtil;
+import top.jpower.core.utils.utils.ReturnJsonUtil;
 import top.jpower.jpower.dbs.entity.function.TbCoreDataScope;
 import top.jpower.jpower.dbs.entity.role.TbCoreRoleData;
 import top.jpower.jpower.module.annotation.Function;
@@ -15,11 +20,6 @@ import top.jpower.jpower.module.base.vo.ResponseData;
 import top.jpower.jpower.module.common.cache.CacheNames;
 import top.jpower.jpower.module.common.page.PaginationContext;
 import top.jpower.jpower.module.common.utils.CacheUtil;
-import top.jpower.jpower.module.common.utils.Fc;
-import top.jpower.jpower.module.common.utils.MapUtil;
-import top.jpower.jpower.module.common.utils.ReturnJsonUtil;
-import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
-import top.jpower.jpower.module.common.utils.constants.StringPool;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.service.role.CoreDataScopeService;
 import top.jpower.jpower.service.role.CoreFunctionService;
@@ -30,7 +30,7 @@ import top.jpower.jpower.vo.DataFunctionVo;
 import java.util.List;
 import java.util.Map;
 
-import static top.jpower.jpower.module.common.utils.constants.JpowerConstants.TOP_CODE;
+import static top.jpower.core.utils.constants.JpowerConstants.TOP_CODE;
 
 /**
  * @author ding

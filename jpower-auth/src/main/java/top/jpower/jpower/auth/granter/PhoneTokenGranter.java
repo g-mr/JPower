@@ -2,6 +2,7 @@ package top.jpower.jpower.auth.granter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import top.jpower.core.utils.utils.Fc;
 import top.jpower.jpower.auth.AuthUserInfo;
 import top.jpower.jpower.auth.TokenGranter;
 import top.jpower.jpower.cache.UserCache;
@@ -13,12 +14,11 @@ import top.jpower.jpower.module.base.enums.JpowerError;
 import top.jpower.jpower.module.base.exception.BusinessException;
 import top.jpower.jpower.module.base.exception.JpowerAssert;
 import top.jpower.jpower.module.common.auth.UserInfo;
-import top.jpower.jpower.module.common.utils.Fc;
 import top.jpower.jpower.utils.TokenUtil;
 import top.jpower.jpower.utils.UserUtil;
 
+import static top.jpower.core.utils.constants.JpowerConstants.VALIDATE_SMS_CODE;
 import static top.jpower.jpower.auth.granter.PhoneTokenGranter.GRANT_TYPE;
-import static top.jpower.jpower.module.common.utils.constants.JpowerConstants.VALIDATE_SMS_CODE;
 
 
 /**

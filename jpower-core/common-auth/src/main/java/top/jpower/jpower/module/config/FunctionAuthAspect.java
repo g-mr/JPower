@@ -10,13 +10,13 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.AnnotationUtils;
+import top.jpower.core.utils.constants.JpowerConstants;
+import top.jpower.core.utils.constants.TokenConstant;
+import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.utils.utils.WebUtil;
 import top.jpower.jpower.module.annotation.Function;
 import top.jpower.jpower.module.common.support.EnvBeanUtil;
-import top.jpower.jpower.module.common.utils.Fc;
 import top.jpower.jpower.module.common.utils.ShieldUtil;
-import top.jpower.jpower.module.common.utils.WebUtil;
-import top.jpower.jpower.module.common.utils.constants.AppConstant;
-import top.jpower.jpower.module.common.utils.constants.TokenConstant;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
@@ -50,7 +50,7 @@ public class FunctionAuthAspect {
     public void doBefore(JoinPoint joinPoint){
 
         // 开发环境不检测
-        if (Fc.equalsValue(EnvBeanUtil.getProfile(), AppConstant.DEV_CODE)){
+        if (Fc.equalsValue(EnvBeanUtil.getProfile(), JpowerConstants.DEV_CODE)){
             return;
         }
 

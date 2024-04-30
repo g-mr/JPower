@@ -38,7 +38,7 @@
 
         <dependency>
             <groupId>top.jpower</groupId>
-            <artifactId>common-nacos</artifactId>
+            <artifactId>jpower-common</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
 

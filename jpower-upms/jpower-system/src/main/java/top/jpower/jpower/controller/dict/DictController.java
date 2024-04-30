@@ -8,6 +8,9 @@ import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
+import top.jpower.core.utils.constants.ConstantsEnum;
+import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.utils.utils.ReturnJsonUtil;
 import top.jpower.jpower.dbs.entity.dict.TbCoreDict;
 import top.jpower.jpower.dbs.entity.dict.TbCoreDictType;
 import top.jpower.jpower.module.annotation.Function;
@@ -20,9 +23,6 @@ import top.jpower.jpower.module.common.cache.CacheNames;
 import top.jpower.jpower.module.common.controller.BaseController;
 import top.jpower.jpower.module.common.page.PaginationContext;
 import top.jpower.jpower.module.common.utils.CacheUtil;
-import top.jpower.jpower.module.common.utils.Fc;
-import top.jpower.jpower.module.common.utils.ReturnJsonUtil;
-import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.service.dict.CoreDictService;
 import top.jpower.jpower.service.dict.CoreDictTypeService;
@@ -30,8 +30,8 @@ import top.jpower.jpower.vo.DictVo;
 
 import java.util.List;
 
-import static top.jpower.jpower.module.common.utils.constants.ConstantsUtils.I18N_KEY;
-import static top.jpower.jpower.module.common.utils.constants.JpowerConstants.TOP_CODE;
+import static top.jpower.core.utils.constants.ConstantsUtils.I18N_KEY;
+import static top.jpower.core.utils.constants.JpowerConstants.TOP_CODE;
 
 /**
  * @ClassName DictController

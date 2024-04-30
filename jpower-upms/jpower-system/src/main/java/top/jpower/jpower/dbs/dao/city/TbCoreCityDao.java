@@ -1,10 +1,10 @@
 package top.jpower.jpower.dbs.dao.city;
 
 import org.springframework.stereotype.Repository;
+import top.jpower.core.utils.utils.BeanUtil;
 import top.jpower.jpower.cache.SystemCache;
 import top.jpower.jpower.dbs.dao.city.mapper.TbCoreCityMapper;
 import top.jpower.jpower.dbs.entity.city.TbCoreCity;
-import top.jpower.jpower.module.common.utils.BeanUtil;
 import top.jpower.jpower.module.dbs.dao.BaseDaoWrapper;
 import top.jpower.jpower.module.dbs.dao.JpowerServiceImpl;
 import top.jpower.jpower.vo.CityVo;

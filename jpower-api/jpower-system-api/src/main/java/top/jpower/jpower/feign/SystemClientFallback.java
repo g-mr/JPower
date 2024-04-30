@@ -1,6 +1,7 @@
 package top.jpower.jpower.feign;
 
 import org.springframework.stereotype.Component;
+import top.jpower.core.utils.utils.ReturnJsonUtil;
 import top.jpower.jpower.dbs.entity.city.TbCoreCity;
 import top.jpower.jpower.dbs.entity.client.TbCoreClient;
 import top.jpower.jpower.dbs.entity.function.TbCoreDataScope;
@@ -8,7 +9,6 @@ import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
 import top.jpower.jpower.dbs.entity.org.TbCoreOrg;
 import top.jpower.jpower.dbs.entity.tenant.TbCoreTenant;
 import top.jpower.jpower.module.base.vo.ResponseData;
-import top.jpower.jpower.module.common.utils.ReturnJsonUtil;
 
 import java.util.List;
 

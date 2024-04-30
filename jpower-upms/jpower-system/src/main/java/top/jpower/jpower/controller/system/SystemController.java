@@ -6,11 +6,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import top.jpower.core.utils.constants.TokenConstant;
+import top.jpower.core.utils.utils.ReturnJsonUtil;
 import top.jpower.jpower.module.base.vo.ResponseData;
 import top.jpower.jpower.module.common.controller.BaseController;
 import top.jpower.jpower.module.common.support.ChainMap;
-import top.jpower.jpower.module.common.utils.ReturnJsonUtil;
-import top.jpower.jpower.module.common.utils.constants.TokenConstant;
 import top.jpower.jpower.module.tenant.JpowerTenantProperties;
 
 import java.util.Map;

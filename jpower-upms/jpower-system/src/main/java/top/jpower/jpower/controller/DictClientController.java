@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
+import top.jpower.core.utils.utils.ReturnJsonUtil;
 import top.jpower.jpower.feign.DictClient;
 import top.jpower.jpower.module.base.vo.ResponseData;
-import top.jpower.jpower.module.common.utils.ReturnJsonUtil;
 import top.jpower.jpower.service.dict.CoreDictService;
 
 import java.util.List;

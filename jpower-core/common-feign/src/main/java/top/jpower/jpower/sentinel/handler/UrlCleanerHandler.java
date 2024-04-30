@@ -1,8 +1,8 @@
 package top.jpower.jpower.sentinel.handler;
 
 import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.UrlCleaner;
-import top.jpower.jpower.module.common.utils.Fc;
-import top.jpower.jpower.module.common.utils.constants.StringPool;
+import top.jpower.core.utils.constants.StringPool;
+import top.jpower.core.utils.utils.Fc;
 
 /**
  * @ClassName UrlCleanerHandler

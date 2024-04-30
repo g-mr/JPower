@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import org.apache.commons.lang3.StringUtils;
-import top.jpower.jpower.module.common.utils.DateUtil;
+import top.jpower.core.utils.utils.DateUtil;
 
 import java.io.IOException;
 import java.util.Date;

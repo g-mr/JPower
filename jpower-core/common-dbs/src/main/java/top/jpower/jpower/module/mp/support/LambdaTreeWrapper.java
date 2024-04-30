@@ -11,8 +11,8 @@ import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.ArrayUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
+import top.jpower.core.utils.utils.Fc;
 import top.jpower.jpower.module.common.node.ForestNodeMerger;
-import top.jpower.jpower.module.common.utils.Fc;
 
 import java.util.ArrayList;
 import java.util.List;

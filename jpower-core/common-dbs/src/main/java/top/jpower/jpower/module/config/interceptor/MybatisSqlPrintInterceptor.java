@@ -13,9 +13,9 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
+import top.jpower.core.utils.constants.CharPool;
+import top.jpower.core.utils.utils.*;
 import top.jpower.jpower.module.annotation.NoSqlLog;
-import top.jpower.jpower.module.common.utils.*;
-import top.jpower.jpower.module.common.utils.constants.CharPool;
 import top.jpower.jpower.module.config.interceptor.chain.ChainFilter;
 import top.jpower.jpower.module.config.interceptor.chain.MybatisInterceptor;
 import top.jpower.jpower.module.config.properties.MybatisProperties;
@@ -25,8 +25,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 
-import static top.jpower.jpower.module.common.utils.constants.StringPool.NEWLINE;
-import static top.jpower.jpower.module.common.utils.constants.StringPool.TAB;
+import static top.jpower.core.utils.constants.StringPool.NEWLINE;
+import static top.jpower.core.utils.constants.StringPool.TAB;
 
 /**
  * @author mr.g

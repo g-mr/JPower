@@ -6,13 +6,13 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import top.jpower.core.utils.constants.ConstantsUtils;
+import top.jpower.core.utils.constants.StringPool;
+import top.jpower.core.utils.utils.*;
 import top.jpower.jpower.dbs.entity.TbResourceFile;
 import top.jpower.jpower.module.base.enums.JpowerError;
 import top.jpower.jpower.module.base.exception.BusinessException;
 import top.jpower.jpower.module.base.exception.JpowerAssert;
-import top.jpower.jpower.module.common.utils.*;
-import top.jpower.jpower.module.common.utils.constants.ConstantsUtils;
-import top.jpower.jpower.module.common.utils.constants.StringPool;
 import top.jpower.jpower.operate.FileOperate;
 import top.jpower.jpower.operate.properties.FileProperties;
 import top.jpower.jpower.service.ResourceFileService;
@@ -20,7 +20,7 @@ import top.jpower.jpower.service.ResourceFileService;
 import java.io.File;
 import java.io.IOException;
 
-import static top.jpower.jpower.module.common.utils.constants.ConstantsEnum.FILE_STORAGE_TYPE.SERVER;
+import static top.jpower.core.utils.constants.ConstantsEnum.FILE_STORAGE_TYPE.SERVER;
 import static top.jpower.jpower.operate.storage.ServerFileOperate.STORAGE_TYPE;
 
 /**

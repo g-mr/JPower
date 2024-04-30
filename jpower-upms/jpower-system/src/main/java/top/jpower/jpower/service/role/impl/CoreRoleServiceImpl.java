@@ -2,6 +2,7 @@ package top.jpower.jpower.service.role.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import top.jpower.core.utils.utils.Fc;
 import top.jpower.jpower.dbs.dao.role.TbCoreFunctionDao;
 import top.jpower.jpower.dbs.dao.role.TbCoreRoleDao;
 import top.jpower.jpower.dbs.dao.role.TbCoreRoleFunctionDao;
@@ -10,7 +11,6 @@ import top.jpower.jpower.dbs.dao.role.mapper.TbCoreRoleMapper;
 import top.jpower.jpower.dbs.entity.role.TbCoreRole;
 import top.jpower.jpower.dbs.entity.role.TbCoreRoleMenu;
 import top.jpower.jpower.module.common.service.impl.BaseServiceImpl;
-import top.jpower.jpower.module.common.utils.Fc;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.service.role.CoreRoleService;
 

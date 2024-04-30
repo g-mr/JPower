@@ -13,8 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import top.jpower.core.utils.utils.Fc;
 import top.jpower.jpower.gateway.utils.NacosUtils;
-import top.jpower.jpower.module.common.utils.Fc;
 
 import javax.annotation.PostConstruct;
 import java.util.List;

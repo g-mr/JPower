@@ -1,8 +1,13 @@
 package top.jpower.jpower.module.common.nacos;
 
-import top.jpower.jpower.module.common.utils.Fc;
-import top.jpower.jpower.module.common.utils.constants.AppConstant;
-import top.jpower.jpower.module.common.utils.constants.StringPool;
+import cn.hutool.core.exceptions.UtilException;
+import top.jpower.core.utils.constants.JpowerConstants;
+import top.jpower.core.utils.constants.StringPool;
+import top.jpower.core.utils.utils.ClassUtil;
+import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.utils.utils.ReflectUtil;
+
+import java.util.Set;
 
 /**
  * NacosConstants
@@ -21,16 +26,43 @@ public interface NacosConstants {
     String CONFIG_GROUP = "DEFAULT_GROUP";
 
     /**
+     * 默认公共配置文件名称
+     **/
+    String JPOWER = "jpower";
+
+    /**
+     * 获取实例
+     *
+     * @author mr.g
+     * @return 实例子
+     **/
+    static NacosConstants getInstance(){
+        Set<Class<?>> set = ClassUtil.scanPackageBySuper(StringPool.EMPTY, NacosConstants.class);
+        if (Fc.isEmpty(set)){
+            return new NacosConstants() {};
+        }
+
+        return set.stream().map(clz->{
+            try {
+                return (NacosConstants)ReflectUtil.newInstance(clz);
+            } catch (UtilException e){
+                return null;
+            }
+        }).filter(Fc::notNull).findFirst().get();
+    }
+
+    /**
      * 动态获取公共nacos地址
      *
      * @param profile 环境变量
      * @return addr
      */
-    static String nacosProfileDataId(String profile) {
+    default String nacosProfileDataId(String profile) {
         if (Fc.isBlank(profile)){
-            profile = AppConstant.DEV_CODE;
+            profile = JpowerConstants.DEV_CODE;
         }
-        return AppConstant.getInstance().getJpower().concat(StringPool.DASH).concat(profile).concat(StringPool.DOT).concat(FILE_EXTENSION);
+
+        return JPOWER.concat(StringPool.DASH).concat(profile).concat(StringPool.DOT).concat(FILE_EXTENSION);
     }
 
     /**
@@ -38,8 +70,8 @@ public interface NacosConstants {
      *
      * @return addr
      */
-    static String nacosDataId() {
-        return AppConstant.getInstance().getJpower().concat(StringPool.DOT).concat(FILE_EXTENSION);
+    default String nacosDataId() {
+        return JPOWER.concat(StringPool.DOT).concat(FILE_EXTENSION);
     }
 
 }

@@ -3,9 +3,13 @@ package top.jpower.jpower.module.common.utils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.RestTemplate;
+import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.utils.utils.GuavaCache;
+import top.jpower.core.utils.utils.MapUtil;
+import top.jpower.core.utils.utils.SpringUtil;
 import top.jpower.jpower.module.base.vo.ResponseData;
+import top.jpower.jpower.module.common.constants.ClientNameConstant;
 import top.jpower.jpower.module.common.deploy.props.JpowerProperties;
-import top.jpower.jpower.module.common.utils.constants.AppConstant;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -30,7 +34,7 @@ public class SystemClient {
                     map = null;
                 }
             }else {
-                ResponseData<Map<String,Object>> responseData = SpringUtil.getBean(RestTemplate.class).getForObject("http://"+ AppConstant.getInstance().getJpowerSystem()+"/core/client/getClientByClientCode?clientCode="+code, ResponseData.class);
+                ResponseData<Map<String,Object>> responseData = SpringUtil.getBean(RestTemplate.class).getForObject("http://"+ ClientNameConstant.getInstance().getJpowerSystem()+"/core/client/getClientByClientCode?clientCode="+code, ResponseData.class);
                 map = responseData.getData();
             }
             CLIENT_CACHE.put(code,map);

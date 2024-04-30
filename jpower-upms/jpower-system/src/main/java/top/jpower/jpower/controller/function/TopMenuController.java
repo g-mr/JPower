@@ -6,6 +6,10 @@ import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
+import top.jpower.core.utils.constants.ConstantsEnum;
+import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.utils.utils.MapUtil;
+import top.jpower.core.utils.utils.ReturnJsonUtil;
 import top.jpower.jpower.dbs.entity.client.TbCoreClient;
 import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
 import top.jpower.jpower.dbs.entity.function.TbCoreTopMenu;
@@ -18,10 +22,6 @@ import top.jpower.jpower.module.base.vo.ResponseData;
 import top.jpower.jpower.module.common.controller.BaseController;
 import top.jpower.jpower.module.common.page.PaginationContext;
 import top.jpower.jpower.module.common.support.ChainMap;
-import top.jpower.jpower.module.common.utils.Fc;
-import top.jpower.jpower.module.common.utils.MapUtil;
-import top.jpower.jpower.module.common.utils.ReturnJsonUtil;
-import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.service.client.CoreClientService;
 import top.jpower.jpower.service.role.CoreFunctionService;
@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static top.jpower.jpower.module.common.utils.constants.JpowerConstants.TOP_CODE;
+import static top.jpower.core.utils.constants.JpowerConstants.TOP_CODE;
 
 /**
  * 顶级菜单接口

@@ -1,7 +1,7 @@
 package top.jpower.jpower.module.dbs.dao;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import top.jpower.jpower.module.common.utils.BeanUtil;
+import top.jpower.core.utils.utils.BeanUtil;
 
 import java.util.List;
 import java.util.Objects;

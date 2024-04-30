@@ -11,7 +11,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import top.jpower.jpower.module.common.utils.Fc;
+import top.jpower.core.utils.utils.Fc;
 
 import java.util.HashSet;
 import java.util.List;

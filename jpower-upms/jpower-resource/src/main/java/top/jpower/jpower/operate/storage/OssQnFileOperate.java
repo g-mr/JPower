@@ -18,12 +18,12 @@ import com.qiniu.util.Auth;
 import lombok.Cleanup;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import top.jpower.core.utils.constants.ConstantsUtils;
+import top.jpower.core.utils.constants.StringPool;
+import top.jpower.core.utils.utils.*;
 import top.jpower.jpower.dbs.dao.TbResourceFileDao;
 import top.jpower.jpower.dbs.entity.TbResourceFile;
 import top.jpower.jpower.dbs.entity.TbResourceOss;
-import top.jpower.jpower.module.common.utils.*;
-import top.jpower.jpower.module.common.utils.constants.ConstantsUtils;
-import top.jpower.jpower.module.common.utils.constants.StringPool;
 import top.jpower.jpower.operate.FileOperate;
 
 import java.io.File;

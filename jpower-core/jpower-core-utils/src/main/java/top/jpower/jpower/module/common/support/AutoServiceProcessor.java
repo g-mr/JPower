@@ -5,10 +5,10 @@ import cn.hutool.core.io.LineHandler;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
+import top.jpower.core.utils.utils.BufferUtil;
+import top.jpower.core.utils.utils.CollectionUtil;
+import top.jpower.core.utils.utils.ExceptionUtil;
 import top.jpower.jpower.module.base.annotation.LoaderService;
-import top.jpower.jpower.module.common.utils.BufferUtil;
-import top.jpower.jpower.module.common.utils.CollectionUtil;
-import top.jpower.jpower.module.common.utils.ExceptionUtil;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;

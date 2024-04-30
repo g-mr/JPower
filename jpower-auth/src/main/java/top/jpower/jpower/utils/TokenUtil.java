@@ -1,6 +1,10 @@
 package top.jpower.jpower.utils;
 
 import cn.hutool.extra.servlet.ServletUtil;
+import top.jpower.core.utils.constants.ConstantsEnum;
+import top.jpower.core.utils.constants.StringPool;
+import top.jpower.core.utils.constants.TokenConstant;
+import top.jpower.core.utils.utils.*;
 import top.jpower.jpower.cache.SystemCache;
 import top.jpower.jpower.dbs.entity.client.TbCoreClient;
 import top.jpower.jpower.dbs.entity.function.TbCoreDataScope;
@@ -11,10 +15,8 @@ import top.jpower.jpower.module.common.auth.UserInfo;
 import top.jpower.jpower.module.common.cache.CacheNames;
 import top.jpower.jpower.module.common.redis.RedisUtil;
 import top.jpower.jpower.module.common.support.ChainMap;
-import top.jpower.jpower.module.common.utils.*;
-import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
-import top.jpower.jpower.module.common.utils.constants.StringPool;
-import top.jpower.jpower.module.common.utils.constants.TokenConstant;
+import top.jpower.jpower.module.common.utils.JwtUtil;
+import top.jpower.jpower.module.common.utils.ShieldUtil;
 import top.jpower.jpower.module.datascope.DataScope;
 import top.jpower.jpower.module.properties.AuthProperties;
 

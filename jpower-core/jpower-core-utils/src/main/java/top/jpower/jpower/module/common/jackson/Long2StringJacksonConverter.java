@@ -3,7 +3,7 @@ package top.jpower.jpower.module.common.jackson;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import top.jpower.jpower.module.common.utils.Fc;
+import top.jpower.core.utils.utils.Fc;
 
 import java.io.IOException;
 

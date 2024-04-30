@@ -9,6 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
+import top.jpower.core.utils.constants.ConstantsEnum;
+import top.jpower.core.utils.constants.StringPool;
+import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.utils.utils.StringUtil;
 import top.jpower.jpower.dbs.dao.client.TbCoreClientDao;
 import top.jpower.jpower.dbs.dao.role.TbCoreFunctionDao;
 import top.jpower.jpower.dbs.dao.role.TbCoreFunctionMenuDao;
@@ -19,12 +23,8 @@ import top.jpower.jpower.dbs.entity.function.TbCoreFunctionMenu;
 import top.jpower.jpower.dbs.entity.role.TbCoreRoleFunction;
 import top.jpower.jpower.module.common.auth.RoleConstant;
 import top.jpower.jpower.module.common.service.impl.BaseServiceImpl;
-import top.jpower.jpower.module.common.utils.Fc;
 import top.jpower.jpower.module.common.utils.NacosUtil;
 import top.jpower.jpower.module.common.utils.ShieldUtil;
-import top.jpower.jpower.module.common.utils.StringUtil;
-import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
-import top.jpower.jpower.module.common.utils.constants.StringPool;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.module.mp.support.LambdaTreeWrapper;
 import top.jpower.jpower.service.role.CoreFunctionService;
@@ -34,7 +34,7 @@ import top.jpower.jpower.vo.FunctionVo;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static top.jpower.jpower.module.common.utils.constants.JpowerConstants.TOP_CODE;
+import static top.jpower.core.utils.constants.JpowerConstants.TOP_CODE;
 import static top.jpower.jpower.module.config.BuiltEndpoint.PATH;
 
 /**

@@ -9,16 +9,16 @@ import okhttp3.internal.http.HttpHeaders;
 import okio.Buffer;
 import okio.BufferedSource;
 import org.springframework.core.Ordered;
-import top.jpower.jpower.module.common.utils.BufferUtil;
-import top.jpower.jpower.module.common.utils.ExceptionUtil;
-import top.jpower.jpower.module.common.utils.Fc;
-import top.jpower.jpower.module.common.utils.constants.CharsetKit;
+import top.jpower.core.utils.constants.CharsetKit;
+import top.jpower.core.utils.utils.BufferUtil;
+import top.jpower.core.utils.utils.ExceptionUtil;
+import top.jpower.core.utils.utils.Fc;
 
 import java.io.IOException;
 import java.net.SocketException;
 import java.nio.charset.Charset;
 
-import static top.jpower.jpower.module.common.utils.constants.StringPool.*;
+import static top.jpower.core.utils.constants.StringPool.*;
 
 /**
  * feign日志打印

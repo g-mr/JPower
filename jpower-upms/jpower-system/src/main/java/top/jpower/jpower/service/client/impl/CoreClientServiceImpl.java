@@ -2,12 +2,12 @@ package top.jpower.jpower.service.client.impl;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.utils.utils.RandomUtil;
 import top.jpower.jpower.dbs.dao.client.TbCoreClientDao;
 import top.jpower.jpower.dbs.dao.client.mapper.TbCoreClientMapper;
 import top.jpower.jpower.dbs.entity.client.TbCoreClient;
 import top.jpower.jpower.module.common.service.impl.BaseServiceImpl;
-import top.jpower.jpower.module.common.utils.Fc;
-import top.jpower.jpower.module.common.utils.RandomUtil;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.service.client.CoreClientService;
 

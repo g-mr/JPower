@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import springfox.documentation.service.AuthorizationScope;
-import top.jpower.jpower.module.common.utils.constants.JpowerConstants;
-import top.jpower.jpower.module.common.utils.constants.TokenConstant;
+import top.jpower.core.utils.constants.JpowerConstants;
+import top.jpower.core.utils.constants.TokenConstant;
 
 import java.util.ArrayList;
 import java.util.Arrays;

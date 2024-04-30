@@ -9,6 +9,11 @@ import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
+import top.jpower.core.utils.constants.ConstantsEnum;
+import top.jpower.core.utils.constants.ParamsConstants;
+import top.jpower.core.utils.constants.StringPool;
+import top.jpower.core.utils.constants.TokenConstant;
+import top.jpower.core.utils.utils.*;
 import top.jpower.jpower.auth.TokenGranterBuilder;
 import top.jpower.jpower.auth.granter.RefreshTokenGranter;
 import top.jpower.jpower.cache.SystemCache;
@@ -31,11 +36,8 @@ import top.jpower.jpower.module.common.cache.CacheNames;
 import top.jpower.jpower.module.common.controller.BaseController;
 import top.jpower.jpower.module.common.redis.RedisUtil;
 import top.jpower.jpower.module.common.support.ChainMap;
-import top.jpower.jpower.module.common.utils.*;
-import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
-import top.jpower.jpower.module.common.utils.constants.ParamsConstants;
-import top.jpower.jpower.module.common.utils.constants.StringPool;
-import top.jpower.jpower.module.common.utils.constants.TokenConstant;
+import top.jpower.jpower.module.common.utils.JwtUtil;
+import top.jpower.jpower.module.common.utils.ShieldUtil;
 import top.jpower.jpower.module.tenant.JpowerTenantProperties;
 import top.jpower.jpower.utils.TokenUtil;
 
@@ -44,8 +46,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import static top.jpower.core.utils.constants.TokenConstant.HEADER_TENANT;
 import static top.jpower.jpower.module.common.cache.CacheNames.TOKEN_USER_KEY;
-import static top.jpower.jpower.module.common.utils.constants.TokenConstant.HEADER_TENANT;
 import static top.jpower.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
 import static top.jpower.jpower.module.tenant.TenantConstant.getExpireTime;
 

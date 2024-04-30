@@ -4,8 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import top.jpower.jpower.module.common.utils.Fc;
-import top.jpower.jpower.module.common.utils.StringUtil;
+import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.utils.utils.StringUtil;
 import top.jpower.jpower.module.properties.XssProperties;
 
 import javax.annotation.Resource;

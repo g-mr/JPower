@@ -3,8 +3,12 @@ package top.jpower.jpower.module.common.utils;
 import cn.hutool.core.util.URLUtil;
 import io.jsonwebtoken.*;
 import lombok.NonNull;
-import top.jpower.jpower.module.common.utils.constants.StringPool;
-import top.jpower.jpower.module.common.utils.constants.TokenConstant;
+import top.jpower.core.utils.constants.StringPool;
+import top.jpower.core.utils.constants.TokenConstant;
+import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.utils.utils.SpringUtil;
+import top.jpower.core.utils.utils.StringUtil;
+import top.jpower.core.utils.utils.WebUtil;
 import top.jpower.jpower.module.properties.AuthProperties;
 
 import javax.crypto.spec.SecretKeySpec;

@@ -1,7 +1,7 @@
 package top.jpower.jpower.handler;
 
+import top.jpower.core.utils.utils.Fc;
 import top.jpower.jpower.interceptor.AuthInterceptor;
-import top.jpower.jpower.module.common.utils.Fc;
 import top.jpower.jpower.properties.MonitorRestfulProperties;
 
 import java.util.Map;

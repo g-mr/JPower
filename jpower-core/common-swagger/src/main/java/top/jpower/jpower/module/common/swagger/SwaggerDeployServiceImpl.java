@@ -2,9 +2,9 @@ package top.jpower.jpower.module.common.swagger;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.core.Ordered;
+import top.jpower.core.utils.constants.JpowerConstants;
 import top.jpower.jpower.module.base.annotation.LoaderService;
 import top.jpower.jpower.module.common.deploy.service.DeployService;
-import top.jpower.jpower.module.common.utils.constants.AppConstant;
 
 import java.util.Properties;
 
@@ -21,7 +21,7 @@ public class SwaggerDeployServiceImpl implements DeployService {
 		props.setProperty("knife4j.enable", "true");
 		props.setProperty("spring.mvc.pathmatch.matching-strategy", "ANT_PATH_MATCHER");
 
-		if (profile.equals(AppConstant.PROD_CODE)) {
+		if (profile.equals(JpowerConstants.PROD_CODE)) {
 			props.setProperty("knife4j.production", "true");
 		}
 	}

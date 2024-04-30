@@ -3,6 +3,8 @@ package top.jpower.jpower.service.role.impl;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import top.jpower.core.utils.constants.ConstantsEnum;
+import top.jpower.core.utils.utils.StringUtil;
 import top.jpower.jpower.dbs.dao.client.TbCoreClientDao;
 import top.jpower.jpower.dbs.dao.role.TbCoreDataScopeDao;
 import top.jpower.jpower.dbs.dao.role.TbCoreRoleDataDao;
@@ -10,8 +12,6 @@ import top.jpower.jpower.dbs.dao.role.mapper.TbCoreDataScopeMapper;
 import top.jpower.jpower.dbs.entity.function.TbCoreDataScope;
 import top.jpower.jpower.dbs.entity.role.TbCoreRoleData;
 import top.jpower.jpower.module.common.service.impl.BaseServiceImpl;
-import top.jpower.jpower.module.common.utils.StringUtil;
-import top.jpower.jpower.module.common.utils.constants.ConstantsEnum;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.service.role.CoreDataScopeService;
 
