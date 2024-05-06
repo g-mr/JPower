@@ -2,7 +2,7 @@ package top.jpower.jpower.config.sms;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import top.jpower.core.utils.enums.SmsCategoryEnum;
+import top.jpower.common.enums.SmsCategoryEnum;
 import top.jpower.core.utils.utils.BeanUtil;
 import top.jpower.core.utils.utils.Fc;
 import top.jpower.core.utils.utils.GuavaCache;

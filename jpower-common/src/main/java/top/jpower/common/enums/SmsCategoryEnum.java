@@ -1,4 +1,4 @@
-package top.jpower.core.utils.enums;
+package top.jpower.common.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,6 +14,9 @@ import java.util.Arrays;
 @AllArgsConstructor
 public enum SmsCategoryEnum {
 
+    /**
+     * 阿里
+     **/
     ALI("ali", "阿里");
 
     private final String code;
