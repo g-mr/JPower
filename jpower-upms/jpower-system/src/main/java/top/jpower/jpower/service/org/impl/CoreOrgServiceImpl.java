@@ -8,19 +8,19 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import top.jpower.core.utils.constants.JpowerConstants;
-import top.jpower.core.utils.constants.StringPool;
-import top.jpower.core.utils.utils.Fc;
-import top.jpower.core.utils.utils.StringUtil;
+import top.jpower.core.util.constants.JpowerConstants;
+import top.jpower.core.util.constants.StringPool;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.StringUtil;
 import top.jpower.jpower.dbs.dao.org.TbCoreOrgDao;
 import top.jpower.jpower.dbs.dao.org.mapper.TbCoreOrgMapper;
 import top.jpower.jpower.dbs.entity.org.TbCoreOrg;
 import top.jpower.jpower.module.base.enums.JpowerError;
 import top.jpower.jpower.module.base.exception.JpowerAssert;
 import top.jpower.jpower.module.common.service.impl.BaseServiceImpl;
-import top.jpower.jpower.module.common.support.EnvBeanUtil;
 import top.jpower.jpower.module.common.utils.ShieldUtil;
 import top.jpower.jpower.module.mp.support.Condition;
+import top.jpower.jpower.module.tenant.JpowerTenantProperties;
 import top.jpower.jpower.service.org.CoreOrgService;
 import top.jpower.jpower.vo.OrgVo;
 
@@ -37,6 +37,7 @@ import static top.jpower.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE
 @Slf4j
 public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper, TbCoreOrg> implements CoreOrgService {
 
+    private JpowerTenantProperties tenantProperties;
     private TbCoreOrgDao coreOrgDao;
 
     @Override
@@ -55,7 +56,7 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<TbCoreOrgMapper, TbCoreO
     public Boolean add(TbCoreOrg coreOrg) {
 
         LambdaQueryWrapper<TbCoreOrg> queryWrapper = Condition.<TbCoreOrg>getQueryWrapper().lambda().eq(TbCoreOrg::getCode,coreOrg.getCode());
-        if (ShieldUtil.isRoot() && EnvBeanUtil.getTenantEnable()){
+        if (ShieldUtil.isRoot() && tenantProperties.getEnable()){
             queryWrapper.eq(TbCoreOrg::getTenantCode,Fc.isNotBlank(coreOrg.getTenantCode())?coreOrg.getTenantCode():DEFAULT_TENANT_CODE);
         }
         JpowerAssert.geZero(coreOrgDao.count(queryWrapper), JpowerError.Business,"该编码已存在");

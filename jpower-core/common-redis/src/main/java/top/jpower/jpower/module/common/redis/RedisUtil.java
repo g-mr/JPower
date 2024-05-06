@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.*;
-import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.util.utils.Fc;
 
 import java.util.List;
 import java.util.Set;

@@ -1,13 +1,13 @@
 package top.jpower.jpower.cache.dict;
 
 import top.jpower.common.enums.YYZLEnum;
-import top.jpower.core.utils.constants.StringPool;
-import top.jpower.core.utils.utils.Fc;
-import top.jpower.core.utils.utils.MapUtil;
-import top.jpower.core.utils.utils.SpringUtil;
-import top.jpower.core.utils.utils.WebUtil;
+import top.jpower.core.util.constants.StringPool;
+import top.jpower.core.util.rsp.ResponseData;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.MapUtil;
+import top.jpower.core.util.utils.SpringUtil;
+import top.jpower.core.util.utils.WebUtil;
 import top.jpower.jpower.feign.DictClient;
-import top.jpower.jpower.module.base.vo.ResponseData;
 import top.jpower.jpower.module.common.cache.CacheNames;
 import top.jpower.jpower.module.common.utils.CacheUtil;
 
@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static top.jpower.core.utils.constants.ConstantsUtils.I18N_KEY;
+import static top.jpower.core.util.constants.JpowerConstants.I18N_KEY;
 
 /**
  * 字典缓存

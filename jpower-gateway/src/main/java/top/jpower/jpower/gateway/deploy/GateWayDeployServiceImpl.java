@@ -1,7 +1,7 @@
 package top.jpower.jpower.gateway.deploy;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import top.jpower.jpower.module.base.annotation.LoaderService;
+import top.jpower.core.util.annotation.LoaderService;
 import top.jpower.jpower.module.common.deploy.service.DeployService;
 
 import java.util.Properties;

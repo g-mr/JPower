@@ -9,9 +9,9 @@ import com.aliyun.teautil.models.RuntimeOptions;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import top.jpower.core.utils.constants.ConstantsReturn;
-import top.jpower.core.utils.constants.StringPool;
-import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.util.constants.ReturnConstants;
+import top.jpower.core.util.constants.StringPool;
+import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.config.sms.properties.AliSmsProperties;
 import top.jpower.jpower.dto.SmsResponse;
 import top.jpower.jpower.module.base.exception.JpowerException;
@@ -71,7 +71,7 @@ public class AliSmsTemplate implements SmsTemplate {
                 .setTemplateParam(JSON.toJSONString(param));
         try {
             SendSmsResponse sendSmsResponse = client.sendSmsWithOptions(sendSmsRequest, new RuntimeOptions());
-            if (Fc.equalsValue(sendSmsResponse.statusCode, ConstantsReturn.RECODE_SUCCESS) && Fc.equalsValue(sendSmsResponse.body.code, StringPool.OK)){
+            if (Fc.equalsValue(sendSmsResponse.statusCode, ReturnConstants.RECODE_SUCCESS) && Fc.equalsValue(sendSmsResponse.body.code, StringPool.OK)){
                 return new SmsResponse(Boolean.TRUE, sendSmsResponse.statusCode, sendSmsResponse.body.message);
             } else {
                 log.error("短信发送失败==>>{}", JSON.toJSONString(sendSmsResponse));
@@ -85,7 +85,7 @@ public class AliSmsTemplate implements SmsTemplate {
             if (isThrow){
                 throw new JpowerException(error.getMessage());
             }
-            return new SmsResponse(Boolean.FALSE, ConstantsReturn.RECODE_SYSTEM, error.getMessage());
+            return new SmsResponse(Boolean.FALSE, ReturnConstants.RECODE_SYSTEM, error.getMessage());
         }
     }
 

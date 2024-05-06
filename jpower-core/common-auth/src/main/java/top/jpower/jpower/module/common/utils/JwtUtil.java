@@ -3,12 +3,13 @@ package top.jpower.jpower.module.common.utils;
 import cn.hutool.core.util.URLUtil;
 import io.jsonwebtoken.*;
 import lombok.NonNull;
-import top.jpower.core.utils.constants.StringPool;
-import top.jpower.core.utils.constants.TokenConstant;
-import top.jpower.core.utils.utils.Fc;
-import top.jpower.core.utils.utils.SpringUtil;
-import top.jpower.core.utils.utils.StringUtil;
-import top.jpower.core.utils.utils.WebUtil;
+import top.jpower.core.util.constants.JpowerConstants;
+import top.jpower.core.util.constants.StringPool;
+import top.jpower.core.util.constants.TokenConstant;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.SpringUtil;
+import top.jpower.core.util.utils.StringUtil;
+import top.jpower.core.util.utils.WebUtil;
 import top.jpower.jpower.module.properties.AuthProperties;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -78,20 +79,20 @@ public class JwtUtil {
             return null;
         }
 
-        String auth = request.getHeader(TokenConstant.HEADER);
+        String auth = request.getHeader(JpowerConstants.AUTH_HEADER);
         if (StringUtil.isNotBlank(auth)) {
             return parsingToken(auth);
         }
 
         AuthProperties properties = SpringUtil.getBean(AuthProperties.class);
         if (Fc.notNull(properties) && properties.getCookie()){
-            String cookieVal = WebUtil.getCookieVal(request,TokenConstant.HEADER);
+            String cookieVal = WebUtil.getCookieVal(request,JpowerConstants.AUTH_HEADER);
             if (Fc.isNotBlank(cookieVal)){
                 return cookieVal;
             }
         }
 
-        String parameter = request.getParameter(TokenConstant.HEADER);
+        String parameter = request.getParameter(JpowerConstants.AUTH_HEADER);
         if (StringUtil.isNotBlank(parameter)) {
             return URLUtil.decode(parameter);
         }

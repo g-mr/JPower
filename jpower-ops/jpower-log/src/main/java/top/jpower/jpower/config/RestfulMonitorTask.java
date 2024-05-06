@@ -6,7 +6,7 @@ import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
-import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.properties.MonitorRestfulProperties;
 import top.jpower.jpower.service.TaskService;
 

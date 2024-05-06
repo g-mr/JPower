@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.jpower.common.enums.YNEnum;
-import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.dbs.dao.dict.TbCoreDictDao;
 import top.jpower.jpower.dbs.dao.dict.mapper.TbCoreDictMapper;
 import top.jpower.jpower.dbs.entity.dict.TbCoreDict;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import static top.jpower.common.enums.YYZLEnum.CHINA;
-import static top.jpower.core.utils.constants.JpowerConstants.TOP_CODE;
+import static top.jpower.core.util.constants.JpowerConstants.TOP_CODE;
 import static top.jpower.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
 
 /**

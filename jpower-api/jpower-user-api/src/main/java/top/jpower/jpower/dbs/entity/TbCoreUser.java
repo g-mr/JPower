@@ -6,8 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import top.jpower.jpower.module.base.annotation.Dict;
-import top.jpower.jpower.module.base.annotation.Excel;
+import top.jpower.jpower.module.annotation.Dict;
+import top.jpower.jpower.module.common.annotation.Excel;
 import top.jpower.jpower.module.tenant.entity.TenantEntity;
 
 import java.io.Serializable;

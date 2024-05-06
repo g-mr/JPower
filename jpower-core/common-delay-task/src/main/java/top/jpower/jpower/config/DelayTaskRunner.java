@@ -6,10 +6,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
-import top.jpower.core.utils.utils.*;
+import top.jpower.core.util.utils.*;
 import top.jpower.jpower.enums.TaskStatusEnum;
 import top.jpower.jpower.enums.TaskTypeEnum;
-import top.jpower.jpower.module.common.support.EnvBeanUtil;
+import top.jpower.jpower.module.common.deploy.props.JpowerProperties;
 import top.jpower.jpower.task.DelayTask;
 import top.jpower.jpower.task.entity.TaskDelay;
 import top.jpower.jpower.task.jdbc.TaskDelayJdbc;
@@ -31,6 +31,7 @@ public class DelayTaskRunner implements InitializingBean {
 
     private final DelayQueue<DelayTask> delayQueue;
     private final TaskDelayJdbc taskDelayJdbc;
+    private final JpowerProperties jpowerProperties;
 
     @Override
     public void afterPropertiesSet() {
@@ -122,9 +123,9 @@ public class DelayTaskRunner implements InitializingBean {
      */
     private synchronized DelayTask getData() throws InterruptedException {
         while (delayQueue.size() == 0){
-            Long count = taskDelayJdbc.countByServer(EnvBeanUtil.getString("spring.application.name"), TaskStatusEnum.EXECUTED, TaskTypeEnum.DELAY);
+            Long count = taskDelayJdbc.countByServer(jpowerProperties.getApplicationName(), TaskStatusEnum.EXECUTED, TaskTypeEnum.DELAY);
             if (count > 0){
-                List<TaskDelay> list = taskDelayJdbc.queryByServer(EnvBeanUtil.getString("spring.application.name"), TaskStatusEnum.EXECUTED, TaskTypeEnum.DELAY);
+                List<TaskDelay> list = taskDelayJdbc.queryByServer(jpowerProperties.getApplicationName(), TaskStatusEnum.EXECUTED, TaskTypeEnum.DELAY);
                 delayQueue.addAll(BeanUtil.copyToList(list, DelayTask.class));
             } else {
                 // 如果没有任务的时候,休息一秒再去查

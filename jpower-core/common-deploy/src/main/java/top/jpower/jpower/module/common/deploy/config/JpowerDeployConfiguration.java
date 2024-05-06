@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.module.common.deploy.props.JpowerProperties;
 
 import java.net.InetAddress;

@@ -2,7 +2,7 @@ package top.jpower.common.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.util.utils.Fc;
 
 import java.util.Arrays;
 

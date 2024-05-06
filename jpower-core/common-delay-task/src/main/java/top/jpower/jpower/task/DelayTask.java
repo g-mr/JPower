@@ -3,7 +3,7 @@ package top.jpower.jpower.task;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import top.jpower.core.utils.utils.DateUtil;
+import top.jpower.core.util.utils.DateUtil;
 
 import java.util.Date;
 import java.util.concurrent.Delayed;

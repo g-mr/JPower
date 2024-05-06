@@ -2,8 +2,8 @@ package top.jpower.jpower.service.client.impl;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import top.jpower.core.utils.utils.Fc;
-import top.jpower.core.utils.utils.RandomUtil;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.RandomUtil;
 import top.jpower.jpower.dbs.dao.client.TbCoreClientDao;
 import top.jpower.jpower.dbs.dao.client.mapper.TbCoreClientMapper;
 import top.jpower.jpower.dbs.entity.client.TbCoreClient;

@@ -4,8 +4,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import top.jpower.common.constants.AppConstant;
+import top.jpower.core.util.rsp.ResponseData;
 import top.jpower.jpower.dbs.entity.params.TbCoreParam;
-import top.jpower.jpower.module.base.vo.ResponseData;
 
 /**
  * @author mr.gmac

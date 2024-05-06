@@ -3,9 +3,9 @@ package top.jpower.jpower.feign;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
-import top.jpower.core.utils.utils.ReturnJsonUtil;
+import top.jpower.core.util.rsp.ResponseData;
+import top.jpower.core.util.rsp.ReturnJsonUtil;
 import top.jpower.jpower.dbs.entity.TbResourceFile;
-import top.jpower.jpower.module.base.vo.ResponseData;
 
 import java.io.File;
 

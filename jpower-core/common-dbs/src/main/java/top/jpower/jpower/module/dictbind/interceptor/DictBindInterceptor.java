@@ -10,11 +10,11 @@ import org.apache.ibatis.reflection.DefaultReflectorFactory;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
 import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
-import top.jpower.core.utils.utils.BeanUtil;
-import top.jpower.core.utils.utils.ClassUtil;
-import top.jpower.core.utils.utils.Fc;
-import top.jpower.core.utils.utils.ReflectUtil;
-import top.jpower.jpower.module.base.annotation.Dict;
+import top.jpower.core.util.utils.BeanUtil;
+import top.jpower.core.util.utils.ClassUtil;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.ReflectUtil;
+import top.jpower.jpower.module.annotation.Dict;
 import top.jpower.jpower.module.config.interceptor.chain.MybatisInterceptor;
 import top.jpower.jpower.module.dictbind.handler.IDictBindHandler;
 

@@ -1,9 +1,9 @@
 package top.jpower.jpower.cache;
 
-import top.jpower.core.utils.utils.SpringUtil;
+import top.jpower.core.util.rsp.ResponseData;
+import top.jpower.core.util.utils.SpringUtil;
 import top.jpower.jpower.dbs.entity.TbResourceFile;
 import top.jpower.jpower.feign.FileClient;
-import top.jpower.jpower.module.base.vo.ResponseData;
 import top.jpower.jpower.module.common.cache.CacheNames;
 import top.jpower.jpower.module.common.utils.CacheUtil;
 

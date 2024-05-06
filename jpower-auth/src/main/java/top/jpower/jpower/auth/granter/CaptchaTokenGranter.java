@@ -2,8 +2,8 @@ package top.jpower.jpower.auth.granter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import top.jpower.core.utils.utils.Fc;
-import top.jpower.core.utils.utils.StringUtil;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.StringUtil;
 import top.jpower.jpower.auth.AuthUserInfo;
 import top.jpower.jpower.auth.TokenGranter;
 import top.jpower.jpower.dto.TokenParameter;

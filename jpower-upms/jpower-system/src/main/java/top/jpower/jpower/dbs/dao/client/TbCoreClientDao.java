@@ -1,7 +1,7 @@
 package top.jpower.jpower.dbs.dao.client;
 
 import org.springframework.stereotype.Repository;
-import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.dbs.dao.client.mapper.TbCoreClientMapper;
 import top.jpower.jpower.dbs.entity.client.TbCoreClient;
 import top.jpower.jpower.module.dbs.dao.JpowerServiceImpl;

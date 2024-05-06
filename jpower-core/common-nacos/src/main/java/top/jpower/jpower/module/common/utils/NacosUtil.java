@@ -5,8 +5,8 @@ import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingFactory;
 import com.alibaba.nacos.api.naming.NamingService;
 import lombok.SneakyThrows;
-import top.jpower.core.utils.utils.Fc;
-import top.jpower.core.utils.utils.SpringUtil;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.SpringUtil;
 
 import java.util.List;
 import java.util.Properties;

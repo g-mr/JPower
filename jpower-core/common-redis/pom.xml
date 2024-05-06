@@ -25,7 +25,7 @@
         </dependency>
         <dependency>
             <groupId>top.jpower</groupId>
-            <artifactId>jpower-core-utils</artifactId>
+            <artifactId>jpower-core-util</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
 
@@ -33,6 +33,14 @@
             <groupId>top.jpower</groupId>
             <artifactId>common-auth</artifactId>
             <version>${com.jpower.version}</version>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>top.jpower</groupId>
+            <artifactId>common-dbs</artifactId>
+            <version>${com.jpower.version}</version>
+            <optional>true</optional>
         </dependency>
 
     </dependencies>

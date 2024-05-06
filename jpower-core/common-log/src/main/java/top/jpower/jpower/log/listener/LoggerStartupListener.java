@@ -8,8 +8,8 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.LogbackException;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.LifeCycle;
-import top.jpower.core.utils.utils.Fc;
-import top.jpower.core.utils.utils.StringUtil;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.StringUtil;
 import top.jpower.jpower.log.property.JpowerLogProperties;
 
 import java.util.Properties;

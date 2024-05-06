@@ -13,8 +13,8 @@ import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.RowBounds;
-import top.jpower.core.utils.utils.ClassUtil;
-import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.util.utils.ClassUtil;
+import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.module.datascope.handler.DataScopeHandler;
 
 import java.util.Properties;

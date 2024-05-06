@@ -7,8 +7,8 @@ import com.github.tobato.fastdfs.service.FastFileStorageClient;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
-import top.jpower.core.utils.utils.Fc;
-import top.jpower.core.utils.utils.SpringUtil;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.SpringUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

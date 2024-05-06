@@ -7,7 +7,7 @@ import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowException;
 import com.alibaba.csp.sentinel.slots.system.SystemBlockException;
 import lombok.SneakyThrows;
 import org.apache.http.HttpStatus;
-import top.jpower.jpower.module.base.vo.ResponseData;
+import top.jpower.core.util.rsp.ResponseData;
 
 /**
  * @ClassName ErrorMsg

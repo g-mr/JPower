@@ -1,25 +1,44 @@
 package top.jpower.jpower.module.common.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
 import org.springframework.lang.Nullable;
-import top.jpower.core.utils.constants.StringPool;
-import top.jpower.core.utils.utils.Fc;
-import top.jpower.jpower.module.common.support.EnvBeanUtil;
+import top.jpower.core.util.constants.StringPool;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.SpringUtil;
+import top.jpower.jpower.module.tenant.JpowerTenantProperties;
 
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
 /**
- * @ClassName CacheUtil
- * @Description TODO
- * @Author 郭丁志
- * @Date 2020-09-01 11:16
- * @Version 1.0
+ * 缓存工具
+ *
+ * @author mr.g
  */
+@Slf4j
 public class CacheUtil {
 
+    public static Boolean TENANT_MODE = Boolean.FALSE;
+
+    static {
+        try {
+            TENANT_MODE = SpringUtil.getBean(JpowerTenantProperties.class).getEnable();
+        } catch (Exception e){
+            log.warn("未获取到JpowerTenantProperties，无法启动租户自动区分...");
+        }
+    }
+
+    private static Boolean isRoot(){
+        try {
+            return ShieldUtil.isRoot();
+        } catch (Exception e){
+            return Boolean.FALSE;
+        }
+    }
+
     public static <T> T get(String cacheName, String keyPrefix, Object key,@Nullable Class<T> clz) {
-        return get(cacheName,keyPrefix,key,clz, EnvBeanUtil.getTenantEnable());
+        return get(cacheName,keyPrefix,key,clz, TENANT_MODE);
     }
 
     public static <T> T get(String cacheName, String keyPrefix, Object key, Class<T> clz, Boolean tenantMode) {
@@ -39,7 +58,7 @@ public class CacheUtil {
                 if (Fc.notNull(valueLoader)) {
                     T call = valueLoader.call();
                     if (Fc.isNotEmpty(call)) {
-                        Cm.getInstance().getCache(cacheName,tenantMode).put(keyPrefix.concat(String.valueOf(key)), call);
+                        Cm.getInstance().getCache(cacheName, tenantMode).put(keyPrefix.concat(String.valueOf(key)), call);
                         return call;
                     }
                 }
@@ -51,12 +70,12 @@ public class CacheUtil {
     }
 
     /**
-     * @Author mr.g
-     * @Description //TODO 获取缓存值
-     * @Date 11:32 2020-09-01
+     * 获取缓存值
+     *
+     * @author mr.g
      **/
     public static <T> T get(String cacheName, String keyPrefix, Object key, Callable<T> valueLoader) {
-        return get(cacheName, keyPrefix, key, valueLoader,EnvBeanUtil.getTenantEnable());
+        return get(cacheName, keyPrefix, key, valueLoader, TENANT_MODE);
     }
 
     /**
@@ -76,7 +95,7 @@ public class CacheUtil {
      * @Date 11:32 2020-09-01
      **/
     public static void put(String cacheName, String keyPrefix, Object key, @Nullable Object value) {
-        put(cacheName, keyPrefix, key, value,EnvBeanUtil.getTenantEnable());
+        put(cacheName, keyPrefix, key, value, TENANT_MODE);
     }
 
     /**
@@ -96,7 +115,7 @@ public class CacheUtil {
      * @Date 11:32 2020-09-01
      **/
     public static void evict(String cacheName, String keyPrefix, Object key) {
-        evict(cacheName,keyPrefix,key,EnvBeanUtil.getTenantEnable());
+        evict(cacheName,keyPrefix,key, TENANT_MODE);
     }
 
     /**
@@ -106,12 +125,11 @@ public class CacheUtil {
      **/
     public static void clear(String cacheName, Boolean tenantMode) {
         if (Fc.isNotBlank(cacheName)) {
-            if (tenantMode && ShieldUtil.isRoot()){
+            if (tenantMode && isRoot()){
                 Cm.getInstance().getCache("*" + StringPool.COLON + cacheName, Boolean.FALSE).clear();
             } else {
                 Cm.getInstance().getCache(cacheName, tenantMode).clear();
             }
-
         }
     }
 
@@ -121,8 +139,7 @@ public class CacheUtil {
      * @Date 11:32 2020-09-01
      **/
     public static void clear(String cacheName,String... tenantCode) {
-        // 非超管不可操作其他租户缓存
-        if (ShieldUtil.isRoot() && Fc.notNull(tenantCode) && tenantCode.length > 0){
+        if (Fc.isNotEmpty(tenantCode)){
             if (Fc.isNotBlank(cacheName)) {
                 for (String code : tenantCode) {
                     Cm.getInstance().getCache(cacheName, code).clear();
@@ -139,7 +156,7 @@ public class CacheUtil {
      * @Date 11:32 2020-09-01
      **/
     public static void clear(String cacheName) {
-        clear(cacheName, EnvBeanUtil.getTenantEnable());
+        clear(cacheName, TENANT_MODE);
     }
 
 }

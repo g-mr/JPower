@@ -10,16 +10,16 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.common.enums.YNEnum;
 import top.jpower.common.enums.YYZLEnum;
-import top.jpower.core.utils.utils.Fc;
-import top.jpower.core.utils.utils.ReturnJsonUtil;
+import top.jpower.core.util.rsp.Pg;
+import top.jpower.core.util.rsp.ResponseData;
+import top.jpower.core.util.rsp.ReturnJsonUtil;
+import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.dbs.entity.dict.TbCoreDict;
 import top.jpower.jpower.dbs.entity.dict.TbCoreDictType;
 import top.jpower.jpower.module.annotation.Function;
 import top.jpower.jpower.module.annotation.Menu;
 import top.jpower.jpower.module.base.enums.JpowerError;
 import top.jpower.jpower.module.base.exception.JpowerAssert;
-import top.jpower.jpower.module.base.vo.Pg;
-import top.jpower.jpower.module.base.vo.ResponseData;
 import top.jpower.jpower.module.common.cache.CacheNames;
 import top.jpower.jpower.module.common.controller.BaseController;
 import top.jpower.jpower.module.common.page.PaginationContext;
@@ -31,8 +31,8 @@ import top.jpower.jpower.vo.DictVo;
 
 import java.util.List;
 
-import static top.jpower.core.utils.constants.ConstantsUtils.I18N_KEY;
-import static top.jpower.core.utils.constants.JpowerConstants.TOP_CODE;
+import static top.jpower.core.util.constants.JpowerConstants.I18N_KEY;
+import static top.jpower.core.util.constants.JpowerConstants.TOP_CODE;
 
 /**
  * @ClassName DictController

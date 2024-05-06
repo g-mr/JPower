@@ -3,7 +3,7 @@ package top.jpower.jpower.gateway.utils;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
-import top.jpower.core.utils.utils.StringUtil;
+import top.jpower.core.util.utils.StringUtil;
 
 /**
  * @ClassName IpUtil

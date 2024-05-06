@@ -7,8 +7,8 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
-import top.jpower.core.utils.constants.StringPool;
-import top.jpower.core.utils.utils.ExceptionUtil;
+import top.jpower.core.util.constants.StringPool;
+import top.jpower.core.util.utils.ExceptionUtil;
 
 /**
  * 异常的日志打印切面

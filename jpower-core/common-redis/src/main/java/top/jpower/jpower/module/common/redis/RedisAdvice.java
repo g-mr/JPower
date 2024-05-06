@@ -2,7 +2,7 @@ package top.jpower.jpower.module.common.redis;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInvocation;
-import top.jpower.core.utils.constants.StringPool;
+import top.jpower.core.util.constants.StringPool;
 import top.jpower.jpower.module.common.utils.AspectBase;
 import top.jpower.jpower.module.common.utils.ProxyUtils;
 

@@ -1,5 +1,6 @@
 package top.jpower.jpower.module.config;
 
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -10,12 +11,11 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.AnnotationUtils;
-import top.jpower.core.utils.constants.JpowerConstants;
-import top.jpower.core.utils.constants.TokenConstant;
-import top.jpower.core.utils.utils.Fc;
-import top.jpower.core.utils.utils.WebUtil;
+import top.jpower.core.util.constants.JpowerConstants;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.WebUtil;
 import top.jpower.jpower.module.annotation.Function;
-import top.jpower.jpower.module.common.support.EnvBeanUtil;
+import top.jpower.jpower.module.common.deploy.props.JpowerProperties;
 import top.jpower.jpower.module.common.utils.ShieldUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,11 +32,14 @@ import java.util.Arrays;
 @Slf4j
 @Aspect
 @Configuration
+@RequiredArgsConstructor
 public class FunctionAuthAspect {
+
+    private final JpowerProperties jpowerProperties;
 
     /**
      * 配置织入点
-     * @Author mr.g
+     * @author mr.g
      **/
     @Pointcut("@annotation(top.jpower.jpower.module.annotation.Function)")
     public void authPointCut(){ }
@@ -50,7 +53,7 @@ public class FunctionAuthAspect {
     public void doBefore(JoinPoint joinPoint){
 
         // 开发环境不检测
-        if (Fc.equalsValue(EnvBeanUtil.getProfile(), JpowerConstants.DEV_CODE)){
+        if (Fc.equalsValue(jpowerProperties.getEnv(), JpowerConstants.DEV_CODE)){
             return;
         }
 
@@ -64,15 +67,15 @@ public class FunctionAuthAspect {
             return;
         }
 
-        String menuCode = request.getHeader(TokenConstant.HEADER_MENU);
+        String menuCode = request.getHeader(JpowerConstants.HEADER_MENU);
         if (Fc.isBlank(menuCode)){
-            log.warn("请求中没有带{}头，判定为非法访问！！！", TokenConstant.HEADER_MENU);
+            log.warn("请求中没有带{}头，判定为非法访问！！！", JpowerConstants.HEADER_MENU);
             throw new GeneralSecurityException("非法访问！！！");
         }
 
         boolean is = Arrays.stream(function.menus()).filter(menu -> Fc.equalsValue(menu.client(), ShieldUtil.getClientCodeFromHeader())).anyMatch(menu -> Fc.equalsValue(menuCode,menu.menuCode()));
         if (!is){
-            log.warn("请求头{}值不匹配，判定为非法访问！！！", TokenConstant.HEADER_MENU);
+            log.warn("请求头{}值不匹配，判定为非法访问！！！", JpowerConstants.HEADER_MENU);
             throw new GeneralSecurityException("非法访问！！！");
         }
 

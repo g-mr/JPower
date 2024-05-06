@@ -7,16 +7,16 @@ import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import top.jpower.common.enums.YN01Enum;
-import top.jpower.core.utils.constants.StringPool;
-import top.jpower.core.utils.utils.Fc;
-import top.jpower.core.utils.utils.ReturnJsonUtil;
+import top.jpower.core.util.constants.StringPool;
+import top.jpower.core.util.rsp.ResponseData;
+import top.jpower.core.util.rsp.ReturnJsonUtil;
+import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.dbs.entity.role.TbCoreRole;
 import top.jpower.jpower.module.annotation.Function;
 import top.jpower.jpower.module.annotation.Menu;
 import top.jpower.jpower.module.base.annotation.OperateLog;
 import top.jpower.jpower.module.base.enums.JpowerError;
 import top.jpower.jpower.module.base.exception.JpowerAssert;
-import top.jpower.jpower.module.base.vo.ResponseData;
 import top.jpower.jpower.module.common.cache.CacheNames;
 import top.jpower.jpower.module.common.controller.BaseController;
 import top.jpower.jpower.module.common.utils.CacheUtil;
@@ -28,7 +28,7 @@ import top.jpower.jpower.service.role.CoreRoleService;
 import java.util.List;
 import java.util.Map;
 
-import static top.jpower.core.utils.constants.JpowerConstants.TOP_CODE;
+import static top.jpower.core.util.constants.JpowerConstants.TOP_CODE;
 
 @Api(tags = "角色管理")
 @RestController

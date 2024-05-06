@@ -2,8 +2,8 @@ package top.jpower.jpower.dbs.dao;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import top.jpower.core.utils.utils.BeanUtil;
-import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.util.utils.BeanUtil;
+import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.dbs.dao.mapper.TbCorePostMapper;
 import top.jpower.jpower.dbs.dao.mapper.TbCoreUserMapper;
 import top.jpower.jpower.dbs.entity.TbCorePost;

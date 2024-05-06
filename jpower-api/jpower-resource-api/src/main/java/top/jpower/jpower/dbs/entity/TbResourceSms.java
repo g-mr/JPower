@@ -3,7 +3,7 @@ package top.jpower.jpower.dbs.entity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import top.jpower.jpower.module.base.annotation.Dict;
+import top.jpower.jpower.module.annotation.Dict;
 import top.jpower.jpower.module.dbs.entity.base.BaseEntity;
 
 import javax.validation.constraints.NotBlank;

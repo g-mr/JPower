@@ -7,15 +7,11 @@ import cn.hutool.core.date.DateUnit;
 import io.jsonwebtoken.Claims;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import top.jpower.core.utils.constants.CharPool;
-import top.jpower.core.utils.constants.CharsetKit;
-import top.jpower.core.utils.constants.StringPool;
-import top.jpower.core.utils.constants.TokenConstant;
-import top.jpower.core.utils.utils.*;
+import top.jpower.core.util.constants.*;
+import top.jpower.core.util.utils.*;
 import top.jpower.jpower.module.common.auth.RoleConstant;
 import top.jpower.jpower.module.common.auth.SecureConstant;
 import top.jpower.jpower.module.common.auth.UserInfo;
-import top.jpower.jpower.module.common.support.EnvBeanUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
@@ -160,10 +156,6 @@ public class ShieldUtil {
      * @return tenantId
      */
     public static String getTenantCode(HttpServletRequest request) {
-        if (!EnvBeanUtil.getTenantEnable()) {
-            return StringPool.EMPTY;
-        }
-
         if (Fc.isNull(request)){
             log.warn("HttpServletRequest为空，无法获取当前租户");
             return StringPool.EMPTY;
@@ -176,7 +168,7 @@ public class ShieldUtil {
             String tenantCode = StringPool.EMPTY;
             if (Fc.notNull(request)) {
                 String code = request.getParameter(TokenConstant.TENANT_CODE);
-                tenantCode = Fc.isBlank(code) ? request.getHeader(TokenConstant.HEADER_TENANT) : code;
+                tenantCode = Fc.isBlank(code) ? request.getHeader(JpowerConstants.HEADER_TENANT) : code;
             }
             return tenantCode;
         }else {

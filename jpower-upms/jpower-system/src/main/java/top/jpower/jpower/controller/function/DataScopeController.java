@@ -6,18 +6,18 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.common.enums.DataScopeTypeEnum;
 import top.jpower.common.enums.YN01Enum;
-import top.jpower.core.utils.constants.StringPool;
-import top.jpower.core.utils.utils.Fc;
-import top.jpower.core.utils.utils.MapUtil;
-import top.jpower.core.utils.utils.ReturnJsonUtil;
+import top.jpower.core.util.constants.StringPool;
+import top.jpower.core.util.rsp.Pg;
+import top.jpower.core.util.rsp.ResponseData;
+import top.jpower.core.util.rsp.ReturnJsonUtil;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.MapUtil;
 import top.jpower.jpower.dbs.entity.function.TbCoreDataScope;
 import top.jpower.jpower.dbs.entity.role.TbCoreRoleData;
 import top.jpower.jpower.module.annotation.Function;
 import top.jpower.jpower.module.annotation.Menu;
 import top.jpower.jpower.module.base.enums.JpowerError;
 import top.jpower.jpower.module.base.exception.JpowerAssert;
-import top.jpower.jpower.module.base.vo.Pg;
-import top.jpower.jpower.module.base.vo.ResponseData;
 import top.jpower.jpower.module.common.cache.CacheNames;
 import top.jpower.jpower.module.common.page.PaginationContext;
 import top.jpower.jpower.module.common.utils.CacheUtil;
@@ -31,7 +31,7 @@ import top.jpower.jpower.vo.DataFunctionVo;
 import java.util.List;
 import java.util.Map;
 
-import static top.jpower.core.utils.constants.JpowerConstants.TOP_CODE;
+import static top.jpower.core.util.constants.JpowerConstants.TOP_CODE;
 
 /**
  * @author ding

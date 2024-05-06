@@ -2,7 +2,7 @@ package top.jpower.jpower.service.role.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.dbs.dao.role.TbCoreFunctionDao;
 import top.jpower.jpower.dbs.dao.role.TbCoreRoleDao;
 import top.jpower.jpower.dbs.dao.role.TbCoreRoleFunctionDao;

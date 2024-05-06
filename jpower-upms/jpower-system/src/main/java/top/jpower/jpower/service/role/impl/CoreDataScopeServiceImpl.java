@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import top.jpower.common.enums.FunctionTypeEnum;
 import top.jpower.common.enums.YN01Enum;
-import top.jpower.core.utils.utils.StringUtil;
+import top.jpower.core.util.utils.StringUtil;
 import top.jpower.jpower.dbs.dao.client.TbCoreClientDao;
 import top.jpower.jpower.dbs.dao.role.TbCoreDataScopeDao;
 import top.jpower.jpower.dbs.dao.role.TbCoreRoleDataDao;

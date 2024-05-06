@@ -39,7 +39,7 @@
 
         <dependency>
             <groupId>top.jpower</groupId>
-            <artifactId>jpower-core-utils</artifactId>
+            <artifactId>jpower-core-util</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
     </dependencies>

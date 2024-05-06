@@ -3,8 +3,8 @@ package top.jpower.jpower.dbs.dao;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.springframework.stereotype.Repository;
-import top.jpower.core.utils.utils.BeanUtil;
-import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.util.utils.BeanUtil;
+import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.cache.SystemCache;
 import top.jpower.jpower.cache.UserCache;
 import top.jpower.jpower.dbs.dao.mapper.TbCoreUserMapper;

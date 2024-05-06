@@ -4,7 +4,7 @@ import cn.hutool.core.date.DatePattern;
 import com.alibaba.fastjson2.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.util.utils.Fc;
 
 import java.io.Serializable;
 import java.util.Date;

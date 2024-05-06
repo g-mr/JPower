@@ -12,9 +12,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-import top.jpower.core.utils.constants.JpowerConstants;
-import top.jpower.core.utils.utils.Fc;
-import top.jpower.core.utils.utils.FileUtil;
+import top.jpower.core.util.constants.JpowerConstants;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.FileUtil;
 import top.jpower.jpower.module.common.deploy.service.DeployService;
 
 import java.io.File;
@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static top.jpower.core.utils.constants.StringPool.LINUX;
+import static top.jpower.core.util.constants.StringPool.LINUX;
 
 /**
  * @ClassName JpowerApplication

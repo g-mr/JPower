@@ -13,8 +13,9 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
-import top.jpower.core.utils.constants.TokenConstant;
-import top.jpower.core.utils.utils.WebUtil;
+import top.jpower.core.util.constants.JpowerConstants;
+import top.jpower.core.util.constants.TokenConstant;
+import top.jpower.core.util.utils.WebUtil;
 import top.jpower.jpower.module.common.auth.SecureConstant;
 
 import java.nio.charset.StandardCharsets;
@@ -54,9 +55,9 @@ public class RestTemplateConfig {
                     String name = headerNames.nextElement();
                     if (name.equalsIgnoreCase(SecureConstant.BASIC_HEADER_KEY)
                             || name.equalsIgnoreCase("User-Type")
-                            || name.equalsIgnoreCase(TokenConstant.HEADER_MENU)
-                            || name.equalsIgnoreCase(TokenConstant.HEADER)
-                            || name.equalsIgnoreCase(TokenConstant.HEADER_TENANT)
+                            || name.equalsIgnoreCase(JpowerConstants.HEADER_MENU)
+                            || name.equalsIgnoreCase(JpowerConstants.AUTH_HEADER)
+                            || name.equalsIgnoreCase(JpowerConstants.HEADER_TENANT)
                             || name.equalsIgnoreCase(TokenConstant.DATA_SCOPE_NAME)
                             || name.equalsIgnoreCase(TokenConstant.PASS_HEADER_NAME)){
 

@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.listener.adapter.RedisListenerExecutionFailedException;
-import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.util.utils.Fc;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;

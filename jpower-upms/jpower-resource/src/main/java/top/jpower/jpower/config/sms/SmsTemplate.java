@@ -2,10 +2,11 @@ package top.jpower.jpower.config.sms;
 
 import cn.hutool.core.util.PhoneUtil;
 import org.apache.commons.lang3.RandomStringUtils;
-import top.jpower.core.utils.constants.JpowerConstants;
-import top.jpower.core.utils.utils.Fc;
-import top.jpower.core.utils.utils.SpringUtil;
-import top.jpower.core.utils.utils.StringUtil;
+import top.jpower.core.util.constants.JpowerConstants;
+import top.jpower.core.util.utils.ChainMap;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.SpringUtil;
+import top.jpower.core.util.utils.StringUtil;
 import top.jpower.jpower.dto.SmsResponse;
 import top.jpower.jpower.module.base.enums.JpowerError;
 import top.jpower.jpower.module.base.exception.JpowerAssert;
@@ -13,14 +14,13 @@ import top.jpower.jpower.module.base.exception.JpowerException;
 import top.jpower.jpower.module.common.cache.CacheNames;
 import top.jpower.jpower.module.common.deploy.props.JpowerProperties;
 import top.jpower.jpower.module.common.redis.RedisUtil;
-import top.jpower.jpower.module.common.support.ChainMap;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static top.jpower.core.utils.constants.JpowerConstants.CODE_TEST;
+import static top.jpower.core.util.constants.JpowerConstants.CODE_TEST;
 
 /**
  * 短信发送模板

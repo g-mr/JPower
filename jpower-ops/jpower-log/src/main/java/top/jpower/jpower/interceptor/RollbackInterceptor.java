@@ -9,7 +9,7 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
-import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.util.utils.Fc;
 
 import java.io.IOException;
 

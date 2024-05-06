@@ -12,8 +12,8 @@ import net.sf.jsqlparser.expression.StringValue;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
-import top.jpower.core.utils.utils.ExceptionUtil;
-import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.util.utils.ExceptionUtil;
+import top.jpower.core.util.utils.Fc;
 
 import java.lang.reflect.Field;
 import java.util.List;

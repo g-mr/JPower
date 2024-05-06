@@ -2,8 +2,8 @@ package top.jpower.jpower.module.common.swagger;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.core.Ordered;
-import top.jpower.core.utils.constants.JpowerConstants;
-import top.jpower.jpower.module.base.annotation.LoaderService;
+import top.jpower.core.util.annotation.LoaderService;
+import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.jpower.module.common.deploy.service.DeployService;
 
 import java.util.Properties;

@@ -9,8 +9,8 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import top.jpower.core.utils.utils.Fc;
-import top.jpower.core.utils.utils.MapUtil;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.MapUtil;
 import top.jpower.jpower.module.annotation.Function;
 import top.jpower.jpower.module.annotation.Menu;
 

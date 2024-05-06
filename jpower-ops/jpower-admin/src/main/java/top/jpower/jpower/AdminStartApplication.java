@@ -8,7 +8,7 @@ import org.springframework.context.annotation.FilterType;
 import top.jpower.common.constants.AppConstant;
 import top.jpower.jpower.module.common.deploy.JpowerApplication;
 import top.jpower.jpower.module.common.deploy.service.annotation.JpowerCloudApplication;
-import top.jpower.jpower.module.common.jackson.JpowerJacksonConfig;
+import top.jpower.jpower.module.jackson.JpowerJacksonConfig;
 
 /**
  * @ClassName AdminStartApplication

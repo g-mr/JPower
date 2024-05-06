@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.jpower.common.enums.YN01Enum;
-import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.dbs.dao.LogMonitorParamDao;
 import top.jpower.jpower.dbs.dao.LogMonitorSettingDao;
 import top.jpower.jpower.dbs.dao.mapper.LogMonitorSettingMapper;

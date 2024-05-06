@@ -9,9 +9,10 @@ import top.jpower.common.constants.ParamsConstants;
 import top.jpower.common.enums.FunctionTypeEnum;
 import top.jpower.common.enums.UserTypeEnum;
 import top.jpower.common.enums.YN01Enum;
-import top.jpower.core.utils.utils.DigestUtil;
-import top.jpower.core.utils.utils.Fc;
-import top.jpower.core.utils.utils.MD5;
+import top.jpower.core.util.rsp.ResponseData;
+import top.jpower.core.util.utils.DigestUtil;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.MD5;
 import top.jpower.jpower.cache.param.ParamConfig;
 import top.jpower.jpower.dbs.dao.dict.TbCoreDictDao;
 import top.jpower.jpower.dbs.dao.org.TbCoreOrgDao;
@@ -30,7 +31,6 @@ import top.jpower.jpower.feign.UserClient;
 import top.jpower.jpower.module.base.enums.JpowerError;
 import top.jpower.jpower.module.base.exception.JpowerAssert;
 import top.jpower.jpower.module.base.exception.JpowerException;
-import top.jpower.jpower.module.base.vo.ResponseData;
 import top.jpower.jpower.module.common.service.impl.BaseServiceImpl;
 import top.jpower.jpower.module.common.utils.ShieldUtil;
 import top.jpower.jpower.module.mp.support.Condition;
@@ -39,11 +39,8 @@ import top.jpower.jpower.service.tenant.TenantService;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static top.jpower.core.utils.constants.JpowerConstants.TOP_CODE;
-import static top.jpower.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
-import static top.jpower.jpower.module.tenant.TenantConstant.TENANT_ACCOUNT_NUMBER;
-import static top.jpower.jpower.module.tenant.TenantConstant.getLicenseKey;
-import static top.jpower.jpower.module.tenant.TenantConstant.tenantCode;
+import static top.jpower.core.util.constants.JpowerConstants.TOP_CODE;
+import static top.jpower.jpower.module.tenant.TenantConstant.*;
 
 /**
  * @ClassName TenantServiceImpl

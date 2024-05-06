@@ -3,13 +3,13 @@ package top.jpower.jpower.wrapper;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 import top.jpower.common.enums.YYZLEnum;
-import top.jpower.core.utils.constants.StringPool;
-import top.jpower.core.utils.utils.Fc;
-import top.jpower.core.utils.utils.GuavaCache;
-import top.jpower.core.utils.utils.MapUtil;
-import top.jpower.core.utils.utils.WebUtil;
+import top.jpower.core.util.constants.StringPool;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.GuavaCache;
+import top.jpower.core.util.utils.MapUtil;
+import top.jpower.core.util.utils.WebUtil;
 import top.jpower.jpower.cache.dict.DictCache;
-import top.jpower.jpower.module.base.annotation.Dict;
+import top.jpower.jpower.module.annotation.Dict;
 import top.jpower.jpower.module.dictbind.handler.IDictBindHandler;
 
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static top.jpower.core.utils.constants.ConstantsUtils.I18N_KEY;
+import static top.jpower.core.util.constants.JpowerConstants.I18N_KEY;
 
 /**
  * @Author mr.g

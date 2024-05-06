@@ -24,17 +24,17 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import top.jpower.core.utils.constants.StringPool;
-import top.jpower.core.utils.constants.TokenConstant;
-import top.jpower.core.utils.utils.CollectionUtil;
-import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.util.constants.StringPool;
+import top.jpower.core.util.constants.TokenConstant;
+import top.jpower.core.util.utils.ChainMap;
+import top.jpower.core.util.utils.CollectionUtil;
+import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.gateway.service.RoleService;
 import top.jpower.jpower.gateway.utils.ExculdesUrl;
 import top.jpower.jpower.gateway.utils.IpUtil;
 import top.jpower.jpower.gateway.utils.TokenUtil;
 import top.jpower.jpower.module.common.cache.CacheNames;
 import top.jpower.jpower.module.common.redis.RedisUtil;
-import top.jpower.jpower.module.common.support.ChainMap;
 import top.jpower.jpower.module.common.utils.JwtUtil;
 import top.jpower.jpower.module.properties.AuthProperties;
 
@@ -43,7 +43,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static top.jpower.core.utils.constants.TokenConstant.HEADER_MENU;
+import static top.jpower.core.util.constants.JpowerConstants.HEADER_MENU;
 import static top.jpower.jpower.module.common.auth.RoleConstant.*;
 
 /**

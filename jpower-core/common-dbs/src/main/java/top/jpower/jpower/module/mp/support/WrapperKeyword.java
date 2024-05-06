@@ -2,8 +2,8 @@ package top.jpower.jpower.module.mp.support;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import top.jpower.core.utils.constants.StringPool;
-import top.jpower.core.utils.utils.StringUtil;
+import top.jpower.core.util.constants.StringPool;
+import top.jpower.core.util.utils.StringUtil;
 
 /**
  * @author mr.g

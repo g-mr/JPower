@@ -17,11 +17,11 @@ import top.jpower.common.constants.ParamsConstants;
 import top.jpower.common.enums.ActivationStatusEnum;
 import top.jpower.common.enums.IdTypeEnum;
 import top.jpower.common.enums.UserTypeEnum;
-import top.jpower.core.utils.constants.StringPool;
-import top.jpower.core.utils.utils.DigestUtil;
-import top.jpower.core.utils.utils.Fc;
-import top.jpower.core.utils.utils.MD5;
-import top.jpower.core.utils.utils.UuidUtil;
+import top.jpower.core.util.constants.StringPool;
+import top.jpower.core.util.utils.DigestUtil;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.MD5;
+import top.jpower.core.util.utils.UuidUtil;
 import top.jpower.jpower.cache.SystemCache;
 import top.jpower.jpower.cache.UserCache;
 import top.jpower.jpower.cache.param.ParamConfig;
@@ -50,9 +50,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static top.jpower.jpower.module.common.cache.CacheNames.TOKEN_USER_KEY;
-import static top.jpower.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
-import static top.jpower.jpower.module.tenant.TenantConstant.TENANT_ACCOUNT_NUMBER;
-import static top.jpower.jpower.module.tenant.TenantConstant.getAccountNumber;
+import static top.jpower.jpower.module.tenant.TenantConstant.*;
 
 /**
  * @author mr.gmac

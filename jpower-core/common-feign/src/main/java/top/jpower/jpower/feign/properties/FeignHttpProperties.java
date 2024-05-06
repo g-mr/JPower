@@ -3,9 +3,9 @@ package top.jpower.jpower.feign.properties;
 import feign.Logger;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import top.jpower.core.utils.constants.JpowerConstants;
-import top.jpower.core.utils.utils.Fc;
-import top.jpower.jpower.module.common.support.EnvBeanUtil;
+import top.jpower.core.util.constants.JpowerConstants;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.jpower.module.common.deploy.props.JpowerProperties;
 
 import java.util.concurrent.TimeUnit;
 
@@ -19,9 +19,8 @@ import static org.springframework.cloud.openfeign.support.FeignHttpClientPropert
 @ConfigurationProperties(prefix = "jpower.feign.http")
 public class FeignHttpProperties {
 
-    public FeignHttpProperties(){
-        String profile = EnvBeanUtil.getProfile();
-        if (Fc.equals(profile, JpowerConstants.PROD_CODE)){
+    public FeignHttpProperties(JpowerProperties jpowerProperties){
+        if (Fc.equals(jpowerProperties.getEnv(), JpowerConstants.PROD_CODE)){
             logLevel = Logger.Level.BASIC;
         }
     }

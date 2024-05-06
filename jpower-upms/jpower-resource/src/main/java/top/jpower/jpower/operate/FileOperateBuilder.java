@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Component;
 import top.jpower.common.enums.FileStorageTypeEnum;
 import top.jpower.common.enums.OssCategoryEnum;
-import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.dbs.dao.TbResourceFileDao;
 import top.jpower.jpower.dbs.dao.TbResourceOssDao;
 import top.jpower.jpower.dbs.entity.TbResourceOss;

@@ -15,7 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>top.jpower</groupId>
-            <artifactId>jpower-core-utils</artifactId>
+            <artifactId>jpower-core-util</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
 
@@ -23,6 +23,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>top.jpower</groupId>
+            <artifactId>common-deploy</artifactId>
+            <version>${com.jpower.version}</version>
+        </dependency>
+
     </dependencies>
 
 

@@ -5,8 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import springfox.documentation.service.AuthorizationScope;
-import top.jpower.core.utils.constants.JpowerConstants;
-import top.jpower.core.utils.constants.TokenConstant;
+import top.jpower.core.util.constants.JpowerConstants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,7 +24,7 @@ import java.util.List;
 public class SwaggerProperties {
 
     private static final String BASIC_HEADER_KEY = "Authorization";
-    private static final String HEADER = TokenConstant.HEADER;
+    private static final String HEADER = JpowerConstants.AUTH_HEADER;
 
     /** 分组名称 */
     private String groupName = "";

@@ -4,11 +4,11 @@ import cn.hutool.core.util.ClassUtil;
 import com.alibaba.fastjson2.JSON;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import top.jpower.core.utils.utils.*;
+import top.jpower.core.util.utils.*;
 import top.jpower.jpower.annotation.JpowerDelayTask;
 import top.jpower.jpower.enums.TaskStatusEnum;
 import top.jpower.jpower.enums.TaskTypeEnum;
-import top.jpower.jpower.module.common.support.EnvBeanUtil;
+import top.jpower.jpower.module.common.deploy.props.JpowerProperties;
 import top.jpower.jpower.task.DelayTask;
 import top.jpower.jpower.task.entity.TaskDelay;
 import top.jpower.jpower.task.jdbc.TaskDelayJdbc;
@@ -27,12 +27,13 @@ import java.util.concurrent.DelayQueue;
 @RequiredArgsConstructor
 public class DelayTaskUtil {
 
+    private final JpowerProperties jpowerProperties;
     private final TaskDelayJdbc taskDelayJdbc;
     private final DelayQueue<DelayTask> delayQueue;
 
 
     private static class Singleton{
-        private static final DelayTaskUtil DELAY_TASK = new DelayTaskUtil(SpringUtil.getBean(TaskDelayJdbc.class), SpringUtil.getBean(DelayQueue.class));
+        private static final DelayTaskUtil DELAY_TASK = new DelayTaskUtil(SpringUtil.getBean(JpowerProperties.class), SpringUtil.getBean(TaskDelayJdbc.class), SpringUtil.getBean(DelayQueue.class));
 
     }
 
@@ -62,7 +63,7 @@ public class DelayTaskUtil {
         taskTimeBean.setId(Fc.randomSnowFlakeId());
         taskTimeBean.setName(delayTask.name());
         taskTimeBean.setRetry(delayTask.retry());
-        taskTimeBean.setAppName(EnvBeanUtil.getString("spring.application.name"));
+        taskTimeBean.setAppName(jpowerProperties.getApplicationName());
         taskTimeBean.setType(TaskTypeEnum.DELAY.getCode());
         taskTimeBean.setTaskTime(taskTime);
         taskTimeBean.setClassPath(ClassUtil.getClassName(clz, false));

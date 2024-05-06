@@ -7,8 +7,8 @@ import lombok.AllArgsConstructor;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.StringValue;
 import org.springframework.beans.factory.SmartInitializingSingleton;
-import top.jpower.core.utils.utils.Fc;
-import top.jpower.core.utils.utils.WebUtil;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.WebUtil;
 import top.jpower.jpower.module.common.utils.ShieldUtil;
 
 import java.util.ArrayList;

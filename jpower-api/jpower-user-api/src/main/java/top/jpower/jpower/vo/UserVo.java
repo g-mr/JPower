@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
-import top.jpower.jpower.module.base.annotation.Excel;
+import top.jpower.jpower.module.common.annotation.Excel;
 
 /**
  * @ClassName UserVo

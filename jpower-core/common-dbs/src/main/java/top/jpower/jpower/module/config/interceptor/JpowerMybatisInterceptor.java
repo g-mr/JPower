@@ -7,8 +7,8 @@ import org.apache.ibatis.executor.resultset.ResultSetHandler;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.session.ResultHandler;
-import top.jpower.core.utils.utils.ClassUtil;
-import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.util.utils.ClassUtil;
+import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.module.config.interceptor.chain.ChainFilter;
 import top.jpower.jpower.module.config.interceptor.chain.MybatisInterceptor;
 

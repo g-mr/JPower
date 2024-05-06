@@ -3,8 +3,8 @@ package top.jpower.jpower.module.common.utils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.jpower.core.utils.constants.StringPool;
-import top.jpower.core.utils.utils.WebUtil;
+import top.jpower.core.util.constants.StringPool;
+import top.jpower.core.util.utils.WebUtil;
 
 import java.util.HashMap;
 import java.util.Map;

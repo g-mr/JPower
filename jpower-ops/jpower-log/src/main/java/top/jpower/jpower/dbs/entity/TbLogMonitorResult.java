@@ -5,8 +5,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import top.jpower.jpower.module.base.annotation.Dict;
-import top.jpower.jpower.module.base.annotation.Excel;
+import top.jpower.jpower.module.annotation.Dict;
+import top.jpower.jpower.module.common.annotation.Excel;
 import top.jpower.jpower.module.dbs.entity.base.BaseEntity;
 
 /**

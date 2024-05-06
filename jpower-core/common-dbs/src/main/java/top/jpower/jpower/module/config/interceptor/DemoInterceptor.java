@@ -6,8 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.springframework.util.AntPathMatcher;
-import top.jpower.core.utils.utils.Fc;
-import top.jpower.core.utils.utils.WebUtil;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.WebUtil;
 import top.jpower.jpower.module.config.properties.DemoProperties;
 
 /**

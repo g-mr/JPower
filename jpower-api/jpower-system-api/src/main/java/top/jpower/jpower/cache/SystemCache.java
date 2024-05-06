@@ -1,8 +1,9 @@
 package top.jpower.jpower.cache;
 
-import top.jpower.core.utils.constants.StringPool;
-import top.jpower.core.utils.utils.Fc;
-import top.jpower.core.utils.utils.SpringUtil;
+import top.jpower.core.util.constants.StringPool;
+import top.jpower.core.util.rsp.ResponseData;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.SpringUtil;
 import top.jpower.jpower.dbs.entity.city.TbCoreCity;
 import top.jpower.jpower.dbs.entity.client.TbCoreClient;
 import top.jpower.jpower.dbs.entity.function.TbCoreDataScope;
@@ -10,7 +11,6 @@ import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
 import top.jpower.jpower.dbs.entity.org.TbCoreOrg;
 import top.jpower.jpower.dbs.entity.tenant.TbCoreTenant;
 import top.jpower.jpower.feign.SystemClient;
-import top.jpower.jpower.module.base.vo.ResponseData;
 import top.jpower.jpower.module.common.cache.CacheNames;
 import top.jpower.jpower.module.common.utils.CacheUtil;
 

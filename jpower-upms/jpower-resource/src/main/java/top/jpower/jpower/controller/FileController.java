@@ -6,11 +6,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.common.constants.DefaultValConstants;
-import top.jpower.core.utils.constants.ConstantsReturn;
-import top.jpower.core.utils.utils.DesUtil;
-import top.jpower.core.utils.utils.Fc;
-import top.jpower.core.utils.utils.FileUtil;
-import top.jpower.core.utils.utils.ReturnJsonUtil;
+import top.jpower.core.util.constants.ReturnConstants;
+import top.jpower.core.util.rsp.Pg;
+import top.jpower.core.util.rsp.ResponseData;
+import top.jpower.core.util.rsp.ReturnJsonUtil;
+import top.jpower.core.util.utils.DesUtil;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.FileUtil;
 import top.jpower.jpower.cache.dict.DictCache;
 import top.jpower.jpower.dbs.entity.TbResourceFile;
 import top.jpower.jpower.module.annotation.Function;
@@ -19,8 +21,6 @@ import top.jpower.jpower.module.base.enums.JpowerError;
 import top.jpower.jpower.module.base.exception.BusinessException;
 import top.jpower.jpower.module.base.exception.JpowerAssert;
 import top.jpower.jpower.module.base.exception.JpowerException;
-import top.jpower.jpower.module.base.vo.Pg;
-import top.jpower.jpower.module.base.vo.ResponseData;
 import top.jpower.jpower.module.common.cache.CacheNames;
 import top.jpower.jpower.module.common.controller.BaseController;
 import top.jpower.jpower.module.common.utils.CacheUtil;
@@ -75,7 +75,7 @@ public class FileController extends BaseController {
         } catch (Exception e){
             e.printStackTrace();
             logger.error("文件上传失败，e={}",e.getMessage());
-            return ReturnJsonUtil.print(ConstantsReturn.RECODE_ERROR,"文件上传失败", false);
+            return ReturnJsonUtil.print(ReturnConstants.RECODE_ERROR,"文件上传失败", false);
         }
     }
 

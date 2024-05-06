@@ -2,7 +2,7 @@ package top.jpower.jpower.module.config;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import org.apache.ibatis.reflection.MetaObject;
-import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.module.common.auth.RoleConstant;
 import top.jpower.jpower.module.dbs.config.LoginUserContext;
 

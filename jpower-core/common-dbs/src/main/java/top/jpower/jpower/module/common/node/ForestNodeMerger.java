@@ -5,10 +5,10 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.hutool.core.lang.tree.TreeUtil;
 import cn.hutool.core.util.TypeUtil;
-import top.jpower.core.utils.utils.BeanUtil;
-import top.jpower.core.utils.utils.Fc;
-import top.jpower.core.utils.utils.MapUtil;
-import top.jpower.core.utils.utils.StringUtil;
+import top.jpower.core.util.utils.BeanUtil;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.MapUtil;
+import top.jpower.core.util.utils.StringUtil;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static top.jpower.core.utils.constants.StringPool.*;
+import static top.jpower.core.util.constants.StringPool.*;
 
 /**
  * @author mr.g

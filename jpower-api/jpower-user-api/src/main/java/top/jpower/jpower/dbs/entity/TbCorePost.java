@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import top.jpower.jpower.module.base.annotation.Dict;
+import top.jpower.jpower.module.annotation.Dict;
 import top.jpower.jpower.module.tenant.entity.TenantEntity;
 
 import javax.validation.constraints.NotBlank;

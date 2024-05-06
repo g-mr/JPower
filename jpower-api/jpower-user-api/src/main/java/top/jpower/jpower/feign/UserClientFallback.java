@@ -4,12 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestParam;
-import top.jpower.core.utils.constants.ConstantsReturn;
-import top.jpower.core.utils.utils.ReturnJsonUtil;
+import top.jpower.core.util.constants.ReturnConstants;
+import top.jpower.core.util.rsp.ResponseData;
+import top.jpower.core.util.rsp.ReturnJsonUtil;
 import top.jpower.jpower.dbs.entity.TbCorePost;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
 import top.jpower.jpower.dto.ValidatePasswordDto;
-import top.jpower.jpower.module.base.vo.ResponseData;
 import top.jpower.jpower.vo.UserVo;
 
 import java.util.List;
@@ -62,19 +62,19 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
             @Override
             public ResponseData saveUser(TbCoreUser user) {
                 log.error("调用saveUser失败，参数：user={} ，e={}", user, cause);
-                return ReturnJsonUtil.print(ConstantsReturn.RECODE_API, cause.getMessage(), false);
+                return ReturnJsonUtil.print(ReturnConstants.RECODE_API, cause.getMessage(), false);
             }
 
             @Override
             public ResponseData<List<TbCoreUser>> listByUserType(Integer userType) {
                 log.error("调用listByUserType失败，参数：userType={}", userType);
-                return ReturnJsonUtil.print(ConstantsReturn.RECODE_API, cause.getMessage(), false);
+                return ReturnJsonUtil.print(ReturnConstants.RECODE_API, cause.getMessage(), false);
             }
 
             @Override
             public ResponseData<TbCorePost> queryPostById(Long postId) {
                 log.error("调用queryPostById失败，参数：postId={}", postId);
-                return ReturnJsonUtil.print(ConstantsReturn.RECODE_API, cause.getMessage(), false);
+                return ReturnJsonUtil.print(ReturnConstants.RECODE_API, cause.getMessage(), false);
             }
 
             /**

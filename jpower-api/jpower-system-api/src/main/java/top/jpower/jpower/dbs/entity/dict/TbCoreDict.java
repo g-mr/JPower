@@ -2,7 +2,7 @@ package top.jpower.jpower.dbs.entity.dict;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import top.jpower.jpower.module.base.annotation.Dict;
+import top.jpower.jpower.module.annotation.Dict;
 import top.jpower.jpower.module.tenant.entity.TenantEntity;
 
 /**

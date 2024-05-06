@@ -1,6 +1,6 @@
 package top.jpower.jpower.module.base.enums;
 
-import top.jpower.core.utils.constants.ConstantsReturn;
+import top.jpower.core.util.constants.ReturnConstants;
 
 /**
  * 异常信息
@@ -11,16 +11,16 @@ import top.jpower.core.utils.constants.ConstantsReturn;
 public enum JpowerError {
 
     // 异常信息
-    Redis(ConstantsReturn.RECODE_REDIS, "redis异常:%s"),
-    Http(ConstantsReturn.RECODE_HTTP, "http异常"),
-    Rpc(ConstantsReturn.RECODE_API, "rpc异常[retcode:%s,retmsg:%s]"),
-    RateLimit(ConstantsReturn.RECODE_RATELIMIT, "流量限制"),
-    Parser(ConstantsReturn.RECODE_PARSER, "解析异常:%s"),
-    Auth(ConstantsReturn.RECODE_AUTH, "权限异常:%s"),
-    Unknown(ConstantsReturn.RECODE_SYSTEM, "系统异常:%s"),
-    Arg(ConstantsReturn.RECODE_NULL, "参数错误:%s"),
-    Business(ConstantsReturn.RECODE_ERROR, "%s"),
-    NotFind(ConstantsReturn.RECODE_NOTFOUND, "未找到:%s");
+    Redis(ReturnConstants.RECODE_REDIS, "redis异常:%s"),
+    Http(ReturnConstants.RECODE_HTTP, "http异常"),
+    Rpc(ReturnConstants.RECODE_API, "rpc异常[retcode:%s,retmsg:%s]"),
+    RateLimit(ReturnConstants.RECODE_RATELIMIT, "流量限制"),
+    Parser(ReturnConstants.RECODE_PARSER, "解析异常:%s"),
+    Auth(ReturnConstants.RECODE_AUTH, "权限异常:%s"),
+    Unknown(ReturnConstants.RECODE_SYSTEM, "系统异常:%s"),
+    Arg(ReturnConstants.RECODE_NULL, "参数错误:%s"),
+    Business(ReturnConstants.RECODE_ERROR, "%s"),
+    NotFind(ReturnConstants.RECODE_NOTFOUND, "未找到:%s");
 
     private int    code;
     private String message;

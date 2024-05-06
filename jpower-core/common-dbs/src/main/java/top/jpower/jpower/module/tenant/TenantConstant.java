@@ -1,10 +1,10 @@
 package top.jpower.jpower.module.tenant;
 
-import top.jpower.core.utils.constants.StringPool;
-import top.jpower.core.utils.constants.TokenConstant;
-import top.jpower.core.utils.utils.DateUtil;
-import top.jpower.core.utils.utils.DesedeUtil;
-import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.util.constants.StringPool;
+import top.jpower.core.util.constants.TokenConstant;
+import top.jpower.core.util.utils.DateUtil;
+import top.jpower.core.util.utils.DesedeUtil;
+import top.jpower.core.util.utils.Fc;
 
 import java.util.Date;
 import java.util.List;

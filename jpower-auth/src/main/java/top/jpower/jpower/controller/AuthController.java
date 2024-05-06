@@ -12,9 +12,11 @@ import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.common.constants.ParamsConstants;
 import top.jpower.common.enums.LoginLimitEnum;
 import top.jpower.common.enums.UserTypeEnum;
-import top.jpower.core.utils.constants.StringPool;
-import top.jpower.core.utils.constants.TokenConstant;
-import top.jpower.core.utils.utils.*;
+import top.jpower.core.util.constants.JpowerConstants;
+import top.jpower.core.util.constants.StringPool;
+import top.jpower.core.util.rsp.ResponseData;
+import top.jpower.core.util.rsp.ReturnJsonUtil;
+import top.jpower.core.util.utils.*;
 import top.jpower.jpower.auth.TokenGranterBuilder;
 import top.jpower.jpower.auth.granter.RefreshTokenGranter;
 import top.jpower.jpower.cache.SystemCache;
@@ -30,13 +32,11 @@ import top.jpower.jpower.feign.SmsClient;
 import top.jpower.jpower.feign.UserClient;
 import top.jpower.jpower.module.base.enums.JpowerError;
 import top.jpower.jpower.module.base.exception.JpowerAssert;
-import top.jpower.jpower.module.base.vo.ResponseData;
 import top.jpower.jpower.module.common.auth.SecureConstant;
 import top.jpower.jpower.module.common.auth.UserInfo;
 import top.jpower.jpower.module.common.cache.CacheNames;
 import top.jpower.jpower.module.common.controller.BaseController;
 import top.jpower.jpower.module.common.redis.RedisUtil;
-import top.jpower.jpower.module.common.support.ChainMap;
 import top.jpower.jpower.module.common.utils.JwtUtil;
 import top.jpower.jpower.module.common.utils.ShieldUtil;
 import top.jpower.jpower.module.tenant.JpowerTenantProperties;
@@ -47,7 +47,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import static top.jpower.core.utils.constants.TokenConstant.HEADER_TENANT;
+import static top.jpower.core.util.constants.JpowerConstants.HEADER_TENANT;
 import static top.jpower.jpower.module.common.cache.CacheNames.TOKEN_USER_KEY;
 import static top.jpower.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
 import static top.jpower.jpower.module.tenant.TenantConstant.getExpireTime;
@@ -161,9 +161,9 @@ public class AuthController extends BaseController {
             redisUtil.remove(CacheNames.TOKEN_URL_KEY+ JwtUtil.getToken(getRequest()));
             redisUtil.remove(CacheNames.TOKEN_DATA_SCOPE_KEY+JwtUtil.getToken(getRequest()));
             redisUtil.remove(TOKEN_USER_KEY+userId+ StringPool.COLON +JwtUtil.getToken(getRequest()));
-            String cookieToken = WebUtil.getCookieVal(TokenConstant.HEADER);
+            String cookieToken = WebUtil.getCookieVal(JpowerConstants.AUTH_HEADER);
             if (Fc.isNotBlank(cookieToken)){
-                WebUtil.removeCookie(WebUtil.getResponse(), TokenConstant.HEADER);
+                WebUtil.removeCookie(WebUtil.getResponse(), JpowerConstants.AUTH_HEADER);
             }
             return ReturnJsonUtil.ok("退出成功");
         }else{

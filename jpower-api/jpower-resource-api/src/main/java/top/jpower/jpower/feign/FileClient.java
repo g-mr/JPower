@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import top.jpower.common.constants.AppConstant;
+import top.jpower.core.util.rsp.ResponseData;
 import top.jpower.jpower.dbs.entity.TbResourceFile;
-import top.jpower.jpower.module.base.vo.ResponseData;
 
 import java.io.File;
 

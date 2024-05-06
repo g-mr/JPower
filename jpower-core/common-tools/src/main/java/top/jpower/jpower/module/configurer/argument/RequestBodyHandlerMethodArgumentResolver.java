@@ -16,9 +16,9 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor;
-import top.jpower.core.utils.constants.CharsetKit;
-import top.jpower.core.utils.utils.Fc;
-import top.jpower.core.utils.utils.JsonUtil;
+import top.jpower.core.util.constants.CharsetKit;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.JsonUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;

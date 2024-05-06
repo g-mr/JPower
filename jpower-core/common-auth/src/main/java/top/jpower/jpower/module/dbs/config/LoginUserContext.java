@@ -1,10 +1,10 @@
 package top.jpower.jpower.module.dbs.config;
 
 import lombok.extern.slf4j.Slf4j;
-import top.jpower.core.utils.constants.StringPool;
-import top.jpower.core.utils.constants.TokenConstant;
-import top.jpower.core.utils.utils.Fc;
-import top.jpower.core.utils.utils.WebUtil;
+import top.jpower.core.util.constants.StringPool;
+import top.jpower.core.util.constants.TokenConstant;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.WebUtil;
 import top.jpower.jpower.module.common.auth.RoleConstant;
 import top.jpower.jpower.module.common.auth.UserInfo;
 import top.jpower.jpower.module.common.utils.ShieldUtil;

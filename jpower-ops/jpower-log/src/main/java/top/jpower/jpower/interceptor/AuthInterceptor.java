@@ -12,9 +12,9 @@ import okhttp3.*;
 import org.apache.commons.lang.NullArgumentException;
 import org.apache.http.HttpException;
 import org.jetbrains.annotations.NotNull;
-import top.jpower.core.utils.constants.StringPool;
-import top.jpower.core.utils.utils.OkHttp;
-import top.jpower.core.utils.utils.*;
+import top.jpower.core.util.constants.StringPool;
+import top.jpower.core.util.utils.OkHttp;
+import top.jpower.core.util.utils.*;
 import top.jpower.jpower.module.base.exception.BusinessException;
 import top.jpower.jpower.properties.AuthInfoConfiguration;
 

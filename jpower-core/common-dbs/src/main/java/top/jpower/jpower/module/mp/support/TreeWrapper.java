@@ -9,9 +9,9 @@ import com.baomidou.mybatisplus.core.conditions.segments.MergeSegments;
 import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
-import top.jpower.core.utils.constants.JpowerConstants;
-import top.jpower.core.utils.utils.Fc;
-import top.jpower.core.utils.utils.StringUtil;
+import top.jpower.core.util.constants.JpowerConstants;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.StringUtil;
 import top.jpower.jpower.module.common.node.ForestNodeMerger;
 
 import java.util.ArrayList;

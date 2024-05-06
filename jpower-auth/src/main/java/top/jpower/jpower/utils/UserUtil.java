@@ -1,7 +1,7 @@
 package top.jpower.jpower.utils;
 
 import top.jpower.common.enums.YN01Enum;
-import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.cache.SystemCache;
 import top.jpower.jpower.cache.UserCache;
 import top.jpower.jpower.dbs.entity.TbCoreUser;

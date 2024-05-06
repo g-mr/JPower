@@ -25,9 +25,9 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import top.jpower.core.utils.constants.CharsetKit;
-import top.jpower.core.utils.utils.BufferUtil;
-import top.jpower.core.utils.utils.Fc;
+import top.jpower.core.util.constants.CharsetKit;
+import top.jpower.core.util.utils.BufferUtil;
+import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.gateway.reactive.RecorderServerHttpRequestDecorator;
 
 import java.net.URI;
@@ -35,7 +35,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static top.jpower.core.utils.constants.StringPool.*;
+import static top.jpower.core.util.constants.StringPool.*;
 
 /**
  * @author mr.g

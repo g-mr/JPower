@@ -2,10 +2,11 @@ package top.jpower.jpower.module.common.utils;
 
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import top.jpower.core.utils.constants.StringPool;
-import top.jpower.core.utils.utils.Fc;
-import top.jpower.core.utils.utils.SpringUtil;
-import top.jpower.jpower.module.common.support.EnvBeanUtil;
+import top.jpower.core.util.constants.StringPool;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.SpringUtil;
+
+import static top.jpower.jpower.module.common.utils.CacheUtil.TENANT_MODE;
 
 /**
  * @Author mr.g
@@ -31,7 +32,7 @@ public class Cm {
      * @Date 11:32 2020-09-01
      **/
     public Cache getCache(String cacheName, String tenantCode) {
-        return getCache(cacheName, EnvBeanUtil.getTenantEnable(),Fc.isNotBlank(tenantCode)?tenantCode: ShieldUtil.getTenantCode());
+        return getCache(cacheName, Boolean.TRUE, tenantCode);
     }
 
     /**
@@ -40,7 +41,7 @@ public class Cm {
      * @Date 11:32 2020-09-01
      **/
     public Cache getCache(String cacheName) {
-        return getCache(cacheName,EnvBeanUtil.getTenantEnable());
+        return getCache(cacheName, TENANT_MODE);
     }
 
     /**
@@ -49,7 +50,13 @@ public class Cm {
      * @Date 11:32 2020-09-01
      **/
     public Cache getCache(String cacheName,Boolean tenantMode) {
-        return getCache(cacheName, tenantMode, ShieldUtil.getTenantCode());
+        if (tenantMode){
+            try {
+                return getCache(cacheName, ShieldUtil.getTenantCode());
+            } catch (Exception ignored){}
+        }
+
+        return getCache(cacheName, Boolean.FALSE, StringPool.EMPTY);
     }
 
     /**

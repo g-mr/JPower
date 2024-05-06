@@ -15,10 +15,13 @@ import top.jpower.common.constants.DefaultValConstants;
 import top.jpower.common.constants.ParamsConstants;
 import top.jpower.common.enums.IdTypeEnum;
 import top.jpower.common.enums.UserTypeEnum;
-import top.jpower.core.utils.constants.ConstantsReturn;
-import top.jpower.core.utils.constants.ImportExportConstants;
-import top.jpower.core.utils.constants.StringPool;
-import top.jpower.core.utils.utils.*;
+import top.jpower.core.util.constants.ImportExportConstants;
+import top.jpower.core.util.constants.ReturnConstants;
+import top.jpower.core.util.constants.StringPool;
+import top.jpower.core.util.rsp.Pg;
+import top.jpower.core.util.rsp.ResponseData;
+import top.jpower.core.util.rsp.ReturnJsonUtil;
+import top.jpower.core.util.utils.*;
 import top.jpower.jpower.cache.SystemCache;
 import top.jpower.jpower.cache.param.ParamConfig;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
@@ -31,18 +34,16 @@ import top.jpower.jpower.module.base.annotation.OperateLog;
 import top.jpower.jpower.module.base.enums.JpowerError;
 import top.jpower.jpower.module.base.exception.BusinessException;
 import top.jpower.jpower.module.base.exception.JpowerAssert;
-import top.jpower.jpower.module.base.vo.Pg;
-import top.jpower.jpower.module.base.vo.ResponseData;
 import top.jpower.jpower.module.common.auth.UserInfo;
 import top.jpower.jpower.module.common.cache.CacheNames;
 import top.jpower.jpower.module.common.controller.BaseController;
 import top.jpower.jpower.module.common.redis.RedisUtil;
 import top.jpower.jpower.module.common.support.BeanExcelUtil;
-import top.jpower.jpower.module.common.support.EnvBeanUtil;
 import top.jpower.jpower.module.common.utils.CacheUtil;
 import top.jpower.jpower.module.common.utils.ShieldUtil;
 import top.jpower.jpower.module.configurer.argument.RequestSingleBody;
 import top.jpower.jpower.module.mp.support.Condition;
+import top.jpower.jpower.module.tenant.JpowerTenantProperties;
 import top.jpower.jpower.service.CoreUserService;
 import top.jpower.jpower.vo.UserVo;
 
@@ -51,13 +52,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-import static top.jpower.core.utils.constants.JpowerConstants.VALIDATE_SMS_CODE;
+import static top.jpower.core.util.constants.JpowerConstants.VALIDATE_SMS_CODE;
 import static top.jpower.jpower.module.base.annotation.OperateLog.BusinessType.DELETE;
 import static top.jpower.jpower.module.base.annotation.OperateLog.BusinessType.UPDATE;
 import static top.jpower.jpower.module.common.cache.CacheNames.TOKEN_USER_KEY;
-import static top.jpower.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
-import static top.jpower.jpower.module.tenant.TenantConstant.TENANT_ACCOUNT_NUMBER;
-import static top.jpower.jpower.module.tenant.TenantConstant.getAccountNumber;
+import static top.jpower.jpower.module.tenant.TenantConstant.*;
 
 @Api(tags = "用户管理")
 @RestController
@@ -65,6 +64,7 @@ import static top.jpower.jpower.module.tenant.TenantConstant.getAccountNumber;
 @RequestMapping("/core/user")
 public class UserController extends BaseController {
 
+    private JpowerTenantProperties tenantProperties;
     private CoreUserService coreUserService;
     private RedisUtil redisUtil;
     private SmsClient smsClient;
@@ -185,14 +185,14 @@ public class UserController extends BaseController {
         }
 
         if (StringUtils.isNotBlank(coreUser.getTelephone()) && !Validator.isMobile(coreUser.getTelephone())) {
-            return ReturnJsonUtil.print(ConstantsReturn.RECODE_BUSINESS, "手机号不合法", false);
+            return ReturnJsonUtil.print(ReturnConstants.RECODE_BUSINESS, "手机号不合法", false);
         }
         if (StringUtils.isNotBlank(coreUser.getEmail()) && !Validator.isEmail(coreUser.getEmail())) {
             return ReturnJsonUtil.busFail("邮箱不合法");
         }
 
         String tenantCode = Fc.toStr(coreUser.getTenantCode(), ShieldUtil.getTenantCode());
-        if (EnvBeanUtil.getTenantEnable()){
+        if (tenantProperties.getEnable()){
             if (ShieldUtil.isRoot()) {
                 tenantCode = Fc.isBlank(coreUser.getTenantCode()) ? DEFAULT_TENANT_CODE : coreUser.getTenantCode();
             }
@@ -375,7 +375,7 @@ public class UserController extends BaseController {
             return ReturnJsonUtil.fail("上传出错，请稍后重试");
         } catch (Exception e) {
             logger.error("文件上传出错，error={}", ExceptionUtil.getStackTraceAsString(e));
-            return ReturnJsonUtil.print(ConstantsReturn.RECODE_ERROR, "上传出错，请稍后重试", false);
+            return ReturnJsonUtil.print(ReturnConstants.RECODE_ERROR, "上传出错，请稍后重试", false);
         }
 
     }

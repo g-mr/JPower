@@ -3,7 +3,7 @@ package top.jpower.jpower.dbs.entity.city;
 import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import top.jpower.jpower.module.base.annotation.Dict;
+import top.jpower.jpower.module.annotation.Dict;
 import top.jpower.jpower.module.dbs.entity.base.BaseEntity;
 
 /**
