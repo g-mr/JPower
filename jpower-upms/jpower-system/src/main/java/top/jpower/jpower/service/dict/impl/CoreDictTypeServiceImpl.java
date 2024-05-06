@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import top.jpower.common.enums.ConstantsEnum;
+import top.jpower.common.enums.YNEnum;
 import top.jpower.core.utils.constants.JpowerConstants;
 import top.jpower.core.utils.utils.Fc;
 import top.jpower.jpower.dbs.dao.dict.TbCoreDictTypeDao;
@@ -44,7 +44,7 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
     public Boolean deleteDictType(List<Long> ids) {
         List<TbCoreDictType> listType = coreDictTypeDao.list(Condition.<TbCoreDictType>getQueryWrapper().lambda()
                 .in(TbCoreDictType::getId,ids)
-                .eq(TbCoreDictType::getDelEnabled, ConstantsEnum.YN.Y.getValue()));
+                .eq(TbCoreDictType::getDelEnabled, YNEnum.Y.getValue()));
         if (listType.size() > 0){
             JpowerAssert.geZero(coreDictTypeDao.count(Condition.<TbCoreDictType>getQueryWrapper().lambda()
                     .in(TbCoreDictType::getParentId,ids)), JpowerError.Business,"请先删除下级字典类型");
@@ -52,7 +52,7 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
 
         if (coreDictTypeDao.removeReal(Condition.<TbCoreDictType>getQueryWrapper().lambda()
                 .in(TbCoreDictType::getId,ids)
-                .eq(TbCoreDictType::getDelEnabled, ConstantsEnum.YN.Y.getValue()))){
+                .eq(TbCoreDictType::getDelEnabled, YNEnum.Y.getValue()))){
             listType.forEach(type ->
                 coreDictService.removeReal(Condition.<TbCoreDict>getQueryWrapper()
                         .lambda()
@@ -67,7 +67,7 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<TbCoreDictTypeMappe
     @Override
     public Boolean addDictType(TbCoreDictType dictType) {
         dictType.setParentId(Fc.isNull(dictType.getParentId())? Fc.toLong(JpowerConstants.TOP_CODE):dictType.getParentId());
-        dictType.setDelEnabled(Fc.isBlank(dictType.getDelEnabled())? ConstantsEnum.YN.Y.getValue() :dictType.getDelEnabled());
+        dictType.setDelEnabled(Fc.isBlank(dictType.getDelEnabled())? YNEnum.Y.getValue() :dictType.getDelEnabled());
 
         LambdaQueryWrapper<TbCoreDictType> queryWrapper = Condition.<TbCoreDictType>getQueryWrapper().lambda().eq(TbCoreDictType::getDictTypeCode,dictType.getDictTypeCode());
         JpowerAssert.geZero(coreDictTypeDao.count(queryWrapper),JpowerError.Business,"该字典类型已存在");

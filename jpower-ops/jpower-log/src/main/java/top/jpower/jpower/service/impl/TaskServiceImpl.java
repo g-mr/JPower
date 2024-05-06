@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.apache.http.entity.ContentType;
 import org.springframework.stereotype.Service;
-import top.jpower.common.enums.ConstantsEnum;
+import top.jpower.common.enums.YN01Enum;
 import top.jpower.core.utils.constants.StringPool;
 import top.jpower.core.utils.utils.*;
 import top.jpower.jpower.dbs.dao.LogMonitorResultDao;
@@ -128,7 +128,7 @@ public class TaskServiceImpl implements TaskService {
 
                         TbLogMonitorSetting setting = monitorSettingService.getSetting(route.getName(),handler.getTags(method),url,method);
 
-                        if (Fc.equals(setting.getIsMonitor(), ConstantsEnum.YN01.Y.getValue())){
+                        if (Fc.equals(setting.getIsMonitor(), YN01Enum.Y.getValue())){
                             OkHttp okHttp = null;
                             try{
                                 log.info("--> START TEST REST {} {}",method,url);
@@ -180,30 +180,30 @@ public class TaskServiceImpl implements TaskService {
 
             if (Fc.isNull(okHttp.getResponse())){
                 result.setError(okHttp.getError());
-                result.setIsSuccess(ConstantsEnum.YN01.N.getValue());
+                result.setIsSuccess(YN01Enum.N.getValue());
             }else {
                 result.setResponseTime(okHttp.getResponseTime());
                 result.setRespose(okHttp.getResponse().toString());
                 result.setResposeCode(okHttp.getResponse().code());
                 result.setRestfulResponse(okHttp.getBody());
 
-                int isSuccess = ConstantsEnum.YN01.N.getValue();
+                int isSuccess = YN01Enum.N.getValue();
 
                 if (Fc.notNull(setting.getCode())){
-                    isSuccess = setting.getCode().contains(Fc.toStr(okHttp.getResponse().code()))?ConstantsEnum.YN01.Y.getValue():ConstantsEnum.YN01.N.getValue();
+                    isSuccess = setting.getCode().contains(Fc.toStr(okHttp.getResponse().code()))?YN01Enum.Y.getValue():YN01Enum.N.getValue();
                 }
 
-                if (isSuccess==ConstantsEnum.YN01.Y.getValue() && Fc.notNull(setting.getExecJs())){
+                if (isSuccess==YN01Enum.Y.getValue() && Fc.notNull(setting.getExecJs())){
                     try{
                         boolean is = JsUtil.execJsFunction("function exc(result){"+setting.getExecJs()+"}","exc",result.getRestfulResponse());
-                        isSuccess = is?ConstantsEnum.YN01.Y.getValue():ConstantsEnum.YN01.N.getValue();
+                        isSuccess = is?YN01Enum.Y.getValue():YN01Enum.N.getValue();
                     }catch (Exception e){
-                        isSuccess = ConstantsEnum.YN01.N.getValue();
+                        isSuccess = YN01Enum.N.getValue();
                     }
                 }
 
                 if (Fc.isNull(setting.getCode()) && Fc.isNull(setting.getExecJs())){
-                    isSuccess = okHttp.getResponse().isSuccessful()?ConstantsEnum.YN01.Y.getValue():ConstantsEnum.YN01.N.getValue();
+                    isSuccess = okHttp.getResponse().isSuccessful()?YN01Enum.Y.getValue():YN01Enum.N.getValue();
                 }
                 result.setIsSuccess(isSuccess);
             }

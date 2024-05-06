@@ -2,7 +2,7 @@ package top.jpower.jpower.service.role.impl;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import top.jpower.common.enums.ConstantsEnum;
+import top.jpower.common.enums.FunctionTypeEnum;
 import top.jpower.core.utils.utils.Fc;
 import top.jpower.jpower.dbs.dao.role.TbCoreRoleFunctionDao;
 import top.jpower.jpower.dbs.dao.role.mapper.TbCoreRoleFunctionMapper;
@@ -45,7 +45,7 @@ public class CoreRoleFunctionServiceImpl extends BaseServiceImpl<TbCoreRoleFunct
         if (isAutoSaveInterface){
             List<Long> fIds = coreFunctionService.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                     .select(TbCoreFunction::getId)
-                    .eq(TbCoreFunction::getFunctionType, ConstantsEnum.FUNCTION_TYPE.INTERFACE.getValue())
+                    .eq(TbCoreFunction::getFunctionType, FunctionTypeEnum.INTERFACE.getValue())
                     .in(TbCoreFunction::getParentId, funcIds), Fc::toLong);
             if (Fc.isNotEmpty(fIds)){
                 funcIds.addAll(fIds);

@@ -5,7 +5,7 @@ import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
-import top.jpower.common.enums.ConstantsEnum;
+import top.jpower.common.enums.YNEnum;
 import top.jpower.core.utils.utils.Fc;
 import top.jpower.core.utils.utils.ReturnJsonUtil;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
@@ -126,7 +126,7 @@ public class RoleUserController extends BaseController {
                 .orderByDesc(TbCoreUser::getCreateTime);
 
 
-        if (Fc.equalsValue(isEq, ConstantsEnum.YN.N.getValue())){
+        if (Fc.equalsValue(isEq, YNEnum.N.getValue())){
             wrapper.notInSql(TbCoreUser::getId,buffer.toString());
         } else {
             wrapper.inSql(TbCoreUser::getId,buffer.toString());

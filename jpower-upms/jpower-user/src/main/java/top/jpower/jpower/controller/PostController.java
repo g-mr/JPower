@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
-import top.jpower.common.enums.ConstantsEnum;
+import top.jpower.common.enums.YN01Enum;
 import top.jpower.core.utils.utils.Fc;
 import top.jpower.core.utils.utils.ReturnJsonUtil;
 import top.jpower.jpower.dbs.entity.TbCorePost;
@@ -64,7 +64,7 @@ public class PostController extends BaseController {
         return ReturnJsonUtil.data(postService.listMaps(Condition.<TbCorePost>getQueryWrapper()
                         .lambda()
                         .select(TbCorePost::getId,TbCorePost::getName,TbCorePost::getCode)
-                        .eq(TbCorePost::getStatus, ConstantsEnum.YN01.Y.getValue())
+                        .eq(TbCorePost::getStatus, YN01Enum.Y.getValue())
                         .eq(ShieldUtil.isRoot()&&Fc.isNotBlank(tenantCode),TbCorePost::getTenantCode,tenantCode)
                         .like(Fc.isNotBlank(name),TbCorePost::getName,name)
                         .orderByAsc(TbCorePost::getSort)));
@@ -81,7 +81,7 @@ public class PostController extends BaseController {
             corePost.setSort(0);
         }
         if (Fc.isNull(corePost.getStatus())){
-            corePost.setStatus(ConstantsEnum.YN01.Y.getValue());
+            corePost.setStatus(YN01Enum.Y.getValue());
         }
 
         JpowerAssert.geZero(postService.count(Condition.<TbCorePost>getQueryWrapper().lambda().eq(TbCorePost::getCode,corePost.getCode())),JpowerError.Arg,"编码已存在");

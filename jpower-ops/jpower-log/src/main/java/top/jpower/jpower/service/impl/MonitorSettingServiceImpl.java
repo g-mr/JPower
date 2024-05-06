@@ -5,7 +5,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import top.jpower.common.enums.ConstantsEnum;
+import top.jpower.common.enums.YN01Enum;
 import top.jpower.core.utils.utils.Fc;
 import top.jpower.jpower.dbs.dao.LogMonitorParamDao;
 import top.jpower.jpower.dbs.dao.LogMonitorSettingDao;
@@ -38,7 +38,7 @@ public class MonitorSettingServiceImpl extends BaseServiceImpl<LogMonitorSetting
         setting.setTag(Fc.isNotBlank(setting.getTag())?setting.getTag():null);
         setting.setPath(Fc.isNotBlank(setting.getPath())?setting.getPath():null);
         setting.setMethod(Fc.isNotBlank(setting.getMethod())?setting.getMethod():null);
-        setting.setIsMonitor(Fc.isNull(setting.getIsMonitor())?ConstantsEnum.YN01.Y.getValue():setting.getIsMonitor());
+        setting.setIsMonitor(Fc.isNull(setting.getIsMonitor())? YN01Enum.Y.getValue():setting.getIsMonitor());
         return monitorSettingDao.saveOrUpdate(setting);
     }
 
@@ -138,7 +138,7 @@ public class MonitorSettingServiceImpl extends BaseServiceImpl<LogMonitorSetting
 
         //默认情况
         setting =  new TbLogMonitorSetting();
-        setting.setIsMonitor(ConstantsEnum.YN01.Y.getValue());
+        setting.setIsMonitor(YN01Enum.Y.getValue());
         return setting;
     }
 }

@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import top.jpower.common.enums.ConstantsEnum;
+import top.jpower.common.enums.YN01Enum;
 import top.jpower.core.utils.constants.StringPool;
 import top.jpower.core.utils.utils.Fc;
 import top.jpower.core.utils.utils.ReturnJsonUtil;
@@ -83,7 +83,7 @@ public class RoleController extends BaseController {
         }
 
         if (Fc.isNull(coreRole.getIsSysRole())){
-            coreRole.setIsSysRole(ConstantsEnum.YN01.N.getValue());
+            coreRole.setIsSysRole(YN01Enum.N.getValue());
         }
 
         String ancestorId = TOP_CODE;
@@ -116,7 +116,7 @@ public class RoleController extends BaseController {
         CacheUtil.clear(CacheNames.USER_KEY);
         return ReturnJsonUtil.status(coreRoleService.remove(Condition.<TbCoreRole>getQueryWrapper().lambda()
                 .in(TbCoreRole::getId,Fc.toLongList(ids))
-                .eq(TbCoreRole::getIsSysRole,ConstantsEnum.YN01.N.getValue())));
+                .eq(TbCoreRole::getIsSysRole, YN01Enum.N.getValue())));
     }
 
     @Function(value = "修改",menus = {

@@ -2,7 +2,7 @@ package top.jpower.jpower.service.role.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import top.jpower.common.enums.ConstantsEnum;
+import top.jpower.common.enums.YN01Enum;
 import top.jpower.core.utils.utils.Fc;
 import top.jpower.core.utils.utils.StringUtil;
 import top.jpower.jpower.dbs.dao.client.TbCoreClientDao;
@@ -69,7 +69,7 @@ public class CoreMenuServiceImpl extends BaseServiceImpl<TbCoreTopMenuMapper, Tb
 
         return menuDao.listMaps(Condition.<TbCoreTopMenu>getQueryWrapper().lambda()
                         .select(TbCoreTopMenu::getId,TbCoreTopMenu::getName,TbCoreTopMenu::getCode,TbCoreTopMenu::getIcon,TbCoreTopMenu::getRouter)
-                        .eq(TbCoreTopMenu::getStatus, ConstantsEnum.YN01.Y.getValue())
+                        .eq(TbCoreTopMenu::getStatus, YN01Enum.Y.getValue())
                         .eq(TbCoreTopMenu::getClientId,clientDao.queryIdByCode(ShieldUtil.getClientCode()))
                         .inSql(!ShieldUtil.isRoot(),TbCoreTopMenu::getId, StringUtil.format(ROLE_MENU_ID, Fc.join(ShieldUtil.getUserRole()))).orderByAsc(TbCoreTopMenu::getSortNum));
     }

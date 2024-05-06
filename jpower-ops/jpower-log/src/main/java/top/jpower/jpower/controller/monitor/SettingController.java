@@ -7,7 +7,7 @@ import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
-import top.jpower.common.enums.ConstantsEnum;
+import top.jpower.common.enums.YN01Enum;
 import top.jpower.core.utils.utils.Fc;
 import top.jpower.core.utils.utils.ReturnJsonUtil;
 import top.jpower.jpower.dbs.entity.TbLogMonitorParam;
@@ -115,7 +115,7 @@ public class SettingController {
     @PostMapping(value = "/save-setup",produces="application/json")
     public ResponseData<TbLogMonitorSetting> saveSetup(@ApiIgnore TbLogMonitorSetting setting){
         JpowerAssert.notEmpty(setting.getServer(),JpowerError.Arg,"服务名称不可为空");
-        setting.setIsMonitor(Fc.isNull(setting.getIsMonitor())? ConstantsEnum.YN01.Y.getValue() :setting.getIsMonitor());
+        setting.setIsMonitor(Fc.isNull(setting.getIsMonitor())? YN01Enum.Y.getValue() :setting.getIsMonitor());
         if (monitorSettingService.save(setting)){
             return ReturnJsonUtil.ok("保存成功",setting);
         }

@@ -8,7 +8,6 @@ import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
-import top.jpower.common.enums.ConstantsEnum;
 import top.jpower.common.enums.YNEnum;
 import top.jpower.common.enums.YYZLEnum;
 import top.jpower.core.utils.utils.Fc;
@@ -183,11 +182,11 @@ public class DictController extends BaseController {
     public ResponseData stopDict(@ApiParam("字典主键，多个逗号分割") String ids){
         JpowerAssert.notEmpty(ids,JpowerError.Arg,"字典主键不可为空");
 
-        long count = coreDictService.count(Condition.<TbCoreDict>getQueryWrapper().lambda().eq(TbCoreDict::getIsStop, ConstantsEnum.YN.N.getValue()).in(TbCoreDict::getParentId,Fc.toLongList(ids)));
+        long count = coreDictService.count(Condition.<TbCoreDict>getQueryWrapper().lambda().eq(TbCoreDict::getIsStop, YNEnum.N.getValue()).in(TbCoreDict::getParentId,Fc.toLongList(ids)));
         JpowerAssert.geZero(count,JpowerError.Business,"存在启用的下级字典，不可停用");
 
         CacheUtil.clear(CacheNames.DICT_KEY);
-        return ReturnJsonUtil.status(coreDictService.update(Wrappers.<TbCoreDict>lambdaUpdate().set(TbCoreDict::getIsStop, ConstantsEnum.YN.Y.getValue()).in(TbCoreDict::getId,Fc.toLongList(ids))));
+        return ReturnJsonUtil.status(coreDictService.update(Wrappers.<TbCoreDict>lambdaUpdate().set(TbCoreDict::getIsStop, YNEnum.Y.getValue()).in(TbCoreDict::getId,Fc.toLongList(ids))));
     }
 
     @Function(value = "删除字典",menus = {

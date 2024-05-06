@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import top.jpower.common.enums.ConstantsEnum;
+import top.jpower.common.enums.YN01Enum;
 import top.jpower.core.utils.constants.StringPool;
 import top.jpower.core.utils.utils.Fc;
 import top.jpower.core.utils.utils.MapUtil;
@@ -95,10 +95,10 @@ public class RoleService {
                         .filter(m->Fc.equalsValue(MapUtil.getLong(m,"menuId"),menuId))
                         .sorted(Comparator.comparingInt(m->MapUtil.getInt(m,"allRole")))
                         .filter(m->{
-                            if (Fc.equalsValue(MapUtil.getInt(m,"allRole"), ConstantsEnum.YN01.N.getValue())){
+                            if (Fc.equalsValue(MapUtil.getInt(m,"allRole"), YN01Enum.N.getValue())){
                                 return true;
                             }
-                            return list.stream().noneMatch(lm-> Fc.equalsValue(MapUtil.getInt(lm,"allRole"), ConstantsEnum.YN01.N.getValue()) &&
+                            return list.stream().noneMatch(lm-> Fc.equalsValue(MapUtil.getInt(lm,"allRole"), YN01Enum.N.getValue()) &&
                                     Fc.equalsValue(MapUtil.getStr(lm,"scopeClass"), MapUtil.getStr(m,"scopeClass")));
 
                         }).collect(Collectors.toList());

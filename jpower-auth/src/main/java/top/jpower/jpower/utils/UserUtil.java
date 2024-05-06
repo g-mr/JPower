@@ -1,6 +1,6 @@
 package top.jpower.jpower.utils;
 
-import top.jpower.common.enums.ConstantsEnum;
+import top.jpower.common.enums.YN01Enum;
 import top.jpower.core.utils.utils.Fc;
 import top.jpower.jpower.cache.SystemCache;
 import top.jpower.jpower.cache.UserCache;
@@ -20,7 +20,7 @@ public class UserUtil {
         UserInfo userInfo = null;
         if(Fc.notNull(result)){
 
-            if (Fc.equalsValue(result.getActivationStatus(), ConstantsEnum.YN01.N.getValue())){
+            if (Fc.equalsValue(result.getActivationStatus(), YN01Enum.N.getValue())){
                 throw new BusinessException(TokenUtil.USER_NOT_ACTIVATION);
             }
 
