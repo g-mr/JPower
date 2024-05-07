@@ -4,10 +4,10 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import top.jpower.core.deploy.property.JpowerProperties;
 import top.jpower.jpower.module.base.aspectj.OperateLogAspect;
 import top.jpower.jpower.module.base.listener.ErrorLogListener;
 import top.jpower.jpower.module.base.listener.OperateLogListener;
-import top.jpower.jpower.module.common.deploy.props.JpowerProperties;
 
 /**
  * 日志工具配置

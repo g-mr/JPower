@@ -102,6 +102,8 @@ knife4j:
     footerCustomContent: Copyright © 2021 JPower All Rights Reserved
 
 jpower:
+  log:
+    mode: file
   server: CLOUD
 #  log:
 #    mode: elk

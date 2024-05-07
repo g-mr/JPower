@@ -1,8 +1,8 @@
 package top.jpower.jpower;
 
 import top.jpower.common.constants.AppConstant;
-import top.jpower.jpower.module.common.deploy.JpowerApplication;
-import top.jpower.jpower.module.common.deploy.service.annotation.JpowerCloudApplication;
+import top.jpower.core.deploy.JpowerApplication;
+import top.jpower.core.deploy.annotation.JpowerCloudApplication;
 
 /**
  * 网关启动

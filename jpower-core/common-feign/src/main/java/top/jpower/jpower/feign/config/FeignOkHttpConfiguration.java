@@ -9,7 +9,6 @@ import org.springframework.cloud.commons.httpclient.OkHttpClientFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 import top.jpower.jpower.feign.interceptor.HttpLogInterceptor;
 import top.jpower.jpower.feign.properties.FeignHttpProperties;
 
@@ -25,7 +24,6 @@ import java.util.concurrent.TimeUnit;
 @ConditionalOnMissingBean(okhttp3.OkHttpClient.class)
 @ComponentScan(basePackageClasses = HttpClientConfiguration.class)
 @EnableConfigurationProperties(FeignHttpProperties.class)
-@DependsOn("envBeanUtil")
 public class FeignOkHttpConfiguration {
 
     private okhttp3.OkHttpClient okHttpClient;

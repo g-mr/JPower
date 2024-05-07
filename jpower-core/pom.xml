@@ -8,7 +8,7 @@
     </parent>
 
     <modules>
-        <module>common-deploy</module>
+        <module>jpower-core-deploy</module>
         <module>common-nacos</module>
         <module>common-auth</module>
         <module>common-redis</module>
@@ -19,7 +19,7 @@
         <module>common-exception</module>
         <module>common-tools</module>
         <module>common-feign</module>
-        <module>common-log</module>
+        <module>jpower-core-log</module>
         <module>common-delay-task</module>
     </modules>
 

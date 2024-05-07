@@ -2,6 +2,7 @@ package top.jpower.jpower.module.configurer.xss;
 
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
+import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.constants.TokenConstant;
 import top.jpower.core.util.enums.Header;
@@ -74,7 +75,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
      */
     @Override
     public String getHeader(String name) {
-        if (Fc.equalsValue(TokenConstant.PASS_HEADER_NAME,name) || Fc.equalsValue(TokenConstant.DATA_SCOPE_NAME,name) || Fc.equalsValue(TokenConstant.HEADER,name)){
+        if (Fc.equalsValue(TokenConstant.PASS_HEADER_NAME,name) || Fc.equalsValue(TokenConstant.DATA_SCOPE_NAME,name) || Fc.equalsValue(JpowerConstants.AUTH_HEADER,name)){
             return super.getHeader(name);
         }
 

@@ -2,8 +2,8 @@ package top.jpower.jpower.module.common.nacos.deploy;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.core.Ordered;
+import top.jpower.core.deploy.service.DeployService;
 import top.jpower.core.util.annotation.LoaderService;
-import top.jpower.jpower.module.common.deploy.service.DeployService;
 import top.jpower.jpower.module.common.nacos.NacosConstants;
 
 import java.util.Properties;

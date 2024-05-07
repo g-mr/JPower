@@ -3,13 +3,13 @@ package top.jpower.jpower.module.common.utils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.RestTemplate;
+import top.jpower.core.deploy.property.JpowerProperties;
 import top.jpower.core.util.rsp.ResponseData;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.GuavaCache;
 import top.jpower.core.util.utils.MapUtil;
 import top.jpower.core.util.utils.SpringUtil;
 import top.jpower.jpower.module.common.constants.ClientNameConstant;
-import top.jpower.jpower.module.common.deploy.props.JpowerProperties;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;

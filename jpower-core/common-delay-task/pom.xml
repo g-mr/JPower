@@ -26,7 +26,7 @@
 
         <dependency>
             <groupId>top.jpower</groupId>
-            <artifactId>common-deploy</artifactId>
+            <artifactId>jpower-core-deploy</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
 

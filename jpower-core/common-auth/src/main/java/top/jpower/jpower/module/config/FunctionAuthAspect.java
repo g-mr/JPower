@@ -11,11 +11,11 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.AnnotationUtils;
+import top.jpower.core.deploy.property.JpowerProperties;
 import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.WebUtil;
 import top.jpower.jpower.module.annotation.Function;
-import top.jpower.jpower.module.common.deploy.props.JpowerProperties;
 import top.jpower.jpower.module.common.utils.ShieldUtil;
 
 import javax.servlet.http.HttpServletRequest;

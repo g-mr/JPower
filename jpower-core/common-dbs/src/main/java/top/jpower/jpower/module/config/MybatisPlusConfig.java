@@ -17,7 +17,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import top.jpower.jpower.module.common.deploy.property.YamlAndPropertySourceFactory;
+import top.jpower.core.deploy.support.YamlAndPropertySourceFactory;
 import top.jpower.jpower.module.config.interceptor.DemoInterceptor;
 import top.jpower.jpower.module.config.interceptor.JpowerMybatisInterceptor;
 import top.jpower.jpower.module.config.interceptor.MybatisSqlPrintInterceptor;

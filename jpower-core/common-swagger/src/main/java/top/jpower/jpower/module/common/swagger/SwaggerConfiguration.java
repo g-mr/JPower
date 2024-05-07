@@ -22,9 +22,9 @@ import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
+import top.jpower.core.deploy.property.JpowerProperties;
 import top.jpower.core.util.utils.ClassUtil;
 import top.jpower.core.util.utils.Fc;
-import top.jpower.jpower.module.common.deploy.props.JpowerProperties;
 
 import java.util.ArrayList;
 import java.util.List;

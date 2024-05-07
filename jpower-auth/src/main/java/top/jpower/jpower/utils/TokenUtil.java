@@ -2,6 +2,7 @@ package top.jpower.jpower.utils;
 
 import cn.hutool.extra.servlet.ServletUtil;
 import top.jpower.common.enums.YN01Enum;
+import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.constants.TokenConstant;
 import top.jpower.core.util.utils.*;
@@ -196,7 +197,7 @@ public class TokenUtil {
 
         // cookie
         if (AUTH_PROPERTIES.getCookie()){
-            ServletUtil.addCookie(WebUtil.getResponse(), TokenConstant.HEADER, authInfo.getAccessToken(), Fc.toInt(authInfo.getExpiresIn(), 0));
+            ServletUtil.addCookie(WebUtil.getResponse(), JpowerConstants.AUTH_HEADER, authInfo.getAccessToken(), Fc.toInt(authInfo.getExpiresIn(), 0));
         }
     }
 }

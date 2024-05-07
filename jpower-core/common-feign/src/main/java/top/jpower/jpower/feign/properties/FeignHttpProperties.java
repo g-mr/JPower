@@ -3,9 +3,9 @@ package top.jpower.jpower.feign.properties;
 import feign.Logger;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import top.jpower.core.deploy.property.JpowerProperties;
 import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.utils.Fc;
-import top.jpower.jpower.module.common.deploy.props.JpowerProperties;
 
 import java.util.concurrent.TimeUnit;
 

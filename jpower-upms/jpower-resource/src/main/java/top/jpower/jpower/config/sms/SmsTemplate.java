@@ -2,6 +2,7 @@ package top.jpower.jpower.config.sms;
 
 import cn.hutool.core.util.PhoneUtil;
 import org.apache.commons.lang3.RandomStringUtils;
+import top.jpower.core.deploy.property.JpowerProperties;
 import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.utils.ChainMap;
 import top.jpower.core.util.utils.Fc;
@@ -12,7 +13,6 @@ import top.jpower.jpower.module.base.enums.JpowerError;
 import top.jpower.jpower.module.base.exception.JpowerAssert;
 import top.jpower.jpower.module.base.exception.JpowerException;
 import top.jpower.jpower.module.common.cache.CacheNames;
-import top.jpower.jpower.module.common.deploy.props.JpowerProperties;
 import top.jpower.jpower.module.common.redis.RedisUtil;
 
 import java.util.Collections;
