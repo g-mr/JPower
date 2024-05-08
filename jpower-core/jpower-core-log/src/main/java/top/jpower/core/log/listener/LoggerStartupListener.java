@@ -9,6 +9,7 @@ import ch.qos.logback.core.LogbackException;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.LifeCycle;
 import top.jpower.core.log.property.JpowerLogProperties;
+import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.StringUtil;
 
@@ -59,8 +60,9 @@ public class LoggerStartupListener extends ContextAwareBase
         }
 
         Properties props = System.getProperties();
+
         context.putProperty("appName",props.getProperty("jpower.applicationName"));
-        context.putProperty("version",props.getProperty("jpower.version"));
+        context.putProperty("version", JpowerConstants.JPOWER_VESION);
 
         started = true;
     }
