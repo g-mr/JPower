@@ -70,7 +70,7 @@
 
         <dependency>
             <groupId>top.jpower</groupId>
-            <artifactId>common-nacos</artifactId>
+            <artifactId>jpower-core-nacos</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
     </dependencies>

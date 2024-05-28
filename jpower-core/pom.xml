@@ -9,13 +9,13 @@
 
     <modules>
         <module>jpower-core-deploy</module>
-        <module>common-nacos</module>
+        <module>jpower-core-nacos</module>
         <module>common-auth</module>
         <module>common-redis</module>
         <module>common-swagger</module>
         <module>jpower-core-util</module>
         <module>common-dbs</module>
-        <module>common-transaction</module>
+        <module>jpower-core-seata</module>
         <module>common-exception</module>
         <module>common-tools</module>
         <module>common-feign</module>

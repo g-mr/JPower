@@ -1,4 +1,4 @@
-package top.jpower.jpower.module.common.seata.constants;
+package top.jpower.core.seata.constants;
 
 /**
  * @ClassName NacosConstants
