@@ -6,8 +6,14 @@
 
     <groupId>top.jpower</groupId>
     <artifactId>jpower</artifactId>
-    <version>2.2.0</version>
+    <version>2.1.10</version>
     <packaging>pom</packaging>
+
+    <name>JPower</name>
+    <description>
+        Java微服务快速开发平台
+    </description>
+    <url>https://gitee.com/gdzWork/JPower</url>
 
     <developers>
         <developer>
@@ -32,7 +38,7 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <com.jpower.version>2.2.0</com.jpower.version>
+        <com.jpower.version>2.1.10</com.jpower.version>
 
         <mybatis-plus.version>3.5.5</mybatis-plus.version>
         <easy-captcha.version>1.6.2</easy-captcha.version>
