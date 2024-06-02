@@ -2,6 +2,7 @@ package top.jpower.jpower.controller.tenant;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Validator;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.NumberUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.swagger.annotations.*;
@@ -64,6 +65,8 @@ public class TenantController extends BaseController {
         LambdaQueryWrapper<TbCoreTenant> queryWrapper = Condition.getQueryWrapper(map,TbCoreTenant.class).lambda();
         if (!ShieldUtil.isRoot()){
             queryWrapper.eq(TbCoreTenant::getTenantCode, ShieldUtil.getTenantCode());
+        } else if (top.jpower.core.util.utils.MapUtil.containsKey(map, "tenantCode")){
+            queryWrapper.like(TbCoreTenant::getTenantCode, MapUtil.getStr(map,"tenantCode"));
         }
         return ReturnJsonUtil.ok("查询成功",tenantService.page(PaginationContext.getMpPage(), queryWrapper));
     }
