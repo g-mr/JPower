@@ -9,6 +9,12 @@
     <version>2.1.10</version>
     <packaging>pom</packaging>
 
+    <name>JPower</name>
+    <description>
+        Java微服务快速开发平台
+    </description>
+    <url>https://gitee.com/gdzWork/JPower</url>
+
     <developers>
         <developer>
             <id>mr.g</id>
