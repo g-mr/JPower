@@ -8,7 +8,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.constants.TokenConstant;
-import top.jpower.jpower.module.common.auth.SecureConstant;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
@@ -30,7 +29,7 @@ public class HeaderRequestInterceptor implements RequestInterceptor {
             if (headerNames != null) {
                 while (headerNames.hasMoreElements()) {
                     String name = headerNames.nextElement();
-                    if (name.equalsIgnoreCase(SecureConstant.BASIC_HEADER_KEY)
+                    if (name.equalsIgnoreCase("Authorization")
                             || name.equalsIgnoreCase("User-Type")
                             || name.equalsIgnoreCase(JpowerConstants.HEADER_MENU)
                             || name.equalsIgnoreCase(JpowerConstants.AUTH_HEADER)

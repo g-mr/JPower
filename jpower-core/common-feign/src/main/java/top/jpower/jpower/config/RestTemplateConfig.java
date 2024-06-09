@@ -53,7 +53,7 @@ public class RestTemplateConfig {
             if (headerNames != null) {
                 while (headerNames.hasMoreElements()) {
                     String name = headerNames.nextElement();
-                    if (name.equalsIgnoreCase(SecureConstant.BASIC_HEADER_KEY)
+                    if (name.equalsIgnoreCase("Authorization")
                             || name.equalsIgnoreCase("User-Type")
                             || name.equalsIgnoreCase(JpowerConstants.HEADER_MENU)
                             || name.equalsIgnoreCase(JpowerConstants.AUTH_HEADER)

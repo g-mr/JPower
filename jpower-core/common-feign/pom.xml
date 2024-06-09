@@ -24,6 +24,29 @@
             <groupId>top.jpower</groupId>
             <artifactId>common-auth</artifactId>
             <version>${com.jpower.version}</version>
+            <optional>true</optional>
+            <exclusions>
+                <exclusion>
+                    <groupId>top.jpower</groupId>
+                    <artifactId>jpower-core-util</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>top.jpower</groupId>
+                    <artifactId>jpower-core-deploy</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>top.jpower</groupId>
+            <artifactId>jpower-core-util</artifactId>
+            <version>${com.jpower.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>top.jpower</groupId>
+            <artifactId>jpower-core-deploy</artifactId>
+            <version>${com.jpower.version}</version>
         </dependency>
 
         <dependency>
