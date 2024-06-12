@@ -30,7 +30,7 @@
         </dependency>
         <dependency>
             <groupId>top.jpower</groupId>
-            <artifactId>common-feign</artifactId>
+            <artifactId>jpower-core-feign</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
         <dependency>

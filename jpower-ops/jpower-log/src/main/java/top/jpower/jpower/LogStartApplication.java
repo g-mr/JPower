@@ -3,7 +3,7 @@ package top.jpower.jpower;
 import top.jpower.common.constants.AppConstant;
 import top.jpower.core.deploy.JpowerApplication;
 import top.jpower.core.deploy.annotation.JpowerCloudApplication;
-import top.jpower.jpower.annotation.EnableJpowerFeignClients;
+import top.jpower.core.feign.annotation.EnableJpowerFeignClients;
 
 /**
  * @ClassName LogStartApplication

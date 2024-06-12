@@ -1,12 +1,12 @@
 package top.jpower.common.constants;
 
 import lombok.Data;
+import top.jpower.core.nacos.constants.NacosConstants;
 import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.module.base.constants.LogConstant;
 import top.jpower.jpower.module.common.constants.ClientNameConstant;
-import top.jpower.jpower.module.common.nacos.NacosConstants;
 
 /**
  * 服务名常量

@@ -18,7 +18,7 @@
         <module>jpower-core-seata</module>
         <module>common-exception</module>
         <module>common-tools</module>
-        <module>common-feign</module>
+        <module>jpower-core-feign</module>
         <module>jpower-core-log</module>
         <module>common-delay-task</module>
     </modules>

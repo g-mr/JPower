@@ -3,8 +3,8 @@ package top.jpower.jpower.feign;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
+import top.jpower.core.feign.exception.JpowerFeignException;
 import top.jpower.jpower.dto.*;
-import top.jpower.jpower.exception.JpowerFeignException;
 
 /**
  * @author mr.g
