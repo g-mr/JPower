@@ -320,7 +320,11 @@ public class FunctionController extends BaseController {
     @ApiOperation("生成功能点")
     @PostMapping(value = "/generate", produces="application/json")
     public ResponseData generate(){
-        return ReturnJsonUtil.status(coreFunctionService.generateFunction());
+        boolean is =  coreFunctionService.generateFunction();
+        if (is){
+            CacheUtil.clear(CacheNames.FUNCTION_KEY);
+        }
+        return ReturnJsonUtil.status(is);
     }
 
     @Function(value = "菜单开关",alias = "同步", menus = {
