@@ -4,6 +4,7 @@ import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSON;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
@@ -153,7 +154,7 @@ public class OssAliFileOperate implements FileOperate {
     @Override
     public String getUrl(TbResourceFile coreFile) {
         String domain = StringUtil.removeAllSuffix(Fc.toStr(resourceOss.getExternalAddress(), resourceOss.getInternalAddress()), StringPool.SLASH);
-        return StringUtil.concat(domain, StringPool.SLASH, coreFile.getPath());
+        return StringUtil.concat(domain, StringPool.SLASH, StrUtil.replaceFirst(coreFile.getPath(), resourceOss.getBucketName() + StringPool.SLASH, StringPool.EMPTY));
     }
 
     @Override
