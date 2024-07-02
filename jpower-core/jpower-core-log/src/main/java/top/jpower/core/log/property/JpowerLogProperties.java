@@ -53,6 +53,13 @@ public class JpowerLogProperties {
 
     @Data
     public static class File {
+
+        /**
+         * INFO日志打印方式
+         * <br/>
+         * warn:打印info、warn级别、info:打印info、threshold:打印info以下所有日志
+         **/
+        private String info = "warn";
         /**
          * 文件路径
          */

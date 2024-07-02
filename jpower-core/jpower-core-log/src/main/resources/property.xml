@@ -2,6 +2,7 @@
 
 <included>
     <springProperty scope="context" name="mode" source="jpower.log.mode" defaultValue="file,skywalking"/>
+    <springProperty scope="context" name="log.file.info" source="jpower.log.info" defaultValue="warn"/>
     <springProperty scope="context" name="log.file.base" source="jpower.log.file.base" defaultValue="./logs"/>
     <springProperty scope="context" name="log.file.historyDay" source="jpower.log.file.historyDay" defaultValue="30"/>
     <springProperty scope="context" name="log.file.pattern" source="jpower.log.file.pattern" defaultValue="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [${appName}-${version}] [%tid] [%thread] [%logger{39}.%M:%L] - %msg%n"/>

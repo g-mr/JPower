@@ -17,16 +17,33 @@
             <charset>UTF-8</charset>
         </encoder>
         <!-- 打印日志级别 -->
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>WARN</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>NEUTRAL</onMismatch>
-        </filter>
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>INFO</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
+        <if condition='property("log.file.info").contains("threshold")'>
+            <then>
+                <!-- 阈值过滤 -->
+                <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                    <level>INFO</level>
+                </filter>
+            </then>
+            <else>
+                <then>
+                    <!-- 级别过滤 -->
+                    <if condition='property("log.file.info").contains("warn")'>
+                        <then>
+                            <filter class="ch.qos.logback.classic.filter.LevelFilter">
+                                <level>WARN</level>
+                                <onMatch>ACCEPT</onMatch>
+                                <onMismatch>NEUTRAL</onMismatch>
+                            </filter>
+                        </then>
+                    </if>
+                    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+                        <level>INFO</level>
+                        <onMatch>ACCEPT</onMatch>
+                        <onMismatch>DENY</onMismatch>
+                    </filter>
+                </then>
+            </else>
+        </if>
     </appender>
     <appender name="error_file" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${log.file.base}/error/error.log</file>
@@ -36,6 +53,7 @@
             <!--日志文件保留天数-->
             <MaxHistory>${log.file.historyDay}</MaxHistory>
         </rollingPolicy>
+        <!-- 级别过滤 -->
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>ERROR</level>
             <onMatch>ACCEPT</onMatch>
