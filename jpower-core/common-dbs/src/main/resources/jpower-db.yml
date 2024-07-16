@@ -24,20 +24,13 @@ spring:
       useGlobalDataSourceStat: true # 合并多个DruidDataSource的监控数据
 
 mybatis-plus:
-  type-aliases-package: com.*..*.dbs.entity.**
   global-config:
     db-config:
-      id-type: ASSIGN_ID
       where-strategy: NOT_EMPTY
       update-strategy: NOT_EMPTY
       insert-strategy: NOT_EMPTY
       #表名驼峰下划线转换
       table-underline: true
-      #逻辑删除配置
-      logic-delete-value: 1
-      logic-not-delete-value: 0
-      db-type: mysql
-    refresh: false
   configuration:
     map-underscore-to-camel-case: true
     call-setters-on-nulls: true
