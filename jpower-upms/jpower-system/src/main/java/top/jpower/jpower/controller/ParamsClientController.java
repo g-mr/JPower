@@ -9,8 +9,8 @@ import top.jpower.core.util.rsp.ResponseData;
 import top.jpower.core.util.rsp.ReturnJsonUtil;
 import top.jpower.jpower.dbs.entity.params.TbCoreParam;
 import top.jpower.jpower.feign.ParamsClient;
-import top.jpower.jpower.module.base.enums.JpowerError;
-import top.jpower.jpower.module.base.exception.JpowerAssert;
+import top.jpower.core.exception.enums.JpowerError;
+import top.jpower.core.exception.handler.JpowerAssert;
 import top.jpower.jpower.service.params.CoreParamService;
 
 /**

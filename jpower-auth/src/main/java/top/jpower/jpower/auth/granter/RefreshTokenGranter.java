@@ -10,7 +10,7 @@ import top.jpower.jpower.auth.AuthUserInfo;
 import top.jpower.jpower.auth.TokenGranter;
 import top.jpower.jpower.cache.UserCache;
 import top.jpower.jpower.dto.TokenParameter;
-import top.jpower.jpower.module.base.exception.JpowerException;
+import top.jpower.core.exception.handler.JpowerException;
 import top.jpower.jpower.module.common.auth.UserInfo;
 import top.jpower.jpower.module.common.utils.JwtUtil;
 import top.jpower.jpower.utils.TokenUtil;

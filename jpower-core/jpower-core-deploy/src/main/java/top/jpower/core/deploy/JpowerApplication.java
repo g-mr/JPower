@@ -95,8 +95,8 @@ public class JpowerApplication {
         props.setProperty("spring.profiles.active", profile);
         props.setProperty("spring.main.allow-bean-definition-overriding", "true");
         //nacos配置
-        props.setProperty("spring.cloud.nacos.discovery.server-addr", "${jpower.".concat(profile).concat(".nacos.server-addr:}"));
-        props.setProperty("spring.cloud.nacos.config.server-addr", "${jpower.".concat(profile).concat(".nacos.server-addr:}"));
+        props.setProperty("spring.cloud.nacos.discovery.server-addr", "${jpower.".concat(profile).concat(".nacos.server-addr}"));
+        props.setProperty("spring.cloud.nacos.config.server-addr", "${jpower.".concat(profile).concat(".nacos.server-addr}"));
         props.setProperty("spring.cloud.nacos.discovery.namespace", "${jpower.".concat(profile).concat(".nacos.namespace:}"));
         props.setProperty("spring.cloud.nacos.config.namespace", "${jpower.".concat(profile).concat(".nacos.namespace:}"));
         //sentinel配置

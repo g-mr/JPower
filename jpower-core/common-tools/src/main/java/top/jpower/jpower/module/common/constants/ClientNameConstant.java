@@ -5,7 +5,6 @@ import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.utils.ClassUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.ReflectUtil;
-import top.jpower.jpower.module.base.constants.LogConstant;
 
 import java.util.Set;
 
@@ -18,7 +17,7 @@ public interface ClientNameConstant {
     String JPOWER_SYSTEM = "jpower-system";
 
     static ClientNameConstant getInstance(){
-        Set<Class<?>> set = ClassUtil.scanPackageBySuper(StringPool.EMPTY, LogConstant.class);
+        Set<Class<?>> set = ClassUtil.scanPackageBySuper(StringPool.EMPTY, ClientNameConstant.class);
         if (Fc.isEmpty(set)){
             return new ClientNameConstant() {};
         }

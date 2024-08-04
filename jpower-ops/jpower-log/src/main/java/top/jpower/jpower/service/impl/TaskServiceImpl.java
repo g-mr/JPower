@@ -24,7 +24,7 @@ import top.jpower.jpower.handler.HttpInfoHandler;
 import top.jpower.jpower.interceptor.AuthInterceptor;
 import top.jpower.jpower.interceptor.LogInterceptor;
 import top.jpower.jpower.interceptor.RollbackInterceptor;
-import top.jpower.jpower.module.base.exception.BusinessException;
+import top.jpower.core.exception.handler.BusinessException;
 import top.jpower.jpower.properties.MonitorRestfulProperties;
 import top.jpower.jpower.service.MonitorSettingService;
 import top.jpower.jpower.service.TaskService;

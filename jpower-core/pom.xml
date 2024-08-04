@@ -16,7 +16,7 @@
         <module>jpower-core-util</module>
         <module>common-dbs</module>
         <module>jpower-core-seata</module>
-        <module>common-exception</module>
+        <module>jpower-core-exception</module>
         <module>common-tools</module>
         <module>jpower-core-feign</module>
         <module>jpower-core-log</module>

@@ -14,7 +14,7 @@ import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.config.sms.properties.AliSmsProperties;
 import top.jpower.jpower.dto.SmsResponse;
-import top.jpower.jpower.module.base.exception.JpowerException;
+import top.jpower.core.exception.handler.JpowerException;
 
 import java.util.List;
 import java.util.Map;

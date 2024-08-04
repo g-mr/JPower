@@ -14,8 +14,8 @@ import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.FileUtil;
 import top.jpower.jpower.dbs.entity.TbResourceFile;
 import top.jpower.jpower.feign.FileClient;
-import top.jpower.jpower.module.base.enums.JpowerError;
-import top.jpower.jpower.module.base.exception.JpowerAssert;
+import top.jpower.core.exception.enums.JpowerError;
+import top.jpower.core.exception.handler.JpowerAssert;
 import top.jpower.jpower.operate.FileOperateBuilder;
 import top.jpower.jpower.service.ResourceFileService;
 

@@ -7,7 +7,7 @@ import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.auth.AuthUserInfo;
 import top.jpower.jpower.auth.TokenGranter;
 import top.jpower.jpower.dto.TokenParameter;
-import top.jpower.jpower.module.base.exception.BusinessException;
+import top.jpower.core.exception.handler.BusinessException;
 import top.jpower.jpower.module.common.auth.UserInfo;
 
 import static top.jpower.jpower.auth.granter.OtherCodeTokenGranter.GRANT_TYPE;

@@ -3,7 +3,7 @@ package top.jpower.jpower.auth;
 import org.springframework.stereotype.Component;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.auth.granter.PasswordTokenGranter;
-import top.jpower.jpower.module.base.exception.BusinessException;
+import top.jpower.core.exception.handler.BusinessException;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

@@ -18,9 +18,9 @@ import top.jpower.core.util.utils.StringUtil;
 import top.jpower.jpower.dbs.entity.tenant.TbCoreTenant;
 import top.jpower.jpower.module.annotation.Function;
 import top.jpower.jpower.module.annotation.Menu;
-import top.jpower.jpower.module.base.annotation.OperateLog;
-import top.jpower.jpower.module.base.enums.JpowerError;
-import top.jpower.jpower.module.base.exception.JpowerAssert;
+import top.jpower.core.exception.annotation.OperateLog;
+import top.jpower.core.exception.enums.JpowerError;
+import top.jpower.core.exception.handler.JpowerAssert;
 import top.jpower.jpower.module.common.cache.CacheNames;
 import top.jpower.jpower.module.common.controller.BaseController;
 import top.jpower.jpower.module.common.page.PaginationContext;
@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static top.jpower.jpower.module.base.annotation.OperateLog.BusinessType.DELETE;
+import static top.jpower.core.exception.annotation.OperateLog.BusinessType.DELETE;
 
 /**
  * @author mr.gmac

@@ -12,8 +12,8 @@ import top.jpower.core.util.rsp.ReturnJsonUtil;
 import top.jpower.core.util.utils.BeanUtil;
 import top.jpower.jpower.dbs.entity.TbLogError;
 import top.jpower.jpower.dbs.entity.TbLogOperate;
-import top.jpower.jpower.module.base.model.ErrorLogDto;
-import top.jpower.jpower.module.base.model.OperateLogDto;
+import top.jpower.core.exception.model.ErrorLogDto;
+import top.jpower.core.exception.model.OperateLogDto;
 import top.jpower.jpower.service.ErrorLogService;
 import top.jpower.jpower.service.OperateLogService;
 

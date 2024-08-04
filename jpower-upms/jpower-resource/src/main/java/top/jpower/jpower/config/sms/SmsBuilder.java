@@ -9,8 +9,8 @@ import top.jpower.core.util.utils.GuavaCache;
 import top.jpower.jpower.config.sms.properties.AliSmsProperties;
 import top.jpower.jpower.dbs.dao.TbResourceSmsDao;
 import top.jpower.jpower.dbs.entity.TbResourceSms;
-import top.jpower.jpower.module.base.enums.JpowerError;
-import top.jpower.jpower.module.base.exception.JpowerAssert;
+import top.jpower.core.exception.enums.JpowerError;
+import top.jpower.core.exception.handler.JpowerAssert;
 
 import java.util.concurrent.TimeUnit;
 

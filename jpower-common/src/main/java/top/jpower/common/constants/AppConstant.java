@@ -5,7 +5,7 @@ import top.jpower.core.nacos.constants.NacosConstants;
 import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.utils.Fc;
-import top.jpower.jpower.module.base.constants.LogConstant;
+import top.jpower.core.exception.enums.constants.LogConstant;
 import top.jpower.jpower.module.common.constants.ClientNameConstant;
 
 /**

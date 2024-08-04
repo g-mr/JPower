@@ -15,7 +15,7 @@ import top.jpower.core.util.rsp.ResponseData;
 import top.jpower.core.util.rsp.ReturnJsonUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.ReflectUtil;
-import top.jpower.jpower.module.base.exception.BusinessException;
+import top.jpower.core.exception.handler.BusinessException;
 import top.jpower.jpower.module.common.annotation.Excel;
 import top.jpower.jpower.module.common.utils.ExcelUtil;
 

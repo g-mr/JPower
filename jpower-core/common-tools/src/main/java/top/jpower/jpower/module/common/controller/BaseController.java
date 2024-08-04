@@ -12,7 +12,7 @@ import top.jpower.core.util.utils.DateUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.FileUtil;
 import top.jpower.core.util.utils.WebUtil;
-import top.jpower.jpower.module.base.exception.BusinessException;
+import top.jpower.core.exception.handler.BusinessException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

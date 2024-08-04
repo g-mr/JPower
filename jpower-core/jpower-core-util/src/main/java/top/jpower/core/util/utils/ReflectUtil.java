@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import top.jpower.core.util.constants.StringPool;
 
+import java.lang.reflect.Method;
+
 /**
  * 反射工具类
  *
@@ -91,5 +93,22 @@ public class ReflectUtil extends cn.hutool.core.util.ReflectUtil{
      */
     public static Class<?> getClassGenricType(final Class<?> clazz, final int index) {
         return TypeUtil.getClass(TypeUtil.getTypeArgument(clazz,1));
+    }
+
+    /**
+     * 是否存在main方法
+     *
+     * @author mr.g
+     * @param clazz 类
+     * @return boolean 是否存在
+     **/
+    public static boolean hasMainMethod(Class<?> clazz) {
+        try {
+            Method method = getMethod(clazz, "main", String[].class);
+            return method != null && ClassUtil.isStatic(method) && ClassUtil.isPublic(method);
+        } catch (SecurityException e) {
+            // 安全异常，可能是因为访问权限问题
+            return false;
+        }
     }
 }

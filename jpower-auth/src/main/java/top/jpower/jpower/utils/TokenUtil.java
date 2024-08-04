@@ -11,7 +11,7 @@ import top.jpower.jpower.dbs.entity.client.TbCoreClient;
 import top.jpower.jpower.dbs.entity.function.TbCoreDataScope;
 import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
 import top.jpower.jpower.dto.AuthInfo;
-import top.jpower.jpower.module.base.exception.BusinessException;
+import top.jpower.core.exception.handler.BusinessException;
 import top.jpower.jpower.module.common.auth.UserInfo;
 import top.jpower.jpower.module.common.cache.CacheNames;
 import top.jpower.jpower.module.common.redis.RedisUtil;
