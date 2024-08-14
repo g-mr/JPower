@@ -1,6 +1,5 @@
-package top.jpower.jpower.module.common.utils;
+package top.jpower.core.util.support.excel;
 
-import com.alibaba.fastjson2.JSON;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
@@ -265,16 +264,6 @@ public class ExcelUtil {
         wb.write(stream);
         //关闭文件流
         Fc.closeQuietly(stream);
-    }
-
-    public static void main(String[] args) {
-        List<Map<String,Object>> list = excel2List("/Users/mr.gmac/Desktop/111.xlsx",null,null);
-
-        for (Map<String, Object> stringStringMap : list) {
-
-            System.out.println(JSON.toJSONString(stringStringMap));
-
-        }
     }
 
 }

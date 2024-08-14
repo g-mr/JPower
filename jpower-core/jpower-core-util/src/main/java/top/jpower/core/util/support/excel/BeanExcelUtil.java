@@ -1,4 +1,4 @@
-package top.jpower.jpower.module.common.support;
+package top.jpower.core.util.support.excel;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
@@ -15,9 +15,6 @@ import top.jpower.core.util.rsp.ResponseData;
 import top.jpower.core.util.rsp.ReturnJsonUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.ReflectUtil;
-import top.jpower.core.exception.handler.BusinessException;
-import top.jpower.jpower.module.common.annotation.Excel;
-import top.jpower.jpower.module.common.utils.ExcelUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -198,7 +195,7 @@ public class BeanExcelUtil<T> {
         }
         catch (Exception e){
             log.error("导出Excel异常{}", e.getMessage());
-            throw new BusinessException("导出Excel失败，请联系网站管理员！");
+            throw new RuntimeException("导出Excel失败！");
         }
         finally
         {
@@ -238,7 +235,7 @@ public class BeanExcelUtil<T> {
         catch (Exception e)
         {
             log.error("导出Excel异常{}", e.getMessage());
-            throw new BusinessException("导出Excel失败，请联系网站管理员！");
+            throw new RuntimeException("导出Excel失败！");
         }
         finally
         {
@@ -577,7 +574,7 @@ public class BeanExcelUtil<T> {
     public List<T> importExcel(String sheetName, File file) throws Exception {
 
         if (!file.exists()){
-            throw new BusinessException("文件不存在,"+file.getAbsolutePath());
+            throw new RuntimeException("文件不存在,"+file.getAbsolutePath());
         }
 
         this.type = Excel.Type.IMPORT;

@@ -1,5 +1,6 @@
 package top.jpower.core.exception.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -8,6 +9,8 @@ import top.jpower.core.deploy.property.JpowerProperties;
 import top.jpower.core.exception.aspectj.OperateLogAspect;
 import top.jpower.core.exception.listener.ErrorLogListener;
 import top.jpower.core.exception.listener.OperateLogListener;
+import top.jpower.core.exception.model.UserDto;
+import top.jpower.core.util.utils.Fc;
 
 /**
  * 日志工具配置
@@ -20,8 +23,8 @@ import top.jpower.core.exception.listener.OperateLogListener;
 public class JpowerLogConfiguration {
 
     @Bean
-    public OperateLogAspect apiLogAspect() {
-        return new OperateLogAspect();
+    public OperateLogAspect apiLogAspect(@Autowired(required = false) UserConfig userConfig) {
+        return new OperateLogAspect(Fc.notNull(userConfig)?userConfig.queryUser():new UserDto());
     }
 
     @Bean
@@ -35,4 +38,12 @@ public class JpowerLogConfiguration {
     public ErrorLogListener errorLogListener(JpowerProperties jpowerProperties) {
         return new ErrorLogListener(jpowerProperties);
     }
+
+    // todo 这里有问题 如果没引入 auth模块 就报错
+    // @Bean
+    // @ConditionalOnMissingBean
+    // @ConditionalOnClass(LoginUserContext.class)
+    // public UserConfig errorLogListener() {
+    //     return new DefaultUserConfig();
+    // }
 }

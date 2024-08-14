@@ -3,9 +3,9 @@ package top.jpower.core.exception.utils;
 import com.alibaba.fastjson2.JSONObject;
 import top.jpower.core.deploy.property.JpowerProperties;
 import top.jpower.core.exception.model.LogDto;
+import top.jpower.core.exception.model.UserDto;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.WebUtil;
-import top.jpower.jpower.module.common.auth.UserInfo;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -31,7 +31,7 @@ public class FieldCompletionUtil {
         operLog.setOperIp(WebUtil.getIp());
     }
 
-    public static void userInfo(LogDto operLog, UserInfo currentUser){
+    public static void userInfo(LogDto operLog, UserDto currentUser){
         if (Fc.isNull(currentUser)){
             return;
         }

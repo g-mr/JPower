@@ -19,7 +19,7 @@ import top.jpower.jpower.dbs.entity.TbLogMonitorResult;
 import top.jpower.jpower.module.annotation.Function;
 import top.jpower.jpower.module.annotation.Menu;
 import top.jpower.jpower.module.common.controller.BaseController;
-import top.jpower.jpower.module.common.support.BeanExcelUtil;
+import top.jpower.core.util.support.excel.BeanExcelUtil;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.module.mp.support.WrapperKeyword;
 import top.jpower.jpower.service.MonitorResultService;

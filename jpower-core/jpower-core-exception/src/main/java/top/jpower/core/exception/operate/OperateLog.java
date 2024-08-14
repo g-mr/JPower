@@ -7,14 +7,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.jpower.core.exception.listener.OperateLogEvent;
 import top.jpower.core.exception.model.OperateLogDto;
+import top.jpower.core.exception.model.UserDto;
 import top.jpower.core.exception.utils.FieldCompletionUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.SpringUtil;
 import top.jpower.core.util.utils.WebUtil;
-import top.jpower.core.exception.listener.OperateLogEvent;
-import top.jpower.jpower.module.common.auth.UserInfo;
-import top.jpower.jpower.module.dbs.config.LoginUserContext;
 
 /**
  * @author mr.g
@@ -24,14 +23,17 @@ public class OperateLog {
 
     private final Logger log;
 
+    private final UserDto userDto;
+
     private static final SimpleCache<Class<?>, OperateLog> LOG_CACHE = new SimpleCache<>();
 
-    private OperateLog(Class<?> clazz){
-        log = LoggerFactory.getLogger(clazz);
+    private OperateLog(Class<?> clazz, UserDto userDto){
+        this.log = LoggerFactory.getLogger(clazz);
+        this.userDto = userDto;
     }
 
-    public static OperateLog SINGLETON(Class<?> clazz){
-        return LOG_CACHE.get(clazz, ()->new OperateLog(clazz));
+    public static OperateLog SINGLETON(Class<?> clazz, UserDto userDto){
+        return LOG_CACHE.get(clazz, ()->new OperateLog(clazz, userDto));
     }
 
     public void info(final OperateInfo controllerLog){
@@ -45,9 +47,8 @@ public class OperateLog {
             StringBuilder builder = new StringBuilder("["+controllerLog.title()+"]");
             builder.append(" 记录操作日志==> ");
             // 获取当前的用户
-            UserInfo currentUser = LoginUserContext.get();
-            if (Fc.notNull(currentUser)){
-                builder.append(currentUser.getUserName()).append("(id=").append(currentUser.getUserId()).append(")");
+            if (Fc.notNull(userDto)){
+                builder.append(userDto.getUserName()).append("(id=").append(userDto.getUserId()).append(")");
             }
 
             builder.append("请求").append(WebUtil.getRequest().getRequestURI()).append("接口;");
@@ -91,13 +92,13 @@ public class OperateLog {
 
                 // 处理设置注解上的参数
                 if (controllerLog.isSaveRequestData()){
-                    FieldCompletionUtil.requestInfo(operLog,WebUtil.getRequest());
+                    FieldCompletionUtil.requestInfo(operLog, WebUtil.getRequest());
                 }
 
                 operLog.setRecordId(controllerLog.recordId());
                 operLog.setContent(controllerLog.content());
 
-                FieldCompletionUtil.userInfo(operLog,currentUser);
+                FieldCompletionUtil.userInfo(operLog, userDto);
 
                 SpringUtil.publishEvent(new OperateLogEvent(operLog));
             }

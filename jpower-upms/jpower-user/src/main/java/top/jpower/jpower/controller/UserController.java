@@ -38,7 +38,7 @@ import top.jpower.jpower.module.common.auth.UserInfo;
 import top.jpower.jpower.module.common.cache.CacheNames;
 import top.jpower.jpower.module.common.controller.BaseController;
 import top.jpower.jpower.module.common.redis.RedisUtil;
-import top.jpower.jpower.module.common.support.BeanExcelUtil;
+import top.jpower.core.util.support.excel.BeanExcelUtil;
 import top.jpower.jpower.module.common.utils.CacheUtil;
 import top.jpower.jpower.module.common.utils.ShieldUtil;
 import top.jpower.jpower.module.configurer.argument.RequestSingleBody;

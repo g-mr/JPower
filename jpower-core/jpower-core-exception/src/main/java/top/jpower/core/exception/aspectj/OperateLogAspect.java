@@ -1,5 +1,6 @@
 package top.jpower.core.exception.aspectj;
 
+import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -13,6 +14,7 @@ import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
+import top.jpower.core.exception.model.UserDto;
 import top.jpower.core.exception.operate.OperateInfo;
 import top.jpower.core.exception.operate.OperateLog;
 import top.jpower.core.util.constants.StringPool;
@@ -26,7 +28,10 @@ import java.lang.reflect.Method;
  * @Date 17:38 2020-07-10
  **/
 @Aspect
+@RequiredArgsConstructor
 public class OperateLogAspect {
+
+    private final UserDto userDto;
 
     /**
      * 用于SpEL表达式解析.
@@ -79,7 +84,7 @@ public class OperateLogAspect {
     }
 
     protected void handleLog(final OperateInfo operateInfo, final JoinPoint joinPoint, Object rvt, final Exception e){
-        final OperateLog log = OperateLog.SINGLETON(joinPoint.getTarget().getClass());
+        final OperateLog log = OperateLog.SINGLETON(joinPoint.getTarget().getClass(), userDto);
         operateInfo.recordId(generateKeyBySpEL(operateInfo.recordId(),joinPoint));
         operateInfo.content(generateKeyBySpEL(operateInfo.content(),joinPoint));
         log.info(operateInfo,joinPoint,rvt,e);

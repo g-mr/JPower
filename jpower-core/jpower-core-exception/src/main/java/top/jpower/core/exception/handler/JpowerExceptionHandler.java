@@ -3,6 +3,7 @@ package top.jpower.core.exception.handler;
 import cn.hutool.core.util.StrUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import top.jpower.core.exception.config.UserConfig;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.listener.ErrorLogEvent;
 import top.jpower.core.exception.model.ErrorLogDto;
@@ -19,7 +21,6 @@ import top.jpower.core.exception.utils.FieldCompletionUtil;
 import top.jpower.core.exception.vo.ErrorReturnJson;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.utils.*;
-import top.jpower.jpower.module.dbs.config.LoginUserContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,6 +33,9 @@ import javax.servlet.http.HttpServletResponse;
 @Slf4j
 @RestControllerAdvice
 public class JpowerExceptionHandler {
+
+    @Autowired(required = false)
+    private UserConfig userConfig;
 
     private static final String ROOT_PACKAGE;
 
@@ -126,7 +130,9 @@ public class JpowerExceptionHandler {
         ErrorLogDto errorLog = new ErrorLogDto();
 
         FieldCompletionUtil.requestInfo(errorLog, request);
-        FieldCompletionUtil.userInfo(errorLog,LoginUserContext.get());
+        if (Fc.notNull(userConfig)){
+            FieldCompletionUtil.userInfo(errorLog, userConfig.queryUser());
+        }
 
         StackTraceElement element = getStackTrace(e.getStackTrace());
 

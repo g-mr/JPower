@@ -73,7 +73,7 @@ public class PaginationContext {
         return page;
     }
 
-    /*
+    /**
      * pageNum ：get、set、remove
      */
     public static int getPageNum() {
@@ -92,7 +92,7 @@ public class PaginationContext {
         pageNum.remove();
     }
 
-    /*
+    /**
      * pageSize ：get、set、remove
      */
     public static int getPageSize() {
