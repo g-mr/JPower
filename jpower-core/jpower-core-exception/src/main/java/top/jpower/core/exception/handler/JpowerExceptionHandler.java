@@ -95,7 +95,6 @@ public class JpowerExceptionHandler {
      * @return
      * @throws Exception
      */
-    @SneakyThrows
     @ExceptionHandler(value = Exception.class)
     public ErrorReturnJson defaultErrorHandler(HttpServletRequest request, HttpServletResponse response, Exception e){
 
@@ -110,11 +109,8 @@ public class JpowerExceptionHandler {
             //标记返回为500错误
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 
-            createLog(request,e);
-
-            if (!isControllerStackTrace(e.getStackTrace())){
-                log.error("请求运行异常捕获=>{}异常信息：{}", StringPool.NEWLINE, ExceptionUtil.getStackTraceAsString(e));
-            }
+            createLog(request, e);
+            log.error("运行异常,异常信息===>>{}{}", StringPool.NEWLINE, ExceptionUtil.getStackTraceAsString(e));
 
         }
         r.setStatus(false);
@@ -154,12 +150,4 @@ public class JpowerExceptionHandler {
         return elements[0];
     }
 
-    private boolean isControllerStackTrace(StackTraceElement[] elements){
-        for (StackTraceElement element : elements) {
-            if (StrUtil.startWith(element.getClassName(), ROOT_PACKAGE) && StringUtil.contains(element.getClassName(),".controller.")){
-                return true;
-            }
-        }
-        return false;
-    }
 }

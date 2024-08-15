@@ -2,15 +2,21 @@ package top.jpower.core.exception.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.web.client.RestTemplate;
 import top.jpower.core.deploy.property.JpowerProperties;
 import top.jpower.core.exception.aspectj.OperateLogAspect;
+import top.jpower.core.exception.client.JdbcLogClient;
+import top.jpower.core.exception.client.LogClient;
+import top.jpower.core.exception.client.RestLogClient;
 import top.jpower.core.exception.listener.ErrorLogListener;
 import top.jpower.core.exception.listener.OperateLogListener;
 import top.jpower.core.exception.model.UserDto;
 import top.jpower.core.util.utils.Fc;
+import top.jpower.jpower.module.dbs.config.LoginUserContext;
 
 /**
  * 日志工具配置
@@ -29,21 +35,52 @@ public class JpowerLogConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(name = "operateLogListener")
-    public OperateLogListener operateLogListener(JpowerProperties jpowerProperties) {
-        return new OperateLogListener(jpowerProperties);
+    public OperateLogListener operateLogListener(JpowerProperties jpowerProperties, @Autowired(required = false) LogClient logClient) {
+        return new OperateLogListener(jpowerProperties, logClient);
     }
 
     @Bean
     @ConditionalOnMissingBean(name = "errorLogListener")
-    public ErrorLogListener errorLogListener(JpowerProperties jpowerProperties) {
-        return new ErrorLogListener(jpowerProperties);
+    public ErrorLogListener errorLogListener(JpowerProperties jpowerProperties, @Autowired(required = false) LogClient logClient) {
+        return new ErrorLogListener(jpowerProperties, logClient);
     }
 
-    // todo 这里有问题 如果没引入 auth模块 就报错
-    // @Bean
-    // @ConditionalOnMissingBean
-    // @ConditionalOnClass(LoginUserContext.class)
-    // public UserConfig errorLogListener() {
-    //     return new DefaultUserConfig();
-    // }
+    @Configuration(proxyBeanMethods = false)
+    @ConditionalOnMissingBean(UserConfig.class)
+    @ConditionalOnClass(LoginUserContext.class)
+    static class UserConfiguration {
+
+        @Bean
+        UserConfig userConfig() {
+             return new DefaultUserConfig();
+         }
+
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    @ConditionalOnMissingBean(LogClient.class)
+    @ConditionalOnBean(RestTemplate.class)
+    @ConditionalOnProperty(prefix = "jpower", name = "server", havingValue = "CLOUD")
+    static class RestLogClientConfiguration {
+
+        @Bean
+        LogClient logClient(RestTemplate restTemplate) {
+            return new RestLogClient(restTemplate);
+        }
+
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    @ConditionalOnMissingBean(LogClient.class)
+    @ConditionalOnBean(JdbcTemplate.class)
+    @ConditionalOnProperty(prefix = "jpower", name = "server", havingValue = "BOOT", matchIfMissing = true)
+    static class JdbcLogClientConfiguration {
+
+        @Bean
+        LogClient logClient(JdbcTemplate jdbcTemplate) {
+            return new JdbcLogClient(jdbcTemplate);
+        }
+
+    }
+
 }
