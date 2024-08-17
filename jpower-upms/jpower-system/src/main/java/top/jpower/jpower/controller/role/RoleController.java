@@ -167,9 +167,8 @@ public class RoleController extends BaseController {
 
         //保存功能权限和顶部菜单权限
         if (coreRoleFunctionService.addRoleFunctions(roleId, Fc.toLongList(functionIds), isAutoSaveInterface) && coreRoleService.saveTopMenu(roleId,Fc.toLongList(topMenuIds))){
-            TbCoreRole role = coreRoleService.getById(roleId);
-            CacheUtil.clear(CacheNames.ROLE_KEY,role.getTenantCode());
-            CacheUtil.clear(CacheNames.FUNCTION_KEY,role.getTenantCode());
+            CacheUtil.clear(CacheNames.ROLE_KEY);
+            CacheUtil.clear(CacheNames.FUNCTION_KEY);
             return ReturnJsonUtil.ok("设置成功");
         }else {
             return ReturnJsonUtil.fail("设置失败");
