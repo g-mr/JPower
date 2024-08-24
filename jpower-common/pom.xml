@@ -31,7 +31,19 @@
         </dependency>
         <dependency>
             <groupId>top.jpower</groupId>
-            <artifactId>common-tools</artifactId>
+            <artifactId>jpower-core-boot</artifactId>
+            <version>${com.jpower.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>top.jpower</groupId>
+            <artifactId>common-auth</artifactId>
+            <version>${com.jpower.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>top.jpower</groupId>
+            <artifactId>common-dbs</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
     </dependencies>

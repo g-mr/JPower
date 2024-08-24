@@ -10,7 +10,7 @@ import top.jpower.jpower.config.sms.properties.AliSmsProperties;
 import top.jpower.jpower.dbs.dao.TbResourceSmsDao;
 import top.jpower.jpower.dbs.entity.TbResourceSms;
 import top.jpower.core.exception.enums.JpowerError;
-import top.jpower.core.exception.handler.JpowerAssert;
+import top.jpower.core.exception.throwable.JpowerAssert;
 
 import java.util.concurrent.TimeUnit;
 

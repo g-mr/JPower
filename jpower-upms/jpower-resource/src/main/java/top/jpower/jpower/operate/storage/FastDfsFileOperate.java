@@ -10,7 +10,7 @@ import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.utils.*;
 import top.jpower.jpower.dbs.entity.TbResourceFile;
 import top.jpower.core.exception.enums.JpowerError;
-import top.jpower.core.exception.handler.JpowerAssert;
+import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.jpower.operate.FileOperate;
 import top.jpower.jpower.operate.properties.FileProperties;
 import top.jpower.jpower.service.ResourceFileService;

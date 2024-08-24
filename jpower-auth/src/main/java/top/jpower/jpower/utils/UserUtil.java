@@ -1,11 +1,11 @@
 package top.jpower.jpower.utils;
 
 import top.jpower.common.enums.YN01Enum;
+import top.jpower.core.exception.throwable.BusinessException;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.cache.SystemCache;
 import top.jpower.jpower.cache.UserCache;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
-import top.jpower.core.exception.handler.BusinessException;
 import top.jpower.jpower.module.common.auth.UserInfo;
 import top.jpower.jpower.module.common.cache.CacheNames;
 import top.jpower.jpower.module.common.utils.CacheUtil;

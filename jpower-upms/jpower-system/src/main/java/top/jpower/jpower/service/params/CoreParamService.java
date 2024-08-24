@@ -1,7 +1,7 @@
 package top.jpower.jpower.service.params;
 
 import top.jpower.jpower.dbs.entity.params.TbCoreParam;
-import top.jpower.jpower.module.common.service.BaseService;
+import top.jpower.jpower.module.service.BaseService;
 
 /**
  * @author mr.gmac

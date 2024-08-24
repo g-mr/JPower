@@ -10,7 +10,7 @@ import top.jpower.jpower.dbs.dao.role.TbCoreRoleMenuDao;
 import top.jpower.jpower.dbs.dao.role.mapper.TbCoreRoleMapper;
 import top.jpower.jpower.dbs.entity.role.TbCoreRole;
 import top.jpower.jpower.dbs.entity.role.TbCoreRoleMenu;
-import top.jpower.jpower.module.common.service.impl.BaseServiceImpl;
+import top.jpower.jpower.module.service.impl.BaseServiceImpl;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.service.role.CoreRoleService;
 

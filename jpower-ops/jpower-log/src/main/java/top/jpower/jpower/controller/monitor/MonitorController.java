@@ -15,15 +15,18 @@ import top.jpower.core.util.rsp.Pg;
 import top.jpower.core.util.rsp.ResponseData;
 import top.jpower.core.util.rsp.ReturnJsonUtil;
 import top.jpower.core.util.utils.DateUtil;
+import top.jpower.core.util.utils.FileUtil;
 import top.jpower.jpower.dbs.entity.TbLogMonitorResult;
 import top.jpower.jpower.module.annotation.Function;
 import top.jpower.jpower.module.annotation.Menu;
-import top.jpower.jpower.module.common.controller.BaseController;
+import top.jpower.core.boot.controller.BaseController;
 import top.jpower.core.util.support.excel.BeanExcelUtil;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.module.mp.support.WrapperKeyword;
 import top.jpower.jpower.service.MonitorResultService;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -82,11 +85,12 @@ public class MonitorController extends BaseController {
         @ApiImplicitParam(name = "createTime_datelt",value = "结束时间",paramType = "query", dataTypeClass = Date.class)
     })
     @GetMapping(value = "/export")
-    public void export(@ApiIgnore @RequestParam Map<String,Object> map){
+    public void export(@ApiIgnore @RequestParam Map<String,Object> map) throws IOException {
         List<TbLogMonitorResult> list = monitorResultService.list(Condition.getQueryWrapper(initMap(map),TbLogMonitorResult.class).lambda().orderByDesc(TbLogMonitorResult::getCreateTime));
 
         BeanExcelUtil<TbLogMonitorResult> beanExcelUtil = new BeanExcelUtil<>(TbLogMonitorResult.class, ImportExportConstants.EXPORT_PATH);
         ResponseData<String> responseData = beanExcelUtil.exportExcel(list, "监控结果");
-        download(responseData,"接口监控.xlsx");
+        File file = new File(ImportExportConstants.EXPORT_PATH + responseData.getData());
+        FileUtil.download(file, getResponse(), "接口监控.xlsx");
     }
 }

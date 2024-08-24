@@ -2,7 +2,7 @@ package top.jpower.jpower.service.org;
 
 import cn.hutool.core.lang.tree.Tree;
 import top.jpower.jpower.dbs.entity.org.TbCoreOrg;
-import top.jpower.jpower.module.common.service.BaseService;
+import top.jpower.jpower.module.service.BaseService;
 import top.jpower.jpower.vo.OrgVo;
 
 import java.util.List;

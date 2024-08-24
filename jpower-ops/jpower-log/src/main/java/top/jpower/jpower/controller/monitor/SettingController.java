@@ -17,7 +17,7 @@ import top.jpower.jpower.dbs.entity.TbLogMonitorSetting;
 import top.jpower.jpower.module.annotation.Function;
 import top.jpower.jpower.module.annotation.Menu;
 import top.jpower.core.exception.enums.JpowerError;
-import top.jpower.core.exception.handler.JpowerAssert;
+import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.jpower.properties.MonitorRestfulProperties;
 import top.jpower.jpower.service.MonitorSettingService;
 import top.jpower.jpower.service.TaskService;

@@ -2,9 +2,9 @@ package top.jpower.jpower.module.mp.support;
 
 import cn.hutool.core.util.ArrayUtil;
 import com.baomidou.mybatisplus.core.conditions.AbstractWrapper;
+import top.jpower.core.util.support.XssInjectionUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.StringUtil;
-import top.jpower.jpower.module.common.utils.SqlInjectionUtil;
 
 import java.util.Map;
 
@@ -19,7 +19,7 @@ import static top.jpower.jpower.module.mp.support.WrapperKeyword.LIKE;
 class SqlWrapper {
 
 
-    private final static String[] SQL_REGEX = ArrayUtil.append(SqlInjectionUtil.SQL_CHAR,"--","count","group","union","alter","grant","execute","exec","xp_cmdshell","call","declare","sql");
+    private final static String[] SQL_REGEX = ArrayUtil.append(XssInjectionUtil.SQL_CHAR,"--","count","group","union","alter","grant","execute","exec","xp_cmdshell","call","declare","sql");
 
     /**
      * 条件构造器

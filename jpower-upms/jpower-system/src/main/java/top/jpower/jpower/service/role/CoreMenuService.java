@@ -1,7 +1,7 @@
 package top.jpower.jpower.service.role;
 
 import top.jpower.jpower.dbs.entity.function.TbCoreTopMenu;
-import top.jpower.jpower.module.common.service.BaseService;
+import top.jpower.jpower.module.service.BaseService;
 
 import java.util.List;
 import java.util.Map;

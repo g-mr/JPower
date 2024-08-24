@@ -3,7 +3,7 @@ package top.jpower.jpower.service;
 import com.alibaba.fastjson2.JSONArray;
 import top.jpower.jpower.dbs.entity.TbLogMonitorParam;
 import top.jpower.jpower.dbs.entity.TbLogMonitorSetting;
-import top.jpower.jpower.module.common.service.BaseService;
+import top.jpower.jpower.module.service.BaseService;
 
 import java.util.List;
 import java.util.Map;

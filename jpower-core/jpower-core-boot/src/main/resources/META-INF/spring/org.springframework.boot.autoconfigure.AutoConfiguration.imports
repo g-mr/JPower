@@ -1,0 +1,4 @@
+top.jpower.core.boot.argument.SingleBodyConfig
+top.jpower.core.boot.config.JpowerJacksonConfig
+top.jpower.core.boot.config.XssConfig
+top.jpower.core.boot.config.TransactionConfig

@@ -1,11 +1,17 @@
 package top.jpower.jpower.controller;
 
 import io.swagger.annotations.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.common.constants.DefaultValConstants;
+import top.jpower.core.boot.controller.BaseController;
+import top.jpower.core.exception.enums.JpowerError;
+import top.jpower.core.exception.throwable.BusinessException;
+import top.jpower.core.exception.throwable.JpowerAssert;
+import top.jpower.core.exception.throwable.JpowerException;
 import top.jpower.core.util.constants.ReturnConstants;
 import top.jpower.core.util.rsp.Pg;
 import top.jpower.core.util.rsp.ResponseData;
@@ -17,12 +23,7 @@ import top.jpower.jpower.cache.dict.DictCache;
 import top.jpower.jpower.dbs.entity.TbResourceFile;
 import top.jpower.jpower.module.annotation.Function;
 import top.jpower.jpower.module.annotation.Menu;
-import top.jpower.core.exception.enums.JpowerError;
-import top.jpower.core.exception.handler.BusinessException;
-import top.jpower.core.exception.handler.JpowerAssert;
-import top.jpower.core.exception.handler.JpowerException;
 import top.jpower.jpower.module.common.cache.CacheNames;
-import top.jpower.jpower.module.common.controller.BaseController;
 import top.jpower.jpower.module.common.utils.CacheUtil;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.operate.FileOperateBuilder;
@@ -42,6 +43,7 @@ import java.util.Map;
  * @Author 郭 * @Date 2020-02-13 14:10
  * @Version 1.0
  */
+@Slf4j
 @Api(tags = "文件管理")
 @RestController
 @RequestMapping("/resource/file")
@@ -74,7 +76,7 @@ public class FileController extends BaseController {
             throw je;
         } catch (Exception e){
             e.printStackTrace();
-            logger.error("文件上传失败，e={}",e.getMessage());
+            log.error("文件上传失败，e={}",e.getMessage());
             return ReturnJsonUtil.print(ReturnConstants.RECODE_ERROR,"文件上传失败", false);
         }
     }
@@ -95,7 +97,7 @@ public class FileController extends BaseController {
             operateBuilder.getBuilder(coreFile.getStorageType()).download(coreFile);
         } catch (IOException e) {
             e.printStackTrace();
-            logger.error("文件下载失败，e={}",e.getMessage());
+            log.error("文件下载失败，e={}",e.getMessage());
             throw new BusinessException(coreFile.getName()+"文件下载失败");
         }
     }
@@ -207,7 +209,7 @@ public class FileController extends BaseController {
             try {
                 FileUtil.download(file, response,"导出数据.xlsx");
             } catch (IOException e) {
-                logger.error("下载文件出错。file={},error={}",file.getAbsolutePath(),e.getMessage());
+                log.error("下载文件出错。file={},error={}",file.getAbsolutePath(),e.getMessage());
                 throw new BusinessException("下载文件出错，请联系网站管理员");
             }
 

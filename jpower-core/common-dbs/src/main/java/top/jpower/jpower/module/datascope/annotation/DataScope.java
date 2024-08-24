@@ -1,7 +1,7 @@
 package top.jpower.jpower.module.datascope.annotation;
 
-import top.jpower.core.util.constants.StringPool;
 import top.jpower.jpower.module.constants.DataScopeConstant;
+import top.jpower.core.util.constants.StringPool;
 
 import java.lang.annotation.*;
 

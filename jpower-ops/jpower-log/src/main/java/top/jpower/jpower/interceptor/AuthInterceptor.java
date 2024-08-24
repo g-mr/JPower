@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.utils.OkHttp;
 import top.jpower.core.util.utils.*;
-import top.jpower.core.exception.handler.BusinessException;
+import top.jpower.core.exception.throwable.BusinessException;
 import top.jpower.jpower.properties.AuthInfoConfiguration;
 
 import java.nio.charset.Charset;

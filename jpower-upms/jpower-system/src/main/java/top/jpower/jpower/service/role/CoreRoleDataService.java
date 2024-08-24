@@ -1,7 +1,7 @@
 package top.jpower.jpower.service.role;
 
 import top.jpower.jpower.dbs.entity.role.TbCoreRoleData;
-import top.jpower.jpower.module.common.service.BaseService;
+import top.jpower.jpower.module.service.BaseService;
 
 /**
  * @author ding

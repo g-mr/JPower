@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.module.config.interceptor.JpowerMybatisInterceptor;
+import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.module.dictbind.handler.IDictBindHandler;
 import top.jpower.jpower.module.dictbind.interceptor.DictBindInterceptor;
 

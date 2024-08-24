@@ -8,7 +8,7 @@ import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.dbs.dao.TbResourceFileDao;
 import top.jpower.jpower.dbs.dao.mapper.TbResourceFileMapper;
 import top.jpower.jpower.dbs.entity.TbResourceFile;
-import top.jpower.jpower.module.common.service.impl.BaseServiceImpl;
+import top.jpower.jpower.module.service.impl.BaseServiceImpl;
 import top.jpower.jpower.service.ResourceFileService;
 
 import java.util.Map;

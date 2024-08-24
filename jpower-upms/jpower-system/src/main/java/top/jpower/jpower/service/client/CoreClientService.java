@@ -1,7 +1,7 @@
 package top.jpower.jpower.service.client;
 
 import top.jpower.jpower.dbs.entity.client.TbCoreClient;
-import top.jpower.jpower.module.common.service.BaseService;
+import top.jpower.jpower.module.service.BaseService;
 
 /**
  * @author mr.gmac

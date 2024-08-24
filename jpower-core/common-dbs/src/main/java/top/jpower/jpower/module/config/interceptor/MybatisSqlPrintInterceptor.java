@@ -13,12 +13,12 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
+import top.jpower.jpower.module.config.properties.MybatisProperties;
 import top.jpower.core.util.constants.CharPool;
 import top.jpower.core.util.utils.*;
 import top.jpower.jpower.module.annotation.NoSqlLog;
 import top.jpower.jpower.module.config.interceptor.chain.ChainFilter;
 import top.jpower.jpower.module.config.interceptor.chain.MybatisInterceptor;
-import top.jpower.jpower.module.config.properties.MybatisProperties;
 
 import java.sql.Statement;
 import java.util.Date;

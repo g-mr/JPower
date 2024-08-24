@@ -10,7 +10,7 @@ import top.jpower.jpower.dbs.dao.TbResourceFileDao;
 import top.jpower.jpower.dbs.dao.TbResourceOssDao;
 import top.jpower.jpower.dbs.entity.TbResourceOss;
 import top.jpower.core.exception.enums.JpowerError;
-import top.jpower.core.exception.handler.JpowerAssert;
+import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.jpower.operate.properties.FileProperties;
 import top.jpower.jpower.operate.storage.OssAliFileOperate;
 import top.jpower.jpower.operate.storage.OssQnFileOperate;

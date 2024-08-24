@@ -10,8 +10,8 @@ import top.jpower.jpower.dbs.dao.role.mapper.TbCoreRoleFunctionMapper;
 import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
 import top.jpower.jpower.dbs.entity.role.TbCoreRoleFunction;
 import top.jpower.jpower.module.common.redis.RedisUtil;
-import top.jpower.jpower.module.common.service.impl.BaseServiceImpl;
 import top.jpower.jpower.module.mp.support.Condition;
+import top.jpower.jpower.module.service.impl.BaseServiceImpl;
 import top.jpower.jpower.service.role.CoreFunctionService;
 import top.jpower.jpower.service.role.CoreRoleFunctionService;
 

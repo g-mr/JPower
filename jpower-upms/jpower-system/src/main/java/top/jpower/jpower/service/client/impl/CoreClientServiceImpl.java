@@ -7,7 +7,7 @@ import top.jpower.core.util.utils.RandomUtil;
 import top.jpower.jpower.dbs.dao.client.TbCoreClientDao;
 import top.jpower.jpower.dbs.dao.client.mapper.TbCoreClientMapper;
 import top.jpower.jpower.dbs.entity.client.TbCoreClient;
-import top.jpower.jpower.module.common.service.impl.BaseServiceImpl;
+import top.jpower.jpower.module.service.impl.BaseServiceImpl;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.service.client.CoreClientService;
 

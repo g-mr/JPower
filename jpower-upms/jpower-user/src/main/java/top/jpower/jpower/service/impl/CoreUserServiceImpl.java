@@ -17,6 +17,9 @@ import top.jpower.common.constants.ParamsConstants;
 import top.jpower.common.enums.ActivationStatusEnum;
 import top.jpower.common.enums.IdTypeEnum;
 import top.jpower.common.enums.UserTypeEnum;
+import top.jpower.core.exception.enums.JpowerError;
+import top.jpower.core.exception.throwable.BusinessException;
+import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.utils.DigestUtil;
 import top.jpower.core.util.utils.Fc;
@@ -31,15 +34,12 @@ import top.jpower.jpower.dbs.dao.mapper.TbCoreUserMapper;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
 import top.jpower.jpower.dbs.entity.TbCoreUserRole;
 import top.jpower.jpower.dbs.entity.tenant.TbCoreTenant;
-import top.jpower.core.exception.enums.JpowerError;
-import top.jpower.core.exception.handler.BusinessException;
-import top.jpower.core.exception.handler.JpowerAssert;
 import top.jpower.jpower.module.common.auth.RoleConstant;
-import top.jpower.jpower.module.common.page.PaginationContext;
 import top.jpower.jpower.module.common.redis.RedisUtil;
-import top.jpower.jpower.module.common.service.impl.BaseServiceImpl;
 import top.jpower.jpower.module.common.utils.ShieldUtil;
 import top.jpower.jpower.module.mp.support.Condition;
+import top.jpower.jpower.module.page.PaginationContext;
+import top.jpower.jpower.module.service.impl.BaseServiceImpl;
 import top.jpower.jpower.service.CoreUserService;
 import top.jpower.jpower.vo.UserVo;
 
@@ -50,7 +50,9 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static top.jpower.jpower.module.common.cache.CacheNames.TOKEN_USER_KEY;
-import static top.jpower.jpower.module.tenant.TenantConstant.*;
+import static top.jpower.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
+import static top.jpower.jpower.module.tenant.TenantConstant.TENANT_ACCOUNT_NUMBER;
+import static top.jpower.jpower.module.tenant.TenantConstant.getAccountNumber;
 
 /**
  * @author mr.gmac
@@ -139,7 +141,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
     public TbCoreUser selectUserLoginId(String loginId,String tenantCode) {
         LambdaQueryWrapper<TbCoreUser> queryWrapper = Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getLoginId,loginId);
         if (ShieldUtil.isRoot()){
-            tenantCode = Fc.isBlank(tenantCode)?DEFAULT_TENANT_CODE:tenantCode;
+            tenantCode = Fc.isBlank(tenantCode) ? DEFAULT_TENANT_CODE : tenantCode;
             queryWrapper.eq(TbCoreUser::getTenantCode,tenantCode);
         }
         return coreUserDao.getOne(queryWrapper);

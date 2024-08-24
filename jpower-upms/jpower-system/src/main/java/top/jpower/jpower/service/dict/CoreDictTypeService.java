@@ -2,7 +2,7 @@ package top.jpower.jpower.service.dict;
 
 import cn.hutool.core.lang.tree.Tree;
 import top.jpower.jpower.dbs.entity.dict.TbCoreDictType;
-import top.jpower.jpower.module.common.service.BaseService;
+import top.jpower.jpower.module.service.BaseService;
 
 import java.util.List;
 

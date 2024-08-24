@@ -17,9 +17,9 @@ import top.jpower.jpower.dbs.entity.TbLogError;
 import top.jpower.jpower.dbs.entity.TbLogOperate;
 import top.jpower.jpower.module.annotation.Function;
 import top.jpower.jpower.module.annotation.Menu;
-import top.jpower.jpower.module.common.controller.BaseController;
-import top.jpower.jpower.module.common.page.PaginationContext;
+import top.jpower.core.boot.controller.BaseController;
 import top.jpower.jpower.module.mp.support.Condition;
+import top.jpower.jpower.module.page.PaginationContext;
 import top.jpower.jpower.service.ErrorLogService;
 import top.jpower.jpower.service.OperateLogService;
 

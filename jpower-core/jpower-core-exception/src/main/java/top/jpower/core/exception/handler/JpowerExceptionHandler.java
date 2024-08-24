@@ -1,7 +1,6 @@
 package top.jpower.core.exception.handler;
 
 import cn.hutool.core.util.StrUtil;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +14,8 @@ import org.springframework.web.context.request.async.AsyncRequestTimeoutExceptio
 import org.springframework.web.servlet.NoHandlerFoundException;
 import top.jpower.core.exception.config.UserConfig;
 import top.jpower.core.exception.enums.JpowerError;
+import top.jpower.core.exception.throwable.BusinessException;
+import top.jpower.core.exception.throwable.JpowerException;
 import top.jpower.core.exception.listener.ErrorLogEvent;
 import top.jpower.core.exception.model.ErrorLogDto;
 import top.jpower.core.exception.utils.FieldCompletionUtil;

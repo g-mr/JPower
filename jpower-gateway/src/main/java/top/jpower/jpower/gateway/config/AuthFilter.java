@@ -44,7 +44,9 @@ import java.util.List;
 import java.util.Map;
 
 import static top.jpower.core.util.constants.JpowerConstants.HEADER_MENU;
-import static top.jpower.jpower.module.common.auth.RoleConstant.*;
+import static top.jpower.jpower.module.common.auth.RoleConstant.ANONYMOUS;
+import static top.jpower.jpower.module.common.auth.RoleConstant.ANONYMOUS_ID;
+import static top.jpower.jpower.module.common.auth.RoleConstant.ROOT_ID;
 
 /**
  * @ClassName AuthFilter
@@ -104,7 +106,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
             //匿名用户
             if (getIsAnonymous(currentPath, TokenUtil.getClientCodeFromHeader(exchange.getRequest()))){
                 String dataAuth = roleClient.queryDataScopeByRoleAndMenu(Collections.singletonList(ANONYMOUS_ID),exchange.getRequest().getHeaders().getFirst(HEADER_MENU),TokenUtil.getClientCodeFromHeader(exchange.getRequest()));
-                return chain.filter(addHeader(exchange,ANONYMOUS,dataAuth));
+                return chain.filter(addHeader(exchange, ANONYMOUS, dataAuth));
             }
             return proxyAuthenticationRequired(exchange.getResponse(), "缺失令牌，鉴权失败");
         }
@@ -119,7 +121,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
      **/
     private boolean isAuth(Claims claims, String token,String currentPath){
         List<Long> roleIds = claims.get("roleIds",List.class);
-        if (Fc.isNotEmpty(roleIds) && CollectionUtil.containsValue(roleIds,ROOT_ID)){
+        if (Fc.isNotEmpty(roleIds) && CollectionUtil.containsValue(roleIds, ROOT_ID)){
             return true;
         }
 

@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,12 +16,19 @@ import top.jpower.common.constants.DefaultValConstants;
 import top.jpower.common.constants.ParamsConstants;
 import top.jpower.common.enums.IdTypeEnum;
 import top.jpower.common.enums.UserTypeEnum;
+import top.jpower.core.boot.argument.RequestSingleBody;
+import top.jpower.core.boot.controller.BaseController;
+import top.jpower.core.exception.annotation.OperateLog;
+import top.jpower.core.exception.enums.JpowerError;
+import top.jpower.core.exception.throwable.BusinessException;
+import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.core.util.constants.ImportExportConstants;
 import top.jpower.core.util.constants.ReturnConstants;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.rsp.Pg;
 import top.jpower.core.util.rsp.ResponseData;
 import top.jpower.core.util.rsp.ReturnJsonUtil;
+import top.jpower.core.util.support.excel.BeanExcelUtil;
 import top.jpower.core.util.utils.*;
 import top.jpower.jpower.cache.SystemCache;
 import top.jpower.jpower.cache.param.ParamConfig;
@@ -30,18 +38,11 @@ import top.jpower.jpower.dto.ValidateDto;
 import top.jpower.jpower.feign.SmsClient;
 import top.jpower.jpower.module.annotation.Function;
 import top.jpower.jpower.module.annotation.Menu;
-import top.jpower.core.exception.annotation.OperateLog;
-import top.jpower.core.exception.enums.JpowerError;
-import top.jpower.core.exception.handler.BusinessException;
-import top.jpower.core.exception.handler.JpowerAssert;
 import top.jpower.jpower.module.common.auth.UserInfo;
 import top.jpower.jpower.module.common.cache.CacheNames;
-import top.jpower.jpower.module.common.controller.BaseController;
 import top.jpower.jpower.module.common.redis.RedisUtil;
-import top.jpower.core.util.support.excel.BeanExcelUtil;
 import top.jpower.jpower.module.common.utils.CacheUtil;
 import top.jpower.jpower.module.common.utils.ShieldUtil;
-import top.jpower.jpower.module.configurer.argument.RequestSingleBody;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.module.tenant.JpowerTenantProperties;
 import top.jpower.jpower.service.CoreUserService;
@@ -52,12 +53,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-import static top.jpower.core.util.constants.JpowerConstants.VALIDATE_SMS_CODE;
 import static top.jpower.core.exception.annotation.OperateLog.BusinessType.DELETE;
 import static top.jpower.core.exception.annotation.OperateLog.BusinessType.UPDATE;
+import static top.jpower.core.util.constants.JpowerConstants.VALIDATE_SMS_CODE;
 import static top.jpower.jpower.module.common.cache.CacheNames.TOKEN_USER_KEY;
-import static top.jpower.jpower.module.tenant.TenantConstant.*;
+import static top.jpower.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
+import static top.jpower.jpower.module.tenant.TenantConstant.TENANT_ACCOUNT_NUMBER;
+import static top.jpower.jpower.module.tenant.TenantConstant.getAccountNumber;
 
+@Slf4j
 @Api(tags = "用户管理")
 @RestController
 @AllArgsConstructor
@@ -149,12 +153,13 @@ public class UserController extends BaseController {
             @ApiImplicitParam(name = "telephone", value = "电话", paramType = "query", required = false)
     })
     @GetMapping(value = "/exportUser")
-    public void exportUser(@ApiIgnore TbCoreUser coreUser) {
+    public void exportUser(@ApiIgnore TbCoreUser coreUser) throws IOException {
         List<UserVo> list = coreUserService.list(coreUser);
 
         BeanExcelUtil<UserVo> beanExcelUtil = new BeanExcelUtil<>(UserVo.class, ImportExportConstants.EXPORT_PATH);
         ResponseData<String> responseData = beanExcelUtil.exportExcel(list, "用户列表");
-        download(responseData,"用户数据.xlsx");
+        File file = new File(ImportExportConstants.EXPORT_PATH + responseData.getData());
+        FileUtil.download(file, getResponse(), "用户数据.xlsx");
     }
 
     @Function(value = "用户详情",menus = {
@@ -371,10 +376,10 @@ public class UserController extends BaseController {
                 }
             }
 
-            logger.error("文件上传出错，文件不存在,{}", saveFile.getAbsolutePath());
+            log.error("文件上传出错，文件不存在,{}", saveFile.getAbsolutePath());
             return ReturnJsonUtil.fail("上传出错，请稍后重试");
         } catch (Exception e) {
-            logger.error("文件上传出错，error={}", ExceptionUtil.getStackTraceAsString(e));
+            log.error("文件上传出错，error={}", ExceptionUtil.getStackTraceAsString(e));
             return ReturnJsonUtil.print(ReturnConstants.RECODE_ERROR, "上传出错，请稍后重试", false);
         }
 
@@ -398,7 +403,7 @@ public class UserController extends BaseController {
             try {
                 FileUtil.download(file, getResponse(), "用户导入模板.xlsx");
             } catch (IOException e) {
-                logger.error("下载文件出错。file={},error={}", file.getAbsolutePath(), e.getMessage());
+                log.error("下载文件出错。file={},error={}", file.getAbsolutePath(), e.getMessage());
                 throw new BusinessException("下载文件出错，请联系网站管理员");
             }
 

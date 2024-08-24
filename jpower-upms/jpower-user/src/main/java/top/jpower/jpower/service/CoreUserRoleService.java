@@ -1,7 +1,7 @@
 package top.jpower.jpower.service;
 
 import top.jpower.jpower.dbs.entity.TbCoreUserRole;
-import top.jpower.jpower.module.common.service.BaseService;
+import top.jpower.jpower.module.service.BaseService;
 
 import java.util.List;
 

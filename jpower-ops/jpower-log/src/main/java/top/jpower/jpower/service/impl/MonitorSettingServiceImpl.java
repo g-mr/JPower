@@ -12,7 +12,7 @@ import top.jpower.jpower.dbs.dao.LogMonitorSettingDao;
 import top.jpower.jpower.dbs.dao.mapper.LogMonitorSettingMapper;
 import top.jpower.jpower.dbs.entity.TbLogMonitorParam;
 import top.jpower.jpower.dbs.entity.TbLogMonitorSetting;
-import top.jpower.jpower.module.common.service.impl.BaseServiceImpl;
+import top.jpower.jpower.module.service.impl.BaseServiceImpl;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.service.MonitorSettingService;
 

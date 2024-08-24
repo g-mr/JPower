@@ -51,7 +51,7 @@ public class UpdateRelatedFieldsMetaHandler implements MetaObjectHandler {
      * @Date 17:49 2020-07-09
      **/
     private Long getUserId(){
-        return Fc.isNull(LoginUserContext.getUserId()) ? RoleConstant.ANONYMOUS_ID:LoginUserContext.getUserId();
+        return Fc.isNull(LoginUserContext.getUserId()) ? RoleConstant.ANONYMOUS_ID: LoginUserContext.getUserId();
     }
 
     /**

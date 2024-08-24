@@ -17,7 +17,7 @@
         <module>common-dbs</module>
         <module>jpower-core-seata</module>
         <module>jpower-core-exception</module>
-        <module>common-tools</module>
+        <module>jpower-core-boot</module>
         <module>jpower-core-feign</module>
         <module>jpower-core-log</module>
         <module>common-delay-task</module>

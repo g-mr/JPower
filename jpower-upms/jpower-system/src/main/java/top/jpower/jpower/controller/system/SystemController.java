@@ -10,7 +10,7 @@ import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.rsp.ResponseData;
 import top.jpower.core.util.rsp.ReturnJsonUtil;
 import top.jpower.core.util.utils.ChainMap;
-import top.jpower.jpower.module.common.controller.BaseController;
+import top.jpower.core.boot.controller.BaseController;
 import top.jpower.jpower.module.tenant.JpowerTenantProperties;
 
 import java.util.Map;

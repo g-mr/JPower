@@ -27,7 +27,7 @@ import top.jpower.jpower.dbs.entity.function.TbCoreFunctionMenu;
 import top.jpower.jpower.dbs.entity.role.TbCoreRoleFunction;
 import top.jpower.jpower.module.annotation.Menu;
 import top.jpower.jpower.module.common.auth.RoleConstant;
-import top.jpower.jpower.module.common.service.impl.BaseServiceImpl;
+import top.jpower.jpower.module.service.impl.BaseServiceImpl;
 import top.jpower.jpower.module.common.utils.ShieldUtil;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.module.mp.support.LambdaTreeWrapper;

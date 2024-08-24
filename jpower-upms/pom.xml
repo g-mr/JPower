@@ -21,7 +21,7 @@
     <dependencies>
         <dependency>
             <groupId>top.jpower</groupId>
-            <artifactId>common-tools</artifactId>
+            <artifactId>jpower-core-boot</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
 
