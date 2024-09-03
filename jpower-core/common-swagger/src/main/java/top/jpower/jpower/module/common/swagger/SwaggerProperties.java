@@ -1,6 +1,5 @@
 package top.jpower.jpower.module.common.swagger;
 
-import cn.hutool.core.collection.ListUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -25,17 +24,6 @@ public class SwaggerProperties {
 
     private static final String BASIC_HEADER_KEY = "Authorization";
     private static final String HEADER = JpowerConstants.AUTH_HEADER;
-
-    /** 分组名称 */
-    private String groupName = "";
-
-    /** 扫描路径 **/
-    private List<String> basePackage = new ArrayList(Collections.singletonList("top.jpower"));
-
-    /**
-     * 排除的包名称 （todo 重构swagger的时候实现）
-     **/
-    private List<String> excludePackage = ListUtil.toList("top.jpower.jpower.module.config.BuiltEndpoint");
 
     /**
      * swagger会解析的url规则
@@ -69,7 +57,7 @@ public class SwaggerProperties {
     /**
      * 服务地址
      **/
-    private String termsOfServiceUrl = "https:localhost";
+    private String termsOfServiceUrl = "http:localhost";
     /**
      * 服务版本
      **/
@@ -105,5 +93,13 @@ public class SwaggerProperties {
             this.name = name;
             this.type = header;
         }
+    }
+
+    @Data
+    static class Group {
+        /** 分组名称 */
+        private String name;
+        /** 扫描路径 **/
+        private List<String> basePackage;
     }
 }

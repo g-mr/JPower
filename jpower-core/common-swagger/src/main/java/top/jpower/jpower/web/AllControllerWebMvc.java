@@ -27,7 +27,7 @@ import static org.springframework.util.StringUtils.isEmpty;
 import static springfox.documentation.swagger.common.HostNameProvider.componentsFrom;
 
 /**
- * @author ding
+ * @author mr.g
  * @description
  * @date 2021-03-31 15:38
  */

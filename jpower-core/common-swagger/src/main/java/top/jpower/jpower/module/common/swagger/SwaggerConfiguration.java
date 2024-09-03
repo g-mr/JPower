@@ -1,11 +1,10 @@
 package top.jpower.jpower.module.common.swagger;
 
 import com.github.xiaoymin.knife4j.spring.extension.OpenApiExtensionResolver;
-import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
-import com.google.common.collect.Lists;
-import lombok.AllArgsConstructor;
+import io.swagger.annotations.Api;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -15,22 +14,20 @@ import org.springframework.context.annotation.Import;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.RequestMethod;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
-import springfox.documentation.RequestHandler;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.contexts.ApiSelector;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
-import top.jpower.core.deploy.property.JpowerProperties;
-import top.jpower.core.util.utils.ClassUtil;
-import top.jpower.core.util.utils.Fc;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static springfox.documentation.spring.web.plugins.Docket.DEFAULT_GROUP_NAME;
 
 /**
  * @ClassName SwaggerConfiguration
@@ -43,36 +40,29 @@ import static com.google.common.collect.Lists.newArrayList;
 @EnableConfigurationProperties({SwaggerProperties.class})
 @ConditionalOnProperty(prefix = "knife4j", name = "enable", havingValue = "true", matchIfMissing = false)
 @Import({BeanValidatorPluginsConfiguration.class})
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SwaggerConfiguration {
-
-    /**
-     * JPower配置
-     **/
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    private final JpowerProperties properties;
 
     /**
      * 引入Knife4j扩展类
      */
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     private final OpenApiExtensionResolver openApiExtensionResolver;
 
-    private Predicate<RequestHandler> basePackage(final List<String> basePackage) {
-        return input -> declaringClass(input).map(handlerPackage(basePackage)).orElse(true);
-    }
-
-    private Function<Class<?>, Boolean> handlerPackage(final List<String> basePackage) {
-        return input -> basePackage.stream().anyMatch(ClassUtil.getPackage(input)::startsWith);
-    }
-
-    private Optional<? extends Class<?>> declaringClass(RequestHandler input) {
-        return Optional.ofNullable(input.declaringClass());
-    }
 
     @Bean
     @ConditionalOnMissingBean
     public Docket createRestApi(SwaggerProperties swaggerProperties) {
+        // // todo 获取自定义注解 @ApiGroup 获取到类和分组名称进行分组实例化
+        // AtomicInteger count = new AtomicInteger();
+        // swaggerProperties.getGroup().forEach(group -> {
+        //     SpringUtil.registerBean("docket"+(count.getAndIncrement()), createRestApi(group.getName(), swaggerProperties));
+        // });
+        return createRestApi(DEFAULT_GROUP_NAME, swaggerProperties);
+    }
+
+
+
+    public Docket createRestApi(String name, SwaggerProperties swaggerProperties) {
 
         // base-path处理
         List<Predicate<String>> basePath = new ArrayList<>();
@@ -87,20 +77,20 @@ public class SwaggerConfiguration {
         }
 
         return new Docket(DocumentationType.SWAGGER_2)
-                .globalResponseMessage(RequestMethod.POST,new ArrayList<>())
-                .globalResponseMessage(RequestMethod.GET,new ArrayList<>())
-                .globalResponseMessage(RequestMethod.PUT,new ArrayList<>())
-                .globalResponseMessage(RequestMethod.DELETE,new ArrayList<>())
+                .globalResponseMessage(RequestMethod.POST, new ArrayList<>())
+                .globalResponseMessage(RequestMethod.GET, new ArrayList<>())
+                .globalResponseMessage(RequestMethod.PUT, new ArrayList<>())
+                .globalResponseMessage(RequestMethod.DELETE, new ArrayList<>())
+                .groupName(name)
                 .host(swaggerProperties.getHost())
                 .apiInfo(apiInfo(swaggerProperties))
                 .select()
-                .apis(basePackage(swaggerProperties.getBasePackage()))
+                .apis(ApiSelector.DEFAULT.getRequestHandlerSelector().and(RequestHandlerSelectors.withClassAnnotation(Api.class)))
                 .paths(Predicates.and(Predicates.not(Predicates.or(excludePath)), Predicates.or(basePath)))
-                .paths(PathSelectors.any())
                 .build()
                 .securitySchemes(securitySchemes(swaggerProperties))
-                .securityContexts(Lists.newArrayList(securityContexts(swaggerProperties)))
-                .extensions(openApiExtensionResolver.buildExtensions(Fc.isBlank(swaggerProperties.getGroupName())?properties.getApplicationName():swaggerProperties.getGroupName()))
+                .securityContexts(newArrayList(securityContexts(swaggerProperties)))
+                .extensions(openApiExtensionResolver.buildExtensions(name))
                 .pathMapping("/");
     }
 
