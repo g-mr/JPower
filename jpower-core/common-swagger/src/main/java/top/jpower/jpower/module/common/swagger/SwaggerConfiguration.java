@@ -1,7 +1,6 @@
 package top.jpower.jpower.module.common.swagger;
 
 import com.github.xiaoymin.knife4j.spring.extension.OpenApiExtensionResolver;
-import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
@@ -11,9 +10,12 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.RequestMethod;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
+import springfox.documentation.RequestHandler;
+import springfox.documentation.annotations.ApiIgnore;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -22,9 +24,14 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.ApiSelector;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
+import top.jpower.core.util.utils.AnnotationUtil;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.SpringUtil;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static springfox.documentation.spring.web.plugins.Docket.DEFAULT_GROUP_NAME;
@@ -49,29 +56,41 @@ public class SwaggerConfiguration {
     private final OpenApiExtensionResolver openApiExtensionResolver;
 
 
+    public static Predicate<RequestHandler> withGroupName(final String groupName) {
+        return input -> Optional.ofNullable(input.declaringClass())
+                .map(clz->AnnotationUtil.getAnnotation(clz, ApiGroup.class))
+                .map(apiGroup -> Fc.contains(apiGroup.value(), groupName)).orElse(false);
+    }
+
     @Bean
     @ConditionalOnMissingBean
     public Docket createRestApi(SwaggerProperties swaggerProperties) {
-        // // todo 获取自定义注解 @ApiGroup 获取到类和分组名称进行分组实例化
-        // AtomicInteger count = new AtomicInteger();
-        // swaggerProperties.getGroup().forEach(group -> {
-        //     SpringUtil.registerBean("docket"+(count.getAndIncrement()), createRestApi(group.getName(), swaggerProperties));
-        // });
-        return createRestApi(DEFAULT_GROUP_NAME, swaggerProperties);
+
+        Map<String, Object> map = SpringUtil.getApplicationContext().getBeansWithAnnotation(ApiGroup.class);
+        List<String> list = map.values().stream()
+                .map(Object::getClass)
+                .filter(clz -> AnnotatedElementUtils.hasAnnotation(clz, Api.class) && !AnnotatedElementUtils.hasAnnotation(clz, ApiIgnore.class))
+                .map(clz -> AnnotationUtil.<String[]>getAnnotationValue(clz, ApiGroup.class))
+                .flatMap(Arrays::stream).distinct().collect(Collectors.toList());
+
+        AtomicInteger count = new AtomicInteger();
+        list.forEach(group -> {
+            SpringUtil.registerBean("docket"+(count.getAndIncrement()), createRestApi(group, withGroupName(group), swaggerProperties));
+        });
+
+        return createRestApi(DEFAULT_GROUP_NAME, ApiSelector.DEFAULT.getRequestHandlerSelector().and(RequestHandlerSelectors.withClassAnnotation(Api.class)), swaggerProperties);
     }
 
-
-
-    public Docket createRestApi(String name, SwaggerProperties swaggerProperties) {
+    public Docket createRestApi(String name, Predicate<RequestHandler> predicate, SwaggerProperties swaggerProperties) {
 
         // base-path处理
-        List<Predicate<String>> basePath = new ArrayList<>();
+        List<com.google.common.base.Predicate<String>> basePath = new ArrayList<>();
         for (String path : swaggerProperties.getBasePath()) {
             basePath.add((input -> new AntPathMatcher().match(path, input)));
         }
 
         // exclude-path处理
-        List<Predicate<String>> excludePath = new ArrayList<>();
+        List<com.google.common.base.Predicate<String>> excludePath = new ArrayList<>();
         for (String path : swaggerProperties.getExcludePath()) {
             excludePath.add((input -> new AntPathMatcher().match(path, input)));
         }
@@ -85,7 +104,7 @@ public class SwaggerConfiguration {
                 .host(swaggerProperties.getHost())
                 .apiInfo(apiInfo(swaggerProperties))
                 .select()
-                .apis(ApiSelector.DEFAULT.getRequestHandlerSelector().and(RequestHandlerSelectors.withClassAnnotation(Api.class)))
+                .apis(predicate)
                 .paths(Predicates.and(Predicates.not(Predicates.or(excludePath)), Predicates.or(basePath)))
                 .build()
                 .securitySchemes(securitySchemes(swaggerProperties))
