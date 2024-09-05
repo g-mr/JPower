@@ -131,7 +131,7 @@ JPower
 ├    ├── common-nacos -- Nacos Toolkit
 ├    ├── common-redis -- Cache Toolkit 
 ├    ├── common-feign -- The feign toolkit also integrates sentinel
-├    ├── common-swagger -- Swagger Toolkit
+├    ├── jpower-core-swagger -- Swagger Toolkit
 ├    ├── common-tool -- Basic Configuration Toolkit 
 ├    ├── common-transaction -- Distributed Transaction Toolkit 
 ├    └── common-utils -- Tools 

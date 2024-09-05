@@ -87,20 +87,19 @@ knife4j:
     enableFooterCustom: true
     footerCustomContent: Copyright © 2021 JPower All Rights Reserved
 
-#swagger公共信息
-swagger:
-  title: JPower 接口文档系统
-  description: JPower 接口文档系统
-  version: 2.2.0
-  license: Powered By JPower
-  license-url: https://gitee.com/gdzWork/JPower
-  terms-of-service-url: http://jpower.top
-  contact:
-    name: mr.g
-    email: ding931226@yeah.net
-    url: https://gitee.com/gdzWork
-
 jpower:
+  #swagger公共信息
+  swagger:
+    title: JPower 接口文档系统
+    description: JPower 接口文档系统
+    version: 2.2.0
+    license: Powered By JPower
+    license-url: https://gitee.com/gdzWork/JPower
+    terms-of-service-url: http://jpower.top
+    contact:
+      name: mr.g
+      email: ding931226@yeah.net
+      url: https://gitee.com/gdzWork
 ##  是否开启数据权限
 #  datascope:
 #    enable: true

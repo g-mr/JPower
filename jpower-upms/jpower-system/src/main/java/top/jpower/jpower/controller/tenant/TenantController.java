@@ -19,6 +19,7 @@ import top.jpower.core.util.rsp.ReturnJsonUtil;
 import top.jpower.core.util.utils.ChainMap;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.StringUtil;
+import top.jpower.core.util.utils.WebUtil;
 import top.jpower.jpower.dbs.entity.tenant.TbCoreTenant;
 import top.jpower.jpower.module.annotation.Function;
 import top.jpower.jpower.module.annotation.Menu;
@@ -179,8 +180,10 @@ public class TenantController extends BaseController {
 
     @ApiOperation("通过域名查询租户")
     @GetMapping("/queryByDomain")
-    public ResponseData<Map<String,Object>> queryByDomain(@ApiParam(value = "域名",required = true) @RequestParam String domain){
-        JpowerAssert.notEmpty(domain, JpowerError.Arg,"域名不可为空");
+    public ResponseData<Map<String,Object>> queryByDomain(@ApiParam(value = "域名", required = false) @RequestParam(required = false) String domain){
+        if (Fc.isBlank(domain)){
+            domain = WebUtil.getRequest().getServerName();
+        }
         domain = StringUtil.removeAllSuffix(domain, "/");
         List<TbCoreTenant> tenants = tenantService.list(Condition.<TbCoreTenant>getQueryWrapper().apply("length(domain) > 0").apply("{0} like concat('%', domain)", domain));
 

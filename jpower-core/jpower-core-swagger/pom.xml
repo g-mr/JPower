@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>common-swagger</artifactId>
+    <artifactId>jpower-core-swagger</artifactId>
 
     <packaging>jar</packaging>
     <dependencies>

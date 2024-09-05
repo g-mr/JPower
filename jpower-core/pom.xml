@@ -12,7 +12,7 @@
         <module>jpower-core-nacos</module>
         <module>common-auth</module>
         <module>common-redis</module>
-        <module>common-swagger</module>
+        <module>jpower-core-swagger</module>
         <module>jpower-core-util</module>
         <module>common-dbs</module>
         <module>jpower-core-seata</module>

@@ -27,7 +27,7 @@
 
         <dependency>
             <groupId>top.jpower</groupId>
-            <artifactId>common-swagger</artifactId>
+            <artifactId>jpower-core-swagger</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
 
