@@ -1,0 +1,3 @@
+top.jpower.core.swagger.config.SwaggerConfig
+top.jpower.core.swagger.config.SwaggerSpringConfig
+top.jpower.core.swagger.endpoint.AllControllerWebEndpoint

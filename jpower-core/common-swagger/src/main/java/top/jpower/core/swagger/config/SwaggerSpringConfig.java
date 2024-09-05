@@ -1,4 +1,4 @@
-package top.jpower.jpower.module.common.swagger;
+package top.jpower.core.swagger.config;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -13,6 +13,7 @@ import java.util.List;
 
 /**
  * 解决与高版本springboot 兼容性问题
+ * <br/>
  * e.g: Failed to start bean 'documentationPluginsBootstrapper'; nested exception is java.lang.NullPointerException
  *
  * @author mr.g
@@ -20,7 +21,7 @@ import java.util.List;
  */
 
 @Configuration(proxyBeanMethods = false)
-public class SwaggerSpringConfiguration {
+public class SwaggerSpringConfig {
 
     @Bean
     public static BeanPostProcessor springfoxHandlerProviderBeanPostProcessor() {

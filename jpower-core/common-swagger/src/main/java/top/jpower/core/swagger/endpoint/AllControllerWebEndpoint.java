@@ -1,4 +1,4 @@
-package top.jpower.jpower.web;
+package top.jpower.core.swagger.endpoint;
 
 import io.swagger.models.Swagger;
 import lombok.AllArgsConstructor;
@@ -36,7 +36,8 @@ import static springfox.documentation.swagger.common.HostNameProvider.components
 @ConditionalOnClass(name = "javax.servlet.http.HttpServletRequest")
 @ApiIgnore
 @AllArgsConstructor
-public class AllControllerWebMvc {
+@Deprecated
+public class AllControllerWebEndpoint {
 
     private static final String HAL_MEDIA_TYPE = "application/hal+json";
 

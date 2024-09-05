@@ -1,5 +1,6 @@
-package top.jpower.jpower.module.common.swagger;
+package top.jpower.core.swagger.config;
 
+import cn.hutool.core.collection.ListUtil;
 import com.github.xiaoymin.knife4j.spring.extension.OpenApiExtensionResolver;
 import com.google.common.base.Predicates;
 import io.swagger.annotations.Api;
@@ -24,7 +25,10 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.ApiSelector;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
+import top.jpower.core.swagger.property.SwaggerProperties;
+import top.jpower.core.swagger.annotation.ApiGroup;
 import top.jpower.core.util.utils.AnnotationUtil;
+import top.jpower.core.util.utils.BeanUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.SpringUtil;
 
@@ -37,18 +41,16 @@ import static com.google.common.collect.Lists.newArrayList;
 import static springfox.documentation.spring.web.plugins.Docket.DEFAULT_GROUP_NAME;
 
 /**
- * @ClassName SwaggerConfiguration
- * @Description TODO Swagger配置
- * @Author mr.g
- * @Date 2020-08-12 11:23
- * @Version 2.0
+ * Swagger配置
+ *
+ * @author mr.g
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties({SwaggerProperties.class})
 @ConditionalOnProperty(prefix = "knife4j", name = "enable", havingValue = "true", matchIfMissing = false)
 @Import({BeanValidatorPluginsConfiguration.class})
 @RequiredArgsConstructor
-public class SwaggerConfiguration {
+public class SwaggerConfig {
 
     /**
      * 引入Knife4j扩展类
@@ -57,31 +59,29 @@ public class SwaggerConfiguration {
 
 
     public static Predicate<RequestHandler> withGroupName(final String groupName) {
-        return input -> Optional.ofNullable(input.declaringClass())
-                .map(clz->AnnotationUtil.getAnnotation(clz, ApiGroup.class))
-                .map(apiGroup -> Fc.contains(apiGroup.value(), groupName)).orElse(false);
+        return input -> input.findControllerAnnotation(ApiGroup.class).map(apiGroup -> Fc.contains(apiGroup.value(), groupName)).orElse(false);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public Docket createRestApi(SwaggerProperties swaggerProperties) {
+    public Docket docket(SwaggerProperties swaggerProperties) {
 
         Map<String, Object> map = SpringUtil.getApplicationContext().getBeansWithAnnotation(ApiGroup.class);
         List<String> list = map.values().stream()
                 .map(Object::getClass)
                 .filter(clz -> AnnotatedElementUtils.hasAnnotation(clz, Api.class) && !AnnotatedElementUtils.hasAnnotation(clz, ApiIgnore.class))
                 .map(clz -> AnnotationUtil.<String[]>getAnnotationValue(clz, ApiGroup.class))
-                .flatMap(Arrays::stream).distinct().collect(Collectors.toList());
+                .flatMap(Arrays::stream)
+                .distinct()
+                .collect(Collectors.toList());
 
-        AtomicInteger count = new AtomicInteger();
-        list.forEach(group -> {
-            SpringUtil.registerBean("docket"+(count.getAndIncrement()), createRestApi(group, withGroupName(group), swaggerProperties));
-        });
+        AtomicInteger count = new AtomicInteger(0);
+        list.forEach(group -> SpringUtil.registerBean("docket"+(count.getAndIncrement()), createRestApi(group, withGroupName(group), swaggerProperties)));
 
         return createRestApi(DEFAULT_GROUP_NAME, ApiSelector.DEFAULT.getRequestHandlerSelector().and(RequestHandlerSelectors.withClassAnnotation(Api.class)), swaggerProperties);
     }
 
-    public Docket createRestApi(String name, Predicate<RequestHandler> predicate, SwaggerProperties swaggerProperties) {
+    public Docket createRestApi(String name, Predicate<RequestHandler> apiPredicate, SwaggerProperties swaggerProperties) {
 
         // base-path处理
         List<com.google.common.base.Predicate<String>> basePath = new ArrayList<>();
@@ -104,11 +104,11 @@ public class SwaggerConfiguration {
                 .host(swaggerProperties.getHost())
                 .apiInfo(apiInfo(swaggerProperties))
                 .select()
-                .apis(predicate)
+                .apis(apiPredicate)
                 .paths(Predicates.and(Predicates.not(Predicates.or(excludePath)), Predicates.or(basePath)))
                 .build()
                 .securitySchemes(securitySchemes(swaggerProperties))
-                .securityContexts(newArrayList(securityContexts(swaggerProperties)))
+                .securityContexts(securityContexts(swaggerProperties))
                 .extensions(openApiExtensionResolver.buildExtensions(name))
                 .pathMapping("/");
     }
@@ -116,24 +116,39 @@ public class SwaggerConfiguration {
     private List<? extends SecurityScheme> securitySchemes(SwaggerProperties swaggerProperties) {
         List<ApiKey> list = new ArrayList<>();
         swaggerProperties.getAuthorization().forEach(authorization -> {
-            list.add(new ApiKey(authorization.getName(),authorization.getName(),authorization.getType()));
+            list.add(new ApiKey(authorization.getName(), authorization.getName(), "header"));
         });
-
         return list;
     }
 
     private List<SecurityContext> securityContexts(SwaggerProperties swaggerProperties) {
-        return newArrayList(
-                SecurityContext.builder()
-                        .securityReferences(defaultAuth(swaggerProperties))
-                        .forPaths(PathSelectors.regex("^(?!auth).*$"))
-                        .build()
-        );
+
+        Predicate<String> predicates = null;
+
+        predicates.or((input -> new AntPathMatcher().match("path", input)));
+
+        return swaggerProperties.getAuthorization().stream().map(authorization -> {
+            return SecurityContext.builder()
+                    .securityReferences(ListUtil.of(new SecurityReference(authorization.getName(), new AuthorizationScope[0])))
+                    .forPaths(PathSelectors.ant(authorization.getPath()).and(PathSelectors.ant(authorization.getExcludePath()).negate()))
+                    .build();
+        }).collect(Collectors.toList());
+
+
+
+//        return newArrayList(
+//                SecurityContext.builder()
+//                        .securityReferences(defaultAuth(swaggerProperties))
+//                        .forPaths(PathSelectors.ant("/core/dict/**").and(PathSelectors.ant("/core/dict/dictTypeTree").negate()))
+//                        .build()
+//        );
     }
 
     private List<SecurityReference> defaultAuth(SwaggerProperties swaggerProperties) {
         List<SecurityReference> securityReferences = new ArrayList<>();
-        swaggerProperties.getAuthorization().forEach(authorization -> securityReferences.add(new SecurityReference(authorization.getName(), authorization.getAuthorizationScopes().toArray(new AuthorizationScope[authorization.getAuthorizationScopes().size()]))));
+        swaggerProperties.getAuthorization().forEach(authorization ->
+                securityReferences.add(new SecurityReference(authorization.getName(), new AuthorizationScope[0])));
+
         return securityReferences;
     }
 
@@ -144,7 +159,7 @@ public class SwaggerConfiguration {
                 .license(properties.getLicense())
                 .licenseUrl(properties.getLicenseUrl())
                 .termsOfServiceUrl(properties.getTermsOfServiceUrl())
-                .contact(new Contact(properties.getContact().getName(),properties.getContact().getUrl(),properties.getContact().getEmail()))
+                .contact(BeanUtil.copyProperties(properties.getContact(), Contact.class))
                 .version(properties.getVersion())
                 .build();
     }

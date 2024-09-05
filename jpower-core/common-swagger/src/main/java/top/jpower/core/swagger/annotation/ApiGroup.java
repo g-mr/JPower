@@ -1,4 +1,4 @@
-package top.jpower.jpower.module.common.swagger;
+package top.jpower.core.swagger.annotation;
 
 import java.lang.annotation.*;
 

@@ -1,4 +1,4 @@
-package top.jpower.jpower.module.common.swagger;
+package top.jpower.core.swagger.deploy;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.core.Ordered;
