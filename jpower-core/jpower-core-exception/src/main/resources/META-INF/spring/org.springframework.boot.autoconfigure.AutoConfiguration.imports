@@ -1,2 +1,2 @@
-top.jpower.core.exception.config.JpowerLogConfiguration
+top.jpower.core.exception.config.JpowerLogConfig
 top.jpower.core.exception.handler.JpowerExceptionHandler

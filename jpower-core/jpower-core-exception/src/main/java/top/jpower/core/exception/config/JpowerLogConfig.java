@@ -26,7 +26,7 @@ import top.jpower.jpower.module.dbs.config.LoginUserContext;
  */
 @AutoConfiguration
 @ConditionalOnWebApplication
-public class JpowerLogConfiguration {
+public class JpowerLogConfig {
 
     @Bean
     public OperateLogAspect apiLogAspect(@Autowired(required = false) UserConfig userConfig) {

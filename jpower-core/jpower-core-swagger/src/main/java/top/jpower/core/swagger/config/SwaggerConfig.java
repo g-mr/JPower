@@ -3,6 +3,8 @@ package top.jpower.core.swagger.config;
 import com.github.xiaoymin.knife4j.spring.extension.OpenApiExtensionResolver;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -11,6 +13,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.RequestHandler;
 import springfox.documentation.annotations.ApiIgnore;
@@ -54,6 +58,18 @@ public class SwaggerConfig {
      * 引入Knife4j扩展类
      */
     private final OpenApiExtensionResolver openApiExtensionResolver;
+
+    @Bean
+    public WebMvcConfigurer swaggerWebMvcConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addResourceHandlers(ResourceHandlerRegistry registry) {
+                registry.addResourceHandler("/js/**").addResourceLocations("classpath:/js/");
+                registry.addResourceHandler("doc.html").addResourceLocations("classpath:/META-INF/resources/");
+                registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
+            }
+        };
+    }
 
     private Docket createRestApi(String name, Predicate<RequestHandler> controllerSelects, SwaggerProperties swaggerProperties, ApiInfo apiInfo, SecurityApi securityApi) {
         return new Docket(DocumentationType.SWAGGER_2)
