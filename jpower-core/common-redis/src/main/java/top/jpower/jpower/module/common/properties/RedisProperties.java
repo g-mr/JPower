@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -15,6 +16,55 @@ import java.util.Map;
 @Data
 @ConfigurationProperties(prefix = "jpower.redis")
 public class RedisProperties {
+
+    // 是否启用前缀生成器
+
+    // 哪些Key需要忽略前缀（蚂蚁匹配器） 增删查全部忽略
+
+    // 前缀生成规则（获取前缀）
+
+    // 删除缓存的时候 前缀忽略规则（e.g：超级用户操作忽略前缀）
+
+    /**
+     * 前缀配置
+     **/
+    private Prefix prefix;
+
+
+    @Data
+    public static class Prefix {
+
+        /**
+         * 是否启用前缀生成器
+         **/
+        private Boolean enabled = Boolean.TRUE;
+
+        /**
+         * 哪些Key需要忽略前缀
+         **/
+        private List<String> ignore;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * 通过 @Cacheable 注解标注的方法的缓存策略

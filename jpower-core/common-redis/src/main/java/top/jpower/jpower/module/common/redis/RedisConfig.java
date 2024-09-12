@@ -1,6 +1,7 @@
 package top.jpower.jpower.module.common.redis;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -9,7 +10,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
@@ -32,7 +32,7 @@ import java.util.Optional;
  * @author mr.g
  **/
 @EnableCaching
-@Configuration
+@AutoConfiguration
 @EnableConfigurationProperties(RedisProperties.class)
 @AutoConfigureBefore({RedisAutoConfiguration.class})
 @RequiredArgsConstructor
@@ -40,15 +40,17 @@ public class RedisConfig {
 
     private final RedisProperties redisProperties;
 
-    @Bean(name = "redisTemplate")
-    @ConditionalOnMissingBean(RedisTemplate.class)
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+
+    @Bean
+    @ConditionalOnMissingBean
+    // @ConditionalOnSingleCandidate(RedisConnectionFactory.class)
+    public RedisTemplate<String, Object> redisTemplate(JpowerRedis jpowerRedis) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         // value 序列化
         Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
         redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
         redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
-        redisTemplate.setConnectionFactory(redisConnectionFactory);
+        redisTemplate.setConnectionFactory(jpowerRedis.getFactory());
         // key 序列化
         StringRedisSerializer redisKeySerializer = new StringRedisSerializer();
         redisTemplate.setKeySerializer(redisKeySerializer);
@@ -57,7 +59,7 @@ public class RedisConfig {
         return redisTemplate;
     }
 
-    @Bean(name = "redisUtil")
+    @Bean
     @ConditionalOnBean(RedisTemplate.class)
     public RedisUtil redisUtils(RedisTemplate<String, Object> redisTemplate) {
         return new RedisUtil(redisTemplate);
@@ -85,7 +87,7 @@ public class RedisConfig {
         return config;
     }
 
-    @Bean(name = "cacheManager")
+    @Bean
     @Primary
     public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
 
@@ -99,6 +101,47 @@ public class RedisConfig {
         );
 
         return RedisCacheManager
+                // .builder(new RedisCacheWriter() {
+                //     @Override
+                //     public void put(String name, byte[] key, byte[] value, Duration ttl) {
+                //
+                //     }
+                //
+                //     @Override
+                //     public byte[] get(String name, byte[] key) {
+                //         return new byte[0];
+                //     }
+                //
+                //     @Override
+                //     public byte[] putIfAbsent(String name, byte[] key, byte[] value, Duration ttl) {
+                //         return new byte[0];
+                //     }
+                //
+                //     @Override
+                //     public void remove(String name, byte[] key) {
+                //
+                //     }
+                //
+                //     @Override
+                //     public void clean(String name, byte[] pattern) {
+                //
+                //     }
+                //
+                //     @Override
+                //     public void clearStatistics(String name) {
+                //
+                //     }
+                //
+                //     @Override
+                //     public RedisCacheWriter withStatisticsCollector(CacheStatisticsCollector cacheStatisticsCollector) {
+                //         return null;
+                //     }
+                //
+                //     @Override
+                //     public CacheStatistics getCacheStatistics(String cacheName) {
+                //         return null;
+                //     }
+                // })
                 .builder(redisConnectionFactory)
                 .cacheDefaults(handleRedisCacheConfiguration(redisProperties.getCacheable(), RedisCacheConfiguration.defaultCacheConfig()))
                 .withInitialCacheConfigurations(map)

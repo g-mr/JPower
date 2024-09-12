@@ -97,7 +97,7 @@ public class SystemCache {
         return CacheUtil.get(CacheNames.CITY_KEY,CacheNames.CITY_CODE_KEY,code,() -> {
             ResponseData<TbCoreCity> responseData = systemClient.getCityByCode(code);
             return responseData.getData();
-        },Boolean.FALSE);
+        });
     }
 
     /**
@@ -111,7 +111,7 @@ public class SystemCache {
         return CacheUtil.get(CacheNames.CLIENT_KEY,CacheNames.CLIENTCODE_KEY,clientCode,() -> {
             ResponseData<TbCoreClient> responseData = systemClient.getClientByClientCode(clientCode);
             return responseData.getData();
-        },Boolean.FALSE);
+        });
     }
 
     /**
@@ -197,7 +197,7 @@ public class SystemCache {
         return CacheUtil.get(CacheNames.TENANT_KEY,CacheNames.TENANT_CODE_KEY,tenantCode,() -> {
             ResponseData<TbCoreTenant> responseData = systemClient.getTenantByCode(tenantCode);
             return responseData.getData();
-        }, Boolean.FALSE);
+        });
     }
 
 }

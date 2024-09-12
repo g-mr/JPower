@@ -28,7 +28,7 @@ public class ParamConfig {
      * @return 值
      **/
     public static String getString(String code){
-        return CacheUtil.get(CacheNames.PARAM_KEY,CacheNames.PARAM_CODE_KEY,code,() -> paramsClient.queryByCode(code).getData(), Boolean.FALSE);
+        return CacheUtil.get(CacheNames.PARAM_KEY,CacheNames.PARAM_CODE_KEY,code,() -> paramsClient.queryByCode(code).getData());
     }
 
     /**

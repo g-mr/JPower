@@ -14,34 +14,47 @@
     <packaging>jar</packaging>
 
     <dependencies>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.data</groupId>-->
+<!--            <artifactId>spring-data-redis</artifactId>-->
+<!--        </dependency>-->
         <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-redis</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.redisson</groupId>-->
+<!--            <artifactId>redisson-spring-boot-starter</artifactId>-->
+<!--&lt;!&ndash;            <version>3.16.2</version>&ndash;&gt;-->
+<!--        </dependency>-->
 
-        <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
-        </dependency>
+
+
+
+<!--        <dependency>-->
+<!--            <groupId>redis.clients</groupId>-->
+<!--            <artifactId>jedis</artifactId>-->
+<!--        </dependency>-->
+
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-util</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>top.jpower</groupId>
-            <artifactId>common-auth</artifactId>
-            <version>${com.jpower.version}</version>
-            <optional>true</optional>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>top.jpower</groupId>-->
+<!--            <artifactId>common-auth</artifactId>-->
+<!--            <version>${com.jpower.version}</version>-->
+<!--            <optional>true</optional>-->
+<!--        </dependency>-->
 
-        <dependency>
-            <groupId>top.jpower</groupId>
-            <artifactId>common-dbs</artifactId>
-            <version>${com.jpower.version}</version>
-            <optional>true</optional>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>top.jpower</groupId> -->
+<!--            <artifactId>common-dbs</artifactId>-->
+<!--            <version>${com.jpower.version}</version>-->
+<!--            <optional>true</optional>-->
+<!--        </dependency>-->
 
     </dependencies>
 </project>
