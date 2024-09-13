@@ -1,4 +1,4 @@
-package top.jpower.jpower.module.common.cache;
+package top.jpower.common.constants;
 
 /**
  * @ClassName CacheNames

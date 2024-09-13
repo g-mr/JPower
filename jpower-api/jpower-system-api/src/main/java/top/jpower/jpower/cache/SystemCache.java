@@ -11,8 +11,8 @@ import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
 import top.jpower.jpower.dbs.entity.org.TbCoreOrg;
 import top.jpower.jpower.dbs.entity.tenant.TbCoreTenant;
 import top.jpower.jpower.feign.SystemClient;
-import top.jpower.jpower.module.common.cache.CacheNames;
-import top.jpower.jpower.module.common.utils.CacheUtil;
+import top.jpower.common.constants.CacheNames;
+import top.jpower.core.redis.service.CacheUtil;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package top.jpower.jpower.module.common.utils;
+package top.jpower.core.redis.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;

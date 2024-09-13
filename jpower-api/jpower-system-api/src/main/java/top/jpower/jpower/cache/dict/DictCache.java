@@ -8,8 +8,8 @@ import top.jpower.core.util.utils.MapUtil;
 import top.jpower.core.util.utils.SpringUtil;
 import top.jpower.core.util.utils.WebUtil;
 import top.jpower.jpower.feign.DictClient;
-import top.jpower.jpower.module.common.cache.CacheNames;
-import top.jpower.jpower.module.common.utils.CacheUtil;
+import top.jpower.common.constants.CacheNames;
+import top.jpower.core.redis.service.CacheUtil;
 
 import java.util.ArrayList;
 import java.util.List;

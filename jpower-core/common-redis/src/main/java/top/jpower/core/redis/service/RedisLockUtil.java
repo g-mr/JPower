@@ -1,4 +1,4 @@
-package top.jpower.jpower.module.common.redis;
+package top.jpower.core.redis.service;
 
 import cn.hutool.core.thread.ThreadUtil;
 import lombok.RequiredArgsConstructor;

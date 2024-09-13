@@ -31,12 +31,6 @@ spring:
     #cluster:
     #  nodes: 127.0.0.1:6379,127.0.0.1:6378,127.0.0.1:6377
     #  commandTimeout: 5000
-    #出现错误时, 直接抛出异常(便于异常统一处理，否则捕获不到404)
-  mvc:
-    throw-exception-if-no-handler-found: true
-  web:
-    resources:
-      add-mappings: false
   #通用配置
   servlet:
     multipart:
@@ -91,8 +85,8 @@ knife4j:
   setting:
     enableSwaggerModels: true
     enableDocumentManage: true
-    enableHost: false
-    enableHostText: http://localhost
+    enable-host: true
+    enable-host-text: http://localhost
     enableRequestCache: true
     enableFilterMultipartApis: false
     enableFilterMultipartApiMethodType: POST
@@ -104,6 +98,19 @@ knife4j:
 
 jpower:
   server: CLOUD
+  #swagger公共信息
+  swagger:
+    host: 127.0.0.1
+    title: JPower 接口文档系统
+    description: JPower 接口文档系统
+    version: 2.2.0
+    license: Powered By JPower
+    license-url: https://gitee.com/gdzWork/JPower
+    terms-of-service-url: http://jpower.top
+    contact:
+      name: mr.g
+      email: ding931226@yeah.net
+      url: https://gitee.com/gdzWork
 #  log:
 #    mode: elk
 #    elk:

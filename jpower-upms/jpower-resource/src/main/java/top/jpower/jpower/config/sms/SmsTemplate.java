@@ -12,8 +12,8 @@ import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.SpringUtil;
 import top.jpower.core.util.utils.StringUtil;
 import top.jpower.jpower.dto.SmsResponse;
-import top.jpower.jpower.module.common.cache.CacheNames;
-import top.jpower.jpower.module.common.redis.RedisUtil;
+import top.jpower.common.constants.CacheNames;
+import top.jpower.core.redis.service.RedisUtil;
 
 import java.util.Collections;
 import java.util.List;

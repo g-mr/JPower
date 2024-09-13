@@ -1,4 +1,4 @@
-package top.jpower.jpower.module.common.properties;
+package top.jpower.core.redis.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -29,6 +29,11 @@ public class RedisProperties {
      * 前缀配置
      **/
     private Prefix prefix;
+
+    /**
+     * 是否开启redis日志
+     **/
+    private Boolean log = true;
 
 
     @Data

@@ -13,8 +13,8 @@ import top.jpower.jpower.dbs.entity.function.TbCoreDataScope;
 import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
 import top.jpower.jpower.dto.AuthInfo;
 import top.jpower.jpower.module.common.auth.UserInfo;
-import top.jpower.jpower.module.common.cache.CacheNames;
-import top.jpower.jpower.module.common.redis.RedisUtil;
+import top.jpower.common.constants.CacheNames;
+import top.jpower.core.redis.service.RedisUtil;
 import top.jpower.jpower.module.common.utils.JwtUtil;
 import top.jpower.jpower.module.common.utils.ShieldUtil;
 import top.jpower.jpower.module.datascope.DataScope;
@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static top.jpower.jpower.module.common.cache.CacheNames.TOKEN_USER_KEY;
+import static top.jpower.common.constants.CacheNames.TOKEN_USER_KEY;
 
 
 /**

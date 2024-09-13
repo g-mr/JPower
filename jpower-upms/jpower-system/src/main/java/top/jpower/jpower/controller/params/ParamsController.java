@@ -15,7 +15,7 @@ import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.dbs.entity.params.TbCoreParam;
 import top.jpower.jpower.module.annotation.Function;
 import top.jpower.jpower.module.annotation.Menu;
-import top.jpower.jpower.module.common.utils.CacheUtil;
+import top.jpower.core.redis.service.CacheUtil;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.module.page.PaginationContext;
 import top.jpower.jpower.service.params.CoreParamService;
@@ -23,7 +23,7 @@ import top.jpower.jpower.service.params.CoreParamService;
 import java.util.List;
 import java.util.Map;
 
-import static top.jpower.jpower.module.common.cache.CacheNames.PARAM_KEY;
+import static top.jpower.common.constants.CacheNames.PARAM_KEY;
 
 
 @Api(tags = "系统参数管理")

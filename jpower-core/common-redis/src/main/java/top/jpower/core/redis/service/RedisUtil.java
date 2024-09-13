@@ -1,4 +1,4 @@
-package top.jpower.jpower.module.common.redis;
+package top.jpower.core.redis.service;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

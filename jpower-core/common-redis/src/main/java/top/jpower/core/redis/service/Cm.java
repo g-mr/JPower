@@ -1,4 +1,4 @@
-package top.jpower.jpower.module.common.utils;
+package top.jpower.core.redis.service;
 
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;

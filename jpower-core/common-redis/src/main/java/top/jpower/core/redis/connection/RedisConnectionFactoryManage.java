@@ -1,4 +1,4 @@
-package top.jpower.jpower.module.common.redis;
+package top.jpower.core.redis.connection;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
  */
 @AllArgsConstructor
 @Getter
-public class JpowerRedis {
+public class RedisConnectionFactoryManage {
 
     private RedisConnectionFactory factory;
 

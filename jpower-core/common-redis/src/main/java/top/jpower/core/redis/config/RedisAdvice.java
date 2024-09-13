@@ -1,10 +1,10 @@
-package top.jpower.jpower.module.common.redis;
+package top.jpower.core.redis.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInvocation;
 import top.jpower.core.util.constants.StringPool;
-import top.jpower.jpower.module.common.utils.AspectBase;
-import top.jpower.jpower.module.common.utils.ProxyUtils;
+import top.jpower.core.redis.utils.AspectBase;
+import top.jpower.core.redis.utils.ProxyUtils;
 
 import java.lang.reflect.Method;
 

@@ -16,7 +16,7 @@ import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.dbs.entity.city.TbCoreCity;
 import top.jpower.jpower.module.annotation.Function;
 import top.jpower.jpower.module.annotation.Menu;
-import top.jpower.jpower.module.common.cache.CacheNames;
+import top.jpower.common.constants.CacheNames;
 import top.jpower.jpower.module.mp.support.WrapperKeyword;
 import top.jpower.jpower.service.city.CoreCityService;
 import top.jpower.jpower.vo.CityVo;

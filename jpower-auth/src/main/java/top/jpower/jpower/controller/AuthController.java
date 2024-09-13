@@ -35,8 +35,8 @@ import top.jpower.jpower.feign.SmsClient;
 import top.jpower.jpower.feign.UserClient;
 import top.jpower.jpower.module.common.auth.SecureConstant;
 import top.jpower.jpower.module.common.auth.UserInfo;
-import top.jpower.jpower.module.common.cache.CacheNames;
-import top.jpower.jpower.module.common.redis.RedisUtil;
+import top.jpower.common.constants.CacheNames;
+import top.jpower.core.redis.service.RedisUtil;
 import top.jpower.jpower.module.common.utils.JwtUtil;
 import top.jpower.jpower.module.common.utils.ShieldUtil;
 import top.jpower.jpower.module.tenant.JpowerTenantProperties;
@@ -48,7 +48,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static top.jpower.core.util.constants.JpowerConstants.HEADER_TENANT;
-import static top.jpower.jpower.module.common.cache.CacheNames.TOKEN_USER_KEY;
+import static top.jpower.common.constants.CacheNames.TOKEN_USER_KEY;
 import static top.jpower.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
 import static top.jpower.jpower.module.tenant.TenantConstant.getExpireTime;
 

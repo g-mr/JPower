@@ -9,8 +9,8 @@ import top.jpower.jpower.auth.AuthUserInfo;
 import top.jpower.jpower.auth.TokenGranter;
 import top.jpower.jpower.dto.TokenParameter;
 import top.jpower.jpower.module.common.auth.UserInfo;
-import top.jpower.jpower.module.common.cache.CacheNames;
-import top.jpower.jpower.module.common.redis.RedisUtil;
+import top.jpower.common.constants.CacheNames;
+import top.jpower.core.redis.service.RedisUtil;
 import top.jpower.jpower.utils.TokenUtil;
 
 import static top.jpower.jpower.auth.granter.CaptchaTokenGranter.GRANT_TYPE;

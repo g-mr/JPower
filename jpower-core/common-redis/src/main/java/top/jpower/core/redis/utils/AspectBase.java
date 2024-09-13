@@ -1,4 +1,4 @@
-package top.jpower.jpower.module.common.utils;
+package top.jpower.core.redis.utils;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;

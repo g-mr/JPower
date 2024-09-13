@@ -1,9 +1,9 @@
-package top.jpower.jpower.module.common.redis;
+package top.jpower.core.redis.config;
 
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
-import top.jpower.jpower.module.common.utils.ProxyUtils;
+import top.jpower.core.redis.utils.ProxyUtils;
 
 /**
  * @author mr.g

@@ -1,8 +1,8 @@
-package top.jpower.jpower.module.common.redis;
+package top.jpower.core.redis.connection;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 
 /**
  * @author mr.g
@@ -10,12 +10,12 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
  * @description
  */
 @AllArgsConstructor
-public class JpowerJedisConnectionFactory extends JedisConnectionFactory {
+public class JpowerLettuceConnectionFactory extends LettuceConnectionFactory {
     private RedisConnection connection;
 
     @Override
     public RedisConnection getConnection() {
-        return new JpowerStringRedisConnection(connection);
+        return new JpowerRedisConnection(connection);
     }
 
 }

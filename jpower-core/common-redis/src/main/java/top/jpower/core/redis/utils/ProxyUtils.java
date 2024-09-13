@@ -1,4 +1,4 @@
-package top.jpower.jpower.module.common.utils;
+package top.jpower.core.redis.utils;
 
 /**
  * @author mr.g

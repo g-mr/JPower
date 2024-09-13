@@ -33,8 +33,8 @@ import top.jpower.jpower.gateway.service.RoleService;
 import top.jpower.jpower.gateway.utils.ExculdesUrl;
 import top.jpower.jpower.gateway.utils.IpUtil;
 import top.jpower.jpower.gateway.utils.TokenUtil;
-import top.jpower.jpower.module.common.cache.CacheNames;
-import top.jpower.jpower.module.common.redis.RedisUtil;
+import top.jpower.common.constants.CacheNames;
+import top.jpower.core.redis.service.RedisUtil;
 import top.jpower.jpower.module.common.utils.JwtUtil;
 import top.jpower.jpower.module.properties.AuthProperties;
 

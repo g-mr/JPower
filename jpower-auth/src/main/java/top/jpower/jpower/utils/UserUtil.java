@@ -7,8 +7,8 @@ import top.jpower.jpower.cache.SystemCache;
 import top.jpower.jpower.cache.UserCache;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
 import top.jpower.jpower.module.common.auth.UserInfo;
-import top.jpower.jpower.module.common.cache.CacheNames;
-import top.jpower.jpower.module.common.utils.CacheUtil;
+import top.jpower.common.constants.CacheNames;
+import top.jpower.core.redis.service.CacheUtil;
 
 /**
  * @author mr.g

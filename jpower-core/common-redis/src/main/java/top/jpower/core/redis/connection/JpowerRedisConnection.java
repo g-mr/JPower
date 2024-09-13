@@ -1,4 +1,4 @@
-package top.jpower.jpower.module.common.redis;
+package top.jpower.core.redis.connection;
 
 import org.springframework.data.redis.connection.DefaultStringRedisConnection;
 import org.springframework.data.redis.connection.RedisConnection;
@@ -9,13 +9,13 @@ import org.springframework.data.redis.serializer.RedisSerializer;
  * @date 2024-9-10 0:34
  * @description
  */
-public class JpowerStringRedisConnection extends DefaultStringRedisConnection {
+public class JpowerRedisConnection extends DefaultStringRedisConnection {
 
     private static final byte[][] EMPTY_2D_BYTE_ARRAY = new byte[0][];
 
     private final RedisSerializer<String> serializer = RedisSerializer.string();
 
-    public JpowerStringRedisConnection(RedisConnection connection) {
+    public JpowerRedisConnection(RedisConnection connection) {
         super(connection);
     }
 
