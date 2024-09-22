@@ -1,5 +1,6 @@
 package top.jpower.core.redis.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -9,6 +10,7 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import top.jpower.core.redis.connection.JpowerJedisConnectionFactory;
 import top.jpower.core.redis.connection.JpowerLettuceConnectionFactory;
 import top.jpower.core.redis.connection.RedisConnectionFactoryManage;
+import top.jpower.core.redis.properties.RedisProperties;
 
 /**
  * @author mr.g
@@ -28,8 +30,8 @@ public class RedisFactoryConfig {
     @Bean
     @ConditionalOnBean(LettuceConnectionFactory.class)
     @ConditionalOnMissingBean
-    public RedisConnectionFactoryManage redisLettuce(LettuceConnectionFactory redisConnectionFactory) {
-        return new RedisConnectionFactoryManage(new JpowerLettuceConnectionFactory(redisConnectionFactory.getConnection()));
+    public RedisConnectionFactoryManage redisLettuce(LettuceConnectionFactory redisConnectionFactory, RedisProperties redisProperties, @Autowired(required = false) RedisPrefixHandler redisPrefixHandler) {
+        return new RedisConnectionFactoryManage(new JpowerLettuceConnectionFactory(redisConnectionFactory.getConnection(), redisProperties, redisPrefixHandler));
     }
 
     /**
@@ -42,8 +44,9 @@ public class RedisFactoryConfig {
     @Bean
     @ConditionalOnBean(JedisConnectionFactory.class)
     @ConditionalOnMissingBean
-    public RedisConnectionFactoryManage redisJedis(JedisConnectionFactory redisConnectionFactory) {
-        return new RedisConnectionFactoryManage(new JpowerJedisConnectionFactory(redisConnectionFactory.getConnection()));
+    public RedisConnectionFactoryManage redisJedis(JedisConnectionFactory redisConnectionFactory, RedisProperties redisProperties, @Autowired(required = false) RedisPrefixHandler redisPrefixHandler) {
+        return new RedisConnectionFactoryManage(new JpowerJedisConnectionFactory(redisConnectionFactory.getConnection() , redisProperties, redisPrefixHandler));
     }
+
 
 }

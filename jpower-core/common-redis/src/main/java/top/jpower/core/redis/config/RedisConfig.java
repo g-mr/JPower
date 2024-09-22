@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import top.jpower.core.redis.connection.RedisConnectionFactoryManage;
@@ -39,8 +40,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RedisConfig {
 
-    private final RedisProperties redisProperties;
-
 
     // todo 下次先研究重写的方式来实现，实在不行就使用RedisConnectionFactoryManage方式
 
@@ -48,18 +47,26 @@ public class RedisConfig {
     @ConditionalOnMissingBean
     // todo 除了这个方式，还可以研究重写RedisTemplate的preProcessConnection方式来实现
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactoryManage redisConnectionFactoryManage) {
+
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactoryManage.getFactory());
+
         // value 序列化
         Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
         redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
         redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
-        redisTemplate.setConnectionFactory(redisConnectionFactoryManage.getFactory());
         // key 序列化
         StringRedisSerializer redisKeySerializer = new StringRedisSerializer();
         redisTemplate.setKeySerializer(redisKeySerializer);
         redisTemplate.setHashKeySerializer(redisKeySerializer);
 
         return redisTemplate;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public StringRedisTemplate stringRedisTemplate(RedisConnectionFactoryManage redisConnectionFactoryManage) {
+        return new StringRedisTemplate(redisConnectionFactoryManage.getFactory());
     }
 
     @Bean
@@ -92,8 +99,8 @@ public class RedisConfig {
 
     @Bean
     @Primary
-    // todo 3.实在没办法可以采用这个方法，自定义实现RedisConnectionFactoryManage
-    public CacheManager cacheManager(RedisConnectionFactoryManage redisConnectionFactoryManage) {
+    // // todo 3.实在没办法可以采用这个方法，自定义实现RedisConnectionFactoryManage
+    public CacheManager cacheManager(RedisConnectionFactoryManage redisConnectionFactoryManage, RedisProperties redisProperties) {
 
         Map<String, RedisProperties.Cache> configs = redisProperties.getCacheableKey();
         Map<String, RedisCacheConfiguration> map = MapUtil.newHashMap();

@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +29,7 @@ public class RedisProperties {
     /**
      * 前缀配置
      **/
-    private Prefix prefix;
+    private Prefix prefix = new Prefix();
 
     /**
      * 是否开启redis日志
@@ -45,9 +46,9 @@ public class RedisProperties {
         private Boolean enabled = Boolean.TRUE;
 
         /**
-         * 哪些Key需要忽略前缀
+         * 哪些Key需要忽略前缀，支持蚂蚁匹配器
          **/
-        private List<String> ignore;
+        private List<String> ignore = new ArrayList<>();
     }
 
 
