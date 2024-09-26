@@ -18,7 +18,6 @@ import org.springframework.data.redis.domain.geo.GeoShape;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.lang.Nullable;
 import org.springframework.util.AntPathMatcher;
-import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import top.jpower.core.redis.config.RedisPrefixHandler;
 import top.jpower.core.redis.properties.RedisProperties;
@@ -63,26 +62,35 @@ public class JpowerRedisConnection implements RedisConnection {
         this.serializer = redisSerializer;
     }
 
-    private void addPrefix(boolean isDel, byte[]... keys){
-        RedisProperties.Prefix prefix = redisProperties.getPrefix();
-        if (prefix.getEnabled() && Fc.notNull(redisPrefixHandler)){
-            for (byte[] key : keys) {
-                final String ks = serializer.deserialize(key);
-                Assert.notNull(ks, "non null key required");
-                if (prefix.getIgnore().stream().noneMatch(pattern -> antPathMatcher.match(pattern, ks))){
-                    String keyStr = serializer.deserialize(key);
-                    String pre = getPrefix(redisPrefixHandler.getPrefix(keyStr));
-                    if (isDel && redisPrefixHandler.ignorePrefixForDel(keyStr)){
-                        if (StringUtil.isNotBlank(pre)){
-                            keyStr = StringPool.ASTERISK+StringPool.COLON+keyStr;
-                        }
+    private boolean enabledPrefix(){
+        return redisProperties.getPrefix().getEnabled() && Fc.notNull(redisPrefixHandler);
+    }
+
+    private boolean prefixForScan(boolean isDel, String key){
+        if (isDel && redisPrefixHandler.ignorePrefixForDel(key)){
+            return StringUtil.isNotBlank(getPrefix(redisPrefixHandler.getPrefix(key)));
+        } else {
+            return false;
+        }
+    }
+
+    private byte[][] addPrefix(boolean isDel, byte[]... keys){
+        if (enabledPrefix()){
+            for (int i = 0; i < keys.length; i++) {
+                byte[] key = keys[i]; // 获取当前键
+                String keyStr = serializer.deserialize(key);
+                if (redisProperties.getPrefix().getIgnore().stream().noneMatch(pattern -> antPathMatcher.match(pattern, Objects.requireNonNull(serializer.deserialize(key), "non null key required")))){
+                    if (prefixForScan(isDel, keyStr)){
+                        keyStr = StringPool.ASTERISK+StringPool.COLON+keyStr;
                     } else {
-                        keyStr = pre+keyStr;
+                        keyStr = redisPrefixHandler.getPrefix(keyStr)+keyStr;
                     }
-                    key = serializer.serialize(keyStr);
                 }
+                keys[i] = serializer.serialize(keyStr);
             }
         }
+
+        return keys;
     }
 
     private String getPrefix(String prefix){
@@ -205,8 +213,22 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long del(byte[]... keys) {
-        addPrefix(Boolean.TRUE, keys);
-        return convertAndReturn(delegate.del(keys), Converters.identityConverter());
+        keys = addPrefix(Boolean.TRUE, keys);
+
+        Set<byte[]> keyList = new HashSet<>();
+        for (byte[] key : keys){
+            String keyForStr = serializer.deserialize(key);
+            if (StringUtil.startWith(keyForStr, StringPool.ASTERISK)){
+                Set<byte[]> set = keys(key);
+                if (Fc.isNotEmpty(set)){
+                    keyList.addAll(set);
+                }
+            } else {
+                keyList.add(key);
+            }
+        }
+
+        return convertAndReturn(delegate.del(keyList.toArray(new byte[0][])), Converters.identityConverter());
     }
 
     /*
@@ -298,6 +320,16 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Boolean exists(byte[] key) {
+        if (enabledPrefix()){
+            byte[] ks = addPrefix(Boolean.TRUE, key)[0];
+            if (StringUtil.startWith(serializer.deserialize(ks), StringPool.ASTERISK)){
+                Set<byte[]> set = keys(ks);
+                return set != null ? set.size() > 0 : null;
+            } else {
+                return convertAndReturn(delegate.exists(ks), Converters.identityConverter());
+            }
+        }
+
         return convertAndReturn(delegate.exists(key), Converters.identityConverter());
     }
 
@@ -307,6 +339,28 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long exists(byte[]... keys) {
+
+        if (enabledPrefix()){
+            byte[][] kss = addPrefix(Boolean.TRUE, keys);
+            List<byte[]> keysForNo = new ArrayList<>();
+            long count = 0L;
+            for (byte[] ks: kss){
+                if (StringUtil.startWith(serializer.deserialize(ks), StringPool.ASTERISK)){
+                    Set<byte[]> set = keys(ks);
+                    count = count + (set != null ? set.size() : 0);
+                } else {
+                    keysForNo.add(ks);
+                }
+            }
+
+            if (Fc.isNotEmpty(keysForNo)){
+                Long c = convertAndReturn(delegate.exists(keysForNo.toArray(new byte[0][])), Converters.identityConverter());
+                count = count + Fc.toLong(c, 0);
+            }
+
+            return count;
+        }
+
         return convertAndReturn(delegate.exists(keys), Converters.identityConverter());
     }
 
@@ -643,6 +697,14 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Set<byte[]> keys(byte[] pattern) {
+        // todo 扫描的比较特殊 keys和scan都要走这个逻辑
+
+        // 判断是否是*开头如果不是就加上*
+
+        // 针对所有扫描出来的结果，都要去除开头的 pre:
+
+        // 如果forDel是true则返回所有的去除了pre:的key，如果forDel是false则只返回符合pre开头的去除了pre:的key
+
         return convertAndReturn(delegate.keys(pattern), Converters.identityConverter());
     }
 
@@ -1014,7 +1076,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Boolean set(byte[] key, byte[] value) {
-        addPrefix(Boolean.FALSE, key);
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.set(key, value), Converters.identityConverter());
     }
 
