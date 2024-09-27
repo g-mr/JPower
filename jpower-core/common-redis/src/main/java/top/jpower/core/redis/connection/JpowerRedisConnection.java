@@ -9,7 +9,9 @@ import org.springframework.data.redis.connection.*;
 import org.springframework.data.redis.connection.convert.Converters;
 import org.springframework.data.redis.connection.convert.ListConverter;
 import org.springframework.data.redis.connection.stream.*;
+import org.springframework.data.redis.core.ConvertingCursor;
 import org.springframework.data.redis.core.Cursor;
+import org.springframework.data.redis.core.KeyScanOptions;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.types.Expiration;
 import org.springframework.data.redis.core.types.RedisClientInfo;
@@ -69,7 +71,7 @@ public class JpowerRedisConnection implements RedisConnection {
 
     private boolean prefixForScan(boolean isDel, String key){
         if (isDel && redisPrefixHandler.ignorePrefixForDel(key)){
-            return StringUtil.isNotBlank(getPrefix(redisPrefixHandler.getPrefix(key)));
+            return StringUtil.isNotBlank(redisPrefixHandler.getPrefix(key));
         } else {
             return false;
         }
@@ -79,19 +81,22 @@ public class JpowerRedisConnection implements RedisConnection {
         if (enabledPrefix()){
             for (int i = 0; i < keys.length; i++) {
                 byte[] key = keys[i]; // 获取当前键
-                String keyStr = serializer.deserialize(key);
                 if (redisProperties.getPrefix().getIgnore().stream().noneMatch(pattern -> antPathMatcher.match(pattern, Objects.requireNonNull(serializer.deserialize(key), "non null key required")))){
-                    if (prefixForScan(isDel, keyStr)){
-                        keyStr = StringPool.ASTERISK+StringPool.COLON+keyStr;
-                    } else {
-                        keyStr = redisPrefixHandler.getPrefix(keyStr)+keyStr;
-                    }
+                    keys[i] = appendPrefix(isDel, key);
                 }
-                keys[i] = serializer.serialize(keyStr);
             }
         }
 
         return keys;
+    }
+
+    private byte[] appendPrefix(boolean isDel,byte[] key){
+        String keyStr = serializer.deserialize(key);
+        if (prefixForScan(isDel, keyStr)){
+            return serializer.serialize(StringPool.ASTERISK+keyStr);
+        } else {
+            return serializer.serialize(getPrefix(redisPrefixHandler.getPrefix(keyStr))+keyStr);
+        }
     }
 
     private String getPrefix(String prefix){
@@ -699,26 +704,21 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Set<byte[]> keys(byte[] pattern) {
-        // todo 扫描的比较特殊 keys和scan都要走这个逻辑
-
         if (enabledPrefix()){
-            pattern = addPrefix(Boolean.TRUE, pattern)[0];
+            pattern = appendPrefix(Boolean.TRUE, pattern);
             Set<byte[]> set = convertAndReturn(delegate.keys(pattern), Converters.identityConverter());
             if (set != null) {
                 return set.stream()
                         .map(serializer::deserialize) // 先反序列化
-                        .map(keyStr -> {
-                            String prefix = redisPrefixHandler.getPrefix(keyStr);
-                            // 检查前缀并处理
-                            if (StringUtil.startWith(keyStr, prefix + StringPool.COLON)) {
-                                if (redisPrefixHandler.ignorePrefixForDel(keyStr)) {
-                                    return serializer.serialize(StringUtil.removePrefix(keyStr, prefix + StringPool.COLON));
-                                }
-                                return serializer.serialize(keyStr); // 如果不需要处理前缀，直接序列化
-                            }
-                            return null; // 不符合条件的返回null
-                        })
                         .filter(Objects::nonNull)
+                        .map(keyStr -> {
+                            if (redisProperties.getPrefix().getIgnore().stream().noneMatch(ant -> antPathMatcher.match(ant, keyStr))) {
+                                if (StringUtil.contains(keyStr, StringPool.COLON)){
+                                    return serializer.serialize(StringUtil.subAfter(keyStr, StringPool.COLON, false));
+                                }
+                            }
+                            return serializer.serialize(keyStr); // 如果不需要处理前缀，直接序列化
+                        })
                         .collect(Collectors.toSet());
             }
         }
@@ -2400,6 +2400,28 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Cursor<byte[]> scan(ScanOptions options) {
+        if (enabledPrefix()){
+            byte[] pattern = appendPrefix(Boolean.TRUE, options.getBytePattern());
+
+            if (options instanceof KeyScanOptions){
+                options = ScanOptions.scanOptions().count(Fc.toLong(options.getCount(), 1000)).match(pattern).type(((KeyScanOptions) options).getType()).build();
+            } else {
+                options = ScanOptions.scanOptions().count(Fc.toLong(options.getCount(), 1000)).match(pattern).build();
+            }
+
+            Cursor<byte[]> cursor = this.delegate.scan(options);
+            return new ConvertingCursor<>(cursor, key -> {
+                String keyStr = serializer.deserialize(key);
+                if (Fc.isNotBlank(keyStr)){
+                    if (redisProperties.getPrefix().getIgnore().stream().noneMatch(ant -> antPathMatcher.match(ant, keyStr))) {
+                        if (StringUtil.contains(keyStr, StringPool.COLON)){
+                            return serializer.serialize(StringUtil.subAfter(keyStr, StringPool.COLON, false));
+                        }
+                    }
+                }
+                return key;
+            });
+        }
         return this.delegate.scan(options);
     }
 
