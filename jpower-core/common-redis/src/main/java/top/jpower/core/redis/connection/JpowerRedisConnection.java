@@ -28,6 +28,7 @@ import top.jpower.core.util.utils.StringUtil;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * redis 连接器
@@ -219,7 +220,7 @@ public class JpowerRedisConnection implements RedisConnection {
         for (byte[] key : keys){
             String keyForStr = serializer.deserialize(key);
             if (StringUtil.startWith(keyForStr, StringPool.ASTERISK)){
-                Set<byte[]> set = keys(key);
+                Set<byte[]> set = convertAndReturn(delegate.keys(key), Converters.identityConverter());
                 if (Fc.isNotEmpty(set)){
                     keyList.addAll(set);
                 }
@@ -309,6 +310,7 @@ public class JpowerRedisConnection implements RedisConnection {
             this.txConverters = txConverters;
         }
 
+        @Override
         public List<Object> convert(List<Object> execResults) {
             return convertResults(execResults, txConverters);
         }
@@ -323,7 +325,7 @@ public class JpowerRedisConnection implements RedisConnection {
         if (enabledPrefix()){
             byte[] ks = addPrefix(Boolean.TRUE, key)[0];
             if (StringUtil.startWith(serializer.deserialize(ks), StringPool.ASTERISK)){
-                Set<byte[]> set = keys(ks);
+                Set<byte[]> set = convertAndReturn(delegate.keys(ks), Converters.identityConverter());
                 return set != null ? set.size() > 0 : null;
             } else {
                 return convertAndReturn(delegate.exists(ks), Converters.identityConverter());
@@ -346,7 +348,7 @@ public class JpowerRedisConnection implements RedisConnection {
             long count = 0L;
             for (byte[] ks: kss){
                 if (StringUtil.startWith(serializer.deserialize(ks), StringPool.ASTERISK)){
-                    Set<byte[]> set = keys(ks);
+                    Set<byte[]> set = convertAndReturn(delegate.keys(ks), Converters.identityConverter());
                     count = count + (set != null ? set.size() : 0);
                 } else {
                     keysForNo.add(ks);
@@ -699,11 +701,27 @@ public class JpowerRedisConnection implements RedisConnection {
     public Set<byte[]> keys(byte[] pattern) {
         // todo 扫描的比较特殊 keys和scan都要走这个逻辑
 
-        // 判断是否是*开头如果不是就加上*
-
-        // 针对所有扫描出来的结果，都要去除开头的 pre:
-
-        // 如果forDel是true则返回所有的去除了pre:的key，如果forDel是false则只返回符合pre开头的去除了pre:的key
+        if (enabledPrefix()){
+            pattern = addPrefix(Boolean.TRUE, pattern)[0];
+            Set<byte[]> set = convertAndReturn(delegate.keys(pattern), Converters.identityConverter());
+            if (set != null) {
+                return set.stream()
+                        .map(serializer::deserialize) // 先反序列化
+                        .map(keyStr -> {
+                            String prefix = redisPrefixHandler.getPrefix(keyStr);
+                            // 检查前缀并处理
+                            if (StringUtil.startWith(keyStr, prefix + StringPool.COLON)) {
+                                if (redisPrefixHandler.ignorePrefixForDel(keyStr)) {
+                                    return serializer.serialize(StringUtil.removePrefix(keyStr, prefix + StringPool.COLON));
+                                }
+                                return serializer.serialize(keyStr); // 如果不需要处理前缀，直接序列化
+                            }
+                            return null; // 不符合条件的返回null
+                        })
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toSet());
+            }
+        }
 
         return convertAndReturn(delegate.keys(pattern), Converters.identityConverter());
     }
