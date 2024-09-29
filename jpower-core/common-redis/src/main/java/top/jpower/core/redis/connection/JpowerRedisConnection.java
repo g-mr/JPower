@@ -65,24 +65,45 @@ public class JpowerRedisConnection implements RedisConnection {
         this.serializer = redisSerializer;
     }
 
+    /**
+     * 是否开启前缀
+     *
+     * @author mr.g
+     * @return 是否开启
+     **/
     private boolean enabledPrefix(){
         return redisProperties.getPrefix().getEnabled() && Fc.notNull(redisPrefixHandler);
     }
 
-    private boolean prefixForScan(boolean isDel, String key){
-        if (isDel && redisPrefixHandler.ignorePrefixForDel(key)){
+    /**
+     * 是否是扫描前缀
+     *
+     * @author mr.g
+     * @param isAppend 是否拼接
+     * @param key 缓存KEY
+     * @return 是否扫描前缀
+     **/
+    private boolean prefixForScan(boolean isAppend, String key){
+        if (isAppend && redisPrefixHandler.ignorePrefixForScan(key)){
             return StringUtil.isNotBlank(redisPrefixHandler.getPrefix(key));
         } else {
             return false;
         }
     }
 
-    private byte[][] addPrefix(boolean isDel, byte[]... keys){
+    /**
+     * 添加前缀
+     * @author mr.g
+     * @param isAppend 是否拼接
+     * @param keys 缓存KEY
+     * @return 缓存KEY
+     **/
+    private byte[][] addPrefix(boolean isAppend, byte[]... keys){
         if (enabledPrefix()){
             for (int i = 0; i < keys.length; i++) {
                 byte[] key = keys[i]; // 获取当前键
                 if (redisProperties.getPrefix().getIgnore().stream().noneMatch(pattern -> antPathMatcher.match(pattern, Objects.requireNonNull(serializer.deserialize(key), "non null key required")))){
-                    keys[i] = appendPrefix(isDel, key);
+                    keys[i] = appendPrefix(isAppend, key);
                 }
             }
         }
@@ -90,15 +111,29 @@ public class JpowerRedisConnection implements RedisConnection {
         return keys;
     }
 
-    private byte[] appendPrefix(boolean isDel,byte[] key){
+    /**
+     * 拼接前缀
+     * @author mr.g
+     * @param isAppend 是否拼接
+     * @param key 缓存KEY
+     * @return 缓存KEY
+     **/
+    private byte[] appendPrefix(boolean isAppend,byte[] key){
         String keyStr = serializer.deserialize(key);
-        if (prefixForScan(isDel, keyStr)){
+        if (prefixForScan(isAppend, keyStr)){
             return serializer.serialize(StringPool.ASTERISK+keyStr);
         } else {
             return serializer.serialize(getPrefix(redisPrefixHandler.getPrefix(keyStr))+keyStr);
         }
     }
 
+    /**
+     * 获取前缀
+     *
+     * @author mr.g
+     * @param prefix 前缀
+     * @return 前缀
+     **/
     private String getPrefix(String prefix){
         if (StringUtil.isBlank(prefix)){
             return StringPool.EMPTY;
@@ -112,6 +147,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long append(byte[] key, byte[] value) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.append(key, value), Converters.identityConverter());
     }
 
@@ -137,6 +173,7 @@ public class JpowerRedisConnection implements RedisConnection {
      * @deprecated As of 1.3, use {@link #bgReWriteAof}.
      */
     @Deprecated
+    @Override
     public void bgWriteAof() {
         bgReWriteAof();
     }
@@ -147,6 +184,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public List<byte[]> bLPop(int timeout, byte[]... keys) {
+        keys = addPrefix(Boolean.FALSE, keys);
         return convertAndReturn(delegate.bLPop(timeout, keys), Converters.identityConverter());
     }
 
@@ -156,6 +194,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public List<byte[]> bRPop(int timeout, byte[]... keys) {
+        keys = addPrefix(Boolean.FALSE, keys);
         return convertAndReturn(delegate.bRPop(timeout, keys), Converters.identityConverter());
     }
 
@@ -165,6 +204,8 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public byte[] bRPopLPush(int timeout, byte[] srcKey, byte[] dstKey) {
+        srcKey = addPrefix(Boolean.FALSE, srcKey)[0];
+        dstKey = addPrefix(Boolean.FALSE, dstKey)[0];
         return convertAndReturn(delegate.bRPopLPush(timeout, srcKey, dstKey), Converters.identityConverter());
     }
 
@@ -183,6 +224,8 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Boolean copy(byte[] sourceKey, byte[] targetKey, boolean replace) {
+        sourceKey = addPrefix(Boolean.FALSE, sourceKey)[0];
+        targetKey = addPrefix(Boolean.FALSE, targetKey)[0];
         return convertAndReturn(delegate.copy(sourceKey, targetKey, replace), Converters.identityConverter());
     }
 
@@ -201,6 +244,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long decr(byte[] key) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.decr(key), Converters.identityConverter());
     }
 
@@ -210,15 +254,18 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long decrBy(byte[] key, long value) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.decrBy(key, value), Converters.identityConverter());
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.data.redis.connection.RedisKeyCommands#del(byte[][])
-     */
-    @Override
-    public Long del(byte[]... keys) {
+    /**
+     * 扫描所有的KEY
+     *
+     * @author mr.g
+     * @param keys 键
+     * @return 键
+     **/
+    private byte[][] scanAllForKey(byte[]... keys){
         keys = addPrefix(Boolean.TRUE, keys);
 
         Set<byte[]> keyList = new HashSet<>();
@@ -234,7 +281,17 @@ public class JpowerRedisConnection implements RedisConnection {
             }
         }
 
-        return convertAndReturn(delegate.del(keyList.toArray(new byte[0][])), Converters.identityConverter());
+        return keyList.toArray(new byte[0][]);
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.springframework.data.redis.connection.RedisKeyCommands#del(byte[][])
+     */
+    @Override
+    public Long del(byte[]... keys) {
+        keys = scanAllForKey(keys);
+        return convertAndReturn(delegate.del(keys), Converters.identityConverter());
     }
 
     /*
@@ -243,6 +300,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long unlink(byte[]... keys) {
+        keys = scanAllForKey(keys);
         return convertAndReturn(delegate.unlink(keys), Converters.identityConverter());
     }
 
@@ -377,6 +435,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Boolean expire(byte[] key, long seconds) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.expire(key, seconds), Converters.identityConverter());
     }
 
@@ -386,6 +445,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Boolean expireAt(byte[] key, long unixTime) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.expireAt(key, unixTime), Converters.identityConverter());
     }
 
@@ -431,6 +491,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public byte[] get(byte[] key) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.get(key), Converters.identityConverter());
     }
 
@@ -441,6 +502,7 @@ public class JpowerRedisConnection implements RedisConnection {
     @Nullable
     @Override
     public byte[] getDel(byte[] key) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.getDel(key), Converters.identityConverter());
     }
 
@@ -451,6 +513,7 @@ public class JpowerRedisConnection implements RedisConnection {
     @Nullable
     @Override
     public byte[] getEx(byte[] key, Expiration expiration) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.getEx(key, expiration), Converters.identityConverter());
     }
 
@@ -460,6 +523,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Boolean getBit(byte[] key, long offset) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.getBit(key, offset), Converters.identityConverter());
     }
 
@@ -487,6 +551,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public byte[] getRange(byte[] key, long start, long end) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.getRange(key, start, end), Converters.identityConverter());
     }
 
@@ -496,6 +561,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public byte[] getSet(byte[] key, byte[] value) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.getSet(key, value), Converters.identityConverter());
     }
 
@@ -514,7 +580,12 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long hDel(byte[] key, byte[]... fields) {
-        return convertAndReturn(delegate.hDel(key, fields), Converters.identityConverter());
+        byte[][] keys = scanAllForKey(key);
+        long count = 0;
+        for (byte[] k : keys){
+            count = count + Fc.toLong(convertAndReturn(delegate.hDel(k, fields), Converters.identityConverter()), 0);
+        }
+        return count;
     }
 
     /*
@@ -523,6 +594,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Boolean hExists(byte[] key, byte[] field) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.hExists(key, field), Converters.identityConverter());
     }
 
@@ -532,6 +604,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public byte[] hGet(byte[] key, byte[] field) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.hGet(key, field), Converters.identityConverter());
     }
 
@@ -541,6 +614,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Map<byte[], byte[]> hGetAll(byte[] key) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.hGetAll(key), Converters.identityConverter());
     }
 
@@ -550,6 +624,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long hIncrBy(byte[] key, byte[] field, long delta) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.hIncrBy(key, field, delta), Converters.identityConverter());
     }
 
@@ -559,6 +634,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Double hIncrBy(byte[] key, byte[] field, double delta) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.hIncrBy(key, field, delta), Converters.identityConverter());
     }
 
@@ -568,6 +644,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Set<byte[]> hKeys(byte[] key) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.hKeys(key), Converters.identityConverter());
     }
 
@@ -577,6 +654,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long hLen(byte[] key) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.hLen(key), Converters.identityConverter());
     }
 
@@ -586,6 +664,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public List<byte[]> hMGet(byte[] key, byte[]... fields) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.hMGet(key, fields), Converters.identityConverter());
     }
 
@@ -595,6 +674,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public void hMSet(byte[] key, Map<byte[], byte[]> hashes) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         delegate.hMSet(key, hashes);
     }
 
@@ -604,6 +684,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Boolean hSet(byte[] key, byte[] field, byte[] value) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.hSet(key, field, value), Converters.identityConverter());
     }
 
@@ -613,6 +694,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Boolean hSetNX(byte[] key, byte[] field, byte[] value) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.hSetNX(key, field, value), Converters.identityConverter());
     }
 
@@ -622,6 +704,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public List<byte[]> hVals(byte[] key) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.hVals(key), Converters.identityConverter());
     }
 
@@ -631,6 +714,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long incr(byte[] key) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.incr(key), Converters.identityConverter());
     }
 
@@ -640,7 +724,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long incrBy(byte[] key, long value) {
-
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.incrBy(key, value), Converters.identityConverter());
     }
 
@@ -650,6 +734,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Double incrBy(byte[] key, double value) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.incrBy(key, value), Converters.identityConverter());
     }
 
@@ -741,6 +826,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public byte[] lIndex(byte[] key, long index) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.lIndex(key, index), Converters.identityConverter());
     }
 
@@ -750,6 +836,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long lInsert(byte[] key, Position where, byte[] pivot, byte[] value) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.lInsert(key, where, pivot, value), Converters.identityConverter());
     }
 
@@ -759,6 +846,8 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public byte[] lMove(byte[] sourceKey, byte[] destinationKey, Direction from, Direction to) {
+        sourceKey = addPrefix(Boolean.FALSE, sourceKey)[0];
+        destinationKey = addPrefix(Boolean.FALSE, destinationKey)[0];
         return convertAndReturn(delegate.lMove(sourceKey, destinationKey, from, to), Converters.identityConverter());
     }
 
@@ -768,6 +857,8 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public byte[] bLMove(byte[] sourceKey, byte[] destinationKey, Direction from, Direction to, double timeout) {
+        sourceKey = addPrefix(Boolean.FALSE, sourceKey)[0];
+        destinationKey = addPrefix(Boolean.FALSE, destinationKey)[0];
         return convertAndReturn(delegate.bLMove(sourceKey, destinationKey, from, to, timeout),
                 Converters.identityConverter());
     }
@@ -778,6 +869,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long lLen(byte[] key) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.lLen(key), Converters.identityConverter());
     }
 
@@ -787,6 +879,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public byte[] lPop(byte[] key) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.lPop(key), Converters.identityConverter());
     }
 
@@ -796,6 +889,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public List<byte[]> lPop(byte[] key, long count) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.lPop(key, count), Converters.identityConverter());
     }
 
@@ -805,6 +899,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public List<Long> lPos(byte[] key, byte[] element, @Nullable Integer rank, @Nullable Integer count) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.lPos(key, element, rank, count), Converters.identityConverter());
     }
 
@@ -814,6 +909,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long lPush(byte[] key, byte[]... values) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.lPush(key, values), Converters.identityConverter());
     }
 
@@ -823,6 +919,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long lPushX(byte[] key, byte[] value) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.lPushX(key, value), Converters.identityConverter());
     }
 
@@ -832,6 +929,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public List<byte[]> lRange(byte[] key, long start, long end) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.lRange(key, start, end), Converters.identityConverter());
     }
 
@@ -841,8 +939,12 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long lRem(byte[] key, long count, byte[] value) {
-
-        return convertAndReturn(delegate.lRem(key, count, value), Converters.identityConverter());
+        byte[][] keys = scanAllForKey(key);
+        long remCount = 0;
+        for (byte[] k : keys){
+            remCount = remCount + Fc.toLong(convertAndReturn(delegate.lRem(k, count, value), Converters.identityConverter()), 0);
+        }
+        return remCount;
     }
 
     /*
@@ -851,6 +953,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public void lSet(byte[] key, long index, byte[] value) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         delegate.lSet(key, index, value);
     }
 
@@ -860,7 +963,10 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public void lTrim(byte[] key, long start, long end) {
-        delegate.lTrim(key, start, end);
+        byte[][] keys = scanAllForKey(key);
+        for (byte[] k : keys){
+            delegate.lTrim(k, start, end);
+        }
     }
 
     /*
@@ -869,6 +975,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public List<byte[]> mGet(byte[]... keys) {
+        keys = addPrefix(Boolean.FALSE, keys);
         return convertAndReturn(delegate.mGet(keys), Converters.identityConverter());
     }
 
@@ -878,6 +985,15 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Boolean mSet(Map<byte[], byte[]> tuple) {
+        tuple = tuple.entrySet().stream()
+                .collect(Collectors.toMap(
+                        // 修改键
+                        entry -> addPrefix(Boolean.FALSE, entry.getKey())[0],
+                        // 保持原值
+                        Map.Entry::getValue,
+                        // 选择保留现有值
+                        (existing, replacement) -> replacement
+                ));
         return convertAndReturn(delegate.mSet(tuple), Converters.identityConverter());
     }
 
@@ -887,6 +1003,15 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Boolean mSetNX(Map<byte[], byte[]> tuple) {
+        tuple = tuple.entrySet().stream()
+                .collect(Collectors.toMap(
+                        // 修改键
+                        entry -> addPrefix(Boolean.FALSE, entry.getKey())[0],
+                        // 保持原值
+                        Map.Entry::getValue,
+                        // 选择保留现有值
+                        (existing, replacement) -> replacement
+                ));
         return convertAndReturn(delegate.mSetNX(tuple), Converters.identityConverter());
     }
 
@@ -905,6 +1030,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Boolean persist(byte[] key) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.persist(key), Converters.identityConverter());
     }
 
@@ -914,6 +1040,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Boolean move(byte[] key, int dbIndex) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.move(key, dbIndex), Converters.identityConverter());
     }
 
@@ -950,7 +1077,20 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public byte[] randomKey() {
-        return convertAndReturn(delegate.randomKey(), Converters.identityConverter());
+
+        byte[] key = convertAndReturn(delegate.randomKey(), Converters.identityConverter());
+
+        if (enabledPrefix()){
+            String keyStr = serializer.deserialize(key);
+            if (Fc.isNotBlank(keyStr) && redisProperties.getPrefix().getIgnore().stream().noneMatch(ant -> antPathMatcher.match(ant, keyStr))) {
+                if (StringUtil.contains(keyStr, StringPool.COLON)){
+                    return serializer.serialize(StringUtil.subAfter(keyStr, StringPool.COLON, false));
+                }
+            }
+            return serializer.serialize(keyStr); // 如果不需要处理前缀，直接序列化
+        }
+
+        return key;
     }
 
     /*
@@ -959,6 +1099,8 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public void rename(byte[] oldKey, byte[] newKey) {
+        oldKey = addPrefix(Boolean.FALSE, oldKey)[0];
+        newKey = addPrefix(Boolean.FALSE, newKey)[0];
         delegate.rename(oldKey, newKey);
     }
 
@@ -968,6 +1110,8 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Boolean renameNX(byte[] oldKey, byte[] newKey) {
+        oldKey = addPrefix(Boolean.FALSE, oldKey)[0];
+        newKey = addPrefix(Boolean.FALSE, newKey)[0];
         return convertAndReturn(delegate.renameNX(oldKey, newKey), Converters.identityConverter());
     }
 
@@ -995,6 +1139,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public byte[] rPop(byte[] key) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.rPop(key), Converters.identityConverter());
     }
 
@@ -1004,6 +1149,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public List<byte[]> rPop(byte[] key, long count) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.rPop(key, count), Converters.identityConverter());
     }
 
@@ -1013,6 +1159,8 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public byte[] rPopLPush(byte[] srcKey, byte[] dstKey) {
+        srcKey = addPrefix(Boolean.FALSE, srcKey)[0];
+        dstKey = addPrefix(Boolean.FALSE, dstKey)[0];
         return convertAndReturn(delegate.rPopLPush(srcKey, dstKey), Converters.identityConverter());
     }
 
@@ -1022,6 +1170,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long rPush(byte[] key, byte[]... values) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.rPush(key, values), Converters.identityConverter());
     }
 
@@ -1031,6 +1180,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long rPushX(byte[] key, byte[] value) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.rPushX(key, value), Converters.identityConverter());
     }
 
@@ -1040,6 +1190,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long sAdd(byte[] key, byte[]... values) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.sAdd(key, values), Converters.identityConverter());
     }
 
@@ -1058,6 +1209,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long sCard(byte[] key) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.sCard(key), Converters.identityConverter());
     }
 
@@ -1067,6 +1219,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Set<byte[]> sDiff(byte[]... keys) {
+        keys = addPrefix(Boolean.FALSE, keys);
         return convertAndReturn(delegate.sDiff(keys), Converters.identityConverter());
     }
 
@@ -1076,6 +1229,8 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long sDiffStore(byte[] destKey, byte[]... keys) {
+        destKey = addPrefix(Boolean.FALSE, destKey)[0];
+        keys = addPrefix(Boolean.FALSE, keys);
         return convertAndReturn(delegate.sDiffStore(destKey, keys), Converters.identityConverter());
     }
 
@@ -1104,6 +1259,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Boolean set(byte[] key, byte[] value, Expiration expiration, SetOption option) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.set(key, value, expiration, option), Converters.identityConverter());
     }
 
@@ -1113,6 +1269,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Boolean setBit(byte[] key, long offset, boolean value) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.setBit(key, offset, value), Converters.identityConverter());
     }
 
@@ -1131,6 +1288,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Boolean setEx(byte[] key, long seconds, byte[] value) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.setEx(key, seconds, value), Converters.identityConverter());
     }
 
@@ -1140,6 +1298,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Boolean pSetEx(byte[] key, long milliseconds, byte[] value) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.pSetEx(key, milliseconds, value), Converters.identityConverter());
     }
 
@@ -1149,6 +1308,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Boolean setNX(byte[] key, byte[] value) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.setNX(key, value), Converters.identityConverter());
     }
 
@@ -1158,6 +1318,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public void setRange(byte[] key, byte[] value, long start) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         delegate.setRange(key, value, start);
     }
 
@@ -1185,6 +1346,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Set<byte[]> sInter(byte[]... keys) {
+        keys = addPrefix(Boolean.FALSE, keys);
         return convertAndReturn(delegate.sInter(keys), Converters.identityConverter());
     }
 
@@ -1194,6 +1356,8 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long sInterStore(byte[] destKey, byte[]... keys) {
+        destKey = addPrefix(Boolean.FALSE, destKey)[0];
+        keys = addPrefix(Boolean.FALSE, keys);
         return convertAndReturn(delegate.sInterStore(destKey, keys), Converters.identityConverter());
     }
 
@@ -1203,6 +1367,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Boolean sIsMember(byte[] key, byte[] value) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.sIsMember(key, value), Converters.identityConverter());
     }
 
@@ -1212,6 +1377,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public List<Boolean> sMIsMember(byte[] key, byte[]... values) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.sMIsMember(key, values), Converters.identityConverter());
     }
 
@@ -1221,6 +1387,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Set<byte[]> sMembers(byte[] key) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.sMembers(key), Converters.identityConverter());
     }
 
@@ -1230,6 +1397,8 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Boolean sMove(byte[] srcKey, byte[] destKey, byte[] value) {
+        srcKey = addPrefix(Boolean.FALSE, srcKey)[0];
+        destKey = addPrefix(Boolean.FALSE, destKey)[0];
         return convertAndReturn(delegate.sMove(srcKey, destKey, value), Converters.identityConverter());
     }
 
@@ -1239,6 +1408,8 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long sort(byte[] key, SortParameters params, byte[] storeKey) {
+        key = addPrefix(Boolean.FALSE, key)[0];
+        storeKey = addPrefix(Boolean.FALSE, storeKey)[0];
         return convertAndReturn(delegate.sort(key, params, storeKey), Converters.identityConverter());
     }
 
@@ -1248,6 +1419,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public List<byte[]> sort(byte[] key, SortParameters params) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.sort(key, params), Converters.identityConverter());
     }
 
@@ -1257,6 +1429,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public ValueEncoding encodingOf(byte[] key) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.encodingOf(key), Converters.identityConverter());
     }
 
@@ -1266,6 +1439,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Duration idletime(byte[] key) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.idletime(key), Converters.identityConverter());
     }
 
@@ -1275,6 +1449,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long refcount(byte[] key) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.refcount(key), Converters.identityConverter());
     }
 
@@ -1284,6 +1459,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public byte[] sPop(byte[] key) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.sPop(key), Converters.identityConverter());
     }
 
@@ -1293,6 +1469,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public List<byte[]> sPop(byte[] key, long count) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.sPop(key, count), Converters.identityConverter());
     }
 
@@ -1302,6 +1479,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public byte[] sRandMember(byte[] key) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.sRandMember(key), Converters.identityConverter());
     }
 
@@ -1311,6 +1489,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public List<byte[]> sRandMember(byte[] key, long count) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.sRandMember(key, count), Converters.identityConverter());
     }
 
@@ -1320,7 +1499,12 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long sRem(byte[] key, byte[]... values) {
-        return convertAndReturn(delegate.sRem(key, values), Converters.identityConverter());
+        byte[][] keys = scanAllForKey(key);
+        long remCount = 0;
+        for (byte[] k : keys){
+            remCount = remCount + Fc.toLong(convertAndReturn(delegate.sRem(key, values), Converters.identityConverter()), 0);
+        }
+        return remCount;
     }
 
     /*
@@ -1329,6 +1513,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long strLen(byte[] key) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.strLen(key), Converters.identityConverter());
     }
 
@@ -1338,6 +1523,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long bitCount(byte[] key) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.bitCount(key), Converters.identityConverter());
     }
 
@@ -1347,6 +1533,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long bitCount(byte[] key, long start, long end) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.bitCount(key, start, end), Converters.identityConverter());
     }
 
@@ -1356,6 +1543,8 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long bitOp(BitOperation op, byte[] destination, byte[]... keys) {
+        destination = addPrefix(Boolean.FALSE, destination)[0];
+        keys = addPrefix(Boolean.FALSE, keys);
         return convertAndReturn(delegate.bitOp(op, destination, keys), Converters.identityConverter());
     }
 
@@ -1366,6 +1555,7 @@ public class JpowerRedisConnection implements RedisConnection {
     @Nullable
     @Override
     public Long bitPos(byte[] key, boolean bit, org.springframework.data.domain.Range<Long> range) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.bitPos(key, bit, range), Converters.identityConverter());
     }
 
@@ -1384,6 +1574,16 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Set<byte[]> sUnion(byte[]... keys) {
+
+
+
+
+
+
+
+
+
+
         return convertAndReturn(delegate.sUnion(keys), Converters.identityConverter());
     }
 

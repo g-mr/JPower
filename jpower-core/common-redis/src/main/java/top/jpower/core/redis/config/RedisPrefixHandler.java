@@ -25,5 +25,5 @@ public interface RedisPrefixHandler {
      * @param key 缓存KEY
      * @return 是否忽略
      **/
-    boolean ignorePrefixForDel(String key);
+    boolean ignorePrefixForScan(String key);
 }
