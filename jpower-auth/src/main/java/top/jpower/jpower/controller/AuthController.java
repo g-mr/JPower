@@ -9,12 +9,14 @@ import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
+import top.jpower.common.constants.CacheNames;
 import top.jpower.common.constants.ParamsConstants;
 import top.jpower.common.enums.LoginLimitEnum;
 import top.jpower.common.enums.UserTypeEnum;
 import top.jpower.core.boot.controller.BaseController;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
+import top.jpower.core.redis.service.RedisUtil;
 import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.rsp.ResponseData;
@@ -35,8 +37,6 @@ import top.jpower.jpower.feign.SmsClient;
 import top.jpower.jpower.feign.UserClient;
 import top.jpower.jpower.module.common.auth.SecureConstant;
 import top.jpower.jpower.module.common.auth.UserInfo;
-import top.jpower.common.constants.CacheNames;
-import top.jpower.core.redis.service.RedisUtil;
 import top.jpower.jpower.module.common.utils.JwtUtil;
 import top.jpower.jpower.module.common.utils.ShieldUtil;
 import top.jpower.jpower.module.tenant.JpowerTenantProperties;
@@ -47,8 +47,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import static top.jpower.core.util.constants.JpowerConstants.HEADER_TENANT;
 import static top.jpower.common.constants.CacheNames.TOKEN_USER_KEY;
+import static top.jpower.core.util.constants.JpowerConstants.HEADER_TENANT;
 import static top.jpower.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
 import static top.jpower.jpower.module.tenant.TenantConstant.getExpireTime;
 
@@ -65,7 +65,6 @@ import static top.jpower.jpower.module.tenant.TenantConstant.getExpireTime;
 @AllArgsConstructor
 public class AuthController extends BaseController {
 
-
     private RedisUtil redisUtil;
     private JpowerTenantProperties tenantProperties;
     private TokenGranterBuilder granterBuilder;
@@ -73,7 +72,6 @@ public class AuthController extends BaseController {
     private final SmsClient smsClient;
 
     private final String VALIDATE_SMS_CODE = "validate";
-
     @ApiOperation(value = "用户登录",notes = "Authorization（客户端识别码）：由clientCode+\":\"+clientSecret组成字符串后用base64编码后获得值，再由Basic +base64编码后的值组成客户端识别码； <br/>" +
             "&nbsp;&nbsp;&nbsp;clientCode和clientSecret的值由后端统一提供，不同的登录客户端值也不一样。<br/>" +
             "token如何使用：tokenType+\" \"+token组成的值要放到header；header头是jpower-auth；具体写法如下；<br/>" +

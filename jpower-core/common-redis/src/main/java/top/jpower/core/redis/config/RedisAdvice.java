@@ -36,11 +36,13 @@ class RedisAdvice extends AspectBase {
         Object[] args = invocation.getArguments();
 
         StringBuilder builder = new StringBuilder(StringPool.NEWLINE);
-        builder.append("===========START REDIS==============").append(StringPool.NEWLINE);
-        builder.append(StringPool.SPACE).append("-->METHOD: ").append(name).append(StringPool.NEWLINE);
-        builder.append(StringPool.SPACE).append("-->CLASS: ").append(target.getClass().getName()).append(StringPool.NEWLINE);
-        builder.append(StringPool.SPACE).append("-->KEY: ").append(serial(args[0])).append(StringPool.NEWLINE);
-        builder.append(StringPool.SPACE).append("-->PARAMS: ").append(serial(getParam(args))).append(StringPool.NEWLINE);
+        try {
+            builder.append("===========START REDIS==============").append(StringPool.NEWLINE);
+            builder.append(StringPool.SPACE).append("-->METHOD: ").append(name).append(StringPool.NEWLINE);
+            builder.append(StringPool.SPACE).append("-->CLASS: ").append(target.getClass().getName()).append(StringPool.NEWLINE);
+            builder.append(StringPool.SPACE).append("-->KEY: ").append(serial(args[0])).append(StringPool.NEWLINE);
+            builder.append(StringPool.SPACE).append("-->PARAMS: ").append(serial(getParam(args))).append(StringPool.NEWLINE);
+        } catch (Exception exception){}
 
         Object ret = null;
         long start = System.currentTimeMillis();
