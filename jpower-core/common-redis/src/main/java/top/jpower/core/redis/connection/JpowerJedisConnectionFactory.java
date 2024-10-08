@@ -22,6 +22,7 @@ public class JpowerJedisConnectionFactory extends JedisConnectionFactory {
     public JpowerJedisConnectionFactory(RedisConnection connection, RedisProperties redisProperties, RedisPrefixHandler redisPrefixHandler){
         this(connection, redisProperties, redisPrefixHandler, RedisSerializer.string());
     }
+
     @Override
     public RedisConnection getConnection() {
         return new JpowerRedisConnection(connection, redisProperties, redisPrefixHandler, serializer);

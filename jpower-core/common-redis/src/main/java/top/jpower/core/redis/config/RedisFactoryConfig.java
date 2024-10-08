@@ -48,5 +48,4 @@ public class RedisFactoryConfig {
         return new RedisConnectionFactoryManage(new JpowerJedisConnectionFactory(redisConnectionFactory.getConnection() , redisProperties, redisPrefixHandler));
     }
 
-
 }

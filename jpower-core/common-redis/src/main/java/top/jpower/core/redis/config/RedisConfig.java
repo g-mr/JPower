@@ -1,8 +1,6 @@
 package top.jpower.core.redis.config;
 
 import lombok.RequiredArgsConstructor;
-import org.redisson.api.RedissonClient;
-import org.redisson.spring.cache.RedissonSpringCacheManager;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -12,7 +10,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -45,7 +42,7 @@ import java.util.Optional;
 public class RedisConfig {
 
     @Bean
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(name = "redisTemplate")
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactoryManage redisConnectionFactoryManage) {
 
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
@@ -71,13 +68,13 @@ public class RedisConfig {
 
     @Bean
     @ConditionalOnBean(RedisTemplate.class)
-    public RedisUtil redisUtils(RedisTemplate<String, Object> redisTemplate) {
+    public RedisUtil redisUtils(RedisTemplate redisTemplate) {
         return new RedisUtil(redisTemplate);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public CacheManager cacheManager(RedissonClient redissonClient,RedisConnectionFactoryManage redisConnectionFactoryManage, RedisProperties redisProperties) {
+    public CacheManager cacheManager(RedisConnectionFactoryManage redisConnectionFactoryManage, RedisProperties redisProperties) {
 
         Map<String, RedisProperties.Cache> configs = redisProperties.getCacheableKey();
         Map<String, RedisCacheConfiguration> map = MapUtil.newHashMap();
@@ -87,12 +84,6 @@ public class RedisConfig {
                     map.put(key, handleRedisCacheConfiguration(cache, RedisCacheConfiguration.defaultCacheConfig()));
                 })
         );
-
-
-//        redissonClient.getConfig().setConnectionListener();
-        String a = redissonClient.<String>getBucket("").get();
-        redissonClient.getLock("").lock
-        new RedissonSpringCacheManager(redissonClient);
 
 
         return RedisCacheManager
