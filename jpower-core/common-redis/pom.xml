@@ -18,15 +18,17 @@
 <!--            <groupId>org.springframework.data</groupId>-->
 <!--            <artifactId>spring-data-redis</artifactId>-->
 <!--        </dependency>-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
+
 <!--        <dependency>-->
-<!--            <groupId>org.redisson</groupId>-->
-<!--            <artifactId>redisson-spring-boot-starter</artifactId>-->
-<!--&lt;!&ndash;            <version>3.16.2</version>&ndash;&gt;-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-data-redis</artifactId>-->
 <!--        </dependency>-->
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-boot-starter</artifactId>
+<!--            <version>3.16.2</version>-->
+            <version>3.37.0</version>
+        </dependency>
 
 
 

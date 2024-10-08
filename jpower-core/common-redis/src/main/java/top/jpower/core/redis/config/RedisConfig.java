@@ -1,6 +1,8 @@
 package top.jpower.core.redis.config;
 
 import lombok.RequiredArgsConstructor;
+import org.redisson.api.RedissonClient;
+import org.redisson.spring.cache.RedissonSpringCacheManager;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -16,6 +18,8 @@ import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import top.jpower.core.redis.connection.RedisConnectionFactoryManage;
 import top.jpower.core.redis.properties.RedisProperties;
@@ -40,19 +44,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RedisConfig {
 
-
-    // todo 下次先研究重写的方式来实现，实在不行就使用RedisConnectionFactoryManage方式
-
     @Bean
     @ConditionalOnMissingBean
-    // todo 除了这个方式，还可以研究重写RedisTemplate的preProcessConnection方式来实现
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactoryManage redisConnectionFactoryManage) {
 
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactoryManage.getFactory());
 
         // value 序列化
-        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
+        Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
         redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
         redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
         // key 序列化
@@ -75,32 +75,9 @@ public class RedisConfig {
         return new RedisUtil(redisTemplate);
     }
 
-    private RedisCacheConfiguration handleRedisCacheConfiguration(RedisProperties.Cache redisProperties, RedisCacheConfiguration config) {
-        if (Fc.isNull(redisProperties)) {
-            return config;
-        }
-        if (redisProperties.getTimeToLive() != null) {
-            config = config.entryTtl(redisProperties.getTimeToLive());
-        }
-        if (redisProperties.getKeyPrefix() != null) {
-            config = config.computePrefixWith(cacheName -> redisProperties.getKeyPrefix().concat(StringPool.COLON).concat(cacheName).concat(StringPool.COLON));
-        } else {
-            config = config.computePrefixWith(cacheName -> cacheName.concat(StringPool.COLON));
-        }
-        if (!redisProperties.isCacheNullVal()) {
-            config = config.disableCachingNullValues();
-        }
-        if (!redisProperties.isUseKeyPrefix()) {
-            config = config.disableKeyPrefix();
-        }
-
-        return config;
-    }
-
     @Bean
-    @Primary
-    // // todo 3.实在没办法可以采用这个方法，自定义实现RedisConnectionFactoryManage
-    public CacheManager cacheManager(RedisConnectionFactoryManage redisConnectionFactoryManage, RedisProperties redisProperties) {
+    @ConditionalOnMissingBean
+    public CacheManager cacheManager(RedissonClient redissonClient,RedisConnectionFactoryManage redisConnectionFactoryManage, RedisProperties redisProperties) {
 
         Map<String, RedisProperties.Cache> configs = redisProperties.getCacheableKey();
         Map<String, RedisCacheConfiguration> map = MapUtil.newHashMap();
@@ -111,11 +88,40 @@ public class RedisConfig {
                 })
         );
 
+
+//        redissonClient.getConfig().setConnectionListener();
+        String a = redissonClient.<String>getBucket("").get();
+        redissonClient.getLock("").lock
+        new RedissonSpringCacheManager(redissonClient);
+
+
         return RedisCacheManager
                 .builder(redisConnectionFactoryManage.getFactory())
                 .cacheDefaults(handleRedisCacheConfiguration(redisProperties.getCacheable(), RedisCacheConfiguration.defaultCacheConfig()))
                 .withInitialCacheConfigurations(map)
                 .build();
+    }
+
+    private RedisCacheConfiguration handleRedisCacheConfiguration(RedisProperties.Cache redisProperties, RedisCacheConfiguration config) {
+        if (Fc.isNull(redisProperties)) {
+            return config;
+        }
+        if (redisProperties.getTimeToLive() != null) {
+            config = config.entryTtl(redisProperties.getTimeToLive());
+        }
+        if (Fc.isNotBlank(redisProperties.getKeyPrefix())) {
+            config = config.computePrefixWith(cacheName -> redisProperties.getKeyPrefix().concat(StringPool.COLON).concat(cacheName).concat(StringPool.COLON));
+        } else {
+            config = config.disableKeyPrefix();
+        }
+        if (!redisProperties.isCacheNullVal()) {
+            config = config.disableCachingNullValues();
+        }
+
+        config.serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.string()));
+        config.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new Jackson2JsonRedisSerializer<>(Object.class)));
+
+        return config;
     }
 
 }

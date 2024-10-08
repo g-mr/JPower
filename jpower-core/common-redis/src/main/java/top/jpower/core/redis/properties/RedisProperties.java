@@ -18,14 +18,6 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "jpower.redis")
 public class RedisProperties {
 
-    // 是否启用前缀生成器
-
-    // 哪些Key需要忽略前缀（蚂蚁匹配器） 增删查全部忽略
-
-    // 前缀生成规则（获取前缀）
-
-    // 删除缓存的时候 前缀忽略规则（e.g：超级用户操作忽略前缀）
-
     /**
      * 前缀配置
      **/
@@ -51,33 +43,12 @@ public class RedisProperties {
         private List<String> ignore = new ArrayList<>();
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /**
-     * 通过 @Cacheable 注解标注的方法的缓存策略
+     * CacheManage的缓存策略
      */
     private Cache cacheable = new Cache();
     /**
-     * 针对某几个具体的key配置
+     * CacheManage针对某几个具体的key配置
      */
     private Map<String, Cache> cacheableKey;
 
@@ -86,9 +57,9 @@ public class RedisProperties {
 
         /**
          * key 的过期时间
-         * 默认1天过期
+         * 默认不过期
          */
-        private Duration timeToLive = Duration.ofDays(1);
+        private Duration timeToLive = Duration.ZERO;
 
         /**
          * 是否允许缓存null值
@@ -99,11 +70,6 @@ public class RedisProperties {
          * key 的前缀
          */
         private String keyPrefix;
-
-        /**
-         * 写入redis时，是否使用key前缀
-         */
-        private boolean useKeyPrefix = true;
 
     }
 
