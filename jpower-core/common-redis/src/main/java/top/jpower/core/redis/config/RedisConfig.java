@@ -42,6 +42,22 @@ import java.util.Optional;
 public class RedisConfig {
 
     @Bean
+    public RedisPrefixHandler redisPrefixHandler(){
+        return new RedisPrefixHandler() {
+            @Override
+            public String getPrefix(String key) {
+                return "666666";
+            }
+
+            @Override
+            public boolean ignorePrefixForScan(String key) {
+                return true;
+            }
+        };
+    }
+
+
+    @Bean
     @ConditionalOnMissingBean(name = "redisTemplate")
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactoryManage redisConnectionFactoryManage) {
 
@@ -76,7 +92,7 @@ public class RedisConfig {
     @ConditionalOnMissingBean
     public CacheManager cacheManager(RedisConnectionFactoryManage redisConnectionFactoryManage, RedisProperties redisProperties) {
 
-        Map<String, RedisProperties.Cache> configs = redisProperties.getCacheableKey();
+        Map<String, RedisProperties.CacheManager> configs = redisProperties.getCacheableKey();
         Map<String, RedisCacheConfiguration> map = MapUtil.newHashMap();
         //自定义的缓存过期时间配置
         Optional.ofNullable(configs).ifPresent(config ->
@@ -93,7 +109,7 @@ public class RedisConfig {
                 .build();
     }
 
-    private RedisCacheConfiguration handleRedisCacheConfiguration(RedisProperties.Cache redisProperties, RedisCacheConfiguration config) {
+    private RedisCacheConfiguration handleRedisCacheConfiguration(RedisProperties.CacheManager redisProperties, RedisCacheConfiguration config) {
         if (Fc.isNull(redisProperties)) {
             return config;
         }
@@ -103,7 +119,7 @@ public class RedisConfig {
         if (Fc.isNotBlank(redisProperties.getKeyPrefix())) {
             config = config.computePrefixWith(cacheName -> redisProperties.getKeyPrefix().concat(StringPool.COLON).concat(cacheName).concat(StringPool.COLON));
         } else {
-            config = config.disableKeyPrefix();
+            config = config.computePrefixWith(cacheName -> cacheName.concat(StringPool.COLON));
         }
         if (!redisProperties.isCacheNullVal()) {
             config = config.disableCachingNullValues();

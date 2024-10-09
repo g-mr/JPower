@@ -28,10 +28,19 @@ public class RedisProperties {
      **/
     private Boolean log = true;
 
+    /**
+     * CacheManage的缓存策略
+     */
+    private CacheManager cacheable = new CacheManager();
+
+    /**
+     * CacheManage针对某几个具体的key配置
+     */
+    private Map<String, CacheManager> cacheableKey;
+
 
     @Data
     public static class Prefix {
-
         /**
          * 是否启用前缀生成器
          **/
@@ -41,19 +50,11 @@ public class RedisProperties {
          * 哪些Key需要忽略前缀，支持蚂蚁匹配器
          **/
         private List<String> ignore = new ArrayList<>();
+
     }
 
-    /**
-     * CacheManage的缓存策略
-     */
-    private Cache cacheable = new Cache();
-    /**
-     * CacheManage针对某几个具体的key配置
-     */
-    private Map<String, Cache> cacheableKey;
-
     @Data
-    public static class Cache {
+    public static class CacheManager {
 
         /**
          * key 的过期时间
@@ -72,5 +73,4 @@ public class RedisProperties {
         private String keyPrefix;
 
     }
-
 }

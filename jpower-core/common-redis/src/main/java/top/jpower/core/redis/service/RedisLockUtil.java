@@ -66,7 +66,7 @@ public class RedisLockUtil {
      * @return V
      **/
     public <V> V lock(String key, Supplier<V> supplier, String msg){
-        return lock(key, -1, -1, TimeUnit.SECONDS, supplier,msg);
+        return lock(key, -1, -1, TimeUnit.SECONDS, supplier, msg);
     }
 
     /**

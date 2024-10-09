@@ -114,13 +114,13 @@ public class JpowerRedisConnection implements RedisConnection {
     /**
      * 拼接前缀
      * @author mr.g
-     * @param isAppend 是否拼接
+     * @param isAsterisk 是否模糊
      * @param key 缓存KEY
      * @return 缓存KEY
      **/
-    private byte[] appendPrefix(boolean isAppend,byte[] key){
+    private byte[] appendPrefix(boolean isAsterisk,byte[] key){
         String keyStr = serializer.deserialize(key);
-        if (prefixForScan(isAppend, keyStr)){
+        if (prefixForScan(isAsterisk, keyStr)){
             return serializer.serialize(StringPool.ASTERISK+keyStr);
         } else {
             return serializer.serialize(getPrefix(redisPrefixHandler.getPrefix(keyStr))+keyStr);

@@ -12,12 +12,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 /**
- * @ClassName RedisUtils
- * @Description TODO redis服务
- * @Author 郭丁志
- * @Date 2020-03-18 20:44
- * @Version 1.0
- */
+ * redis服务
+ *
+ * @author mr.g
+ **/
 @RequiredArgsConstructor
 public class RedisUtil {
 
@@ -30,7 +28,8 @@ public class RedisUtil {
     private volatile static RedisLockUtil redisLockUtil;
 
     /**
-     * 分布式锁<br/>
+     * 分布式锁
+     * <br/>
      * 单例模式
      *
      * @author mr.g
@@ -46,6 +45,73 @@ public class RedisUtil {
         }
         return redisLockUtil;
     }
+
+    /**
+     * 拼接缓存值
+     *
+     * @author mr.g
+     * @param key 缓存KEY
+     * @param value 缓存值
+     * @return java.lang.Integer 次数
+     **/
+    public Integer append(String key, String value) {
+        return redisTemplate.opsForValue().append(key, value);
+    }
+
+    public <T> T listLeftPop(String key, long timeout, TimeUnit unit) {
+        //noinspection unchecked
+        return (T) redisTemplate.opsForList().leftPop(key, timeout, unit);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * 扫描 实现

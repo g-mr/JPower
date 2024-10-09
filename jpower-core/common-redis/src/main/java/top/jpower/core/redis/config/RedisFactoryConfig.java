@@ -13,9 +13,10 @@ import top.jpower.core.redis.connection.RedisConnectionFactoryManage;
 import top.jpower.core.redis.properties.RedisProperties;
 
 /**
+ * redis连接器生成
+ *
  * @author mr.g
  * @date 2024-9-10 22:12
- * @description
  */
 @AutoConfiguration
 public class RedisFactoryConfig {

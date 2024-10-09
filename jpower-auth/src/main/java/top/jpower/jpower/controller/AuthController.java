@@ -72,6 +72,16 @@ public class AuthController extends BaseController {
     private final SmsClient smsClient;
 
     private final String VALIDATE_SMS_CODE = "validate";
+
+    @GetMapping(value = "/test",produces="application/json")
+    // @Cacheable(value = CacheNames.ROLE_KEY)
+    // @CachePut(value = CacheNames.ROLE_KEY,key = "'dddd'")
+    // @CacheEvict(value = CacheNames.ROLE_KEY, allEntries = true)
+    public ResponseData test(){
+        return ReturnJsonUtil.data(redisUtil.listLeftPop("test", 1, TimeUnit.MINUTES));
+    }
+
+
     @ApiOperation(value = "用户登录",notes = "Authorization（客户端识别码）：由clientCode+\":\"+clientSecret组成字符串后用base64编码后获得值，再由Basic +base64编码后的值组成客户端识别码； <br/>" +
             "&nbsp;&nbsp;&nbsp;clientCode和clientSecret的值由后端统一提供，不同的登录客户端值也不一样。<br/>" +
             "token如何使用：tokenType+\" \"+token组成的值要放到header；header头是jpower-auth；具体写法如下；<br/>" +
