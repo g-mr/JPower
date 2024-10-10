@@ -78,7 +78,23 @@ public class AuthController extends BaseController {
     // @CachePut(value = CacheNames.ROLE_KEY,key = "'dddd'")
     // @CacheEvict(value = CacheNames.ROLE_KEY, allEntries = true)
     public ResponseData test(){
-        return ReturnJsonUtil.data(redisUtil.listLeftPop("test", 1, TimeUnit.MINUTES));
+
+        redisUtil.value().set("gdz", "测试");
+        redisUtil.value().set("gdz1", 1);
+        AuthInfo authInfo = new AuthInfo();
+        authInfo.setAccessToken("撒赖科技");
+        redisUtil.value().set("gdz2", authInfo);
+
+        String gdz = redisUtil.value(String.class).get("gdz");
+        System.out.println("gdz=="+gdz);
+
+        Integer gdz1 = redisUtil.value(Integer.class).get("gdz1");
+        System.out.println("gdz1=="+gdz1);
+
+        AuthInfo gdz2 = redisUtil.value(AuthInfo.class).get("gdz2");
+        System.out.println("gdz2=="+gdz2);
+
+        return ReturnJsonUtil.data(true);
     }
 
 

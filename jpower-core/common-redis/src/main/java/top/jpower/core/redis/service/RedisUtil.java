@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.*;
+import top.jpower.core.redis.wrapper.ValueOperationsWrapper;
 import top.jpower.core.util.utils.Fc;
 
 import java.util.List;
@@ -47,20 +48,24 @@ public class RedisUtil {
     }
 
     /**
-     * 拼接缓存值
+     * Value操作
      *
      * @author mr.g
-     * @param key 缓存KEY
-     * @param value 缓存值
-     * @return java.lang.Integer 次数
+     * @return org.springframework.data.redis.core.ValueOperations<java.lang.String,java.lang.Object>
      **/
-    public Integer append(String key, String value) {
-        return redisTemplate.opsForValue().append(key, value);
+    public ValueOperations<String, Object> value(){
+        return redisTemplate.opsForValue();
     }
 
-    public <T> T listLeftPop(String key, long timeout, TimeUnit unit) {
-        //noinspection unchecked
-        return (T) redisTemplate.opsForList().leftPop(key, timeout, unit);
+    /**
+     * Value操作
+     *
+     * @author mr.g
+     * @param clz 值类型
+     * @return top.jpower.core.redis.wrapper.ValueOperationsWrapper<T>
+     **/
+    public <T> ValueOperationsWrapper<T> value(Class<T> clz){
+        return new ValueOperationsWrapper<>(redisTemplate.opsForValue(), clz);
     }
 
 
