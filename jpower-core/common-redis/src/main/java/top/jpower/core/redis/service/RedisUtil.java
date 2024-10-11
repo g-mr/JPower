@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.*;
+import top.jpower.core.redis.wrapper.ListOperationsWrapper;
 import top.jpower.core.redis.wrapper.ValueOperationsWrapper;
 import top.jpower.core.util.utils.Fc;
 
@@ -68,6 +69,25 @@ public class RedisUtil {
         return new ValueOperationsWrapper<>(redisTemplate.opsForValue(), clz);
     }
 
+    /**
+     * List操作
+     *
+     * @author mr.g
+     * @return org.springframework.data.redis.core.ListOperations<java.lang.String,java.lang.Object>
+     **/
+    public ListOperations<String, Object> list(){
+        return redisTemplate.opsForList();
+    }
+
+    /**
+     * List操作
+     *
+     * @author mr.g
+     * @return org.springframework.data.redis.core.ListOperations<java.lang.String,java.lang.Object>
+     **/
+    public <T> ListOperationsWrapper<T> list(Class<T> clz){
+        return new ListOperationsWrapper<>(redisTemplate.opsForList(), clz);
+    }
 
 
 
