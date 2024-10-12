@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.*;
 import top.jpower.core.redis.wrapper.ListOperationsWrapper;
+import top.jpower.core.redis.wrapper.SetOperationsWrapper;
 import top.jpower.core.redis.wrapper.ValueOperationsWrapper;
 import top.jpower.core.util.utils.Fc;
 
@@ -54,7 +55,7 @@ public class RedisUtil {
      * @author mr.g
      * @return org.springframework.data.redis.core.ValueOperations<java.lang.String,java.lang.Object>
      **/
-    public ValueOperations<String, Object> value(){
+    public ValueOperations<String, Object> valueOps(){
         return redisTemplate.opsForValue();
     }
 
@@ -65,7 +66,7 @@ public class RedisUtil {
      * @param clz 值类型
      * @return top.jpower.core.redis.wrapper.ValueOperationsWrapper<T>
      **/
-    public <T> ValueOperationsWrapper<T> value(Class<T> clz){
+    public <T> ValueOperationsWrapper<T> valueOps(Class<T> clz){
         return new ValueOperationsWrapper<>(redisTemplate.opsForValue(), clz);
     }
 
@@ -75,7 +76,7 @@ public class RedisUtil {
      * @author mr.g
      * @return org.springframework.data.redis.core.ListOperations<java.lang.String,java.lang.Object>
      **/
-    public ListOperations<String, Object> list(){
+    public ListOperations<String, Object> listOps(){
         return redisTemplate.opsForList();
     }
 
@@ -85,8 +86,28 @@ public class RedisUtil {
      * @author mr.g
      * @return org.springframework.data.redis.core.ListOperations<java.lang.String,java.lang.Object>
      **/
-    public <T> ListOperationsWrapper<T> list(Class<T> clz){
+    public <T> ListOperationsWrapper<T> listOps(Class<T> clz){
         return new ListOperationsWrapper<>(redisTemplate.opsForList(), clz);
+    }
+
+    /**
+     * Set操作
+     *
+     * @author mr.g
+     * @return Set操作
+     **/
+    public SetOperations<String, Object> setOps(){
+        return redisTemplate.opsForSet();
+    }
+
+    /**
+     * Set操作
+     *
+     * @author mr.g
+     * @return Set操作
+     **/
+    public <T> SetOperationsWrapper<T> setOps(Class<T> clz){
+        return new SetOperationsWrapper<>(redisTemplate.opsForSet(), clz);
     }
 
 
