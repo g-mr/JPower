@@ -1,12 +1,11 @@
 package top.jpower.core.redis.wrapper;
 
+import cn.hutool.core.convert.Convert;
 import lombok.AllArgsConstructor;
-import org.checkerframework.checker.units.qual.K;
+import org.springframework.data.redis.core.ConvertingCursor;
 import org.springframework.data.redis.core.Cursor;
-import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.SetOperations;
-import org.springframework.lang.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -45,7 +44,7 @@ public class SetOperationsWrapper<V> {
      * @see <a href="https://redis.io/commands/srem">Redis Documentation: SREM</a>
      */
     public Long remove(String key, Object... values) {
-
+        return delegate.remove(key, values);
     }
 
     /**
@@ -56,7 +55,7 @@ public class SetOperationsWrapper<V> {
      * @see <a href="https://redis.io/commands/spop">Redis Documentation: SPOP</a>
      */
     public V pop(String key) {
-
+        return Convert.convert(clz, delegate.pop(key));
     }
 
     /**
@@ -69,7 +68,7 @@ public class SetOperationsWrapper<V> {
      * @since 2.0
      */
     public List<V> pop(String key, long count) {
-
+        return Convert.toList(clz, delegate.pop(key, count));
     }
 
     /**
@@ -82,7 +81,7 @@ public class SetOperationsWrapper<V> {
      * @see <a href="https://redis.io/commands/smove">Redis Documentation: SMOVE</a>
      */
     public Boolean move(String key, V value, String destKey) {
-
+        return delegate.move(key, value, destKey);
     }
 
     /**
@@ -93,7 +92,7 @@ public class SetOperationsWrapper<V> {
      * @see <a href="https://redis.io/commands/scard">Redis Documentation: SCARD</a>
      */
     public Long size(String key) {
-
+        return delegate.size(key);
     }
 
     /**
@@ -105,7 +104,7 @@ public class SetOperationsWrapper<V> {
      * @see <a href="https://redis.io/commands/sismember">Redis Documentation: SISMEMBER</a>
      */
     public Boolean isMember(String key, Object o) {
-
+        return delegate.isMember(key, o);
     }
 
     /**
@@ -118,7 +117,7 @@ public class SetOperationsWrapper<V> {
      * @see <a href="https://redis.io/commands/smismember">Redis Documentation: SMISMEMBER</a>
      */
     public Map<Object, Boolean> isMember(String key, Object... objects) {
-
+        return delegate.isMember(key, objects);
     }
 
     /**
@@ -130,7 +129,7 @@ public class SetOperationsWrapper<V> {
      * @see <a href="https://redis.io/commands/sinter">Redis Documentation: SINTER</a>
      */
     public Set<V> intersect(String key, String otherKey) {
-
+        return Convert.toSet(clz, delegate.intersect(key, otherKey));
     }
 
     /**
@@ -142,7 +141,7 @@ public class SetOperationsWrapper<V> {
      * @see <a href="https://redis.io/commands/sinter">Redis Documentation: SINTER</a>
      */
     public Set<V> intersect(String key, Collection<String> otherKeys) {
-
+        return Convert.toSet(clz, delegate.intersect(key, otherKeys));
     }
 
     /**
@@ -154,7 +153,7 @@ public class SetOperationsWrapper<V> {
      * @since 2.2
      */
     public Set<V> intersect(Collection<String> keys) {
-
+        return Convert.toSet(clz, delegate.intersect(keys));
     }
 
     /**
@@ -167,7 +166,7 @@ public class SetOperationsWrapper<V> {
      * @see <a href="https://redis.io/commands/sinterstore">Redis Documentation: SINTERSTORE</a>
      */
     public Long intersectAndStore(String key, String otherKey, String destKey) {
-
+        return delegate.intersectAndStore(key, otherKey, destKey);
     }
 
     /**
@@ -180,7 +179,7 @@ public class SetOperationsWrapper<V> {
      * @see <a href="https://redis.io/commands/sinterstore">Redis Documentation: SINTERSTORE</a>
      */
     public Long intersectAndStore(String key, Collection<String> otherKeys, String destKey) {
-
+        return delegate.intersectAndStore(key, otherKeys, destKey);
     }
 
     /**
@@ -193,7 +192,7 @@ public class SetOperationsWrapper<V> {
      * @since 2.2
      */
     public Long intersectAndStore(Collection<String> keys, String destKey) {
-
+        return delegate.intersectAndStore(keys, destKey);
     }
 
     /**
@@ -205,7 +204,7 @@ public class SetOperationsWrapper<V> {
      * @see <a href="https://redis.io/commands/sunion">Redis Documentation: SUNION</a>
      */
     public Set<V> union(String key, String otherKey) {
-
+        return Convert.toSet(clz, delegate.union(key, otherKey));
     }
 
     /**
@@ -218,7 +217,7 @@ public class SetOperationsWrapper<V> {
      */
     
     Set<V> union(String key, Collection<String> otherKeys) {
-
+        return Convert.toSet(clz, delegate.union(key, otherKeys));
     }
 
     /**
@@ -230,7 +229,7 @@ public class SetOperationsWrapper<V> {
      * @since 2.2
      */
     public Set<V> union(Collection<String> keys) {
-
+        return Convert.toSet(clz, delegate.union(keys));
     }
 
     /**
@@ -243,7 +242,7 @@ public class SetOperationsWrapper<V> {
      * @see <a href="https://redis.io/commands/sunionstore">Redis Documentation: SUNIONSTORE</a>
      */
     public Long unionAndStore(String key, String otherKey, String destKey) {
-
+        return delegate.unionAndStore(key, otherKey, destKey);
     }
 
     /**
@@ -256,7 +255,7 @@ public class SetOperationsWrapper<V> {
      * @see <a href="https://redis.io/commands/sunionstore">Redis Documentation: SUNIONSTORE</a>
      */
     public Long unionAndStore(String key, Collection<String> otherKeys, String destKey) {
-
+        return delegate.unionAndStore(key, otherKeys, destKey);
     }
 
     /**
@@ -269,7 +268,7 @@ public class SetOperationsWrapper<V> {
      * @since 2.2
      */
     public Long unionAndStore(Collection<String> keys, String destKey) {
-
+        return delegate.unionAndStore(keys, destKey);
     }
 
     /**
@@ -281,7 +280,7 @@ public class SetOperationsWrapper<V> {
      * @see <a href="https://redis.io/commands/sdiff">Redis Documentation: SDIFF</a>
      */
     public Set<V> difference(String key, String otherKey) {
-
+        return Convert.toSet(clz, delegate.difference(key, otherKey));
     }
 
     /**
@@ -293,7 +292,7 @@ public class SetOperationsWrapper<V> {
      * @see <a href="https://redis.io/commands/sdiff">Redis Documentation: SDIFF</a>
      */
     public Set<V> difference(String key, Collection<String> otherKeys) {
-
+        return Convert.toSet(clz, delegate.difference(key, otherKeys));
     }
 
     /**
@@ -305,7 +304,7 @@ public class SetOperationsWrapper<V> {
      * @since 2.2
      */
     public Set<V> difference(Collection<String> keys) {
-
+        return Convert.toSet(clz, delegate.difference(keys));
     }
 
     /**
@@ -318,7 +317,7 @@ public class SetOperationsWrapper<V> {
      * @see <a href="https://redis.io/commands/sdiffstore">Redis Documentation: SDIFFSTORE</a>
      */
     public Long differenceAndStore(String key, String otherKey, String destKey) {
-
+        return delegate.differenceAndStore(key, otherKey, destKey);
     }
 
     /**
@@ -331,7 +330,7 @@ public class SetOperationsWrapper<V> {
      * @see <a href="https://redis.io/commands/sdiffstore">Redis Documentation: SDIFFSTORE</a>
      */
     public Long differenceAndStore(String key, Collection<String> otherKeys, String destKey) {
-
+        return delegate.differenceAndStore(key, otherKeys, destKey);
     }
 
     /**
@@ -344,7 +343,7 @@ public class SetOperationsWrapper<V> {
      * @since 2.2
      */
     public Long differenceAndStore(Collection<String> keys, String destKey) {
-
+        return delegate.differenceAndStore(keys, destKey);
     }
 
     /**
@@ -355,7 +354,7 @@ public class SetOperationsWrapper<V> {
      * @see <a href="https://redis.io/commands/smembers">Redis Documentation: SMEMBERS</a>
      */
     public Set<V> members(String key) {
-
+        return Convert.toSet(clz, delegate.members(key));
     }
 
     /**
@@ -366,7 +365,7 @@ public class SetOperationsWrapper<V> {
      * @see <a href="https://redis.io/commands/srandmember">Redis Documentation: SRANDMEMBER</a>
      */
     public V randomMember(String key) {
-
+        return Convert.convert(clz, delegate.randomMember(key));
     }
 
     /**
@@ -380,7 +379,7 @@ public class SetOperationsWrapper<V> {
      */
 
     public Set<V> distinctRandomMembers(String key, long count) {
-
+        return Convert.toSet(clz, delegate.distinctRandomMembers(key, count));
     }
 
     /**
@@ -394,7 +393,7 @@ public class SetOperationsWrapper<V> {
      */
 
     public List<V> randomMembers(String key, long count) {
-
+        return Convert.toList(clz, delegate.randomMembers(key, count));
     }
 
     /**
@@ -408,6 +407,6 @@ public class SetOperationsWrapper<V> {
      * @since 1.4
      */
     public Cursor<V> scan(String key, ScanOptions options) {
-
+        return new ConvertingCursor<>(delegate.scan(key, options), val -> Convert.convert(clz, val));
     }
 }

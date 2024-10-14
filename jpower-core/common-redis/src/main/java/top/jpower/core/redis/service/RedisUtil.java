@@ -7,6 +7,7 @@ import org.springframework.data.redis.core.*;
 import top.jpower.core.redis.wrapper.ListOperationsWrapper;
 import top.jpower.core.redis.wrapper.SetOperationsWrapper;
 import top.jpower.core.redis.wrapper.ValueOperationsWrapper;
+import top.jpower.core.redis.wrapper.ZSetOperationsWrapper;
 import top.jpower.core.util.utils.Fc;
 
 import java.util.List;
@@ -110,6 +111,25 @@ public class RedisUtil {
         return new SetOperationsWrapper<>(redisTemplate.opsForSet(), clz);
     }
 
+    /**
+     * ZSet操作
+     *
+     * @author mr.g
+     * @return ZSet操作
+     **/
+    public ZSetOperations<String, Object> zSetOps(){
+        return redisTemplate.opsForZSet();
+    }
+
+    /**
+     * ZSet操作
+     *
+     * @author mr.g
+     * @return ZSet操作
+     **/
+    public <T> ZSetOperationsWrapper<T> zSetOps(Class<T> clz){
+        return new ZSetOperationsWrapper<>(redisTemplate.opsForZSet(), clz);
+    }
 
 
 
