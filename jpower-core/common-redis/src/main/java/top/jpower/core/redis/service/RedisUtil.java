@@ -4,10 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.*;
-import top.jpower.core.redis.wrapper.ListOperationsWrapper;
-import top.jpower.core.redis.wrapper.SetOperationsWrapper;
-import top.jpower.core.redis.wrapper.ValueOperationsWrapper;
-import top.jpower.core.redis.wrapper.ZSetOperationsWrapper;
+import top.jpower.core.redis.wrapper.*;
 import top.jpower.core.util.utils.Fc;
 
 import java.util.List;
@@ -131,6 +128,27 @@ public class RedisUtil {
         return new ZSetOperationsWrapper<>(redisTemplate.opsForZSet(), clz);
     }
 
+    /**
+     * geo 命令的 Redis 操作。
+     *
+     * @author mr.g
+     * @param
+     * @return org.springframework.data.redis.core.GeoOperations<java.lang.String,java.lang.Object>
+     **/
+    public GeoOperations<String, Object> geoOps(){
+        return redisTemplate.opsForGeo();
+    }
+
+    /**
+     * geo 命令的 Redis 操作。
+     *
+     * @author mr.g
+     * @param
+     * @return org.springframework.data.redis.core.GeoOperations<java.lang.String,java.lang.Object>
+     **/
+    public <T> GeoOperationsWrapper<T> geoOps(Class<T> clz){
+        return new GeoOperationsWrapper<>(redisTemplate.opsForGeo(), clz);
+    }
 
 
 
