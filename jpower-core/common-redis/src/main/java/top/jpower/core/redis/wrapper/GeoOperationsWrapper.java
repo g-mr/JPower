@@ -638,5 +638,4 @@ public class GeoOperationsWrapper<M> {
                 ? GeoReference.fromMember(((GeoReference.GeoMemberReference<M>) reference).getMember())
                 : (GeoReference<Object>) reference;
     }
-    
 }

@@ -2,9 +2,8 @@ package top.jpower.core.redis.service;
 
 import cn.hutool.core.thread.ThreadUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.listener.adapter.RedisListenerExecutionFailedException;
+import top.jpower.core.redis.wrapper.ValueOperationsWrapper;
 import top.jpower.core.util.utils.Fc;
 
 import java.util.concurrent.TimeUnit;
@@ -17,9 +16,9 @@ import java.util.function.Supplier;
  * @date 2022-08-10 17:55
  */
 @RequiredArgsConstructor
-public class RedisLockUtil {
+public class LockOperations {
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisService redisUtil;
 
     /**
      * 获取锁
@@ -31,7 +30,7 @@ public class RedisLockUtil {
      * @return true为获取到锁，false则没获取到
      **/
     public Boolean lock(String key, long expireTime, TimeUnit timeUnit){
-        return redisTemplate.opsForValue().setIfAbsent(key, Fc.randomUUID(), expireTime, timeUnit);
+        return redisUtil.valueOps().setIfAbsent(key, Fc.randomUUID(), expireTime, timeUnit);
     }
 
     /**
@@ -42,7 +41,7 @@ public class RedisLockUtil {
      * @return true为获取到锁，false则没获取到
      **/
     public Boolean lock(String key){
-        return redisTemplate.opsForValue().setIfAbsent(key, Fc.randomUUID());
+        return redisUtil.valueOps().setIfAbsent(key, Fc.randomUUID());
     }
 
     /**
@@ -53,7 +52,7 @@ public class RedisLockUtil {
      * @return 是否删除锁成功
      **/
     public Boolean unlock(String key){
-        return redisTemplate.delete(key);
+        return redisUtil.delete(key);
     }
 
     /**
@@ -111,9 +110,9 @@ public class RedisLockUtil {
      * @return V
      **/
     public <V> V lock(String key, long waitTime, long expireTime, TimeUnit timeUnit, Supplier<V> supplier, String msg){
+        ValueOperationsWrapper<String> operations = redisUtil.valueOps(String.class);
         String uidValue = Fc.randomUUID();
         try {
-            ValueOperations<String, Object> operations = redisTemplate.opsForValue();
             Boolean is = expireTime >= 0 ? operations.setIfAbsent(key, uidValue, expireTime, timeUnit) : operations.setIfAbsent(key, uidValue);
             if (Fc.toBoolean(is)){
                 return supplier.get();
@@ -127,8 +126,8 @@ public class RedisLockUtil {
             }
         }finally {
             //释放锁
-            if (Fc.equalsValue(uidValue,redisTemplate.opsForValue().get(key))){
-                redisTemplate.delete(key);
+            if (Fc.equalsValue(uidValue,operations.get(key))){
+                redisUtil.delete(key);
             }
         }
     }

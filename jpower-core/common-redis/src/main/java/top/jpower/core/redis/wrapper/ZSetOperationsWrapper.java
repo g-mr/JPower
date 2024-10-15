@@ -1,5 +1,6 @@
 package top.jpower.core.redis.wrapper;
 
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.convert.Convert;
 import lombok.AllArgsConstructor;
 import org.springframework.data.redis.connection.RedisZSetCommands;
@@ -1115,6 +1116,24 @@ public class ZSetOperationsWrapper<V> {
      */
     public Set<V> reverseRangeByLex(String key, RedisZSetCommands.Range range, RedisZSetCommands.Limit limit) {
         return Convert.toSet(clz, delegate.reverseRangeByLex(key, range, limit));
+    }
+
+    /**
+     * 删除
+     *
+     * @param keys KEYS
+     */
+    public Boolean delete(final String keys) {
+        return delegate.getOperations().delete(keys);
+    }
+
+    /**
+     * 删除
+     *
+     * @param keys KEYS
+     */
+    public Long delete(final String... keys) {
+        return delegate.getOperations().delete(ListUtil.toList(keys));
     }
 
 }

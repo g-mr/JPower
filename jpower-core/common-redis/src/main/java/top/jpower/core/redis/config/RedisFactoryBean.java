@@ -3,7 +3,6 @@ package top.jpower.core.redis.config;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
-import top.jpower.core.redis.utils.ProxyUtils;
 
 /**
  * @author mr.g
@@ -15,9 +14,9 @@ public class RedisFactoryBean implements BeanPostProcessor {
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) {
-        if (beanName.equals("redisConnectionFactory")) {
-            return ProxyUtils.getProxy(bean, invocation -> new RedisAdvice().interceptorRedisFactory(invocation));
-        }
+//        if (beanName.equals("redisConnectionFactory")) {
+//            return ProxyUtils.getProxy(bean, invocation -> new RedisAdvice().interceptorRedisFactory(invocation));
+//        }
         return bean;
     }
 }

@@ -1,5 +1,6 @@
 package top.jpower.core.redis.wrapper;
 
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.convert.Convert;
 import lombok.AllArgsConstructor;
 import org.springframework.data.redis.core.ConvertingCursor;
@@ -408,5 +409,23 @@ public class SetOperationsWrapper<V> {
      */
     public Cursor<V> scan(String key, ScanOptions options) {
         return new ConvertingCursor<>(delegate.scan(key, options), val -> Convert.convert(clz, val));
+    }
+
+    /**
+     * 删除
+     *
+     * @param keys KEYS
+     */
+    public Boolean delete(final String keys) {
+        return delegate.getOperations().delete(keys);
+    }
+
+    /**
+     * 删除
+     *
+     * @param keys KEYS
+     */
+    public Long delete(final String... keys) {
+        return delegate.getOperations().delete(ListUtil.toList(keys));
     }
 }

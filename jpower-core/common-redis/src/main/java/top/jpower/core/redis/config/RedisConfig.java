@@ -20,7 +20,7 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import top.jpower.core.redis.connection.RedisConnectionFactoryManage;
 import top.jpower.core.redis.properties.RedisProperties;
-import top.jpower.core.redis.service.RedisUtil;
+import top.jpower.core.redis.service.RedisService;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.MapUtil;
@@ -40,22 +40,6 @@ import java.util.Optional;
 @AutoConfigureBefore({RedisAutoConfiguration.class})
 @RequiredArgsConstructor
 public class RedisConfig {
-
-    @Bean
-    public RedisPrefixHandler redisPrefixHandler(){
-        return new RedisPrefixHandler() {
-            @Override
-            public String getPrefix(String key) {
-                return "666666";
-            }
-
-            @Override
-            public boolean ignorePrefixForScan(String key) {
-                return true;
-            }
-        };
-    }
-
 
     @Bean
     @ConditionalOnMissingBean(name = "redisTemplate")
@@ -84,8 +68,8 @@ public class RedisConfig {
 
     @Bean
     @ConditionalOnBean(RedisTemplate.class)
-    public RedisUtil redisUtils(RedisTemplate redisTemplate) {
-        return new RedisUtil(redisTemplate);
+    public RedisService redisUtils(RedisTemplate<String, Object> redisTemplate) {
+        return new RedisService(redisTemplate);
     }
 
     @Bean

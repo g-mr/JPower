@@ -2927,6 +2927,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long xAck(byte[] key, String group, RecordId... recordIds) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return delegate.xAck(key, group, recordIds);
     }
 
@@ -2936,6 +2937,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public RecordId xAdd(MapRecord<byte[], byte[], byte[]> record, XAddOptions options) {
+        record = StreamRecords.newRecord().in(addPrefix(Boolean.FALSE, record.getStream())[0]).withId(record.getId()).ofMap(record.getValue());
         return delegate.xAdd(record, options);
     }
 
@@ -2945,6 +2947,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public List<RecordId> xClaimJustId(byte[] key, String group, String newOwner, XClaimOptions options) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return delegate.xClaimJustId(key, group, newOwner, options);
     }
 
@@ -2954,6 +2957,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public List<ByteRecord> xClaim(byte[] key, String group, String newOwner, XClaimOptions options) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return delegate.xClaim(key, group, newOwner, options);
     }
 
@@ -2963,6 +2967,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long xDel(byte[] key, RecordId... recordIds) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return delegate.xDel(key, recordIds);
     }
 
@@ -2972,6 +2977,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public String xGroupCreate(byte[] key, String groupName, ReadOffset readOffset) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return delegate.xGroupCreate(key, groupName, readOffset);
     }
 
@@ -2981,6 +2987,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public String xGroupCreate(byte[] key, String groupName, ReadOffset readOffset, boolean mkStream) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return delegate.xGroupCreate(key, groupName, readOffset, mkStream);
     }
 
@@ -2990,6 +2997,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Boolean xGroupDelConsumer(byte[] key, Consumer consumer) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return delegate.xGroupDelConsumer(key, consumer);
     }
 
@@ -2999,6 +3007,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Boolean xGroupDestroy(byte[] key, String groupName) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return delegate.xGroupDestroy(key, groupName);
     }
 
@@ -3008,6 +3017,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public StreamInfo.XInfoStream xInfo(byte[] key) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return delegate.xInfo(key);
     }
 
@@ -3017,6 +3027,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public StreamInfo.XInfoGroups xInfoGroups(byte[] key) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return delegate.xInfoGroups(key);
     }
 
@@ -3026,6 +3037,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public StreamInfo.XInfoConsumers xInfoConsumers(byte[] key, String groupName) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return delegate.xInfoConsumers(key, groupName);
     }
 
@@ -3035,6 +3047,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long xLen(byte[] key) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return delegate.xLen(key);
     }
 
@@ -3044,6 +3057,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public PendingMessagesSummary xPending(byte[] key, String groupName) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return delegate.xPending(key, groupName);
     }
 
@@ -3053,6 +3067,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public PendingMessages xPending(byte[] key, String groupName, XPendingOptions options) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return delegate.xPending(key, groupName, options);
     }
 
@@ -3062,6 +3077,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public List<ByteRecord> xRange(byte[] key, org.springframework.data.domain.Range<String> range, Limit limit) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return delegate.xRange(key, range, limit);
     }
 
@@ -3071,6 +3087,9 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public List<ByteRecord> xRead(StreamReadOptions readOptions, StreamOffset<byte[]>... streams) {
+        streams = Arrays.stream(streams)
+                .map(it -> StreamOffset.create(addPrefix(Boolean.FALSE, it.getKey())[0], it.getOffset())) //
+                .toArray(it -> new StreamOffset[it]);
         return delegate.xRead(readOptions, streams);
     }
 
@@ -3081,6 +3100,9 @@ public class JpowerRedisConnection implements RedisConnection {
     @Override
     public List<ByteRecord> xReadGroup(Consumer consumer, StreamReadOptions readOptions,
                                        StreamOffset<byte[]>... streams) {
+        streams = Arrays.stream(streams)
+                .map(it -> StreamOffset.create(addPrefix(Boolean.FALSE, it.getKey())[0], it.getOffset())) //
+                .toArray(it -> new StreamOffset[it]);
         return delegate.xReadGroup(consumer, readOptions, streams);
     }
 
@@ -3090,6 +3112,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public List<ByteRecord> xRevRange(byte[] key, org.springframework.data.domain.Range<String> range, Limit limit) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return delegate.xRevRange(key, range, limit);
     }
 
@@ -3099,6 +3122,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long xTrim(byte[] key, long count) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return xTrim(key, count, false);
     }
 
@@ -3108,6 +3132,7 @@ public class JpowerRedisConnection implements RedisConnection {
      */
     @Override
     public Long xTrim(byte[] key, long count, boolean approximateTrimming) {
+        key = addPrefix(Boolean.FALSE, key)[0];
         return delegate.xTrim(key, count, approximateTrimming);
     }
 

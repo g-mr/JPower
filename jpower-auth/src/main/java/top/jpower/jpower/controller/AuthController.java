@@ -79,6 +79,8 @@ public class AuthController extends BaseController {
     // @CacheEvict(value = CacheNames.ROLE_KEY, allEntries = true)
     public ResponseData test(){
 
+
+
 //        redisUtil.value().set("gdz", "测试");
 //        redisUtil.value().set("gdz1", 1);
 //        AuthInfo authInfo = new AuthInfo();
