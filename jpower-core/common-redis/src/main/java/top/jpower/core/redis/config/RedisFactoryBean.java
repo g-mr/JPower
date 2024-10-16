@@ -14,9 +14,9 @@ public class RedisFactoryBean implements BeanPostProcessor {
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) {
-//        if (beanName.equals("redisConnectionFactory")) {
-//            return ProxyUtils.getProxy(bean, invocation -> new RedisAdvice().interceptorRedisFactory(invocation));
-//        }
+        // if (beanName.equals("redisConnectionFactory")) {
+        //     return ProxyUtils.getProxy(bean, invocation -> new RedisAdvice().interceptorRedisFactory(invocation));
+        // }
         return bean;
     }
 }

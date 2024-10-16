@@ -1,9 +1,10 @@
-package top.jpower.core.redis.service;
+package top.jpower.core.redis.wrapper;
 
 import cn.hutool.core.thread.ThreadUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.listener.adapter.RedisListenerExecutionFailedException;
-import top.jpower.core.redis.wrapper.ValueOperationsWrapper;
 import top.jpower.core.util.utils.Fc;
 
 import java.util.concurrent.TimeUnit;
@@ -18,7 +19,7 @@ import java.util.function.Supplier;
 @RequiredArgsConstructor
 public class LockOperations {
 
-    private final RedisService redisUtil;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     /**
      * 获取锁
@@ -30,7 +31,7 @@ public class LockOperations {
      * @return true为获取到锁，false则没获取到
      **/
     public Boolean lock(String key, long expireTime, TimeUnit timeUnit){
-        return redisUtil.valueOps().setIfAbsent(key, Fc.randomUUID(), expireTime, timeUnit);
+        return redisTemplate.opsForValue().setIfAbsent(key, Fc.randomUUID(), expireTime, timeUnit);
     }
 
     /**
@@ -41,7 +42,7 @@ public class LockOperations {
      * @return true为获取到锁，false则没获取到
      **/
     public Boolean lock(String key){
-        return redisUtil.valueOps().setIfAbsent(key, Fc.randomUUID());
+        return redisTemplate.opsForValue().setIfAbsent(key, Fc.randomUUID());
     }
 
     /**
@@ -52,7 +53,7 @@ public class LockOperations {
      * @return 是否删除锁成功
      **/
     public Boolean unlock(String key){
-        return redisUtil.delete(key);
+        return redisTemplate.delete(key);
     }
 
     /**
@@ -110,7 +111,7 @@ public class LockOperations {
      * @return V
      **/
     public <V> V lock(String key, long waitTime, long expireTime, TimeUnit timeUnit, Supplier<V> supplier, String msg){
-        ValueOperationsWrapper<String> operations = redisUtil.valueOps(String.class);
+        ValueOperations<String, Object> operations = redisTemplate.opsForValue();
         String uidValue = Fc.randomUUID();
         try {
             Boolean is = expireTime >= 0 ? operations.setIfAbsent(key, uidValue, expireTime, timeUnit) : operations.setIfAbsent(key, uidValue);
@@ -127,7 +128,7 @@ public class LockOperations {
         }finally {
             //释放锁
             if (Fc.equalsValue(uidValue,operations.get(key))){
-                redisUtil.delete(key);
+                redisTemplate.delete(key);
             }
         }
     }

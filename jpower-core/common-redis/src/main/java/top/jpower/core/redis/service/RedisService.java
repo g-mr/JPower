@@ -1,6 +1,7 @@
 package top.jpower.core.redis.service;
 
 import cn.hutool.core.collection.ListUtil;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.RedisConnection;
@@ -21,6 +22,7 @@ import java.util.function.Consumer;
  * @author mr.g
  **/
 @Slf4j
+@AllArgsConstructor
 public class RedisService {
 
     /**
@@ -32,10 +34,16 @@ public class RedisService {
     /**
      * 分布式锁实现工具类
      **/
-    private final LockOperations redisLockUtil = new LockOperations(this);
+    private final LockOperations lock;
+    /**
+     * 分布式锁实现工具类
+     **/
+    private final QueueOperations<Object> queue;
 
     public RedisService(RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
+        queue = new QueueOperations<>(this.redisTemplate, Object.class);
+        lock = new LockOperations(this.redisTemplate);
     }
 
     /**
@@ -45,7 +53,28 @@ public class RedisService {
      * @return 分布式锁
      **/
     public LockOperations lockOps(){
-        return redisLockUtil;
+        return lock;
+    }
+
+    /**
+     *
+     *
+     * @author mr.g
+     * @return top.jpower.core.redis.wrapper.QueueOperations<java.lang.Object>
+     **/
+    public QueueOperations<Object> queueOps() {
+        return queue;
+    }
+
+    /**
+     * 消息队列
+     *
+     * @author mr.g
+     * @param clz 消息类型
+     * @return top.jpower.core.redis.wrapper.QueueOperations<T>
+     **/
+    public <T> QueueOperations<T> queueOps(Class<T> clz) {
+        return new QueueOperations<>(redisTemplate, clz);
     }
 
     /**
@@ -462,17 +491,6 @@ public class RedisService {
      **/
     public Boolean renameIfAbsent(String oldKey, String newKey) {
         return redisTemplate.renameIfAbsent(oldKey, newKey);
-    }
-
-    /**
-     * 发布订阅
-     * @author mr.g
-     * @param channel KEY
-     * @param message 消息
-     **/
-
-    public void publish(String channel, Object message) {
-        redisTemplate.convertAndSend(channel, message);
     }
 
 }
