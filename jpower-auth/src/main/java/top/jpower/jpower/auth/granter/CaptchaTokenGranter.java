@@ -3,6 +3,7 @@ package top.jpower.jpower.auth.granter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import top.jpower.core.exception.throwable.BusinessException;
+import top.jpower.core.redis.service.RedisService;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.StringUtil;
 import top.jpower.jpower.auth.AuthUserInfo;
@@ -10,7 +11,6 @@ import top.jpower.jpower.auth.TokenGranter;
 import top.jpower.jpower.dto.TokenParameter;
 import top.jpower.jpower.module.common.auth.UserInfo;
 import top.jpower.common.constants.CacheNames;
-import top.jpower.core.redis.service.RedisUtil;
 import top.jpower.jpower.utils.TokenUtil;
 
 import static top.jpower.jpower.auth.granter.CaptchaTokenGranter.GRANT_TYPE;
@@ -26,7 +26,7 @@ public class CaptchaTokenGranter implements TokenGranter {
 	public static final String GRANT_TYPE = "captcha";
 
 	@Autowired
-	private RedisUtil redisUtil;
+	private RedisService redisService;
 	@Autowired
 	private PasswordTokenGranter passwordTokenGranter;
 	@Autowired(required = false)
@@ -38,7 +38,7 @@ public class CaptchaTokenGranter implements TokenGranter {
 		String key = tokenParameter.getCaptchaKey();
 		String code = tokenParameter.getCaptchaCode();
 		// 获取验证码
-		String redisCode = String.valueOf(redisUtil.get(CacheNames.CAPTCHA_KEY + key));
+		String redisCode = redisService.valueOps(String.class).get(CacheNames.CAPTCHA_KEY + key);
 		// 判断验证码
 		if (code == null || !StringUtil.equalsIgnoreCase(redisCode, code)) {
 			throw new BusinessException(TokenUtil.CAPTCHA_NOT_CORRECT);

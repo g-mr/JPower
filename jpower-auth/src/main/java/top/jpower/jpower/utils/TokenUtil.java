@@ -1,8 +1,10 @@
 package top.jpower.jpower.utils;
 
 import cn.hutool.extra.servlet.ServletUtil;
+import top.jpower.common.constants.CacheNames;
 import top.jpower.common.enums.YN01Enum;
 import top.jpower.core.exception.throwable.BusinessException;
+import top.jpower.core.redis.service.RedisService;
 import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.constants.TokenConstant;
@@ -13,8 +15,6 @@ import top.jpower.jpower.dbs.entity.function.TbCoreDataScope;
 import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
 import top.jpower.jpower.dto.AuthInfo;
 import top.jpower.jpower.module.common.auth.UserInfo;
-import top.jpower.common.constants.CacheNames;
-import top.jpower.core.redis.service.RedisUtil;
 import top.jpower.jpower.module.common.utils.JwtUtil;
 import top.jpower.jpower.module.common.utils.ShieldUtil;
 import top.jpower.jpower.module.datascope.DataScope;
@@ -46,11 +46,11 @@ public class TokenUtil {
     public final static String USER_NOT_ACTIVATION = "用户尚未激活";
 
 
-    private static final RedisUtil redisUtil;
+    private static final RedisService redisService;
     private static final AuthProperties AUTH_PROPERTIES;
 
     static {
-        redisUtil = SpringUtil.getBean(RedisUtil.class);
+        redisService = SpringUtil.getBean(RedisService.class);
         AUTH_PROPERTIES = SpringUtil.getBean(AuthProperties.class);
     }
 
@@ -183,18 +183,18 @@ public class TokenUtil {
             });
         }
 
-        redisUtil.set(CacheNames.TOKEN_DATA_SCOPE_KEY+authInfo.getAccessToken(), map , authInfo.getExpiresIn(), TimeUnit.SECONDS);
+        redisService.valueOps().set(CacheNames.TOKEN_DATA_SCOPE_KEY+authInfo.getAccessToken(), map , authInfo.getExpiresIn(), TimeUnit.SECONDS);
 
         List<String> list = SystemCache.getUrlsByRoleIds(authInfo.getUser().getRoleIds(),client.getClientCode());
-        redisUtil.set(CacheNames.TOKEN_URL_KEY+authInfo.getAccessToken(), list , authInfo.getExpiresIn(), TimeUnit.SECONDS);
+        redisService.valueOps().set(CacheNames.TOKEN_URL_KEY+authInfo.getAccessToken(), list , authInfo.getExpiresIn(), TimeUnit.SECONDS);
 
         //缓存用户在线信息
         String oldToken = JwtUtil.getToken(WebUtil.getRequest());
         //如果有旧token代表的是刷新token
         if (Fc.isNotBlank(oldToken)){
-            redisUtil.remove(TOKEN_USER_KEY+authInfo.getUser().getUserId()+ StringPool.COLON+oldToken);
+            redisService.delete(TOKEN_USER_KEY+authInfo.getUser().getUserId()+ StringPool.COLON+oldToken);
         }
-        redisUtil.set(TOKEN_USER_KEY+authInfo.getUser().getUserId()+ StringPool.COLON+authInfo.getAccessToken(),ChainMap.<String,Object>create().put("client",client.getClientCode()).put("ip", WebUtil.getIp()).put("date", DateUtil.now()).build(),authInfo.getExpiresIn(), TimeUnit.SECONDS);
+        redisService.valueOps().set(TOKEN_USER_KEY+authInfo.getUser().getUserId()+ StringPool.COLON+authInfo.getAccessToken(),ChainMap.<String,Object>create().put("client",client.getClientCode()).put("ip", WebUtil.getIp()).put("date", DateUtil.now()).build(),authInfo.getExpiresIn(), TimeUnit.SECONDS);
 
         // cookie
         if (AUTH_PROPERTIES.getCookie()){

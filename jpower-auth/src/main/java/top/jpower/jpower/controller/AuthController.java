@@ -16,7 +16,7 @@ import top.jpower.common.enums.UserTypeEnum;
 import top.jpower.core.boot.controller.BaseController;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
-import top.jpower.core.redis.service.RedisUtil;
+import top.jpower.core.redis.service.RedisService;
 import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.rsp.ResponseData;
@@ -65,7 +65,7 @@ import static top.jpower.jpower.module.tenant.TenantConstant.getExpireTime;
 @AllArgsConstructor
 public class AuthController extends BaseController {
 
-    private RedisUtil redisUtil;
+    private RedisService redisService;
     private JpowerTenantProperties tenantProperties;
     private TokenGranterBuilder granterBuilder;
     private UserClient userClient;
@@ -73,12 +73,24 @@ public class AuthController extends BaseController {
 
     private final String VALIDATE_SMS_CODE = "validate";
 
-    @GetMapping(value = "/test",produces="application/json")
+    @GetMapping(value = "/test1/{pat}",produces="application/json")
     // @Cacheable(value = CacheNames.ROLE_KEY)
     // @CachePut(value = CacheNames.ROLE_KEY,key = "'dddd'")
     // @CacheEvict(value = CacheNames.ROLE_KEY, allEntries = true)
-    public ResponseData test(){
+    public ResponseData test1(@PathVariable("pat") String pat){
 
+        redisService.queueOps(String.class).subscribe((channel, message)->{
+            System.out.println(channel+"----------"+message);
+        }, "msg","gdz");
+        return ReturnJsonUtil.data(true);
+    }
+
+    @GetMapping(value = "/test/{pat}/{msg}",produces="application/json")
+    // @Cacheable(value = CacheNames.ROLE_KEY)
+    // @CachePut(value = CacheNames.ROLE_KEY,key = "'dddd'")
+    // @CacheEvict(value = CacheNames.ROLE_KEY, allEntries = true)
+    public ResponseData test(@PathVariable("pat") String pat, @PathVariable("msg") String msg){
+        redisService.queueOps().publish(pat, msg);
 
 
 //        redisUtil.value().set("gdz", "测试");
@@ -149,22 +161,22 @@ public class AuthController extends BaseController {
         //判断单端登录
         TbCoreClient client = SystemCache.getClientByClientCode(ShieldUtil.getClientCodeFromHeader());
         if (StringUtil.equalsIgnoreCase(client.getLoginLimit(), LoginLimitEnum.ONE.getValue())){
-            Set<String> keys = redisUtil.pattern(TOKEN_USER_KEY+userInfo.getUserId()+ StringPool.COLON);
+            Set<String> keys = redisService.keys(TOKEN_USER_KEY+userInfo.getUserId()+ StringPool.COLON + StringPool.ASTERISK);
             keys.forEach(key->{
-                Map<String,Object> map = (Map<String, Object>) redisUtil.get(key);
+                Map<String,Object> map = (Map<String, Object>) redisService.valueOps().get(key);
                 if (Fc.equalsValue(MapUtil.getStr(map,"client"),client.getClientCode())){
                     JpowerAssert.createException(JpowerError.RateLimit);
                 }
             });
         } else if(StringUtil.equalsIgnoreCase(client.getLoginLimit(), LoginLimitEnum.SQUEEZE.getValue())){
-            Set<String> keys = redisUtil.pattern(TOKEN_USER_KEY+userInfo.getUserId()+ StringPool.COLON);
+            Set<String> keys = redisService.keys(TOKEN_USER_KEY+userInfo.getUserId()+ StringPool.COLON + StringPool.ASTERISK);
             keys.forEach(key->{
-                Map<String,Object> map = (Map<String, Object>) redisUtil.get(key);
+                Map<String,Object> map = (Map<String, Object>) redisService.valueOps().get(key);
                 if (Fc.equalsValue(MapUtil.getStr(map,"client"),client.getClientCode())){
                     String token = StringUtil.split(key,StringPool.COLON).get(4);
-                    redisUtil.remove(CacheNames.TOKEN_URL_KEY+token);
-                    redisUtil.remove(CacheNames.TOKEN_DATA_SCOPE_KEY+token);
-                    redisUtil.remove(TOKEN_USER_KEY+userInfo.getUserId()+ StringPool.COLON +token);
+                    redisService.delete(CacheNames.TOKEN_URL_KEY+token);
+                    redisService.delete(CacheNames.TOKEN_DATA_SCOPE_KEY+token);
+                    redisService.delete(TOKEN_USER_KEY+userInfo.getUserId()+ StringPool.COLON +token);
                 }
             });
         }
@@ -184,9 +196,9 @@ public class AuthController extends BaseController {
         UserInfo user = ShieldUtil.getUser();
         if(Fc.notNull(user) && NumberUtil.equals(userId, user.getUserId())){
             getRequest().getSession().invalidate();
-            redisUtil.remove(CacheNames.TOKEN_URL_KEY+ JwtUtil.getToken(getRequest()));
-            redisUtil.remove(CacheNames.TOKEN_DATA_SCOPE_KEY+JwtUtil.getToken(getRequest()));
-            redisUtil.remove(TOKEN_USER_KEY+userId+ StringPool.COLON +JwtUtil.getToken(getRequest()));
+            redisService.delete(CacheNames.TOKEN_URL_KEY+ JwtUtil.getToken(getRequest()));
+            redisService.delete(CacheNames.TOKEN_DATA_SCOPE_KEY+JwtUtil.getToken(getRequest()));
+            redisService.delete(TOKEN_USER_KEY+userId+ StringPool.COLON +JwtUtil.getToken(getRequest()));
             String cookieToken = WebUtil.getCookieVal(JpowerConstants.AUTH_HEADER);
             if (Fc.isNotBlank(cookieToken)){
                 WebUtil.removeCookie(WebUtil.getResponse(), JpowerConstants.AUTH_HEADER);
@@ -204,7 +216,7 @@ public class AuthController extends BaseController {
         String verCode = specCaptcha.text().toLowerCase();
         String key = Fc.randomUUID();
         // 存入redis并设置过期时间为30分钟
-        redisUtil.set(CacheNames.CAPTCHA_KEY + key, verCode, 30L, TimeUnit.MINUTES);
+        redisService.valueOps().set(CacheNames.CAPTCHA_KEY + key, verCode, 30L, TimeUnit.MINUTES);
         // 将key和base64返回给前端
         return ReturnJsonUtil.ok("操作成功",ChainMap.create().put("key", key).put("image", specCaptcha.toBase64()).build());
     }
@@ -223,7 +235,7 @@ public class AuthController extends BaseController {
 
         String code = RandomStringUtils.randomNumeric(6);
         String msgId = MailUtil.sendText(email,"Jpower邮件","您得验证码："+code);
-        redisUtil.set("email:"+email+":"+msgId, code ,5L, TimeUnit.MINUTES);
+        redisService.valueOps().set("email:"+email+":"+msgId, code ,5L, TimeUnit.MINUTES);
         return ReturnJsonUtil.data(msgId);
     }
 

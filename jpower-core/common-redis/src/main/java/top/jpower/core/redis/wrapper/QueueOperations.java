@@ -1,12 +1,14 @@
 package top.jpower.core.redis.wrapper;
 
+import cn.hutool.core.convert.Convert;
 import lombok.AllArgsConstructor;
-import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.connection.RedisPubSubCommands;
 import org.springframework.data.redis.connection.Subscription;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.util.Assert;
+
+import java.util.function.BiConsumer;
 
 /**
  * @author mr.g
@@ -67,12 +69,14 @@ public class QueueOperations<T> {
      * @param channels channel names, must not be {@literal null}.
      * @see <a href="https://redis.io/commands/subscribe">Redis Documentation: SUBSCRIBE</a>
      */
-    public void subscribe(MessageListener listener, String... channels) {
+    public void subscribe(BiConsumer<String, T> listener, String... channels) {
 
         byte[][] rawMessage = rawStrings(channels);
 
         redisTemplate.execute(connection->{
-            connection.subscribe(listener, rawMessage);
+            connection.subscribe((message, channel)->
+                    listener.accept(redisTemplate.getStringSerializer().deserialize(message.getChannel()), Convert.convert(clz, redisTemplate.getValueSerializer().deserialize(message.getBody())))
+                , rawMessage);
             return null;
         }, true);
     }
@@ -88,11 +92,13 @@ public class QueueOperations<T> {
      * @param patterns channel name patterns, must not be {@literal null}.
      * @see <a href="https://redis.io/commands/psubscribe">Redis Documentation: PSUBSCRIBE</a>
      */
-    public void pSubscribe(MessageListener listener, String... patterns) {
+    public void pSubscribe(BiConsumer<String, T> listener, String... patterns) {
         byte[][] rawPatterns = rawStrings(patterns);
 
         redisTemplate.execute(connection->{
-            connection.pSubscribe(listener, rawPatterns);
+            connection.pSubscribe((message, channel)->
+                    listener.accept(redisTemplate.getStringSerializer().deserialize(message.getChannel()), Convert.convert(clz, redisTemplate.getValueSerializer().deserialize(message.getBody())))
+                , rawPatterns);
             return null;
         }, true);
     }
