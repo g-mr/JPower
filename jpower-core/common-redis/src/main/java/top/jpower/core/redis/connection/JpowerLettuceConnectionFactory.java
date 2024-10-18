@@ -6,6 +6,7 @@ import org.springframework.data.redis.connection.RedisClusterConnection;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisSentinelConnection;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import top.jpower.core.redis.config.RedisPrefixHandler;
 import top.jpower.core.redis.properties.RedisProperties;
@@ -16,7 +17,7 @@ import top.jpower.core.redis.properties.RedisProperties;
  * @description
  */
 @AllArgsConstructor
-public class JpowerLettuceConnectionFactory implements RedisConnectionFactory {
+public class JpowerLettuceConnectionFactory extends LettuceConnectionFactory {
     private RedisConnectionFactory connectionFactory;
     private RedisProperties redisProperties;
     private RedisPrefixHandler redisPrefixHandler;
