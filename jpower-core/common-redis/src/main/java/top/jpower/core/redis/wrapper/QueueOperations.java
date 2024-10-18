@@ -1,7 +1,8 @@
 package top.jpower.core.redis.wrapper;
 
 import cn.hutool.core.convert.Convert;
-import lombok.AllArgsConstructor;
+import cn.hutool.core.thread.ThreadUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.RedisPubSubCommands;
 import org.springframework.data.redis.connection.Subscription;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -15,7 +16,7 @@ import java.util.function.BiConsumer;
  * @date 2024-10-16 21:38
  * @description
  */
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class QueueOperations<T> {
 
     private final RedisTemplate<String, Object> redisTemplate;
@@ -73,12 +74,19 @@ public class QueueOperations<T> {
 
         byte[][] rawMessage = rawStrings(channels);
 
-        redisTemplate.execute(connection->{
-            connection.subscribe((message, channel)->
-                    listener.accept(redisTemplate.getStringSerializer().deserialize(message.getChannel()), Convert.convert(clz, redisTemplate.getValueSerializer().deserialize(message.getBody())))
-                , rawMessage);
-            return null;
-        }, true);
+        ThreadUtil.execute(()->{
+            redisTemplate.execute(connection->{
+                connection.subscribe((message, channel)->{
+                    listener.accept(redisTemplate.getStringSerializer().deserialize(message.getChannel()), Convert.convert(clz, redisTemplate.getValueSerializer().deserialize(message.getBody())));
+                }, rawMessage);
+
+                // todo 什么垃圾处理方式，必须把线程阻塞才能订阅到消息，换redisson
+                while (true){
+
+                }
+
+            }, true);
+        });
     }
 
     /**
