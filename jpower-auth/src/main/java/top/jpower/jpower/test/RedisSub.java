@@ -2,10 +2,10 @@ package top.jpower.jpower.test;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+import top.jpower.core.redis.connection.RedisConnectionFactoryManage;
 
 /**
  * @author mr.g
@@ -22,9 +22,9 @@ public class RedisSub {
 
 
     @Bean
-    RedisMessageListenerContainer redisContainer(RedisConnectionFactory factory) {
+    RedisMessageListenerContainer redisContainer(RedisConnectionFactoryManage redisConnectionFactoryManage) {
         final RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(factory);
+        container.setConnectionFactory(redisConnectionFactoryManage.getFactory());
         container.addMessageListener(messageListener(), new ChannelTopic("msg"));
         return container;
     }
