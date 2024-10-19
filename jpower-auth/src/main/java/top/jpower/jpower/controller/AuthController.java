@@ -7,6 +7,7 @@ import com.wf.captcha.SpecCaptcha;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.redisson.api.RedissonClient;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.common.constants.CacheNames;
@@ -73,6 +74,8 @@ public class AuthController extends BaseController {
 
     private final String VALIDATE_SMS_CODE = "validate";
 
+    private RedissonClient redissonClient;
+
     @GetMapping(value = "/test1/{pat}",produces="application/json")
     // @Cacheable(value = CacheNames.ROLE_KEY)
     // @CachePut(value = CacheNames.ROLE_KEY,key = "'dddd'")
@@ -90,10 +93,13 @@ public class AuthController extends BaseController {
     // @CachePut(value = CacheNames.ROLE_KEY,key = "'dddd'")
     // @CacheEvict(value = CacheNames.ROLE_KEY, allEntries = true)
     public ResponseData test(@PathVariable("pat") String pat, @PathVariable("msg") String msg){
-        redisService.queueOps().publish(pat, msg);
+        // redisService.queueOps().publish(pat, msg);
+
+        // redissonClient.<String>getBucket("gdz").set("dsjfo");
+        String text = redissonClient.<String>getBucket("gdz").get();
 
 
-//        redisUtil.value().set("gdz", "测试");
+        // redisService.valueOps().set("gdz", "测试");
 //        redisUtil.value().set("gdz1", 1);
 //        AuthInfo authInfo = new AuthInfo();
 //        authInfo.setAccessToken("撒赖科技");
@@ -106,7 +112,7 @@ public class AuthController extends BaseController {
 //        System.out.println("gdz1=="+gdz1);
 //
 //        AuthInfo gdz2 = redisUtil.value(AuthInfo.class).get("gdz2");
-//        System.out.println("gdz2=="+gdz2);
+       System.out.println("gdz2=="+redisService.valueOps(String.class).get("gdz"));
 
         return ReturnJsonUtil.data(true);
     }

@@ -81,10 +81,11 @@ public class QueueOperations<T> {
                 }, rawMessage);
 
                 // todo 什么垃圾处理方式，必须把线程阻塞才能订阅到消息，换redisson
-                while (true){
+                // while (true){
+                //
+                // }
 
-                }
-
+                return null;
             }, true);
         });
     }

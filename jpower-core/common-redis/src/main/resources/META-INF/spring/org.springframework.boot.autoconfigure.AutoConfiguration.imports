@@ -1,3 +1,1 @@
-top.jpower.core.redis.config.RedisFactoryConfig
-top.jpower.core.redis.config.RedisConfig
-top.jpower.core.redis.config.RedisFactoryBean
+top.jpower.core.redis.config.RedissonConfig

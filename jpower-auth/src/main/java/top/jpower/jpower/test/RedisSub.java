@@ -2,10 +2,8 @@ package top.jpower.jpower.test;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.listener.ChannelTopic;
-import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
-import top.jpower.core.redis.connection.RedisConnectionFactoryManage;
 
 /**
  * @author mr.g
@@ -16,18 +14,18 @@ import top.jpower.core.redis.connection.RedisConnectionFactoryManage;
 public class RedisSub {
 
     @Bean
-    MessageListenerAdapter messageListener() {
-        return new MessageListenerAdapter(new MySubcribe());
+    MessageListenerAdapter messageListener(RedisTemplate<String, Object> redisTemplate) {
+        return new MessageListenerAdapter(new MySubcribe(redisTemplate));
     }
 
 
-    @Bean
-    RedisMessageListenerContainer redisContainer(RedisConnectionFactoryManage redisConnectionFactoryManage) {
-        final RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(redisConnectionFactoryManage.getFactory());
-        container.addMessageListener(messageListener(), new ChannelTopic("msg"));
-        return container;
-    }
+    // @Bean
+    // RedisMessageListenerContainer redisContainer(RedisConnectionFactory redisConnectionFactoryManage, RedisTemplate<String, Object> redisTemplate) {
+    //     final RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+    //     container.setConnectionFactory(redisConnectionFactoryManage);
+    //     container.addMessageListener(messageListener(redisTemplate), new ChannelTopic("msg"));
+    //     return container;
+    // }
 
     // @Bean
     // RedisMessageListenerContainer redisContainerGdz(RedisConnectionFactory factory) {
