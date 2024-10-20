@@ -94,9 +94,10 @@ public class AuthController extends BaseController {
     // @CacheEvict(value = CacheNames.ROLE_KEY, allEntries = true)
     public ResponseData test(@PathVariable("pat") String pat, @PathVariable("msg") String msg){
         // redisService.queueOps().publish(pat, msg);
-
-        // redissonClient.<String>getBucket("gdz").set("dsjfo");
-        String text = redissonClient.<String>getBucket("gdz").get();
+        redissonClient.<String>getBucket("gdz").set("dsjfo");
+        // String text = redissonClient.<String>getBucket("gdz").get();
+        // redisService.valueOps().set("gdz", "5654645");
+        // System.out.println(redisService.valueOps(String.class).get("gdz"));
 
 
         // redisService.valueOps().set("gdz", "测试");
@@ -112,7 +113,7 @@ public class AuthController extends BaseController {
 //        System.out.println("gdz1=="+gdz1);
 //
 //        AuthInfo gdz2 = redisUtil.value(AuthInfo.class).get("gdz2");
-       System.out.println("gdz2=="+redisService.valueOps(String.class).get("gdz"));
+//        System.out.println("gdz2=="+redisService.valueOps(String.class).get("gdz"));
 
         return ReturnJsonUtil.data(true);
     }

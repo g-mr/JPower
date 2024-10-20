@@ -1,7 +1,6 @@
 package top.jpower.core.redis.config;
 
 import lombok.RequiredArgsConstructor;
-import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.spring.cache.RedissonSpringCacheManager;
 import org.redisson.spring.starter.RedissonAutoConfiguration;
@@ -16,6 +15,8 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import top.jpower.core.redis.properties.RedisProperties;
 import top.jpower.core.redis.service.RedisService;
 
@@ -36,6 +37,16 @@ public class RedissonConfig {
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
+
+        // value 序列化
+        Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
+        template.setValueSerializer(jackson2JsonRedisSerializer);
+        template.setHashValueSerializer(jackson2JsonRedisSerializer);
+        // key 序列化
+        StringRedisSerializer redisKeySerializer = new StringRedisSerializer();
+        template.setKeySerializer(redisKeySerializer);
+        template.setHashKeySerializer(redisKeySerializer);
+
         return template;
     }
 
@@ -45,9 +56,16 @@ public class RedissonConfig {
         return new RedisService(redisTemplate);
     }
 
+    // @Bean
+    // public RedissonClient redissonClient() {
+    //     RedissonClient redissonClient = Redisson.create();
+    //     redissonClient.pre
+    //     return Redisson.create();
+    // }
+
     @Bean
-    public RedissonClient redissonClient() {
-        return Redisson.create();
+    public TestRedissonAutoConfigurationCustomizer redissonAutoConfigurationCustomizer(){
+        return new TestRedissonAutoConfigurationCustomizer();
     }
 
     @Bean
