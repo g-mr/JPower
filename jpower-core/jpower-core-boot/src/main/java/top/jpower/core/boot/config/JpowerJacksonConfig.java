@@ -99,7 +99,7 @@ public class JpowerJacksonConfig{
 
     @Bean
     @ConditionalOnMissingBean(MappingJackson2HttpMessageConverter.class)
-    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(@Autowired ObjectMapper objectMapper,@Autowired DateJacksonConverter dateJacksonConverter) {
+    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(@Autowired ObjectMapper objectMapper) {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
 
         // 忽略json字符串中不识别的属性
