@@ -12,6 +12,7 @@ import org.redisson.spring.starter.RedissonAutoConfigurationCustomizer;
 public class TestRedissonAutoConfigurationCustomizer implements RedissonAutoConfigurationCustomizer {
     @Override
     public void customize(Config configuration) {
+        // configuration.useSingleServer().setCommandMapper()
         configuration.setCodec(new StringCodec());
     }
 }

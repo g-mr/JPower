@@ -56,11 +56,18 @@ public class RedissonConfig {
         return new RedisService(redisTemplate);
     }
 
-    // @Bean
+    /**
+     * todo  1:使用AOP技术代理 CommandAsyncExecutor.async来控制入参的 键名的修改，达到自定义前缀的同事，满足删除的关联性
+     * todo  2:实现线程之间的传递性，可以考虑在做redis操作之前，加一个前置操作，当执行了前置操作以后，redis的操作不需要添加前缀
+     * todo  3:RedissonClient的操作不区分超级用户，删除也只能删除自己租户的；RedisTemplate操作做区分
+     **/
+     // @Bean
     // public RedissonClient redissonClient() {
     //     RedissonClient redissonClient = Redisson.create();
-    //     redissonClient.pre
-    //     return Redisson.create();
+    //     // redissonClient.pre
+    //     // redissonClient.commandExecutor
+    //     redissonClient.getConfig().getConnectionListener()
+    //     return redissonClient;
     // }
 
     @Bean

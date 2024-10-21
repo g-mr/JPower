@@ -95,9 +95,11 @@ public class AuthController extends BaseController {
     public ResponseData test(@PathVariable("pat") String pat, @PathVariable("msg") String msg){
         // redisService.queueOps().publish(pat, msg);
         redissonClient.<String>getBucket("gdz").set("dsjfo");
-        // String text = redissonClient.<String>getBucket("gdz").get();
+        String text = redissonClient.<String>getBucket("gdz").get();
         // redisService.valueOps().set("gdz", "5654645");
-        // System.out.println(redisService.valueOps(String.class).get("gdz"));
+        System.out.println(redisService.valueOps(String.class).get("gdz"));
+
+        redissonClient.getKeys().delete()
 
 
         // redisService.valueOps().set("gdz", "测试");
