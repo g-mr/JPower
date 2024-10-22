@@ -13,10 +13,12 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import top.jpower.core.redis.aop.RedisKeyAspect;
 import top.jpower.core.redis.properties.RedisProperties;
 import top.jpower.core.redis.service.RedisService;
 
@@ -30,7 +32,13 @@ import top.jpower.core.redis.service.RedisService;
 @EnableConfigurationProperties(RedisProperties.class)
 @AutoConfigureBefore({RedisAutoConfiguration.class, RedissonAutoConfiguration.class})
 @RequiredArgsConstructor
+@EnableAspectJAutoProxy
 public class RedissonConfig {
+
+    @Bean
+    public RedisKeyAspect redisKeyAspect() {
+        return new RedisKeyAspect();
+    }
 
     @Bean
     @ConditionalOnMissingBean(name = "redisTemplate")

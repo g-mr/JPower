@@ -8,6 +8,7 @@ import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.redisson.api.RedissonClient;
+import org.slf4j.MDC;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.common.constants.CacheNames;
@@ -94,12 +95,19 @@ public class AuthController extends BaseController {
     // @CacheEvict(value = CacheNames.ROLE_KEY, allEntries = true)
     public ResponseData test(@PathVariable("pat") String pat, @PathVariable("msg") String msg){
         // redisService.queueOps().publish(pat, msg);
-        redissonClient.<String>getBucket("gdz").set("dsjfo");
-        String text = redissonClient.<String>getBucket("gdz").get();
+        // redissonClient.<String>getBucket("gdz").set("dsjfo");
+        // String text = redissonClient.<String>getBucket("gdz").get();
         // redisService.valueOps().set("gdz", "5654645");
-        System.out.println(redisService.valueOps(String.class).get("gdz"));
+        // System.out.println(redisService.valueOps(String.class).get("gdz"));
 
-        redissonClient.getKeys().delete()
+
+        // todo redisService采用之前的方案（RedisConnion）; redissonClient采用NameMapper的方式，不区分删除，全部加前缀
+
+        MDC.put("test", "xxxxxxxx");
+        System.out.println(redissonClient.getBuckets().get("gdz"));
+        // redissonClient.getBucket("gdz").set("dfasfdsad");
+        // redissonClient.getKeys().delete("test");
+        // redisService.delete("test");
 
 
         // redisService.valueOps().set("gdz", "测试");
