@@ -101,7 +101,7 @@ public class AuthController extends BaseController {
         // System.out.println(redisService.valueOps(String.class).get("gdz"));
 
 
-        // todo redisService采用之前的方案（RedisConnion）; redissonClient采用NameMapper的方式，不区分删除，全部加前缀
+        // todo redisService采用之前的方案（RedisConnion）; redissonClient采用NameMapper的方式，不区分删除，全部加前缀,前置条件可去除
 
         MDC.put("test", "xxxxxxxx");
         System.out.println(redissonClient.getBuckets().get("gdz"));
