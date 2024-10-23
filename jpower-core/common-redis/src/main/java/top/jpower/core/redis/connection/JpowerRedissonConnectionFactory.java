@@ -1,12 +1,12 @@
 package top.jpower.core.redis.connection;
 
 import lombok.AllArgsConstructor;
+import org.redisson.spring.data.connection.RedissonConnectionFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisClusterConnection;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisSentinelConnection;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import top.jpower.core.redis.config.RedisPrefixHandler;
 import top.jpower.core.redis.properties.RedisProperties;
@@ -17,16 +17,15 @@ import top.jpower.core.redis.properties.RedisProperties;
  * @description
  */
 @AllArgsConstructor
-public class JpowerJedisConnectionFactory extends JedisConnectionFactory {
+public class JpowerRedissonConnectionFactory extends RedissonConnectionFactory {
     private RedisConnectionFactory connectionFactory;
     private RedisProperties redisProperties;
     private RedisPrefixHandler redisPrefixHandler;
     private RedisSerializer<String> serializer;
 
-    public JpowerJedisConnectionFactory(RedisConnectionFactory connectionFactory, RedisProperties redisProperties, RedisPrefixHandler redisPrefixHandler){
+    public JpowerRedissonConnectionFactory(RedisConnectionFactory connectionFactory, RedisProperties redisProperties, RedisPrefixHandler redisPrefixHandler){
         this(connectionFactory, redisProperties, redisPrefixHandler, RedisSerializer.string());
     }
-
     @Override
     public RedisConnection getConnection() {
         return new JpowerRedisConnection(connectionFactory.getConnection(), redisProperties, redisPrefixHandler, serializer);
@@ -42,6 +41,7 @@ public class JpowerJedisConnectionFactory extends JedisConnectionFactory {
      */
     @Override
     public RedisClusterConnection getClusterConnection() {
+        // return new JpowerRedisConnection(connectionFactory.getClusterConnection(), redisProperties, redisPrefixHandler, serializer);
         return connectionFactory.getClusterConnection();
     }
 
@@ -68,6 +68,7 @@ public class JpowerJedisConnectionFactory extends JedisConnectionFactory {
      */
     @Override
     public RedisSentinelConnection getSentinelConnection() {
+        // return new JpowerRedisConnection(connectionFactory.getSentinelConnection(), redisProperties, redisPrefixHandler, serializer);
         return connectionFactory.getSentinelConnection();
     }
 
@@ -75,5 +76,4 @@ public class JpowerJedisConnectionFactory extends JedisConnectionFactory {
     public DataAccessException translateExceptionIfPossible(RuntimeException ex) {
         return connectionFactory.translateExceptionIfPossible(ex);
     }
-
 }
