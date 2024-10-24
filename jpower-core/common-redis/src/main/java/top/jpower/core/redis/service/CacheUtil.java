@@ -73,6 +73,9 @@ public class CacheUtil {
      * @Date 11:32 2020-09-01
      **/
     public static void clear(String cacheName) {
+
+        // todo 这里要判断是否删除素有前缀相关得，利用MDC实现
+
         if (Fc.isNotBlank(cacheName)) {
             Cm.getInstance().getCache(cacheName).clear();
         }

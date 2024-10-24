@@ -1,8 +1,7 @@
 package top.jpower.core.redis.config;
 
 import lombok.RequiredArgsConstructor;
-import org.redisson.api.RedissonClient;
-import org.redisson.spring.cache.RedissonSpringCacheManager;
+import org.redisson.Redisson;
 import org.redisson.spring.starter.RedissonAutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -18,6 +17,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import top.jpower.core.redis.connection.JpowerRedissonCacheManager;
 import top.jpower.core.redis.properties.RedisProperties;
 import top.jpower.core.redis.service.RedisService;
 
@@ -79,8 +79,8 @@ public class RedissonConfig {
 
     @Bean
     @ConditionalOnMissingBean
-    public CacheManager cacheManager(RedissonClient redissonClient) {
-        return new RedissonSpringCacheManager(redissonClient);
+    public CacheManager cacheManager(Redisson redissonClient) {
+        return new JpowerRedissonCacheManager(redissonClient);
     }
 
 }

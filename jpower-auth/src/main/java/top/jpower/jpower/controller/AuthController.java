@@ -7,9 +7,7 @@ import com.wf.captcha.SpecCaptcha;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.redisson.RedissonObject;
 import org.redisson.api.RedissonClient;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.common.constants.CacheNames;
@@ -19,6 +17,7 @@ import top.jpower.common.enums.UserTypeEnum;
 import top.jpower.core.boot.controller.BaseController;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
+import top.jpower.core.redis.service.CacheUtil;
 import top.jpower.core.redis.service.RedisService;
 import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.constants.StringPool;
@@ -92,7 +91,7 @@ public class AuthController extends BaseController {
 
     @GetMapping(value = "/test/{pat}/{msg}",produces="application/json")
     // @Cacheable(value = CacheNames.ROLE_KEY)
-    @CachePut(value = CacheNames.ROLE_KEY,key = "'dddd'")
+    // @CachePut(value = CacheNames.ROLE_KEY,key = "'dddd'")
     // @CacheEvict(value = CacheNames.ROLE_KEY, allEntries = true)
     public ResponseData test(@PathVariable("pat") String pat, @PathVariable("msg") String msg){
         // redisService.queueOps().publish(pat, msg);
@@ -102,7 +101,9 @@ public class AuthController extends BaseController {
         // System.out.println(redisService.valueOps(String.class).get("gdz"));
 
 
-        redissonClient.getKeys().deleteAsync()
+        CacheUtil.put("jpower", "user", "all", "哦i时间佛i额我发");
+
+        // redissonClient.getKeys().deleteAsync()
 
         // todo redisService采用之前的方案（RedisConnion）; redissonClient采用NameMapper的方式，不区分删除，全部加前缀,前置条件可去除
 
