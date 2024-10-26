@@ -1,16 +1,22 @@
 package top.jpower.core.redis.config;
 
+import org.redisson.api.RedissonClient;
 import org.redisson.spring.data.connection.RedissonConnectionFactory;
+import org.redisson.spring.starter.RedissonAutoConfiguration;
+import org.redisson.spring.starter.RedissonAutoConfigurationV2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import top.jpower.core.redis.connection.JpowerJedisConnectionFactory;
 import top.jpower.core.redis.connection.JpowerLettuceConnectionFactory;
+import top.jpower.core.redis.connection.JpowerRedissonConnectionFactory;
 import top.jpower.core.redis.connection.RedisConnectionFactoryManage;
 import top.jpower.core.redis.properties.RedisProperties;
 
@@ -20,8 +26,16 @@ import top.jpower.core.redis.properties.RedisProperties;
  * @author mr.g
  * @date 2024-9-10 22:12
  */
-@AutoConfiguration
+@AutoConfiguration(before = {RedisAutoConfiguration.class, RedissonAutoConfiguration.class, RedissonAutoConfigurationV2.class})
 public class RedisFactoryConfig {
+
+
+    @Bean
+    @ConditionalOnClass(RedissonConnectionFactory.class)
+    @ConditionalOnMissingBean(RedisConnectionFactory.class)
+    public RedissonConnectionFactory redissonConnectionFactory(RedissonClient redisson, RedisProperties redisProperties, @Autowired(required = false) RedisPrefixHandler redisPrefixHandler) {
+        return new JpowerRedissonConnectionFactory(redisson, redisProperties, redisPrefixHandler);
+    }
 
     /**
      * 获取LettuceConnectionFactory
@@ -34,8 +48,8 @@ public class RedisFactoryConfig {
     @ConditionalOnClass(RedissonConnectionFactory.class)
     @ConditionalOnBean(RedissonConnectionFactory.class)
     @ConditionalOnMissingBean
-    public RedisConnectionFactoryManage redisLettuce(RedissonConnectionFactory redisConnectionFactory, RedisProperties redisProperties, @Autowired(required = false) RedisPrefixHandler redisPrefixHandler) {
-        return new RedisConnectionFactoryManage(new JpowerLettuceConnectionFactory(redisConnectionFactory, redisProperties, redisPrefixHandler));
+    public RedisConnectionFactoryManage redisRedisson(RedissonConnectionFactory redisConnectionFactory) {
+        return new RedisConnectionFactoryManage(redisConnectionFactory);
     }
 
     /**

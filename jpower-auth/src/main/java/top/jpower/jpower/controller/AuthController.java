@@ -17,7 +17,6 @@ import top.jpower.common.enums.UserTypeEnum;
 import top.jpower.core.boot.controller.BaseController;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
-import top.jpower.core.redis.service.CacheUtil;
 import top.jpower.core.redis.service.RedisService;
 import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.constants.StringPool;
@@ -99,16 +98,16 @@ public class AuthController extends BaseController {
         // String text = redissonClient.<String>getBucket("gdz").get();
         // redisService.valueOps().set("gdz", "5654645");
         // System.out.println(redisService.valueOps(String.class).get("gdz"));
+        // redissonClient.getKeys().getKeys().forEach(System.out::println);
 
-
-        CacheUtil.put("jpower", "user", "all", "哦i时间佛i额我发");
+        // CacheUtil.put("jpower", "user", "all", "哦i时间佛i额我发");
 
         // redissonClient.getKeys().deleteAsync()
 
         // todo redisService采用之前的方案（RedisConnion）; redissonClient采用NameMapper的方式，不区分删除，全部加前缀,前置条件可去除
 
         // MDC.put("test", "xxxxxxxx");
-        // System.out.println(redissonClient.getBuckets().get("gdz"));
+        System.out.println(redissonClient.getMap(CacheNames.ROLE_KEY).get("dddd"));
         // redissonClient.getBucket("gdz").set("dfasfdsad");
         // redissonClient.getKeys().delete("test");
         // redisService.delete("test");

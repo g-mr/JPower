@@ -9,10 +9,16 @@ import org.redisson.spring.starter.RedissonAutoConfigurationCustomizer;
  * @date 2024-10-21 0:25
  * @description
  */
-public class TestRedissonAutoConfigurationCustomizer implements RedissonAutoConfigurationCustomizer {
+public class JpowerCustomizerRedissonConfig implements RedissonAutoConfigurationCustomizer {
     @Override
     public void customize(Config configuration) {
         // configuration.useSingleServer().setCommandMapper()
+
+
+        // configuration.isSingleConfig()
+
+        // configuration.na
+
         configuration.setCodec(new StringCodec());
     }
 }

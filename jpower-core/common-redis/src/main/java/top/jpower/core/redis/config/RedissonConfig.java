@@ -3,6 +3,7 @@ package top.jpower.core.redis.config;
 import lombok.RequiredArgsConstructor;
 import org.redisson.Redisson;
 import org.redisson.spring.starter.RedissonAutoConfiguration;
+import org.redisson.spring.starter.RedissonAutoConfigurationCustomizer;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -13,11 +14,11 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import top.jpower.core.redis.connection.JpowerRedissonCacheManager;
+import top.jpower.core.redis.connection.RedisConnectionFactoryManage;
 import top.jpower.core.redis.properties.RedisProperties;
 import top.jpower.core.redis.service.RedisService;
 
@@ -36,9 +37,9 @@ public class RedissonConfig {
 
     @Bean
     @ConditionalOnMissingBean(name = "redisTemplate")
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactoryManage redisConnectionFactory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(redisConnectionFactory);
+        template.setConnectionFactory(redisConnectionFactory.getFactory());
 
         // value 序列化
         Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
@@ -58,23 +59,10 @@ public class RedissonConfig {
         return new RedisService(redisTemplate);
     }
 
-    /**
-     * todo  1:使用AOP技术代理 CommandAsyncExecutor.async来控制入参的 键名的修改，达到自定义前缀的同事，满足删除的关联性
-     * todo  2:实现线程之间的传递性，可以考虑在做redis操作之前，加一个前置操作，当执行了前置操作以后，redis的操作不需要添加前缀
-     * todo  3:RedissonClient的操作不区分超级用户，删除也只能删除自己租户的；RedisTemplate操作做区分
-     **/
-     // @Bean
-    // public RedissonClient redissonClient() {
-    //     RedissonClient redissonClient = Redisson.create();
-    //     // redissonClient.pre
-    //     // redissonClient.commandExecutor
-    //     redissonClient.getConfig().getConnectionListener()
-    //     return redissonClient;
-    // }
-
     @Bean
-    public TestRedissonAutoConfigurationCustomizer redissonAutoConfigurationCustomizer(){
-        return new TestRedissonAutoConfigurationCustomizer();
+    @ConditionalOnMissingBean
+    public RedissonAutoConfigurationCustomizer redissonAutoConfigurationCustomizer(){
+        return new JpowerCustomizerRedissonConfig();
     }
 
     @Bean
