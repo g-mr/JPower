@@ -1,9 +1,12 @@
-package top.jpower.core.redis.connection;
+package top.jpower.core.redis.handler;
 
 import org.redisson.Redisson;
+import org.redisson.spring.cache.CacheConfig;
 import org.redisson.spring.cache.RedissonSpringCacheManager;
 import org.springframework.cache.Cache;
 import top.jpower.core.redis.utils.CachePrefix;
+
+import java.util.Map;
 
 /**
  * @author mr.g
@@ -12,10 +15,7 @@ import top.jpower.core.redis.utils.CachePrefix;
  */
 public class JpowerRedissonCacheManager extends RedissonSpringCacheManager {
 
-    // todo 这种写法需要试试clear()的时候是把多个租户全部清空了，还是只清空当前租户
-    // todo 还需要试试集群和哨兵模式是否有问题
-
-    Redisson rds;
+    private Redisson rds;
 
     /**
      * Creates CacheManager supplied by Redisson instance
@@ -27,10 +27,22 @@ public class JpowerRedissonCacheManager extends RedissonSpringCacheManager {
         this.rds = redisson;
     }
 
+    /**
+     * Creates CacheManager supplied by Redisson instance and
+     * Cache config mapped by Cache name
+     *
+     * @param redisson object
+     * @param config object
+     */
+    public JpowerRedissonCacheManager(Redisson redisson, Map<String, ? extends CacheConfig> config) {
+        super(redisson, config);
+        this.rds = redisson;
+    }
+
 
     @Override
     public Cache getCache(String name) {
-        // name = rds.getCommandExecutor().getServiceManager().getConfig().getNameMapper().map(name);
+        name = rds.getCommandExecutor().getServiceManager().getConfig().getNameMapper().map(name);
         CachePrefix.clear();
         return super.getCache(name);
     }

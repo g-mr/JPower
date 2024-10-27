@@ -21,12 +21,13 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.lang.Nullable;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.ObjectUtils;
-import top.jpower.core.redis.config.RedisPrefixHandler;
+import top.jpower.core.redis.handler.RedisPrefixHandler;
 import top.jpower.core.redis.properties.RedisProperties;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.StringUtil;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -58,7 +59,7 @@ public class JpowerRedisConnection implements RedisConnection {
         this(connection, redisProperties, redisPrefixHandler, RedisSerializer.string());
     }
 
-    public JpowerRedisConnection(RedisConnection connection, RedisProperties redisProperties, RedisPrefixHandler redisPrefixHandler, RedisSerializer<String> redisSerializer) {
+    public JpowerRedisConnection(RedisConnection connection, RedisProperties redisProperties, RedisPrefixHandler redisPrefixHandler, RedisSerializer redisSerializer) {
         this.delegate = connection;
         this.redisProperties = redisProperties;
         this.redisPrefixHandler = redisPrefixHandler;
@@ -493,6 +494,10 @@ public class JpowerRedisConnection implements RedisConnection {
     public byte[] get(byte[] key) {
         key = addPrefix(Boolean.FALSE, key)[0];
         return convertAndReturn(delegate.get(key), Converters.identityConverter());
+    }
+
+    public byte[] get(String key) {
+        return get(key.getBytes(StandardCharsets.UTF_8));
     }
 
     /*

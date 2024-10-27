@@ -8,6 +8,7 @@ import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.redisson.api.RedissonClient;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.common.constants.CacheNames;
@@ -67,6 +68,7 @@ import static top.jpower.jpower.module.tenant.TenantConstant.getExpireTime;
 public class AuthController extends BaseController {
 
     private RedisService redisService;
+    private StringRedisTemplate stringRedisTemplate;
     private JpowerTenantProperties tenantProperties;
     private TokenGranterBuilder granterBuilder;
     private UserClient userClient;
@@ -94,7 +96,23 @@ public class AuthController extends BaseController {
     // @CacheEvict(value = CacheNames.ROLE_KEY, allEntries = true)
     public ResponseData test(@PathVariable("pat") String pat, @PathVariable("msg") String msg){
         // redisService.queueOps().publish(pat, msg);
-        // redissonClient.<String>getBucket("gdz").set("dsjfo");
+
+        UserInfo userInfo = new UserInfo();
+
+        redissonClient.<UserInfo>getBucket("gdz01").set(userInfo);
+        UserInfo userInfos = redisService.valueOps(UserInfo.class).get("gdz01");
+
+        // redisService.valueOps(UserInfo.class).set("gdz01", userInfo);
+        // UserInfo userInfos = redissonClient.<UserInfo>getBucket("gdz01").get();
+        System.out.println(userInfos);
+
+        // redissonClient.getMap("gdz_map").put(userInfo, userInfo);
+        // System.out.println(redisService.hashOps().get("gdz_map", userInfo));
+
+        // redisService.hashOps().put("gdz_map", "rdddz", userInfo);
+        // System.out.println(redissonClient.getMap("gdz_map").get("rdddz"));
+
+
         // String text = redissonClient.<String>getBucket("gdz").get();
         // redisService.valueOps().set("gdz", "5654645");
         // System.out.println(redisService.valueOps(String.class).get("gdz"));
@@ -107,7 +125,7 @@ public class AuthController extends BaseController {
         // todo redisService采用之前的方案（RedisConnion）; redissonClient采用NameMapper的方式，不区分删除，全部加前缀,前置条件可去除
 
         // MDC.put("test", "xxxxxxxx");
-        System.out.println(redissonClient.getMap(CacheNames.ROLE_KEY).get("dddd"));
+        // System.out.println(redissonClient.getMap(CacheNames.ROLE_KEY).get("dddd"));
         // redissonClient.getBucket("gdz").set("dfasfdsad");
         // redissonClient.getKeys().delete("test");
         // redisService.delete("test");

@@ -1,10 +1,11 @@
 package top.jpower.core.redis.properties;
 
 import lombok.Data;
+import org.redisson.spring.cache.CacheConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import java.time.Duration;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,25 +20,19 @@ import java.util.Map;
 public class RedisProperties {
 
     /**
+     * 是否开启redis日志
+     **/
+    private Boolean log = Boolean.TRUE;
+
+    /**
      * 前缀配置
      **/
     private Prefix prefix = new Prefix();
 
     /**
-     * 是否开启redis日志
-     **/
-    private Boolean log = true;
-
-    /**
      * CacheManage的缓存策略
      */
-    private CacheManager cacheable = new CacheManager();
-
-    /**
-     * CacheManage针对某几个具体的key配置
-     */
-    private Map<String, CacheManager> cacheableKey;
-
+    private CacheManager cacheManager = new CacheManager();
 
     @Data
     public static class Prefix {
@@ -57,20 +52,13 @@ public class RedisProperties {
     public static class CacheManager {
 
         /**
-         * key 的过期时间
-         * 默认不过期
+         * 空值是否存储
          */
-        private Duration timeToLive = Duration.ZERO;
+        private Boolean allowNullValues = Boolean.TRUE;
 
         /**
-         * 是否允许缓存null值
+         * CacheManage针对某几个具体的key配置
          */
-        private boolean cacheNullVal = true;
-
-        /**
-         * key 的前缀
-         */
-        private String keyPrefix;
-
+        private Map<String, CacheConfig> keys = new HashMap<>();
     }
 }

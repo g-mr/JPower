@@ -1,4 +1,4 @@
-package top.jpower.core.redis.config;
+package top.jpower.core.redis.handler;
 
 /**
  * @author mr.g
