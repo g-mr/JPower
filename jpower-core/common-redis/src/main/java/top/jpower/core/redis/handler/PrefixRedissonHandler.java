@@ -20,7 +20,7 @@ public class PrefixRedissonHandler implements NameMapper {
 
     private final RedisProperties.Prefix prefixProperties;
     private final RedisPrefixHandler redisPrefixHandler;
-    private static final AntPathMatcher antPathMatcher = new AntPathMatcher();
+    private static final AntPathMatcher ANT_PATH_MATCHER = new AntPathMatcher();
 
     /**
      * 是否忽略前缀
@@ -32,15 +32,14 @@ public class PrefixRedissonHandler implements NameMapper {
     private boolean ignore(String key){
         return Fc.isNull(key) ||
                 CachePrefix.isClear() ||
-                !prefixProperties.getEnabled() ||
-                prefixProperties.getIgnore().stream().anyMatch(pattern -> antPathMatcher.match(pattern, key));
+                !prefixProperties.getEnabled();
     }
 
     @Override
     public String map(String name) {
 
         // 如果清除了缓存前缀 就不处理
-        if (ignore(name)){
+        if (ignore(name) || prefixProperties.getIgnore().stream().anyMatch(pattern -> ANT_PATH_MATCHER.match(pattern, name))){
             return name;
         }
 
@@ -55,16 +54,19 @@ public class PrefixRedissonHandler implements NameMapper {
             return name;
         }
 
+        String keyAfter = StringUtil.subAfter(name, StringPool.COLON, false);
+        if (prefixProperties.getIgnore().stream().anyMatch(pattern -> ANT_PATH_MATCHER.match(pattern, keyAfter))){
+            return name;
+        }
+        String keyBefore = StringUtil.subBefore(name, StringPool.COLON, false);
+        String prefix = redisPrefixHandler.getPrefix(keyAfter);
 
-        // todo 这里还要想想    通过第一个:分割之后，判断前缀和获取的前缀是否一致？后面怎么处理
-
-        String prefix = redisPrefixHandler.getPrefix(name);
-        if (StringUtil.startWith(name, prefix)){
-            String key = StringUtil.removePrefix(name, StringUtil.concat(prefix, StringPool.COLON));
-            if (prefixProperties.getIgnore().stream().anyMatch(pattern -> antPathMatcher.match(pattern, key))){
+        if (Fc.equalsValue(keyBefore, prefix)){
+            return keyAfter;
+        } else {
+            if (prefixProperties.getIgnore().stream().anyMatch(pattern -> ANT_PATH_MATCHER.match(pattern, name))){
                 return name;
             }
-            return key;
         }
 
         return null;
