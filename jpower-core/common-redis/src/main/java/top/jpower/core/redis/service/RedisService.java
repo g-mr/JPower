@@ -9,6 +9,7 @@ import org.springframework.data.redis.core.*;
 import top.jpower.core.redis.wrapper.*;
 import top.jpower.core.util.utils.ExceptionUtil;
 import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.SpringUtil;
 
 import java.util.Collection;
 import java.util.Date;
@@ -44,6 +45,10 @@ public class RedisService {
         this.redisTemplate = redisTemplate;
         queue = new QueueOperations<>(this.redisTemplate, Object.class);
         lock = new LockOperations(this.redisTemplate);
+    }
+
+    public static RedisService getInstance(){
+        return SpringUtil.getBean(RedisService.class);
     }
 
     /**

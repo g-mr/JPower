@@ -1,7 +1,5 @@
 package top.jpower.core.redis.config;
 
-import lombok.RequiredArgsConstructor;
-import org.redisson.Redisson;
 import org.redisson.spring.starter.RedissonAutoConfigurationCustomizer;
 import org.redisson.spring.starter.RedissonAutoConfigurationV2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,16 +9,13 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import top.jpower.core.redis.handler.JpowerCustomizerRedissonHandler;
-import top.jpower.core.redis.handler.JpowerRedissonCacheManager;
 import top.jpower.core.redis.handler.PrefixRedissonHandler;
 import top.jpower.core.redis.handler.RedisPrefixHandler;
 import top.jpower.core.redis.properties.RedisProperties;
@@ -38,8 +33,6 @@ import top.jpower.core.redis.service.RedisService;
 @AutoConfiguration
 @EnableConfigurationProperties(RedisProperties.class)
 @AutoConfigureBefore({RedisAutoConfiguration.class, RedissonAutoConfigurationV2.class})
-@RequiredArgsConstructor
-@EnableAspectJAutoProxy
 public class RedisConfig {
 
     @Bean
@@ -89,16 +82,6 @@ public class RedisConfig {
     @ConditionalOnBean(RedisTemplate.class)
     public RedisService redisService(RedisTemplate<String, Object> redisTemplate) {
         return new RedisService(redisTemplate);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public CacheManager cacheManager(Redisson redissonClient, RedisProperties redisProperties) {
-        JpowerRedissonCacheManager cacheManager = new JpowerRedissonCacheManager(redissonClient);
-        cacheManager.setAllowNullValues(redisProperties.getCacheManager().getAllowNullValues());
-        cacheManager.setConfig(redisProperties.getCacheManager().getKeys());
-        return cacheManager;
     }
 
 }
