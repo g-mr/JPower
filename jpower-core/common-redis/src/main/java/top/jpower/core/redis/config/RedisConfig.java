@@ -33,6 +33,7 @@ import top.jpower.core.redis.service.RedisService;
 @AutoConfiguration
 @EnableConfigurationProperties(RedisProperties.class)
 @AutoConfigureBefore({RedisAutoConfiguration.class, RedissonAutoConfigurationV2.class})
+//@ConditionalOnBean(RedisConnectionFactory.class)
 public class RedisConfig {
 
     @Bean
@@ -47,7 +48,6 @@ public class RedisConfig {
 
     @Bean
     @ConditionalOnMissingBean(name = "redisTemplate")
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory, RedisProperties redisProperties, @Autowired(required = false) RedisPrefixHandler redisPrefixHandler) {
         RedisTemplate<String, Object> template = new JpowerRedisTemplate(redisConnectionFactory, redisProperties, redisPrefixHandler);
 
@@ -65,7 +65,6 @@ public class RedisConfig {
 
     @Bean
     @ConditionalOnMissingBean(StringRedisTemplate.class)
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory redisConnectionFactory, RedisProperties redisProperties, @Autowired(required = false) RedisPrefixHandler redisPrefixHandler) {
         StringRedisTemplate template = new JpowerStringRedisTemplate(redisConnectionFactory, redisProperties, redisPrefixHandler);
         // key 序列化

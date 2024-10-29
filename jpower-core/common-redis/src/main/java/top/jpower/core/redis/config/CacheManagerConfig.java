@@ -47,8 +47,8 @@ public class CacheManagerConfig {
 
     @Bean
     @ConditionalOnBean(RedissonClient.class)
-    public JpowerRedissonCacheManager redissonCacheManager(RedissonClient redissonClient, RedisProperties redisProperties) {
-        JpowerRedissonCacheManager cacheManager = new JpowerRedissonCacheManager(redissonClient);
+    public JpowerRedissonCacheManager redissonCacheManager(RedissonClient redissonClient, RedisProperties redisProperties, @Autowired(required = false) RedisPrefixHandler redisPrefixHandler) {
+        JpowerRedissonCacheManager cacheManager = new JpowerRedissonCacheManager(redissonClient, redisProperties.getPrefix(), redisPrefixHandler);
         cacheManager.setAllowNullValues(redisProperties.getCacheManager().getAllowNullValues());
         cacheManager.setConfig(redisProperties.getCacheManager().getKeys());
         return cacheManager;

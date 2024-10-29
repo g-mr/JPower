@@ -9,7 +9,6 @@ import org.redisson.spring.cache.RedissonSpringCacheManager;
 import org.springframework.cache.Cache;
 import top.jpower.core.redis.properties.RedisProperties;
 import top.jpower.core.redis.utils.CachePrefix;
-import top.jpower.core.util.utils.SpringUtil;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,20 +23,30 @@ public class JpowerRedissonCacheManager extends RedissonSpringCacheManager {
     @Setter
     NameMapper nameMapper;
 
-    Map<String, CacheConfig> configMap = new ConcurrentHashMap<String, CacheConfig>();
+    Map<String, CacheConfig> configMap = new ConcurrentHashMap<>();
+
+    /**
+     * Creates CacheManager supplied by RedissonClient instance
+     *
+     * @param redisson object
+     */
+    public JpowerRedissonCacheManager(RedissonClient redisson, RedisProperties.Prefix prefix, RedisPrefixHandler redisPrefixHandler) {
+        super(redisson);
+        if (redisson instanceof Redisson) {
+            nameMapper = ((Redisson) redisson).getCommandExecutor().getServiceManager().getConfig().getNameMapper();
+        } else {
+            nameMapper = new PrefixRedissonHandler(prefix, redisPrefixHandler);
+        }
+    }
 
     /**
      * Creates CacheManager supplied by Redisson instance
      *
      * @param redisson object
      */
-    public JpowerRedissonCacheManager(RedissonClient redisson) {
+    public JpowerRedissonCacheManager(Redisson redisson) {
         super(redisson);
-        if (redisson instanceof Redisson) {
-            nameMapper = ((Redisson) redisson).getCommandExecutor().getServiceManager().getConfig().getNameMapper();
-        } else {
-            nameMapper = new PrefixRedissonHandler(SpringUtil.getBean(RedisProperties.class).getPrefix(), SpringUtil.getBean(RedisPrefixHandler.class));
-        }
+        nameMapper = redisson.getCommandExecutor().getServiceManager().getConfig().getNameMapper();
     }
 
     @SuppressWarnings("unchecked")
