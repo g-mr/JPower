@@ -1,9 +1,11 @@
 package top.jpower.core.redis.service;
 
+import org.redisson.api.NameMapper;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import top.jpower.core.redis.connection.JpowerRedisConnection;
+import top.jpower.core.redis.handler.PrefixRedissonHandler;
 import top.jpower.core.redis.handler.RedisPrefixHandler;
 import top.jpower.core.redis.properties.RedisProperties;
 import top.jpower.core.redis.serializer.JpowerStringSerializer;
@@ -15,8 +17,9 @@ import top.jpower.core.redis.serializer.JpowerStringSerializer;
  */
 public class JpowerRedisTemplate extends RedisTemplate<String, Object> {
 
-    private RedisProperties redisProperties;
-    private RedisPrefixHandler redisPrefixHandler;
+    private final RedisProperties redisProperties;
+    private final RedisPrefixHandler redisPrefixHandler;
+    private final NameMapper nameMapper;
 
     /**
      * Constructs a new <code>StringRedisTemplate</code> instance. {@link #setConnectionFactory(RedisConnectionFactory)}
@@ -27,6 +30,19 @@ public class JpowerRedisTemplate extends RedisTemplate<String, Object> {
         setHashKeySerializer(new JpowerStringSerializer());
         this.redisProperties = redisProperties;
         this.redisPrefixHandler = redisPrefixHandler;
+        nameMapper = new PrefixRedissonHandler(redisProperties.getPrefix(), redisPrefixHandler);
+    }
+
+    /**
+     * Constructs a new <code>StringRedisTemplate</code> instance. {@link #setConnectionFactory(RedisConnectionFactory)}
+     * and {@link #afterPropertiesSet()} still need to be called.
+     */
+    public JpowerRedisTemplate(RedisProperties redisProperties, RedisPrefixHandler redisPrefixHandler, NameMapper nameMapper) {
+        setKeySerializer(new JpowerStringSerializer());
+        setHashKeySerializer(new JpowerStringSerializer());
+        this.redisProperties = redisProperties;
+        this.redisPrefixHandler = redisPrefixHandler;
+        this.nameMapper = nameMapper;
     }
 
     /**
@@ -40,8 +56,19 @@ public class JpowerRedisTemplate extends RedisTemplate<String, Object> {
         afterPropertiesSet();
     }
 
+    /**
+     * Constructs a new <code>StringRedisTemplate</code> instance ready to be used.
+     *
+     * @param connectionFactory connection factory for creating new connections
+     */
+    public JpowerRedisTemplate(RedisConnectionFactory connectionFactory, RedisProperties redisProperties, RedisPrefixHandler redisPrefixHandler, NameMapper nameMapper) {
+        this(redisProperties, redisPrefixHandler, nameMapper);
+        setConnectionFactory(connectionFactory);
+        afterPropertiesSet();
+    }
+
     protected RedisConnection preProcessConnection(RedisConnection connection, boolean existingConnection) {
-        return new JpowerRedisConnection(connection, redisProperties, redisPrefixHandler, getKeySerializer());
+        return new JpowerRedisConnection(connection, redisProperties.getPrefix(), redisPrefixHandler, nameMapper, getKeySerializer());
     }
 
 }

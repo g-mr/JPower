@@ -31,7 +31,7 @@ public class Cm {
      * @return boolean 是否
      **/
     public boolean clearForAll(String cacheName) {
-        return Fc.notNull(redisPrefixHandler) && redisPrefixHandler.ignorePrefixForScan(cacheName);
+        return Fc.notNull(redisPrefixHandler) && redisPrefixHandler.deleteForAll(cacheName);
     }
 
     /**

@@ -25,6 +25,7 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import top.jpower.core.redis.connection.JpowerRedisConnection;
 import top.jpower.core.redis.handler.JpowerRedissonCacheManager;
+import top.jpower.core.redis.handler.PrefixRedissonHandler;
 import top.jpower.core.redis.handler.RedisPrefixHandler;
 import top.jpower.core.redis.properties.RedisProperties;
 import top.jpower.core.util.utils.MapUtil;
@@ -74,7 +75,7 @@ public class CacheManagerConfig {
                 .builder(new RedisConnectionFactory() {
                     @Override
                     public RedisConnection getConnection() {
-                        return new JpowerRedisConnection(redisConnectionFactory.getConnection(), redisProperties, redisPrefixHandler, RedisSerializer.string());
+                        return new JpowerRedisConnection(redisConnectionFactory.getConnection(), redisProperties.getPrefix(), redisPrefixHandler, new PrefixRedissonHandler(redisProperties.getPrefix(), redisPrefixHandler), RedisSerializer.string());
                     }
 
                     @Override

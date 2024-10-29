@@ -17,7 +17,7 @@ public interface RedisPrefixHandler {
     String getPrefix(String key);
 
     /**
-     * 删除KEY的时候是否忽略前缀
+     * 删除KEY的时候是否删除所有的前缀
      * <br/>
      * 删除缓存的时候是否要忽略前缀把所有的KEY都删调
      *
@@ -25,5 +25,5 @@ public interface RedisPrefixHandler {
      * @param key 缓存KEY
      * @return 是否忽略
      **/
-    boolean ignorePrefixForScan(String key);
+    boolean deleteForAll(String key);
 }
