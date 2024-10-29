@@ -1,14 +1,15 @@
 package top.jpower.core.redis.config;
 
-import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.spring.cache.CacheConfig;
+import org.redisson.spring.starter.RedissonAutoConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
@@ -38,15 +39,15 @@ import java.util.Optional;
  * @description
  */
 @AutoConfiguration
-@AutoConfigureBefore({RedisAutoConfiguration.class})
+@AutoConfigureBefore(CacheAutoConfiguration.class)
+@AutoConfigureAfter(RedissonAutoConfiguration.class)
 @EnableConfigurationProperties(RedisProperties.class)
+@ConditionalOnMissingBean(CacheManager.class)
 public class CacheManagerConfig {
 
     @Bean
-    // @ConditionalOnMissingBean
-    // @ConditionalOnClass(RedissonSpringCacheManager.class)
-    // @ConditionalOnBean(Redisson.class)
-    public CacheManager cacheManager(Redisson redissonClient, RedisProperties redisProperties) {
+    @ConditionalOnBean(RedissonClient.class)
+    public JpowerRedissonCacheManager redissonCacheManager(RedissonClient redissonClient, RedisProperties redisProperties) {
         JpowerRedissonCacheManager cacheManager = new JpowerRedissonCacheManager(redissonClient);
         cacheManager.setAllowNullValues(redisProperties.getCacheManager().getAllowNullValues());
         cacheManager.setConfig(redisProperties.getCacheManager().getKeys());
@@ -55,8 +56,8 @@ public class CacheManagerConfig {
 
     @Bean
     @ConditionalOnBean(RedisConnectionFactory.class)
-    @ConditionalOnMissingBean({CacheManager.class,RedissonClient.class})
-    public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory, RedisProperties redisProperties, @Autowired(required = false) RedisPrefixHandler redisPrefixHandler) {
+    @ConditionalOnMissingBean(RedissonClient.class)
+    public RedisCacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory, RedisProperties redisProperties, @Autowired(required = false) RedisPrefixHandler redisPrefixHandler) {
 
         RedisProperties.CacheManager cacheProperties = redisProperties.getCacheManager();
 

@@ -1,12 +1,18 @@
 package top.jpower.core.redis.handler;
 
+import lombok.Setter;
 import org.redisson.Redisson;
+import org.redisson.api.NameMapper;
+import org.redisson.api.RedissonClient;
 import org.redisson.spring.cache.CacheConfig;
 import org.redisson.spring.cache.RedissonSpringCacheManager;
 import org.springframework.cache.Cache;
+import top.jpower.core.redis.properties.RedisProperties;
 import top.jpower.core.redis.utils.CachePrefix;
+import top.jpower.core.util.utils.SpringUtil;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author mr.g
@@ -15,35 +21,42 @@ import java.util.Map;
  */
 public class JpowerRedissonCacheManager extends RedissonSpringCacheManager {
 
-    private Redisson rds;
+    @Setter
+    NameMapper nameMapper;
+
+    Map<String, CacheConfig> configMap = new ConcurrentHashMap<String, CacheConfig>();
 
     /**
      * Creates CacheManager supplied by Redisson instance
      *
      * @param redisson object
      */
-    public JpowerRedissonCacheManager(Redisson redisson) {
+    public JpowerRedissonCacheManager(RedissonClient redisson) {
         super(redisson);
-        this.rds = redisson;
+        if (redisson instanceof Redisson) {
+            nameMapper = ((Redisson) redisson).getCommandExecutor().getServiceManager().getConfig().getNameMapper();
+        } else {
+            nameMapper = new PrefixRedissonHandler(SpringUtil.getBean(RedisProperties.class).getPrefix(), SpringUtil.getBean(RedisPrefixHandler.class));
+        }
     }
 
-    /**
-     * Creates CacheManager supplied by Redisson instance and
-     * Cache config mapped by Cache name
-     *
-     * @param redisson object
-     * @param config object
-     */
-    public JpowerRedissonCacheManager(Redisson redisson, Map<String, ? extends CacheConfig> config) {
-        super(redisson, config);
-        this.rds = redisson;
+    @SuppressWarnings("unchecked")
+    @Override
+    public void setConfig(Map<String, ? extends CacheConfig> config) {
+        this.configMap = (Map<String, CacheConfig>) config;
     }
-
 
     @Override
     public Cache getCache(String name) {
-        name = rds.getCommandExecutor().getServiceManager().getConfig().getNameMapper().map(name);
+        String prefixName = nameMapper.map(name);
+
+        CacheConfig config = configMap.get(name);
+        if (config != null){
+            configMap.put(prefixName, config);
+            super.setConfig(configMap);
+        }
+
         CachePrefix.clear();
-        return super.getCache(name);
+        return super.getCache(prefixName);
     }
 }
