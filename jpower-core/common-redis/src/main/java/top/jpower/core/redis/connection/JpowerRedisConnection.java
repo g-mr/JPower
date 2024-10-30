@@ -82,6 +82,38 @@ public class JpowerRedisConnection implements RedisConnection {
         return keys;
     }
 
+    /**
+     * 扫描所有的KEY
+     *
+     * @author mr.g
+     * @param keys 键
+     * @return 键
+     **/
+    private byte[][] scanAllPrefixForKey(byte[]... keys){
+        if (Fc.isNull(redisPrefixHandler) || !prefixProperties.getEnabled()) {
+            return keys;
+        }
+
+        Set<byte[]> keyList = new HashSet<>();
+        for (byte[] key : keys) {
+            String name = serializer.deserialize(key);
+            if (StringUtil.isNotBlank(name)){
+                if (prefixProperties.getIgnore().stream().anyMatch(pattern -> ANT_PATH_MATCHER.match(pattern, name))){
+                    keyList.add(key);
+                } else {
+                    boolean isAll = redisPrefixHandler.deleteForAll(name);
+                    if (isAll) {
+                        Set<byte[]> set = convertAndReturn(delegate.keys(serializer.serialize(StringPool.ASTERISK+StringPool.COLON+name)), Converters.identityConverter());
+                        keyList.addAll(set);
+                    } else {
+                        keyList.add(serializer.serialize(nameMapper.map(name)));
+                    }
+                }
+            }
+        }
+        return keyList.toArray(new byte[0][]);
+    }
+
     /*
      * (non-Javadoc)
      * @see org.springframework.data.redis.connection.RedisStringCommands#append(byte[], byte[])
@@ -190,37 +222,6 @@ public class JpowerRedisConnection implements RedisConnection {
         return convertAndReturn(delegate.decrBy(this.addPrefix(key), value), Converters.identityConverter());
     }
 
-    /**
-     * 扫描所有的KEY
-     *
-     * @author mr.g
-     * @param keys 键
-     * @return 键
-     **/
-    private byte[][] scanAllPrefixForKey(byte[]... keys){
-        if (Fc.isNull(redisPrefixHandler) || !prefixProperties.getEnabled()) {
-            return keys;
-        }
-
-        Set<byte[]> keyList = new HashSet<>();
-        for (byte[] key : keys) {
-            String name = serializer.deserialize(key);
-            if (StringUtil.isNotBlank(name)){
-                if (prefixProperties.getIgnore().stream().anyMatch(pattern -> ANT_PATH_MATCHER.match(pattern, name))){
-                    keyList.add(key);
-                } else {
-                    boolean isAll = redisPrefixHandler.deleteForAll(name);
-                    if (isAll) {
-                        Set<byte[]> set = convertAndReturn(delegate.keys(serializer.serialize(StringPool.ASTERISK+StringPool.COLON+name)), Converters.identityConverter());
-                        keyList.addAll(set);
-                    } else {
-                        keyList.add(serializer.serialize(nameMapper.map(name)));
-                    }
-                }
-            }
-        }
-        return keyList.toArray(new byte[0][]);
-    }
 
     /*
      * (non-Javadoc)
