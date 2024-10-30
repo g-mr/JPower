@@ -1,6 +1,6 @@
 package top.jpower.core.redis.utils;
 
-import org.jboss.logging.MDC;
+import org.slf4j.MDC;
 import top.jpower.core.util.utils.Fc;
 
 /**
@@ -18,7 +18,7 @@ public class CachePrefix {
      * @author mr.g
      **/
     public static void clear(){
-        MDC.put(REMOVE_PREFIX, true);
+        MDC.put(REMOVE_PREFIX, "true");
     }
 
     /**
@@ -28,6 +28,15 @@ public class CachePrefix {
      **/
     public static boolean isClear(){
         return Fc.toBoolean(MDC.get(REMOVE_PREFIX), false);
+    }
+
+    /**
+     * 关闭清除缓前缀
+     *
+     * @author mr.g
+     **/
+    public static void close(){
+        MDC.remove(REMOVE_PREFIX);
     }
 
 }

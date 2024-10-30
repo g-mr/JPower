@@ -24,5 +24,6 @@ public class MySubcribe implements MessageListener {
         String deserialize = (String) serializer.deserialize(message.getBody());
         System.out.println("接收数据:"+deserialize);
         System.out.println("订阅频道:"+new String(message.getChannel()));
+        System.out.println(new String(bytes));
     }
 }

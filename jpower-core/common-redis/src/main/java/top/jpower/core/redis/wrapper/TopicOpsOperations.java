@@ -17,7 +17,7 @@ import java.util.function.BiConsumer;
  * @description
  */
 @RequiredArgsConstructor
-public class QueueOperations<T> {
+public class TopicOpsOperations<T> {
 
     private final RedisTemplate<String, Object> redisTemplate;
     private final Class<T> clz;
@@ -79,12 +79,6 @@ public class QueueOperations<T> {
                 connection.subscribe((message, channel)->{
                     listener.accept(redisTemplate.getStringSerializer().deserialize(message.getChannel()), Convert.convert(clz, redisTemplate.getValueSerializer().deserialize(message.getBody())));
                 }, rawMessage);
-
-                // todo 什么垃圾处理方式，必须把线程阻塞才能订阅到消息，换redisson
-                // while (true){
-                //
-                // }
-
                 return null;
             }, true);
         });

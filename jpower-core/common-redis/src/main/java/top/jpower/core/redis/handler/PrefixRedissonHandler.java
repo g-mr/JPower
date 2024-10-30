@@ -30,7 +30,8 @@ public class PrefixRedissonHandler implements NameMapper {
      * @return
      **/
     private boolean ignore(String key){
-        return Fc.isNull(redisPrefixHandler) || Fc.isNull(key) ||
+        return Fc.isNull(redisPrefixHandler) ||
+                Fc.isBlank(key) ||
                 CachePrefix.isClear() ||
                 !prefixProperties.getEnabled();
     }

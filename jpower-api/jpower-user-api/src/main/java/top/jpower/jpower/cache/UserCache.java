@@ -93,7 +93,7 @@ public class UserCache {
      * @return 用户信息
      **/
     public static UserVo getById(Long userId) {
-        return CacheUtil.get(CacheNames.USER_KEY,CacheNames.USER_DETAIL_KEY,userId,() -> {
+        return CacheUtil.get(CacheNames.USER_KEY,CacheNames.USER_DETAIL_KEY, userId,() -> {
             ResponseData<UserVo> responseData = userClient.get(userId);
             return responseData.getData();
         });

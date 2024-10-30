@@ -23,7 +23,7 @@ public class RedisSub {
     // RedisMessageListenerContainer redisContainer(RedisConnectionFactory redisConnectionFactoryManage, RedisTemplate<String, Object> redisTemplate) {
     //     final RedisMessageListenerContainer container = new RedisMessageListenerContainer();
     //     container.setConnectionFactory(redisConnectionFactoryManage);
-    //     container.addMessageListener(messageListener(redisTemplate), new ChannelTopic("msg"));
+    //     container.addMessageListener(messageListener(redisTemplate), new ChannelTopic("123456:msg"));
     //     return container;
     // }
 

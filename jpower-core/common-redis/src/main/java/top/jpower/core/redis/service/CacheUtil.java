@@ -43,7 +43,7 @@ public class CacheUtil {
         return CACHE_MANAGER.getCache(cacheName);
     }
 
-    public static <T> T get(String cacheName, String key, Class<T> clz) {
+    public static <T> T get(String cacheName, Object key, Class<T> clz) {
         if (Fc.hasEmpty(cacheName, key)){
             return null;
         }
@@ -54,7 +54,7 @@ public class CacheUtil {
         return cache.get(key, clz);
     }
 
-    public static <T> T get(String cacheName, String key, Callable<T> valueLoader) {
+    public static <T> T get(String cacheName, String keys, Object key, Callable<T> valueLoader) {
         if (Fc.hasEmpty(cacheName, key)) {
             return null;
         }
@@ -70,7 +70,7 @@ public class CacheUtil {
      * @Description //TODO 设置缓存
      * @Date 11:32 2020-09-01
      **/
-    public static void put(String cacheName, String key, Object value) {
+    public static void put(String cacheName, Object key, Object value) {
         if (!Fc.hasEmpty(cacheName, key)) {
             Cache cache = getCache(cacheName);
             if (cache != null){
@@ -84,7 +84,7 @@ public class CacheUtil {
      * @Description //TODO 删除一个缓存key
      * @Date 11:32 2020-09-01
      **/
-    public static void evict(String cacheName, String key) {
+    public static void remove(String cacheName, Object key) {
         if (!Fc.hasEmpty(cacheName, key)) {
             Cache cache = getCache(cacheName);
             if (cache != null){

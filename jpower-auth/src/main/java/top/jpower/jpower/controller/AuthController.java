@@ -84,27 +84,50 @@ public class AuthController extends BaseController {
     // @CacheEvict(value = CacheNames.ROLE_KEY, allEntries = true)
     public ResponseData test1(@PathVariable("pat") String pat){
 
-        redisService.queueOps(String.class).subscribe((channel, message)->{
-            System.out.println(channel+"----------"+message);
-        }, "msg","gdz");
+        // redisService.topicOps(String.class).subscribe((channel, message)->{
+        //     System.out.println(channel+"----------"+message);
+        // }, pat);
+
+        // redissonClient.getTopic(pat).addListener(String.class, (channel, message)->{
+        //     System.out.println(channel+"----------"+message);
+        // });
+
         return ReturnJsonUtil.data(true);
     }
 
     @GetMapping(value = "/test/{pat}/{msg}",produces="application/json")
     // @Cacheable(value = CacheNames.ROLE_KEY)
     // @CachePut(value = CacheNames.ROLE_KEY,key = "'dddd'")
-    // @CacheEvict(value = CacheNames.ROLE_KEY, allEntries = true)
-    public ResponseData test(@PathVariable("pat") String pat, @PathVariable("msg") String msg){
+    // @CacheEvict(value = CacheNames.ROLE_KEY)
+    public ResponseData test(@PathVariable("pat") String pat, @PathVariable("msg") String msg) {
+
+        // redisService.topicOps().publish(pat, msg);
+
+        // redissonClient.getTopic(pat).publish(msg);
+
+
+        // CacheUtil.put(CacheNames.ROLE_KEY, "gdz", "测试");
+
         // redisService.queueOps().publish(pat, msg);
 
         UserInfo userInfo = new UserInfo();
-
         redissonClient.<UserInfo>getBucket("gdz01").set(userInfo);
-        UserInfo userInfos = redisService.valueOps(UserInfo.class).get("gdz01");
+        redissonClient.<UserInfo>getBucket("01gdz01").set(userInfo);
 
-        // redisService.valueOps(UserInfo.class).set("gdz01", userInfo);
+        // for (String key : redissonClient.getKeys().getKeys()) {
+        //     System.out.println(key);
+        // }
+
+        // for (String key : redisService.keys("*")) {
+        //     System.out.println(key);
+        // }
+
+
+        // UserInfo userInfos = redisService.valueOps(UserInfo.class).get("gdz01");
+
+        // redisService.valueOps(UserInfo.class).delete("01gdz01");
         // UserInfo userInfos = redissonClient.<UserInfo>getBucket("gdz01").get();
-        System.out.println(userInfos);
+        // System.out.println(userInfos);
 
         // redissonClient.getMap("gdz_map").put(userInfo, userInfo);
         // System.out.println(redisService.hashOps().get("gdz_map", userInfo));

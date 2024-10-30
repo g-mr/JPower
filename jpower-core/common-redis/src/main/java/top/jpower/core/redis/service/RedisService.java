@@ -39,11 +39,11 @@ public class RedisService {
     /**
      * 分布式锁实现工具类
      **/
-    private final QueueOperations<Object> queue;
+    private final TopicOpsOperations<Object> queue;
 
     public RedisService(RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
-        queue = new QueueOperations<>(this.redisTemplate, Object.class);
+        queue = new TopicOpsOperations<>(this.redisTemplate, Object.class);
         lock = new LockOperations(this.redisTemplate);
     }
 
@@ -67,7 +67,7 @@ public class RedisService {
      * @author mr.g
      * @return top.jpower.core.redis.wrapper.QueueOperations<java.lang.Object>
      **/
-    public QueueOperations<Object> queueOps() {
+    public TopicOpsOperations<Object> topicOps() {
         return queue;
     }
 
@@ -78,8 +78,8 @@ public class RedisService {
      * @param clz 消息类型
      * @return top.jpower.core.redis.wrapper.QueueOperations<T>
      **/
-    public <T> QueueOperations<T> queueOps(Class<T> clz) {
-        return new QueueOperations<>(redisTemplate, clz);
+    public <T> TopicOpsOperations<T> topicOps(Class<T> clz) {
+        return new TopicOpsOperations<>(redisTemplate, clz);
     }
 
     /**

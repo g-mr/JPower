@@ -65,7 +65,11 @@ public class JpowerRedissonCacheManager extends RedissonSpringCacheManager {
             super.setConfig(configMap);
         }
 
-        CachePrefix.clear();
-        return super.getCache(prefixName);
+        try {
+            CachePrefix.clear();
+            return super.getCache(prefixName);
+        } finally {
+            CachePrefix.close();
+        }
     }
 }
