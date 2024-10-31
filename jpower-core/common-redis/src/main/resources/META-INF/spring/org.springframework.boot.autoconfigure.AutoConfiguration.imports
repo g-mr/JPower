@@ -1,2 +1,3 @@
 top.jpower.core.redis.config.CacheManagerConfig
 top.jpower.core.redis.config.RedisConfig
+top.jpower.core.redis.config.RedisTopicConfig
