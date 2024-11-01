@@ -9,4 +9,6 @@ public @interface RedisTopic {
 
     String[] value();
 
+    boolean isJsonSource() default false;
+
 }

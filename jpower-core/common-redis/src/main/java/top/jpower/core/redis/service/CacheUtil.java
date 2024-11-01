@@ -54,7 +54,7 @@ public class CacheUtil {
         return cache.get(key, clz);
     }
 
-    public static <T> T get(String cacheName, String keys, Object key, Callable<T> valueLoader) {
+    public static <T> T get(String cacheName, Object key, Callable<T> valueLoader) {
         if (Fc.hasEmpty(cacheName, key)) {
             return null;
         }

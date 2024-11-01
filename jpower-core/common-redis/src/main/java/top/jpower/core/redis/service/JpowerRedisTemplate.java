@@ -1,5 +1,6 @@
 package top.jpower.core.redis.service;
 
+import lombok.Getter;
 import org.redisson.api.NameMapper;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -15,6 +16,7 @@ import top.jpower.core.redis.serializer.JpowerStringSerializer;
  * @date 2024-10-27 23:04
  * @description
  */
+@Getter
 public class JpowerRedisTemplate extends RedisTemplate<String, Object> {
 
     private final RedisProperties redisProperties;

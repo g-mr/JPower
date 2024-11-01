@@ -7,8 +7,6 @@ import com.wf.captcha.SpecCaptcha;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.redisson.api.RedissonClient;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.common.constants.CacheNames;
@@ -68,109 +66,12 @@ import static top.jpower.jpower.module.tenant.TenantConstant.getExpireTime;
 public class AuthController extends BaseController {
 
     private RedisService redisService;
-    private StringRedisTemplate stringRedisTemplate;
     private JpowerTenantProperties tenantProperties;
     private TokenGranterBuilder granterBuilder;
     private UserClient userClient;
     private final SmsClient smsClient;
 
     private final String VALIDATE_SMS_CODE = "validate";
-
-    private RedissonClient redissonClient;
-
-    @GetMapping(value = "/test1/{pat}",produces="application/json")
-    // @Cacheable(value = CacheNames.ROLE_KEY)
-    // @CachePut(value = CacheNames.ROLE_KEY,key = "'dddd'")
-    // @CacheEvict(value = CacheNames.ROLE_KEY, allEntries = true)
-    public ResponseData test1(@PathVariable("pat") String pat){
-
-        // redisService.topicOps(String.class).subscribe((channel, message)->{
-        //     System.out.println(channel+"----------"+message);
-        // }, pat);
-
-        // redissonClient.getTopic(pat).addListener(String.class, (channel, message)->{
-        //     System.out.println(channel+"----------"+message);
-        // });
-
-        return ReturnJsonUtil.data(true);
-    }
-
-    @GetMapping(value = "/test/{pat}/{msg}",produces="application/json")
-    // @Cacheable(value = CacheNames.ROLE_KEY)
-    // @CachePut(value = CacheNames.ROLE_KEY,key = "'dddd'")
-    // @CacheEvict(value = CacheNames.ROLE_KEY)
-    public ResponseData test(@PathVariable("pat") String pat, @PathVariable("msg") String msg) {
-
-        // redisService.topicOps().publish(pat, msg);
-
-        // redissonClient.getTopic(pat).publish(msg);
-
-
-        // CacheUtil.put(CacheNames.ROLE_KEY, "gdz", "测试");
-
-        // redisService.queueOps().publish(pat, msg);
-
-        UserInfo userInfo = new UserInfo();
-        redissonClient.<UserInfo>getBucket("gdz01").set(userInfo);
-        redissonClient.<UserInfo>getBucket("01gdz01").set(userInfo);
-
-        // for (String key : redissonClient.getKeys().getKeys()) {
-        //     System.out.println(key);
-        // }
-
-        // for (String key : redisService.keys("*")) {
-        //     System.out.println(key);
-        // }
-
-
-        // UserInfo userInfos = redisService.valueOps(UserInfo.class).get("gdz01");
-
-        // redisService.valueOps(UserInfo.class).delete("01gdz01");
-        // UserInfo userInfos = redissonClient.<UserInfo>getBucket("gdz01").get();
-        // System.out.println(userInfos);
-
-        // redissonClient.getMap("gdz_map").put(userInfo, userInfo);
-        // System.out.println(redisService.hashOps().get("gdz_map", userInfo));
-
-        // redisService.hashOps().put("gdz_map", "rdddz", userInfo);
-        // System.out.println(redissonClient.getMap("gdz_map").get("rdddz"));
-
-
-        // String text = redissonClient.<String>getBucket("gdz").get();
-        // redisService.valueOps().set("gdz", "5654645");
-        // System.out.println(redisService.valueOps(String.class).get("gdz"));
-        // redissonClient.getKeys().getKeys().forEach(System.out::println);
-
-        // CacheUtil.put("jpower", "user", "all", "哦i时间佛i额我发");
-
-        // redissonClient.getKeys().deleteAsync()
-
-        // todo redisService采用之前的方案（RedisConnion）; redissonClient采用NameMapper的方式，不区分删除，全部加前缀,前置条件可去除
-
-        // MDC.put("test", "xxxxxxxx");
-        // System.out.println(redissonClient.getMap(CacheNames.ROLE_KEY).get("dddd"));
-        // redissonClient.getBucket("gdz").set("dfasfdsad");
-        // redissonClient.getKeys().delete("test");
-        // redisService.delete("test");
-
-
-        // redisService.valueOps().set("gdz", "测试");
-//        redisUtil.value().set("gdz1", 1);
-//        AuthInfo authInfo = new AuthInfo();
-//        authInfo.setAccessToken("撒赖科技");
-//        redisUtil.value().set("gdz2", authInfo);
-//
-//        String gdz = redisUtil.value(String.class).get("gdz");
-//        System.out.println("gdz=="+gdz);
-//
-//        Integer gdz1 = redisUtil.value(Integer.class).get("gdz1");
-//        System.out.println("gdz1=="+gdz1);
-//
-//        AuthInfo gdz2 = redisUtil.value(AuthInfo.class).get("gdz2");
-//        System.out.println("gdz2=="+redisService.valueOps(String.class).get("gdz"));
-
-        return ReturnJsonUtil.data(true);
-    }
 
 
     @ApiOperation(value = "用户登录",notes = "Authorization（客户端识别码）：由clientCode+\":\"+clientSecret组成字符串后用base64编码后获得值，再由Basic +base64编码后的值组成客户端识别码； <br/>" +

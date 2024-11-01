@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import static org.springframework.util.Assert.notEmpty;
@@ -18,7 +19,7 @@ public class RedisTopicScannerConfigurer implements InitializingBean, BeanNameAw
 
     private String beanName;
 
-    private Set<String> basePackages;
+    private Set<String> basePackages = new HashSet<>();
 
     @Override
     public void afterPropertiesSet() {

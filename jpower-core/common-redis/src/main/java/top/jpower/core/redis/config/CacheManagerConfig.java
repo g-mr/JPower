@@ -13,19 +13,14 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
-import org.springframework.data.redis.connection.RedisClusterConnection;
-import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.RedisSentinelConnection;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
-import top.jpower.core.redis.connection.JpowerRedisConnection;
+import top.jpower.core.redis.connection.RedisConnectionFactoryBroker;
 import top.jpower.core.redis.handler.JpowerRedissonCacheManager;
-import top.jpower.core.redis.handler.PrefixRedissonHandler;
 import top.jpower.core.redis.handler.RedisPrefixHandler;
 import top.jpower.core.redis.properties.RedisProperties;
 import top.jpower.core.util.utils.MapUtil;
@@ -72,32 +67,7 @@ public class CacheManagerConfig {
         );
 
         return RedisCacheManager
-                .builder(new RedisConnectionFactory() {
-                    @Override
-                    public RedisConnection getConnection() {
-                        return new JpowerRedisConnection(redisConnectionFactory.getConnection(), redisProperties.getPrefix(), redisPrefixHandler, new PrefixRedissonHandler(redisProperties.getPrefix(), redisPrefixHandler), RedisSerializer.string());
-                    }
-
-                    @Override
-                    public RedisClusterConnection getClusterConnection() {
-                        return redisConnectionFactory.getClusterConnection();
-                    }
-
-                    @Override
-                    public boolean getConvertPipelineAndTxResults() {
-                        return redisConnectionFactory.getConvertPipelineAndTxResults();
-                    }
-
-                    @Override
-                    public RedisSentinelConnection getSentinelConnection() {
-                        return redisConnectionFactory.getSentinelConnection();
-                    }
-
-                    @Override
-                    public DataAccessException translateExceptionIfPossible(RuntimeException ex) {
-                        return redisConnectionFactory.translateExceptionIfPossible(ex);
-                    }
-                })
+                .builder(new RedisConnectionFactoryBroker(redisConnectionFactory, redisProperties, redisPrefixHandler))
                 .cacheDefaults(handleRedisCacheConfiguration(0, cacheProperties.getAllowNullValues(), RedisCacheConfiguration.defaultCacheConfig()))
                 .withInitialCacheConfigurations(map)
                 .build();
