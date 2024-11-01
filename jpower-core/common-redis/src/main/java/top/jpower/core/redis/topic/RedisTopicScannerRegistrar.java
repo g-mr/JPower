@@ -42,6 +42,7 @@ public class RedisTopicScannerRegistrar implements ImportBeanDefinitionRegistrar
 
             if (registry.isBeanNameInUse(name)){
                 BeanDefinition beanDefinition = registry.getBeanDefinition(name);
+                //noinspection unchecked,DataFlowIssue
                 ((Set<String>) beanDefinition.getPropertyValues().getPropertyValue("basePackages").getValue()).addAll(basePackages);
             } else {
                 BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(RedisTopicScannerConfigurer.class);

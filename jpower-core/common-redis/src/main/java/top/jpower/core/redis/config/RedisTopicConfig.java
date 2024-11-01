@@ -11,7 +11,7 @@ import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import top.jpower.core.redis.topic.RedisTopicScannerConfigurer;
-import top.jpower.core.util.utils.ClassUtil;
+import top.jpower.core.util.utils.SpringUtil;
 
 /**
  * @author mr.g
@@ -34,13 +34,17 @@ public class RedisTopicConfig {
     public RedisMessageListenerContainer redisContainer(@Autowired(required = false) RedisTopicScannerConfigurer scannerConfigurer, RedisConnectionFactory redisConnectionFactoryManage, RedisTemplate<String, Object> redisTemplate) {
 
         if (scannerConfigurer == null){
-            ClassUtil.getMainClass();
+            SpringUtil.getMainClass();
+
+
         }
+//        Class<?> clz = SpringUtil.getApplicationContext().getBean(SpringApplication.class).getMainApplicationClass();
 
 
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactoryManage);
         container.addMessageListener(new MessageListenerAdapter(), new ChannelTopic("123456:msg"));
+
 
 
 

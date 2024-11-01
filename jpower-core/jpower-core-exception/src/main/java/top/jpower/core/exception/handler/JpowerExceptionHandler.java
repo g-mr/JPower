@@ -41,7 +41,7 @@ public class JpowerExceptionHandler {
     private static final String ROOT_PACKAGE;
 
     static {
-        ROOT_PACKAGE = ClassUtil.getPackage(ClassUtil.getMainClass());
+        ROOT_PACKAGE = ClassUtil.getPackage(SpringUtil.getMainClass());
     }
 
     /**
