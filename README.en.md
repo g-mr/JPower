@@ -129,7 +129,7 @@ JPower
 ├    ├── common-exception -- Anomaly Toolkit
 ├    ├── common-log -- Log Toolkit 
 ├    ├── common-nacos -- Nacos Toolkit
-├    ├── common-redis -- Cache Toolkit 
+├    ├── jpower-core-redis -- Cache Toolkit 
 ├    ├── common-feign -- The feign toolkit also integrates sentinel
 ├    ├── jpower-core-swagger -- Swagger Toolkit
 ├    ├── common-tool -- Basic Configuration Toolkit 

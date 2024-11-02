@@ -35,7 +35,7 @@ public class UserCache {
      * @return 用户信息
      **/
     public static TbCoreUser getUserByPhone(String telephone, String tenantCode) {
-        return CacheUtil.get(CacheNames.USER_KEY,CacheNames.USER_PHPNE_KEY,telephone,() -> {
+        return CacheUtil.get(CacheNames.USER_KEY,CacheNames.USER_PHPNE_KEY, telephone,() -> {
             ResponseData<TbCoreUser> responseData = userClient.queryUserByPhone(telephone,tenantCode);
             return responseData.getData();
         });

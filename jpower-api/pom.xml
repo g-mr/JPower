@@ -40,7 +40,7 @@
 
         <dependency>
             <groupId>top.jpower</groupId>
-            <artifactId>common-redis</artifactId>
+            <artifactId>jpower-core-redis</artifactId>
             <version>${com.jpower.version}</version>
             <optional>true</optional>
         </dependency>

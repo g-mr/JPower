@@ -336,14 +336,7 @@ public class UserController extends BaseController {
         JpowerAssert.notEmpty(ids, JpowerError.Arg, "用户ids不可为空");
 
         if (coreUserService.updateUserPassword(Fc.toLongList(ids), pass)) {
-
-            if (ShieldUtil.isRoot()){
-                List<String> codes = coreUserService.listObjs(Condition.<TbCoreUser>getQueryWrapper().lambda().select(TbCoreUser::getTenantCode).in(TbCoreUser::getId,Fc.toLongList(ids)),Fc::toStr);
-                CacheUtil.clear(CacheNames.USER_KEY, ArrayUtil.toArray(new HashSet<>(codes),String.class));
-            } else {
-                CacheUtil.clear(CacheNames.USER_KEY);
-            }
-
+            CacheUtil.clear(CacheNames.USER_KEY);
             return ReturnJsonUtil.ok(Fc.toLongArray(ids).length + "位用户密码重置成功");
         } else {
             return ReturnJsonUtil.fail("重置失败");

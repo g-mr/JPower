@@ -43,7 +43,30 @@ public class CacheUtil {
         return CACHE_MANAGER.getCache(cacheName);
     }
 
-    public static <T> T get(String cacheName, Object key, Class<T> clz) {
+    /**
+     * 获取缓存
+     *
+     * @author mr.g
+     * @param cacheName 缓存名称
+     * @param keyPrefix KEY前缀
+     * @param key KEY
+     * @param clz 返回类型
+     * @return T
+     **/
+    public static <T> T get(String cacheName, String keyPrefix, Object key, Class<T> clz) {
+        return get(cacheName, keyPrefix.concat(Fc.toStr(key)), clz);
+    }
+
+    /**
+     * 获取缓存
+     *
+     * @author mr.g
+     * @param cacheName 缓存名称
+     * @param key KEY
+     * @param clz 返回类型
+     * @return T
+     **/
+    public static <T> T get(String cacheName, String key, Class<T> clz) {
         if (Fc.hasEmpty(cacheName, key)){
             return null;
         }
@@ -54,7 +77,30 @@ public class CacheUtil {
         return cache.get(key, clz);
     }
 
-    public static <T> T get(String cacheName, Object key, Callable<T> valueLoader) {
+    /**
+     * 获取缓存
+     *
+     * @author mr.g
+     * @param cacheName 缓存名称
+     * @param keyPrefix KEY前缀
+     * @param key KEY
+     * @param valueLoader 默认返回操作
+     * @return T
+     **/
+    public static <T> T get(String cacheName, String keyPrefix, Object key, Callable<T> valueLoader) {
+        return get(cacheName, keyPrefix.concat(Fc.toStr(key)), valueLoader);
+    }
+
+    /**
+     * 获取缓存
+     *
+     * @author mr.g
+     * @param cacheName 缓存名称
+     * @param key KEY
+     * @param valueLoader 默认返回操作
+     * @return T
+     **/
+    public static <T> T get(String cacheName, String key, Callable<T> valueLoader) {
         if (Fc.hasEmpty(cacheName, key)) {
             return null;
         }
@@ -66,9 +112,25 @@ public class CacheUtil {
     }
 
     /**
-     * @Author mr.g
-     * @Description //TODO 设置缓存
-     * @Date 11:32 2020-09-01
+     * 设置缓存
+     *
+     * @author mr.g
+     * @param cacheName 缓存名称
+     * @param keyPrefix 缓存前缀
+     * @param key KEY
+     * @param value 缓存值
+     **/
+    public static void put(String cacheName, String keyPrefix, Object key, Object value) {
+        put(cacheName, keyPrefix.concat(Fc.toStr(key)), value);
+    }
+
+    /**
+     * 设置缓存
+     *
+     * @author mr.g
+     * @param cacheName 缓存名称
+     * @param key KEY
+     * @param value 缓存值
      **/
     public static void put(String cacheName, Object key, Object value) {
         if (!Fc.hasEmpty(cacheName, key)) {
@@ -80,11 +142,13 @@ public class CacheUtil {
     }
 
     /**
-     * @Author mr.g
-     * @Description //TODO 删除一个缓存key
-     * @Date 11:32 2020-09-01
+     * 删除一个缓存key
+     *
+     * @author mr.g
+     * @param cacheName 缓存名称
+     * @param key KEY
      **/
-    public static void remove(String cacheName, Object key) {
+    public static void remove(String cacheName, String key) {
         if (!Fc.hasEmpty(cacheName, key)) {
             Cache cache = getCache(cacheName);
             if (cache != null){
@@ -94,9 +158,10 @@ public class CacheUtil {
     }
 
     /**
-     * @Author mr.g
-     * @Description //TODO 清空缓存
-     * @Date 11:32 2020-09-01
+     * 清空缓存
+     *
+     * @author mr.g
+     * @param cacheName 缓存名称
      **/
     public static void clear(String cacheName) {
         if (Fc.isNotBlank(cacheName)) {
