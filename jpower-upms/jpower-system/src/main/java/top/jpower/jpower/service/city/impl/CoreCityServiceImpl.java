@@ -17,7 +17,6 @@ import top.jpower.jpower.dbs.dao.city.mapper.TbCoreCityMapper;
 import top.jpower.jpower.dbs.entity.city.TbCoreCity;
 import top.jpower.common.constants.CacheNames;
 import top.jpower.core.redis.service.CacheUtil;
-import top.jpower.core.redis.service.Cm;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.module.service.impl.BaseServiceImpl;
 import top.jpower.jpower.service.city.CoreCityService;
@@ -67,14 +66,14 @@ public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper, TbCor
             if (coreCityDao.count(Condition.<TbCoreCity>getQueryWrapper().lambda().eq(TbCoreCity::getPcode,coreCity.getPcode())) <= 0){
                 TbCoreCity city = queryByCode(coreCity.getPcode());
                 if (Fc.notNull(city)){
-                    Fc.requireNotNull(Cm.getInstance().getCache(CacheNames.CITY_PARENT_REDIS_KEY, Boolean.FALSE),"缓存不存在").evict(city.getPcode());
+                    CacheUtil.remove(CacheNames.CITY_PARENT_REDIS_KEY, city.getPcode());
                 }
             }
         }catch (Exception e){
             log.warn("("+CacheNames.CITY_PARENT_REDIS_KEY+")缓存删除失败："+e.getMessage());
         }
 
-        CacheUtil.clear(CacheNames.CITY_KEY,Boolean.FALSE);
+        CacheUtil.clear(CacheNames.CITY_KEY);
         return coreCityDao.save(coreCity);
     }
 
@@ -93,7 +92,7 @@ public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper, TbCor
             JpowerAssert.geZero(count,JpowerError.Business,"请先删除子区域");
         }
 
-        CacheUtil.clear(CacheNames.CITY_KEY,Boolean.FALSE);
+        CacheUtil.clear(CacheNames.CITY_KEY);
         return coreCityDao.removeRealByIds(ids);
     }
 
@@ -120,7 +119,7 @@ public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper, TbCor
                     .eq(TbCoreCity::getPcode,city.getCode()));
         }
 
-        CacheUtil.clear(CacheNames.CITY_KEY,Boolean.FALSE);
+        CacheUtil.clear(CacheNames.CITY_KEY);
         return is;
     }
 

@@ -5,8 +5,6 @@ import top.jpower.common.constants.AppConstant;
 import top.jpower.core.deploy.JpowerApplication;
 import top.jpower.core.deploy.annotation.JpowerCloudApplication;
 import top.jpower.core.feign.annotation.EnableJpowerFeignClients;
-import top.jpower.core.redis.topic.RedisTopicScan;
-import top.jpower.jpower.test.MySubcribe;
 
 /**
  * @ClassName LoginStartApplication
@@ -18,7 +16,6 @@ import top.jpower.jpower.test.MySubcribe;
 @EnableTransactionManagement
 @JpowerCloudApplication
 @EnableJpowerFeignClients
-@RedisTopicScan(value = {"org.com","org.jpower"}, basePackageClasses = MySubcribe.class)
 public class AuthStartApplication {
     public static void main(String[] args) {
         JpowerApplication.run(AppConstant.JPOWER_AUTH,AuthStartApplication.class,args);

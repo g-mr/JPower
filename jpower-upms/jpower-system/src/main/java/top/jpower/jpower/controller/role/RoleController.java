@@ -93,7 +93,7 @@ public class RoleController extends BaseController {
         }
         coreRole.setAncestorId(ancestorId);
 
-        CacheUtil.clear(CacheNames.ROLE_KEY,coreRole.getTenantCode());
+        CacheUtil.clear(CacheNames.ROLE_KEY);
         return ReturnJsonUtil.status(coreRoleService.add(coreRole),coreRole.getId());
     }
 
@@ -106,11 +106,10 @@ public class RoleController extends BaseController {
 
         JpowerAssert.notEmpty(ids, JpowerError.Arg,"ids不可为空");
 
-        List<String> tenants = coreRoleService.listObjs(Condition.<TbCoreRole>getQueryWrapper().lambda().select(TbCoreRole::getTenantCode).in(TbCoreRole::getId,Fc.toStrList(ids)),Fc::toStr);
         long c = coreRoleService.listByPids(Fc.toLongList(ids));
         JpowerAssert.geZero(c, JpowerError.Business, "该角色存在下级角色，请先删除下级角色");
 
-        CacheUtil.clear(CacheNames.ROLE_KEY,tenants.toArray(new String[tenants.size()]));
+        CacheUtil.clear(CacheNames.ROLE_KEY);
         CacheUtil.clear(CacheNames.FUNCTION_KEY);
         CacheUtil.clear(CacheNames.DATASCOPE_KEY);
         CacheUtil.clear(CacheNames.USER_KEY);
@@ -137,7 +136,7 @@ public class RoleController extends BaseController {
             coreRole.setAncestorId(ancestorId);
         }
 
-        CacheUtil.clear(CacheNames.ROLE_KEY,coreRole.getTenantCode());
+        CacheUtil.clear(CacheNames.ROLE_KEY);
         return ReturnJsonUtil.status(coreRoleService.updateById(coreRole));
     }
 

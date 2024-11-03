@@ -20,6 +20,7 @@ import top.jpower.common.enums.UserTypeEnum;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.BusinessException;
 import top.jpower.core.exception.throwable.JpowerAssert;
+import top.jpower.core.redis.service.RedisService;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.utils.DigestUtil;
 import top.jpower.core.util.utils.Fc;
@@ -35,7 +36,6 @@ import top.jpower.jpower.dbs.entity.TbCoreUser;
 import top.jpower.jpower.dbs.entity.TbCoreUserRole;
 import top.jpower.jpower.dbs.entity.tenant.TbCoreTenant;
 import top.jpower.jpower.module.common.auth.RoleConstant;
-import top.jpower.core.redis.service.RedisUtil;
 import top.jpower.jpower.module.common.utils.ShieldUtil;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.module.page.PaginationContext;
@@ -64,14 +64,14 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCor
 
     private TbCoreUserDao coreUserDao;
     private TbCoreUserRoleDao coreUserRoleDao;
-    private RedisUtil redisUtil;
+    private RedisService redisService;
 
     @Override
     public PageInfo<UserVo> listPage(TbCoreUser coreUser) {
         PaginationContext.startPage();
         List<UserVo> userVo = coreUserDao.listVo(coreUser);
         //查询用户在线信息
-        userVo.forEach(user-> user.setOnLine(redisUtil.pattern(TOKEN_USER_KEY+user.getId() + StringPool.COLON).size()));
+        userVo.forEach(user-> user.setOnLine(redisService.keys(TOKEN_USER_KEY+user.getId() + StringPool.COLON + StringPool.ASTERISK).size()));
         return new PageInfo<>(userVo);
     }
 

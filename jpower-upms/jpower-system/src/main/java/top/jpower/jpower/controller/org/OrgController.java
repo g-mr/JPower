@@ -6,9 +6,11 @@ import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
+import top.jpower.common.constants.CacheNames;
 import top.jpower.core.boot.controller.BaseController;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
+import top.jpower.core.redis.service.CacheUtil;
 import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.rsp.Pg;
 import top.jpower.core.util.rsp.ResponseData;
@@ -17,9 +19,6 @@ import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.dbs.entity.org.TbCoreOrg;
 import top.jpower.jpower.module.annotation.Function;
 import top.jpower.jpower.module.annotation.Menu;
-import top.jpower.common.constants.CacheNames;
-import top.jpower.core.redis.service.CacheUtil;
-import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.module.page.PaginationContext;
 import top.jpower.jpower.service.org.CoreOrgService;
 import top.jpower.jpower.vo.OrgVo;
@@ -67,7 +66,7 @@ public class OrgController extends BaseController {
         JpowerAssert.notEmpty(coreOrg.getCode(),JpowerError.Arg,"编码不可为空");
 
         if (coreOrgService.add(coreOrg)){
-            CacheUtil.clear(CacheNames.ORG_KEY, coreOrg.getTenantCode());
+            CacheUtil.clear(CacheNames.ORG_KEY);
             return ReturnJsonUtil.ok("新增成功",coreOrg.getId());
         }else {
             return ReturnJsonUtil.fail("新增失败");
@@ -86,9 +85,8 @@ public class OrgController extends BaseController {
         long c = coreOrgService.listOrgByPids(Fc.toLongList(ids));
         JpowerAssert.geZero(c, JpowerError.Business, "您选中的组织机构存在下级机构，请先删除下级机构");
 
-        List<String> tenants = coreOrgService.listObjs(Condition.<TbCoreOrg>getQueryWrapper().lambda().select(TbCoreOrg::getTenantCode).in(TbCoreOrg::getId,Fc.toLongList(ids)),Fc::toStr);
         if (coreOrgService.removeByIds(Fc.toLongList(ids))){
-            CacheUtil.clear(CacheNames.ORG_KEY, tenants.toArray(new String[tenants.size()]));
+            CacheUtil.clear(CacheNames.ORG_KEY);
             return ReturnJsonUtil.ok("删除成功");
         }else {
             return ReturnJsonUtil.fail("删除失败");
@@ -106,7 +104,7 @@ public class OrgController extends BaseController {
         Boolean is = coreOrgService.update(coreOrg);
 
         if (is){
-            CacheUtil.clear(CacheNames.ORG_KEY,coreOrg.getTenantCode());
+            CacheUtil.clear(CacheNames.ORG_KEY);
             return ReturnJsonUtil.ok("修改成功");
         }else {
             return ReturnJsonUtil.fail("修改失败");

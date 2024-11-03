@@ -9,7 +9,6 @@ import top.jpower.jpower.dbs.dao.role.TbCoreRoleFunctionDao;
 import top.jpower.jpower.dbs.dao.role.mapper.TbCoreRoleFunctionMapper;
 import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
 import top.jpower.jpower.dbs.entity.role.TbCoreRoleFunction;
-import top.jpower.core.redis.service.RedisUtil;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.module.service.impl.BaseServiceImpl;
 import top.jpower.jpower.service.role.CoreFunctionService;
@@ -23,12 +22,11 @@ import java.util.Map;
  * @author mr.gmac
  */
 @AllArgsConstructor
-@Service("coreRoleFunctionService")
+@Service
 public class CoreRoleFunctionServiceImpl extends BaseServiceImpl<TbCoreRoleFunctionMapper, TbCoreRoleFunction> implements CoreRoleFunctionService {
 
     public TbCoreRoleFunctionDao coreRoleFunctionDao;
     public CoreFunctionService coreFunctionService;
-    public RedisUtil redisUtil;
 
     @Override
     public List<Map<String,Object>> selectRoleFunctionByRoleId(Long roleId) {

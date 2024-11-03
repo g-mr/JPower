@@ -24,6 +24,7 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import top.jpower.core.redis.service.RedisService;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.constants.TokenConstant;
 import top.jpower.core.util.utils.ChainMap;
@@ -34,7 +35,6 @@ import top.jpower.jpower.gateway.utils.ExculdesUrl;
 import top.jpower.jpower.gateway.utils.IpUtil;
 import top.jpower.jpower.gateway.utils.TokenUtil;
 import top.jpower.common.constants.CacheNames;
-import top.jpower.core.redis.service.RedisUtil;
 import top.jpower.jpower.module.common.utils.JwtUtil;
 import top.jpower.jpower.module.properties.AuthProperties;
 
@@ -62,7 +62,7 @@ import static top.jpower.jpower.module.common.auth.RoleConstant.ROOT_ID;
 @EnableConfigurationProperties({AuthProperties.class})
 public class AuthFilter implements GlobalFilter, Ordered {
 
-    private final RedisUtil redisUtil;
+    private final RedisService redisService;
     private final RoleService roleClient;
     private final ObjectMapper objectMapper;
     private final AuthProperties authProperties;
@@ -85,7 +85,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
         if (Fc.isNotBlank(token)) {
 
             Claims claims = JwtUtil.parseJwt(token);
-            if (!redisUtil.exists(CacheNames.TOKEN_URL_KEY + token)){
+            if (!redisService.exist(CacheNames.TOKEN_URL_KEY + token)){
                 return proxyAuthenticationRequired(exchange.getResponse(), "令牌已过期，请重新登录");
             }
 
@@ -93,7 +93,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
                 return unAuth(exchange.getResponse(), "请求未授权");
             }
 
-            Object dataAuth = redisUtil.get(CacheNames.TOKEN_DATA_SCOPE_KEY + token);
+            Object dataAuth = redisService.valueOps().get(CacheNames.TOKEN_DATA_SCOPE_KEY + token);
             Map<String,List> map = Fc.isNull(dataAuth) ? ChainMap.<String,List>create().build() : (Map<String, List>) dataAuth;
             return chain.filter(addHeader(exchange, StringPool.EMPTY, JSON.toJSONString(map.getOrDefault(exchange.getRequest().getHeaders().getFirst(HEADER_MENU),ListUtil.empty()))));
         }else {
@@ -125,7 +125,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
             return true;
         }
 
-        Object o = redisUtil.get(CacheNames.TOKEN_URL_KEY + token);
+        Object o = redisService.valueOps().get(CacheNames.TOKEN_URL_KEY + token);
         List<String> listUrl = Fc.isNull(o)? ListUtil.empty() :(List<String>) o;
         return listUrl.stream().anyMatch(pattern -> antPathMatcher.match(pattern, currentPath));
     }

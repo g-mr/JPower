@@ -1,7 +1,6 @@
 package top.jpower.jpower.controller;
 
 import cn.hutool.core.lang.Validator;
-import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.NumberUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.PageInfo;
@@ -12,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
+import top.jpower.common.constants.CacheNames;
 import top.jpower.common.constants.DefaultValConstants;
 import top.jpower.common.constants.ParamsConstants;
 import top.jpower.common.enums.IdTypeEnum;
@@ -22,6 +22,8 @@ import top.jpower.core.exception.annotation.OperateLog;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.BusinessException;
 import top.jpower.core.exception.throwable.JpowerAssert;
+import top.jpower.core.redis.service.CacheUtil;
+import top.jpower.core.redis.service.RedisService;
 import top.jpower.core.util.constants.ImportExportConstants;
 import top.jpower.core.util.constants.ReturnConstants;
 import top.jpower.core.util.constants.StringPool;
@@ -39,9 +41,6 @@ import top.jpower.jpower.feign.SmsClient;
 import top.jpower.jpower.module.annotation.Function;
 import top.jpower.jpower.module.annotation.Menu;
 import top.jpower.jpower.module.common.auth.UserInfo;
-import top.jpower.common.constants.CacheNames;
-import top.jpower.core.redis.service.RedisUtil;
-import top.jpower.core.redis.service.CacheUtil;
 import top.jpower.jpower.module.common.utils.ShieldUtil;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.module.tenant.JpowerTenantProperties;
@@ -53,10 +52,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import static top.jpower.common.constants.CacheNames.TOKEN_USER_KEY;
 import static top.jpower.core.exception.annotation.OperateLog.BusinessType.DELETE;
 import static top.jpower.core.exception.annotation.OperateLog.BusinessType.UPDATE;
 import static top.jpower.core.util.constants.JpowerConstants.VALIDATE_SMS_CODE;
-import static top.jpower.common.constants.CacheNames.TOKEN_USER_KEY;
 import static top.jpower.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
 import static top.jpower.jpower.module.tenant.TenantConstant.TENANT_ACCOUNT_NUMBER;
 import static top.jpower.jpower.module.tenant.TenantConstant.getAccountNumber;
@@ -70,7 +69,7 @@ public class UserController extends BaseController {
 
     private JpowerTenantProperties tenantProperties;
     private CoreUserService coreUserService;
-    private RedisUtil redisUtil;
+    private RedisService redisService;
     private SmsClient smsClient;
 
     @ApiOperation("查询当前登录用户信息")
@@ -89,10 +88,10 @@ public class UserController extends BaseController {
     public ResponseData<List<Map<String,String>>> online(Long userId) {
         JpowerAssert.notNull(userId,JpowerError.Arg,"用户ID不可为空");
 
-        Set<String> keys = redisUtil.pattern(TOKEN_USER_KEY+userId+ StringPool.COLON);
+        Set<String> keys = redisService.keys(TOKEN_USER_KEY + userId + StringPool.COLON + StringPool.ASTERISK);
         List<Map<String,Object>> list = new ArrayList<>();
         keys.forEach(key -> {
-            Map<String,Object> map = (Map<String, Object>) redisUtil.get(key);
+            Map<String,Object> map = redisService.valueOps(Map.class).get(key);
             map.put("token", StringUtil.split(key,StringPool.COLON).get(4));
             map.put("userId",userId);
             list.add(map);
@@ -110,9 +109,9 @@ public class UserController extends BaseController {
         JpowerAssert.notNull(userId,JpowerError.Arg,"用户ID不可为空");
         JpowerAssert.notEmpty(token,JpowerError.Arg,"TOKEN不可为空");
 
-        redisUtil.remove(CacheNames.TOKEN_URL_KEY+token);
-        redisUtil.remove(CacheNames.TOKEN_DATA_SCOPE_KEY+token);
-        redisUtil.remove(TOKEN_USER_KEY + userId + StringPool.COLON + token);
+        redisService.delete(CacheNames.TOKEN_URL_KEY+token);
+        redisService.delete(CacheNames.TOKEN_DATA_SCOPE_KEY+token);
+        redisService.delete(TOKEN_USER_KEY + userId + StringPool.COLON + token);
 
         return ReturnJsonUtil.ok("操作成功");
     }
@@ -448,7 +447,7 @@ public class UserController extends BaseController {
         UserInfo userInfo = ShieldUtil.getUser();
         JpowerAssert.notNull(userInfo, JpowerError.Business, "请登录");
         JpowerAssert.isTrue(Validator.isEmail(email), JpowerError.Business, "邮箱 不合法");
-        String code = Fc.toStr(redisUtil.get("email:"+email+":"+msgId));
+        String code = redisService.valueOps(String.class).get("email:"+email+":"+msgId);
         JpowerAssert.notTrue(Fc.notEqualsValue(code, emailCode), JpowerError.Business, "验证码错误");
 
         boolean is = coreUserService.exists(Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getEmail, email));

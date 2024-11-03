@@ -6,6 +6,7 @@ import top.jpower.core.deploy.property.JpowerProperties;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.core.exception.throwable.JpowerException;
+import top.jpower.core.redis.service.RedisService;
 import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.utils.ChainMap;
 import top.jpower.core.util.utils.Fc;
@@ -13,7 +14,6 @@ import top.jpower.core.util.utils.SpringUtil;
 import top.jpower.core.util.utils.StringUtil;
 import top.jpower.jpower.dto.SmsResponse;
 import top.jpower.common.constants.CacheNames;
-import top.jpower.core.redis.service.RedisUtil;
 
 import java.util.Collections;
 import java.util.List;
@@ -120,15 +120,14 @@ public interface SmsTemplate {
      **/
     default boolean sendValidate(String phone){
         JpowerAssert.isTrue(PhoneUtil.isMobile(phone), JpowerError.Unknown, "手机号不合法");
-        RedisUtil redisUtil = SpringUtil.getBean(RedisUtil.class);
-        if (redisUtil.getExpire(CacheNames.PHONE_KEY+phone, TimeUnit.MINUTES) >= 4){
+        if (RedisService.getInstance().getExpire(CacheNames.PHONE_KEY+phone, TimeUnit.MINUTES) >= 4){
             JpowerAssert.createException(JpowerError.Business, "该验证码已经发送，请一分钟后重试");
         }
 
         String code = RandomStringUtils.randomNumeric(6);
         boolean is = sendSingle(ChainMap.<String, String>create().put(getParameters().get(0), code).build(), phone);
         if (is){
-            redisUtil.set(CacheNames.PHONE_KEY+phone, code ,5L, TimeUnit.MINUTES);
+            RedisService.getInstance().valueOps(String.class).set(CacheNames.PHONE_KEY+phone, code ,5L, TimeUnit.MINUTES);
         }
         return is;
     }
@@ -142,10 +141,9 @@ public interface SmsTemplate {
      * @return 是否正确
      **/
     default boolean validate(String phone, String code){
-        RedisUtil redisUtil = SpringUtil.getBean(RedisUtil.class);
         JpowerProperties jpowerProperties = SpringUtil.getBean(JpowerProperties.class);
         // 获取验证码
-        String redisCode = String.valueOf(redisUtil.get(CacheNames.PHONE_KEY + phone));
+        String redisCode = RedisService.getInstance().valueOps(String.class).get(CacheNames.PHONE_KEY + phone);
         // 判断验证码;
         if (Fc.isBlank(code)){
             return Boolean.FALSE;
