@@ -17,20 +17,28 @@ public @interface GlobalLock {
 
     /**
      * 锁名称
+     * <br/>
+     * <per>
+     *     e.g: 支持EL表达式
+     * </per>
      **/
     @AliasFor("name")
     String value();
 
     /**
      * 锁名称
+     * <br/>
+     * <per>
+     *     e.g: 支持EL表达式
+     * </per>
      **/
     @AliasFor("value")
     String name();
 
     /**
-     * 是否公平锁，否则是重入锁
+     * 锁类型
      **/
-    boolean isFair() default true;
+    LockTypeEnum type() default LockTypeEnum.FAIR;
 
     /**
      * 获取锁的最大等待时间

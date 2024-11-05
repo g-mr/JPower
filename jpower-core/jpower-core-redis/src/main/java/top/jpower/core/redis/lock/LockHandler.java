@@ -11,9 +11,9 @@ public interface LockHandler {
     /**
      * lock具体实现
      * @author mr.g
-     * @param globalLock 锁参数
+     * @param lockDto 锁参数
      * @param supplier 锁的执行内容
      * @return
      **/
-    <V> V lock(GlobalLock globalLock, ThrowableSupplier<V> supplier);
+    <V> V lock(LockDto lockDto, ThrowableSupplier<V> supplier) throws Throwable;
 }

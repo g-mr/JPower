@@ -34,7 +34,6 @@ import top.jpower.core.redis.cache.RedisService;
 @AutoConfiguration
 @EnableConfigurationProperties(RedisProperties.class)
 @AutoConfigureBefore({RedisAutoConfiguration.class, RedissonAutoConfigurationV2.class})
-// @ConditionalOnBean(RedisConnectionFactory.class)
 public class RedisConfig {
 
     @Bean

@@ -16,15 +16,15 @@ public class RedisLockHandler implements LockHandler{
     /**
      * lock具体实现
      *
-     * @param globalLock 锁参数
+     * @param lockDto 锁参数
      * @param supplier   锁的执行内容
      * @return 执行内容
      * @author mr.g
      **/
     @Override
-    public <V> V lock(GlobalLock globalLock, ThrowableSupplier<V> supplier) {
-        return redisService.lockOps().lock(globalLock.name(), globalLock.waitTime(),
-                globalLock.leaveTime(), globalLock.unit(), supplier, "数据处理中，不可重复提交");
+    public <V> V lock(LockDto lockDto, ThrowableSupplier<V> supplier) {
+        return redisService.lockOps().lock(lockDto.name(), lockDto.waitTime(),
+                lockDto.leaveTime(), lockDto.unit(), supplier, "数据处理中，不可重复请求");
     }
 
 }

@@ -7,8 +7,6 @@ import com.wf.captcha.SpecCaptcha;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.redisson.api.RedissonClient;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.common.constants.CacheNames;
@@ -74,12 +72,6 @@ public class AuthController extends BaseController {
     private final SmsClient smsClient;
 
     private final String VALIDATE_SMS_CODE = "validate";
-
-    RedissonClient redissonClient;
-    public void tets(){
-        redissonClient.getFairLock("").tryLock(0,0,TimeUnit.DAYS);
-        redisService.valueOps().set();
-    }
 
     @ApiOperation(value = "用户登录",notes = "Authorization（客户端识别码）：由clientCode+\":\"+clientSecret组成字符串后用base64编码后获得值，再由Basic +base64编码后的值组成客户端识别码； <br/>" +
             "&nbsp;&nbsp;&nbsp;clientCode和clientSecret的值由后端统一提供，不同的登录客户端值也不一样。<br/>" +
