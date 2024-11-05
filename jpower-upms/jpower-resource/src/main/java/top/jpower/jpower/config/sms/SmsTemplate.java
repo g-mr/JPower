@@ -6,7 +6,7 @@ import top.jpower.core.deploy.property.JpowerProperties;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.core.exception.throwable.JpowerException;
-import top.jpower.core.redis.service.RedisService;
+import top.jpower.core.redis.cache.RedisService;
 import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.utils.ChainMap;
 import top.jpower.core.util.utils.Fc;

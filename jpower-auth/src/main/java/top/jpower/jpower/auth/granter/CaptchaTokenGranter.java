@@ -3,7 +3,7 @@ package top.jpower.jpower.auth.granter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import top.jpower.core.exception.throwable.BusinessException;
-import top.jpower.core.redis.service.RedisService;
+import top.jpower.core.redis.cache.RedisService;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.StringUtil;
 import top.jpower.jpower.auth.AuthUserInfo;

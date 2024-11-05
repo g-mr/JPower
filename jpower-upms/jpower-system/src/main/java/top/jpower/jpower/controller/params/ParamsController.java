@@ -15,7 +15,7 @@ import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.dbs.entity.params.TbCoreParam;
 import top.jpower.jpower.module.annotation.Function;
 import top.jpower.jpower.module.annotation.Menu;
-import top.jpower.core.redis.service.CacheUtil;
+import top.jpower.core.redis.cache.CacheUtil;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.module.page.PaginationContext;
 import top.jpower.jpower.service.params.CoreParamService;

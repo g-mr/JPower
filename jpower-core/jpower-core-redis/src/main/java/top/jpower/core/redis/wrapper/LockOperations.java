@@ -4,11 +4,11 @@ import cn.hutool.core.thread.ThreadUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.data.redis.listener.adapter.RedisListenerExecutionFailedException;
+import top.jpower.core.util.support.ThrowableSupplier;
+import top.jpower.core.util.utils.ExceptionUtil;
 import top.jpower.core.util.utils.Fc;
 
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 
 /**
  * redis分布式锁
@@ -65,7 +65,7 @@ public class LockOperations {
      * @param msg 当没有获取到锁时候的提示信息
      * @return V
      **/
-    public <V> V lock(String key, Supplier<V> supplier, String msg){
+    public <V> V lock(String key, ThrowableSupplier<V> supplier, String msg){
         return lock(key, -1, -1, TimeUnit.SECONDS, supplier, msg);
     }
 
@@ -80,7 +80,7 @@ public class LockOperations {
      * @param msg 当没有获取到锁时候的提示信息
      * @return V
      **/
-    public <V> V lock(String key, long expireTime, TimeUnit timeUnit, Supplier<V> supplier, String msg){
+    public <V> V lock(String key, long expireTime, TimeUnit timeUnit, ThrowableSupplier<V> supplier, String msg){
         return lock(key, -1, expireTime, timeUnit, supplier,msg);
     }
 
@@ -94,7 +94,7 @@ public class LockOperations {
      * @param msg 当没有获取到锁时候的提示信息
      * @return V
      **/
-    public <V> V lock(String key, long waitTime, Supplier<V> supplier, String msg){
+    public <V> V lock(String key, long waitTime, ThrowableSupplier<V> supplier, String msg){
         return lock(key, waitTime, -1, TimeUnit.SECONDS, supplier,msg);
     }
 
@@ -107,25 +107,29 @@ public class LockOperations {
      * @param expireTime 锁过期时间，小于0则代表永不过期
      * @param timeUnit 锁过期时间单位
      * @param supplier 锁执行函数
-     * @param msg 当没有获取到锁时候的提示信息，只有waitTime<0会触发
+     * @param msg 当没有获取到锁时的提示信息
      * @return V
      **/
-    public <V> V lock(String key, long waitTime, long expireTime, TimeUnit timeUnit, Supplier<V> supplier, String msg){
+    public <V> V lock(String key, long waitTime, long expireTime, TimeUnit timeUnit, ThrowableSupplier<V> supplier, String msg){
         ValueOperations<String, Object> operations = redisTemplate.opsForValue();
         String uidValue = Fc.randomUUID();
         try {
-            Boolean is = expireTime >= 0 ? operations.setIfAbsent(key, uidValue, expireTime, timeUnit) : operations.setIfAbsent(key, uidValue);
+            Boolean is = expireTime >= 0 ?
+                    operations.setIfAbsent(key, uidValue, expireTime, timeUnit) :
+                    operations.setIfAbsent(key, uidValue);
             if (Fc.toBoolean(is)){
                 return supplier.get();
             }else {
                 if (waitTime >= 0){
                     ThreadUtil.sleep(waitTime);
-                    return lock(key,waitTime,expireTime,timeUnit,supplier,msg);
+                    return lock(key,-1,expireTime,timeUnit,supplier,msg);
                 } else {
-                    throw new RedisListenerExecutionFailedException(msg);
+                    throw new RuntimeException(msg);
                 }
             }
-        }finally {
+        } catch (Throwable e) {
+            throw ExceptionUtil.wrapRuntime(ExceptionUtil.unwrap(e));
+        } finally {
             //释放锁
             if (Fc.equalsValue(uidValue,operations.get(key))){
                 redisTemplate.delete(key);

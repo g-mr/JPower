@@ -12,7 +12,7 @@ import top.jpower.jpower.dbs.entity.org.TbCoreOrg;
 import top.jpower.jpower.dbs.entity.tenant.TbCoreTenant;
 import top.jpower.jpower.feign.SystemClient;
 import top.jpower.common.constants.CacheNames;
-import top.jpower.core.redis.service.CacheUtil;
+import top.jpower.core.redis.cache.CacheUtil;
 
 import java.util.List;
 

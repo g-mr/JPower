@@ -1,4 +1,4 @@
-package top.jpower.core.redis.service;
+package top.jpower.core.redis.handler;
 
 import lombok.Getter;
 import org.redisson.api.NameMapper;
@@ -6,8 +6,6 @@ import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import top.jpower.core.redis.connection.JpowerRedisConnection;
-import top.jpower.core.redis.handler.PrefixRedissonHandler;
-import top.jpower.core.redis.handler.RedisPrefixHandler;
 import top.jpower.core.redis.properties.RedisProperties;
 import top.jpower.core.redis.serializer.JpowerStringSerializer;
 
@@ -69,6 +67,7 @@ public class JpowerRedisTemplate extends RedisTemplate<String, Object> {
         afterPropertiesSet();
     }
 
+    @Override
     protected RedisConnection preProcessConnection(RedisConnection connection, boolean existingConnection) {
         return new JpowerRedisConnection(connection, redisProperties.getPrefix(), redisPrefixHandler, nameMapper, getKeySerializer());
     }

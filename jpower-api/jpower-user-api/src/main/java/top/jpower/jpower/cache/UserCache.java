@@ -8,7 +8,7 @@ import top.jpower.jpower.dbs.entity.TbCorePost;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
 import top.jpower.jpower.feign.UserClient;
 import top.jpower.common.constants.CacheNames;
-import top.jpower.core.redis.service.CacheUtil;
+import top.jpower.core.redis.cache.CacheUtil;
 import top.jpower.jpower.vo.UserVo;
 
 import java.util.List;

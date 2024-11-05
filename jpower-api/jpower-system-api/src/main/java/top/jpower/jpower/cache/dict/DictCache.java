@@ -9,7 +9,7 @@ import top.jpower.core.util.utils.SpringUtil;
 import top.jpower.core.util.utils.WebUtil;
 import top.jpower.jpower.feign.DictClient;
 import top.jpower.common.constants.CacheNames;
-import top.jpower.core.redis.service.CacheUtil;
+import top.jpower.core.redis.cache.CacheUtil;
 
 import java.util.ArrayList;
 import java.util.List;

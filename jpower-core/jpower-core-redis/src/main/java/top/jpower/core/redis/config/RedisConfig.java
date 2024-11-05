@@ -15,14 +15,15 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import top.jpower.core.redis.handler.JpowerCustomizerRedissonHandler;
 import top.jpower.core.redis.handler.PrefixRedissonHandler;
 import top.jpower.core.redis.handler.RedisPrefixHandler;
 import top.jpower.core.redis.properties.RedisProperties;
 import top.jpower.core.redis.serializer.JpowerStringSerializer;
-import top.jpower.core.redis.service.JpowerRedisTemplate;
-import top.jpower.core.redis.service.JpowerStringRedisTemplate;
-import top.jpower.core.redis.service.RedisService;
+import top.jpower.core.redis.handler.JpowerRedisTemplate;
+import top.jpower.core.redis.handler.JpowerStringRedisTemplate;
+import top.jpower.core.redis.cache.RedisService;
 
 /**
  * @author mr.g
@@ -37,24 +38,34 @@ import top.jpower.core.redis.service.RedisService;
 public class RedisConfig {
 
     @Bean
+    @ConditionalOnMissingBean(name = "redisSerializer")
+    public RedisSerializer<Object> redisSerializer(){
+        return new Jackson2JsonRedisSerializer<>(Object.class);
+    }
+
+    @Bean
     @ConditionalOnMissingBean
-    public RedissonAutoConfigurationCustomizer redissonAutoConfigurationCustomizer(RedisProperties redisProperties, @Autowired(required = false) RedisPrefixHandler redisPrefixHandler){
+    public RedissonAutoConfigurationCustomizer redissonAutoConfigurationCustomizer(RedisSerializer<Object> redisSerializer,
+                                                                                   RedisProperties redisProperties,
+                                                                                   @Autowired(required = false) RedisPrefixHandler redisPrefixHandler){
         JpowerCustomizerRedissonHandler customizerRedissonConfig = new JpowerCustomizerRedissonHandler();
         customizerRedissonConfig.setKeySerializer(new JpowerStringSerializer());
-        customizerRedissonConfig.setValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
+        customizerRedissonConfig.setValueSerializer(redisSerializer);
         customizerRedissonConfig.setNameMapper(new PrefixRedissonHandler(redisProperties.getPrefix(), redisPrefixHandler));
         return customizerRedissonConfig;
     }
 
     @Bean
     @ConditionalOnMissingBean(name = "redisTemplate")
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory, RedisProperties redisProperties, @Autowired(required = false) RedisPrefixHandler redisPrefixHandler) {
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory,
+                                                       RedisSerializer<Object> redisSerializer,
+                                                       RedisProperties redisProperties,
+                                                       @Autowired(required = false) RedisPrefixHandler redisPrefixHandler) {
         RedisTemplate<String, Object> template = new JpowerRedisTemplate(redisConnectionFactory, redisProperties, redisPrefixHandler);
 
         // value 序列化
-        Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
-        template.setValueSerializer(jackson2JsonRedisSerializer);
-        template.setHashValueSerializer(jackson2JsonRedisSerializer);
+        template.setValueSerializer(redisSerializer);
+        template.setHashValueSerializer(redisSerializer);
         // key 序列化
         JpowerStringSerializer redisKeySerializer = new JpowerStringSerializer();
         template.setKeySerializer(redisKeySerializer);

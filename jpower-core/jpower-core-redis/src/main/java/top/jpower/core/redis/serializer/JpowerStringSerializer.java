@@ -13,7 +13,7 @@ import java.nio.charset.StandardCharsets;
  * @date 2024-10-27 19:58
  * @description
  */
-public class JpowerStringSerializer implements RedisSerializer<Object> {
+public class JpowerStringSerializer implements RedisSerializer<String> {
 
     private final Charset charset;
 
@@ -49,8 +49,8 @@ public class JpowerStringSerializer implements RedisSerializer<Object> {
      * @see org.springframework.data.redis.serializer.RedisSerializer#serialize(java.lang.Object)
      */
     @Override
-    public byte[] serialize(@Nullable Object string) {
-        return (string == null ? null : string.toString().getBytes(charset));
+    public byte[] serialize(@Nullable String string) {
+        return (string == null ? null : string.getBytes(charset));
     }
 
     @Override

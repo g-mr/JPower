@@ -5,7 +5,7 @@ import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.SpringUtil;
 import top.jpower.jpower.feign.ParamsClient;
 import top.jpower.common.constants.CacheNames;
-import top.jpower.core.redis.service.CacheUtil;
+import top.jpower.core.redis.cache.CacheUtil;
 
 /**
  * 系统参数缓存

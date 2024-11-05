@@ -10,7 +10,7 @@ import top.jpower.common.constants.CacheNames;
 import top.jpower.core.boot.controller.BaseController;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
-import top.jpower.core.redis.service.CacheUtil;
+import top.jpower.core.redis.cache.CacheUtil;
 import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.rsp.Pg;
 import top.jpower.core.util.rsp.ResponseData;

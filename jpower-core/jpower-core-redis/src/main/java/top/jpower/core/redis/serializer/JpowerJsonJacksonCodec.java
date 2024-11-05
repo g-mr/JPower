@@ -16,7 +16,7 @@ import java.io.IOException;
  */
 public class JpowerJsonJacksonCodec extends BaseCodec {
 
-    protected final RedisSerializer<Object> redisStringSerializer;
+    protected final RedisSerializer<String> redisStringSerializer;
     protected final RedisSerializer<Object> redisSerializer;
 
     private Encoder encoderString;
@@ -27,7 +27,7 @@ public class JpowerJsonJacksonCodec extends BaseCodec {
 
     private Decoder<Object> decoder;
 
-    public JpowerJsonJacksonCodec(RedisSerializer<Object> keySerializer, RedisSerializer<Object> valueSerializer) {
+    public JpowerJsonJacksonCodec(RedisSerializer<String> keySerializer, RedisSerializer<Object> valueSerializer) {
         this.redisStringSerializer = keySerializer;
         this.redisSerializer = valueSerializer;
 
@@ -39,7 +39,7 @@ public class JpowerJsonJacksonCodec extends BaseCodec {
             ByteBuf out = ByteBufAllocator.DEFAULT.buffer();
 
             try {
-                return out.writeBytes(redisStringSerializer.serialize(in));
+                return out.writeBytes(redisStringSerializer.serialize(in.toString()));
             } catch (Exception io){
                 out.release();
                 throw io;

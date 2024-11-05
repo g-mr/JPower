@@ -16,13 +16,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import top.jpower.core.redis.connection.RedisConnectionFactoryBroker;
 import top.jpower.core.redis.handler.JpowerRedissonCacheManager;
 import top.jpower.core.redis.handler.RedisPrefixHandler;
 import top.jpower.core.redis.properties.RedisProperties;
+import top.jpower.core.redis.serializer.JpowerStringSerializer;
 import top.jpower.core.util.utils.MapUtil;
 
 import java.time.Duration;
@@ -53,7 +53,10 @@ public class CacheManagerConfig {
     @Bean
     @ConditionalOnBean(RedisConnectionFactory.class)
     @ConditionalOnMissingBean(RedissonClient.class)
-    public RedisCacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory, RedisProperties redisProperties, @Autowired(required = false) RedisPrefixHandler redisPrefixHandler) {
+    public RedisCacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory,
+                                               RedisSerializer<Object> redisSerializer,
+                                               RedisProperties redisProperties,
+                                               @Autowired(required = false) RedisPrefixHandler redisPrefixHandler) {
 
         RedisProperties.CacheManager cacheProperties = redisProperties.getCacheManager();
 
@@ -62,18 +65,18 @@ public class CacheManagerConfig {
         //自定义的缓存过期时间配置
         Optional.ofNullable(configs).ifPresent(config ->
                 config.forEach((key, cache) -> {
-                    map.put(key, handleRedisCacheConfiguration(cache.getTTL(), cacheProperties.getAllowNullValues(), RedisCacheConfiguration.defaultCacheConfig()));
+                    map.put(key, handleRedisCacheConfiguration(redisSerializer, cache.getTTL(), cacheProperties.getAllowNullValues(), RedisCacheConfiguration.defaultCacheConfig()));
                 })
         );
 
         return RedisCacheManager
                 .builder(new RedisConnectionFactoryBroker(redisConnectionFactory, redisProperties, redisPrefixHandler))
-                .cacheDefaults(handleRedisCacheConfiguration(0, cacheProperties.getAllowNullValues(), RedisCacheConfiguration.defaultCacheConfig()))
+                .cacheDefaults(handleRedisCacheConfiguration(redisSerializer, 0, cacheProperties.getAllowNullValues(), RedisCacheConfiguration.defaultCacheConfig()))
                 .withInitialCacheConfigurations(map)
                 .build();
     }
 
-    private RedisCacheConfiguration handleRedisCacheConfiguration(long ttl, Boolean allowNullValues, RedisCacheConfiguration config) {
+    private RedisCacheConfiguration handleRedisCacheConfiguration(RedisSerializer<Object> redisSerializer,long ttl, Boolean allowNullValues, RedisCacheConfiguration config) {
         if (ttl > 0) {
             config = config.entryTtl(Duration.ofMillis(ttl));
         }
@@ -81,8 +84,8 @@ public class CacheManagerConfig {
             config = config.disableCachingNullValues();
         }
 
-        config.serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.string()));
-        config.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new Jackson2JsonRedisSerializer<>(Object.class)));
+        config.serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new JpowerStringSerializer()));
+        config.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(redisSerializer));
 
         return config;
     }

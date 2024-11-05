@@ -19,7 +19,7 @@ import top.jpower.jpower.dbs.entity.role.TbCoreRole;
 import top.jpower.jpower.module.annotation.Function;
 import top.jpower.jpower.module.annotation.Menu;
 import top.jpower.common.constants.CacheNames;
-import top.jpower.core.redis.service.CacheUtil;
+import top.jpower.core.redis.cache.CacheUtil;
 import top.jpower.jpower.module.common.utils.ShieldUtil;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.service.role.CoreRoleFunctionService;

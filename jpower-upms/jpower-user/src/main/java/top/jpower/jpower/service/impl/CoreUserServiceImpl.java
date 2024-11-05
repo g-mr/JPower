@@ -20,7 +20,7 @@ import top.jpower.common.enums.UserTypeEnum;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.BusinessException;
 import top.jpower.core.exception.throwable.JpowerAssert;
-import top.jpower.core.redis.service.RedisService;
+import top.jpower.core.redis.cache.RedisService;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.utils.DigestUtil;
 import top.jpower.core.util.utils.Fc;

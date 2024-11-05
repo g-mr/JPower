@@ -4,7 +4,7 @@ import cn.hutool.extra.servlet.ServletUtil;
 import top.jpower.common.constants.CacheNames;
 import top.jpower.common.enums.YN01Enum;
 import top.jpower.core.exception.throwable.BusinessException;
-import top.jpower.core.redis.service.RedisService;
+import top.jpower.core.redis.cache.RedisService;
 import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.constants.TokenConstant;

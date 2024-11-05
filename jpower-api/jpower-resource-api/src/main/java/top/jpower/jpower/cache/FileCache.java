@@ -5,7 +5,7 @@ import top.jpower.core.util.utils.SpringUtil;
 import top.jpower.jpower.dbs.entity.TbResourceFile;
 import top.jpower.jpower.feign.FileClient;
 import top.jpower.common.constants.CacheNames;
-import top.jpower.core.redis.service.CacheUtil;
+import top.jpower.core.redis.cache.CacheUtil;
 
 
 /**

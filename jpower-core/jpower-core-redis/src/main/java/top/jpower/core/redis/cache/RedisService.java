@@ -1,4 +1,4 @@
-package top.jpower.core.redis.service;
+package top.jpower.core.redis.cache;
 
 import cn.hutool.core.collection.ListUtil;
 import lombok.AllArgsConstructor;

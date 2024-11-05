@@ -16,7 +16,7 @@ import top.jpower.jpower.dbs.dao.city.TbCoreCityDao;
 import top.jpower.jpower.dbs.dao.city.mapper.TbCoreCityMapper;
 import top.jpower.jpower.dbs.entity.city.TbCoreCity;
 import top.jpower.common.constants.CacheNames;
-import top.jpower.core.redis.service.CacheUtil;
+import top.jpower.core.redis.cache.CacheUtil;
 import top.jpower.jpower.module.mp.support.Condition;
 import top.jpower.jpower.module.service.impl.BaseServiceImpl;
 import top.jpower.jpower.service.city.CoreCityService;

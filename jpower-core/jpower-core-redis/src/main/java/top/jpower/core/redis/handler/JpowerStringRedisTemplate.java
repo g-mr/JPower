@@ -1,4 +1,4 @@
-package top.jpower.core.redis.service;
+package top.jpower.core.redis.handler;
 
 import org.redisson.api.NameMapper;
 import org.springframework.data.redis.connection.RedisConnection;

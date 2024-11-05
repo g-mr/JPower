@@ -11,9 +11,10 @@ import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.Topic;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.util.ErrorHandler;
 import top.jpower.core.redis.connection.RedisConnectionFactoryBroker;
-import top.jpower.core.redis.service.JpowerRedisTemplate;
+import top.jpower.core.redis.handler.JpowerRedisTemplate;
 import top.jpower.core.redis.topic.RedisTopic;
 import top.jpower.core.redis.topic.RedisTopicListener;
 import top.jpower.core.redis.topic.RedisTopicListenerAdapter;
@@ -83,7 +84,12 @@ public class RedisTopicConfig {
             RedisTopic redisTopic = AnnotationUtil.getAnnotation(clz, RedisTopic.class);
 
             RedisTopicListenerAdapter listenerAdapter = new RedisTopicListenerAdapter(listener, redisTopic);
-            listenerAdapter.setKeySerializer(redisTemplate.getStringSerializer());
+            if (Fc.equalsValue(redisTemplate.getKeySerializer().getTargetType().getName(), String.class.getName())){
+                //noinspection unchecked
+                listenerAdapter.setKeySerializer((RedisSerializer<String>) redisTemplate.getKeySerializer());
+            } else {
+                listenerAdapter.setKeySerializer(redisTemplate.getStringSerializer());
+            }
             listenerAdapter.setValueSerializer(redisTemplate.getValueSerializer());
 
             container.addMessageListener(listenerAdapter, bindTopicName(redisTopic));
