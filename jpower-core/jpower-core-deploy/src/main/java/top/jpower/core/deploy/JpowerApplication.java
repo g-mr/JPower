@@ -137,58 +137,28 @@ public class JpowerApplication {
         Properties properties = System.getProperties();
         YamlPropertiesFactoryBean yaml = new YamlPropertiesFactoryBean();
         yaml.setResources(resources);
-        properties.putAll(yaml.getObject());
-
-        try {
-            yaml = new YamlPropertiesFactoryBean();
-            yaml.setResources(new FileUrlResource(FileUtil.getSysRootPath() + File.separator + "application.yml"));
-            if (Fc.notNull(yaml.getObject())){
-                properties.putAll(yaml.getObject());
-            }
-        } catch (IllegalStateException e){
-            log.warn("读取配置文件报错==={}", e.getMessage());
+        if (Fc.isNotEmpty(yaml.getObject())){
+            yaml.getObject().forEach(properties::putIfAbsent);
         }
 
-        try {
-            yaml = new YamlPropertiesFactoryBean();
-            yaml.setResources(new FileUrlResource(FileUtil.getSysRootPath() + File.separator + "bootstrap.yml"));
-            if (Fc.notNull(yaml.getObject())){
-                properties.putAll(yaml.getObject());
-            }
-        } catch (IllegalStateException e){
-            log.warn("读取配置文件报错==={}", e.getMessage());
-        }
-
-        try {
-            yaml = new YamlPropertiesFactoryBean();
-            yaml.setResources(new FileUrlResource(FileUtil.getSysRootResourcePath() + File.separator + "application.yml"));
-            if (Fc.notNull(yaml.getObject())){
-                properties.putAll(yaml.getObject());
-            }
-        } catch (IllegalStateException e){
-            log.warn("读取配置文件报错==={}", e.getMessage());
-        }
-
-        try {
-            yaml = new YamlPropertiesFactoryBean();
-            yaml.setResources(new FileUrlResource(FileUtil.getSysRootResourcePath() + File.separator + "bootstrap.yml"));
-            if (Fc.notNull(yaml.getObject())){
-                properties.putAll(yaml.getObject());
-            }
-        } catch (IllegalStateException e){
-            log.warn("读取配置文件报错==={}", e.getMessage());
-        }
-
-        try {
-//            Properties systemProperties = System.getProperties();
-//            if(Fc.isNotEmpty(systemProperties)){
-//                properties.putAll(systemProperties);
-//            }
-        } catch (IllegalStateException e){
-            log.warn("读取系统配置报错==={}", e.getMessage());
-        }
+        buildProperties(FileUtil.getSysRootPath() + File.separator + "application.yml", properties);
+        buildProperties(FileUtil.getSysRootPath() + File.separator + "bootstrap.yml", properties);
+        buildProperties(FileUtil.getSysRootResourcePath() + File.separator + "application.yml", properties);
+        buildProperties(FileUtil.getSysRootResourcePath() + File.separator + "bootstrap.yml", properties);
 
         return properties;
+    }
+
+    private static void buildProperties(String file, Properties properties) throws IOException{
+        try {
+            YamlPropertiesFactoryBean yaml = new YamlPropertiesFactoryBean();
+            yaml.setResources(new FileUrlResource(file));
+            if (Fc.notNull(yaml.getObject())){
+                yaml.getObject().forEach(properties::putIfAbsent);
+            }
+        } catch (IllegalStateException e){
+            log.warn("读取配置文件报错==={}", e.getMessage());
+        }
     }
 
     /**
