@@ -35,25 +35,25 @@ public class LockAspect {
     private final DefaultParameterNameDiscoverer nameDiscoverer = new DefaultParameterNameDiscoverer();
 
 
-    @Pointcut("@annotation(globalLock)")
-    public void lockMethods(GlobalLock globalLock) {}
+    @Pointcut("@annotation(redisLock)")
+    public void lockMethods(RedisLock redisLock) {}
 
-    @Around("lockMethods(globalLock)")
-    public Object around(ProceedingJoinPoint joinPoint, GlobalLock globalLock) throws Throwable {
-        LockDto lockDto = conver(globalLock, joinPoint);
+    @Around("lockMethods(redisLock)")
+    public Object around(ProceedingJoinPoint joinPoint, RedisLock redisLock) throws Throwable {
+        LockDto lockDto = conver(redisLock, joinPoint);
         if (Fc.isNull(lockHandler)){
             return joinPoint.proceed();
         }
         return lockHandler.lock(lockDto, joinPoint::proceed);
     }
 
-    private LockDto conver(GlobalLock globalLock, ProceedingJoinPoint joinPoint){
+    private LockDto conver(RedisLock redisLock, ProceedingJoinPoint joinPoint){
         return LockDto.builder()
-                .name(generateKeyBySpEL(globalLock.name(), joinPoint))
-                .type(globalLock.type())
-                .waitTime(globalLock.waitTime())
-                .leaveTime(globalLock.leaveTime())
-                .unit(globalLock.unit())
+                .name(generateKeyBySpEL(redisLock.name(), joinPoint))
+                .type(redisLock.type())
+                .waitTime(redisLock.waitTime())
+                .leaveTime(redisLock.leaveTime())
+                .unit(redisLock.unit())
                 .build();
     }
 

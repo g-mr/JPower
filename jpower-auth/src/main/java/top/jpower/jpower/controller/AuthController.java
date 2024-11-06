@@ -7,6 +7,7 @@ import com.wf.captcha.SpecCaptcha;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.redisson.api.RedissonClient;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.common.constants.CacheNames;
@@ -73,9 +74,15 @@ public class AuthController extends BaseController {
 
     private final String VALIDATE_SMS_CODE = "validate";
 
+    RedissonClient redissonClient;
+
     @GetMapping("test/{msg}")
     public void test(@PathVariable("msg") String msg){
-        redisService.topicOps(String.class).publish("test", msg);
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUserName(msg);
+        redissonClient.getBucket("test").set(userInfo);
+        System.out.println("**************"+redisService.valueOps().get("test"));
+        // ((Redisson) redissonClient).getCommandExecutor().
     }
 
     @ApiOperation(value = "用户登录",notes = "Authorization（客户端识别码）：由clientCode+\":\"+clientSecret组成字符串后用base64编码后获得值，再由Basic +base64编码后的值组成客户端识别码； <br/>" +

@@ -1,7 +1,5 @@
 package top.jpower.core.redis.lock;
 
-import org.springframework.core.annotation.AliasFor;
-
 import java.lang.annotation.*;
 import java.util.concurrent.TimeUnit;
 
@@ -13,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 @Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface GlobalLock {
+public @interface RedisLock {
 
     /**
      * 锁名称
@@ -22,17 +20,6 @@ public @interface GlobalLock {
      *     e.g: 支持EL表达式
      * </per>
      **/
-    @AliasFor("name")
-    String value();
-
-    /**
-     * 锁名称
-     * <br/>
-     * <per>
-     *     e.g: 支持EL表达式
-     * </per>
-     **/
-    @AliasFor("value")
     String name();
 
     /**
