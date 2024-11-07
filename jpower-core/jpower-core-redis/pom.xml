@@ -30,16 +30,10 @@
             </exclusions>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.redisson</groupId>-->
-<!--            <artifactId>redisson</artifactId>-->
-<!--            <version>3.37.0</version>-->
-<!--        </dependency>-->
-
         <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson-spring-boot-starter</artifactId>
-            <version>3.37.0</version>
+            <version>${redisson.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>
@@ -52,6 +46,12 @@
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-util</artifactId>
+            <version>${com.jpower.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>top.jpower</groupId>
+            <artifactId>jpower-core-deploy</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>
 

@@ -15,8 +15,6 @@
  */
 package org.redisson.command;
 
-import cn.hutool.core.thread.ThreadUtil;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.util.ReferenceCountUtil;
@@ -45,13 +43,10 @@ import org.redisson.misc.LogHelper;
 import org.redisson.misc.RedisURI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.redis.serializer.RedisSerializer;
-import top.jpower.core.redis.properties.RedisProperties;
-import top.jpower.core.util.constants.StringPool;
+import top.jpower.core.redis.log.RedisLog;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.SpringUtil;
 
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.BiConsumer;
@@ -684,54 +679,14 @@ public class RedisExecutor<V, R> {
                         connectionType, LogHelper.toString(command, params), source, connection.getRedisClient().getAddr(), connection);
             }
 
-            StringBuilder builder = new StringBuilder(StringPool.NEWLINE);
-            RedisProperties redisProperties = SpringUtil.getBean(RedisProperties.class);
-            if (Fc.notNull(redisProperties)){
-                try {
-
-                    builder.append("===========START REDIS==============").append(StringPool.NEWLINE);
-                    builder.append(StringPool.SPACE).append("-->COMMAND: ").append(command.getName()).append(StringPool.SPACE);
-                    for (Object param : params) {
-                        String pm;
-                        if (param instanceof byte[]){
-                            pm = RedisSerializer.string().deserialize((byte[]) param);
-                        } else if (param instanceof String){
-                            pm = (String) param;
-                        } else if (param instanceof ByteBuf) {
-                            pm = ((ByteBuf) param).toString(StandardCharsets.UTF_8);
-                        }else {
-                            pm = param.toString();
-                        }
-                        builder.append(pm).append(StringPool.SPACE);
-                    }
-                    builder.append(StringPool.NEWLINE);
-                } catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-
-            writeFuture = connection.send(new CommandData<>(attemptPromise, codec, command, params));
-
-            if (Fc.notNull(redisProperties)){
-                builder.append(StringPool.SPACE).append("<--isSuccess: ").append(writeFuture).append(StringPool.NEWLINE);
-
-                ThreadUtil.execute(()->{
-                    try {
-                        while (true){
-                            if (writeFuture.isDone()){
-                                System.out.println(mainPromise.toCompletableFuture().get().getClass());
-                                break;
-                            }
-                        }
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    } catch (ExecutionException e) {
-                        throw new RuntimeException(e);
-                    }
+            // 打印日志
+            RedisLog redisLog = SpringUtil.getBean(RedisLog.class);
+            if (Fc.notNull(redisLog)){
+                writeFuture = redisLog.broker(command, params, mainPromise, ()->{
+                    return connection.send(new CommandData<>(attemptPromise, codec, command, params));
                 });
-
-                builder.append("=========== END REDIS ==============");
-                log.info(builder.toString());
+            } else {
+                writeFuture = connection.send(new CommandData<>(attemptPromise, codec, command, params));
             }
 
             if (connectionManager.getServiceManager().getConfig().getMasterConnectionPoolSize() < 10
