@@ -2,6 +2,7 @@ package top.jpower.jpower.module.config.interceptor;
 
 
 import cn.hutool.core.annotation.AnnotationUtil;
+import cn.hutool.core.date.TimeInterval;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.statement.StatementHandler;
@@ -51,7 +52,9 @@ public class MybatisSqlPrintInterceptor implements MybatisInterceptor {
     public Object printSql(ChainFilter chainFilter, Configuration configuration,String mpId, BoundSql boundSql, boolean isUpdate) {
 
         if (isLog(mpId)){
-            long startTime = System.currentTimeMillis();
+            TimeInterval timeInterval = DateUtil.timer(true);
+            timeInterval.start();
+
             Object rest = null;
             String error = null;
             try {
@@ -62,10 +65,9 @@ public class MybatisSqlPrintInterceptor implements MybatisInterceptor {
             } finally {
                 try {
 
-                    long time = System.currentTimeMillis() - startTime;
                     // 超过超时时长则打印
-                    if(time >= sqlProperties.getPrintTimeout()) {
-                        printSql(boundSql,configuration,mpId,time,rest,isUpdate,error);
+                    if(timeInterval.intervalMs() >= sqlProperties.getPrintTimeout()) {
+                        printSql(boundSql,configuration,mpId,timeInterval.intervalPretty(),rest,isUpdate,error);
                     }
                 } catch (Exception e) {
                     log.error("==> 打印sql 日志异常 {}", NEWLINE+ExceptionUtil.getStackTraceAsString(e));
@@ -77,7 +79,7 @@ public class MybatisSqlPrintInterceptor implements MybatisInterceptor {
         return chainFilter.proceed();
     }
 
-    public void printSql(BoundSql boundSql,Configuration configuration,String sqlId,long time,Object rest, boolean isUpdate,String error) {
+    public void printSql(BoundSql boundSql,Configuration configuration,String sqlId,String time,Object rest, boolean isUpdate,String error) {
         // 替换参数格式化Sql语句，去除换行符
         String sql = formatSql(boundSql, configuration).concat(";");
 
@@ -87,7 +89,7 @@ public class MybatisSqlPrintInterceptor implements MybatisInterceptor {
                 .append(TAB).append("==> Mapper name：").append(mappers[0]).append(NEWLINE)
                 .append(TAB).append("==> Mapper method：").append(mappers[1]).append(NEWLINE)
                 .append(TAB).append("==> Execute SQL：").append(sql).append(NEWLINE)
-                .append(TAB).append("<== Time：").append(time).append(" ms ").append(NEWLINE);
+                .append(TAB).append("<== Time：").append(time).append(NEWLINE);
 
         if (isUpdate){
             sb.append(TAB).append("<== Updates: ").append(rest).append(NEWLINE);

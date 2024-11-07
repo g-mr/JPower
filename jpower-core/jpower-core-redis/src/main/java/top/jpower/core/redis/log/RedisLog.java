@@ -14,7 +14,9 @@ import top.jpower.core.util.utils.DateUtil;
 import top.jpower.core.util.utils.Fc;
 
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 
 /**
@@ -86,9 +88,18 @@ public class RedisLog {
                 if (error != null){
                     builder.append(StringPool.SPACE).append("-->Error: ").append(error.getMessage());
                 } else {
-                    builder.append(StringPool.SPACE).append("<--Success: ").append(getIsSuccess(writeFuture));
+                    builder.append(StringPool.SPACE).append("<--Success: ").append(getIsSuccess(writeFuture, mainPromise));
                     builder.append(StringPool.NEWLINE);
-                    builder.append(StringPool.SPACE).append("<--Result: ").append(convert(mainPromise.toCompletableFuture().get()));
+                    builder.append(StringPool.SPACE).append("<--Result: ");
+                    try {
+                        builder.append(convert(mainPromise.toCompletableFuture().get()));
+                    } catch (InterruptedException e) {
+                        builder.append("命令被中断=>").append(e.getMessage());
+                    } catch (ExecutionException e) {
+                        builder.append("命令发生异常=>").append(e.getMessage());
+                    } catch (CancellationException e){
+                        builder.append("命令被取消=>").append(e.getMessage());
+                    }
                 }
                 builder.append(StringPool.NEWLINE);
                 builder.append(StringPool.SPACE).append("<--Time: ").append(timeInterval.intervalPretty());
@@ -110,12 +121,12 @@ public class RedisLog {
      * @param writeFuture 执行结果
      * @return 是否成功
      **/
-    private boolean getIsSuccess(ChannelFuture writeFuture) {
+    private <R> boolean getIsSuccess(ChannelFuture writeFuture, CompletableFuture<R> mainPromise) {
         TimeInterval timeInterval = DateUtil.timer();
         timeInterval.start();
         while (true){
             if (writeFuture.isDone() || timeInterval.intervalSecond() > 1){
-                return writeFuture.isSuccess();
+                return writeFuture.isSuccess() && !mainPromise.isCompletedExceptionally();
             }
         }
     }
