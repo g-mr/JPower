@@ -1,6 +1,7 @@
 package top.jpower.jpower.module.config;
 
 import lombok.AllArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -19,6 +20,7 @@ import java.util.Set;
  * @author mr.g
  **/
 @Configuration
+@ConditionalOnWebApplication
 @AllArgsConstructor
 @EnableConfigurationProperties({AuthProperties.class})
 public class ClientConfigurer implements WebMvcConfigurer {
