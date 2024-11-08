@@ -32,7 +32,7 @@ public class RestTemplateConfig {
 
     @Bean
     @LoadBalanced
-    @ConditionalOnMissingBean(RestTemplate.class)
+    @ConditionalOnMissingBean
     public RestTemplate restTemplate() {
 
         HttpComponentsClientHttpRequestFactory httpRequestFactory = new HttpComponentsClientHttpRequestFactory();

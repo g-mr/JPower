@@ -16,6 +16,7 @@ import java.lang.annotation.*;
 @Documented
 @Inherited
 @EnableDiscoveryClient
+@EnableAutoConfiguration
 @SpringBootApplication
 public @interface JpowerCloudApplication {
 

@@ -131,7 +131,7 @@ public class JpowerApplication {
             Resource[] resourcesConfig = resolver.getResources("classpath:/config/*.yml");
             resources = ArrayUtil.append(resources, resourcesConfig);
         } catch (FileNotFoundException e){
-            log.warn("读取配置文件报错==={}", e.getMessage());
+            log.warn("读取配置文件异常==={}", e.getMessage());
         }
 
         Properties properties = System.getProperties();
@@ -157,7 +157,7 @@ public class JpowerApplication {
                 yaml.getObject().forEach(properties::putIfAbsent);
             }
         } catch (IllegalStateException e){
-            log.warn("读取配置文件报错==={}", e.getMessage());
+            log.warn("读取配置文件异常==={}", e.getMessage());
         }
     }
 

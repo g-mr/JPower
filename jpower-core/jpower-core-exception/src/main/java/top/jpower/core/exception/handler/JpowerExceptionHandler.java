@@ -106,10 +106,8 @@ public class JpowerExceptionHandler {
         }else if (e instanceof JpowerException) {
             r.setCode(((JpowerException) e).getCode());
         } else {
+            r.setMessage(ExceptionUtil.getMessage(ExceptionUtil.unwrap(e)));
             r.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            //标记返回为500错误
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-
             createLog(request, e);
             log.error("运行异常,异常信息===>>{}{}", StringPool.NEWLINE, ExceptionUtil.getStackTraceAsString(e));
 

@@ -35,7 +35,7 @@ public class RestLogClient implements LogClient {
                 log.error("操作日志保存失败={}",responseData);
             }
         }catch (Exception e){
-            log.error("操作日志保存失败={}", ExceptionUtil.getStackTraceAsString(e));
+            log.error("操作日志保存失败={}", ExceptionUtil.getMessage(e));
         }
     }
 
@@ -55,10 +55,10 @@ public class RestLogClient implements LogClient {
         try {
             ResponseData responseData = restTemplate.postForObject("http://"+ LogConstant.getInstance().getJpowerLog()+"/log/saveErrorLog", errorLog,ResponseData.class);
             if (Fc.isNull(responseData) || !responseData.isStatus()){
-                log.error("错误日志保存失败={}",responseData);
+                log.error("错误日志保存失败={}", responseData);
             }
         }catch (Exception e){
-            log.error("错误日志保存失败={}", ExceptionUtil.getStackTraceAsString(e));
+            log.error("错误日志保存失败={}", ExceptionUtil.getMessage(e));
         }
     }
 

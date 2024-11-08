@@ -3,6 +3,7 @@ package top.jpower.core.exception.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.*;
+import org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,7 +25,7 @@ import top.jpower.jpower.module.dbs.config.LoginUserContext;
  * @Author mr.g
  * @Date 2021/5/1 0001 0:16
  */
-@AutoConfiguration
+@AutoConfiguration(after = JdbcTemplateAutoConfiguration.class)
 @ConditionalOnWebApplication
 public class JpowerLogConfig {
 
@@ -34,13 +35,11 @@ public class JpowerLogConfig {
     }
 
     @Bean
-    @ConditionalOnMissingBean(name = "operateLogListener")
     public OperateLogListener operateLogListener(JpowerProperties jpowerProperties, @Autowired(required = false) LogClient logClient) {
         return new OperateLogListener(jpowerProperties, logClient);
     }
 
     @Bean
-    @ConditionalOnMissingBean(name = "errorLogListener")
     public ErrorLogListener errorLogListener(JpowerProperties jpowerProperties, @Autowired(required = false) LogClient logClient) {
         return new ErrorLogListener(jpowerProperties, logClient);
     }
@@ -59,7 +58,7 @@ public class JpowerLogConfig {
 
     @Configuration(proxyBeanMethods = false)
     @ConditionalOnMissingBean(LogClient.class)
-    @ConditionalOnBean(RestTemplate.class)
+    @ConditionalOnClass(RestTemplate.class)
     @ConditionalOnProperty(prefix = "jpower", name = "server", havingValue = "CLOUD")
     static class RestLogClientConfiguration {
 
