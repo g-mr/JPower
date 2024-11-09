@@ -20,7 +20,7 @@ import java.util.Set;
  * @author mr.g
  **/
 @Configuration
-@ConditionalOnWebApplication
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @AllArgsConstructor
 @EnableConfigurationProperties({AuthProperties.class})
 public class ClientConfigurer implements WebMvcConfigurer {

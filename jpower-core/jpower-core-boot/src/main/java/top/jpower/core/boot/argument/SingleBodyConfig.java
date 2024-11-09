@@ -1,6 +1,7 @@
 package top.jpower.core.boot.argument;
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.SpringProperties;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -21,6 +22,7 @@ import java.util.List;
  * @date 2024/3/9 3:58 PM
  */
 @AutoConfiguration
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 public class SingleBodyConfig implements WebMvcConfigurer {
 
     public List<HttpMessageConverter<?>> getMessageConverters() {

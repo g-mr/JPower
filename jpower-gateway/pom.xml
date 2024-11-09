@@ -21,6 +21,10 @@
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-web</artifactId>
                 </exclusion>
+<!--                <exclusion>-->
+<!--                    <groupId>org.springframework.boot</groupId>-->
+<!--                    <artifactId>spring-boot-autoconfigure</artifactId>-->
+<!--                </exclusion>-->
             </exclusions>
         </dependency>
 
@@ -41,18 +45,18 @@
             <artifactId>jpower-common</artifactId>
             <version>${com.jpower.version}</version>
             <exclusions>
-                <exclusion>
-                    <groupId>top.jpower</groupId>
-                    <artifactId>common-dbs</artifactId>
-                </exclusion>
+<!--                <exclusion>-->
+<!--                    <groupId>top.jpower</groupId>-->
+<!--                    <artifactId>common-dbs</artifactId>-->
+<!--                </exclusion>-->
 <!--                <exclusion>-->
 <!--                    <groupId>top.jpower</groupId>-->
 <!--                    <artifactId>common-auth</artifactId>-->
 <!--                </exclusion>-->
-                <exclusion>
-                    <groupId>top.jpower</groupId>
-                    <artifactId>jpower-core-boot</artifactId>
-                </exclusion>
+<!--                <exclusion>-->
+<!--                    <groupId>top.jpower</groupId>-->
+<!--                    <artifactId>jpower-core-boot</artifactId>-->
+<!--                </exclusion>-->
                 <exclusion>
                     <groupId>top.jpower</groupId>
                     <artifactId>jpower-core-exception</artifactId>
