@@ -11,7 +11,9 @@ import top.jpower.core.deploy.annotation.JpowerCloudApplication;
  **/
 @JpowerCloudApplication
 public class GatewayApplication {
+
     public static void main(String[] args) {
         JpowerApplication.run(AppConstant.JPOWER_GATEWAY, GatewayApplication.class, args);
     }
+
 }

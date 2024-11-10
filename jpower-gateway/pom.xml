@@ -45,18 +45,14 @@
             <artifactId>jpower-common</artifactId>
             <version>${com.jpower.version}</version>
             <exclusions>
-<!--                <exclusion>-->
-<!--                    <groupId>top.jpower</groupId>-->
-<!--                    <artifactId>common-dbs</artifactId>-->
-<!--                </exclusion>-->
-<!--                <exclusion>-->
-<!--                    <groupId>top.jpower</groupId>-->
-<!--                    <artifactId>common-auth</artifactId>-->
-<!--                </exclusion>-->
-<!--                <exclusion>-->
-<!--                    <groupId>top.jpower</groupId>-->
-<!--                    <artifactId>jpower-core-boot</artifactId>-->
-<!--                </exclusion>-->
+                <exclusion>
+                    <groupId>top.jpower</groupId>
+                    <artifactId>common-dbs</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>top.jpower</groupId>
+                    <artifactId>jpower-core-boot</artifactId>
+                </exclusion>
                 <exclusion>
                     <groupId>top.jpower</groupId>
                     <artifactId>jpower-core-exception</artifactId>
