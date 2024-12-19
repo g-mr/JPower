@@ -5,21 +5,22 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Component;
 import top.jpower.common.enums.FileStorageTypeEnum;
 import top.jpower.common.enums.OssCategoryEnum;
+import top.jpower.core.exception.enums.JpowerError;
+import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.dbs.dao.TbResourceFileDao;
 import top.jpower.jpower.dbs.dao.TbResourceOssDao;
 import top.jpower.jpower.dbs.entity.TbResourceOss;
-import top.jpower.core.exception.enums.JpowerError;
-import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.jpower.operate.properties.FileProperties;
 import top.jpower.jpower.operate.storage.OssAliFileOperate;
+import top.jpower.jpower.operate.storage.OssAwsFileOperate;
 import top.jpower.jpower.operate.storage.OssQnFileOperate;
 
 import java.util.Map;
 
 /**
- * @ClassName TokenGranterBuilder
- * @Description TODO 构造登录查询
+ * @ClassName FileOperateBuilder
+ * @Description TODO 文件上传构造器
  * @Author 郭丁志
  * @Date 2020-07-28 00:34
  * @Version 1.0
@@ -54,6 +55,10 @@ public class FileOperateBuilder {
                     break;
                 case QN:
                     fileUpload = new OssQnFileOperate(resourceOss, resourceFileDao);
+                    uploadPool.put(resourceOss.getCode(), fileUpload);
+                    break;
+                case AWS:
+                    fileUpload = new OssAwsFileOperate(resourceOss, resourceFileDao);
                     uploadPool.put(resourceOss.getCode(), fileUpload);
                     break;
                 default:

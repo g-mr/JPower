@@ -43,4 +43,7 @@ public class TbResourceOss extends BaseEntity {
     @ApiModelProperty("空间名称")
     @NotBlank(message = "空间名称 不可为空")
     private String bucketName;
+
+    @ApiModelProperty("区域")
+    private String region;
 }

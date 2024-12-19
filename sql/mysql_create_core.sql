@@ -184,6 +184,7 @@ INSERT INTO `tb_core_dict` VALUES (1728752439150428160, 'PARAM_TYPE', 'query', '
 INSERT INTO `tb_core_dict` VALUES (1764851365206581250, 'SMS_CATEGORY', 'ali', '阿里', 'N', -1, 'zh', NULL, 0, 1, '2024-03-05 11:12:09', 1, '2024-03-05 11:12:09', 0, NULL, '-1', '000000', 1728752845331021824);
 INSERT INTO `tb_core_dict` VALUES (1782694643767443457, 'OSS_CATEGORY', 'ali', '阿里云', 'N', -1, 'zh', NULL, 0, 1, '2024-04-23 16:54:59', 1, '2024-04-23 16:54:59', 0, NULL, '-1', '000000', 1728752845331021824);
 INSERT INTO `tb_core_dict` VALUES (1782694777007898626, 'OSS_CATEGORY', 'qiniu', '七牛云', 'N', -1, 'zh', NULL, 1, 1, '2024-04-23 16:55:30', 1, '2024-04-23 16:55:30', 0, NULL, '-1', '000000', 1728752845331021824);
+INSERT INTO `tb_core_dict` VALUES (1782694777007898627, 'OSS_CATEGORY', 'aws', '亚马逊', 'N', -1, 'zh', NULL, 1, 1, '2024-04-23 16:55:30', 1, '2024-04-23 16:55:30', 0, NULL, '-1', '000000', 1728752845331021824);
 
 -- ----------------------------
 -- Table structure for tb_core_dict_type

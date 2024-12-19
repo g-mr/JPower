@@ -22,7 +22,11 @@ public enum OssCategoryEnum {
     /**
      * 七牛云
      **/
-    QN("qiniu", "七牛云");
+    QN("qiniu", "七牛云"),
+    /**
+     * 亚马逊
+     **/
+    AWS("aws", "亚马逊");
 
     private final String value;
     private final String name;
