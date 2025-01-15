@@ -1,6 +1,5 @@
 package top.jpower.core.exception.operate;
 
-import cn.hutool.core.lang.SimpleCache;
 import cn.hutool.core.util.EnumUtil;
 import com.alibaba.fastjson2.JSON;
 import org.apache.commons.lang3.StringUtils;
@@ -9,9 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.jpower.core.exception.listener.OperateLogEvent;
 import top.jpower.core.exception.model.OperateLogDto;
-import top.jpower.core.exception.model.UserDto;
 import top.jpower.core.exception.utils.FieldCompletionUtil;
+import top.jpower.core.util.user.model.UserDto;
 import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.ObjectUtil;
 import top.jpower.core.util.utils.SpringUtil;
 import top.jpower.core.util.utils.WebUtil;
 
@@ -25,15 +25,10 @@ public class OperateLog {
 
     private final UserDto userDto;
 
-    private static final SimpleCache<Class<?>, OperateLog> LOG_CACHE = new SimpleCache<>();
 
-    private OperateLog(Class<?> clazz, UserDto userDto){
+    public OperateLog(Class<?> clazz, UserDto userDto){
         this.log = LoggerFactory.getLogger(clazz);
-        this.userDto = userDto;
-    }
-
-    public static OperateLog SINGLETON(Class<?> clazz, UserDto userDto){
-        return LOG_CACHE.get(clazz, ()->new OperateLog(clazz, userDto));
+        this.userDto = ObjectUtil.defaultIfNull(userDto, new UserDto());
     }
 
     public void info(final OperateInfo controllerLog){

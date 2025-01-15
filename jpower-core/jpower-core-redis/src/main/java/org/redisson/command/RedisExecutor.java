@@ -53,8 +53,9 @@ import java.util.function.BiConsumer;
 
 /**
  *
- * @author Nikita Koksharov
+ * 为了实现打印日志
  *
+ * @author Nikita Koksharov
  * @param <V> type of value
  * @param <R> type of returned value
  */
@@ -679,7 +680,7 @@ public class RedisExecutor<V, R> {
                         connectionType, LogHelper.toString(command, params), source, connection.getRedisClient().getAddr(), connection);
             }
 
-            // 打印日志
+            // Jpower 打印日志
             RedisLog redisLog = SpringUtil.getBean(RedisLog.class);
             if (Fc.notNull(redisLog)){
                 writeFuture = redisLog.broker(command, params, mainPromise, ()->{

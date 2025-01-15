@@ -16,13 +16,6 @@
 
         <dependency>
             <groupId>top.jpower</groupId>
-            <artifactId>common-auth</artifactId>
-            <version>${com.jpower.version}</version>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>top.jpower</groupId>
             <artifactId>jpower-core-deploy</artifactId>
             <version>${com.jpower.version}</version>
         </dependency>

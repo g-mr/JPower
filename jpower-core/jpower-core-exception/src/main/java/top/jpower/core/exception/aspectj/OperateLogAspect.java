@@ -14,10 +14,10 @@ import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
-import top.jpower.core.exception.model.UserDto;
 import top.jpower.core.exception.operate.OperateInfo;
 import top.jpower.core.exception.operate.OperateLog;
 import top.jpower.core.util.constants.StringPool;
+import top.jpower.core.util.user.UserConfig;
 import top.jpower.core.util.utils.Fc;
 
 import java.lang.reflect.Method;
@@ -31,7 +31,7 @@ import java.lang.reflect.Method;
 @RequiredArgsConstructor
 public class OperateLogAspect {
 
-    private final UserDto userDto;
+    private final UserConfig userConfig;
 
     /**
      * 用于SpEL表达式解析.
@@ -84,7 +84,7 @@ public class OperateLogAspect {
     }
 
     protected void handleLog(final OperateInfo operateInfo, final JoinPoint joinPoint, Object rvt, final Exception e){
-        final OperateLog log = OperateLog.SINGLETON(joinPoint.getTarget().getClass(), userDto);
+        final OperateLog log = new OperateLog(joinPoint.getTarget().getClass(), userConfig.queryUser());
         operateInfo.recordId(generateKeyBySpEL(operateInfo.recordId(),joinPoint));
         operateInfo.content(generateKeyBySpEL(operateInfo.content(),joinPoint));
         log.info(operateInfo,joinPoint,rvt,e);

@@ -36,6 +36,15 @@ public class ClientController extends BaseController {
 
     private CoreClientService coreClientService;
 
+    @GetMapping("test")
+    public void test(){
+        TbCoreClient client = new TbCoreClient();
+        client.setName("1");
+        client.setClientCode("2");
+        client.setClientSecret("2");
+        coreClientService.save(client);
+    }
+
     /**
      * @Author 郭丁志
      * @Description //TODO 保存或者更新客户端信息

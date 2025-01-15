@@ -15,9 +15,7 @@ import top.jpower.core.exception.client.LogClient;
 import top.jpower.core.exception.client.RestLogClient;
 import top.jpower.core.exception.listener.ErrorLogListener;
 import top.jpower.core.exception.listener.OperateLogListener;
-import top.jpower.core.exception.model.UserDto;
-import top.jpower.core.util.utils.Fc;
-import top.jpower.jpower.module.dbs.config.LoginUserContext;
+import top.jpower.core.util.user.UserConfig;
 
 /**
  * 日志工具配置
@@ -31,7 +29,7 @@ public class JpowerLogConfig {
 
     @Bean
     public OperateLogAspect apiLogAspect(@Autowired(required = false) UserConfig userConfig) {
-        return new OperateLogAspect(Fc.notNull(userConfig)?userConfig.queryUser():new UserDto());
+        return new OperateLogAspect(userConfig);
     }
 
     @Bean
@@ -42,18 +40,6 @@ public class JpowerLogConfig {
     @Bean
     public ErrorLogListener errorLogListener(JpowerProperties jpowerProperties, @Autowired(required = false) LogClient logClient) {
         return new ErrorLogListener(jpowerProperties, logClient);
-    }
-
-    @Configuration(proxyBeanMethods = false)
-    @ConditionalOnMissingBean(UserConfig.class)
-    @ConditionalOnClass(LoginUserContext.class)
-    static class UserConfiguration {
-
-        @Bean
-        UserConfig userConfig() {
-             return new DefaultUserConfig();
-         }
-
     }
 
     @Configuration(proxyBeanMethods = false)

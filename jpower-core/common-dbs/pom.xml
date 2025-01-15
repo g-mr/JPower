@@ -56,12 +56,6 @@
             <version>${com.jpower.version}</version>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>top.jpower</groupId>-->
-<!--            <artifactId>common-auth</artifactId>-->
-<!--            <version>${com.jpower.version}</version>-->
-<!--        </dependency>-->
-
     </dependencies>
 
 </project>

@@ -3,12 +3,14 @@ package top.jpower.jpower.module.datascope;
 import com.baomidou.mybatisplus.extension.plugins.handler.DataPermissionHandler;
 import com.baomidou.mybatisplus.extension.plugins.inner.DataPermissionInterceptor;
 import com.github.pagehelper.autoconfigure.PageHelperProperties;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import top.jpower.core.util.user.UserConfig;
 import top.jpower.jpower.module.config.MybatisPlusConfig;
 import top.jpower.jpower.module.datascope.handler.DataScopeHandler;
 
@@ -21,20 +23,22 @@ import top.jpower.jpower.module.datascope.handler.DataScopeHandler;
  */
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureBefore({MybatisPlusConfig.class})
+@AutoConfigureAfter(UserConfig.class)
+@ConditionalOnProperty(value = {"jpower.datascope.enable"}, matchIfMissing = true)
+@ConditionalOnBean(UserConfig.class)
 public class DataScopeConfig {
 
 
     @Bean("dataScopeHandler")
     @ConditionalOnMissingBean({DataPermissionHandler.class})
-    public DataPermissionHandler dataScopeHandler() {
-        return new DataScopeHandler();
+    public DataPermissionHandler dataScopeHandler(UserConfig userConfig) {
+        return new DataScopeHandler(userConfig);
     }
 
     /**
      * 配置数据权限拦截器
      **/
     @Bean
-    @ConditionalOnProperty(value = {"jpower.datascope.enable"}, matchIfMissing = true)
     @ConditionalOnBean(DataPermissionHandler.class)
     @ConditionalOnMissingBean({DataPermissionInterceptor.class})
     public DataPermissionInterceptor dataScopeQueryInterceptor(PageHelperProperties properties, DataPermissionHandler dataPermissionHandler) {

@@ -2,12 +2,15 @@ package top.jpower.jpower.module.tenant;
 
 import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
 import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import top.jpower.core.util.user.UserConfig;
 import top.jpower.jpower.module.config.MybatisPlusConfig;
 
 /**
@@ -18,25 +21,40 @@ import top.jpower.jpower.module.config.MybatisPlusConfig;
  */
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureBefore({MybatisPlusConfig.class})
+@AutoConfigureAfter(UserConfig.class)
 @EnableConfigurationProperties({JpowerTenantProperties.class})
 public class TenantConfiguration {
 
+//    @Bean
+//    UserConfig userConfig() {
+//        return new UserConfig() {
+//            @Override
+//            public UserDto queryUser() {
+//                UserDto userDto = new UserDto();
+//                userDto.setTenantCode("123456");
+//                return userDto;
+//            }
+//        };
+//    }
+
     @Bean
     @ConditionalOnMissingBean({TenantLineHandler.class})
-    public TenantLineHandler tenantHandler(JpowerTenantProperties properties) {
-        return new JpowerTenantHandler(properties);
+    @ConditionalOnBean(UserConfig.class)
+    public TenantLineHandler tenantHandler(JpowerTenantProperties properties, UserConfig userConfig) {
+        return new JpowerTenantHandler(properties, userConfig);
     }
 
     @Bean
-    @ConditionalOnProperty(value = {"jpower.tenant.enable"}, matchIfMissing = true)
+    @ConditionalOnBean(TenantLineHandler.class)
     @ConditionalOnMissingBean({InsertBatchSomeColumnTenant.class})
     public InsertBatchSomeColumnTenant insertBatchSomeColumnTenant(TenantLineHandler tenantHandler) {
         return new InsertBatchSomeColumnTenant(tenantHandler);
     }
 
     @Bean
-    @ConditionalOnProperty(value = {"jpower.tenant.enable"}, matchIfMissing = true)
+    @ConditionalOnBean(TenantLineHandler.class)
     @ConditionalOnMissingBean({TenantLineInnerInterceptor.class})
+    @ConditionalOnProperty(value = {"jpower.tenant.enable"}, matchIfMissing = true)
     public TenantLineInnerInterceptor tenantSqlParser(TenantLineHandler tenantHandler) {
         TenantLineInnerInterceptor innerInterceptor = new TenantLineInnerInterceptor();
         innerInterceptor.setTenantLineHandler(tenantHandler);

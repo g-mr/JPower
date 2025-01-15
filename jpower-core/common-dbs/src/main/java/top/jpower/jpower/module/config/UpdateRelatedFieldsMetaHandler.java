@@ -1,10 +1,9 @@
 package top.jpower.jpower.module.config;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.reflection.MetaObject;
-import top.jpower.core.util.utils.Fc;
-import top.jpower.jpower.module.common.auth.RoleConstant;
-import top.jpower.jpower.module.dbs.config.LoginUserContext;
+import top.jpower.core.util.user.UserConfig;
 
 import java.util.Date;
 
@@ -14,7 +13,10 @@ import java.util.Date;
  * @Author 郭丁志
  * @Date 2020-07-09 17:35
  */
+@RequiredArgsConstructor
 public class UpdateRelatedFieldsMetaHandler implements MetaObjectHandler {
+
+    private final UserConfig userConfig;
 
     /**
      * 新增时配置的字段
@@ -51,7 +53,7 @@ public class UpdateRelatedFieldsMetaHandler implements MetaObjectHandler {
      * @Date 17:49 2020-07-09
      **/
     private Long getUserId(){
-        return Fc.isNull(LoginUserContext.getUserId()) ? RoleConstant.ANONYMOUS_ID: LoginUserContext.getUserId();
+        return userConfig.queryUser().getUserId();
     }
 
     /**
@@ -61,7 +63,7 @@ public class UpdateRelatedFieldsMetaHandler implements MetaObjectHandler {
      * @Date 17:49 2020-07-09
      **/
     private Long getOrg(){
-        return LoginUserContext.getOrgId();
+        return userConfig.queryUser().getOrgId();
     }
 
 }

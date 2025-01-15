@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -18,6 +19,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import top.jpower.core.deploy.support.YamlAndPropertySourceFactory;
+import top.jpower.core.util.user.UserConfig;
 import top.jpower.jpower.module.config.interceptor.DemoInterceptor;
 import top.jpower.jpower.module.config.interceptor.JpowerMybatisInterceptor;
 import top.jpower.jpower.module.config.interceptor.MybatisSqlPrintInterceptor;
@@ -52,8 +54,9 @@ public class MybatisPlusConfig {
 
     @Bean
     @ConditionalOnMissingBean
-    public UpdateRelatedFieldsMetaHandler updateRelatedFieldsMetaHandler(){
-        return new UpdateRelatedFieldsMetaHandler();
+    @ConditionalOnBean(UserConfig.class)
+    public UpdateRelatedFieldsMetaHandler updateRelatedFieldsMetaHandler(UserConfig userConfig){
+        return new UpdateRelatedFieldsMetaHandler(userConfig);
     }
 
     /**
@@ -61,6 +64,7 @@ public class MybatisPlusConfig {
      **/
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnBean(UpdateRelatedFieldsMetaHandler.class)
     public GlobalConfig globalConfig(UpdateRelatedFieldsMetaHandler metaHandler,
                                      ISqlInjector sqlInjector) {
         GlobalConfig globalConfig = new GlobalConfig();

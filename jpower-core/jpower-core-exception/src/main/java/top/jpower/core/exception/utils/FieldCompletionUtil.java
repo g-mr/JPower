@@ -3,7 +3,7 @@ package top.jpower.core.exception.utils;
 import com.alibaba.fastjson2.JSONObject;
 import top.jpower.core.deploy.property.JpowerProperties;
 import top.jpower.core.exception.model.LogDto;
-import top.jpower.core.exception.model.UserDto;
+import top.jpower.core.util.user.model.UserDto;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.WebUtil;
 

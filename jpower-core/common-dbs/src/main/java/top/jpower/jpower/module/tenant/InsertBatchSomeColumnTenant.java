@@ -67,7 +67,7 @@ public class InsertBatchSomeColumnTenant implements InnerInterceptor {
 
                     Object val = field.get(ob);
                     if (Fc.isNull(val)){
-                        field.set(ob, ((StringValue)tenantLineHandler.getTenantId()).getValue());
+                        field.set(ob, new StringValue(tenantLineHandler.getTenantId().toString()).getValue());
                     }
 
                 } catch (IllegalAccessException e){

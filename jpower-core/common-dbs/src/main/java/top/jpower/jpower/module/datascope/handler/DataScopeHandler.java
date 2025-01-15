@@ -5,6 +5,7 @@ import cn.hutool.core.bean.copier.CopyOptions;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.toolkit.LambdaUtils;
 import com.baomidou.mybatisplus.extension.plugins.handler.DataPermissionHandler;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.expression.Expression;
@@ -21,6 +22,8 @@ import org.springframework.util.StringUtils;
 import top.jpower.core.util.constants.CharPool;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.constants.TokenConstant;
+import top.jpower.core.util.user.UserConfig;
+import top.jpower.core.util.user.model.UserDto;
 import top.jpower.core.util.utils.*;
 import top.jpower.jpower.module.common.auth.UserInfo;
 import top.jpower.jpower.module.common.utils.ShieldUtil;
@@ -39,21 +42,23 @@ import java.util.stream.Collectors;
  * @Date 2021/4/23 0023 22:25
  */
 @Slf4j
+@RequiredArgsConstructor
 public class DataScopeHandler implements DataPermissionHandler {
 
+    protected final UserConfig userConfig;
 
     @SneakyThrows
     @Override
     public Expression getSqlSegment(Expression where, String mapperId) {
         DataScope dataScope = this.findDataScope(mapperId);
         //超级管理员不判断数据权限
-        if (Fc.isNull(dataScope) || ShieldUtil.isRoot()) {
+        if (Fc.isNull(dataScope) || userConfig.queryUser().isRoot()) {
             return where;
         }
 
         if (Fc.equalsValue(mapperId,dataScope.getScopeClass())){
 
-            if (Fc.isNull(LoginUserContext.get())){
+            if (Fc.isNull(userConfig.queryUser())){
                 log.warn("未获取到用户，无法进行数据权限过滤");
                 return CCJSqlParserUtil.parseCondExpression("1 = 2");
             }
@@ -67,7 +72,7 @@ public class DataScopeHandler implements DataPermissionHandler {
             if (Fc.equalsValue(dataScope.getScopeType(), DataScopeConstant.CUSTOM)){
                 Map<String,Object> userMap = ChainMap.<String,Object>create().build();
 
-                BeanUtil.beanToMap(LoginUserContext.get(),userMap,new CopyOptions(){
+                BeanUtil.beanToMap(userConfig.queryUser(),userMap,new CopyOptions(){
                     @Override
                     protected Object editFieldValue(String fieldName, Object fieldValue) {
 
@@ -98,7 +103,7 @@ public class DataScopeHandler implements DataPermissionHandler {
                     }
                 });
 
-                Set<Long> roleIds = CollectionUtil.newHashSet(LoginUserContext.get().getRoleIds());
+                Set<Long> roleIds = CollectionUtil.newHashSet(userConfig.queryUser().getRoleIds());
                 if (Fc.isEmpty(roleIds)){
                     //如果没有角色证明看不到数据
                     roleIds.add(-1L);
