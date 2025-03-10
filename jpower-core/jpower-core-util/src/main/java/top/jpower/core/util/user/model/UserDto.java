@@ -3,6 +3,7 @@ package top.jpower.core.util.user.model;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author mr.g
@@ -34,6 +35,15 @@ public class UserDto implements Serializable {
      * 部门ID
      **/
     private Long orgId;
+    /**
+     * 子级部门ID
+     **/
+    private List<Long> childOrgId;
+    /**
+     * 角色ID
+     **/
+    private List<Long> roleIds;
+
     /**
      * 是否超级用户
      **/

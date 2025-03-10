@@ -25,11 +25,8 @@ import top.jpower.core.util.constants.TokenConstant;
 import top.jpower.core.util.user.UserConfig;
 import top.jpower.core.util.user.model.UserDto;
 import top.jpower.core.util.utils.*;
-import top.jpower.jpower.module.common.auth.UserInfo;
-import top.jpower.jpower.module.common.utils.ShieldUtil;
 import top.jpower.jpower.module.constants.DataScopeConstant;
 import top.jpower.jpower.module.datascope.DataScope;
-import top.jpower.jpower.module.dbs.config.LoginUserContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,16 +48,23 @@ public class DataScopeHandler implements DataPermissionHandler {
     @Override
     public Expression getSqlSegment(Expression where, String mapperId) {
         DataScope dataScope = this.findDataScope(mapperId);
+        // 当前登录用户
+        UserDto userDto = userConfig.queryUser();
         //超级管理员不判断数据权限
-        if (Fc.isNull(dataScope) || userConfig.queryUser().isRoot()) {
+        if (Fc.isNull(dataScope)) {
             return where;
         }
 
         if (Fc.equalsValue(mapperId,dataScope.getScopeClass())){
 
-            if (Fc.isNull(userConfig.queryUser())){
+            if (Fc.isNull(userDto)){
                 log.warn("未获取到用户，无法进行数据权限过滤");
                 return CCJSqlParserUtil.parseCondExpression("1 = 2");
+            }
+
+            // 超级用户不做数据权限
+            if (userDto.isRoot()){
+                return where;
             }
 
             // 查询全部
@@ -72,7 +76,7 @@ public class DataScopeHandler implements DataPermissionHandler {
             if (Fc.equalsValue(dataScope.getScopeType(), DataScopeConstant.CUSTOM)){
                 Map<String,Object> userMap = ChainMap.<String,Object>create().build();
 
-                BeanUtil.beanToMap(userConfig.queryUser(),userMap,new CopyOptions(){
+                BeanUtil.beanToMap(userDto,userMap,new CopyOptions(){
                     @Override
                     protected Object editFieldValue(String fieldName, Object fieldValue) {
 
@@ -103,28 +107,28 @@ public class DataScopeHandler implements DataPermissionHandler {
                     }
                 });
 
-                Set<Long> roleIds = CollectionUtil.newHashSet(userConfig.queryUser().getRoleIds());
+                Set<Long> roleIds = CollectionUtil.newHashSet(userDto.getRoleIds());
                 if (Fc.isEmpty(roleIds)){
                     //如果没有角色证明看不到数据
                     roleIds.add(-1L);
                 }
-                userMap.put(PropertyNamer.methodToProperty(LambdaUtils.extract(UserInfo::getRoleIds).getImplMethodName()), StringUtils.collectionToDelimitedString(roleIds, StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE));
+                userMap.put(PropertyNamer.methodToProperty(LambdaUtils.extract(UserDto::getRoleIds).getImplMethodName()), StringUtils.collectionToDelimitedString(roleIds, StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE));
 
-                Set<Long> listOrgId = CollectionUtil.newHashSet(LoginUserContext.get().getChildOrgId());
+                Set<Long> listOrgId = CollectionUtil.newHashSet(userDto.getChildOrgId());
                 if (Fc.isEmpty(listOrgId)){
                     //如果没有子级部门证明看不到数据
                     listOrgId.add(-1L);
                 }
-                userMap.put(PropertyNamer.methodToProperty(LambdaUtils.extract(UserInfo::getChildOrgId).getImplMethodName()), StringUtils.collectionToDelimitedString(listOrgId, StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE));
+                userMap.put(PropertyNamer.methodToProperty(LambdaUtils.extract(UserDto::getChildOrgId).getImplMethodName()), StringUtils.collectionToDelimitedString(listOrgId, StringPool.COMMA,StringPool.SINGLE_QUOTE,StringPool.SINGLE_QUOTE));
 
                 andWhere = CCJSqlParserUtil.parseCondExpression(StringUtil.formatMap(Fc.toStr(dataScope.getScopeValue(),"1=1"),userMap));
             }else if (Fc.equalsValue(dataScope.getScopeType(), DataScopeConstant.OWN)){
-                andWhere = new EqualsTo().withLeftExpression(new Column(dataScope.getScopeColumn())).withRightExpression(new LongValue(Fc.toLong(LoginUserContext.getUserId(), -1L)));
+                andWhere = new EqualsTo().withLeftExpression(new Column(dataScope.getScopeColumn())).withRightExpression(new LongValue(Fc.toLong(userDto.getUserId(), -1L)));
             }else if (Fc.equalsValue(dataScope.getScopeType(), DataScopeConstant.OWN_ORG)){
-                andWhere = new EqualsTo().withLeftExpression(new Column(dataScope.getScopeColumn())).withRightExpression(new LongValue(Fc.toLong(LoginUserContext.getOrgId(), -1L)));
+                andWhere = new EqualsTo().withLeftExpression(new Column(dataScope.getScopeColumn())).withRightExpression(new LongValue(Fc.toLong(userDto.getOrgId(), -1L)));
             }else if (Fc.equalsValue(dataScope.getScopeType(), DataScopeConstant.OWN_ORG_CHILD)){
-                Set<Long> listOrgId = CollectionUtil.newHashSet(LoginUserContext.get().getChildOrgId());
-                listOrgId.add(LoginUserContext.getOrgId());
+                Set<Long> listOrgId = CollectionUtil.newHashSet(userDto.getChildOrgId());
+                listOrgId.add(userDto.getOrgId());
                 //如果没有部门就什么都不要查出来
                 listOrgId.add(-1L);
                 ItemsList itemsList = new ExpressionList(listOrgId.stream().filter(Fc::notNull).map(LongValue::new).collect(Collectors.toList()));
