@@ -44,7 +44,7 @@ public class DataScopeHandler implements DataPermissionHandler {
 
     protected final UserConfig userConfig;
 
-    @SneakyThrows
+    @SneakyThrows(Exception.class)
     @Override
     public Expression getSqlSegment(Expression where, String mapperId) {
         DataScope dataScope = this.findDataScope(mapperId);

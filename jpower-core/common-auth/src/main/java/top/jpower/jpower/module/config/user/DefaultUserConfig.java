@@ -6,6 +6,7 @@ import top.jpower.core.util.utils.BeanUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.module.common.auth.RoleConstant;
 import top.jpower.jpower.module.common.auth.UserInfo;
+import top.jpower.jpower.module.common.utils.ShieldUtil;
 import top.jpower.jpower.module.dbs.config.LoginUserContext;
 
 import java.util.Optional;
@@ -22,6 +23,7 @@ public class DefaultUserConfig implements UserConfig {
         UserInfo userInfo = Optional.ofNullable(LoginUserContext.get()).orElse(new UserInfo());
         UserDto userDto = BeanUtil.copyProperties(userInfo, UserDto.class);
         userDto.setRoot(Fc.contains(userInfo.getRoleIds(), RoleConstant.ROOT_ID));
+        userDto.setTenantCode(ShieldUtil.getTenantCode());
         return userDto;
     }
 

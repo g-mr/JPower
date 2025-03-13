@@ -40,7 +40,7 @@ public class UserDto implements Serializable {
      **/
     private List<Long> childOrgId;
     /**
-     * 角色ID
+     * 角色集合
      **/
     private List<Long> roleIds;
 
