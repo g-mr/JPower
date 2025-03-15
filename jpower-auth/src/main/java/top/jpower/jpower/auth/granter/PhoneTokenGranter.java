@@ -13,7 +13,7 @@ import top.jpower.jpower.feign.SmsClient;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.BusinessException;
 import top.jpower.core.exception.throwable.JpowerAssert;
-import top.jpower.jpower.module.common.auth.UserInfo;
+import top.jpower.core.dbs.common.auth.UserInfo;
 import top.jpower.jpower.utils.TokenUtil;
 import top.jpower.jpower.utils.UserUtil;
 

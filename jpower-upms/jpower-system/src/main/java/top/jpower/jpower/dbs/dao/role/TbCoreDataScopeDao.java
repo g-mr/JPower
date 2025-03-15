@@ -4,7 +4,7 @@ package top.jpower.jpower.dbs.dao.role;
 import org.springframework.stereotype.Repository;
 import top.jpower.jpower.dbs.dao.role.mapper.TbCoreDataScopeMapper;
 import top.jpower.jpower.dbs.entity.function.TbCoreDataScope;
-import top.jpower.jpower.module.dbs.dao.JpowerServiceImpl;
+import top.jpower.core.dbs.dbs.dao.JpowerServiceImpl;
 
 /**
  * @description

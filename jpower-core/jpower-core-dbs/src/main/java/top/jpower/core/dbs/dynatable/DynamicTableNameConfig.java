@@ -1,0 +1,40 @@
+package top.jpower.core.dbs.dynatable;
+
+import com.baomidou.mybatisplus.extension.plugins.handler.TableNameHandler;
+import com.baomidou.mybatisplus.extension.plugins.inner.DynamicTableNameInnerInterceptor;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import top.jpower.core.dbs.config.MybatisPlusConfig;
+import top.jpower.core.dbs.dynatable.handler.DynamicTableNameHandler;
+
+/**
+ * 动态表名配置
+ * @author mr.g
+ * @date 2021-11-21 19:22
+ */
+@AutoConfiguration
+@AutoConfigureBefore({MybatisPlusConfig.class})
+public class DynamicTableNameConfig {
+
+    @Bean
+    @ConditionalOnMissingBean({TableNameHandler.class})
+    public TableNameHandler tableNameHandler() {
+        return new DynamicTableNameHandler();
+    }
+
+    /**
+     * 配置动态表名拦截器
+     **/
+    @Bean
+    @ConditionalOnProperty(value = {"jpower.mybatis.dynamicTableName"}, matchIfMissing = false)
+    @ConditionalOnBean(TableNameHandler.class)
+    @ConditionalOnMissingBean({DynamicTableNameInnerInterceptor.class})
+    public DynamicTableNameInnerInterceptor dataScopeQueryInterceptor(TableNameHandler tableNameHandler) {
+        return new DynamicTableNameInnerInterceptor(tableNameHandler);
+    }
+}

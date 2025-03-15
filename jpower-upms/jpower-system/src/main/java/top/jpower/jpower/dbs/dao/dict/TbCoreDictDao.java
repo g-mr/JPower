@@ -3,7 +3,7 @@ package top.jpower.jpower.dbs.dao.dict;
 import org.springframework.stereotype.Repository;
 import top.jpower.jpower.dbs.dao.dict.mapper.TbCoreDictMapper;
 import top.jpower.jpower.dbs.entity.dict.TbCoreDict;
-import top.jpower.jpower.module.dbs.dao.JpowerServiceImpl;
+import top.jpower.core.dbs.dbs.dao.JpowerServiceImpl;
 
 /**
  * @ClassName TbCoreParamsDao

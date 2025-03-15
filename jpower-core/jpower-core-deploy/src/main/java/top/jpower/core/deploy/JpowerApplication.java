@@ -14,6 +14,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import top.jpower.core.deploy.service.DeployService;
 import top.jpower.core.util.constants.JpowerConstants;
+import top.jpower.core.util.utils.ClassUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.FileUtil;
 
@@ -91,6 +92,7 @@ public class JpowerApplication {
         props.setProperty("jpower.env", profile);
         props.setProperty("jpower.version", JpowerConstants.JPOWER_VESION);
         props.setProperty("jpower.is-local", String.valueOf(isLocalDev()));
+        props.setProperty("jpower.mainPackages", ClassUtil.getPackage(source));
         props.setProperty("spring.application.name", appName);
         props.setProperty("spring.profiles.active", profile);
         props.setProperty("spring.main.allow-bean-definition-overriding", "true");

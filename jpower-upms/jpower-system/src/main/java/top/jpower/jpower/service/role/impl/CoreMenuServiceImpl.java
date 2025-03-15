@@ -13,9 +13,9 @@ import top.jpower.jpower.dbs.entity.function.TbCoreFunctionMenu;
 import top.jpower.jpower.dbs.entity.function.TbCoreTopMenu;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
-import top.jpower.jpower.module.service.impl.BaseServiceImpl;
-import top.jpower.jpower.module.common.utils.ShieldUtil;
-import top.jpower.jpower.module.mp.support.Condition;
+import top.jpower.core.dbs.service.impl.BaseServiceImpl;
+import top.jpower.core.dbs.common.utils.ShieldUtil;
+import top.jpower.core.dbs.mp.support.Condition;
 import top.jpower.jpower.service.role.CoreMenuService;
 
 import java.util.ArrayList;

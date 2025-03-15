@@ -14,10 +14,10 @@ import top.jpower.core.util.rsp.ReturnJsonUtil;
 import top.jpower.core.util.utils.ChainMap;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.dbs.entity.city.TbCoreCity;
-import top.jpower.jpower.module.annotation.Function;
-import top.jpower.jpower.module.annotation.Menu;
+import top.jpower.core.dbs.annotation.Function;
+import top.jpower.core.dbs.annotation.Menu;
 import top.jpower.common.constants.CacheNames;
-import top.jpower.jpower.module.mp.support.WrapperKeyword;
+import top.jpower.core.dbs.mp.support.WrapperKeyword;
 import top.jpower.jpower.service.city.CoreCityService;
 import top.jpower.jpower.vo.CityVo;
 

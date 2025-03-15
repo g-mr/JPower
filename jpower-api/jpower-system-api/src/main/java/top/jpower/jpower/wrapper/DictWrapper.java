@@ -9,8 +9,8 @@ import top.jpower.core.util.utils.GuavaCache;
 import top.jpower.core.util.utils.MapUtil;
 import top.jpower.core.util.utils.WebUtil;
 import top.jpower.jpower.cache.dict.DictCache;
-import top.jpower.jpower.module.annotation.Dict;
-import top.jpower.jpower.module.dictbind.handler.IDictBindHandler;
+import top.jpower.core.dbs.dictbind.annotation.Dict;
+import top.jpower.core.dbs.dictbind.handler.IDictBindHandler;
 
 import java.util.List;
 import java.util.Map;

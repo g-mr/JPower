@@ -8,7 +8,7 @@ import top.jpower.common.constants.DefaultValConstants;
 import top.jpower.common.enums.FileStorageTypeEnum;
 import top.jpower.core.util.utils.*;
 import top.jpower.jpower.dbs.entity.TbResourceFile;
-import top.jpower.jpower.module.mp.support.Condition;
+import top.jpower.core.dbs.mp.support.Condition;
 import top.jpower.jpower.operate.FileOperate;
 import top.jpower.jpower.service.ResourceFileService;
 

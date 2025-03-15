@@ -15,8 +15,8 @@ import top.jpower.jpower.dbs.entity.dict.TbCoreDict;
 import top.jpower.jpower.dbs.entity.dict.TbCoreDictType;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
-import top.jpower.jpower.module.service.impl.BaseServiceImpl;
-import top.jpower.jpower.module.mp.support.Condition;
+import top.jpower.core.dbs.service.impl.BaseServiceImpl;
+import top.jpower.core.dbs.mp.support.Condition;
 import top.jpower.jpower.service.dict.CoreDictService;
 import top.jpower.jpower.service.dict.CoreDictTypeService;
 

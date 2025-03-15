@@ -3,8 +3,8 @@ package top.jpower.jpower.dbs.entity.city;
 import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import top.jpower.jpower.module.annotation.Dict;
-import top.jpower.jpower.module.dbs.entity.base.BaseEntity;
+import top.jpower.core.dbs.dictbind.annotation.Dict;
+import top.jpower.core.dbs.dbs.entity.base.BaseEntity;
 
 /**
  * @ClassName tbCoreCity

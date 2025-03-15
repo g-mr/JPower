@@ -4,7 +4,7 @@ package top.jpower.jpower.dbs.dao.role;
 import org.springframework.stereotype.Repository;
 import top.jpower.jpower.dbs.dao.role.mapper.TbCoreRoleFunctionMapper;
 import top.jpower.jpower.dbs.entity.role.TbCoreRoleFunction;
-import top.jpower.jpower.module.dbs.dao.JpowerServiceImpl;
+import top.jpower.core.dbs.dbs.dao.JpowerServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;

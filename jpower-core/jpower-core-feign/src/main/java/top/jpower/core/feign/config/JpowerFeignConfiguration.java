@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import top.jpower.core.feign.sentinel.handler.OriginParserHandler;
 import top.jpower.core.feign.sentinel.handler.UrlBlockHandler;
 import top.jpower.core.feign.sentinel.handler.UrlCleanerHandler;
-import top.jpower.jpower.module.common.utils.ShieldUtil;
+import top.jpower.core.dbs.common.utils.ShieldUtil;
 
 /**
  * @author goo

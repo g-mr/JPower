@@ -5,13 +5,12 @@ import top.jpower.common.constants.AppConstant;
 import top.jpower.core.deploy.JpowerApplication;
 import top.jpower.core.deploy.annotation.JpowerCloudApplication;
 import top.jpower.core.feign.annotation.EnableJpowerFeignClients;
+import top.jpower.core.redis.topic.RedisTopicScan;
 
 /**
- * @ClassName SpringBootStartApplication
- * @Description TODO 用户管理入口
- * @Author 郭丁志
- * @Date 2020-02-24 18:41
- * @Version 1.0
+ * 用户管理入口
+ *
+ * @author mr.g
  */
 @EnableTransactionManagement
 @JpowerCloudApplication

@@ -35,11 +35,11 @@ import top.jpower.jpower.dto.SmsValidateDto;
 import top.jpower.jpower.dto.TokenParameter;
 import top.jpower.jpower.feign.SmsClient;
 import top.jpower.jpower.feign.UserClient;
-import top.jpower.jpower.module.common.auth.SecureConstant;
-import top.jpower.jpower.module.common.auth.UserInfo;
-import top.jpower.jpower.module.common.utils.JwtUtil;
-import top.jpower.jpower.module.common.utils.ShieldUtil;
-import top.jpower.jpower.module.tenant.JpowerTenantProperties;
+import top.jpower.core.dbs.common.auth.SecureConstant;
+import top.jpower.core.dbs.common.auth.UserInfo;
+import top.jpower.core.dbs.common.utils.JwtUtil;
+import top.jpower.core.dbs.common.utils.ShieldUtil;
+import top.jpower.core.dbs.tenant.JpowerTenantProperties;
 import top.jpower.jpower.utils.TokenUtil;
 
 import java.util.Date;
@@ -49,8 +49,8 @@ import java.util.concurrent.TimeUnit;
 
 import static top.jpower.common.constants.CacheNames.TOKEN_USER_KEY;
 import static top.jpower.core.util.constants.JpowerConstants.HEADER_TENANT;
-import static top.jpower.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
-import static top.jpower.jpower.module.tenant.TenantConstant.getExpireTime;
+import static top.jpower.core.dbs.tenant.TenantConstant.DEFAULT_TENANT_CODE;
+import static top.jpower.core.dbs.tenant.TenantConstant.getExpireTime;
 
 /**
  * @ClassName LoginController

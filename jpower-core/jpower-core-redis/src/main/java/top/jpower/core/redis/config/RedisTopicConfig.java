@@ -1,10 +1,25 @@
 package top.jpower.core.redis.config;
 
+import cn.hutool.core.collection.ListUtil;
+import jodd.introspector.Mapper;
+import org.apache.commons.collections4.SetUtils;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
+import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
@@ -13,6 +28,7 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.Topic;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.util.ErrorHandler;
+import org.springframework.util.StringUtils;
 import top.jpower.core.redis.connection.RedisConnectionFactoryBroker;
 import top.jpower.core.redis.handler.JpowerRedisTemplate;
 import top.jpower.core.redis.topic.RedisTopic;
@@ -38,6 +54,19 @@ import java.util.stream.Collectors;
 @ConditionalOnBean(value = RedisConnectionFactory.class, name = "redisTemplate")
 public class RedisTopicConfig {
 
+    @Bean
+    @ConditionalOnMissingBean(RedisTopicScannerConfigurer.class)
+    public RedisTopicScannerConfigurer redisTopicScannerConfigurer(BeanFactory beanFactory){
+        RedisTopicScannerConfigurer configurer = new RedisTopicScannerConfigurer();
+        if (!AutoConfigurationPackages.has(beanFactory)) {
+            configurer.getBasePackages().add(ClassUtil.getPackage(SpringUtil.getMainClass()));
+        } else {
+            configurer.getBasePackages().addAll(AutoConfigurationPackages.get(beanFactory));
+        }
+        return configurer;
+    }
+
+
     /**
      * 构造监听器
      *
@@ -50,15 +79,10 @@ public class RedisTopicConfig {
      **/
     @Bean
     @ConditionalOnMissingBean
-    public RedisMessageListenerContainer redisContainer(@Autowired(required = false) RedisTopicScannerConfigurer scannerConfigurer,
+    public RedisMessageListenerContainer redisContainer(RedisTopicScannerConfigurer scannerConfigurer,
                                                         @Autowired(required = false) ErrorHandler errorHandler,
                                                         RedisConnectionFactory redisConnectionFactory,
                                                         RedisTemplate<String, Object> redisTemplate) {
-
-        if (Fc.isNull(scannerConfigurer)){
-            scannerConfigurer = new RedisTopicScannerConfigurer();
-            scannerConfigurer.getBasePackages().add(ClassUtil.getPackage(SpringUtil.getMainClass()));
-        }
 
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
 

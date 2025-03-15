@@ -35,11 +35,11 @@ import top.jpower.jpower.dbs.dao.mapper.TbCoreUserMapper;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
 import top.jpower.jpower.dbs.entity.TbCoreUserRole;
 import top.jpower.jpower.dbs.entity.tenant.TbCoreTenant;
-import top.jpower.jpower.module.common.auth.RoleConstant;
-import top.jpower.jpower.module.common.utils.ShieldUtil;
-import top.jpower.jpower.module.mp.support.Condition;
-import top.jpower.jpower.module.page.PaginationContext;
-import top.jpower.jpower.module.service.impl.BaseServiceImpl;
+import top.jpower.core.dbs.common.auth.RoleConstant;
+import top.jpower.core.dbs.common.utils.ShieldUtil;
+import top.jpower.core.dbs.mp.support.Condition;
+import top.jpower.core.dbs.page.PaginationContext;
+import top.jpower.core.dbs.service.impl.BaseServiceImpl;
 import top.jpower.jpower.service.CoreUserService;
 import top.jpower.jpower.vo.UserVo;
 
@@ -50,9 +50,9 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static top.jpower.common.constants.CacheNames.TOKEN_USER_KEY;
-import static top.jpower.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
-import static top.jpower.jpower.module.tenant.TenantConstant.TENANT_ACCOUNT_NUMBER;
-import static top.jpower.jpower.module.tenant.TenantConstant.getAccountNumber;
+import static top.jpower.core.dbs.tenant.TenantConstant.DEFAULT_TENANT_CODE;
+import static top.jpower.core.dbs.tenant.TenantConstant.TENANT_ACCOUNT_NUMBER;
+import static top.jpower.core.dbs.tenant.TenantConstant.getAccountNumber;
 
 /**
  * @author mr.gmac

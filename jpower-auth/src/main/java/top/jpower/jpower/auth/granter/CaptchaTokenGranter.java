@@ -9,7 +9,7 @@ import top.jpower.core.util.utils.StringUtil;
 import top.jpower.jpower.auth.AuthUserInfo;
 import top.jpower.jpower.auth.TokenGranter;
 import top.jpower.jpower.dto.TokenParameter;
-import top.jpower.jpower.module.common.auth.UserInfo;
+import top.jpower.core.dbs.common.auth.UserInfo;
 import top.jpower.common.constants.CacheNames;
 import top.jpower.jpower.utils.TokenUtil;
 

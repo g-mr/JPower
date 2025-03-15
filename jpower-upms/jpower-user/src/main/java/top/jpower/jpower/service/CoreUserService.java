@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageInfo;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
-import top.jpower.jpower.module.service.BaseService;
+import top.jpower.core.dbs.service.BaseService;
 import top.jpower.jpower.vo.UserVo;
 
 import java.util.List;

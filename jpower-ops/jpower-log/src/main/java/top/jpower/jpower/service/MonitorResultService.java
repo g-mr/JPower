@@ -2,7 +2,7 @@ package top.jpower.jpower.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import top.jpower.jpower.dbs.entity.TbLogMonitorResult;
-import top.jpower.jpower.module.service.BaseService;
+import top.jpower.core.dbs.service.BaseService;
 
 import java.util.Map;
 

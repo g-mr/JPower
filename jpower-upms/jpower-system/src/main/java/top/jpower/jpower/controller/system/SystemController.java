@@ -11,12 +11,12 @@ import top.jpower.core.util.rsp.ResponseData;
 import top.jpower.core.util.rsp.ReturnJsonUtil;
 import top.jpower.core.util.utils.ChainMap;
 import top.jpower.core.boot.controller.BaseController;
-import top.jpower.jpower.module.tenant.JpowerTenantProperties;
+import top.jpower.core.dbs.tenant.JpowerTenantProperties;
 
 import java.util.Map;
 
-import static top.jpower.jpower.module.common.auth.RoleConstant.ANONYMOUS_ID;
-import static top.jpower.jpower.module.common.auth.RoleConstant.ROOT_ID;
+import static top.jpower.core.dbs.common.auth.RoleConstant.ANONYMOUS_ID;
+import static top.jpower.core.dbs.common.auth.RoleConstant.ROOT_ID;
 
 /**
  * @author mr.g

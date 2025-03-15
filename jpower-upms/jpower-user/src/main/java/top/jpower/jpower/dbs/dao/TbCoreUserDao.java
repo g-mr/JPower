@@ -9,17 +9,17 @@ import top.jpower.jpower.cache.SystemCache;
 import top.jpower.jpower.cache.UserCache;
 import top.jpower.jpower.dbs.dao.mapper.TbCoreUserMapper;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
-import top.jpower.jpower.module.common.utils.ShieldUtil;
-import top.jpower.jpower.module.dbs.dao.BaseDaoWrapper;
-import top.jpower.jpower.module.dbs.dao.JpowerServiceImpl;
-import top.jpower.jpower.module.mp.support.Condition;
+import top.jpower.core.dbs.common.utils.ShieldUtil;
+import top.jpower.core.dbs.dbs.dao.BaseDaoWrapper;
+import top.jpower.core.dbs.dbs.dao.JpowerServiceImpl;
+import top.jpower.core.dbs.mp.support.Condition;
 import top.jpower.jpower.vo.UserVo;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static top.jpower.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
+import static top.jpower.core.dbs.tenant.TenantConstant.DEFAULT_TENANT_CODE;
 
 /**
  * @author mr.gmac

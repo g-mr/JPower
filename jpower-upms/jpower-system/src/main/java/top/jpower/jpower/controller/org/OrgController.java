@@ -17,9 +17,9 @@ import top.jpower.core.util.rsp.ResponseData;
 import top.jpower.core.util.rsp.ReturnJsonUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.dbs.entity.org.TbCoreOrg;
-import top.jpower.jpower.module.annotation.Function;
-import top.jpower.jpower.module.annotation.Menu;
-import top.jpower.jpower.module.page.PaginationContext;
+import top.jpower.core.dbs.annotation.Function;
+import top.jpower.core.dbs.annotation.Menu;
+import top.jpower.core.dbs.page.PaginationContext;
 import top.jpower.jpower.service.org.CoreOrgService;
 import top.jpower.jpower.vo.OrgVo;
 

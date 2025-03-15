@@ -4,8 +4,8 @@ import org.springframework.stereotype.Repository;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.dbs.dao.client.mapper.TbCoreClientMapper;
 import top.jpower.jpower.dbs.entity.client.TbCoreClient;
-import top.jpower.jpower.module.dbs.dao.JpowerServiceImpl;
-import top.jpower.jpower.module.mp.support.Condition;
+import top.jpower.core.dbs.dbs.dao.JpowerServiceImpl;
+import top.jpower.core.dbs.mp.support.Condition;
 
 /**
  * @ClassName TbCoreClientDao

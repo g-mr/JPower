@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.Constants;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
-import top.jpower.jpower.module.dbs.dao.mapper.base.JpowerBaseMapper;
+import top.jpower.core.dbs.dbs.dao.mapper.base.JpowerBaseMapper;
 import top.jpower.jpower.vo.DataFunctionVo;
 import top.jpower.jpower.vo.FunctionVo;
 

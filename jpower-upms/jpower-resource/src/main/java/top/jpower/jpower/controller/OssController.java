@@ -15,13 +15,13 @@ import top.jpower.core.util.rsp.ReturnJsonUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.validated.UpdateGroup;
 import top.jpower.jpower.dbs.entity.TbResourceOss;
-import top.jpower.jpower.module.annotation.Function;
-import top.jpower.jpower.module.annotation.Menu;
+import top.jpower.core.dbs.annotation.Function;
+import top.jpower.core.dbs.annotation.Menu;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.core.boot.controller.BaseController;
-import top.jpower.jpower.module.page.PaginationContext;
-import top.jpower.jpower.module.mp.support.Condition;
+import top.jpower.core.dbs.page.PaginationContext;
+import top.jpower.core.dbs.mp.support.Condition;
 import top.jpower.jpower.operate.FileOperateBuilder;
 import top.jpower.jpower.service.ResourceOssService;
 

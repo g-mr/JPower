@@ -3,7 +3,7 @@ package top.jpower.jpower.dbs.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import top.jpower.jpower.module.annotation.Dict;
+import top.jpower.core.dbs.dictbind.annotation.Dict;
 
 /**
  * @Author mr.g

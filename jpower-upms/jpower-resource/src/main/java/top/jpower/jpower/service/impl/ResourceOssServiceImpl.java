@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import top.jpower.jpower.dbs.dao.TbResourceOssDao;
 import top.jpower.jpower.dbs.dao.mapper.TbResourceOssMapper;
 import top.jpower.jpower.dbs.entity.TbResourceOss;
-import top.jpower.jpower.module.service.impl.BaseServiceImpl;
+import top.jpower.core.dbs.service.impl.BaseServiceImpl;
 import top.jpower.jpower.service.ResourceOssService;
 
 import java.util.List;

@@ -2,8 +2,8 @@ package top.jpower.jpower.dbs.dao.mapper;
 
 import org.springframework.stereotype.Component;
 import top.jpower.jpower.dbs.entity.TbLogError;
-import top.jpower.jpower.module.annotation.NoSqlLog;
-import top.jpower.jpower.module.dbs.dao.mapper.base.JpowerBaseMapper;
+import top.jpower.core.dbs.config.annotation.NoSqlLog;
+import top.jpower.core.dbs.dbs.dao.mapper.base.JpowerBaseMapper;
 
 /**
  * @Author mr.g

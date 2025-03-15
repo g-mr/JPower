@@ -38,12 +38,12 @@ import top.jpower.jpower.dbs.entity.TbCoreUser;
 import top.jpower.jpower.dbs.entity.tenant.TbCoreTenant;
 import top.jpower.jpower.dto.ValidateDto;
 import top.jpower.jpower.feign.SmsClient;
-import top.jpower.jpower.module.annotation.Function;
-import top.jpower.jpower.module.annotation.Menu;
-import top.jpower.jpower.module.common.auth.UserInfo;
-import top.jpower.jpower.module.common.utils.ShieldUtil;
-import top.jpower.jpower.module.mp.support.Condition;
-import top.jpower.jpower.module.tenant.JpowerTenantProperties;
+import top.jpower.core.dbs.annotation.Function;
+import top.jpower.core.dbs.annotation.Menu;
+import top.jpower.core.dbs.common.auth.UserInfo;
+import top.jpower.core.dbs.common.utils.ShieldUtil;
+import top.jpower.core.dbs.mp.support.Condition;
+import top.jpower.core.dbs.tenant.JpowerTenantProperties;
 import top.jpower.jpower.service.CoreUserService;
 import top.jpower.jpower.vo.UserVo;
 
@@ -56,9 +56,9 @@ import static top.jpower.common.constants.CacheNames.TOKEN_USER_KEY;
 import static top.jpower.core.exception.annotation.OperateLog.BusinessType.DELETE;
 import static top.jpower.core.exception.annotation.OperateLog.BusinessType.UPDATE;
 import static top.jpower.core.util.constants.JpowerConstants.VALIDATE_SMS_CODE;
-import static top.jpower.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
-import static top.jpower.jpower.module.tenant.TenantConstant.TENANT_ACCOUNT_NUMBER;
-import static top.jpower.jpower.module.tenant.TenantConstant.getAccountNumber;
+import static top.jpower.core.dbs.tenant.TenantConstant.DEFAULT_TENANT_CODE;
+import static top.jpower.core.dbs.tenant.TenantConstant.TENANT_ACCOUNT_NUMBER;
+import static top.jpower.core.dbs.tenant.TenantConstant.getAccountNumber;
 
 @Slf4j
 @Api(tags = "用户管理")

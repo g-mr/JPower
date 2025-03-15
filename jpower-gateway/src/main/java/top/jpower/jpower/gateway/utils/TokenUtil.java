@@ -8,12 +8,12 @@ import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.SpringUtil;
 import top.jpower.core.util.utils.StringUtil;
-import top.jpower.jpower.module.common.auth.SecureConstant;
-import top.jpower.jpower.module.common.utils.JwtUtil;
-import top.jpower.jpower.module.common.utils.ShieldUtil;
-import top.jpower.jpower.module.properties.AuthProperties;
+import top.jpower.core.dbs.common.auth.SecureConstant;
+import top.jpower.core.dbs.common.utils.JwtUtil;
+import top.jpower.core.dbs.common.utils.ShieldUtil;
+import top.jpower.core.dbs.properties.AuthProperties;
 
-import static top.jpower.jpower.module.common.auth.SecureConstant.BASIC_HEADER_PREFIX;
+import static top.jpower.core.dbs.common.auth.SecureConstant.BASIC_HEADER_PREFIX;
 
 /**
  * @ClassName TokenUtil

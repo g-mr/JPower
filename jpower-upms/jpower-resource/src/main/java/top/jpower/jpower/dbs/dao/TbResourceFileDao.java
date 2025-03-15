@@ -9,9 +9,9 @@ import top.jpower.core.util.utils.MapUtil;
 import top.jpower.jpower.dbs.dao.mapper.TbResourceFileMapper;
 import top.jpower.jpower.dbs.entity.TbResourceFile;
 import top.jpower.jpower.dbs.entity.TbResourceOss;
-import top.jpower.jpower.module.page.PaginationContext;
-import top.jpower.jpower.module.dbs.dao.JpowerServiceImpl;
-import top.jpower.jpower.module.mp.support.Condition;
+import top.jpower.core.dbs.page.PaginationContext;
+import top.jpower.core.dbs.dbs.dao.JpowerServiceImpl;
+import top.jpower.core.dbs.mp.support.Condition;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -3,7 +3,7 @@ package top.jpower.jpower.service.role.impl;
 import org.springframework.stereotype.Service;
 import top.jpower.jpower.dbs.dao.role.mapper.TbCoreRoleDataMapper;
 import top.jpower.jpower.dbs.entity.role.TbCoreRoleData;
-import top.jpower.jpower.module.service.impl.BaseServiceImpl;
+import top.jpower.core.dbs.service.impl.BaseServiceImpl;
 import top.jpower.jpower.service.role.CoreRoleDataService;
 
 /**

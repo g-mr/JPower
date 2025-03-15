@@ -21,13 +21,13 @@ import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.StringUtil;
 import top.jpower.core.util.utils.WebUtil;
 import top.jpower.jpower.dbs.entity.tenant.TbCoreTenant;
-import top.jpower.jpower.module.annotation.Function;
-import top.jpower.jpower.module.annotation.Menu;
+import top.jpower.core.dbs.annotation.Function;
+import top.jpower.core.dbs.annotation.Menu;
 import top.jpower.common.constants.CacheNames;
 import top.jpower.core.redis.cache.CacheUtil;
-import top.jpower.jpower.module.common.utils.ShieldUtil;
-import top.jpower.jpower.module.mp.support.Condition;
-import top.jpower.jpower.module.page.PaginationContext;
+import top.jpower.core.dbs.common.utils.ShieldUtil;
+import top.jpower.core.dbs.mp.support.Condition;
+import top.jpower.core.dbs.page.PaginationContext;
 import top.jpower.jpower.service.tenant.TenantService;
 
 import java.util.Date;

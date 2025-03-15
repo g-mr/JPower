@@ -3,7 +3,7 @@ package top.jpower.jpower.dbs.dao;
 import org.springframework.stereotype.Repository;
 import top.jpower.jpower.dbs.dao.mapper.LogMonitorParamMapper;
 import top.jpower.jpower.dbs.entity.TbLogMonitorParam;
-import top.jpower.jpower.module.dbs.dao.JpowerServiceImpl;
+import top.jpower.core.dbs.dbs.dao.JpowerServiceImpl;
 
 /**
  * @author mr.g

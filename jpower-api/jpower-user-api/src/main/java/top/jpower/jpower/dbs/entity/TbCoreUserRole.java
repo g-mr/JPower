@@ -2,7 +2,7 @@ package top.jpower.jpower.dbs.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
-import top.jpower.jpower.module.dbs.entity.base.BaseEntity;
+import top.jpower.core.dbs.dbs.entity.base.BaseEntity;
 
 import java.io.Serializable;
 

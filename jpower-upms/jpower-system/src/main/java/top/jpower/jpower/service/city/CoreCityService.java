@@ -3,7 +3,7 @@ package top.jpower.jpower.service.city;
 
 import cn.hutool.core.lang.tree.Tree;
 import top.jpower.jpower.dbs.entity.city.TbCoreCity;
-import top.jpower.jpower.module.service.BaseService;
+import top.jpower.core.dbs.service.BaseService;
 import top.jpower.jpower.vo.CityVo;
 
 import java.util.List;

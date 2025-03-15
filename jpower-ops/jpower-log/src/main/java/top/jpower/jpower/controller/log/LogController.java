@@ -15,11 +15,11 @@ import top.jpower.core.util.rsp.ResponseData;
 import top.jpower.core.util.rsp.ReturnJsonUtil;
 import top.jpower.jpower.dbs.entity.TbLogError;
 import top.jpower.jpower.dbs.entity.TbLogOperate;
-import top.jpower.jpower.module.annotation.Function;
-import top.jpower.jpower.module.annotation.Menu;
+import top.jpower.core.dbs.annotation.Function;
+import top.jpower.core.dbs.annotation.Menu;
 import top.jpower.core.boot.controller.BaseController;
-import top.jpower.jpower.module.mp.support.Condition;
-import top.jpower.jpower.module.page.PaginationContext;
+import top.jpower.core.dbs.mp.support.Condition;
+import top.jpower.core.dbs.page.PaginationContext;
 import top.jpower.jpower.service.ErrorLogService;
 import top.jpower.jpower.service.OperateLogService;
 

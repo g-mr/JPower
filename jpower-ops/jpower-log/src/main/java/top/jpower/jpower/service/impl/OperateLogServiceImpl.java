@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.jpower.jpower.dbs.dao.mapper.LogOperateMapper;
 import top.jpower.jpower.dbs.entity.TbLogOperate;
-import top.jpower.jpower.module.service.impl.BaseServiceImpl;
+import top.jpower.core.dbs.service.impl.BaseServiceImpl;
 import top.jpower.jpower.service.OperateLogService;
 
 /**

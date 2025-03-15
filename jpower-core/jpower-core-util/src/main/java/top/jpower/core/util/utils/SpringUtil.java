@@ -53,7 +53,6 @@ public class SpringUtil extends cn.hutool.extra.spring.SpringUtil implements App
      **/
     public static Class<?> getMainClass(){
         return springApplication.getMainApplicationClass();
-
     }
 
     @Override

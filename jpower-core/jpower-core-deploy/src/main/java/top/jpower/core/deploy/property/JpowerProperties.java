@@ -1,6 +1,7 @@
 package top.jpower.core.deploy.property;
 
 import lombok.Data;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -45,6 +46,11 @@ public class JpowerProperties {
 	 * 端口
 	 */
 	private Integer port;
+
+	/**
+	 * 主包名
+	 */
+	private String mainPackages;
 
 	public enum SERVER {
 		CLOUD,BOOT

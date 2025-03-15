@@ -6,8 +6,8 @@ import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.dbs.dao.TbCoreUserRoleDao;
 import top.jpower.jpower.dbs.dao.mapper.TbCoreUserRoleMapper;
 import top.jpower.jpower.dbs.entity.TbCoreUserRole;
-import top.jpower.jpower.module.service.impl.BaseServiceImpl;
-import top.jpower.jpower.module.mp.support.Condition;
+import top.jpower.core.dbs.service.impl.BaseServiceImpl;
+import top.jpower.core.dbs.mp.support.Condition;
 import top.jpower.jpower.service.CoreUserRoleService;
 
 import java.util.List;

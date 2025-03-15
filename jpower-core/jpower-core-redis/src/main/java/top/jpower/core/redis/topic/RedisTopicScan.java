@@ -6,6 +6,8 @@ import org.springframework.core.annotation.AliasFor;
 import java.lang.annotation.*;
 
 /**
+ * 扫描Redis监听实现
+ *
  * @author mr.g
  * @date 2024-10-31 23:35
  * @description

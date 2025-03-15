@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
-import top.jpower.jpower.module.dbs.entity.base.BaseEntity;
+import top.jpower.core.dbs.dbs.entity.base.BaseEntity;
 
 import java.util.Date;
 import java.util.Map;

@@ -2,7 +2,7 @@ package top.jpower.jpower.auth;
 
 import org.springframework.context.annotation.Configuration;
 import top.jpower.jpower.dto.TokenParameter;
-import top.jpower.jpower.module.common.auth.UserInfo;
+import top.jpower.core.dbs.common.auth.UserInfo;
 
 /**
  * 授权需求实现<br/>

@@ -1,7 +1,7 @@
 package top.jpower.jpower.service;
 
 import top.jpower.jpower.dbs.entity.TbLogError;
-import top.jpower.jpower.module.service.BaseService;
+import top.jpower.core.dbs.service.BaseService;
 
 /**
  * @Author mr.g

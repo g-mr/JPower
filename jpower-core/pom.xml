@@ -8,13 +8,13 @@
     </parent>
 
     <modules>
+        <module>common-auth</module>
         <module>jpower-core-deploy</module>
         <module>jpower-core-nacos</module>
-        <module>common-auth</module>
         <module>jpower-core-redis</module>
         <module>jpower-core-swagger</module>
         <module>jpower-core-util</module>
-        <module>common-dbs</module>
+        <module>jpower-core-dbs</module>
         <module>jpower-core-seata</module>
         <module>jpower-core-exception</module>
         <module>jpower-core-boot</module>

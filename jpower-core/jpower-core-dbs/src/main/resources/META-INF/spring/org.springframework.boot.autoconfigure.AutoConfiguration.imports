@@ -1,0 +1,7 @@
+top.jpower.core.dbs.config.DruidConfig
+top.jpower.core.dbs.config.MybatisPlusConfig
+top.jpower.core.dbs.datascope.DataScopeConfig
+top.jpower.core.dbs.dictbind.DictBindConfig
+top.jpower.core.dbs.dynatable.DynamicTableNameConfig
+top.jpower.core.dbs.page.PageConfig
+top.jpower.core.dbs.tenant.TenantConfiguration

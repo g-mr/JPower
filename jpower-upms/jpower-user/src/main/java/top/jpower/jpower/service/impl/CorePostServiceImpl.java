@@ -11,17 +11,17 @@ import top.jpower.jpower.dbs.dao.TbCoreUserDao;
 import top.jpower.jpower.dbs.dao.mapper.TbCorePostMapper;
 import top.jpower.jpower.dbs.entity.TbCorePost;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
-import top.jpower.jpower.module.page.PaginationContext;
-import top.jpower.jpower.module.service.impl.BaseServiceImpl;
-import top.jpower.jpower.module.common.utils.ShieldUtil;
-import top.jpower.jpower.module.mp.support.Condition;
+import top.jpower.core.dbs.page.PaginationContext;
+import top.jpower.core.dbs.service.impl.BaseServiceImpl;
+import top.jpower.core.dbs.common.utils.ShieldUtil;
+import top.jpower.core.dbs.mp.support.Condition;
 import top.jpower.jpower.service.CorePostService;
 import top.jpower.jpower.vo.PostVo;
 
 import java.util.List;
 import java.util.Map;
 
-import static top.jpower.jpower.module.tenant.TenantConstant.TENANT_CODE;
+import static top.jpower.core.dbs.tenant.TenantConstant.TENANT_CODE;
 
 /**
  * @author mr.g

@@ -47,7 +47,7 @@
             <exclusions>
                 <exclusion>
                     <groupId>top.jpower</groupId>
-                    <artifactId>common-dbs</artifactId>
+                    <artifactId>jpower-core-dbs</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>top.jpower</groupId>

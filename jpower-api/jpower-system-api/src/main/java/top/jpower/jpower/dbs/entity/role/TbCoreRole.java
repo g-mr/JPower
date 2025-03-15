@@ -3,8 +3,8 @@ package top.jpower.jpower.dbs.entity.role;
 import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import top.jpower.jpower.module.annotation.Dict;
-import top.jpower.jpower.module.tenant.entity.TenantEntity;
+import top.jpower.core.dbs.dictbind.annotation.Dict;
+import top.jpower.core.dbs.tenant.entity.TenantEntity;
 
 import java.io.Serializable;
 

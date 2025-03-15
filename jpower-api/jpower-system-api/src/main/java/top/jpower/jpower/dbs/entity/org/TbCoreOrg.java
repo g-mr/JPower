@@ -2,8 +2,8 @@ package top.jpower.jpower.dbs.entity.org;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import top.jpower.jpower.module.annotation.Dict;
-import top.jpower.jpower.module.tenant.entity.TenantEntity;
+import top.jpower.core.dbs.dictbind.annotation.Dict;
+import top.jpower.core.dbs.tenant.entity.TenantEntity;
 
 /**
  * @ClassName TbCoreUser

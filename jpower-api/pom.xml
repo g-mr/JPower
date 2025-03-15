@@ -33,7 +33,7 @@
 
         <dependency>
             <groupId>top.jpower</groupId>
-            <artifactId>common-dbs</artifactId>
+            <artifactId>jpower-core-dbs</artifactId>
             <version>${com.jpower.version}</version>
             <optional>true</optional>
         </dependency>

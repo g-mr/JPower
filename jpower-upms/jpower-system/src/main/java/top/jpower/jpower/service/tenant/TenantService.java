@@ -1,7 +1,7 @@
 package top.jpower.jpower.service.tenant;
 
 import top.jpower.jpower.dbs.entity.tenant.TbCoreTenant;
-import top.jpower.jpower.module.service.BaseService;
+import top.jpower.core.dbs.service.BaseService;
 
 import java.util.Date;
 import java.util.List;

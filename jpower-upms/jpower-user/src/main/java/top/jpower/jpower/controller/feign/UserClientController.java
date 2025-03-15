@@ -11,7 +11,7 @@ import top.jpower.jpower.dbs.entity.TbCorePost;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
 import top.jpower.jpower.dto.ValidatePasswordDto;
 import top.jpower.jpower.feign.UserClient;
-import top.jpower.jpower.module.mp.support.Condition;
+import top.jpower.core.dbs.mp.support.Condition;
 import top.jpower.jpower.service.CorePostService;
 import top.jpower.jpower.service.CoreUserRoleService;
 import top.jpower.jpower.service.CoreUserService;

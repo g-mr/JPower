@@ -12,8 +12,8 @@ import top.jpower.jpower.dbs.dao.role.TbCoreRoleDataDao;
 import top.jpower.jpower.dbs.dao.role.mapper.TbCoreDataScopeMapper;
 import top.jpower.jpower.dbs.entity.function.TbCoreDataScope;
 import top.jpower.jpower.dbs.entity.role.TbCoreRoleData;
-import top.jpower.jpower.module.service.impl.BaseServiceImpl;
-import top.jpower.jpower.module.mp.support.Condition;
+import top.jpower.core.dbs.service.impl.BaseServiceImpl;
+import top.jpower.core.dbs.mp.support.Condition;
 import top.jpower.jpower.service.role.CoreDataScopeService;
 
 import java.util.ArrayList;

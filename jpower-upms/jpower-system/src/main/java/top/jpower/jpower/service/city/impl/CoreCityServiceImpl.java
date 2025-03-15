@@ -17,8 +17,8 @@ import top.jpower.jpower.dbs.dao.city.mapper.TbCoreCityMapper;
 import top.jpower.jpower.dbs.entity.city.TbCoreCity;
 import top.jpower.common.constants.CacheNames;
 import top.jpower.core.redis.cache.CacheUtil;
-import top.jpower.jpower.module.mp.support.Condition;
-import top.jpower.jpower.module.service.impl.BaseServiceImpl;
+import top.jpower.core.dbs.mp.support.Condition;
+import top.jpower.core.dbs.service.impl.BaseServiceImpl;
 import top.jpower.jpower.service.city.CoreCityService;
 import top.jpower.jpower.vo.CityVo;
 
@@ -42,10 +42,10 @@ public class CoreCityServiceImpl extends BaseServiceImpl<TbCoreCityMapper, TbCor
     }
 
     @Cacheable(value = CacheNames.CITY_PARENT_LIST_REDIS_KEY,key = "#coreCity.toString()" +
-            ".concat(T(top.jpower.jpower.module.page.PaginationContext).pageNum)" +
-            ".concat(T(top.jpower.jpower.module.page.PaginationContext).pageSize)" +
-            ".concat(T(top.jpower.jpower.module.page.PaginationContext).asc)" +
-            ".concat(T(top.jpower.jpower.module.page.PaginationContext).desc)")
+            ".concat(T(top.jpower.core.dbs.page.PaginationContext).pageNum)" +
+            ".concat(T(top.jpower.core.dbs.page.PaginationContext).pageSize)" +
+            ".concat(T(top.jpower.core.dbs.page.PaginationContext).asc)" +
+            ".concat(T(top.jpower.core.dbs.page.PaginationContext).desc)")
     @Override
     public List<TbCoreCity> list(TbCoreCity coreCity) {
         return coreCityDao.list(Condition.getQueryWrapper(coreCity).lambda().orderByAsc(TbCoreCity::getSortNum));

@@ -25,12 +25,12 @@ import top.jpower.jpower.dbs.dao.role.mapper.TbCoreFunctionMapper;
 import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
 import top.jpower.jpower.dbs.entity.function.TbCoreFunctionMenu;
 import top.jpower.jpower.dbs.entity.role.TbCoreRoleFunction;
-import top.jpower.jpower.module.annotation.Menu;
-import top.jpower.jpower.module.common.auth.RoleConstant;
-import top.jpower.jpower.module.service.impl.BaseServiceImpl;
-import top.jpower.jpower.module.common.utils.ShieldUtil;
-import top.jpower.jpower.module.mp.support.Condition;
-import top.jpower.jpower.module.mp.support.LambdaTreeWrapper;
+import top.jpower.core.dbs.annotation.Menu;
+import top.jpower.core.dbs.common.auth.RoleConstant;
+import top.jpower.core.dbs.service.impl.BaseServiceImpl;
+import top.jpower.core.dbs.common.utils.ShieldUtil;
+import top.jpower.core.dbs.mp.support.Condition;
+import top.jpower.core.dbs.mp.support.LambdaTreeWrapper;
 import top.jpower.jpower.service.role.CoreFunctionService;
 import top.jpower.jpower.vo.DataFunctionVo;
 import top.jpower.jpower.vo.FunctionVo;
@@ -39,7 +39,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static top.jpower.core.util.constants.JpowerConstants.TOP_CODE;
-import static top.jpower.jpower.module.config.BuiltEndpoint.PATH;
+import static top.jpower.core.dbs.config.BuiltEndpoint.PATH;
 
 /**
  * @author mr.gmac

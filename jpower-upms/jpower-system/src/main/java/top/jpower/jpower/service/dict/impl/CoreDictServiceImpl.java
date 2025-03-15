@@ -11,9 +11,9 @@ import top.jpower.jpower.dbs.dao.dict.mapper.TbCoreDictMapper;
 import top.jpower.jpower.dbs.entity.dict.TbCoreDict;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
-import top.jpower.jpower.module.service.impl.BaseServiceImpl;
-import top.jpower.jpower.module.common.utils.ShieldUtil;
-import top.jpower.jpower.module.mp.support.Condition;
+import top.jpower.core.dbs.service.impl.BaseServiceImpl;
+import top.jpower.core.dbs.common.utils.ShieldUtil;
+import top.jpower.core.dbs.mp.support.Condition;
 import top.jpower.jpower.service.dict.CoreDictService;
 import top.jpower.jpower.vo.DictVo;
 
@@ -22,7 +22,7 @@ import java.util.Map;
 
 import static top.jpower.common.enums.YYZLEnum.CHINA;
 import static top.jpower.core.util.constants.JpowerConstants.TOP_CODE;
-import static top.jpower.jpower.module.tenant.TenantConstant.DEFAULT_TENANT_CODE;
+import static top.jpower.core.dbs.tenant.TenantConstant.DEFAULT_TENANT_CODE;
 
 /**
  * @author mr.gmac

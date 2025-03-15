@@ -13,7 +13,7 @@ import top.jpower.core.util.rsp.ResponseData;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.MapUtil;
 import top.jpower.core.util.utils.StringUtil;
-import top.jpower.jpower.module.client.ClientNameConstant;
+import top.jpower.core.dbs.client.ClientNameConstant;
 
 import java.util.Comparator;
 import java.util.List;

@@ -3,7 +3,7 @@ package top.jpower.jpower.service.params.impl;
 import org.springframework.stereotype.Service;
 import top.jpower.jpower.dbs.dao.params.mapper.TbCoreParamsMapper;
 import top.jpower.jpower.dbs.entity.params.TbCoreParam;
-import top.jpower.jpower.module.service.impl.BaseServiceImpl;
+import top.jpower.core.dbs.service.impl.BaseServiceImpl;
 import top.jpower.jpower.service.params.CoreParamService;
 
 /**

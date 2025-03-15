@@ -14,12 +14,12 @@ import top.jpower.core.util.rsp.ResponseData;
 import top.jpower.core.util.rsp.ReturnJsonUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.dbs.entity.client.TbCoreClient;
-import top.jpower.jpower.module.annotation.Function;
-import top.jpower.jpower.module.annotation.Menu;
+import top.jpower.core.dbs.annotation.Function;
+import top.jpower.core.dbs.annotation.Menu;
 import top.jpower.common.constants.CacheNames;
 import top.jpower.core.redis.cache.CacheUtil;
-import top.jpower.jpower.module.mp.support.Condition;
-import top.jpower.jpower.module.page.PaginationContext;
+import top.jpower.core.dbs.mp.support.Condition;
+import top.jpower.core.dbs.page.PaginationContext;
 import top.jpower.jpower.service.client.CoreClientService;
 
 import java.util.List;

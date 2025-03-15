@@ -31,16 +31,16 @@ import top.jpower.jpower.feign.UserClient;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.core.exception.throwable.JpowerException;
-import top.jpower.jpower.module.service.impl.BaseServiceImpl;
-import top.jpower.jpower.module.common.utils.ShieldUtil;
-import top.jpower.jpower.module.mp.support.Condition;
+import top.jpower.core.dbs.service.impl.BaseServiceImpl;
+import top.jpower.core.dbs.common.utils.ShieldUtil;
+import top.jpower.core.dbs.mp.support.Condition;
 import top.jpower.jpower.service.tenant.TenantService;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static top.jpower.core.dbs.tenant.TenantConstant.*;
 import static top.jpower.core.util.constants.JpowerConstants.TOP_CODE;
-import static top.jpower.jpower.module.tenant.TenantConstant.*;
 
 /**
  * @ClassName TenantServiceImpl
