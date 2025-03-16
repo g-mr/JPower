@@ -59,7 +59,7 @@ import static top.jpower.core.dbs.tenant.TenantConstant.getAccountNumber;
  */
 @Slf4j
 @AllArgsConstructor
-@Service("coreUserService")
+@Service
 public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCoreUser> implements CoreUserService {
 
     private TbCoreUserDao coreUserDao;

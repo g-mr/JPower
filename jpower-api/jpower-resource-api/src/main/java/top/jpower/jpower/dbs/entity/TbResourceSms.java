@@ -40,6 +40,6 @@ public class TbResourceSms extends BaseEntity {
     private String sign;
     @ApiModelProperty("区域ID")
     private String regionId;
-    @ApiModelProperty("发送CoreUserServiceImpl.java参数")
+    @ApiModelProperty("发送参数")
     private String parameters;
 }

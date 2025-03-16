@@ -17,7 +17,7 @@ import java.util.List;
  * @Description //TODO 用户角色
  * @date 22:45 2020/5/26 0026
  */
-@Service("coreUserRoleService")
+@Service
 public class CoreUserRoleServiceImpl extends BaseServiceImpl<TbCoreUserRoleMapper, TbCoreUserRole> implements CoreUserRoleService {
 
     @Autowired

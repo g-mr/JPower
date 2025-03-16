@@ -3,15 +3,11 @@ package top.jpower.core.dbs.config.properties;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.mybatis.spring.mapper.MapperScannerConfigurer;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
+import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import top.jpower.core.dbs.config.MybatisPlusConfig;
-import top.jpower.core.util.utils.ClassUtil;
-import top.jpower.core.util.utils.Fc;
-import top.jpower.core.util.utils.SpringUtil;
+import top.jpower.core.dbs.dbs.dao.mapper.base.JpowerBaseMapper;
+
+import java.util.List;
 
 /**
  * @ClassName DemoProperties
@@ -25,9 +21,9 @@ import top.jpower.core.util.utils.SpringUtil;
 public class MybatisProperties {
 
     /**
-     * Mapper接口所在包路径
+     * Mapper 配置
      */
-    private String mapper = ClassUtil.getPackage(SpringUtil.getMainClass());
+    private Mapper mapper = new Mapper();
 
     /**
      * 是否开启动态表名
@@ -85,10 +81,34 @@ public class MybatisProperties {
         private long printTimeout;
     }
 
-//    @Override
-//    public void afterPropertiesSet() {
-//        if (Fc.isBlank(mapper)){
-//            mapper = ClassUtil.getPackage(SpringUtil.getMainClass());
-//        }
-//    }
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Mapper {
+        /**
+         * 扫描路径
+         **/
+        private List<String> scan;
+        /**
+         * 是否扫描Mapper注解
+         **/
+        private boolean scanMapperAnnotation = false;
+        /**
+         * 是否扫描父级接口
+         **/
+        private boolean scanBySuper = Boolean.TRUE;
+        /**
+         * 父级接口
+         **/
+        private Class<?> superClass = JpowerBaseMapper.class;
+        /**
+         * 是否懒加载
+         **/
+        private Boolean lazyInitialization;
+        /**
+         * 指定扫描的映射器的默认范围
+         **/
+        private String defaultScope;
+
+    }
 }
