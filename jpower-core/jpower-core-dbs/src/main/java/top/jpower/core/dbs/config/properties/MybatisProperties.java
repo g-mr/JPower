@@ -92,7 +92,7 @@ public class MybatisProperties {
         /**
          * 是否扫描Mapper注解
          **/
-        private boolean scanMapperAnnotation = false;
+        private boolean scanMapperAnnotation = true;
         /**
          * 是否扫描父级接口
          **/
