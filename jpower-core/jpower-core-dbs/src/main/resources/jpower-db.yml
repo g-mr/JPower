@@ -22,7 +22,6 @@ spring:
       filters: stat,wall,slf4j #通过别名的方式配置扩展插件，常用的插件有：监控统计用的filter:stat，日志用的filter:log4j，防御sql注入的filter:wall
       connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000 # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
       useGlobalDataSourceStat: true # 合并多个DruidDataSource的监控数据
-
 mybatis-plus:
   type-aliases-super-type: top.jpower.core.dbs.dbs.entity.base.BaseEntity
   global-config:
