@@ -135,6 +135,13 @@
                 <scope>import</scope>
             </dependency>
 
+            <!-- 排除knife4j中的hutool -->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+
             <!-- spring-boot-admin -->
             <dependency>
                 <groupId>de.codecentric</groupId>
