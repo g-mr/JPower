@@ -109,6 +109,5 @@
                 #{orgId,jdbcType=BIGINT}
             </foreach>
         </if>
-
     </select>
 </mapper>
