@@ -35,10 +35,10 @@ import top.jpower.jpower.dto.SmsValidateDto;
 import top.jpower.jpower.dto.TokenParameter;
 import top.jpower.jpower.feign.SmsClient;
 import top.jpower.jpower.feign.UserClient;
-import top.jpower.core.dbs.common.auth.SecureConstant;
-import top.jpower.core.dbs.common.auth.UserInfo;
-import top.jpower.core.dbs.common.utils.JwtUtil;
-import top.jpower.core.dbs.common.utils.ShieldUtil;
+import top.jpower.core.auth.utils.constant.SecureConstant;
+import top.jpower.core.auth.dto.UserInfo;
+import top.jpower.core.auth.utils.JwtUtil;
+import top.jpower.core.auth.utils.ShieldUtil;
 import top.jpower.core.dbs.tenant.JpowerTenantProperties;
 import top.jpower.jpower.utils.TokenUtil;
 

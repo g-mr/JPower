@@ -32,7 +32,7 @@ import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.core.exception.throwable.JpowerException;
 import top.jpower.core.dbs.service.impl.BaseServiceImpl;
-import top.jpower.core.dbs.common.utils.ShieldUtil;
+import top.jpower.core.auth.utils.ShieldUtil;
 import top.jpower.core.dbs.mp.support.Condition;
 import top.jpower.jpower.service.tenant.TenantService;
 

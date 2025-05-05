@@ -9,7 +9,7 @@ import top.jpower.jpower.cache.SystemCache;
 import top.jpower.jpower.cache.UserCache;
 import top.jpower.jpower.dbs.dao.mapper.TbCoreUserMapper;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
-import top.jpower.core.dbs.common.utils.ShieldUtil;
+import top.jpower.core.auth.utils.ShieldUtil;
 import top.jpower.core.dbs.dbs.dao.BaseDaoWrapper;
 import top.jpower.core.dbs.dbs.dao.JpowerServiceImpl;
 import top.jpower.core.dbs.mp.support.Condition;

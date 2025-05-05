@@ -8,7 +8,7 @@ import top.jpower.jpower.auth.AuthUserInfo;
 import top.jpower.jpower.auth.TokenGranter;
 import top.jpower.jpower.dto.TokenParameter;
 import top.jpower.core.exception.throwable.BusinessException;
-import top.jpower.core.dbs.common.auth.UserInfo;
+import top.jpower.core.auth.dto.UserInfo;
 
 import static top.jpower.jpower.auth.granter.OtherCodeTokenGranter.GRANT_TYPE;
 

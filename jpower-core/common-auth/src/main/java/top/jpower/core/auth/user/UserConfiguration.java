@@ -1,4 +1,4 @@
-package top.jpower.core.dbs.config.user;
+package top.jpower.core.auth.user;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;

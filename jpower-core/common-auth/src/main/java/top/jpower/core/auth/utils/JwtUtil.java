@@ -1,9 +1,9 @@
-package top.jpower.core.dbs.common.utils;
+package top.jpower.core.auth.utils;
 
 import cn.hutool.core.util.URLUtil;
 import io.jsonwebtoken.*;
 import lombok.NonNull;
-import top.jpower.core.dbs.properties.AuthProperties;
+import top.jpower.core.auth.properties.AuthProperties;
 import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.constants.TokenConstant;

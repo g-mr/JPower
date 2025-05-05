@@ -11,7 +11,7 @@ import top.jpower.jpower.dbs.entity.TbCoreUser;
 import top.jpower.jpower.dto.TokenParameter;
 import top.jpower.jpower.dto.ValidatePasswordDto;
 import top.jpower.jpower.feign.UserClient;
-import top.jpower.core.dbs.common.auth.UserInfo;
+import top.jpower.core.auth.dto.UserInfo;
 import top.jpower.jpower.utils.UserUtil;
 
 import static top.jpower.jpower.auth.granter.PasswordTokenGranter.GRANT_TYPE;

@@ -2,7 +2,7 @@ package top.jpower.jpower.dto;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import top.jpower.core.dbs.common.auth.UserInfo;
+import top.jpower.core.auth.dto.UserInfo;
 
 /**
  * @ClassName AuthInfo

@@ -1,4 +1,4 @@
-package top.jpower.core.dbs.annotation;
+package top.jpower.core.auth.annotation;
 
 import java.lang.annotation.*;
 

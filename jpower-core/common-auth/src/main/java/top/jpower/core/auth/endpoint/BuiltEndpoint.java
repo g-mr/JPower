@@ -1,8 +1,9 @@
-package top.jpower.core.dbs.config;
+package top.jpower.core.auth.endpoint;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import top.jpower.core.auth.config.FunctionGenerate;
 
 import java.util.List;
 import java.util.Map;

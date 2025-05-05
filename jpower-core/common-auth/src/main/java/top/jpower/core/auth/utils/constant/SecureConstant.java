@@ -1,4 +1,4 @@
-package top.jpower.core.dbs.common.auth;
+package top.jpower.core.auth.utils.constant;
 
 /**
  * 授权校验常量

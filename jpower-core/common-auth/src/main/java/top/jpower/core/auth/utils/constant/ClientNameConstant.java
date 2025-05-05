@@ -1,4 +1,4 @@
-package top.jpower.core.dbs.client;
+package top.jpower.core.auth.utils.constant;
 
 import cn.hutool.core.exceptions.UtilException;
 import top.jpower.core.util.constants.StringPool;

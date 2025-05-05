@@ -13,7 +13,7 @@ import top.jpower.jpower.dbs.entity.TbCorePost;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
 import top.jpower.core.dbs.page.PaginationContext;
 import top.jpower.core.dbs.service.impl.BaseServiceImpl;
-import top.jpower.core.dbs.common.utils.ShieldUtil;
+import top.jpower.core.auth.utils.ShieldUtil;
 import top.jpower.core.dbs.mp.support.Condition;
 import top.jpower.jpower.service.CorePostService;
 import top.jpower.jpower.vo.PostVo;

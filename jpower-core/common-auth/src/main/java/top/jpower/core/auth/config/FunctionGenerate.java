@@ -1,4 +1,4 @@
-package top.jpower.core.dbs.config;
+package top.jpower.core.auth.config;
 
 import lombok.AllArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
@@ -9,10 +9,10 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import top.jpower.core.auth.annotation.Function;
+import top.jpower.core.auth.annotation.Menu;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.MapUtil;
-import top.jpower.core.dbs.annotation.Function;
-import top.jpower.core.dbs.annotation.Menu;
 
 import java.util.ArrayList;
 import java.util.HashMap;

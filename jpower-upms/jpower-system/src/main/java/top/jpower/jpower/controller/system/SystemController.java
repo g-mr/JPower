@@ -15,8 +15,8 @@ import top.jpower.core.dbs.tenant.JpowerTenantProperties;
 
 import java.util.Map;
 
-import static top.jpower.core.dbs.common.auth.RoleConstant.ANONYMOUS_ID;
-import static top.jpower.core.dbs.common.auth.RoleConstant.ROOT_ID;
+import static top.jpower.core.auth.utils.constant.RoleConstant.ANONYMOUS_ID;
+import static top.jpower.core.auth.utils.constant.RoleConstant.ROOT_ID;
 
 /**
  * @author mr.g

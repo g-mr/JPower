@@ -1,4 +1,4 @@
-package top.jpower.core.dbs.common.auth;
+package top.jpower.core.auth.dto;
 
 import cn.hutool.core.date.DatePattern;
 import com.alibaba.fastjson2.annotation.JSONField;

@@ -2,7 +2,7 @@ package top.jpower.common.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import top.jpower.core.dbs.annotation.Menu;
+import top.jpower.core.auth.annotation.Menu;
 
 /**
  * 功能类型

@@ -1,4 +1,4 @@
-package top.jpower.core.dbs.client;
+package top.jpower.core.auth.config.interceptor;
 
 import com.alibaba.fastjson2.JSON;
 import lombok.AllArgsConstructor;
@@ -6,13 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.HandlerInterceptor;
-import top.jpower.core.dbs.properties.AuthProperties;
+import top.jpower.core.auth.config.data.SystemClient;
+import top.jpower.core.auth.dto.UserInfo;
+import top.jpower.core.auth.properties.AuthProperties;
 import top.jpower.core.util.constants.TokenConstant;
 import top.jpower.core.util.rsp.ReturnJsonUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.WebUtil;
-import top.jpower.core.dbs.common.auth.UserInfo;
-import top.jpower.core.dbs.common.utils.ShieldUtil;
+import top.jpower.core.auth.utils.ShieldUtil;
 
 import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;

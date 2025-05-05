@@ -1,4 +1,4 @@
-package top.jpower.core.dbs.config;
+package top.jpower.core.auth.config;
 
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -6,8 +6,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import top.jpower.core.dbs.client.ClientInterceptor;
-import top.jpower.core.dbs.properties.AuthProperties;
+import top.jpower.core.auth.config.interceptor.ClientInterceptor;
+import top.jpower.core.auth.properties.AuthProperties;
 
 import java.util.ArrayList;
 import java.util.HashSet;

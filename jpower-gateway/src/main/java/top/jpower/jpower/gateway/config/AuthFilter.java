@@ -35,8 +35,8 @@ import top.jpower.jpower.gateway.utils.ExculdesUrl;
 import top.jpower.jpower.gateway.utils.IpUtil;
 import top.jpower.jpower.gateway.utils.TokenUtil;
 import top.jpower.common.constants.CacheNames;
-import top.jpower.core.dbs.common.utils.JwtUtil;
-import top.jpower.core.dbs.properties.AuthProperties;
+import top.jpower.core.auth.utils.JwtUtil;
+import top.jpower.core.auth.properties.AuthProperties;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
@@ -44,9 +44,9 @@ import java.util.List;
 import java.util.Map;
 
 import static top.jpower.core.util.constants.JpowerConstants.HEADER_MENU;
-import static top.jpower.core.dbs.common.auth.RoleConstant.ANONYMOUS;
-import static top.jpower.core.dbs.common.auth.RoleConstant.ANONYMOUS_ID;
-import static top.jpower.core.dbs.common.auth.RoleConstant.ROOT_ID;
+import static top.jpower.core.auth.utils.constant.RoleConstant.ANONYMOUS;
+import static top.jpower.core.auth.utils.constant.RoleConstant.ANONYMOUS_ID;
+import static top.jpower.core.auth.utils.constant.RoleConstant.ROOT_ID;
 
 /**
  * @ClassName AuthFilter

@@ -1,4 +1,4 @@
-package top.jpower.core.dbs.config;
+package top.jpower.core.auth.aspect;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -11,12 +11,12 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.AnnotationUtils;
-import top.jpower.core.dbs.annotation.Function;
+import top.jpower.core.auth.annotation.Function;
+import top.jpower.core.auth.utils.ShieldUtil;
 import top.jpower.core.deploy.property.JpowerProperties;
 import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.WebUtil;
-import top.jpower.core.dbs.common.utils.ShieldUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
@@ -41,7 +41,7 @@ public class FunctionAuthAspect {
      * 配置织入点
      * @author mr.g
      **/
-    @Pointcut("@annotation(top.jpower.core.dbs.annotation.Function)")
+    @Pointcut("@annotation(top.jpower.core.auth.annotation.Function)")
     public void authPointCut(){ }
 
     /**

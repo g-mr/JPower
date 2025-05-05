@@ -1,4 +1,4 @@
-package top.jpower.core.dbs.properties;
+package top.jpower.core.auth.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

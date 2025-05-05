@@ -11,7 +11,7 @@ import top.jpower.core.util.utils.MapUtil;
 import top.jpower.core.util.utils.StringUtil;
 import top.jpower.jpower.dbs.dao.role.mapper.TbCoreFunctionMapper;
 import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
-import top.jpower.core.dbs.common.utils.ShieldUtil;
+import top.jpower.core.auth.utils.ShieldUtil;
 import top.jpower.core.dbs.dbs.dao.JpowerServiceImpl;
 import top.jpower.core.dbs.mp.support.Condition;
 

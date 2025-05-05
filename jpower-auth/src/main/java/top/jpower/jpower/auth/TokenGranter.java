@@ -1,7 +1,7 @@
 package top.jpower.jpower.auth;
 
 import top.jpower.jpower.dto.TokenParameter;
-import top.jpower.core.dbs.common.auth.UserInfo;
+import top.jpower.core.auth.dto.UserInfo;
 
 /**
  * @Author 郭丁志

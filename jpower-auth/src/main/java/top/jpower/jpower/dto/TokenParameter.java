@@ -3,7 +3,7 @@ package top.jpower.jpower.dto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import top.jpower.core.dbs.common.auth.SecureConstant;
+import top.jpower.core.auth.utils.constant.SecureConstant;
 import top.jpower.jpower.utils.TokenUtil;
 
 import java.io.Serializable;

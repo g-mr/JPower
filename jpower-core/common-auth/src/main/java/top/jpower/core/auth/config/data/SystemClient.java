@@ -1,8 +1,9 @@
-package top.jpower.core.dbs.client;
+package top.jpower.core.auth.config.data;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.RestTemplate;
+import top.jpower.core.auth.utils.constant.ClientNameConstant;
 import top.jpower.core.deploy.property.JpowerProperties;
 import top.jpower.core.util.rsp.ResponseData;
 import top.jpower.core.util.utils.Fc;

@@ -14,11 +14,11 @@ import top.jpower.jpower.dbs.entity.client.TbCoreClient;
 import top.jpower.jpower.dbs.entity.function.TbCoreDataScope;
 import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
 import top.jpower.jpower.dto.AuthInfo;
-import top.jpower.core.dbs.common.auth.UserInfo;
-import top.jpower.core.dbs.common.utils.JwtUtil;
-import top.jpower.core.dbs.common.utils.ShieldUtil;
+import top.jpower.core.auth.dto.UserInfo;
+import top.jpower.core.auth.utils.JwtUtil;
+import top.jpower.core.auth.utils.ShieldUtil;
 import top.jpower.core.dbs.datascope.DataScope;
-import top.jpower.core.dbs.properties.AuthProperties;
+import top.jpower.core.auth.properties.AuthProperties;
 
 import java.util.ArrayList;
 import java.util.List;

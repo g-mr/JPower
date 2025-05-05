@@ -1,4 +1,4 @@
-package top.jpower.core.dbs.common.utils;
+package top.jpower.core.auth.utils;
 
 
 import cn.hutool.core.codec.Base64Decoder;
@@ -7,18 +7,16 @@ import cn.hutool.core.date.DateUnit;
 import io.jsonwebtoken.Claims;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import top.jpower.core.dbs.common.auth.UserInfo;
+import top.jpower.core.auth.utils.constant.RoleConstant;
+import top.jpower.core.auth.utils.constant.SecureConstant;
+import top.jpower.core.auth.dto.UserInfo;
 import top.jpower.core.util.constants.*;
 import top.jpower.core.util.utils.*;
-import top.jpower.core.dbs.common.auth.RoleConstant;
-import top.jpower.core.dbs.common.auth.SecureConstant;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Objects;
-
-import static top.jpower.core.dbs.common.auth.SecureConstant.BASIC_HEADER_PREFIX;
 
 /**
  * 系统鉴权信息获取工具
@@ -202,12 +200,12 @@ public class ShieldUtil {
     public static String[] getClientInfo() {
         // 获取请求头客户端信息
         String header = Objects.requireNonNull(WebUtil.getRequest()).getHeader(SecureConstant.BASIC_HEADER_KEY);
-        header = Fc.toStr(header).replace(SecureConstant.BASIC_HEADER_PREFIX_EXT, BASIC_HEADER_PREFIX);
-        if (!header.startsWith(BASIC_HEADER_PREFIX)) {
+        header = Fc.toStr(header).replace(SecureConstant.BASIC_HEADER_PREFIX_EXT, SecureConstant.BASIC_HEADER_PREFIX);
+        if (!header.startsWith(SecureConstant.BASIC_HEADER_PREFIX)) {
             throw new IllegalArgumentException("请求头中没有客户端信息");
         }
 
-        String decodeBasic = StringUtil.subAfter(header,BASIC_HEADER_PREFIX,false);
+        String decodeBasic = StringUtil.subAfter(header, SecureConstant.BASIC_HEADER_PREFIX,false);
         return extractClient(decodeBasic);
     }
 
