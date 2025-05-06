@@ -9,7 +9,7 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>common-auth</artifactId>
+    <artifactId>jpower-core-auth</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>

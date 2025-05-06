@@ -22,7 +22,7 @@
 
         <dependency>
             <groupId>top.jpower</groupId>
-            <artifactId>common-auth</artifactId>
+            <artifactId>jpower-core-auth</artifactId>
             <version>${com.jpower.version}</version>
             <optional>true</optional>
             <exclusions>

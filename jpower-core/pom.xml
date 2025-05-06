@@ -8,7 +8,7 @@
     </parent>
 
     <modules>
-        <module>common-auth</module>
+        <module>jpower-core-auth</module>
         <module>jpower-core-deploy</module>
         <module>jpower-core-nacos</module>
         <module>jpower-core-redis</module>

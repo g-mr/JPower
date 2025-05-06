@@ -75,6 +75,7 @@ services:
       - ../docker/nacos/init.d/custom.properties:/home/nacos/init.d/custom.properties
     ports:
       - 82:8848
+      - 1082:9848
     restart: always
     networks:
       jpower_net:

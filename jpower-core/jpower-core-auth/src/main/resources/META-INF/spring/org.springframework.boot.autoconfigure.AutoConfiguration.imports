@@ -1,0 +1,5 @@
+top.jpower.core.auth.user.UserConfiguration
+top.jpower.core.auth.aspect.FunctionAuthAspect
+top.jpower.core.auth.config.ClientConfigurer
+top.jpower.core.auth.config.FunctionGenerate
+top.jpower.core.auth.endpoint.BuiltEndpoint
