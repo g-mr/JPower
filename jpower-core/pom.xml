@@ -20,7 +20,6 @@
         <module>jpower-core-boot</module>
         <module>jpower-core-feign</module>
         <module>jpower-core-log</module>
-        <module>common-delay-task</module>
     </modules>
 
     <modelVersion>4.0.0</modelVersion>
