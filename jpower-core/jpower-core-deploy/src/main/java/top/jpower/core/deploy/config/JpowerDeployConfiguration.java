@@ -1,7 +1,6 @@
 package top.jpower.core.deploy.config;
 
 import org.springframework.beans.factory.SmartInitializingSingleton;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
@@ -19,15 +18,12 @@ import java.net.InetAddress;
  */
 @AutoConfiguration
 @AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE)
-@EnableConfigurationProperties({
-	JpowerProperties.class
-})
+@EnableConfigurationProperties(JpowerProperties.class)
 public class JpowerDeployConfiguration  implements SmartInitializingSingleton {
 
 	private final ServerProperties serverProperties;
 	private final JpowerProperties jpowerProperties;
 
-	@Autowired(required = false)
 	public JpowerDeployConfiguration(ServerProperties serverProperties, JpowerProperties jpowerProperties) {
 		this.serverProperties = serverProperties;
 		this.jpowerProperties = jpowerProperties;

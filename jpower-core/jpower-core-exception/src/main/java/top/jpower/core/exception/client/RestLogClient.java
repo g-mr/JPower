@@ -64,7 +64,6 @@ public class RestLogClient implements LogClient {
 
     public boolean isSaveError(ErrorLogDto errorLog){
         if (Fc.equalsValue(errorLog.getServerName(), LogConstant.getInstance().getJpowerLog()) &&
-                Fc.equalsValue(errorLog.getMethodName(),"saveErrorLog") &&
                 Fc.equalsValue(errorLog.getUrl(),"/log/saveErrorLog")){
             return false;
         }

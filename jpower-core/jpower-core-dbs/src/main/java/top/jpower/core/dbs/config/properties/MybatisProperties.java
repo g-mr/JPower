@@ -28,7 +28,7 @@ public class MybatisProperties {
     /**
      * 是否开启动态表名
      */
-    private boolean dynamicTableName = false;
+    private Boolean dynamicTableName = false;
 
     /**
      * 是否开启动乐观锁

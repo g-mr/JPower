@@ -5,15 +5,21 @@ import cn.hutool.core.util.NumberUtil;
 import cn.hutool.extra.mail.MailUtil;
 import com.wf.captcha.SpecCaptcha;
 import io.swagger.annotations.*;
-import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.common.constants.CacheNames;
 import top.jpower.common.constants.ParamsConstants;
 import top.jpower.common.enums.LoginLimitEnum;
 import top.jpower.common.enums.UserTypeEnum;
+import top.jpower.core.auth.dto.UserInfo;
+import top.jpower.core.auth.utils.JwtUtil;
+import top.jpower.core.auth.utils.ShieldUtil;
+import top.jpower.core.auth.utils.constant.SecureConstant;
 import top.jpower.core.boot.controller.BaseController;
+import top.jpower.core.dbs.config.properties.MybatisProperties;
+import top.jpower.core.dbs.tenant.JpowerTenantProperties;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.core.redis.cache.RedisService;
@@ -35,11 +41,6 @@ import top.jpower.jpower.dto.SmsValidateDto;
 import top.jpower.jpower.dto.TokenParameter;
 import top.jpower.jpower.feign.SmsClient;
 import top.jpower.jpower.feign.UserClient;
-import top.jpower.core.auth.utils.constant.SecureConstant;
-import top.jpower.core.auth.dto.UserInfo;
-import top.jpower.core.auth.utils.JwtUtil;
-import top.jpower.core.auth.utils.ShieldUtil;
-import top.jpower.core.dbs.tenant.JpowerTenantProperties;
 import top.jpower.jpower.utils.TokenUtil;
 
 import java.util.Date;
@@ -48,9 +49,9 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static top.jpower.common.constants.CacheNames.TOKEN_USER_KEY;
-import static top.jpower.core.util.constants.JpowerConstants.HEADER_TENANT;
 import static top.jpower.core.dbs.tenant.TenantConstant.DEFAULT_TENANT_CODE;
 import static top.jpower.core.dbs.tenant.TenantConstant.getExpireTime;
+import static top.jpower.core.util.constants.JpowerConstants.HEADER_TENANT;
 
 /**
  * @ClassName LoginController
@@ -62,16 +63,24 @@ import static top.jpower.core.dbs.tenant.TenantConstant.getExpireTime;
 @Api(tags = "授权相关")
 @RestController
 @RequestMapping("/auth")
-@AllArgsConstructor
+//@AllArgsConstructor
 public class AuthController extends BaseController {
 
+    @Autowired
     private RedisService redisService;
+    @Autowired
     private JpowerTenantProperties tenantProperties;
+    @Autowired
     private TokenGranterBuilder granterBuilder;
+    @Autowired
     private UserClient userClient;
-    private final SmsClient smsClient;
+    @Autowired
+    private SmsClient smsClient;
 
     private final String VALIDATE_SMS_CODE = "validate";
+
+    @Autowired
+    private MybatisProperties mybatisProperties;
 
     @GetMapping("test")
     public void test(){

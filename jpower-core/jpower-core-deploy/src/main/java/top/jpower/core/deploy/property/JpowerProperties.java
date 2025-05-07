@@ -1,14 +1,13 @@
 package top.jpower.core.deploy.property;
 
 import lombok.Data;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * 配置文件
  * @author mr.g
  */
-@ConfigurationProperties("jpower")
+@ConfigurationProperties(prefix = "jpower")
 @Data
 public class JpowerProperties {
 

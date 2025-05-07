@@ -23,21 +23,6 @@ public interface CacheNames {
     String USER_DETAIL_KEY = "detail:";
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /**
      * 鉴权缓存
      **/
