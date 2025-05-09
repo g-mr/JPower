@@ -3,14 +3,14 @@ package top.jpower.jpower.wrapper;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 import top.jpower.common.enums.YYZLEnum;
+import top.jpower.core.dbs.dictbind.annotation.Dict;
+import top.jpower.core.dbs.dictbind.handler.IDictBindHandler;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.GuavaCache;
 import top.jpower.core.util.utils.MapUtil;
 import top.jpower.core.util.utils.WebUtil;
 import top.jpower.jpower.cache.dict.DictCache;
-import top.jpower.core.dbs.dictbind.annotation.Dict;
-import top.jpower.core.dbs.dictbind.handler.IDictBindHandler;
 
 import java.util.List;
 import java.util.Map;

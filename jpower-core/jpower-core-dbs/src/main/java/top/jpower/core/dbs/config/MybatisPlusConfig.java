@@ -67,6 +67,7 @@ public class MybatisPlusConfig {
     @Bean
     @ConditionalOnMissingBean
     public MapperScannerConfigurer mapperScannerConfigurer(BeanFactory beanFactory, MybatisProperties mybatisProperties, JpowerProperties jpowerProperties){
+        // todo 这么写会导致MybatisProperties和JpowerProperties无法映射到配置值，MapperScannerConfigurer实例化早于映射，需要想办法解决
         MybatisProperties.Mapper mapper = mybatisProperties.getMapper();
         List<String> packages;
         if (Fc.isEmpty(mapper.getScan())){
