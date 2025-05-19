@@ -18,7 +18,6 @@ import top.jpower.core.auth.utils.JwtUtil;
 import top.jpower.core.auth.utils.ShieldUtil;
 import top.jpower.core.auth.utils.constant.SecureConstant;
 import top.jpower.core.boot.controller.BaseController;
-import top.jpower.core.dbs.config.properties.MybatisProperties;
 import top.jpower.core.dbs.tenant.JpowerTenantProperties;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
@@ -78,15 +77,6 @@ public class AuthController extends BaseController {
     private SmsClient smsClient;
 
     private final String VALIDATE_SMS_CODE = "validate";
-
-    @Autowired
-    private MybatisProperties mybatisProperties;
-
-    @GetMapping("test")
-    public void test(){
-        Integer a = Integer.parseInt("阿克琉斯减肥");
-    }
-
 
     @ApiOperation(value = "用户登录",notes = "Authorization（客户端识别码）：由clientCode+\":\"+clientSecret组成字符串后用base64编码后获得值，再由Basic +base64编码后的值组成客户端识别码； <br/>" +
             "&nbsp;&nbsp;&nbsp;clientCode和clientSecret的值由后端统一提供，不同的登录客户端值也不一样。<br/>" +

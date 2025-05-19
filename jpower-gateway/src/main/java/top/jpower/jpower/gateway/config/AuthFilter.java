@@ -77,9 +77,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
         }
 
         //不鉴权得URL
-        if (isSkip(currentPath)){
-            return chain.filter(exchange);
-        }
+        boolean isSkip = isSkip(currentPath);
 
         String token = TokenUtil.getToken(exchange.getRequest());
         if (Fc.isNotBlank(token)) {
@@ -89,8 +87,11 @@ public class AuthFilter implements GlobalFilter, Ordered {
                 return proxyAuthenticationRequired(exchange.getResponse(), "令牌已过期，请重新登录");
             }
 
-            if (Fc.isNull(claims) || !isAuth(claims, token, currentPath)) {
-                return unAuth(exchange.getResponse(), "请求未授权");
+            // 不是忽略权限得需要校验
+            if (!isSkip){
+                if (Fc.isNull(claims) || !isAuth(claims, token, currentPath)) {
+                    return unAuth(exchange.getResponse(), "请求未授权");
+                }
             }
 
             Object dataAuth = redisService.valueOps().get(CacheNames.TOKEN_DATA_SCOPE_KEY + token);
@@ -104,10 +105,11 @@ public class AuthFilter implements GlobalFilter, Ordered {
             }
 
             //匿名用户
-            if (getIsAnonymous(currentPath, TokenUtil.getClientCodeFromHeader(exchange.getRequest()))){
+            if (getIsAnonymous(currentPath, TokenUtil.getClientCodeFromHeader(exchange.getRequest())) || isSkip){
                 String dataAuth = roleClient.queryDataScopeByRoleAndMenu(Collections.singletonList(ANONYMOUS_ID),exchange.getRequest().getHeaders().getFirst(HEADER_MENU),TokenUtil.getClientCodeFromHeader(exchange.getRequest()));
                 return chain.filter(addHeader(exchange, ANONYMOUS, dataAuth));
             }
+
             return proxyAuthenticationRequired(exchange.getResponse(), "缺失令牌，鉴权失败");
         }
     }

@@ -10,9 +10,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import top.jpower.core.util.user.UserConfig;
 import top.jpower.core.dbs.config.MybatisPlusConfig;
+import top.jpower.core.util.user.UserConfig;
 
 /**
  * 多租户配置
@@ -25,18 +24,6 @@ import top.jpower.core.dbs.config.MybatisPlusConfig;
 @AutoConfigureAfter(UserConfig.class)
 @EnableConfigurationProperties({JpowerTenantProperties.class})
 public class TenantConfiguration {
-
-//    @Bean
-//    UserConfig userConfig() {
-//        return new UserConfig() {
-//            @Override
-//            public UserDto queryUser() {
-//                UserDto userDto = new UserDto();
-//                userDto.setTenantCode("123456");
-//                return userDto;
-//            }
-//        };
-//    }
 
     @Bean
     @ConditionalOnMissingBean({TenantLineHandler.class})

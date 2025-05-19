@@ -1,10 +1,10 @@
 package top.jpower.jpower.dbs.dao.org.mapper;
 
 
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Component;
-import top.jpower.jpower.dbs.entity.org.TbCoreOrg;
 import top.jpower.core.dbs.dbs.dao.mapper.base.JpowerBaseMapper;
+import top.jpower.jpower.dbs.entity.org.TbCoreOrg;
 import top.jpower.jpower.vo.OrgVo;
 
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * @author mr.gmac
  */
-@Component("tbCoreOrgMapper")
+@Mapper
 public interface TbCoreOrgMapper extends JpowerBaseMapper<TbCoreOrg> {
 
     /**

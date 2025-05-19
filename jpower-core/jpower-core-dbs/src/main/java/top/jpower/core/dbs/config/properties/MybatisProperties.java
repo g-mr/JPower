@@ -21,11 +21,6 @@ import java.util.List;
 public class MybatisProperties {
 
     /**
-     * Mapper 配置
-     */
-    private Mapper mapper = new Mapper();
-
-    /**
      * 是否开启动态表名
      */
     private Boolean dynamicTableName = false;
@@ -81,34 +76,4 @@ public class MybatisProperties {
         private long printTimeout;
     }
 
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class Mapper {
-        /**
-         * 扫描路径
-         **/
-        private List<String> scan;
-        /**
-         * 是否扫描Mapper注解
-         **/
-        private boolean scanMapperAnnotation = true;
-        /**
-         * 是否扫描父级接口
-         **/
-        private boolean scanBySuper = Boolean.TRUE;
-        /**
-         * 父级接口
-         **/
-        private Class<?> superClass = JpowerBaseMapper.class;
-        /**
-         * 是否懒加载
-         **/
-        private Boolean lazyInitialization;
-        /**
-         * 指定扫描的映射器的默认范围
-         **/
-        private String defaultScope;
-
-    }
 }

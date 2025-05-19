@@ -1,13 +1,13 @@
 package top.jpower.jpower.dbs.dao.mapper;
 
-import org.springframework.stereotype.Component;
-import top.jpower.jpower.dbs.entity.TbLogOperate;
+import org.apache.ibatis.annotations.Mapper;
 import top.jpower.core.dbs.dbs.dao.mapper.base.JpowerBaseMapper;
+import top.jpower.jpower.dbs.entity.TbLogOperate;
 
 /**
  * @Author mr.g
  * @Date 2021/5/1 0001 19:39
  */
-@Component
+@Mapper
 public interface LogOperateMapper extends JpowerBaseMapper<TbLogOperate> {
 }
