@@ -2,6 +2,7 @@ package top.jpower.core.dbs.config;
 
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
+import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.core.injector.ISqlInjector;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.*;
@@ -27,6 +28,7 @@ import top.jpower.core.dbs.mp.CustomSqlInjector;
 import top.jpower.core.dbs.tenant.JpowerTenantProperties;
 import top.jpower.core.deploy.support.YamlAndPropertySourceFactory;
 import top.jpower.core.util.user.UserConfig;
+import top.jpower.core.util.utils.Fc;
 
 import java.util.stream.Collectors;
 
@@ -35,7 +37,7 @@ import java.util.stream.Collectors;
  *
  * @author mr.g
  */
-@AutoConfiguration(before = MybatisPlusAutoConfiguration.class, after = UserConfig.class)
+@AutoConfiguration(before = MybatisPlusAutoConfiguration.class)
 @EnableTransactionManagement
 @EnableConfigurationProperties({DemoProperties.class, MybatisProperties.class})
 @PropertySource(value = "classpath:./jpower-db.yml",factory = YamlAndPropertySourceFactory.class)
@@ -50,7 +52,7 @@ public class MybatisPlusConfig {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnBean(UserConfig.class)
-    public UpdateRelatedFieldsMetaHandler updateRelatedFieldsMetaHandler(UserConfig userConfig){
+    public MetaObjectHandler metaObjectHandler(UserConfig userConfig){
         return new UpdateRelatedFieldsMetaHandler(userConfig);
     }
 
@@ -59,11 +61,11 @@ public class MybatisPlusConfig {
      **/
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnBean(UpdateRelatedFieldsMetaHandler.class)
-    public GlobalConfig globalConfig(UpdateRelatedFieldsMetaHandler metaHandler,
-                                     ISqlInjector sqlInjector) {
+    public GlobalConfig globalConfig(@Autowired(required = false) MetaObjectHandler metaHandler, ISqlInjector sqlInjector) {
         GlobalConfig globalConfig = new GlobalConfig();
-        globalConfig.setMetaObjectHandler(metaHandler);
+        if (Fc.notNull(metaHandler)){
+            globalConfig.setMetaObjectHandler(metaHandler);
+        }
         globalConfig.setSqlInjector(sqlInjector);
         return globalConfig;
     }
