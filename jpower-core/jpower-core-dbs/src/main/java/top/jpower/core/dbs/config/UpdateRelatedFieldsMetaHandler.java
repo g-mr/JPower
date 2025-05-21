@@ -3,15 +3,17 @@ package top.jpower.core.dbs.config;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.reflection.MetaObject;
+import top.jpower.core.dbs.dbs.entity.base.BaseEntity;
 import top.jpower.core.util.user.UserConfig;
-
-import java.util.Date;
+import top.jpower.core.util.user.model.UserDto;
+import top.jpower.core.util.utils.DateUtil;
+import top.jpower.core.util.utils.Fc;
 
 /**
  * 公用字段配置
  *
- * @Author 郭丁志
- * @Date 2020-07-09 17:35
+ * @author mr.g
+ * @date 2020-07-09 17:35
  */
 @RequiredArgsConstructor
 public class UpdateRelatedFieldsMetaHandler implements MetaObjectHandler {
@@ -21,49 +23,76 @@ public class UpdateRelatedFieldsMetaHandler implements MetaObjectHandler {
     /**
      * 新增时配置的字段
      *
-     * @Author 郭丁志
-     * @Date 17:48 2020-07-09
+     * @author mr.g
+     * @date 17:48 2020-07-09
      **/
     @Override
     public void insertFill(MetaObject metaObject) {
-        this.strictInsertFill(metaObject, "createUser", Long.class, getUserId());
-        this.strictInsertFill(metaObject, "updateUser", Long.class, getUserId());
-        this.strictInsertFill(metaObject, "createTime", Date.class, new Date());
-        this.strictInsertFill(metaObject, "updateTime", Date.class, new Date());
-        this.strictInsertFill(metaObject, "createOrg", Long.class, getOrg());
-        this.strictInsertFill(metaObject, "isDeleted", Boolean.class, Boolean.FALSE);
+
+        if (Fc.notNull(metaObject) && metaObject.getOriginalObject() instanceof BaseEntity) {
+            BaseEntity baseEntity = (BaseEntity) metaObject.getOriginalObject();
+
+            // 创建时间为空，则以当前时间为插入时间
+            if (Fc.isNull(baseEntity.getCreateTime())) {
+                baseEntity.setCreateTime(DateUtil.date());
+            }
+
+            // 更新时间为空，则以当前时间为插入时间
+            if (Fc.isNull(baseEntity.getUpdateTime())) {
+                baseEntity.setUpdateTime(DateUtil.date());
+            }
+
+            UserDto userDto = userConfig.queryUser();
+
+            if (Fc.notNull(userDto)){
+
+                // 当前登录用户不为空，创建人为空，则当前登录用户为创建人
+                if (Fc.isNull(baseEntity.getCreateUser()) && Fc.notNull(userDto.getUserId())){
+                    baseEntity.setCreateUser(userDto.getUserId());
+                }
+
+                // 当前登录用户不为空，创建人为空，则当前登录用户为更新人
+                if (Fc.isNull(baseEntity.getUpdateUser()) && Fc.notNull(userDto.getUserId())){
+                    baseEntity.setUpdateUser(userDto.getUserId());
+                }
+
+                // 当前登录部门不为空，创建部门为空，则当前登录部门为创建部门
+                if (Fc.isNull(baseEntity.getCreateOrg()) && Fc.notNull(userDto.getOrgId())){
+                    baseEntity.setCreateOrg(userDto.getOrgId());
+                }
+
+            }
+            // 新创建数据为未删除状态
+            baseEntity.setIsDeleted(Boolean.FALSE);
+
+        }
     }
 
     /**
      * 更新时候配置的字段
      *
-     * @Author 郭丁志
-     * @Date 17:49 2020-07-09
+     * @author mr.g
+     * @date 17:49 2020-07-09
      **/
     @Override
     public void updateFill(MetaObject metaObject) {
-        this.strictUpdateFill(metaObject, "updateUser", Long.class, getUserId());
-        this.strictUpdateFill(metaObject, "updateTime", Date.class, new Date());
-    }
 
-    /**
-     * 获取当前登陆用户
-     *
-     * @Author 郭丁志
-     * @Date 17:49 2020-07-09
-     **/
-    private Long getUserId(){
-        return userConfig.queryUser().getUserId();
-    }
+        if (Fc.notNull(metaObject) && metaObject.getOriginalObject() instanceof BaseEntity) {
+            BaseEntity baseEntity = (BaseEntity) metaObject.getOriginalObject();
 
-    /**
-     * 获取当前登陆用户的所在部门
-     *
-     * @Author 郭丁志
-     * @Date 17:49 2020-07-09
-     **/
-    private Long getOrg(){
-        return userConfig.queryUser().getOrgId();
+            // 更新时间为空，则以当前时间为插入时间
+            if (Fc.isNull(baseEntity.getUpdateTime())) {
+                baseEntity.setUpdateTime(DateUtil.date());
+            }
+
+            UserDto userDto = userConfig.queryUser();
+            if (Fc.notNull(userDto)) {
+                // 当前登录用户不为空，创建人为空，则当前登录用户为更新人
+                if (Fc.isNull(baseEntity.getUpdateUser()) && Fc.notNull(userDto.getUserId())) {
+                    baseEntity.setUpdateUser(userDto.getUserId());
+                }
+            }
+        }
     }
 
 }

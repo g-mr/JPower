@@ -22,7 +22,7 @@ public class CacheUtil {
 
     static {
         CACHE_MANAGER = SpringUtil.getBean(CacheManager.class);
-        REDIS_PREFIX_HANDLER = SpringUtil.getBean(RedisPrefixHandler.class);
+        REDIS_PREFIX_HANDLER = SpringUtil.isExistBean(RedisPrefixHandler.class) ? SpringUtil.getBean(RedisPrefixHandler.class) : null;
     }
 
     /**

@@ -1,5 +1,6 @@
 package top.jpower.jpower.dbs.dao.mapper;
 
+import org.apache.ibatis.annotations.Mapper;
 import top.jpower.jpower.dbs.entity.TbResourceSms;
 import top.jpower.core.dbs.dbs.dao.mapper.base.JpowerBaseMapper;
 
@@ -11,6 +12,7 @@ import top.jpower.core.dbs.dbs.dao.mapper.base.JpowerBaseMapper;
  * @author mr.g
  * @since 2024-03-04
  */
+@Mapper
 public interface TbResourceSmsMapper extends JpowerBaseMapper<TbResourceSms> {
 
 }

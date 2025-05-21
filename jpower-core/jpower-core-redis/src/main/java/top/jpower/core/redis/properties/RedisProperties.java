@@ -3,6 +3,7 @@ package top.jpower.core.redis.properties;
 import lombok.Data;
 import org.redisson.spring.cache.CacheConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import top.jpower.core.redis.handler.RedisPrefixHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +38,7 @@ public class RedisProperties {
     @Data
     public static class Prefix {
         /**
-         * 是否启用前缀生成器
+         * 是否启用前缀生成器,启用以后需要实现 {@link RedisPrefixHandler} 接口
          **/
         private Boolean enabled = Boolean.TRUE;
 
