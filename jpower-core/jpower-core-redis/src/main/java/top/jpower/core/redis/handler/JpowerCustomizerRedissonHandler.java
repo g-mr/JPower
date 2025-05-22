@@ -57,5 +57,9 @@ public class JpowerCustomizerRedissonHandler implements RedissonAutoConfiguratio
         }
 
         configuration.setCodec(new JpowerJsonJacksonCodec(keySerializer, valueSerializer));
+        // configuration.setCodec(new ProtobufCodec(Object.class));
+        // configuration.setCodec(new FittenCodec(Object.class));
+        // configuration.setCodec(new Kryo5Codec(Object.class));
+        // configuration.setCodec(new KryoCodec(Object.class));
     }
 }
