@@ -78,6 +78,16 @@ public class AuthController extends BaseController {
 
     private final String VALIDATE_SMS_CODE = "validate";
 
+    @GetMapping("test")
+    public ResponseData<TbCoreUser> test(){
+        TbCoreUser user = new TbCoreUser();
+        user.setUserName("撒旦解放");
+        redisService.valueOps().set("test", user);
+        System.out.println(redisService.valueOps(TbCoreUser.class).get("test"));
+        System.out.println(redisService.hashOps().get("jpower:user","loginId:root"));
+        return ReturnJsonUtil.data(UserCache.getUserByLoginId("root", "000000"));
+    }
+
     @ApiOperation(value = "用户登录",notes = "Authorization（客户端识别码）：由clientCode+\":\"+clientSecret组成字符串后用base64编码后获得值，再由Basic +base64编码后的值组成客户端识别码； <br/>" +
             "&nbsp;&nbsp;&nbsp;clientCode和clientSecret的值由后端统一提供，不同的登录客户端值也不一样。<br/>" +
             "token如何使用：tokenType+\" \"+token组成的值要放到header；header头是jpower-auth；具体写法如下；<br/>" +

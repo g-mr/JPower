@@ -4,11 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.redisson.api.NameMapper;
+import org.redisson.codec.Kryo5Codec;
 import org.redisson.config.*;
 import org.redisson.spring.starter.RedissonAutoConfigurationCustomizer;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
-import top.jpower.core.redis.serializer.JpowerJsonJacksonCodec;
 import top.jpower.core.redis.serializer.JpowerStringSerializer;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.ReflectUtil;
@@ -56,10 +56,16 @@ public class JpowerCustomizerRedissonHandler implements RedissonAutoConfiguratio
             }
         }
 
-        configuration.setCodec(new JpowerJsonJacksonCodec(keySerializer, valueSerializer));
-        // configuration.setCodec(new ProtobufCodec(Object.class));
+        // configuration.setCodec(new JpowerJsonJacksonCodec(keySerializer, valueSerializer));
+
+
+        // configuration.setCodec(new JsonJacksonMapCodec());
+        // configuration.setCodec(new AvroJacksonCodec());
+
+        // configuration.setCodec(new TypedJsonJacksonCodec(Object.class));
+        // configuration.setCodec(new CompositeCodec());
         // configuration.setCodec(new FittenCodec(Object.class));
-        // configuration.setCodec(new Kryo5Codec(Object.class));
+        configuration.setCodec(new Kryo5Codec());
         // configuration.setCodec(new KryoCodec(Object.class));
     }
 }
