@@ -4,12 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.redisson.api.NameMapper;
-import org.redisson.codec.Kryo5Codec;
+import org.redisson.client.codec.Codec;
 import org.redisson.config.*;
 import org.redisson.spring.starter.RedissonAutoConfigurationCustomizer;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.RedisSerializer;
-import top.jpower.core.redis.serializer.JpowerStringSerializer;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.ReflectUtil;
 
@@ -24,10 +21,7 @@ import top.jpower.core.util.utils.ReflectUtil;
 @Setter
 public class JpowerCustomizerRedissonHandler implements RedissonAutoConfigurationCustomizer {
 
-    @SuppressWarnings("rawtypes")
-    private RedisSerializer keySerializer = new JpowerStringSerializer();
-    @SuppressWarnings("rawtypes")
-    private RedisSerializer valueSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
+    private Codec codec;
     private NameMapper nameMapper;
 
     @Override
@@ -55,17 +49,6 @@ public class JpowerCustomizerRedissonHandler implements RedissonAutoConfiguratio
                 replicatedServersConfig.setNameMapper(nameMapper);
             }
         }
-
-        // configuration.setCodec(new JpowerJsonJacksonCodec(keySerializer, valueSerializer));
-
-
-        // configuration.setCodec(new JsonJacksonMapCodec());
-        // configuration.setCodec(new AvroJacksonCodec());
-
-        // configuration.setCodec(new TypedJsonJacksonCodec(Object.class));
-        // configuration.setCodec(new CompositeCodec());
-        // configuration.setCodec(new FittenCodec(Object.class));
-        configuration.setCodec(new Kryo5Codec());
-        // configuration.setCodec(new KryoCodec(Object.class));
+        configuration.setCodec(codec);
     }
 }

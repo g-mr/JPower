@@ -17,12 +17,11 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
-import org.springframework.data.redis.serializer.RedisSerializer;
 import top.jpower.core.redis.connection.RedisConnectionFactoryBroker;
 import top.jpower.core.redis.handler.JpowerRedissonCacheManager;
 import top.jpower.core.redis.handler.RedisPrefixHandler;
 import top.jpower.core.redis.properties.RedisProperties;
-import top.jpower.core.redis.serializer.JpowerStringSerializer;
+import top.jpower.core.redis.serializer.CodecRedisSerializer;
 import top.jpower.core.util.utils.MapUtil;
 
 import java.time.Duration;
@@ -54,7 +53,7 @@ public class CacheManagerConfig {
     @ConditionalOnBean(RedisConnectionFactory.class)
     @ConditionalOnMissingBean(RedissonClient.class)
     public RedisCacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory,
-                                               RedisSerializer<Object> redisSerializer,
+                                               CodecRedisSerializer redisSerializer,
                                                RedisProperties redisProperties,
                                                @Autowired(required = false) RedisPrefixHandler redisPrefixHandler) {
 
@@ -76,7 +75,7 @@ public class CacheManagerConfig {
                 .build();
     }
 
-    private RedisCacheConfiguration handleRedisCacheConfiguration(RedisSerializer<Object> redisSerializer,long ttl, Boolean allowNullValues, RedisCacheConfiguration config) {
+    private RedisCacheConfiguration handleRedisCacheConfiguration(CodecRedisSerializer redisSerializer,long ttl, Boolean allowNullValues, RedisCacheConfiguration config) {
         if (ttl > 0) {
             config = config.entryTtl(Duration.ofMillis(ttl));
         }
@@ -84,8 +83,8 @@ public class CacheManagerConfig {
             config = config.disableCachingNullValues();
         }
 
-        config.serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new JpowerStringSerializer()));
-        config.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(redisSerializer));
+        config.serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(redisSerializer.getKeyRedisSerializer()));
+        config.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(redisSerializer.getValueRedisSerializer()));
 
         return config;
     }

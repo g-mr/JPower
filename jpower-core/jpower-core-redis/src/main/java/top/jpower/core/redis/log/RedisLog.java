@@ -5,15 +5,17 @@ import cn.hutool.core.thread.ThreadUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFuture;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.client.handler.State;
 import org.redisson.client.protocol.RedisCommand;
-import org.springframework.data.redis.serializer.RedisSerializer;
 import top.jpower.core.redis.properties.RedisProperties;
+import top.jpower.core.redis.serializer.CodecRedisSerializer;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.utils.DateUtil;
 import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.StringUtil;
 
-import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -30,7 +32,10 @@ import java.util.function.Supplier;
 public class RedisLog {
 
     private final RedisProperties redisProperties;
-    private final RedisSerializer<String> redisSerializer;
+    private final CodecRedisSerializer redisSerializer;
+
+    private final Integer keyType = 1;
+    private final Integer valueType = 2;
 
     /**
      * 代理发送Redis命令，答应日志
@@ -92,7 +97,7 @@ public class RedisLog {
                     builder.append(StringPool.NEWLINE);
                     builder.append(StringPool.SPACE).append("<--Result: ");
                     try {
-                        builder.append(convert(mainPromise.toCompletableFuture().get()));
+                        builder.append(convert(command.getName(), mainPromise.toCompletableFuture().get(), valueType));
                     } catch (InterruptedException e) {
                         builder.append("命令被中断=>").append(e.getMessage());
                     } catch (ExecutionException e) {
@@ -141,8 +146,19 @@ public class RedisLog {
      **/
     private <V> String getExecute(RedisCommand<V> command, Object[] params) {
         StringBuilder builder = new StringBuilder(command.getName());
+
+
+        for (int i = 0; i < params.length; i++) {
+
+            if ((i+1) == params.length && StringUtil.containsAnyIgnoreCase(command.getName(), "SET", "PUSH", "ADD")){
+                builder.append(StringPool.SPACE).append(convert(command.getName(), params[i], valueType));
+            } else {
+                builder.append(StringPool.SPACE).append(convert(command.getName(), params[i], keyType));
+            }
+        }
+
         for (Object param : params) {
-            builder.append(StringPool.SPACE).append(convert(param));
+            builder.append(StringPool.SPACE).append(convert(command.getName(), param, keyType));
         }
         return builder.toString();
     }
@@ -154,15 +170,31 @@ public class RedisLog {
      * @param param 参数
      * @return 转换结果
      **/
-    private Object convert(Object param) {
+    @SneakyThrows
+    private Object convert(String oper, Object param, Integer type) {
         if (Fc.isNull(param)){
             return "";
         }
-
         if (param instanceof byte[]){
-            param = redisSerializer.deserialize((byte[]) param);
+            if (Fc.equalsValue(type, keyType)){
+                param = redisSerializer.getKeyRedisSerializer().deserialize((byte[]) param);
+            } else {
+                if (StringUtil.containsIgnoreCase(oper, "KEYS")){
+                    param = redisSerializer.getKeyRedisSerializer().deserialize((byte[]) param);
+                } else {
+                    param = redisSerializer.getValueRedisSerializer().deserialize((byte[]) param);
+                }
+            }
         } else if (param instanceof ByteBuf) {
-            param = ((ByteBuf) param).toString(StandardCharsets.UTF_8);
+            if (Fc.equalsValue(type, keyType)){
+                param = redisSerializer.getMapKeyDecoder().decode((ByteBuf) param, new State());
+            } else {
+                if (StringUtil.containsIgnoreCase(oper, "KEYS")){
+                    param = redisSerializer.getMapKeyDecoder().decode((ByteBuf) param, new State());
+                } else {
+                    param = redisSerializer.getValueDecoder().decode((ByteBuf) param, new State());
+                }
+            }
         }
         return param;
     }

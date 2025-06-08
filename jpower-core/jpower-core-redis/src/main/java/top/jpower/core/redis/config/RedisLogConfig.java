@@ -7,9 +7,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.redis.core.RedisTemplate;
 import top.jpower.core.redis.log.RedisLog;
 import top.jpower.core.redis.properties.RedisProperties;
+import top.jpower.core.redis.serializer.CodecRedisSerializer;
 
 /**
  * Redis 日志
@@ -25,8 +25,8 @@ public class RedisLogConfig {
     @Bean
     @ConditionalOnBean(name = "redisTemplate")
     @ConditionalOnMissingBean
-    public RedisLog redisLog(RedisProperties redisProperties, RedisTemplate<String, Object> redisTemplate){
-        return new RedisLog(redisProperties, redisTemplate.getStringSerializer());
+    public RedisLog redisLog(RedisProperties redisProperties, CodecRedisSerializer redisSerializer){
+        return new RedisLog(redisProperties, redisSerializer);
     }
 
 }

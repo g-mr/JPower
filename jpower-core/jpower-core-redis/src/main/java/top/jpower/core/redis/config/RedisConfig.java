@@ -1,5 +1,8 @@
 package top.jpower.core.redis.config;
 
+import org.redisson.client.codec.StringCodec;
+import org.redisson.codec.CompositeCodec;
+import org.redisson.codec.Kryo5Codec;
 import org.redisson.spring.starter.RedissonAutoConfigurationCustomizer;
 import org.redisson.spring.starter.RedissonAutoConfigurationV2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,16 +17,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.RedisSerializer;
-import top.jpower.core.redis.handler.JpowerCustomizerRedissonHandler;
-import top.jpower.core.redis.handler.PrefixRedissonHandler;
-import top.jpower.core.redis.handler.RedisPrefixHandler;
-import top.jpower.core.redis.properties.RedisProperties;
-import top.jpower.core.redis.serializer.JpowerStringSerializer;
-import top.jpower.core.redis.handler.JpowerRedisTemplate;
-import top.jpower.core.redis.handler.JpowerStringRedisTemplate;
 import top.jpower.core.redis.cache.RedisService;
+import top.jpower.core.redis.handler.*;
+import top.jpower.core.redis.properties.RedisProperties;
+import top.jpower.core.redis.serializer.CodecRedisSerializer;
+import top.jpower.core.redis.serializer.JpowerStringSerializer;
 
 /**
  * @author mr.g
@@ -37,38 +35,36 @@ import top.jpower.core.redis.cache.RedisService;
 public class RedisConfig {
 
     @Bean
-    @ConditionalOnMissingBean(name = "redisSerializer")
-    public RedisSerializer<Object> redisSerializer(){
-        return new Jackson2JsonRedisSerializer<>(Object.class);
+    @ConditionalOnMissingBean
+    public CodecRedisSerializer codecRedisSerializer(){
+        return new CodecRedisSerializer(new CompositeCodec(new StringCodec(), new Kryo5Codec(), new Kryo5Codec()));
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public RedissonAutoConfigurationCustomizer redissonAutoConfigurationCustomizer(RedisSerializer<Object> redisSerializer,
+    public RedissonAutoConfigurationCustomizer redissonAutoConfigurationCustomizer(CodecRedisSerializer redisSerializer,
                                                                                    RedisProperties redisProperties,
                                                                                    @Autowired(required = false) RedisPrefixHandler redisPrefixHandler){
         JpowerCustomizerRedissonHandler customizerRedissonConfig = new JpowerCustomizerRedissonHandler();
-        customizerRedissonConfig.setKeySerializer(new JpowerStringSerializer());
-        customizerRedissonConfig.setValueSerializer(redisSerializer);
         customizerRedissonConfig.setNameMapper(new PrefixRedissonHandler(redisProperties.getPrefix(), redisPrefixHandler));
+        customizerRedissonConfig.setCodec(redisSerializer);
         return customizerRedissonConfig;
     }
 
     @Bean
     @ConditionalOnMissingBean(name = "redisTemplate")
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory,
-                                                       RedisSerializer<Object> redisSerializer,
+                                                       CodecRedisSerializer redisSerializer,
                                                        RedisProperties redisProperties,
                                                        @Autowired(required = false) RedisPrefixHandler redisPrefixHandler) {
         RedisTemplate<String, Object> template = new JpowerRedisTemplate(redisConnectionFactory, redisProperties, redisPrefixHandler);
 
         // value 序列化
-        template.setValueSerializer(redisSerializer);
-        template.setHashValueSerializer(redisSerializer);
+        template.setValueSerializer(redisSerializer.getValueRedisSerializer());
+        template.setHashValueSerializer(redisSerializer.getValueRedisSerializer());
         // key 序列化
-        JpowerStringSerializer redisKeySerializer = new JpowerStringSerializer();
-        template.setKeySerializer(redisKeySerializer);
-        template.setHashKeySerializer(redisKeySerializer);
+        template.setKeySerializer(redisSerializer.getKeyRedisSerializer());
+        template.setHashKeySerializer(redisSerializer.getKeyRedisSerializer());
 
         return template;
     }
