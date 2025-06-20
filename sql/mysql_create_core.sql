@@ -185,6 +185,9 @@ INSERT INTO `tb_core_dict` VALUES (1764851365206581250, 'SMS_CATEGORY', 'ali', '
 INSERT INTO `tb_core_dict` VALUES (1782694643767443457, 'OSS_CATEGORY', 'ali', '阿里云', 'N', -1, 'zh', NULL, 0, 1, '2024-04-23 16:54:59', 1, '2024-04-23 16:54:59', 0, NULL, '-1', '000000', 1728752845331021824);
 INSERT INTO `tb_core_dict` VALUES (1782694777007898626, 'OSS_CATEGORY', 'qiniu', '七牛云', 'N', -1, 'zh', NULL, 1, 1, '2024-04-23 16:55:30', 1, '2024-04-23 16:55:30', 0, NULL, '-1', '000000', 1728752845331021824);
 INSERT INTO `tb_core_dict` VALUES (1782694777007898627, 'OSS_CATEGORY', 'aws', '亚马逊', 'N', -1, 'zh', NULL, 1, 1, '2024-04-23 16:55:30', 1, '2024-04-23 16:55:30', 0, NULL, '-1', '000000', 1728752845331021824);
+INSERT INTO tb_core_dict (id, dict_type_code, code, name, is_stop, parent_id, locale, note, sort_num, create_user, create_time, update_user, update_time,  is_deleted, dict_level, pcode, tenant_code, create_org) VALUES ('1730156093074857986', 'ORG_TYPE', '1', '公司', 'N', '-1', 'zh', null, 0, '1', '2023-11-30 17:25:32', '1', '2023-11-30 17:25:32', 0, null, '-1', '000000', '1');
+INSERT INTO tb_core_dict (id, dict_type_code, code, name, is_stop, parent_id, locale, note, sort_num, create_user, create_time, update_user, update_time,  is_deleted, dict_level, pcode, tenant_code, create_org) VALUES ('1730156115350806530', 'ORG_TYPE', '2', '部门', 'N', '-1', 'zh', null, 0, '1', '2023-11-30 17:25:37', '1', '2023-11-30 17:25:37',  0, null, '-1', '000000', '1');
+INSERT INTO tb_core_dict (id, dict_type_code, code, name, is_stop, parent_id, locale, note, sort_num, create_user, create_time, update_user, update_time,  is_deleted, dict_level, pcode, tenant_code, create_org) VALUES ('1730156145692401665', 'ORG_TYPE', '3', '小组', 'N', '-1', 'zh', null, 0, '1', '2023-11-30 17:25:45', '1', '2023-11-30 17:25:45',  0, null, '-1', '000000', '1');
 
 -- ----------------------------
 -- Table structure for tb_core_dict_type
@@ -234,6 +237,7 @@ INSERT INTO `tb_core_dict_type` VALUES (1728752464215588864, 'YN01', '是否01',
 INSERT INTO `tb_core_dict_type` VALUES (1728752465650040832, 'YYZL', '语言种类', NULL, 'N', 2, 1728752458242899968, 1, '2021-03-03 22:33:28', 1, '2023-11-26 12:29:35', 0, 0, 1728752845331021824);
 INSERT INTO `tb_core_dict_type` VALUES (1764851320730181633, 'SMS_CATEGORY', '短信分类', NULL, 'Y', 0, 1728752458242899968, 1, '2024-03-05 11:11:59', 1, '2024-03-05 11:11:59', 0, 0, 1728752845331021824);
 INSERT INTO `tb_core_dict_type` VALUES (1782694566495780866, 'OSS_CATEGORY', '对象存储类型', NULL, 'Y', 3, 1728752458242899968, 1, '2024-04-23 16:54:40', 1, '2024-04-23 16:54:40', 0, 0, 1728752845331021824);
+INSERT INTO tb_core_dict_type (id, dict_type_code, dict_type_name, note, del_enabled, sort_num, parent_id, create_user, create_time, update_user, update_time,  is_deleted, is_tree, create_org) VALUES ('1730156050968240130', 'ORG_TYPE', '机构类型', null, 'Y', 0, '1728752458242899968', '1', '2023-11-30 17:25:22', '1', '2023-11-30 17:25:22',  0, 0, '1');
 
 -- ----------------------------
 -- Table structure for tb_core_file
