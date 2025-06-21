@@ -71,7 +71,7 @@ public class CoreDictServiceImpl extends BaseServiceImpl<TbCoreDictMapper, TbCor
     public List<Map<String, Object>> listByTypeCode(String dictTypeCode) {
         //这里不能返回实体类，不然会造成字典回写的死循环
         return dictDao.listMaps(Condition.<TbCoreDict>getQueryWrapper().lambda()
-                .select(TbCoreDict::getCode,TbCoreDict::getName)
+                .select(TbCoreDict::getCode, TbCoreDict::getName, TbCoreDict::getLocale)
                 .eq(TbCoreDict::getDictTypeCode, dictTypeCode)
                 .eq(ShieldUtil.isRoot(), TbCoreDict::getTenantCode, DEFAULT_TENANT_CODE));
     }
