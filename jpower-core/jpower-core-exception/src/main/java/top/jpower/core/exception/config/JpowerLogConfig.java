@@ -2,8 +2,13 @@ package top.jpower.core.exception.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.*;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.client.RestTemplateAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -43,8 +48,9 @@ public class JpowerLogConfig {
     }
 
     @Configuration(proxyBeanMethods = false)
+    @AutoConfigureAfter(RestTemplateAutoConfiguration.class)
     @ConditionalOnMissingBean(LogClient.class)
-    @ConditionalOnClass(RestTemplate.class)
+    @ConditionalOnBean(RestTemplate.class)
     @ConditionalOnProperty(prefix = "jpower", name = "server", havingValue = "CLOUD")
     static class RestLogClientConfiguration {
 

@@ -79,7 +79,7 @@ public class HttpLogInterceptor implements Interceptor, Ordered {
                 .append(NEWLINE);
 
         if (level == Logger.Level.HEADERS || level == Logger.Level.FULL){
-            builder.append("request headers: ").append(NEWLINE);
+            builder.append(SPACE).append("request headers: ").append(NEWLINE);
             Headers requestHeaders = request.headers();
             for (int i = 0, count = requestHeaders.size(); i < count; i++) {
                 builder.append(TAB).append(requestHeaders.name(i)).append(SPACE).append(EQUALS).append(SPACE).append(requestHeaders.value(i)).append(NEWLINE);
@@ -90,7 +90,7 @@ public class HttpLogInterceptor implements Interceptor, Ordered {
         if (level == Logger.Level.FULL){
             RequestBody requestBody = request.body();
             if (Fc.notNull(requestBody)){
-                builder.append("request body: ")
+                builder.append(SPACE).append("request body: ")
                         .append(requestBody.contentLength() != -1 ? requestBody.contentLength() + "-byte" : "unknown-length")
                         .append(SPACE).append(requestBody.contentType())
                         .append(NEWLINE);
@@ -100,7 +100,7 @@ public class HttpLogInterceptor implements Interceptor, Ordered {
                         .append(rqBody)
                         .append(NEWLINE);
             }else {
-                builder.append("request body is null").append(NEWLINE);
+                builder.append(SPACE).append("request body is null").append(NEWLINE);
             }
         }
 
@@ -116,7 +116,7 @@ public class HttpLogInterceptor implements Interceptor, Ordered {
                 .append(NEWLINE);
 
         if (level == Logger.Level.HEADERS || level == Logger.Level.FULL){
-            builder.append("response headers: ").append(NEWLINE);
+            builder.append(SPACE).append("response headers: ").append(NEWLINE);
             Headers responseHeaders = response.headers();
             for (int i = 0, count = responseHeaders.size(); i < count; i++) {
                 builder.append(TAB).append(responseHeaders.name(i)).append(SPACE).append(EQUALS).append(SPACE).append(responseHeaders.value(i)).append(NEWLINE);
@@ -128,7 +128,7 @@ public class HttpLogInterceptor implements Interceptor, Ordered {
             if (HttpHeaders.hasBody(response)){
                 ResponseBody responseBody = response.body();
 
-                builder.append("response body: ")
+                builder.append(SPACE).append("response body: ")
                         .append(responseBody.contentLength() != -1 ? responseBody.contentLength() + "-byte" : "unknown-length")
                         .append(SPACE).append(responseBody.contentType())
                         .append(NEWLINE);
@@ -139,7 +139,7 @@ public class HttpLogInterceptor implements Interceptor, Ordered {
                         .append(rpBody)
                         .append(NEWLINE);
             }else {
-                builder.append("response body is null").append(NEWLINE);
+                builder.append(SPACE).append("response body is null").append(NEWLINE);
             }
         }
 

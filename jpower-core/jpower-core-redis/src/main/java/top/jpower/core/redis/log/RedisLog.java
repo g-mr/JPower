@@ -3,7 +3,11 @@ package top.jpower.core.redis.log;
 import cn.hutool.core.date.TimeInterval;
 import cn.hutool.core.thread.ThreadUtil;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
+import io.netty.util.IllegalReferenceCountException;
+import io.netty.util.ReferenceCountUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -113,7 +117,7 @@ public class RedisLog {
 
                 log.info(builder.toString());
             } catch (Exception e) {
-                log.error("Redis打印报错==》{}", e.getMessage());
+                log.error("Redis[{}命令]打印报错==》{}", command.getName(), e.getMessage());
             }
 
         });
@@ -147,7 +151,6 @@ public class RedisLog {
     private <V> String getExecute(RedisCommand<V> command, Object[] params) {
         StringBuilder builder = new StringBuilder(command.getName());
 
-
         for (int i = 0; i < params.length; i++) {
 
             if ((i+1) == params.length && StringUtil.containsAnyIgnoreCase(command.getName(), "SET", "PUSH", "ADD")){
@@ -157,9 +160,6 @@ public class RedisLog {
             }
         }
 
-        for (Object param : params) {
-            builder.append(StringPool.SPACE).append(convert(command.getName(), param, keyType));
-        }
         return builder.toString();
     }
 
@@ -186,16 +186,53 @@ public class RedisLog {
                 }
             }
         } else if (param instanceof ByteBuf) {
-            if (Fc.equalsValue(type, keyType)){
-                param = redisSerializer.getMapKeyDecoder().decode((ByteBuf) param, new State());
-            } else {
-                if (StringUtil.containsIgnoreCase(oper, "KEYS")){
-                    param = redisSerializer.getMapKeyDecoder().decode((ByteBuf) param, new State());
+            ByteBuf buf = getBufferSnapshot((ByteBuf) param);
+            try {
+                if (Fc.equalsValue(type, keyType)){
+                    param = redisSerializer.getMapKeyDecoder().decode(buf, new State());
                 } else {
-                    param = redisSerializer.getValueDecoder().decode((ByteBuf) param, new State());
+                    if (StringUtil.containsIgnoreCase(oper, "KEYS")){
+                        param = redisSerializer.getMapKeyDecoder().decode(buf, new State());
+                    } else {
+                        param = redisSerializer.getValueDecoder().decode(buf, new State());
+                    }
+                }
+            } finally {
+                // 堆缓冲区（无需释放）
+                if (buf.hasMemoryAddress()){
+                    ReferenceCountUtil.safeRelease(buf);
                 }
             }
         }
         return param;
     }
+
+    /**
+     * 安全获取缓冲区快照（核心安全机制）
+     */
+    private ByteBuf getBufferSnapshot(ByteBuf buf) {
+        // 情况1：缓冲区有效且可访问
+        if (buf.refCnt() > 0) {
+            try {
+                // 创建零拷贝切片（高效）
+                return buf.retainedSlice();
+            } catch (IllegalReferenceCountException e) {
+                // 多线程竞争下可能发生，回退到复制方案
+                log.debug("由于引用计数问题，切片失败，改用 copy");
+                return Unpooled.copiedBuffer(buf);
+            }
+        }
+
+        // 情况2：缓冲区已释放
+        log.warn("尝试使用已发布的 ByteBuf，使用安全恢复");
+        // 从原始字节恢复（即使缓冲区已释放）
+        byte[] bytes = ByteBufUtil.getBytes(
+                buf,
+                buf.readerIndex(),
+                buf.readableBytes(),
+                false // 不修改原始缓冲区状态
+        );
+        return Unpooled.wrappedBuffer(bytes);
+    }
+
 }
