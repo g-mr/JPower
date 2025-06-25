@@ -3,23 +3,20 @@ package top.jpower.core.exception.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.client.RestTemplateAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.web.client.RestTemplate;
 import top.jpower.core.deploy.property.JpowerProperties;
 import top.jpower.core.exception.aspectj.OperateLogAspect;
+import top.jpower.core.exception.client.FeignLogClient;
 import top.jpower.core.exception.client.JdbcLogClient;
 import top.jpower.core.exception.client.LogClient;
-import top.jpower.core.exception.client.RestLogClient;
+import top.jpower.core.exception.feign.LogTraceClient;
 import top.jpower.core.exception.listener.ErrorLogListener;
 import top.jpower.core.exception.listener.OperateLogListener;
+import top.jpower.core.feign.config.DynamicFeignConfig;
 import top.jpower.core.util.user.UserConfig;
 
 /**
@@ -47,16 +44,17 @@ public class JpowerLogConfig {
         return new ErrorLogListener(jpowerProperties, logClient);
     }
 
-    @Configuration(proxyBeanMethods = false)
-    @AutoConfigureAfter(RestTemplateAutoConfiguration.class)
+    @AutoConfiguration //(proxyBeanMethods = false)
+    @ConditionalOnClass(DynamicFeignConfig.class)
+    @AutoConfigureAfter(DynamicFeignConfig.class)
     @ConditionalOnMissingBean(LogClient.class)
-    @ConditionalOnBean(RestTemplate.class)
     @ConditionalOnProperty(prefix = "jpower", name = "server", havingValue = "CLOUD")
-    static class RestLogClientConfiguration {
+    public static class FeignLogClientConfiguration {
 
         @Bean
-        LogClient logClient(RestTemplate restTemplate) {
-            return new RestLogClient(restTemplate);
+//        @ConditionalOnBean(LogTraceClient.class)
+        public LogClient logClient(LogTraceClient logTraceClient) {
+            return new FeignLogClient(logTraceClient);
         }
 
     }

@@ -7,6 +7,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -33,7 +34,7 @@ public class RestTemplateConfig {
     @Bean
     @LoadBalanced
     @ConditionalOnMissingBean
-    public RestTemplate restTemplate() {
+    public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
 
         HttpComponentsClientHttpRequestFactory httpRequestFactory = new HttpComponentsClientHttpRequestFactory();
         httpRequestFactory.setHttpClient(httpClientBuilder().build());
@@ -44,7 +45,7 @@ public class RestTemplateConfig {
         //读取数据的超时时间
         httpRequestFactory.setReadTimeout(120000);
 
-        RestTemplate restTemplate = new RestTemplate(httpRequestFactory);
+        RestTemplate restTemplate = restTemplateBuilder.build();// new RestTemplate(httpRequestFactory);
 
         restTemplate.getInterceptors().add((request, body, execution) -> {
 

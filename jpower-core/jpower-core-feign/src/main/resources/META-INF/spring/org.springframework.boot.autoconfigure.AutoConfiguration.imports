@@ -3,3 +3,4 @@ top.jpower.core.feign.config.FeignOkHttpConfiguration
 top.jpower.core.feign.config.RestTemplateConfig
 top.jpower.core.feign.config.interceptor.HeaderRequestInterceptor
 top.jpower.core.feign.sentinel.datascource.SentinelNacosDataSource
+top.jpower.core.feign.config.DynamicFeignConfig

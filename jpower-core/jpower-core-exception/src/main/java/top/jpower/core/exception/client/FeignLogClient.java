@@ -2,8 +2,8 @@ package top.jpower.core.exception.client;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.client.RestTemplate;
 import top.jpower.core.exception.enums.constants.LogConstant;
+import top.jpower.core.exception.feign.LogTraceClient;
 import top.jpower.core.exception.model.ErrorLogDto;
 import top.jpower.core.exception.model.OperateLogDto;
 import top.jpower.core.util.rsp.ResponseData;
@@ -11,14 +11,15 @@ import top.jpower.core.util.utils.ExceptionUtil;
 import top.jpower.core.util.utils.Fc;
 
 /**
- * 日志默认处理器，去调用jpower的接口
+ * 日志处理器，去调用jpower的接口
  *
  * @author mr.g
  */
 @Slf4j
 @RequiredArgsConstructor
-public class RestLogClient implements LogClient {
-    private final RestTemplate restTemplate;
+public class FeignLogClient implements LogClient {
+
+    private final LogTraceClient logTraceClient;
 
     /**
      * 保存操作日志
@@ -29,7 +30,7 @@ public class RestLogClient implements LogClient {
     @Override
     public void saveOperateLog(OperateLogDto operateLog) {
         try {
-            ResponseData responseData = restTemplate.postForObject("http://"+ LogConstant.getInstance().getJpowerLog()+"/log/saveOperateLog", operateLog, ResponseData.class);
+            ResponseData responseData = logTraceClient.saveOperateLog(LogConstant.getInstance().getJpowerLog(), operateLog);
             if (Fc.isNull(responseData) || !responseData.isStatus()){
                 log.error("操作日志保存失败={}",responseData);
             }
@@ -52,7 +53,7 @@ public class RestLogClient implements LogClient {
         }
 
         try {
-            ResponseData responseData = restTemplate.postForObject("http://"+ LogConstant.getInstance().getJpowerLog()+"/log/saveErrorLog", errorLog,ResponseData.class);
+            ResponseData responseData = logTraceClient.saveErrorLog(LogConstant.getInstance().getJpowerLog(), errorLog);
             if (Fc.isNull(responseData) || !responseData.isStatus()){
                 log.error("错误日志保存失败={}", responseData);
             }
