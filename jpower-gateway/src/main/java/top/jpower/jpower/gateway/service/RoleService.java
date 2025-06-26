@@ -5,15 +5,15 @@ import cn.hutool.core.thread.ThreadUtil;
 import com.alibaba.fastjson2.JSON;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import top.jpower.common.enums.YN01Enum;
+import top.jpower.core.auth.utils.constant.ClientNameConstant;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.rsp.ResponseData;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.MapUtil;
-import top.jpower.core.util.utils.StringUtil;
-import top.jpower.core.auth.utils.constant.ClientNameConstant;
+import top.jpower.jpower.gateway.feign.RoleClient;
 
 import java.util.Comparator;
 import java.util.List;
@@ -27,10 +27,13 @@ import java.util.stream.Collectors;
  * @date 2022-08-01 23:09
  */
 @Service
+@EnableFeignClients(clients = RoleClient.class)
 @AllArgsConstructor
 public class RoleService {
 
-    private RestTemplate restTemplate;
+    private RoleClient client;
+    // private RestTemplate restTemplate;
+    // private final WebClient webClient;
 
     /**
      * 根据角色ID查询功能
@@ -42,7 +45,10 @@ public class RoleService {
      **/
     @SneakyThrows({ExecutionException.class, InterruptedException.class})
     public List<String> queryUrlByRole(Long roleId, String clientCode){
-        Future<ResponseData<List<String>>> future = ThreadUtil.execAsync(() -> restTemplate.getForObject("http://"+ ClientNameConstant.getInstance().getJpowerSystem()+"/core/function/getUrlsByRoleIds?roleIds="+roleId+"&clientCode="+clientCode,ResponseData.class));
+        Future<ResponseData<List<String>>> future = ThreadUtil.execAsync(() -> {
+            return client.getUrlsByRoleIds(ClientNameConstant.getInstance().getJpowerSystem(), roleId, clientCode);
+            // return restTemplate.getForObject("http://"+ ClientNameConstant.getInstance().getJpowerSystem()+"/core/function/getUrlsByRoleIds?roleIds="+roleId+"&clientCode="+clientCode,ResponseData.class);
+        });
         ResponseData<List<String>> responseData = future.get();
         return Fc.isNull(responseData) ? ListUtil.of() : responseData.getData();
     }
@@ -57,7 +63,10 @@ public class RoleService {
      **/
     @SneakyThrows({ExecutionException.class, InterruptedException.class})
     public Long queryMenuIdByCode(String code){
-        Future<ResponseData<Long>> future = ThreadUtil.execAsync(() -> restTemplate.getForObject("http://"+ ClientNameConstant.getInstance().getJpowerSystem()+"/core/menu/getIdByCode?code="+ code,ResponseData.class));
+        Future<ResponseData<Long>> future = ThreadUtil.execAsync(() -> {
+            return null;
+            // return restTemplate.getForObject("http://"+ ClientNameConstant.getInstance().getJpowerSystem()+"/core/menu/getIdByCode?code="+ code,ResponseData.class);
+        });
         ResponseData<Long> responseData = future.get();
         return Fc.isNull(responseData) ? null : responseData.getData();
     }
@@ -71,7 +80,10 @@ public class RoleService {
      **/
     @SneakyThrows({ExecutionException.class, InterruptedException.class})
     public List<Map<String,Object>> queryDataScopeByRole(List<Long> roleIds, String clientCode){
-        Future<ResponseData<List<Map<String,Object>>>> future = ThreadUtil.execAsync(() -> restTemplate.getForObject("http://"+ ClientNameConstant.getInstance().getJpowerSystem()+"/core/dataScope/getDataScopeByRole?roleIds=" + StringUtil.join(roleIds) + "&clientCode=" + clientCode,ResponseData.class));
+        Future<ResponseData<List<Map<String,Object>>>> future = ThreadUtil.execAsync(() -> {
+            return null;
+            // return restTemplate.getForObject("http://"+ ClientNameConstant.getInstance().getJpowerSystem()+"/core/dataScope/getDataScopeByRole?roleIds=" + StringUtil.join(roleIds) + "&clientCode=" + clientCode,ResponseData.class);
+        });
         ResponseData<List<Map<String,Object>>> responseData = future.get();
         return Fc.isNull(responseData) ? ListUtil.of() : responseData.getData();
     }

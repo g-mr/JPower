@@ -42,6 +42,12 @@
 
         <dependency>
             <groupId>top.jpower</groupId>
+            <artifactId>jpower-core-feign</artifactId>
+            <version>${com.jpower.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>top.jpower</groupId>
             <artifactId>jpower-common</artifactId>
             <version>${com.jpower.version}</version>
             <exclusions>
