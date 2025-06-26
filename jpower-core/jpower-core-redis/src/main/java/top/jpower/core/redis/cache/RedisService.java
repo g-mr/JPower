@@ -62,7 +62,7 @@ public class RedisService {
     }
 
     /**
-     *
+     * 消息队列
      *
      * @author mr.g
      * @return top.jpower.core.redis.wrapper.QueueOperations<java.lang.Object>

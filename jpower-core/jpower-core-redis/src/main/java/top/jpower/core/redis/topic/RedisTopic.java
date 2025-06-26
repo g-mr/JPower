@@ -14,8 +14,16 @@ import java.lang.annotation.*;
 @Documented
 public @interface RedisTopic {
 
+    /**
+     * 监听的topic名称
+     * @return
+     */
     String[] value();
 
+    /**
+     * 是否JSON结构
+     * @return
+     */
     boolean isJsonSource() default false;
 
 }

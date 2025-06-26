@@ -5,7 +5,6 @@ import top.jpower.common.constants.AppConstant;
 import top.jpower.core.deploy.JpowerApplication;
 import top.jpower.core.deploy.annotation.JpowerCloudApplication;
 import top.jpower.core.feign.annotation.EnableJpowerFeignClients;
-import top.jpower.core.redis.topic.RedisTopicScan;
 
 /**
  * 用户管理入口

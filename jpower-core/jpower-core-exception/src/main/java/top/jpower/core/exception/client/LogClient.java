@@ -1,15 +1,5 @@
 package top.jpower.core.exception.client;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.web.client.RestTemplate;
-import top.jpower.core.deploy.property.JpowerProperties;
-import top.jpower.core.util.rsp.ResponseData;
-import top.jpower.core.util.utils.ExceptionUtil;
-import top.jpower.core.util.utils.Fc;
-import top.jpower.core.util.utils.SpringUtil;
-import top.jpower.core.exception.enums.constants.LogConstant;
 import top.jpower.core.exception.model.ErrorLogDto;
 import top.jpower.core.exception.model.OperateLogDto;
 

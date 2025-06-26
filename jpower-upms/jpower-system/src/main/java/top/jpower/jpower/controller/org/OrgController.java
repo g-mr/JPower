@@ -4,7 +4,6 @@ import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.lang.tree.Tree;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
-import org.redisson.api.RedissonClient;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.common.constants.CacheNames;
@@ -24,7 +23,6 @@ import top.jpower.jpower.dbs.entity.org.TbCoreOrg;
 import top.jpower.jpower.service.org.CoreOrgService;
 import top.jpower.jpower.vo.OrgVo;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,13 +33,6 @@ import java.util.Map;
 public class OrgController extends BaseController {
 
     private CoreOrgService coreOrgService;
-
-    private RedissonClient redissonClient;
-
-    @GetMapping(value = "/test",produces="application/json")
-    public void test(){
-        redissonClient.getMap("jpower:dict").put("type:TEST", new HashMap<>());
-    }
 
     @Function(value = "下级部门",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_ORG",code = "SYSTEM_ORGCHILDER_LIST",type = Menu.TYPE.INTERFACE)

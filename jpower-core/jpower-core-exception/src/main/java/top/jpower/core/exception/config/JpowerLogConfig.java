@@ -1,12 +1,11 @@
 package top.jpower.core.exception.config;
 
+import feign.Feign;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.*;
-import org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import top.jpower.core.deploy.property.JpowerProperties;
 import top.jpower.core.exception.aspectj.OperateLogAspect;
@@ -25,7 +24,7 @@ import top.jpower.core.util.user.UserConfig;
  * @Author mr.g
  * @Date 2021/5/1 0001 0:16
  */
-@AutoConfiguration(after = JdbcTemplateAutoConfiguration.class)
+@AutoConfiguration
 @ConditionalOnWebApplication
 public class JpowerLogConfig {
 
@@ -44,29 +43,29 @@ public class JpowerLogConfig {
         return new ErrorLogListener(jpowerProperties, logClient);
     }
 
-    @AutoConfiguration //(proxyBeanMethods = false)
-    @ConditionalOnClass(DynamicFeignConfig.class)
-    @AutoConfigureAfter(DynamicFeignConfig.class)
+    @AutoConfiguration
+    @ConditionalOnClass({DynamicFeignConfig.class, Feign.class})
     @ConditionalOnMissingBean(LogClient.class)
+    @EnableFeignClients(clients = LogTraceClient.class)
     @ConditionalOnProperty(prefix = "jpower", name = "server", havingValue = "CLOUD")
     public static class FeignLogClientConfiguration {
 
         @Bean
-//        @ConditionalOnBean(LogTraceClient.class)
         public LogClient logClient(LogTraceClient logTraceClient) {
             return new FeignLogClient(logTraceClient);
         }
 
     }
 
-    @Configuration(proxyBeanMethods = false)
+    @AutoConfiguration
     @ConditionalOnMissingBean(LogClient.class)
+    @ConditionalOnClass(JdbcTemplate.class)
     @ConditionalOnBean(JdbcTemplate.class)
     @ConditionalOnProperty(prefix = "jpower", name = "server", havingValue = "BOOT", matchIfMissing = true)
-    static class JdbcLogClientConfiguration {
+    public static class JdbcLogClientConfiguration {
 
         @Bean
-        LogClient logClient(JdbcTemplate jdbcTemplate) {
+        public LogClient logClient(JdbcTemplate jdbcTemplate) {
             return new JdbcLogClient(jdbcTemplate);
         }
 
