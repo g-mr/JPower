@@ -24,6 +24,9 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import top.jpower.common.constants.CacheNames;
+import top.jpower.core.auth.properties.AuthProperties;
+import top.jpower.core.auth.utils.JwtUtil;
 import top.jpower.core.redis.cache.RedisService;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.constants.TokenConstant;
@@ -34,19 +37,16 @@ import top.jpower.jpower.gateway.service.RoleService;
 import top.jpower.jpower.gateway.utils.ExculdesUrl;
 import top.jpower.jpower.gateway.utils.IpUtil;
 import top.jpower.jpower.gateway.utils.TokenUtil;
-import top.jpower.common.constants.CacheNames;
-import top.jpower.core.auth.utils.JwtUtil;
-import top.jpower.core.auth.properties.AuthProperties;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
+import static top.jpower.core.auth.utils.constant.RoleConstant.*;
 import static top.jpower.core.util.constants.JpowerConstants.HEADER_MENU;
-import static top.jpower.core.auth.utils.constant.RoleConstant.ANONYMOUS;
-import static top.jpower.core.auth.utils.constant.RoleConstant.ANONYMOUS_ID;
-import static top.jpower.core.auth.utils.constant.RoleConstant.ROOT_ID;
 
 /**
  * @ClassName AuthFilter
@@ -76,9 +76,6 @@ public class AuthFilter implements GlobalFilter, Ordered {
             currentPath = currentPath.replace(StringPool.SLASH+route.getId(),StringPool.EMPTY);
         }
 
-        //不鉴权得URL
-        boolean isSkip = isSkip(currentPath);
-
         String token = TokenUtil.getToken(exchange.getRequest());
         if (Fc.isNotBlank(token)) {
 
@@ -88,7 +85,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
             }
 
             // 不是忽略权限得需要校验
-            if (!isSkip){
+            if (!isSkip(currentPath)){
                 if (Fc.isNull(claims) || !isAuth(claims, token, currentPath)) {
                     return unAuth(exchange.getResponse(), "请求未授权");
                 }
@@ -104,13 +101,15 @@ public class AuthFilter implements GlobalFilter, Ordered {
                 return chain.filter(addHeader(exchange,ip,StringPool.EMPTY));
             }
 
-            //匿名用户
-            if (getIsAnonymous(currentPath, TokenUtil.getClientCodeFromHeader(exchange.getRequest())) || isSkip){
-                String dataAuth = roleClient.queryDataScopeByRoleAndMenu(Collections.singletonList(ANONYMOUS_ID),exchange.getRequest().getHeaders().getFirst(HEADER_MENU),TokenUtil.getClientCodeFromHeader(exchange.getRequest()));
-                return chain.filter(addHeader(exchange, ANONYMOUS, dataAuth));
-            }
-
-            return proxyAuthenticationRequired(exchange.getResponse(), "缺失令牌，鉴权失败");
+            return getIsAnonymous(currentPath, TokenUtil.getClientCodeFromHeader(exchange.getRequest()))
+                    .flatMap(isAnonymous -> {
+                        if (isAnonymous) {
+                            return roleClient.queryDataScopeByRoleAndMenu(Collections.singletonList(ANONYMOUS_ID),exchange.getRequest().getHeaders().getFirst(HEADER_MENU),TokenUtil.getClientCodeFromHeader(exchange.getRequest()))
+                                    .flatMap(dataAuth -> chain.filter(addHeader(exchange, ANONYMOUS, dataAuth)));
+                        } else {
+                            return proxyAuthenticationRequired(exchange.getResponse(), "缺失令牌，鉴权失败");
+                        }
+                    });
         }
     }
 
@@ -143,10 +142,18 @@ public class AuthFilter implements GlobalFilter, Ordered {
                 || authProperties.getSkipUrl().stream().anyMatch(pattern -> antPathMatcher.match(pattern, path));
     }
 
-    private boolean getIsAnonymous(String currentPath, String clientCode){
+    private Mono<Boolean> getIsAnonymous(String currentPath, String clientCode){
+
+        if (isSkip(currentPath)){
+            return Mono.just(true);
+        }
+
         //获取匿名用户的权限
-        List<String> listUrl = roleClient.queryUrlByRole(ANONYMOUS_ID, clientCode);
-        return listUrl.stream().anyMatch(pattern -> antPathMatcher.match(pattern, currentPath));
+        return roleClient.queryUrlByRole(ANONYMOUS_ID, clientCode)
+                .flatMapIterable(Function.identity())
+                .any(pattern -> antPathMatcher.match(pattern, currentPath))
+                .defaultIfEmpty(false)
+                .cache(Duration.ofMinutes(5));
     }
 
     private ServerWebExchange addHeader(ServerWebExchange exchange,String otherAuth, String dataScope) {

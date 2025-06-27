@@ -219,7 +219,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<TbCoreFunctionMappe
         return coreFunctionDao.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
                 .select(TbCoreFunction::getUrl)
                 .isNotNull(TbCoreFunction::getUrl)
-                .eq(TbCoreFunction::getClientId,clientDao.queryIdByCode(clientCode))
+                .eq(TbCoreFunction::getClientId, clientDao.queryIdByCode(clientCode))
                 .inSql(TbCoreFunction::getId,StringUtil.format(ROLE_SQL,inSql)),Fc::toStr).stream().distinct().collect(Collectors.toList());
     }
 
