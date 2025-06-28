@@ -43,6 +43,25 @@ import java.util.stream.Collectors;
 @PropertySource(value = "classpath:./jpower-db.yml",factory = YamlAndPropertySourceFactory.class)
 public class MybatisPlusConfig {
 
+//    @Bean
+//    public ConfigurationCustomizer mybatisConfigurationCustomizer() {
+//        return configuration -> {
+//            // 关闭MyBatis日志
+//            configuration.setLogImpl(NoLoggingImpl.class);
+////
+////            // 关闭MP日志
+////            GlobalConfig globalConfig = new GlobalConfig()
+////                    .setBanner(false) // 关闭启动banner
+////                    .setSqlParserCache(false); // 关闭SQL解析缓存日志
+////
+////            GlobalConfig.DbConfig dbConfig = new GlobalConfig.DbConfig()
+////                    .setSqlShow(false); // 关闭SQL语句打印
+////
+////            globalConfig.setDbConfig(dbConfig);
+////            configuration.setGlobalConfig(globalConfig);
+//        };
+//    }
+
     @Bean
     @ConditionalOnMissingBean
     public ISqlInjector sqlInjector(@Autowired(required = false) JpowerTenantProperties tenantProperties) {

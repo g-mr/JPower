@@ -24,6 +24,7 @@ import top.jpower.core.util.utils.*;
 import java.sql.Statement;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 
 import static top.jpower.core.util.constants.StringPool.NEWLINE;
@@ -80,14 +81,17 @@ public class MybatisSqlPrintInterceptor implements MybatisInterceptor {
     }
 
     public void printSql(BoundSql boundSql,Configuration configuration,String sqlId,String time,Object rest, boolean isUpdate,String error) {
+
         // 替换参数格式化Sql语句，去除换行符
         String sql = formatSql(boundSql, configuration).concat(";");
 
         String[] mappers = getMapper(sqlId);
 
+        Logger logger = Logger.getLogger(mappers[0]+"."+mappers[1]);
+
         StringBuilder sb = new StringBuilder(NEWLINE)
-                .append(TAB).append("==> Mapper name：").append(mappers[0]).append(NEWLINE)
-                .append(TAB).append("==> Mapper method：").append(mappers[1]).append(NEWLINE)
+                .append(TAB).append("==> Mapper Name：").append(mappers[0]).append(NEWLINE)
+                .append(TAB).append("==> Mapper Method：").append(mappers[1]).append(NEWLINE)
                 .append(TAB).append("==> Execute SQL：").append(sql).append(NEWLINE)
                 .append(TAB).append("<== Time：").append(time).append(NEWLINE);
 
@@ -108,7 +112,7 @@ public class MybatisSqlPrintInterceptor implements MybatisInterceptor {
         if (Fc.isNotBlank(error)){
             sb.append(TAB).append("<== errorSqlInfo: ").append(error).append(NEWLINE);
         }
-        log.info(sb.toString());
+        logger.info(sb.toString());
     }
 
     /**

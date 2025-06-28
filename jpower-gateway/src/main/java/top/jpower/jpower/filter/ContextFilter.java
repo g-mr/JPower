@@ -1,4 +1,4 @@
-package top.jpower.jpower.gateway.config;
+package top.jpower.jpower.filter;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -20,8 +20,6 @@ import top.jpower.jpower.gateway.utils.HttpRequestContextHolder;
 @RequiredArgsConstructor
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
 public class ContextFilter implements WebFilter, Ordered {
-
-//    private final RestTemplate restTemplate;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {

@@ -1,4 +1,4 @@
-package top.jpower.jpower.gateway.config;
+package top.jpower.jpower.filter;
 
 import io.netty.buffer.UnpooledByteBufAllocator;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

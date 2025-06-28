@@ -31,12 +31,9 @@ import static top.jpower.core.util.constants.StringPool.NEWLINE;
  */
 @Slf4j
 @Service
-//@EnableFeignClients(clients = RoleClient.class)
 @RequiredArgsConstructor
 public class RoleService {
 
-//    private RoleClient client;
-    // private RestTemplate restTemplate;
      private final WebClient webClient;
 
     /**
@@ -50,7 +47,6 @@ public class RoleService {
     public Mono<List<String>> queryUrlByRole(Long roleId, String clientCode){
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .scheme("http")
                         .host(ClientNameConstant.getInstance().getJpowerSystem())
                         .path("/core/function/getUrlsByRoleIds")
                         .queryParam("roleIds", roleId)

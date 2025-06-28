@@ -5,11 +5,15 @@ import org.springframework.http.HttpCookie;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import top.jpower.core.auth.properties.AuthProperties;
 import top.jpower.core.auth.utils.JwtUtil;
+import top.jpower.core.auth.utils.ShieldUtil;
+import top.jpower.core.auth.utils.constant.SecureConstant;
 import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.SpringUtil;
 import top.jpower.core.util.utils.StringUtil;
+
+import static top.jpower.core.auth.utils.constant.SecureConstant.BASIC_HEADER_PREFIX;
 
 /**
  * @ClassName TokenUtil
@@ -54,16 +58,15 @@ public class TokenUtil {
 
     public static String getClientCodeFromHeader(ServerHttpRequest request) {
         // 获取请求头客户端信息
-//        String header = Fc.requireNotNull(request,"未获取到Request").getHeaders().getFirst(SecureConstant.BASIC_HEADER_KEY);
-//        header = Fc.toStr(header).replace(SecureConstant.BASIC_HEADER_PREFIX_EXT, BASIC_HEADER_PREFIX);
-//        if (!header.startsWith(BASIC_HEADER_PREFIX)) {
-//            throw new IllegalArgumentException("请求头中没有客户端信息");
-//        }
-//
-//        String decodeBasic = StringUtil.subAfter(header,BASIC_HEADER_PREFIX,false);
-//        String[] tokens = ShieldUtil.extractClient(decodeBasic);
-//        assert tokens.length == 2;
-//        return tokens[0];
-        return "admin";
+        String header = Fc.requireNotNull(request,"未获取到Request").getHeaders().getFirst(SecureConstant.BASIC_HEADER_KEY);
+        header = Fc.toStr(header).replace(SecureConstant.BASIC_HEADER_PREFIX_EXT, BASIC_HEADER_PREFIX);
+        if (!header.startsWith(BASIC_HEADER_PREFIX)) {
+            throw new IllegalArgumentException("请求头中没有客户端信息");
+        }
+
+        String decodeBasic = StringUtil.subAfter(header, BASIC_HEADER_PREFIX, false);
+        String[] tokens = ShieldUtil.extractClient(decodeBasic);
+        assert tokens.length == 2;
+        return tokens[0];
     }
 }

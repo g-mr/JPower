@@ -1,4 +1,4 @@
-package top.jpower.jpower.gateway.config;
+package top.jpower.jpower.filter;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

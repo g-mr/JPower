@@ -1,4 +1,4 @@
-package top.jpower.jpower.gateway.config;
+package top.jpower.jpower.filter;
 
 import cn.hutool.core.collection.ListUtil;
 import com.alibaba.fastjson2.JSON;
