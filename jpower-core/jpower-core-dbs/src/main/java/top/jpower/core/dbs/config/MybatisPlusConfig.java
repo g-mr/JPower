@@ -1,11 +1,13 @@
 package top.jpower.core.dbs.config;
 
+import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.core.injector.ISqlInjector;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.*;
+import org.apache.ibatis.logging.nologging.NoLoggingImpl;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -43,24 +45,18 @@ import java.util.stream.Collectors;
 @PropertySource(value = "classpath:./jpower-db.yml",factory = YamlAndPropertySourceFactory.class)
 public class MybatisPlusConfig {
 
-//    @Bean
-//    public ConfigurationCustomizer mybatisConfigurationCustomizer() {
-//        return configuration -> {
-//            // 关闭MyBatis日志
-//            configuration.setLogImpl(NoLoggingImpl.class);
-////
-////            // 关闭MP日志
-////            GlobalConfig globalConfig = new GlobalConfig()
-////                    .setBanner(false) // 关闭启动banner
-////                    .setSqlParserCache(false); // 关闭SQL解析缓存日志
-////
-////            GlobalConfig.DbConfig dbConfig = new GlobalConfig.DbConfig()
-////                    .setSqlShow(false); // 关闭SQL语句打印
-////
-////            globalConfig.setDbConfig(dbConfig);
-////            configuration.setGlobalConfig(globalConfig);
-//        };
-//    }
+    /**
+     * 关闭MyBatis日志
+     *
+     * @author mr.g
+     * @return com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer
+     **/
+   @Bean
+   public ConfigurationCustomizer mybatisConfigurationCustomizer() {
+       return configuration -> {
+           configuration.setLogImpl(NoLoggingImpl.class);
+       };
+   }
 
     @Bean
     @ConditionalOnMissingBean

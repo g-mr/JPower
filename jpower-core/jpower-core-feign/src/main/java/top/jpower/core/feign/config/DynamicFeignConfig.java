@@ -3,7 +3,6 @@ package top.jpower.core.feign.config;
 import cn.hutool.core.util.StrUtil;
 import feign.RequestInterceptor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -16,8 +15,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * 动态服务名配置，不配置扫描，使用时自行指定
+ * <br/>
+ * 不能被扫描这个类,否则所有feign接口都会被设置
+ *
+ * @author mr.g
+ **/
 @Slf4j
-@AutoConfiguration
 public class DynamicFeignConfig {
 
     public final static String SERVICE_PARAM_NAME = "serviceName";
@@ -34,7 +39,7 @@ public class DynamicFeignConfig {
                 // 创建新的可修改查询参数 Map
                 Map<String, Collection<String>> newQueries = new LinkedHashMap<>(template.queries());
                 // 移除目标参数
-                newQueries.remove(SERVICE_PARAM_NAME);
+                    newQueries.remove(SERVICE_PARAM_NAME);
                 // 设置回模板
                 template.queries(newQueries);
 
