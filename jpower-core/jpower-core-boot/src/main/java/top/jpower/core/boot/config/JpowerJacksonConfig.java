@@ -53,7 +53,7 @@ public class JpowerJacksonConfig{
         OrderedCharacterEncodingFilter filter = new OrderedCharacterEncodingFilter();
         filter.setEncoding(StandardCharsets.UTF_8.name());
         filter.setForceEncoding(true);
-        filter.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        filter.setOrder(Ordered.HIGHEST_PRECEDENCE+6);
         return filter;
     }
 

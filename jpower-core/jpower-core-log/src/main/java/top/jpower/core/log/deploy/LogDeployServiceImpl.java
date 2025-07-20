@@ -19,6 +19,7 @@ public class LogDeployServiceImpl implements DeployService {
 
     @Override
     public void deploy(SpringApplicationBuilder builder, Properties properties, String appName, String profile) {
+        properties.setProperty("spring.sleuth.web.filterOrder", Ordered.HIGHEST_PRECEDENCE+"");
         properties.setProperty("logging.config", "classpath:logback-spring.xml");
     }
 

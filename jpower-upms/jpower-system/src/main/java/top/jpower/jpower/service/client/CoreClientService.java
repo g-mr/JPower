@@ -26,4 +26,5 @@ public interface CoreClientService extends BaseService<TbCoreClient> {
      **/
     Long queryIdByCode(String clientCode);
 
+
 }

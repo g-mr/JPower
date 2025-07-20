@@ -163,7 +163,7 @@ public class MybatisPlusConfig {
     /**
      * sql打印
      **/
-    @Order(Ordered.HIGHEST_PRECEDENCE)
+    @Order(Ordered.HIGHEST_PRECEDENCE+10)
     @Bean
     @ConditionalOnProperty(value = {"jpower.mybatis.sql.print"}, matchIfMissing = true)
     public MybatisSqlPrintInterceptor mybatisSqlPrintIntercepter(MybatisProperties mybatisProperties) {

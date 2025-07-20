@@ -151,7 +151,7 @@ public class AccessLogGlobalFilter implements GlobalFilter, Ordered {
 
     @Override
     public int getOrder() {
-        return Ordered.HIGHEST_PRECEDENCE+1;
+        return Ordered.HIGHEST_PRECEDENCE+10;
     }
 
     private String readBody(byte[] content){

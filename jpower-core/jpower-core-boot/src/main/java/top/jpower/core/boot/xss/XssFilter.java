@@ -72,7 +72,7 @@ public class XssFilter implements Filter, Ordered {
 
     @Override
     public int getOrder() {
-        return HIGHEST_PRECEDENCE;
+        return HIGHEST_PRECEDENCE+6;
     }
 }
 

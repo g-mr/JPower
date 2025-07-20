@@ -37,21 +37,18 @@ public class TraceIdPatternConverter extends LogbackPatternConverter {
      **/
     public static final String SPAN_ID = "spanId";
 
-
     @Override
     public String convert(ILoggingEvent event) {
         String traceId = super.convert(event);
         traceId = StrUtil.removePrefix(traceId, TRACING_NAME);
-        if (StrUtil.equalsAnyIgnoreCase(traceId, TRACING_NONE, TRACING_IGNORE)){
+        traceId = StrUtil.trim(traceId);
+        if (Fc.isBlank(traceId) || StrUtil.equalsAnyIgnoreCase(traceId, TRACING_NONE, TRACING_IGNORE)){
             // 没有拿到skywalking的traceId就获取sleuth的
             traceId = MDC.get(TRACE_ID);
-            if (Fc.isNotBlank(traceId)){
-                traceId = MDC.get(TRACE_ID) + StringPool.DOT + MDC.get(SPAN_ID);
-            }
-        } else {
-            // 拿到了就设置上下文的TRACE_ID
-            MDC.put(TRACE_ID, traceId);
         }
+
+        // 重新设置
+        MDC.put(TRACE_ID, traceId);
         return StrUtil.blankToDefault(traceId, StringPool.EMPTY);
     }
 

@@ -29,6 +29,6 @@ public class ContextFilter implements WebFilter, Ordered {
 
     @Override
     public int getOrder() {
-        return Ordered.HIGHEST_PRECEDENCE;
+        return Ordered.HIGHEST_PRECEDENCE+6;
     }
 }

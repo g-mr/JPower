@@ -4,22 +4,23 @@ import cn.hutool.core.util.NumberUtil;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
+import top.jpower.common.constants.CacheNames;
+import top.jpower.core.auth.annotation.Function;
+import top.jpower.core.auth.annotation.Menu;
 import top.jpower.core.boot.controller.BaseController;
+import top.jpower.core.dbs.mp.support.Condition;
+import top.jpower.core.dbs.page.PaginationContext;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
+import top.jpower.core.redis.cache.CacheUtil;
 import top.jpower.core.util.rsp.Pg;
 import top.jpower.core.util.rsp.ResponseData;
 import top.jpower.core.util.rsp.ReturnJsonUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.dbs.entity.client.TbCoreClient;
-import top.jpower.core.auth.annotation.Function;
-import top.jpower.core.auth.annotation.Menu;
-import top.jpower.common.constants.CacheNames;
-import top.jpower.core.redis.cache.CacheUtil;
-import top.jpower.core.dbs.mp.support.Condition;
-import top.jpower.core.dbs.page.PaginationContext;
 import top.jpower.jpower.service.client.CoreClientService;
 
 import java.util.List;
@@ -32,6 +33,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/core/client")
 @AllArgsConstructor
+@Slf4j
 public class ClientController extends BaseController {
 
     private CoreClientService coreClientService;

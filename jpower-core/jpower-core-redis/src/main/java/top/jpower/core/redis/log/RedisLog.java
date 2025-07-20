@@ -1,7 +1,6 @@
 package top.jpower.core.redis.log;
 
 import cn.hutool.core.date.TimeInterval;
-import cn.hutool.core.thread.ThreadUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
@@ -13,6 +12,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.client.handler.State;
 import org.redisson.client.protocol.RedisCommand;
+import org.slf4j.MDC;
 import top.jpower.core.redis.properties.RedisProperties;
 import top.jpower.core.redis.serializer.CodecRedisSerializer;
 import top.jpower.core.util.constants.StringPool;
@@ -20,6 +20,7 @@ import top.jpower.core.util.utils.DateUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.StringUtil;
 
+import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -82,32 +83,42 @@ public class RedisLog {
      * @param writeFuture 执行结果
      * @param mainPromise 返回数据
      * @param timeInterval 计时器
-     * @param error 错误
+     * @param writeFutureError 错误
      **/
-    private <V, R> void printLog(RedisCommand<V> command, Object[] params, ChannelFuture writeFuture, CompletableFuture<R> mainPromise, TimeInterval timeInterval, Throwable error) {
-        ThreadUtil.execute(() -> {
+    private <V, R> void printLog(RedisCommand<V> command, Object[] params, ChannelFuture writeFuture, CompletableFuture<R> mainPromise, TimeInterval timeInterval, Throwable writeFutureError) {
 
-            try {
+        try {
+            Map<String, String> contextMap = MDC.getCopyOfContextMap();
+
+            mainPromise.whenCompleteAsync((result, ex) -> {
+
+                // 合并错误信息（初始错误和完成时错误）
+                Throwable error = writeFutureError != null ? writeFutureError : ex;
+
                 StringBuilder builder = new StringBuilder(StringPool.NEWLINE);
 
                 builder.append("===========START REDIS==============").append(StringPool.NEWLINE);
 
                 builder.append(StringPool.SPACE).append("-->Execute: ").append(getExecute(command, params));
                 builder.append(StringPool.NEWLINE);
-                if (error != null){
-                    builder.append(StringPool.SPACE).append("-->Error: ").append(error.getMessage());
+                if (error != null) {
+                    builder.append(StringPool.SPACE).append("-->Error");
+                    if (error instanceof InterruptedException) {
+                        builder.append("[").append("命令被中断").append("]");
+                    } else if (error instanceof ExecutionException) {
+                        builder.append("[").append("命令发生异常").append("]");
+                    } else if (error instanceof CancellationException) {
+                        builder.append("[").append("命令被取消").append("]");
+                    }
+                    builder.append(": ").append(error.getMessage());
                 } else {
-                    builder.append(StringPool.SPACE).append("<--Success: ").append(getIsSuccess(writeFuture, mainPromise));
+                    builder.append(StringPool.SPACE).append("<--Success: ").append(writeFuture.isSuccess());
                     builder.append(StringPool.NEWLINE);
                     builder.append(StringPool.SPACE).append("<--Result: ");
                     try {
-                        builder.append(convert(command.getName(), mainPromise.toCompletableFuture().get(), valueType));
-                    } catch (InterruptedException e) {
-                        builder.append("命令被中断=>").append(e.getMessage());
-                    } catch (ExecutionException e) {
-                        builder.append("命令发生异常=>").append(e.getMessage());
-                    } catch (CancellationException e){
-                        builder.append("命令被取消=>").append(e.getMessage());
+                        builder.append(convert(command.getName(), result, valueType));
+                    } catch (Exception e) {
+                        builder.append("结果序列化错误=>").append(e.getMessage());
                     }
                 }
                 builder.append(StringPool.NEWLINE);
@@ -116,28 +127,25 @@ public class RedisLog {
                 builder.append("=========== END REDIS ==============");
 
                 log.info(builder.toString());
-            } catch (Exception e) {
-                log.error("Redis[{}命令]打印报错==》{}", command.getName(), e.getMessage());
-            }
 
-        });
-    }
+            }, runnable -> {
+                try {
+                    // 2. 将MDC上下文注入到新线程
+                    if (contextMap != null) {
+                        MDC.setContextMap(contextMap);
+                    }
+                    // 3. 执行原始任务
+                    runnable.run();
+                } finally {
+                    // 4. 清理新线程的MDC上下文
+                    MDC.clear();
+                }
+            });
 
-    /**
-     * 获取是否执行成功
-     *
-     * @author mr.g
-     * @param writeFuture 执行结果
-     * @return 是否成功
-     **/
-    private <R> boolean getIsSuccess(ChannelFuture writeFuture, CompletableFuture<R> mainPromise) {
-        TimeInterval timeInterval = DateUtil.timer();
-        timeInterval.start();
-        while (true){
-            if (writeFuture.isDone() || timeInterval.intervalSecond() > 1){
-                return writeFuture.isSuccess() && !mainPromise.isCompletedExceptionally();
-            }
+        } catch (Exception e) {
+            log.error("Redis[{}命令]打印报错==》{}", command.getName(), e.getMessage());
         }
+
     }
 
     /**
