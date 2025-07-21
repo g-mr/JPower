@@ -2,7 +2,6 @@ package top.jpower.core.log.property;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 /**
  * 日志配置
@@ -11,35 +10,27 @@ import org.springframework.stereotype.Component;
  * @date 2022/1/17 0017 21:46
  */
 @Data
-@Component
 @ConfigurationProperties(prefix = "jpower.log")
 public class JpowerLogProperties {
 
     /**
      * 日志输出方式
+     * <br/>
+     * 多个逗号分割
      */
-    private String mode = "file,skywalking";
+    private String mode;
 
     /**
      * ELK配置
-     * @author mr.g
-     * @param null
-     * @return
      */
     private Elk elk = new Elk();
     /**
      * 文件配置
-     * @author mr.g
-     * @param null
-     * @return
      */
     private File file = new File();
 
     /**
      * 文件配置
-     * @author mr.g
-     * @param null
-     * @return
      */
     private Skywalking skywalking = new Skywalking();
 
@@ -48,7 +39,7 @@ public class JpowerLogProperties {
         /**
          * 日志输出格式
          */
-        private String pattern = "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%tid] [%thread] [%logger] - %msg%n";
+        private String pattern;
     }
 
     @Data
@@ -57,22 +48,24 @@ public class JpowerLogProperties {
         /**
          * INFO日志打印方式
          * <br/>
-         * warn:打印info、warn级别、info:打印info、threshold:打印info以下所有日志
+         * <p>warn:打印info、warn级别</p>
+         * <p>info:打印info</p>
+         * <p>threshold:打印info以下所有日志</p>
          **/
-        private String info = "warn";
+        private String info;
         /**
          * 文件路径
          */
-        private String base = "./logs";
+        private String base;
 
         /**
          * 日志保留天数
          */
-        private int historyDay = 30;
+        private int historyDay;
         /**
          * 日志输出格式
          */
-        private String pattern = "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%tid] [%thread] [%logger] - %msg%n";
+        private String pattern;
     }
 
     @Data
