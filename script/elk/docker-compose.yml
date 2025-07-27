@@ -72,6 +72,7 @@ services:
       - /docker/elk/filebeat/config/filebeat.yml:/usr/share/filebeat/filebeat.yml
       - /docker/elk/filebeat/logs:/usr/share/filebeat/logs
       - /docker/elk/filebeat/data:/usr/share/filebeat/data
+    command: sh -c "chmod 644 /usr/share/filebeat/filebeat.yml && ./filebeat -e"
     depends_on:
       - logstash
     links:

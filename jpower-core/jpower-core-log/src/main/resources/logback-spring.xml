@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration debug="false" scan="true" scanPeriod="60 seconds">
+<configuration debug="false" scan="true" scanPeriod="60 seconds" >
+
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
 
     <include resource="property.xml" />
 
@@ -61,8 +63,6 @@
     <logger name="springfox.documentation" level="info" />
     <logger name="_org.springframework.web.servlet.HandlerMapping.Mappings" level="info" />
     <logger name="_org.springframework.web.reactive.HandlerMapping.Mappings" level="info" />
-
-<!--    <logger name="top.jpower.jpower.dbs.dao" level="info" additivity="false"/>-->
 
     <!-- 日志输出级别 -->
     <root level="${level}">
