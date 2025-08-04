@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
-import org.jetbrains.annotations.NotNull;
 import top.jpower.core.util.utils.Fc;
 
 import java.io.IOException;
@@ -22,7 +21,7 @@ import java.io.IOException;
 public final class RollbackInterceptor implements Interceptor {
 
     @Override
-    public @NotNull Response intercept(Chain chain) throws IOException {
+    public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
         GlobalTransaction tx = null;
         try{

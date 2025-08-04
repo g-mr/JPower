@@ -1,7 +1,6 @@
 package top.jpower.jpower.config;
 
 import lombok.AllArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -28,7 +27,7 @@ public class RestfulMonitorConfig {
     }
 
     @Bean
-    public AuthInterceptor authInterceptor(@NotNull MonitorRestfulProperties properties){
+    public AuthInterceptor authInterceptor(MonitorRestfulProperties properties){
         return new AuthInterceptor(properties.getAuth());
     }
 

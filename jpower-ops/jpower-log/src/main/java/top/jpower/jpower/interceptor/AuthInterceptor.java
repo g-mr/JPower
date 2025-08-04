@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.apache.commons.lang.NullArgumentException;
 import org.apache.http.HttpException;
-import org.jetbrains.annotations.NotNull;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.utils.OkHttp;
 import top.jpower.core.util.utils.*;
@@ -37,7 +36,7 @@ public final class AuthInterceptor implements Interceptor {
 
     @Override
     @SneakyThrows
-    public Response intercept(@NotNull Chain chain) {
+    public Response intercept(Chain chain) {
         Request request = chain.request();
         if (!Fc.isNull(authInfo)){
             try {

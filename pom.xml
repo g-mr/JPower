@@ -84,6 +84,7 @@
         <module>jpower-upms</module>
         <module>jpower-ops</module>
         <module>jpower-common</module>
+        <module>jpower-boot</module>
     </modules>
 
     <dependencies>
