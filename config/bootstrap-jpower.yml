@@ -1,0 +1,163 @@
+## 这些配置可以放到NACOS里面，也可以放到这里会被所有模块引用
+
+#通用配置
+server:
+  undertow:
+    # 设置IO线程数, 它主要执行非阻塞的任务,它们会负责多个连接, 默认设置每个CPU核心一个线程
+    threads:
+      io: 4
+      # 阻塞任务线程池, 当执行类似servlet请求阻塞操作, undertow会从这个线程池中取得线程,它的值设置取决于系统的负载
+      worker: 20
+    # 以下的配置会影响buffer,这些buffer会用于服务器连接的IO操作
+    buffer-size: 1024
+    # 是否分配的直接内存
+    direct-buffers: true
+
+#redis配置
+spring:
+  redis:
+    ##redis 单机环境配置
+    host: 127.0.0.1
+#    password:
+    port: 6379
+    database: 10
+    ssl: false
+    ##redis 集群环境配置
+#    cluster:
+#      nodes:
+#        - 127.0.0.1:6379
+#        - 127.0.0.1:6378
+#        - 127.0.0.1:6377
+#      commandTimeout: 5000
+  #通用配置
+  servlet:
+    multipart:
+      enabled: true
+      #单个数据的大小
+      max-file-size: 10MB
+      #总数据的大小
+      max-request-size: 20MB
+  cloud:
+    sentinel:
+      enabled: true
+      eager: true
+      log:
+        dir: ./logs/sentinel
+  security:
+    user:
+      name: "admin"
+      password: "admin"
+
+#feign配置
+feign:
+  sentinel:
+    enabled: true
+  okhttp:
+    enabled: true
+  httpclient:
+    enabled: false
+
+management:
+  endpoint:
+    shutdown:
+      #开启端点
+      enabled: true
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        #开启所有接口
+        include: "*"
+
+#knife4j配置
+knife4j:
+  #启用
+  enable: true
+  #基础认证
+  basic:
+    enable: false
+    username: jpower
+    password: jpower
+  #增强配置
+  setting:
+    enableSwaggerModels: true
+    enableDocumentManage: true
+    enable-host: true
+    enable-host-text: http://localhost
+    enableRequestCache: true
+    enableFilterMultipartApis: false
+    enableFilterMultipartApiMethodType: POST
+    language: zh-CN
+    enableVersion: true
+    enableFooter: false
+    enableFooterCustom: true
+    footerCustomContent: Copyright © 2021 JPower All Rights Reserved
+
+jpower:
+  server: CLOUD
+  #swagger公共信息
+  swagger:
+    host: 127.0.0.1
+    title: JPower 接口文档系统
+    description: JPower 接口文档系统
+    version: 2.2.0
+    license: Powered By JPower
+    license-url: https://gitee.com/gdzWork/JPower
+    terms-of-service-url: http://jpower.top
+    contact:
+      name: mr.g
+      email: ding931226@yeah.net
+      url: https://gitee.com/gdzWork
+  log:
+    mode: file
+#    elk:
+#      destination: localhost:9000
+  #  开发环境
+  dev:
+    nacos:
+      #      配置中心地址。 如果nacos配置没有配置注册中心地址，则注册中心默认走这里的地址
+      server-addr: 127.0.0.1:8848
+    sentinel:
+      #      sentinel流控组件地址
+      dashboard: localhost:8858
+    seata:
+      grouplist: localhost:8091
+    datasource:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://127.0.0.1:3306/jpower?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true&rewriteBatchedStatements=true # MySQL Connector/J 8.X 连接的示例
+      username: root
+      password: 12345678
+  #   测试环境
+  test:
+    nacos:
+      #      注册中心地址
+      server-addr: localhost:8848
+    sentinel:
+      #      sentinel流控组件地址
+      dashboard: 192.168.0.4:84
+    seata:
+      grouplist: 192.168.0.4:85
+    datasource:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://192.168.0.8:18995/jpower?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true&rewriteBatchedStatements=true
+      username: root
+      password: root
+  #  正式环境
+  prod:
+    nacos:
+      #      配置中心地址，如果nacos配置没有配置注册中心地址，则注册中心默认走这里的地址
+      server-addr: 192.168.0.20:8848
+    sentinel:
+      #      sentinel流控组件地址
+      dashboard: 192.168.0.20:8858
+    seata:
+      grouplist: 192.168.0.20:8878
+    datasource:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://119.3.189.156:18992/jpower?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true&rewriteBatchedStatements=true
+      username: root
+      password: root
+
+test:
+  name: 测试

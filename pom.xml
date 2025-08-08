@@ -231,12 +231,11 @@
                         <warName>${project.build.finalName}</warName>
                         <webResources>
                             <resource>
-                                <directory>${root.basedir}/config</directory>
+                                <directory>${maven.multiModuleProjectDirectory}/config</directory>
                                 <targetPath>WEB-INF/classes</targetPath>
                                 <filtering>false</filtering>
                                 <includes>
-                                    <include>*.yml</include>
-                                    <include>*.properties</include>
+                                    <include>bootstrap-jpower.yml</include>
                                 </includes>
                             </resource>
                         </webResources>
@@ -255,6 +254,12 @@
                             <JAR_FILE>target/${project.build.finalName}-exec.jar</JAR_FILE>
                         </buildArgs>
                     </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${maven-resources.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -287,78 +292,8 @@
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.commonjava.maven.plugins</groupId>
-                <artifactId>directory-maven-plugin</artifactId>
-                <version>0.1</version>
-                <executions>
-                    <execution>
-                        <id>directories</id>
-                        <goals>
-                            <goal>highest-basedir</goal>
-                        </goals>
-                        <phase>initialize</phase>
-                        <configuration>
-                            <property>root.basedir</property>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>${maven-resources.version}</version>
-                <executions>
-                    <execution>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <!-- 输出目录 -->
-                            <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <!-- 资源目录 -->
-                                    <directory>${root.basedir}/config</directory>
-                                    <includes>
-                                        <include>*.yml</include>
-                                        <include>*.properties</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-                <configuration>
-                    <delimiters>@</delimiters>
-                    <useDefaultDelimiters>false</useDefaultDelimiters>
-                </configuration>
-            </plugin>
+
         </plugins>
-        <resources>
-            <!-- 编译 src/main/java 目录下的 mapper 文件 -->
-            <resource>
-                <directory>src/main/java</directory>
-                <includes>
-                    <include>**/*.xml</include>
-                </includes>
-                <!-- ......用于扫描 dao 文件下的mapper 文件................. end -->
-                <filtering>false</filtering>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-            <resource>
-<!--                <directory>/Users/mr.gmac/IdeaProjects/JPower/config</directory>-->
-                <directory>config</directory>
-                <includes>
-                    <include>*.properties</include>
-                    <include>*.yml</include>
-                </includes>
-                <filtering>false</filtering>
-            </resource>
-        </resources>
         <testResources>
             <testResource>
                 <directory>src/test/resources</directory>

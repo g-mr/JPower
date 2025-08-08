@@ -44,6 +44,11 @@ public class AppConstant implements NacosConstants, LogConstant, ClientNameConst
     public static final String JPOWER_RESOURCE = JPOWER + "-resource";
 
     /**
+     * 单体模块
+     **/
+    public static final String JPOWER_BOOT = JPOWER + "-boot";
+
+    /**
      * 动态获取公共nacos地址
      *
      * @param profile 环境变量

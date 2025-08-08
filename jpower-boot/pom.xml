@@ -11,9 +11,98 @@
 
     <artifactId>jpower-boot</artifactId>
 
+    <dependencies>
+
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-openapi2-ui</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>top.jpower</groupId>
+            <artifactId>jpower-auth</artifactId>
+            <version>${com.jpower.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>top.jpower</groupId>
+                    <artifactId>jpower-core-nacos</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>top.jpower</groupId>
+            <artifactId>jpower-resource</artifactId>
+            <version>${com.jpower.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>top.jpower</groupId>
+                    <artifactId>jpower-core-nacos</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>top.jpower</groupId>
+            <artifactId>jpower-system</artifactId>
+            <version>${com.jpower.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>top.jpower</groupId>
+                    <artifactId>jpower-core-nacos</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>top.jpower</groupId>
+            <artifactId>jpower-user</artifactId>
+            <version>${com.jpower.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>top.jpower</groupId>
+                    <artifactId>jpower-core-nacos</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>top.jpower</groupId>
+            <artifactId>jpower-log</artifactId>
+            <version>${com.jpower.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>top.jpower</groupId>
+                    <artifactId>jpower-core-nacos</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+    </dependencies>
+
     <build>
         <finalName>jpower-boot</finalName>
+
+        <resources>
+            <!-- 编译 src/main/java 目录下的 mapper 文件 -->
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+                <!-- ......用于扫描 dao 文件下的mapper 文件................. end -->
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>

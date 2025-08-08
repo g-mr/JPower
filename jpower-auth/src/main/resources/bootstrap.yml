@@ -1,0 +1,7 @@
+server:
+  port: 82
+
+spring:
+  config:
+    import:
+      - classpath:/bootstrap-jpower.yml  # 导入顶级配置
