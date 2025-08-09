@@ -14,33 +14,46 @@ import com.alibaba.csp.sentinel.slots.system.SystemRule;
 import com.alibaba.csp.sentinel.slots.system.SystemRuleManager;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.TypeReference;
+import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.PropertyKeyConst;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Properties;
 
 /**
- * @ClassName NacosDataSource
- * @Description TODO sentinel规则持久化配置
- * @Author 郭丁志
- * @Date 2020/9/13 0013 0:53
- * @Version 1.0
+ * sentinel规则持久化配置
+ *
+ * @author mr.g
  */
-@Component
+//@Component
+@AutoConfiguration
+@ConditionalOnClass(NacosFactory.class)
+@ConditionalOnProperty(
+        prefix = "spring.cloud.nacos",
+        name = {"config.enabled", "config.server-addr"},
+        matchIfMissing = false
+)
 public class SentinelNacosDataSource {//implements InitFunc {
 
     @Value("${spring.cloud.nacos.config.server-addr}")
     private String remoteAddress;
     @Value("${spring.cloud.nacos.config.namespace:}")
     private String nacosNamespace;
-    private String groupId = "SENTINEL_GROUP";
+    private final String groupId = "SENTINEL_GROUP";
     @Value ("#{'${spring.application.name}'.concat('-sentinel')}")
     private String dataId;
 
-    @PostConstruct
+    @Bean
+    public ApplicationRunner seninelNacoDaaSourcesRunner() {
+        return args -> init();
+    }
+
     public void init() {
         Properties properties = new Properties();
         properties.put(PropertyKeyConst.SERVER_ADDR, remoteAddress);

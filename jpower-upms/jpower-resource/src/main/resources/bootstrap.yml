@@ -1,6 +1,11 @@
 server:
   port: 84
 
+spring:
+  config:
+    import:
+      - classpath:/bootstrap-jpower.yml  # 导入顶级配置
+
 fdfs:
   # 链接超时
   connect-timeout: 1800

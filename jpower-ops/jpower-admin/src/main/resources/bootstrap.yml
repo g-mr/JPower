@@ -12,6 +12,9 @@ server:
     direct-buffers: true
 
 spring:
+  config:
+    import:
+      - classpath:/bootstrap-jpower.yml  # 导入顶级配置
   security:
     user:
       name: "admin"

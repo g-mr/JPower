@@ -1,6 +1,11 @@
 server:
   port: 18000
 
+spring:
+  config:
+    import:
+      - classpath:/bootstrap-jpower.yml  # 导入顶级配置
+
 knife4j:
   enableAggregation: true
   cloud:

@@ -96,18 +96,22 @@ public class JpowerApplication {
         props.setProperty("spring.application.name", appName);
         props.setProperty("spring.profiles.active", profile);
         props.setProperty("spring.main.allow-bean-definition-overriding", "true");
-        //nacos配置
-        props.setProperty("spring.cloud.nacos.discovery.server-addr", "${jpower.".concat(profile).concat(".nacos.server-addr}"));
-        props.setProperty("spring.cloud.nacos.config.server-addr", "${jpower.".concat(profile).concat(".nacos.server-addr}"));
-        props.setProperty("spring.cloud.nacos.discovery.namespace", "${jpower.".concat(profile).concat(".nacos.namespace:}"));
-        props.setProperty("spring.cloud.nacos.config.namespace", "${jpower.".concat(profile).concat(".nacos.namespace:}"));
-        //sentinel配置
-        String sentinelServer = properties.getProperty("jpower."+profile+".sentinel.dashboard");
-        if (Fc.isNotBlank(sentinelServer)) {
-            props.setProperty("csp.sentinel.dashboard.server", sentinelServer);
-            props.setProperty("csp.sentinel.app.name",appName);
+        if ((Boolean) props.getOrDefault("spring.cloud.nacos.config.enabled", true)){
+            //nacos配置
+            props.setProperty("spring.cloud.nacos.discovery.server-addr", "${jpower.".concat(profile).concat(".nacos.server-addr}"));
+            props.setProperty("spring.cloud.nacos.config.server-addr", "${jpower.".concat(profile).concat(".nacos.server-addr}"));
+            props.setProperty("spring.cloud.nacos.discovery.namespace", "${jpower.".concat(profile).concat(".nacos.namespace:}"));
+            props.setProperty("spring.cloud.nacos.config.namespace", "${jpower.".concat(profile).concat(".nacos.namespace:}"));
         }
-        props.setProperty("spring.cloud.sentinel.transport.dashboard", "${jpower.".concat(profile).concat(".sentinel.dashboard:}"));
+        if ((Boolean) props.getOrDefault("spring.cloud.sentinel.enabled", true)){
+            //sentinel配置
+            String sentinelServer = properties.getProperty("jpower."+profile+".sentinel.dashboard");
+            if (Fc.isNotBlank(sentinelServer)) {
+                props.setProperty("csp.sentinel.dashboard.server", sentinelServer);
+                props.setProperty("csp.sentinel.app.name",appName);
+            }
+            props.setProperty("spring.cloud.sentinel.transport.dashboard", "${jpower.".concat(profile).concat(".sentinel.dashboard:}"));
+        }
         //seata启用,默认关闭
         props.setProperty("seata.enabled", "${jpower.seata.enabled:false}");
 

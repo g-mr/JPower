@@ -57,11 +57,8 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-            </plugin>
         </plugins>
+
         <resources>
             <!-- 编译 src/main/java 目录下的 mapper 文件 -->
             <resource>
@@ -69,12 +66,20 @@
                 <includes>
                     <include>**/*.xml</include>
                 </includes>
+                <!-- ......用于扫描 dao 文件下的mapper 文件................. end -->
                 <filtering>false</filtering>
             </resource>
             <resource>
                 <directory>src/main/resources</directory>
             </resource>
-            <!-- ......用于扫描 dao 文件下的mapper 文件................. end -->
+            <!-- 编译 根 目录下的 bootstrap-jpower.yml 文件 -->
+            <resource>
+                <directory>${maven.multiModuleProjectDirectory}/config</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>bootstrap-jpower.yml</include>
+                </includes>
+            </resource>
         </resources>
     </build>
 

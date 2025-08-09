@@ -158,6 +158,3 @@ jpower:
       url: jdbc:mysql://119.3.189.156:18992/jpower?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true&rewriteBatchedStatements=true
       username: root
       password: root
-
-test:
-  name: 测试
