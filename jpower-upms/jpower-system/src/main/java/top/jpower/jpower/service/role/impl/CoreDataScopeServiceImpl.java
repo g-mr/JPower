@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import top.jpower.common.enums.FunctionTypeEnum;
 import top.jpower.common.enums.YN01Enum;
+import top.jpower.core.dbs.mp.support.Condition;
+import top.jpower.core.dbs.service.impl.BaseServiceImpl;
+import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.StringUtil;
 import top.jpower.jpower.dbs.dao.client.TbCoreClientDao;
 import top.jpower.jpower.dbs.dao.role.TbCoreDataScopeDao;
@@ -12,12 +15,12 @@ import top.jpower.jpower.dbs.dao.role.TbCoreRoleDataDao;
 import top.jpower.jpower.dbs.dao.role.mapper.TbCoreDataScopeMapper;
 import top.jpower.jpower.dbs.entity.function.TbCoreDataScope;
 import top.jpower.jpower.dbs.entity.role.TbCoreRoleData;
-import top.jpower.core.dbs.service.impl.BaseServiceImpl;
-import top.jpower.core.dbs.mp.support.Condition;
 import top.jpower.jpower.service.role.CoreDataScopeService;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author ding
@@ -69,6 +72,15 @@ public class CoreDataScopeServiceImpl extends BaseServiceImpl<TbCoreDataScopeMap
                 .inSql(TbCoreDataScope::getMenuId,"select id from tb_core_function where client_id = " + clientDao.queryIdByCode(clientCode) + " and function_type = " + FunctionTypeEnum.MENU.getValue())
                 .and(query-> query.inSql(TbCoreDataScope::getId, StringUtil.format(sql,inSql))
                         .or().eq(TbCoreDataScope::getAllRole,YN01Enum.Y.getValue())));
+    }
+
+    @Override
+    public List<TbCoreDataScope> getDataScopeByRoleAndMenu(List<Long> roleIds,String menuCode) {
+        String inSql = Fc.join(roleIds);
+        List<TbCoreDataScope> list = dataScopeDao.list(Condition.<TbCoreDataScope>getQueryWrapper().lambda()
+                .inSql(TbCoreDataScope::getMenuId,StringUtil.format("select id from tb_core_function where code = '{}'",menuCode))
+                .and(query-> query.inSql(TbCoreDataScope::getId, StringUtil.format(sql,inSql)).or().eq(TbCoreDataScope::getAllRole, YN01Enum.Y.getValue())));
+        return list.stream().sorted(Comparator.comparingInt(TbCoreDataScope::getAllRole)).collect(Collectors.toList());
     }
 
 }

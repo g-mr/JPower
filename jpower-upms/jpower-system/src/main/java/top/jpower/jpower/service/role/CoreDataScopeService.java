@@ -49,4 +49,14 @@ public interface CoreDataScopeService extends BaseService<TbCoreDataScope> {
      * @return java.util.List<top.jpower.jpower.dbs.entity.function.TbCoreDataScope>
      */
     List<TbCoreDataScope> getDataScopeByRole(List<Long> roleIds,String clientCode);
+
+    /**
+     * 查询角色下一个菜单的数据权限
+     *
+     * @author mr.g
+     * @param roleIds
+     * @param menuCode
+     * @return java.util.List<top.jpower.jpower.dbs.entity.core.function.TbCoreDataScope>
+     **/
+    List<TbCoreDataScope> getDataScopeByRoleAndMenu(List<Long> roleIds,String menuCode);
 }

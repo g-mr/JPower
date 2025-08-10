@@ -43,7 +43,6 @@
             <groupId>top.jpower</groupId>
             <artifactId>jpower-system-api</artifactId>
             <version>${com.jpower.version}</version>
-            <optional>true</optional>
         </dependency>
 
     </dependencies>
