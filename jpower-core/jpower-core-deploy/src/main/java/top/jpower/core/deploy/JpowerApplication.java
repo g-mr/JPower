@@ -116,11 +116,7 @@ public class JpowerApplication {
         props.setProperty("seata.enabled", "${jpower.seata.enabled:false}");
 
         List<DeployService> deployServiceList = new ArrayList<>();
-        ServiceLoader.load(DeployService.class).forEach(deployService -> {
-
-            System.out.println(deployService);
-            deployServiceList.add(deployService);
-        });
+        ServiceLoader.load(DeployService.class).forEach(deployServiceList::add);
         deployServiceList.stream().sorted(Comparator.comparing(DeployService::getOrder)).collect(Collectors.toList())
                 .forEach(deployService -> deployService.deploy(builder, properties, appName, profile));
 
