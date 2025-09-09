@@ -1,5 +1,7 @@
 package top.jpower.jpower.cache;
 
+import top.jpower.common.constants.CacheNames;
+import top.jpower.core.redis.cache.CacheUtil;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.rsp.ResponseData;
 import top.jpower.core.util.utils.Fc;
@@ -7,8 +9,6 @@ import top.jpower.core.util.utils.SpringUtil;
 import top.jpower.jpower.dbs.entity.TbCorePost;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
 import top.jpower.jpower.feign.UserClient;
-import top.jpower.common.constants.CacheNames;
-import top.jpower.core.redis.cache.CacheUtil;
 import top.jpower.jpower.vo.UserVo;
 
 import java.util.List;
