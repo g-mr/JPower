@@ -1,3 +1,4 @@
+top.jpower.core.feign.config.client.JpowerModeFeignConfiguration
 top.jpower.core.feign.config.JpowerFeignConfiguration
 top.jpower.core.feign.config.FeignOkHttpConfiguration
 top.jpower.core.feign.config.RestTemplateConfig

@@ -4,23 +4,35 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.openfeign.FeignClientFactoryBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import top.jpower.core.deploy.property.JpowerProperties;
 
 @AutoConfiguration
 @RequiredArgsConstructor
 public class JpowerModeFeignConfiguration {
 
-    private final FeignClientProxyFactory feignClientProxyFactory;
-    private final JpowerProperties jpowerProperties;
-
     @Bean
     @ConditionalOnMissingBean
-    public FeignClientFactoryBean feignClientFactoryBean() {
-        return new ClientFeignClientFactoryBean();
+    public FeignClientProxyFactory feignClientProxyFactory(ApplicationContext applicationContext) {
+        return new FeignClientProxyFactory(applicationContext);
     }
 
-    public class ClientFeignClientFactoryBean extends FeignClientFactoryBean {
+    @Bean
+    @Primary
+    @ConditionalOnMissingBean
+    public FeignClientFactoryBean feignClientFactoryBean(FeignClientProxyFactory feignClientProxyFactory,
+                                                         JpowerProperties jpowerProperties) {
+
+        return new ClientFeignClientFactoryBean(feignClientProxyFactory, jpowerProperties);
+    }
+
+    @RequiredArgsConstructor
+    public static class ClientFeignClientFactoryBean extends FeignClientFactoryBean {
+
+        private final FeignClientProxyFactory feignClientProxyFactory;
+        private final JpowerProperties jpowerProperties;
 
         @Override
         public Object getObject() {

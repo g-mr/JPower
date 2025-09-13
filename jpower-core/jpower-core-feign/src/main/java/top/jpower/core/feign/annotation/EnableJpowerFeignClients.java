@@ -1,7 +1,6 @@
 package top.jpower.core.feign.annotation;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 
 import java.lang.annotation.*;
 
@@ -12,7 +11,7 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@EnableFeignClients
+//@EnableFeignClients
 @EnableAutoConfiguration
 public @interface EnableJpowerFeignClients {
 
