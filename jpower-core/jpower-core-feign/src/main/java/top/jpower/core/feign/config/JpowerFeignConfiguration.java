@@ -17,7 +17,6 @@ import top.jpower.core.feign.sentinel.handler.UrlCleanerHandler;
  * @date 2021-03-10 11:39
  */
 @AutoConfiguration
-//@EnableFeignClients(defaultConfiguration = JpowerModeFeignConfiguration.class)
 public class JpowerFeignConfiguration {
 
     @Bean
