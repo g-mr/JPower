@@ -21,6 +21,7 @@ import top.jpower.core.util.utils.FileUtil;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -68,7 +69,7 @@ public class JpowerApplication {
 
         // 判断环境:dev、test、prod
         List<String> profiles = Arrays.asList(activeProfiles);
-        List<String> presetProfiles = new ArrayList(Arrays.asList(JpowerConstants.DEV_CODE, JpowerConstants.TEST_CODE, JpowerConstants.PROD_CODE));
+        List<String> presetProfiles = new ArrayList<>(Arrays.asList(JpowerConstants.DEV_CODE, JpowerConstants.TEST_CODE, JpowerConstants.PROD_CODE));
         presetProfiles.retainAll(profiles);
         List<String> activeProfileList = new ArrayList<>(presetProfiles);
         String profile;
@@ -85,10 +86,14 @@ public class JpowerApplication {
             throw new RuntimeException("同时存在环境变量:[" + StringUtils.arrayToCommaDelimitedString(activeProfiles) + "]");
         }
 
-        Properties properties = getYmlProperties();
+        // 获取本机地址
+        InetAddress address = InetAddress.getLocalHost();
 
-        Properties props = System.getProperties();
+        Properties props = getYmlProperties();
         props.setProperty("jpower.applicationName", appName);
+        props.setProperty("jpower.port", Fc.toStr(props.get("server.port")));
+        props.setProperty("jpower.hostName", Fc.toStr(address.getHostName(), "127.0.0.1"));
+        props.setProperty("jpower.ip", Fc.toStr(address.getHostAddress(), "127.0.0.1"));
         props.setProperty("jpower.env", profile);
         props.setProperty("jpower.version", JpowerConstants.JPOWER_VESION);
         props.setProperty("jpower.is-local", String.valueOf(isLocalDev()));
@@ -105,7 +110,7 @@ public class JpowerApplication {
         }
         if ((Boolean) props.getOrDefault("spring.cloud.sentinel.enabled", true)){
             //sentinel配置
-            String sentinelServer = properties.getProperty("jpower."+profile+".sentinel.dashboard");
+            String sentinelServer = props.getProperty("jpower."+profile+".sentinel.dashboard");
             if (Fc.isNotBlank(sentinelServer)) {
                 props.setProperty("csp.sentinel.dashboard.server", sentinelServer);
                 props.setProperty("csp.sentinel.app.name",appName);
@@ -118,7 +123,7 @@ public class JpowerApplication {
         List<DeployService> deployServiceList = new ArrayList<>();
         ServiceLoader.load(DeployService.class).forEach(deployServiceList::add);
         deployServiceList.stream().sorted(Comparator.comparing(DeployService::getOrder)).collect(Collectors.toList())
-                .forEach(deployService -> deployService.deploy(builder, properties, appName, profile));
+                .forEach(deployService -> deployService.deploy(builder, props, appName, profile));
 
         log.info("{}项目已启动,运行环境：{}",appName,profile);
         return builder;

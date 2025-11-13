@@ -12,7 +12,6 @@ import top.jpower.core.deploy.property.JpowerProperties;
 
 import java.net.URI;
 
-// TODO 这里不知道为什么BootFeignConfig会比JpowerDeployConfiguration之后执行，导致JpowerProperties不生效，需要解决
 @AutoConfiguration
 @ConditionalOnProperty(name = "jpower.server", havingValue = "BOOT")
 public class BootFeignConfig {
