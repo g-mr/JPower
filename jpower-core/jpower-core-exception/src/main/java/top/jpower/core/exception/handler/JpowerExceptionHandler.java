@@ -110,7 +110,6 @@ public class JpowerExceptionHandler {
             r.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
             createLog(request, e);
             log.error("运行异常,异常信息===>>{}{}", StringPool.NEWLINE, ExceptionUtil.getStackTraceAsString(e));
-
         }
         r.setStatus(false);
         return r;

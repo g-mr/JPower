@@ -71,10 +71,10 @@ public class AuthFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         Route route = (Route) exchange.getAttributes().get(ServerWebExchangeUtils.GATEWAY_ROUTE_ATTR);
-        String currentPath = exchange.getRequest().getURI().getPath();
-        if (currentPath.startsWith(StringPool.SLASH+route.getId())){
-            currentPath = currentPath.replace(StringPool.SLASH+route.getId(),StringPool.EMPTY);
-        }
+        String path = exchange.getRequest().getURI().getPath();
+        String currentPath = path.startsWith(StringPool.SLASH+route.getId()) ?
+                path.replace(StringPool.SLASH+route.getId(),StringPool.EMPTY) :
+                path;
 
         String token = TokenUtil.getToken(exchange.getRequest());
         if (Fc.isNotBlank(token)) {
@@ -101,10 +101,17 @@ public class AuthFilter implements GlobalFilter, Ordered {
                 return chain.filter(addHeader(exchange,ip,StringPool.EMPTY));
             }
 
-            return getIsAnonymous(currentPath, TokenUtil.getClientCodeFromHeader(exchange.getRequest()))
+            return getIsAnonymous(currentPath, exchange.getRequest())
                     .flatMap(isAnonymous -> {
                         if (isAnonymous) {
-                            return roleClient.queryDataScopeByRoleAndMenu(Collections.singletonList(ANONYMOUS_ID),exchange.getRequest().getHeaders().getFirst(HEADER_MENU),TokenUtil.getClientCodeFromHeader(exchange.getRequest()))
+
+                            if (ExculdesUrl.getExculudesUrl().stream().anyMatch(pattern -> antPathMatcher.match(pattern, currentPath))) {
+                                return chain.filter(addHeader(exchange, ANONYMOUS, StringPool.EMPTY));
+                            }
+
+                            return roleClient.queryDataScopeByRoleAndMenu(Collections.singletonList(ANONYMOUS_ID),
+                                            exchange.getRequest().getHeaders().getFirst(HEADER_MENU),
+                                            TokenUtil.getClientCodeFromHeader(exchange.getRequest()))
                                     .flatMap(dataAuth -> chain.filter(addHeader(exchange, ANONYMOUS, dataAuth)));
                         } else {
                             return proxyAuthenticationRequired(exchange.getResponse(), "缺失令牌，鉴权失败");
@@ -142,11 +149,13 @@ public class AuthFilter implements GlobalFilter, Ordered {
                 || authProperties.getSkipUrl().stream().anyMatch(pattern -> antPathMatcher.match(pattern, path));
     }
 
-    private Mono<Boolean> getIsAnonymous(String currentPath, String clientCode){
+    private Mono<Boolean> getIsAnonymous(String currentPath, ServerHttpRequest request){
 
         if (isSkip(currentPath)){
             return Mono.just(true);
         }
+
+        String clientCode = TokenUtil.getClientCodeFromHeader(request);
 
         //获取匿名用户的权限
         return roleClient.queryUrlByRole(ANONYMOUS_ID, clientCode)

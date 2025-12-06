@@ -47,13 +47,13 @@ public class UpdateRelatedFieldsMetaHandler implements MetaObjectHandler {
             if (Fc.notNull(userDto)){
 
                 // 当前登录用户不为空，创建人为空，则当前登录用户为创建人
-                if (Fc.isNull(baseEntity.getCreateUser()) && Fc.notNull(userDto.getUserId())){
-                    baseEntity.setCreateUser(userDto.getUserId());
+                if (Fc.isNull(baseEntity.getCreateUser())){
+                    baseEntity.setCreateUser(Fc.notNull(userDto.getUserId())?userDto.getUserId(): 2L);
                 }
 
                 // 当前登录用户不为空，创建人为空，则当前登录用户为更新人
-                if (Fc.isNull(baseEntity.getUpdateUser()) && Fc.notNull(userDto.getUserId())){
-                    baseEntity.setUpdateUser(userDto.getUserId());
+                if (Fc.isNull(baseEntity.getUpdateUser())){
+                    baseEntity.setUpdateUser(Fc.notNull(userDto.getUserId())?userDto.getUserId(): 2L);
                 }
 
                 // 当前登录部门不为空，创建部门为空，则当前登录部门为创建部门
@@ -88,8 +88,9 @@ public class UpdateRelatedFieldsMetaHandler implements MetaObjectHandler {
             UserDto userDto = userConfig.queryUser();
             if (Fc.notNull(userDto)) {
                 // 当前登录用户不为空，创建人为空，则当前登录用户为更新人
-                if (Fc.isNull(baseEntity.getUpdateUser()) && Fc.notNull(userDto.getUserId())) {
-                    baseEntity.setUpdateUser(userDto.getUserId());
+                if (Fc.isNull(baseEntity.getUpdateUser())) {
+                    // 如何没有登录用户，则默认为为匿名用户
+                    baseEntity.setUpdateUser(Fc.notNull(userDto.getUserId())?userDto.getUserId(): 2L);
                 }
             }
         }

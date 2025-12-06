@@ -881,6 +881,7 @@ CREATE TABLE `tb_core_tenant`  (
   `account_number` int(0) NULL DEFAULT -1 COMMENT '账号额度',
   `expire_time` datetime(0) NULL DEFAULT NULL COMMENT '过期时间',
   `license_key` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '授权码',
+  `config`         text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '设置内容',
   `create_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '创建人',
   `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
   `update_user` bigint(0) NOT NULL DEFAULT 1 COMMENT '更新人',

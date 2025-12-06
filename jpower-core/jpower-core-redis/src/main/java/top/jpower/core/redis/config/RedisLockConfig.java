@@ -1,7 +1,7 @@
 package top.jpower.core.redis.config;
 
 import org.redisson.api.RedissonClient;
-import org.redisson.spring.starter.RedissonAutoConfigurationV2;
+import org.redisson.spring.starter.RedissonAutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -20,7 +20,8 @@ import top.jpower.core.redis.lock.RedissonLockHandler;
  * @description
  */
 @AutoConfiguration
-@AutoConfigureAfter({RedisConfig.class, RedisAutoConfiguration.class, RedissonAutoConfigurationV2.class})
+// @AutoConfigureAfter({RedisConfig.class, RedisAutoConfiguration.class, RedissonAutoConfigurationV2.class}) 这个是高版本的Redisson
+@AutoConfigureAfter({RedisConfig.class, RedisAutoConfiguration.class, RedissonAutoConfiguration.class})
 public class RedisLockConfig {
 
     @Bean

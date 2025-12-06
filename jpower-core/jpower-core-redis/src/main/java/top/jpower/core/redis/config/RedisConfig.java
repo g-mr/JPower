@@ -3,8 +3,8 @@ package top.jpower.core.redis.config;
 import org.redisson.client.codec.StringCodec;
 import org.redisson.codec.CompositeCodec;
 import org.redisson.codec.Kryo5Codec;
+import org.redisson.spring.starter.RedissonAutoConfiguration;
 import org.redisson.spring.starter.RedissonAutoConfigurationCustomizer;
-import org.redisson.spring.starter.RedissonAutoConfigurationV2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -31,7 +31,8 @@ import top.jpower.core.redis.serializer.JpowerStringSerializer;
 @EnableCaching
 @AutoConfiguration
 @EnableConfigurationProperties(RedisProperties.class)
-@AutoConfigureBefore({RedisAutoConfiguration.class, RedissonAutoConfigurationV2.class})
+//@AutoConfigureBefore({RedisAutoConfiguration.class, RedissonAutoConfigurationV2.class}) 这个是高版本的Redisson
+@AutoConfigureBefore({RedisAutoConfiguration.class, RedissonAutoConfiguration.class})
 public class RedisConfig {
 
     @Bean

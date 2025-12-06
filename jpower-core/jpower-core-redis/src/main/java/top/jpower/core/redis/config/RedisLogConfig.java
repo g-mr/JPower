@@ -1,6 +1,6 @@
 package top.jpower.core.redis.config;
 
-import org.redisson.spring.starter.RedissonAutoConfigurationV2;
+import org.redisson.spring.starter.RedissonAutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -18,7 +18,8 @@ import top.jpower.core.redis.serializer.CodecRedisSerializer;
  * @date 2024-11-7 22:30
  */
 @AutoConfiguration
-@AutoConfigureAfter({RedisConfig.class, RedisAutoConfiguration.class, RedissonAutoConfigurationV2.class})
+//@AutoConfigureAfter({RedisConfig.class, RedisAutoConfiguration.class, RedissonAutoConfigurationV2.class})  这个是高版本的Redisson
+@AutoConfigureAfter({RedisConfig.class, RedisAutoConfiguration.class, RedissonAutoConfiguration.class})
 @ConditionalOnBean(RedisProperties.class)
 public class RedisLogConfig {
 
