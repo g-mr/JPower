@@ -16,7 +16,9 @@
 
 Adopting the front-end and back-end separation model, front-end open source projects:[jpower-ui](https://gitee.com/gdzWork/jpower-ui) (basedOn AVue、Vue、Element-UI)、[JPowerWeb](https://gitee.com/deep_letters/jpower)(basedOn Vue、Element-UI)
 
-Boot version：[JPowerBoot](https://gitee.com/gdzWork/JPowerBoot)
+The boot version has been changed to the [jpower-boot] (jpower-boot) module
+
+[//]: # (Boot version：[JPowerBoot]&#40;https://gitee.com/gdzWork/JPowerBoot&#41;)
 
 `JPower` basedOn`SpringCloud(2020.0.1)`  + `SpringBoot(2.4.2)` a rapid development platform for microservices
 It has multiple modules such as unified gateway authentication, Xss anti-cross-site attack, and distributed transaction, and supports the parallel development of multi-service systems.
