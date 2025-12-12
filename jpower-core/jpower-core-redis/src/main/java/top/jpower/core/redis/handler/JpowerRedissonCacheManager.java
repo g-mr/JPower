@@ -33,7 +33,7 @@ public class JpowerRedissonCacheManager extends RedissonSpringCacheManager {
     public JpowerRedissonCacheManager(RedissonClient redisson, RedisProperties.Prefix prefix, RedisPrefixHandler redisPrefixHandler) {
         super(redisson);
         if (redisson instanceof Redisson) {
-            nameMapper = ((Redisson) redisson).getCommandExecutor().getServiceManager().getConfig().getNameMapper();
+            nameMapper = ((Redisson) redisson).getCommandExecutor().getConnectionManager().getConfig().getNameMapper();
         } else {
             nameMapper = new PrefixRedissonHandler(prefix, redisPrefixHandler);
         }
@@ -46,7 +46,7 @@ public class JpowerRedissonCacheManager extends RedissonSpringCacheManager {
      */
     public JpowerRedissonCacheManager(Redisson redisson) {
         super(redisson);
-        nameMapper = redisson.getCommandExecutor().getServiceManager().getConfig().getNameMapper();
+        nameMapper = redisson.getCommandExecutor().getConnectionManager().getConfig().getNameMapper();
     }
 
     @SuppressWarnings("unchecked")
