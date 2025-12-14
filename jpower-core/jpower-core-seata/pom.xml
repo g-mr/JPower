@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>jpower-core-seata</artifactId>
-
+    <name>JPower-Core-Seata</name>
     <dependencies>
 
         <dependency>

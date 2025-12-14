@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>jpower-core-nacos</artifactId>
-
+    <name>JPower-Core-Nacos</name>
     <packaging>jar</packaging>
 
     <dependencies>

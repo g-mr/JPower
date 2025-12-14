@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>jpower-core-boot</artifactId>
-
+    <name>JPower-Core-Boot</name>
     <packaging>jar</packaging>
     <dependencies>
 

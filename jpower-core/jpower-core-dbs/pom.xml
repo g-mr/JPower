@@ -8,7 +8,7 @@
         <version>2.2.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
+    <name>JPower-Core-Dbs</name>
     <artifactId>jpower-core-dbs</artifactId>
 
     <dependencies>

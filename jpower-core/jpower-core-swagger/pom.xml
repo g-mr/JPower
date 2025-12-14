@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>jpower-core-swagger</artifactId>
-
+    <name>JPower-Core-Swagger</name>
     <packaging>jar</packaging>
     <dependencies>
 
