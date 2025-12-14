@@ -157,16 +157,6 @@
     <profiles>
         <profile>
             <id>release</id>
-<!--            <distributionManagement>-->
-<!--                <snapshotRepository>-->
-<!--                    <id>ossrh</id>-->
-<!--                    <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>-->
-<!--                </snapshotRepository>-->
-<!--                <repository>-->
-<!--                    <id>ossrh</id>-->
-<!--                    <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>-->
-<!--                </repository>-->
-<!--            </distributionManagement>-->
 
             <build>
                 <plugins>
@@ -203,8 +193,8 @@
                         <extensions>true</extensions>
                         <configuration>
                             <publishingServerId>jpower-central</publishingServerId>
-<!--                            <autoPublish>true</autoPublish>-->
-<!--                            <waitUntil>published</waitUntil>-->
+                            <autoPublish>true</autoPublish>
+                            <waitUntil>published</waitUntil>
                             <excludeArtifacts>
                                 <excludeArtifact>jpower-api</excludeArtifact>
                                 <excludeArtifact>jpower-auth</excludeArtifact>
