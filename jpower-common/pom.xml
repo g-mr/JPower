@@ -6,7 +6,7 @@
     <parent>
         <groupId>top.jpower</groupId>
         <artifactId>jpower</artifactId>
-        <version>2.2.0</version>
+        <version>3.0.0</version>
     </parent>
 
     <artifactId>jpower-common</artifactId>
@@ -21,30 +21,30 @@
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-nacos</artifactId>
-            <version>${com.jpower.version}</version>
+            <version>${top.jpower.version}</version>
         </dependency>
 
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-exception</artifactId>
-            <version>${com.jpower.version}</version>
+            <version>${top.jpower.version}</version>
         </dependency>
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-boot</artifactId>
-            <version>${com.jpower.version}</version>
+            <version>${top.jpower.version}</version>
         </dependency>
 
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-auth</artifactId>
-            <version>${com.jpower.version}</version>
+            <version>${top.jpower.version}</version>
         </dependency>
 
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-dbs</artifactId>
-            <version>${com.jpower.version}</version>
+            <version>${top.jpower.version}</version>
         </dependency>
     </dependencies>
 

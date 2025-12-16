@@ -5,7 +5,7 @@
     <parent>
         <artifactId>jpower-core</artifactId>
         <groupId>top.jpower</groupId>
-        <version>2.2.0</version>
+        <version>3.0.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -124,8 +124,8 @@
                 <configuration>
                     <!-- disable processing because the definition in META-INF/services breaks javac -->
 <!--                    <compilerArgument>-proc:none</compilerArgument>-->
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>

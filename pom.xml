@@ -6,12 +6,12 @@
 
     <groupId>top.jpower</groupId>
     <artifactId>jpower</artifactId>
-    <version>2.2.0</version>
+    <version>3.0.0</version>
     <packaging>pom</packaging>
 
     <name>JPower</name>
     <description>
-        Java微服务快速开发平台
+        JPower微服务快速开发平台
     </description>
     <url>https://gitee.com/gdzWork/JPower</url>
 
@@ -39,8 +39,16 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.8</java.version>
-        <com.jpower.version>2.2.0</com.jpower.version>
+        <java.version>17</java.version>
+        <top.jpower.version>3.0.0</top.jpower.version>
+
+        <spring-boot.version>3.5.8</spring-boot.version>
+        <spring-cloud.version>2025.0.0</spring-cloud.version>
+        <spring-alibaba.version>2025.0.0.0</spring-alibaba.version>
+
+
+        <!-- ****************** 升级中 ********************** -->
+
 
         <mybatis-plus.version>3.5.5</mybatis-plus.version>
         <easy-captcha.version>1.6.2</easy-captcha.version>
@@ -64,9 +72,7 @@
         <spring-boot-admin.version>2.7.15</spring-boot-admin.version>
         <logstash.version>7.0.1</logstash.version>
         <hutool.version>5.8.29</hutool.version>
-        <spring-alibaba.version>2021.0.5.0</spring-alibaba.version>
-        <spring-boot.version>2.7.18</spring-boot.version>
-        <spring-cloud.version>2021.0.8</spring-cloud.version>
+
 
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-resources.version>3.3.1</maven-resources.version>
@@ -323,5 +329,36 @@
             </testResource>
         </testResources>
     </build>
+
+    <!-- 指定 Maven 源 -->
+    <repositories>
+        <repository>
+            <id>huaweicloud</id>
+            <name>huawei</name>
+            <url>https://mirrors.huaweicloud.com/repository/maven/</url>
+        </repository>
+        <repository>
+            <id>aliyunmaven</id>
+            <name>aliyun</name>
+            <url>https://maven.aliyun.com/repository/public</url>
+        </repository>
+
+        <repository>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/milestone</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>spring-snapshots</id>
+            <name>Spring Snapshots</name>
+            <url>https://repo.spring.io/snapshot</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
 
 </project>
