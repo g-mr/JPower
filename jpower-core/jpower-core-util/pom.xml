@@ -12,6 +12,9 @@
     <artifactId>jpower-core-util</artifactId>
     <packaging>jar</packaging>
     <name>JPower Core Util</name>
+    <description>
+        JPower 的工具类库，继承了Hutool
+    </description>
 
     <dependencies>
 
