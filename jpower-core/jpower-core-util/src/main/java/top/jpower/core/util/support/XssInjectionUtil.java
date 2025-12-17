@@ -1,8 +1,8 @@
 package top.jpower.core.util.support;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import top.jpower.core.util.constants.StringPool;
+import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.WebUtil;
 
 import java.util.HashMap;
@@ -27,7 +27,7 @@ public class XssInjectionUtil {
      */
     public static String filter(String str) {
         String str0 = str;
-        if (StringUtils.isBlank(str)) {
+        if (Fc.isBlank(str)) {
             return StringPool.EMPTY;
         }
 

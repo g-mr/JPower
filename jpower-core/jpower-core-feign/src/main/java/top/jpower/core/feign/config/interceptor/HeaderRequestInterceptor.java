@@ -9,7 +9,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.constants.TokenConstant;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 
 /**

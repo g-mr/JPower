@@ -1,7 +1,7 @@
 package top.jpower.core.util.utils;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -110,7 +110,7 @@ public class FileType {
             }
         }
         log.info(">>>>>文件的头部信息:" + value);
-        if (StringUtils.startsWith(value, "FFD8FF")) {
+        if (StrUtil.startWith(value, "FFD8FF")) {
             value = value.substring(0, 6);
         }
         return value;

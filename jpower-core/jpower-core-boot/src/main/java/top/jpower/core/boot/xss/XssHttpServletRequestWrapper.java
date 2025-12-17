@@ -10,8 +10,8 @@ import top.jpower.core.util.support.XssInjectionUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.StringUtil;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 
 import static com.sun.org.apache.xml.internal.serialize.Method.HTML;
 

@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import top.jpower.core.log.apm.SkywalkingApmProperties;
 import top.jpower.core.log.apm.SkywalkingHttpInfoFilter;
 
-import javax.servlet.http.HttpFilter;
+import jakarta.servlet.http.HttpFilter;
 
 /**
  * @author mr.g
@@ -25,7 +25,7 @@ public class SkywalkingConfig {
      *
      * @author mr.g
      * @param skywalkingApmProperties 配置
-     * @return javax.servlet.http.HttpFilter 过滤器
+     * @return jakarta.servlet.http.HttpFilter 过滤器
      **/
     @Bean
     @ConditionalOnMissingBean

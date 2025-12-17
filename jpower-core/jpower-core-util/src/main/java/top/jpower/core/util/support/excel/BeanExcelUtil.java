@@ -1,6 +1,6 @@
 package top.jpower.core.util.support.excel;
 
-import org.apache.commons.lang3.StringUtils;
+import cn.hutool.core.util.StrUtil;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.util.HSSFColor;
@@ -292,7 +292,7 @@ public class BeanExcelUtil<T> {
             // 写入列名
             cell.setCellValue(attr.name());
             // 如果设置了提示信息则鼠标放上去提示.
-            if (StringUtils.isNotEmpty(attr.prompt()))
+            if (Fc.isNotBlank(attr.prompt()))
             {
                 // 这里默认设了2-101列提示.
                 setXSSFPrompt(sheet, "", attr.prompt(), 1, 100, i, i);
@@ -378,11 +378,11 @@ public class BeanExcelUtil<T> {
                         Object value = getTargetValue(vo, field, attr);
                         String dateFormat = attr.dateFormat();
                         String readConverterExp = attr.readConverterExp();
-                        if (StringUtils.isNotEmpty(dateFormat) && value != null)
+                        if (Fc.isNotBlank(dateFormat) && value != null)
                         {
                             cell.setCellValue(top.jpower.core.util.utils.DateUtil.format((Date) value,dateFormat));
                         }
-                        else if (StringUtils.isNotEmpty(readConverterExp) && value != null)
+                        else if (Fc.isNotBlank(readConverterExp) && value != null)
                         {
                             cell.setCellValue(convertByExp(String.valueOf(value), readConverterExp));
                         }
@@ -443,7 +443,7 @@ public class BeanExcelUtil<T> {
     private Object getTargetValue(T vo, Field field, Excel excel) throws Exception
     {
         Object o = field.get(vo);
-        if (StringUtils.isNotEmpty(excel.targetAttr()))
+        if (Fc.isNotBlank(excel.targetAttr()))
         {
             String target = excel.targetAttr();
             if (target.indexOf(".") > -1)
@@ -472,7 +472,7 @@ public class BeanExcelUtil<T> {
      */
     private Object getValue(Object o, String name) throws Exception
     {
-        if (StringUtils.isNotEmpty(name))
+        if (Fc.isNotBlank(name))
         {
             Class<?> clazz = o.getClass();
             String methodName = "get" + name.substring(0, 1).toUpperCase() + name.substring(1);
@@ -582,7 +582,7 @@ public class BeanExcelUtil<T> {
         this.wb = ExcelUtil.getExcel(file.getAbsolutePath());
         List<T> list = new ArrayList<T>();
         Sheet sheet = null;
-        if (StringUtils.isNotEmpty(sheetName))
+        if (Fc.isNotBlank(sheetName))
         {
             // 如果指定sheet名,则取指定sheet中的内容.
             sheet = wb.getSheet(sheetName);
@@ -655,7 +655,7 @@ public class BeanExcelUtil<T> {
                         if (fieldType != null)
                         {
                             Excel attr = field.getAnnotation(Excel.class);
-                            if (StringUtils.isNotEmpty(attr.readConverterExp()))
+                            if (Fc.isNotBlank(attr.readConverterExp()))
                             {
                                 val = reverseByExp(String.valueOf(val), attr.readConverterExp());
                             }
@@ -665,9 +665,9 @@ public class BeanExcelUtil<T> {
                         if (String.class == fieldType)
                         {
                             String s = Fc.toStr(val);
-                            if (StringUtils.endsWith(s, ".0"))
+                            if (StrUtil.endWith(s, ".0"))
                             {
-                                val = StringUtils.substringBefore(s, ".0");
+                                 val = StrUtil.subBefore(s, ".0", true);
                             }
                             else
                             {
@@ -709,7 +709,7 @@ public class BeanExcelUtil<T> {
                         {
                             Excel attr = field.getAnnotation(Excel.class);
                             String propertyName = field.getName();
-                            if (StringUtils.isNotEmpty(attr.targetAttr()))
+                            if (Fc.isNotBlank(attr.targetAttr()))
                             {
                                 propertyName = field.getName() + "." + attr.targetAttr();
                             }

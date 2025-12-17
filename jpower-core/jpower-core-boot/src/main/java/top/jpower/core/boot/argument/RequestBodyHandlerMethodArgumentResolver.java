@@ -20,7 +20,7 @@ import top.jpower.core.util.constants.CharsetKit;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.JsonUtil;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;

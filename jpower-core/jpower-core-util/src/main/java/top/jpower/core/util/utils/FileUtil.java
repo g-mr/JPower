@@ -7,16 +7,16 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ZipUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Cleanup;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import top.jpower.core.util.constants.CharsetKit;
 import top.jpower.core.util.constants.StringPool;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -100,7 +100,7 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
      * @param fileName 下载后的文件名
      * @return 是否下载成功
      **/
-    public static Boolean download(byte[] bytes, HttpServletResponse response,String fileName) throws UnsupportedEncodingException {
+    public static Boolean download(byte[] bytes, HttpServletResponse response, String fileName) throws UnsupportedEncodingException {
 
         if (Fc.isNotEmpty(bytes)){
             downloadHeader(response, fileName);
@@ -325,7 +325,7 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
         }
         //获得文件后缀名
         String suffixName=FileNameUtil.getSuffix(multipartFile.getOriginalFilename());
-        if (StringUtils.isNotBlank(fileSuffixName) && !StringUtils.containsIgnoreCase(fileSuffixName,suffixName) && !StringUtils.containsIgnoreCase(fileSuffixName, FileType.getFileType(multipartFile.getInputStream()))){
+        if (Fc.isNotBlank(fileSuffixName) && !StrUtil.containsIgnoreCase(fileSuffixName,suffixName) && !StrUtil.containsIgnoreCase(fileSuffixName, FileType.getFileType(multipartFile.getInputStream()))){
             throw new IllegalArgumentException("不支持的后缀类型");
         }
 

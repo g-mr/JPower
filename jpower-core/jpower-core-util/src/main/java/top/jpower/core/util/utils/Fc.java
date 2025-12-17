@@ -713,7 +713,7 @@ public class Fc {
      * @return UUID
      */
     public static String randomUUID() {
-        return UuidUtil.fastUUID().toString(true);
+        return UuidUtil.fastUUID();
     }
 
     /**

@@ -9,8 +9,8 @@ import org.springframework.http.MediaType;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.feign.sentinel.utils.ErrorMsg;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @ClassName JpowerUrlBlockHandler

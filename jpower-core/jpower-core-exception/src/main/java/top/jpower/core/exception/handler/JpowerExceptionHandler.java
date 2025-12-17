@@ -23,8 +23,8 @@ import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.user.UserConfig;
 import top.jpower.core.util.utils.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * 全局异常获取

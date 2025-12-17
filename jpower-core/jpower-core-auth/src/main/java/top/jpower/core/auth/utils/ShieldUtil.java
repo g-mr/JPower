@@ -13,7 +13,7 @@ import top.jpower.core.auth.dto.UserInfo;
 import top.jpower.core.util.constants.*;
 import top.jpower.core.util.utils.*;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Objects;

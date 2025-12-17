@@ -1,9 +1,9 @@
 package top.jpower.core.util.utils;
 
 import cn.hutool.core.bean.NullWrapperBean;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.TypeUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import top.jpower.core.util.constants.StringPool;
 
 import java.lang.reflect.Method;
@@ -38,7 +38,7 @@ public class ReflectUtil extends cn.hutool.core.util.ReflectUtil{
     @SuppressWarnings("unchecked")
     public static <E> E invokeGetter(Object obj, String propertyName) {
         Object object = obj;
-        for (String name : StringUtils.split(propertyName, StringPool.DOT)) {
+        for (String name : StrUtil.split(propertyName, StringPool.DOT)) {
             String getterMethodName = GETTER_PREFIX + StringUtil.upperFirst(name);
             object = invoke(object, getterMethodName);
         }
@@ -58,7 +58,7 @@ public class ReflectUtil extends cn.hutool.core.util.ReflectUtil{
      **/
     public static <E> void invokeSetter(Object obj, String propertyName, E value) {
         Object object = obj;
-        String[] names = StringUtils.split(propertyName, StringPool.DOT);
+        String[] names = Fc.toStrArray(StringPool.DOT, propertyName);
         for (int i = 0; i < names.length; i++) {
             if (i < names.length - 1) {
                 String getterMethodName = GETTER_PREFIX + StringUtil.upperFirst(names[i]);

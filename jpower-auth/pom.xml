@@ -73,6 +73,12 @@
             <artifactId>jpower-core-nacos</artifactId>
             <version>${top.jpower.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.github.whvcse</groupId>
+            <artifactId>easy-captcha</artifactId>
+            <version>${easy-captcha.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

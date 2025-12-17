@@ -3,8 +3,8 @@ package top.jpower.core.boot.jackson;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import org.apache.commons.lang3.StringUtils;
 import top.jpower.core.util.utils.DateUtil;
+import top.jpower.core.util.utils.Fc;
 
 import java.io.IOException;
 import java.util.Date;
@@ -20,7 +20,7 @@ public class DateJacksonConverter extends JsonDeserializer<Date> {
 
         Date targetDate = null;
         String originDate = p.getText();
-        if (StringUtils.isNotEmpty(originDate)) {
+        if (Fc.isNotBlank(originDate)) {
             try {
                 long longDate = Long.valueOf(originDate.trim());
                 targetDate = new Date(longDate);

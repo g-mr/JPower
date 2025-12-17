@@ -33,9 +33,9 @@ import top.jpower.jpower.dbs.entity.function.TbCoreDataScope;
 import top.jpower.jpower.service.role.CoreDataScopeService;
 import top.jpower.jpower.service.role.CoreFunctionService;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;

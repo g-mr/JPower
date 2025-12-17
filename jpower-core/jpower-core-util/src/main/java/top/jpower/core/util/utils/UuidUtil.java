@@ -1,5 +1,6 @@
 package top.jpower.core.util.utils;
 
+
 import java.util.UUID;
 
 /**
@@ -7,19 +8,7 @@ import java.util.UUID;
  *
  * @author mr.g
  **/
-public class UuidUtil extends cn.hutool.core.lang.UUID {
-
-    private static final long serialVersionUID = -8620701627379245225L;
-
-    /**
-     * 使用指定的数据构造新的 UUID。
-     *
-     * @param mostSigBits  用于 {@code UUID} 的最高有效 64 位
-     * @param leastSigBits 用于 {@code UUID} 的最低有效 64 位
-     */
-    public UuidUtil(long mostSigBits, long leastSigBits) {
-        super(mostSigBits, leastSigBits);
-    }
+public class UuidUtil extends cn.hutool.core.util.IdUtil {
 
     /**
      * 获取UUID
@@ -28,7 +17,7 @@ public class UuidUtil extends cn.hutool.core.lang.UUID {
      * @return java.lang.String
      **/
     public static String getUUID() {
-        return fastUUID().toString(Boolean.TRUE);
+        return fastUUID();
     }
 
     /**

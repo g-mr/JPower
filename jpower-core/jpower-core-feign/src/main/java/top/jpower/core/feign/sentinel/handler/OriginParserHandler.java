@@ -4,7 +4,7 @@ import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.RequestOriginPars
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.auth.utils.ShieldUtil;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @ClassName OriginParserHandler

@@ -1,6 +1,6 @@
 package top.jpower.core.util.constants;
 
-import org.apache.commons.lang3.StringUtils;
+import top.jpower.core.util.utils.Fc;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -35,7 +35,7 @@ public class CharsetKit
      */
     public static Charset charset(String charset)
     {
-        return StringUtils.isEmpty(charset) ? Charset.defaultCharset() : Charset.forName(charset);
+        return Fc.isBlank(charset) ? Charset.defaultCharset() : Charset.forName(charset);
     }
 
     /**
@@ -71,7 +71,7 @@ public class CharsetKit
             srcCharset = StandardCharsets.UTF_8;
         }
 
-        if (StringUtils.isEmpty(source) || srcCharset.equals(destCharset))
+        if (Fc.isBlank(source) || srcCharset.equals(destCharset))
         {
             return source;
         }

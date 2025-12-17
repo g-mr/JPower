@@ -2,13 +2,13 @@ package top.jpower.core.util.utils;
 
 
 import cn.hutool.core.bean.BeanDesc;
+import cn.hutool.core.util.StrUtil;
 import lombok.SneakyThrows;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserManager;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.select.SelectItem;
-import org.apache.commons.lang3.StringUtils;
 import top.jpower.core.util.constants.StringPool;
 
 import java.io.Serializable;
@@ -24,7 +24,7 @@ import java.util.List;
  *
  * @author mr.g
  */
-public class SqlUtil
+public class SqlUtil extends cn.hutool.db.sql.SqlUtil
 {
     /**
      * 仅支持字母、数字、下划线、空格、逗号（支持多个字段排序）
@@ -40,7 +40,7 @@ public class SqlUtil
      **/
     public static String escapeOrderBySql(String value) {
         if (StringUtil.isNotBlank(value) && !isValidOrderBySql(value)) {
-            return StringUtils.EMPTY;
+            return StrUtil.EMPTY;
         }
         return value;
     }
@@ -68,11 +68,11 @@ public class SqlUtil
     public static List<String> getSelectSql(String sql){
         CCJSqlParserManager parserManager = new CCJSqlParserManager();
         Select select = (Select) parserManager.parse(new StringReader(sql));
-        PlainSelect plain = (PlainSelect) select.getSelectBody();
-        List<SelectItem> selectItems = plain.getSelectItems();
+        PlainSelect plain = select.getPlainSelect();
+        List<SelectItem<?>> selectItems = plain.getSelectItems();
         List<String> items = new ArrayList<>();
         if (selectItems != null) {
-            for (SelectItem selectItem : selectItems) {
+            for (SelectItem<?> selectItem : selectItems) {
                 items.add(selectItem.toString());
             }
         }

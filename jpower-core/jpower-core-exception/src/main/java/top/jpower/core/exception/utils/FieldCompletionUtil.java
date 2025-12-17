@@ -7,7 +7,7 @@ import top.jpower.core.util.user.model.UserDto;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.WebUtil;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**

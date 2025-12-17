@@ -2,7 +2,6 @@ package top.jpower.core.util.utils;
 
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.util.ReflectUtil;
-import org.apache.commons.lang3.reflect.FieldUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -63,7 +62,7 @@ public class BeanUtil extends cn.hutool.core.bean.BeanUtil {
     public static List<Field> getFiledByAnnotation(Class<?> cls, Class<? extends Annotation> annotationType) {
         List<Field> fieldList = new ArrayList<>();
 
-        List<Field> fields = FieldUtils.getAllFieldsList(cls);
+        List<Field> fields = BeanUtil.getFieldList(cls);
         for (Field field : fields) {
             Annotation annotation = field.getAnnotation(annotationType);
             if (annotation != null){

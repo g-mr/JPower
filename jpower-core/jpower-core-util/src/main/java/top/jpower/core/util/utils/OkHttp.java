@@ -1,12 +1,12 @@
 package top.jpower.core.util.utils;
 
+import cn.hutool.http.HttpException;
 import com.google.common.base.Joiner;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import okio.Buffer;
-import org.apache.http.HttpException;
 import top.jpower.core.util.constants.StringPool;
 
 import java.util.Map;

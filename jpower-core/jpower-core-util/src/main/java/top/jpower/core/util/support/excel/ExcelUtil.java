@@ -1,6 +1,5 @@
 package top.jpower.core.util.support.excel;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
@@ -100,13 +99,13 @@ public class ExcelUtil {
                     //获取单元格
                     Cell cell=row.getCell(j);
                     if(cell==null) {
-                        if (StringUtils.isNotBlank(headerText[j])){
+                        if (Fc.isNotBlank(headerText[j])){
                             map.put(headerText[j],"");
                         }else {
                             map.put(j+"","");
                         }
                     } else {
-                        if (StringUtils.isNotBlank(headerText[j])){
+                        if (Fc.isNotBlank(headerText[j])){
                             map.put(headerText[j],Fc.trim(cell.toString()));
                         }else {
                             map.put(j+"",Fc.trim(cell.toString()));
@@ -173,7 +172,7 @@ public class ExcelUtil {
         }
 
         Sheet sheet = wb.getSheet("sheet1");
-        if (StringUtils.isBlank(sheetName)){
+        if (Fc.isBlank(sheetName)){
             if (wb.getNumberOfSheets() > 0){
                 sheet = wb.getSheetAt(0);
             }
@@ -184,7 +183,7 @@ public class ExcelUtil {
         //创建工作文档对象
         if (!file.exists()) {
             //创建sheet对象
-            sheet = wb.createSheet(StringUtils.isBlank(sheetName)?"sheet1":sheetName);
+            sheet = wb.createSheet(Fc.isBlank(sheetName)?"sheet1":sheetName);
             OutputStream outputStream = new FileOutputStream(excelPath);
             wb.write(outputStream);
             outputStream.flush();
@@ -193,7 +192,7 @@ public class ExcelUtil {
         }
         //创建sheet对象
         if (sheet==null) {
-            sheet = wb.createSheet(StringUtils.isBlank(sheetName)?"sheet1":sheetName);
+            sheet = wb.createSheet(Fc.isBlank(sheetName)?"sheet1":sheetName);
         }
         sheet.setSelected(true);
 

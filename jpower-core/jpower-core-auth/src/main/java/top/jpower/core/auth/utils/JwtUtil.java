@@ -2,6 +2,7 @@ package top.jpower.core.auth.utils;
 
 import cn.hutool.core.util.URLUtil;
 import io.jsonwebtoken.*;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.NonNull;
 import top.jpower.core.auth.properties.AuthProperties;
 import top.jpower.core.util.constants.JpowerConstants;
@@ -13,7 +14,6 @@ import top.jpower.core.util.utils.StringUtil;
 import top.jpower.core.util.utils.WebUtil;
 
 import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.util.Date;
 import java.util.Map;

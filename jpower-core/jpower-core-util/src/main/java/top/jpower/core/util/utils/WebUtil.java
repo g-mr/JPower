@@ -7,6 +7,10 @@ import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.util.ArrayUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONWriter;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
@@ -17,10 +21,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import top.jpower.core.util.constants.CharsetKit;
 import top.jpower.core.util.constants.StringPool;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -148,7 +148,7 @@ public class WebUtil extends org.springframework.web.util.WebUtils {
      * 获取response
      *
      * @author mr.g
-     * @return javax.servlet.http.HttpServletResponse
+     * @return jakarta.servlet.http.HttpServletResponse
      **/
     public static HttpServletResponse getResponse(){
         return getRequestAttributes().getResponse();
@@ -158,7 +158,7 @@ public class WebUtil extends org.springframework.web.util.WebUtils {
      * 获取session
      *
      * @author mr.g
-     * @return javax.servlet.http.HttpSession
+     * @return jakarta.servlet.http.HttpSession
      **/
     public static HttpSession getSession() {
         return Objects.requireNonNull(getRequest()).getSession();

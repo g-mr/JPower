@@ -1,5 +1,6 @@
 package top.jpower.core.auth.aspect;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,6 @@ import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.WebUtil;
 
-import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;

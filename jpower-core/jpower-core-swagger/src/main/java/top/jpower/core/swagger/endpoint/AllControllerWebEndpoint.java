@@ -20,7 +20,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 import springfox.documentation.swagger2.mappers.ServiceModelToSwagger2Mapper;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 import static org.springframework.util.StringUtils.isEmpty;
@@ -33,7 +33,7 @@ import static springfox.documentation.swagger.common.HostNameProvider.components
  */
 @Controller
 @EnableSwagger2WebMvc
-@ConditionalOnClass(name = "javax.servlet.http.HttpServletRequest")
+@ConditionalOnClass(name = "jakarta.servlet.http.HttpServletRequest")
 @ApiIgnore
 @AllArgsConstructor
 @Deprecated

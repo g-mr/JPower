@@ -31,7 +31,7 @@ import top.jpower.jpower.service.ResourceFileService;
 import top.jpower.jpower.service.ResourceOssService;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
