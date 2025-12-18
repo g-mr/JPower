@@ -3,7 +3,6 @@ package top.jpower.core.feign.config;
 import okhttp3.ConnectionPool;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.commons.httpclient.HttpClientConfiguration;
@@ -13,11 +12,9 @@ import org.springframework.cloud.openfeign.clientconfig.OkHttpFeignConfiguration
 import org.springframework.cloud.openfeign.loadbalancer.FeignLoadBalancerAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.core.Ordered;
 import top.jpower.core.feign.config.interceptor.HttpLogInterceptor;
 import top.jpower.core.feign.config.properties.FeignHttpProperties;
 
-import javax.annotation.PreDestroy;
 import java.util.concurrent.TimeUnit;
 
 /**

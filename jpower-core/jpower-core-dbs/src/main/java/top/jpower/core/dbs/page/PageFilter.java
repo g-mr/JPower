@@ -1,11 +1,11 @@
 package top.jpower.core.dbs.page;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
-
+import cn.hutool.core.util.StrUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.core.annotation.Order;
+import top.jpower.core.util.utils.Fc;
+
 import java.io.IOException;
 
 /**
@@ -52,7 +52,7 @@ public class PageFilter implements Filter {
         int pageNum = 1;
         try {
             String pageNums = request.getParameter("pageNum");
-            if (pageNums != null && StringUtils.isNumeric(pageNums)) {
+            if (pageNums != null && StrUtil.isNumeric(pageNums)) {
                 pageNum = Integer.parseInt(pageNums);
             }
         } catch (NumberFormatException e) {
@@ -71,7 +71,7 @@ public class PageFilter implements Filter {
         int pageSize = 10;
         try {
             String pageSizes = request.getParameter("pageSize");
-            if (pageSizes != null && StringUtils.isNumeric(pageSizes)) {
+            if (pageSizes != null && StrUtil.isNumeric(pageSizes)) {
                 pageSize = Integer.parseInt(pageSizes);
             }
         } catch (NumberFormatException e) {
@@ -90,7 +90,7 @@ public class PageFilter implements Filter {
     protected String getAsc(HttpServletRequest request) {
         String asc = null;
         String ascs = request.getParameter("asc");
-        if (StringUtils.isNotBlank(ascs)) {
+        if (Fc.isNotBlank(ascs)) {
             asc = ascs;
         }
         return asc;
@@ -106,7 +106,7 @@ public class PageFilter implements Filter {
     protected String getDesc(HttpServletRequest request) {
         String desc = null;
         String descs = request.getParameter("desc");
-        if (StringUtils.isNotBlank(descs)) {
+        if (Fc.isNotBlank(descs)) {
             desc = descs;
         }
         return desc;

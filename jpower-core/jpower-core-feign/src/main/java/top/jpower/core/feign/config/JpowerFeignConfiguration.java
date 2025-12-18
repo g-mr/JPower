@@ -1,6 +1,6 @@
 package top.jpower.core.feign.config;
 
-import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.BlockExceptionHandler;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc_v6x.callback.BlockExceptionHandler;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

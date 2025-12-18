@@ -1,7 +1,7 @@
 package top.jpower.core.dbs.config;
 
-import com.alibaba.druid.support.http.StatViewServlet;
-import com.alibaba.druid.support.http.WebStatFilter;
+import com.alibaba.druid.support.jakarta.WebStatFilter;
+import com.alibaba.druid.support.jakarta.StatViewServlet;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;

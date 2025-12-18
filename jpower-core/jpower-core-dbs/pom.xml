@@ -25,7 +25,8 @@
 
         <dependency>
             <groupId>com.alibaba</groupId>
-            <artifactId>druid-spring-boot-starter</artifactId>
+            <artifactId>druid-spring-boot-3-starter</artifactId>
+            <version>${druid-spring.version}</version>
         </dependency>
 
         <dependency>

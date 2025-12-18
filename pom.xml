@@ -40,6 +40,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>17</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
         <top.jpower.version>3.0.0</top.jpower.version>
 
         <spring-boot.version>3.5.8</spring-boot.version>
@@ -50,6 +52,9 @@
         <jsqlparser.version>5.3</jsqlparser.version>
         <hutool.version>5.8.42</hutool.version>
         <redisson.version>3.52.0</redisson.version>
+        <druid-spring.version>1.2.27</druid-spring.version>
+
+        <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
 
 
         <!-- ****************** 升级中 ********************** -->
@@ -57,7 +62,6 @@
 
         <mybatis-plus.version>3.5.5</mybatis-plus.version>
         <easy-captcha.version>1.6.2</easy-captcha.version>
-        <druid-spring.version>1.2.20</druid-spring.version>
         <pagehelper-spring.version>1.4.1</pagehelper-spring.version>
         <javax.mail.version>1.6.2</javax.mail.version>
         <jwt.version>0.6.0</jwt.version>
@@ -76,7 +80,6 @@
 
 
 
-        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-resources.version>3.3.1</maven-resources.version>
 
         <dockerfile-maven-plugin.version>1.4.13</dockerfile-maven-plugin.version>
@@ -296,9 +299,16 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <release>${java.version}</release>
                     <encoding>${project.build.sourceEncoding}</encoding>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.42</version>
+                        </path>
+                    </annotationProcessorPaths>
+                    <debug>false</debug>
                 </configuration>
             </plugin>
 

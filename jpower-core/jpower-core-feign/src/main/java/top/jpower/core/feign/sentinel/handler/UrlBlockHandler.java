@@ -1,16 +1,15 @@
 package top.jpower.core.feign.sentinel.handler;
 
-import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.BlockExceptionHandler;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc_v6x.callback.BlockExceptionHandler;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.feign.sentinel.utils.ErrorMsg;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import top.jpower.core.util.constants.StringPool;
 
 /**
  * @ClassName JpowerUrlBlockHandler
@@ -22,7 +21,8 @@ import jakarta.servlet.http.HttpServletResponse;
 @Slf4j
 public class UrlBlockHandler implements BlockExceptionHandler {
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, BlockException ex) throws Exception {
+    public void handle(HttpServletRequest request, HttpServletResponse response, String resourceName, BlockException ex) throws Exception {
+        // TODO 回头需要看下resourceName和ex.getRule().getResource()是否一致
         log.error("sentinel 降级 资源名称{}", ex.getRule().getResource(), ex);
 
         response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
