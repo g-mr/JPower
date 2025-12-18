@@ -36,27 +36,27 @@
             <artifactId>okhttp</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+
 <!--        <dependency>-->
 <!--            <groupId>commons-io</groupId>-->
 <!--            <artifactId>commons-io</artifactId>-->
 <!--            <version>${common-io.version}</version>-->
 <!--        </dependency>-->
 
-        <dependency>
-            <groupId>com.alibaba.fastjson2</groupId>
-            <artifactId>fastjson2</artifactId>
-            <version>${fastjson.version}</version>
-        </dependency>
-
 <!--        <dependency>-->
 <!--            <groupId>com.alibaba.fastjson2</groupId>-->
-<!--            <artifactId>fastjson2-extension</artifactId>-->
+<!--            <artifactId>fastjson2</artifactId>-->
 <!--            <version>${fastjson.version}</version>-->
 <!--        </dependency>-->
 
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2-extension</artifactId>
+            <version>${fastjson.version}</version>
         </dependency>
 
 <!--        <dependency>-->

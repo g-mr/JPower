@@ -41,21 +41,6 @@ public class GeoOperationsWrapper<M> {
     }
 
     /**
-     * Add {@link Point} with given member {@literal name} to {@literal key}.
-     *
-     * @param key must not be {@literal null}.
-     * @param point must not be {@literal null}.
-     * @param member must not be {@literal null}.
-     * @return Number of elements added. {@literal null} when used in pipeline / transaction.
-     * @see <a href="https://redis.io/commands/geoadd">Redis Documentation: GEOADD</a>
-     * @deprecated since 2.0, use {@link #add(String, Point, Object)}.
-     */
-    @Deprecated
-    public Long geoAdd(String key, Point point, M member) {
-        return add(key, point, member);
-    }
-
-    /**
      * Add {@link RedisGeoCommands.GeoLocation} to {@literal key}.
      *
      * @param key must not be {@literal null}.
@@ -66,20 +51,6 @@ public class GeoOperationsWrapper<M> {
      */
     public Long add(String key, RedisGeoCommands.GeoLocation<M> location) {
         return delegate.add(key, new RedisGeoCommands.GeoLocation<>(location.getName(), location.getPoint()));
-    }
-
-    /**
-     * Add {@link RedisGeoCommands.GeoLocation} to {@literal key}. 
-     *
-     * @param key must not be {@literal null}.
-     * @param location must not be {@literal null}.
-     * @return Number of elements added. {@literal null} when used in pipeline / transaction.
-     * @see <a href="https://redis.io/commands/geoadd">Redis Documentation: GEOADD</a>
-     * @deprecated since 2.0, use {@link #add(String, RedisGeoCommands.GeoLocation)}.
-     */
-    @Deprecated
-    public Long geoAdd(String key, RedisGeoCommands.GeoLocation<M> location) {
-        return add(key, location);
     }
 
     /**
@@ -96,20 +67,6 @@ public class GeoOperationsWrapper<M> {
     }
 
     /**
-     * Add {@link Map} of member / {@link Point} pairs to {@literal key}.
-     *
-     * @param key must not be {@literal null}.
-     * @param memberCoordinateMap must not be {@literal null}.
-     * @return Number of elements added. {@literal null} when used in pipeline / transaction.
-     * @see <a href="https://redis.io/commands/geoadd">Redis Documentation: GEOADD</a>
-     * @deprecated since 2.0, use {@link #add(String, Map)}.
-     */
-    @Deprecated
-    public Long geoAdd(String key, Map<M, Point> memberCoordinateMap) {
-        return add(key, memberCoordinateMap);
-    }
-
-    /**
      * Add {@link RedisGeoCommands.GeoLocation}s to {@literal key}
      *
      * @param key must not be {@literal null}.
@@ -123,20 +80,6 @@ public class GeoOperationsWrapper<M> {
     }
 
     /**
-     * Add {@link RedisGeoCommands.GeoLocation}s to {@literal key}
-     *
-     * @param key must not be {@literal null}.
-     * @param locations must not be {@literal null}.
-     * @return Number of elements added. {@literal null} when used in pipeline / transaction.
-     * @see <a href="https://redis.io/commands/geoadd">Redis Documentation: GEOADD</a>
-     * @deprecated since 2.0, use {@link #add(String, Iterable)}.
-     */
-    @Deprecated
-    public Long geoAdd(String key, Iterable<RedisGeoCommands.GeoLocation<M>> locations) {
-        return add(key, locations);
-    }
-
-    /**
      * Get the {@link Distance} between {@literal member1} and {@literal member2}.
      *
      * @param key must not be {@literal null}.
@@ -146,23 +89,8 @@ public class GeoOperationsWrapper<M> {
      * @since 2.0
      * @see <a href="https://redis.io/commands/geodist">Redis Documentation: GEODIST</a>
      */
-    public Distance distance(String key, M member1, M member2) {
+    public Distance distance(String key, M member1, M member2)  {
         return delegate.distance(key, member1, member2);
-    }
-
-    /**
-     * Get the {@link Distance} between {@literal member1} and {@literal member2}.
-     *
-     * @param key must not be {@literal null}.
-     * @param member1 must not be {@literal null}.
-     * @param member2 must not be {@literal null}.
-     * @return can be {@literal null}.
-     * @see <a href="https://redis.io/commands/geodist">Redis Documentation: GEODIST</a>
-     * @deprecated since 2.0, use {@link #distance(String, Object, Object)}.
-     */
-    @Deprecated
-    public Distance geoDist(String key, M member1, M member2) {
-        return distance(key, member1, member2);
     }
 
     /**
@@ -181,22 +109,6 @@ public class GeoOperationsWrapper<M> {
     }
 
     /**
-     * Get the {@link Distance} between {@literal member1} and {@literal member2} in the given {@link Metric}.
-     *
-     * @param key must not be {@literal null}.
-     * @param member1 must not be {@literal null}.
-     * @param member2 must not be {@literal null}.
-     * @param metric must not be {@literal null}.
-     * @return can be {@literal null}.
-     * @see <a href="https://redis.io/commands/geodist">Redis Documentation: GEODIST</a>
-     * @deprecated since 2.0, use {@link #distance(String, Object, Object, Metric)}.
-     */
-    @Deprecated
-    public Distance geoDist(String key, M member1, M member2, Metric metric) {
-        return distance(key, member1, member2, metric);
-    }
-
-    /**
      * Get Geohash representation of the position for one or more {@literal member}s.
      *
      * @param key must not be {@literal null}.
@@ -207,20 +119,6 @@ public class GeoOperationsWrapper<M> {
      */
     public List<String> hash(String key, M... members) {
         return delegate.hash(key, members);
-    }
-
-    /**
-     * Get Geohash representation of the position for one or more {@literal member}s.
-     *
-     * @param key must not be {@literal null}.
-     * @param members must not be {@literal null}.
-     * @return never {@literal null} unless used in pipeline / transaction.
-     * @see <a href="https://redis.io/commands/geohash">Redis Documentation: GEOHASH</a>
-     * @deprecated since 2.0, use {@link #hash(String, Object[])}.
-     */
-    @Deprecated
-    public List<String> geoHash(String key, M... members) {
-        return hash(key, members);
     }
 
     /**
@@ -237,20 +135,6 @@ public class GeoOperationsWrapper<M> {
     }
 
     /**
-     * Get the {@link Point} representation of positions for one or more {@literal member}s.
-     *
-     * @param key must not be {@literal null}.
-     * @param members must not be {@literal null}.
-     * @return never {@literal null} unless used in pipeline / transaction.
-     * @see <a href="https://redis.io/commands/geopos">Redis Documentation: GEOPOS</a>
-     * @deprecated since 2.0, use {@link #position(String, Object[])}.
-     */
-    @Deprecated
-    public List<Point> geoPos(String key, M... members) {
-        return position(key, members);
-    }
-
-    /**
      * Get the {@literal member}s within the boundaries of a given {@link Circle}.
      *
      * @param key must not be {@literal null}.
@@ -261,20 +145,6 @@ public class GeoOperationsWrapper<M> {
      */
     public GeoResults<RedisGeoCommands.GeoLocation<M>> radius(String key, Circle within) {
         return convert(delegate.radius(key, within));
-    }
-
-    /**
-     * Get the {@literal member}s within the boundaries of a given {@link Circle}.
-     *
-     * @param key must not be {@literal null}.
-     * @param within must not be {@literal null}.
-     * @return never {@literal null} unless used in pipeline / transaction.
-     * @see <a href="https://redis.io/commands/georadius">Redis Documentation: GEORADIUS</a>
-     * @deprecated since 2.0, use {@link #radius(String, Circle)}.
-     */
-    @Deprecated
-    public GeoResults<RedisGeoCommands.GeoLocation<M>> geoRadius(String key, Circle within) {
-        return convert(delegate.geoRadius(key, within));
     }
 
     /**
@@ -289,21 +159,6 @@ public class GeoOperationsWrapper<M> {
      */
     public GeoResults<RedisGeoCommands.GeoLocation<M>> radius(String key, Circle within, RedisGeoCommands.GeoRadiusCommandArgs args) {
         return convert(delegate.radius(key, within, args));
-    }
-
-    /**
-     * Get the {@literal member}s within the boundaries of a given {@link Circle} applying {@link RedisGeoCommands.GeoRadiusCommandArgs}.
-     *
-     * @param key must not be {@literal null}.
-     * @param within must not be {@literal null}.
-     * @param args must not be {@literal null}.
-     * @return never {@literal null} unless used in pipeline / transaction.
-     * @see <a href="https://redis.io/commands/georadius">Redis Documentation: GEORADIUS</a>
-     * @deprecated since 2.0, use {@link #radius(String, Circle, RedisGeoCommands.GeoRadiusCommandArgs)}.
-     */
-    @Deprecated
-    public GeoResults<RedisGeoCommands.GeoLocation<M>> geoRadius(String key, Circle within, RedisGeoCommands.GeoRadiusCommandArgs args) {
-        return radius(key, within, args);
     }
 
     /**
@@ -323,22 +178,6 @@ public class GeoOperationsWrapper<M> {
 
     /**
      * Get the {@literal member}s within the circle defined by the {@literal members} coordinates and given
-     * {@literal radius}.
-     *
-     * @param key must not be {@literal null}.
-     * @param member must not be {@literal null}.
-     * @param radius
-     * @return never {@literal null} unless used in pipeline / transaction.
-     * @see <a href="https://redis.io/commands/georadiusbymember">Redis Documentation: GEORADIUSBYMEMBER</a>
-     * @deprecated since 2.0, use {@link #radius(String, Object, double)}.
-     */
-    @Deprecated
-    public GeoResults<RedisGeoCommands.GeoLocation<M>> geoRadiusByMember(String key, M member, double radius) {
-        return radius(key, member, radius);
-    }
-
-    /**
-     * Get the {@literal member}s within the circle defined by the {@literal members} coordinates and given
      * {@literal radius} applying {@link Metric}.
      *
      * @param key must not be {@literal null}.
@@ -350,22 +189,6 @@ public class GeoOperationsWrapper<M> {
      */
     public GeoResults<RedisGeoCommands.GeoLocation<M>> radius(String key, M member, Distance distance) {
         return convert(delegate.radius(key, member, distance));
-    }
-
-    /**
-     * Get the {@literal member}s within the circle defined by the {@literal members} coordinates and given
-     * {@literal radius} applying {@link Metric}.
-     *
-     * @param key must not be {@literal null}.
-     * @param member must not be {@literal null}.
-     * @param distance must not be {@literal null}.
-     * @return never {@literal null} unless used in pipeline / transaction.
-     * @see <a href="https://redis.io/commands/georadiusbymember">Redis Documentation: GEORADIUSBYMEMBER</a>
-     * @deprecated since 2.0, use {@link #radius(String, Object, Distance)}.
-     */
-    @Deprecated
-    public GeoResults<RedisGeoCommands.GeoLocation<M>> geoRadiusByMember(String key, M member, Distance distance) {
-        return radius(key, member, distance);
     }
 
     /**
@@ -385,23 +208,6 @@ public class GeoOperationsWrapper<M> {
     }
 
     /**
-     * Get the {@literal member}s within the circle defined by the {@literal members} coordinates and given
-     * {@literal radius} applying {@link Metric} and {@link RedisGeoCommands.GeoRadiusCommandArgs}.
-     *
-     * @param key must not be {@literal null}.
-     * @param member must not be {@literal null}.
-     * @param distance must not be {@literal null}.
-     * @param args must not be {@literal null}.
-     * @return never {@literal null} unless used in pipeline / transaction.
-     * @see <a href="https://redis.io/commands/georadiusbymember">Redis Documentation: GEORADIUSBYMEMBER</a>
-     * @deprecated since 2.0, use {@link #radius(String, Object, Distance, RedisGeoCommands.GeoRadiusCommandArgs)}.
-     */
-    @Deprecated
-    public GeoResults<RedisGeoCommands.GeoLocation<M>> geoRadiusByMember(String key, M member, Distance distance, RedisGeoCommands.GeoRadiusCommandArgs args) {
-        return radius(key, member, distance, args);
-    }
-
-    /**
      * Remove the {@literal member}s.
      *
      * @param key must not be {@literal null}.
@@ -411,19 +217,6 @@ public class GeoOperationsWrapper<M> {
      */
     public Long remove(String key, M... members) {
         return delegate.remove(key, members);
-    }
-
-    /**
-     * Remove the {@literal member}s.
-     *
-     * @param key must not be {@literal null}.
-     * @param members must not be {@literal null}.
-     * @return Number of elements removed. {@literal null} when used in pipeline / transaction.
-     * @deprecated since 2.0, use {@link #remove(Object, Object[])}.
-     */
-    @Deprecated
-    public Long geoRemove(String key, M... members) {
-        return remove(key, members);
     }
 
     /**

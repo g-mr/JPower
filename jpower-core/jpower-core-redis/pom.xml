@@ -42,13 +42,6 @@
             </exclusions>
         </dependency>
 
-        <!-- redisson 3.37.0 版本中已经集成kryo -->
-        <dependency>
-            <groupId>com.esotericsoftware</groupId>
-            <artifactId>kryo</artifactId>
-            <version>5.6.0</version>
-        </dependency>
-
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-util</artifactId>

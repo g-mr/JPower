@@ -3,7 +3,11 @@ package top.jpower.core.redis.wrapper;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.convert.Convert;
 import lombok.AllArgsConstructor;
-import org.springframework.data.redis.connection.RedisZSetCommands;
+import org.springframework.data.domain.Range;
+import org.springframework.data.redis.connection.Limit;
+import org.springframework.data.redis.connection.zset.Aggregate;
+import org.springframework.data.redis.connection.zset.Tuple;
+import org.springframework.data.redis.connection.zset.Weights;
 import org.springframework.data.redis.core.ConvertingCursor;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.ScanOptions;
@@ -239,7 +243,7 @@ public class ZSetOperationsWrapper<V> {
     }
 
     /**
-     * Get set of {@link RedisZSetCommands.Tuple}s between {@code start} and {@code end} from sorted set.
+     * Get set of {@link Tuple}s between {@code start} and {@code end} from sorted set.
      *
      * @param key must not be {@literal null}.
      * @param start
@@ -271,7 +275,7 @@ public class ZSetOperationsWrapper<V> {
     }
 
     /**
-     * Get set of {@link RedisZSetCommands.Tuple}s where score is between {@code min} and {@code max} from sorted set.
+     * Get set of {@link Tuple}s where score is between {@code min} and {@code max} from sorted set.
      *
      * @param key must not be {@literal null}.
      * @param min
@@ -306,7 +310,7 @@ public class ZSetOperationsWrapper<V> {
     }
 
     /**
-     * Get set of {@link RedisZSetCommands.Tuple}s in range from {@code start} to {@code end} where score is between {@code min} and
+     * Get set of {@link Tuple}s in range from {@code start} to {@code end} where score is between {@code min} and
      * {@code max} from sorted set.
      *
      * @param key
@@ -341,7 +345,7 @@ public class ZSetOperationsWrapper<V> {
     }
 
     /**
-     * Get set of {@link RedisZSetCommands.Tuple}s in range from {@code start} to {@code end} from sorted set ordered from high to low.
+     * Get set of {@link Tuple}s in range from {@code start} to {@code end} from sorted set ordered from high to low.
      *
      * @param key must not be {@literal null}.
      * @param start
@@ -373,7 +377,7 @@ public class ZSetOperationsWrapper<V> {
     }
 
     /**
-     * Get set of {@link RedisZSetCommands.Tuple} where score is between {@code min} and {@code max} from sorted set ordered from high to
+     * Get set of {@link Tuple} where score is between {@code min} and {@code max} from sorted set ordered from high to
      * low.
      *
      * @param key must not be {@literal null}.
@@ -409,7 +413,7 @@ public class ZSetOperationsWrapper<V> {
     }
 
     /**
-     * Get set of {@link RedisZSetCommands.Tuple} in range from {@code start} to {@code end} where score is between {@code min} and
+     * Get set of {@link Tuple} in range from {@code start} to {@code end} where score is between {@code min} and
      * {@code max} from sorted set ordered high -> low.
      *
      * @param key must not be {@literal null}.
@@ -453,7 +457,7 @@ public class ZSetOperationsWrapper<V> {
      * @since 2.4
      * @see <a href="https://redis.io/commands/zlexcount">Redis Documentation: ZLEXCOUNT</a>
      */
-    public Long lexCount(String key, RedisZSetCommands.Range range) {
+    public Long lexCount(String key, Range<String> range) {
         return delegate.lexCount(key, range);
     }
 
@@ -807,8 +811,8 @@ public class ZSetOperationsWrapper<V> {
      * @since 2.6
      * @see <a href="https://redis.io/commands/zinter">Redis Documentation: ZINTER</a>
      */
-    public Set<ZSetOperations.TypedTuple<V>> intersectWithScores(String key, Collection<String> otherKeys, RedisZSetCommands.Aggregate aggregate) {
-        return intersectWithScores(key, otherKeys, aggregate, RedisZSetCommands.Weights.fromSetCount(1 + otherKeys.size()));
+    public Set<ZSetOperations.TypedTuple<V>> intersectWithScores(String key, Collection<String> otherKeys, Aggregate aggregate) {
+        return intersectWithScores(key, otherKeys, aggregate, Weights.fromSetCount(1 + otherKeys.size()));
     }
 
     /**
@@ -823,7 +827,7 @@ public class ZSetOperationsWrapper<V> {
      * @see <a href="https://redis.io/commands/zinter">Redis Documentation: ZINTER</a>
      */
 
-    public Set<ZSetOperations.TypedTuple<V>> intersectWithScores(String key, Collection<String> otherKeys, RedisZSetCommands.Aggregate aggregate, RedisZSetCommands.Weights weights) {
+    public Set<ZSetOperations.TypedTuple<V>> intersectWithScores(String key, Collection<String> otherKeys, Aggregate aggregate, Weights weights) {
         Set<ZSetOperations.TypedTuple<Object>> tuples = delegate.intersectWithScores(key, otherKeys, aggregate, weights);
         if (tuples == null){
             return null;
@@ -870,8 +874,8 @@ public class ZSetOperationsWrapper<V> {
      * @since 2.1
      * @see <a href="https://redis.io/commands/zinterstore">Redis Documentation: ZINTERSTORE</a>
      */
-    public Long intersectAndStore(String key, Collection<String> otherKeys, String destKey, RedisZSetCommands.Aggregate aggregate) {
-        return intersectAndStore(key, otherKeys, destKey, aggregate, RedisZSetCommands.Weights.fromSetCount(1 + otherKeys.size()));
+    public Long intersectAndStore(String key, Collection<String> otherKeys, String destKey, Aggregate aggregate) {
+        return intersectAndStore(key, otherKeys, destKey, aggregate, Weights.fromSetCount(1 + otherKeys.size()));
     }
 
     /**
@@ -886,7 +890,7 @@ public class ZSetOperationsWrapper<V> {
      * @since 2.1
      * @see <a href="https://redis.io/commands/zinterstore">Redis Documentation: ZINTERSTORE</a>
      */
-    public Long intersectAndStore(String key, Collection<String> otherKeys, String destKey, RedisZSetCommands.Aggregate aggregate, RedisZSetCommands.Weights weights) {
+    public Long intersectAndStore(String key, Collection<String> otherKeys, String destKey, Aggregate aggregate, Weights weights) {
         return delegate.intersectAndStore(key, otherKeys, destKey, aggregate, weights);
     }
 
@@ -958,8 +962,8 @@ public class ZSetOperationsWrapper<V> {
      * @since 2.6
      * @see <a href="https://redis.io/commands/zunion">Redis Documentation: ZUNION</a>
      */
-    public Set<ZSetOperations.TypedTuple<V>> unionWithScores(String key, Collection<String> otherKeys, RedisZSetCommands.Aggregate aggregate) {
-        return unionWithScores(key, otherKeys, aggregate, RedisZSetCommands.Weights.fromSetCount(1 + otherKeys.size()));
+    public Set<ZSetOperations.TypedTuple<V>> unionWithScores(String key, Collection<String> otherKeys, Aggregate aggregate) {
+        return unionWithScores(key, otherKeys, aggregate, Weights.fromSetCount(1 + otherKeys.size()));
     }
 
     /**
@@ -974,7 +978,7 @@ public class ZSetOperationsWrapper<V> {
      * @see <a href="https://redis.io/commands/zunion">Redis Documentation: ZUNION</a>
      */
 
-    public Set<ZSetOperations.TypedTuple<V>> unionWithScores(String key, Collection<String> otherKeys, RedisZSetCommands.Aggregate aggregate, RedisZSetCommands.Weights weights) {
+    public Set<ZSetOperations.TypedTuple<V>> unionWithScores(String key, Collection<String> otherKeys, Aggregate aggregate, Weights weights) {
         Set<ZSetOperations.TypedTuple<Object>> tuples = delegate.unionWithScores(key, otherKeys, aggregate, weights);
         if (tuples == null){
             return null;
@@ -1021,8 +1025,8 @@ public class ZSetOperationsWrapper<V> {
      * @since 2.1
      * @see <a href="https://redis.io/commands/zunionstore">Redis Documentation: ZUNIONSTORE</a>
      */
-    public Long unionAndStore(String key, Collection<String> otherKeys, String destKey, RedisZSetCommands.Aggregate aggregate) {
-        return unionAndStore(key, otherKeys, destKey, aggregate, RedisZSetCommands.Weights.fromSetCount(1 + otherKeys.size()));
+    public Long unionAndStore(String key, Collection<String> otherKeys, String destKey, Aggregate aggregate) {
+        return unionAndStore(key, otherKeys, destKey, aggregate, Weights.fromSetCount(1 + otherKeys.size()));
     }
 
     /**
@@ -1037,7 +1041,7 @@ public class ZSetOperationsWrapper<V> {
      * @since 2.1
      * @see <a href="https://redis.io/commands/zunionstore">Redis Documentation: ZUNIONSTORE</a>
      */
-    public Long unionAndStore(String key, Collection<String> otherKeys, String destKey, RedisZSetCommands.Aggregate aggregate, RedisZSetCommands.Weights weights) {
+    public Long unionAndStore(String key, Collection<String> otherKeys, String destKey, Aggregate aggregate, Weights weights) {
         return delegate.unionAndStore(key, otherKeys, destKey, aggregate, weights);
     }
 
@@ -1060,61 +1064,61 @@ public class ZSetOperationsWrapper<V> {
 
     /**
      * Get all elements with lexicographical ordering from {@literal ZSET} at {@code key} with a value between
-     * {@link RedisZSetCommands.Range#getMin()} and {@link RedisZSetCommands.Range#getMax()}.
+     * {@link Range#getLowerBound()} and {@link Range#getUpperBound()}.
      *
      * @param key must not be {@literal null}.
      * @param range must not be {@literal null}.
      * @return {@literal null} when used in pipeline / transaction.
-     * @since 1.7
+     * @since 3.0
      * @see <a href="https://redis.io/commands/zrangebylex">Redis Documentation: ZRANGEBYLEX</a>
      */
-    public Set<V> rangeByLex(String key, RedisZSetCommands.Range range) {
-        return rangeByLex(key, range, RedisZSetCommands.Limit.unlimited());
+    public Set<V> rangeByLex(String key, Range<String> range) {
+        return Convert.toSet(clz, delegate.rangeByLex(key, range));
     }
 
     /**
-     * Get all elements {@literal n} elements, where {@literal n = } {@link RedisZSetCommands.Limit#getCount()}, starting at
-     * {@link RedisZSetCommands.Limit#getOffset()} with lexicographical ordering from {@literal ZSET} at {@code key} with a value between
-     * {@link RedisZSetCommands.Range#getMin()} and {@link RedisZSetCommands.Range#getMax()}.
+     * Get all elements {@literal n} elements, where {@literal n = } {@link Limit#getCount()}, starting at
+     * {@link Limit#getOffset()} with lexicographical ordering from {@literal ZSET} at {@code key} with a value between
+     * {@link Range#getLowerBound()} and {@link Range#getUpperBound()}.
      *
      * @param key must not be {@literal null}
      * @param range must not be {@literal null}.
      * @param limit can be {@literal null}.
      * @return {@literal null} when used in pipeline / transaction.
-     * @since 1.7
+     * @since 3.0
      * @see <a href="https://redis.io/commands/zrangebylex">Redis Documentation: ZRANGEBYLEX</a>
      */
-    public Set<V> rangeByLex(String key, RedisZSetCommands.Range range, RedisZSetCommands.Limit limit) {
+    public Set<V> rangeByLex(String key, Range<String> range, Limit limit) {
         return Convert.toSet(clz, delegate.rangeByLex(key, range, limit));
     }
 
     /**
      * Get all elements with reverse lexicographical ordering from {@literal ZSET} at {@code key} with a value between
-     * {@link RedisZSetCommands.Range#getMin()} and {@link RedisZSetCommands.Range#getMax()}.
+     * {@link Range#getLowerBound()} and {@link Range#getUpperBound()}.
      *
      * @param key must not be {@literal null}.
      * @param range must not be {@literal null}.
      * @return {@literal null} when used in pipeline / transaction.
-     * @since 2.4
+     * @since 3.0
      * @see <a href="https://redis.io/commands/zrevrangebylex">Redis Documentation: ZREVRANGEBYLEX</a>
      */
-    public Set<V> reverseRangeByLex(String key, RedisZSetCommands.Range range) {
-        return reverseRangeByLex(key, range, RedisZSetCommands.Limit.unlimited());
+    public Set<V> reverseRangeByLex(String key, Range<String> range) {
+        return reverseRangeByLex(key, range, Limit.unlimited());
     }
 
     /**
-     * Get all elements {@literal n} elements, where {@literal n = } {@link RedisZSetCommands.Limit#getCount()}, starting at
-     * {@link RedisZSetCommands.Limit#getOffset()} with reverse lexicographical ordering from {@literal ZSET} at {@code key} with a value
-     * between {@link RedisZSetCommands.Range#getMin()} and {@link RedisZSetCommands.Range#getMax()}.
+     * Get all elements {@literal n} elements, where {@literal n = } {@link Limit#getCount()}, starting at
+     * {@link Limit#getOffset()} with reverse lexicographical ordering from {@literal ZSET} at {@code key} with a value
+     * between {@link Range#getLowerBound()} and {@link Range#getUpperBound()}.
      *
-     * @param key must not be {@literal null}
+     * @param key must not be {@literal null}.
      * @param range must not be {@literal null}.
      * @param limit can be {@literal null}.
      * @return {@literal null} when used in pipeline / transaction.
      * @since 2.4
      * @see <a href="https://redis.io/commands/zrevrangebylex">Redis Documentation: ZREVRANGEBYLEX</a>
      */
-    public Set<V> reverseRangeByLex(String key, RedisZSetCommands.Range range, RedisZSetCommands.Limit limit) {
+    public Set<V> reverseRangeByLex(String key, Range<String> range, Limit limit) {
         return Convert.toSet(clz, delegate.reverseRangeByLex(key, range, limit));
     }
 

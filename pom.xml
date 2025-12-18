@@ -49,6 +49,7 @@
         <poi.version>3.17</poi.version>
         <jsqlparser.version>5.3</jsqlparser.version>
         <hutool.version>5.8.42</hutool.version>
+        <redisson.version>3.52.0</redisson.version>
 
 
         <!-- ****************** 升级中 ********************** -->
@@ -60,7 +61,6 @@
         <pagehelper-spring.version>1.4.1</pagehelper-spring.version>
         <javax.mail.version>1.6.2</javax.mail.version>
         <jwt.version>0.6.0</jwt.version>
-        <redisson.version>3.17.7</redisson.version>
         <fastdfs.version>1.27.2</fastdfs.version>
         <aliyun.sms.version>2.0.24</aliyun.sms.version>
         <aliyun.oss.version>3.17.4</aliyun.oss.version>

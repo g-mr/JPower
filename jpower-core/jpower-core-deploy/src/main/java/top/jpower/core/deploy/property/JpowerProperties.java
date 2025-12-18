@@ -18,7 +18,7 @@ public class JpowerProperties {
 	/**
 	 * 服务类型 (微服务：cloud、单体服务：boot)
 	 *
-	 * todo 回头想想有什么办法可以自动判断不需要配置
+	 * TODO 回头想想有什么办法可以自动判断不需要配置
 	 */
 	private SERVER server = SERVER.BOOT;
 	/**

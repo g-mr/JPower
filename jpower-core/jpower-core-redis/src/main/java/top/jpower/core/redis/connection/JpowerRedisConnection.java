@@ -4,13 +4,23 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.NameMapper;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.data.geo.*;
+import org.springframework.data.geo.Circle;
+import org.springframework.data.geo.Distance;
+import org.springframework.data.geo.GeoResults;
+import org.springframework.data.geo.Metric;
+import org.springframework.data.geo.Point;
 import org.springframework.data.redis.RedisSystemException;
 import org.springframework.data.redis.connection.*;
 import org.springframework.data.redis.connection.convert.Converters;
 import org.springframework.data.redis.connection.convert.ListConverter;
 import org.springframework.data.redis.connection.stream.*;
-import org.springframework.data.redis.core.*;
+import org.springframework.data.redis.connection.zset.Aggregate;
+import org.springframework.data.redis.connection.zset.Tuple;
+import org.springframework.data.redis.connection.zset.Weights;
+import org.springframework.data.redis.core.ConvertingCursor;
+import org.springframework.data.redis.core.Cursor;
+import org.springframework.data.redis.core.KeyScanOptions;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.types.Expiration;
 import org.springframework.data.redis.core.types.RedisClientInfo;
 import org.springframework.data.redis.domain.geo.GeoReference;
@@ -33,6 +43,7 @@ import java.util.stream.Collectors;
 /**
  * redis 连接器
  *
+ * TODO 新版本都是Commands来实现，回头这里需要优化，重写Commands来实现
  * @author mr.g
  */
 @Slf4j
@@ -136,15 +147,6 @@ public class JpowerRedisConnection implements RedisConnection {
     @Override
     public void bgReWriteAof() {
         delegate.bgReWriteAof();
-    }
-
-    /**
-     * @deprecated As of 1.3, use {@link #bgReWriteAof}.
-     */
-    @Deprecated
-    @Override
-    public void bgWriteAof() {
-        bgReWriteAof();
     }
 
     /*
@@ -306,6 +308,68 @@ public class JpowerRedisConnection implements RedisConnection {
         }
         return convertedResults;
     }
+
+
+    @Override
+    public RedisCommands commands() {
+        return delegate.commands();
+    }
+
+    @Override
+    public RedisGeoCommands geoCommands() {
+        return delegate.geoCommands();
+    }
+
+    @Override
+    public RedisHashCommands hashCommands() {
+        return delegate.hashCommands();
+    }
+
+    @Override
+    public RedisHyperLogLogCommands hyperLogLogCommands() {
+        return delegate.hyperLogLogCommands();
+    }
+
+    @Override
+    public RedisKeyCommands keyCommands() {
+        return delegate.keyCommands();
+    }
+
+    @Override
+    public RedisListCommands listCommands() {
+        return delegate.listCommands();
+    }
+
+    @Override
+    public RedisSetCommands setCommands() {
+        return delegate.setCommands();
+    }
+
+    @Override
+    public RedisScriptingCommands scriptingCommands() {
+        return delegate.scriptingCommands();
+    }
+
+    @Override
+    public RedisServerCommands serverCommands() {
+        return delegate.serverCommands();
+    }
+
+    @Override
+    public RedisStreamCommands streamCommands() {
+        return delegate.streamCommands();
+    }
+
+    @Override
+    public RedisStringCommands stringCommands() {
+        return delegate.stringCommands();
+    }
+
+    @Override
+    public RedisZSetCommands zSetCommands() {
+        return delegate.zSetCommands();
+    }
+
 
     @SuppressWarnings("rawtypes")
     private class TransactionResultConverter implements Converter<List<Object>, List<Object>> {
@@ -1457,7 +1521,7 @@ public class JpowerRedisConnection implements RedisConnection {
      * @see org.springframework.data.redis.connection.RedisZSetCommands#zCount(byte[], org.springframework.data.redis.connection.RedisZSetCommands.Range)
      */
     @Override
-    public Long zCount(byte[] key, Range range) {
+    public Long zCount(byte[] key, org.springframework.data.domain.Range<? extends Number> range) {
         return convertAndReturn(delegate.zCount(this.addPrefix(key), range), Converters.identityConverter());
     }
 
@@ -1572,7 +1636,7 @@ public class JpowerRedisConnection implements RedisConnection {
      * @see org.springframework.data.redis.connection.RedisZSetCommands#zRangeByScore(byte[], org.springframework.data.redis.connection.RedisZSetCommands.Range)
      */
     @Override
-    public Set<byte[]> zRangeByScore(byte[] key, Range range) {
+    public Set<byte[]> zRangeByScore(byte[] key, org.springframework.data.domain.Range<? extends Number> range) {
         return convertAndReturn(delegate.zRangeByScore(this.addPrefix(key), range), Converters.identityConverter());
     }
 
@@ -1581,7 +1645,8 @@ public class JpowerRedisConnection implements RedisConnection {
      * @see org.springframework.data.redis.connection.RedisZSetCommands#zRangeByScore(byte[], org.springframework.data.redis.connection.RedisZSetCommands.Range, org.springframework.data.redis.connection.RedisZSetCommands.Limit)
      */
     @Override
-    public Set<byte[]> zRangeByScore(byte[] key, Range range, Limit limit) {
+    public Set<byte[]> zRangeByScore(byte[] key, org.springframework.data.domain.Range<? extends Number> range,
+                                     org.springframework.data.redis.connection.Limit limit) {
         return convertAndReturn(delegate.zRangeByScore(this.addPrefix(key), range, limit), Converters.identityConverter());
     }
 
@@ -1590,7 +1655,7 @@ public class JpowerRedisConnection implements RedisConnection {
      * @see org.springframework.data.redis.connection.RedisZSetCommands#zRangeByScoreWithScores(byte[], org.springframework.data.redis.connection.RedisZSetCommands.Range)
      */
     @Override
-    public Set<Tuple> zRangeByScoreWithScores(byte[] key, Range range) {
+    public Set<Tuple> zRangeByScoreWithScores(byte[] key, org.springframework.data.domain.Range<? extends Number> range) {
         return convertAndReturn(delegate.zRangeByScoreWithScores(this.addPrefix(key), range), Converters.identityConverter());
     }
 
@@ -1618,7 +1683,8 @@ public class JpowerRedisConnection implements RedisConnection {
      * @see org.springframework.data.redis.connection.RedisZSetCommands#zRangeByScoreWithScores(byte[], org.springframework.data.redis.connection.RedisZSetCommands.Range, org.springframework.data.redis.connection.RedisZSetCommands.Limit)
      */
     @Override
-    public Set<Tuple> zRangeByScoreWithScores(byte[] key, Range range, Limit limit) {
+    public Set<Tuple> zRangeByScoreWithScores(byte[] key, org.springframework.data.domain.Range<? extends Number> range,
+                                              org.springframework.data.redis.connection.Limit limit) {
         return convertAndReturn(delegate.zRangeByScoreWithScores(this.addPrefix(key), range, limit), Converters.identityConverter());
     }
 
@@ -1654,7 +1720,7 @@ public class JpowerRedisConnection implements RedisConnection {
      * @see org.springframework.data.redis.connection.RedisZSetCommands#zRevRangeByScore(byte[], org.springframework.data.redis.connection.RedisZSetCommands.Range)
      */
     @Override
-    public Set<byte[]> zRevRangeByScore(byte[] key, Range range) {
+    public Set<byte[]> zRevRangeByScore(byte[] key, org.springframework.data.domain.Range<? extends Number> range) {
         return convertAndReturn(delegate.zRevRangeByScore(this.addPrefix(key), range), Converters.identityConverter());
     }
 
@@ -1672,7 +1738,8 @@ public class JpowerRedisConnection implements RedisConnection {
      * @see org.springframework.data.redis.connection.RedisZSetCommands#zRevRangeByScore(byte[], org.springframework.data.redis.connection.RedisZSetCommands.Range, org.springframework.data.redis.connection.RedisZSetCommands.Limit)
      */
     @Override
-    public Set<byte[]> zRevRangeByScore(byte[] key, Range range, Limit limit) {
+    public Set<byte[]> zRevRangeByScore(byte[] key, org.springframework.data.domain.Range<? extends Number> range,
+                                        org.springframework.data.redis.connection.Limit limit) {
         return convertAndReturn(delegate.zRevRangeByScore(this.addPrefix(key), range, limit), Converters.identityConverter());
     }
 
@@ -1691,7 +1758,7 @@ public class JpowerRedisConnection implements RedisConnection {
      * @see org.springframework.data.redis.connection.RedisZSetCommands#zRevRangeByScoreWithScores(byte[], org.springframework.data.redis.connection.RedisZSetCommands.Range)
      */
     @Override
-    public Set<Tuple> zRevRangeByScoreWithScores(byte[] key, Range range) {
+    public Set<Tuple> zRevRangeByScoreWithScores(byte[] key, org.springframework.data.domain.Range<? extends Number> range) {
         return convertAndReturn(delegate.zRevRangeByScoreWithScores(this.addPrefix(key), range), Converters.identityConverter());
     }
 
@@ -1700,7 +1767,8 @@ public class JpowerRedisConnection implements RedisConnection {
      * @see org.springframework.data.redis.connection.RedisZSetCommands#zRevRangeByScoreWithScores(byte[], org.springframework.data.redis.connection.RedisZSetCommands.Range, org.springframework.data.redis.connection.RedisZSetCommands.Limit)
      */
     @Override
-    public Set<Tuple> zRevRangeByScoreWithScores(byte[] key, Range range, Limit limit) {
+    public Set<Tuple> zRevRangeByScoreWithScores(byte[] key, org.springframework.data.domain.Range<? extends Number> range,
+                                                 org.springframework.data.redis.connection.Limit limit) {
         return convertAndReturn(delegate.zRevRangeByScoreWithScores(this.addPrefix(key), range, limit), Converters.identityConverter());
     }
 
@@ -1745,7 +1813,7 @@ public class JpowerRedisConnection implements RedisConnection {
      * @see org.springframework.data.redis.connection.RedisZSetCommands#zRemRangeByLex(byte[], org.springframework.data.redis.connection.RedisZSetCommands.Range)
      */
     @Override
-    public Long zRemRangeByLex(byte[] key, Range range) {
+    public Long zRemRangeByLex(byte[] key, org.springframework.data.domain.Range<byte[]> range) {
         return convertAndReturn(delegate.zRemRangeByLex(this.addPrefix(key), range), Converters.identityConverter());
     }
 
@@ -1763,7 +1831,7 @@ public class JpowerRedisConnection implements RedisConnection {
      * @see org.springframework.data.redis.connection.RedisZSetCommands#zRemRangeByScore(byte[], org.springframework.data.redis.connection.RedisZSetCommands.Range)
      */
     @Override
-    public Long zRemRangeByScore(byte[] key, Range range) {
+    public Long zRemRangeByScore(byte[] key, org.springframework.data.domain.Range<? extends Number> range) {
         return convertAndReturn(delegate.zRemRangeByScore(this.addPrefix(key), range), Converters.identityConverter());
     }
 
@@ -2024,7 +2092,7 @@ public class JpowerRedisConnection implements RedisConnection {
      * @see org.springframework.data.redis.connection.RedisZSetCommands#zLexCount(byte[], org.springframework.data.redis.connection.RedisZSetCommands.Range)
      */
     @Override
-    public Long zLexCount(byte[] key, Range range) {
+    public Long zLexCount(byte[] key, org.springframework.data.domain.Range<byte[]> range) {
         return delegate.zLexCount(this.addPrefix(key), range);
     }
 
@@ -2344,24 +2412,6 @@ public class JpowerRedisConnection implements RedisConnection {
 
     /*
      * (non-Javadoc)
-     * @see org.springframework.data.redis.connection.RedisServerCommands#slaveOf(java.lang.String, int)
-     */
-    @Override
-    public void slaveOf(String host, int port) {
-        this.delegate.slaveOf(host, port);
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.data.redis.connection.RedisServerCommands#slaveOfNoOne()
-     */
-    @Override
-    public void slaveOfNoOne() {
-        this.delegate.slaveOfNoOne();
-    }
-
-    /*
-     * (non-Javadoc)
      * @see org.springframework.data.redis.connection.RedisKeyCommands#scan(org.springframework.data.redis.core.ScanOptions)
      */
     @Override
@@ -2512,7 +2562,7 @@ public class JpowerRedisConnection implements RedisConnection {
      * @see org.springframework.data.redis.connection.RedisZSetCommands#zRangeByLex(byte[], org.springframework.data.redis.connection.RedisZSetCommands.Range)
      */
     @Override
-    public Set<byte[]> zRangeByLex(byte[] key, Range range) {
+    public Set<byte[]> zRangeByLex(byte[] key, org.springframework.data.domain.Range<byte[]> range) {
         return convertAndReturn(delegate.zRangeByLex(this.addPrefix(key), range), Converters.identityConverter());
     }
 
@@ -2521,7 +2571,8 @@ public class JpowerRedisConnection implements RedisConnection {
      * @see org.springframework.data.redis.connection.RedisZSetCommands#zRangeByLex(byte[], org.springframework.data.redis.connection.RedisZSetCommands.Range, org.springframework.data.redis.connection.RedisZSetCommands.Limit)
      */
     @Override
-    public Set<byte[]> zRangeByLex(byte[] key, Range range, Limit limit) {
+    public Set<byte[]> zRangeByLex(byte[] key, org.springframework.data.domain.Range<byte[]> range,
+                                   org.springframework.data.redis.connection.Limit limit) {
         return convertAndReturn(delegate.zRangeByLex(this.addPrefix(key), range, limit), Converters.identityConverter());
     }
 
@@ -2530,7 +2581,8 @@ public class JpowerRedisConnection implements RedisConnection {
      * @see org.springframework.data.redis.connection.RedisZSetCommands#zRevRangeByLex(java.lang.String, org.springframework.data.redis.connection.RedisZSetCommands.Range, org.springframework.data.redis.connection.RedisZSetCommands.Limit)
      */
     @Override
-    public Set<byte[]> zRevRangeByLex(byte[] key, Range range, Limit limit) {
+    public Set<byte[]> zRevRangeByLex(byte[] key, org.springframework.data.domain.Range<byte[]> range,
+                                      org.springframework.data.redis.connection.Limit limit) {
         return convertAndReturn(delegate.zRevRangeByLex(this.addPrefix(key), range, limit), Converters.identityConverter());
     }
 
@@ -2699,7 +2751,7 @@ public class JpowerRedisConnection implements RedisConnection {
      * @see org.springframework.data.redis.connection.RedisStreamCommands#xRange(byte[], org.springframework.data.domain.Range, org.springframework.data.redis.connection.RedisZSetCommands.Limit)
      */
     @Override
-    public List<ByteRecord> xRange(byte[] key, org.springframework.data.domain.Range<String> range, Limit limit) {
+    public List<ByteRecord> xRange(byte[] key, org.springframework.data.domain.Range<String> range, org.springframework.data.redis.connection.Limit limit) {
         return delegate.xRange(this.addPrefix(key), range, limit);
     }
 
@@ -2733,7 +2785,7 @@ public class JpowerRedisConnection implements RedisConnection {
      * @see org.springframework.data.redis.connection.RedisStreamCommands#xRevRange(byte[], org.springframework.data.domain.Range, org.springframework.data.redis.connection.RedisZSetCommands.Limit)
      */
     @Override
-    public List<ByteRecord> xRevRange(byte[] key, org.springframework.data.domain.Range<String> range, Limit limit) {
+    public List<ByteRecord> xRevRange(byte[] key, org.springframework.data.domain.Range<String> range, org.springframework.data.redis.connection.Limit limit) {
         return delegate.xRevRange(this.addPrefix(key), range, limit);
     }
 
@@ -2794,4 +2846,6 @@ public class JpowerRedisConnection implements RedisConnection {
             pipelineConverters.add(converter);
         }
     }
+
+
 }

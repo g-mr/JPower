@@ -1,6 +1,9 @@
 package top.jpower.core.auth.config.interceptor;
 
 import com.alibaba.fastjson2.JSON;
+import jakarta.annotation.Nonnull;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -9,15 +12,12 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import top.jpower.core.auth.config.data.SystemClient;
 import top.jpower.core.auth.dto.UserInfo;
 import top.jpower.core.auth.properties.AuthProperties;
+import top.jpower.core.auth.utils.ShieldUtil;
 import top.jpower.core.util.constants.TokenConstant;
 import top.jpower.core.util.rsp.ReturnJsonUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.WebUtil;
-import top.jpower.core.auth.utils.ShieldUtil;
 
-import javax.annotation.Nonnull;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -35,7 +35,7 @@ public class ClientInterceptor implements HandlerInterceptor {
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
     @Override
-    public boolean preHandle(@Nonnull HttpServletRequest request,@Nonnull HttpServletResponse response,@Nonnull Object handler){
+    public boolean preHandle(@Nonnull HttpServletRequest request, @Nonnull HttpServletResponse response, @Nonnull Object handler){
         //放行接口不拦截
         if (skipUrls.stream().anyMatch(pattern -> antPathMatcher.match(pattern, request.getServletPath()))){
             return Boolean.TRUE;

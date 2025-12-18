@@ -1,25 +1,12 @@
 package top.jpower.core.redis.config;
 
-import cn.hutool.core.collection.ListUtil;
-import jodd.introspector.Mapper;
-import org.apache.commons.collections4.SetUtils;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
-import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
@@ -28,7 +15,6 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.Topic;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.util.ErrorHandler;
-import org.springframework.util.StringUtils;
 import top.jpower.core.redis.connection.RedisConnectionFactoryBroker;
 import top.jpower.core.redis.handler.JpowerRedisTemplate;
 import top.jpower.core.redis.topic.RedisTopic;
@@ -36,7 +22,12 @@ import top.jpower.core.redis.topic.RedisTopicListener;
 import top.jpower.core.redis.topic.RedisTopicListenerAdapter;
 import top.jpower.core.redis.topic.RedisTopicScannerConfigurer;
 import top.jpower.core.util.constants.StringPool;
-import top.jpower.core.util.utils.*;
+import top.jpower.core.util.utils.AnnotationUtil;
+import top.jpower.core.util.utils.ClassUtil;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.ReflectUtil;
+import top.jpower.core.util.utils.SpringUtil;
+import top.jpower.core.util.utils.StringUtil;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -130,13 +121,15 @@ public class RedisTopicConfig {
      * @return java.util.Collection<? extends org.springframework.data.redis.listener.Topic>
      **/
     private Collection<? extends Topic> bindTopicName(RedisTopic redisTopic) {
-        return Arrays.stream(redisTopic.value()).map(topic->{
-            if (StringUtil.contains(topic, StringPool.ASTERISK)){
-                return PatternTopic.of(topic);
-            } else {
-                return ChannelTopic.of(topic);
-            }
-        }).collect(Collectors.toList());
+        return Arrays.stream(redisTopic.value())
+                .<Topic>map(topic->{  // 因为AbstractTopic是私有的，所以显示指定接口
+                    if (StringUtil.contains(topic, StringPool.ASTERISK)){
+                        return PatternTopic.of(topic);
+                    } else {
+                        return ChannelTopic.of(topic);
+                    }
+                })
+                .collect(Collectors.toList());
     }
 
     /**
