@@ -2,7 +2,6 @@ package top.jpower.core.deploy.annotation;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.*;
@@ -15,7 +14,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@EnableDiscoveryClient
+// @EnableDiscoveryClient
 @EnableAutoConfiguration
 @SpringBootApplication
 public @interface JpowerCloudApplication {

@@ -43,6 +43,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-util</artifactId>
             <version>${top.jpower.version}</version>
