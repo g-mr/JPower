@@ -1,7 +1,9 @@
 package top.jpower.core.boot.xss;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.codec.binary.StringUtils;
 import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.constants.TokenConstant;
@@ -10,10 +12,6 @@ import top.jpower.core.util.support.XssInjectionUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.StringUtil;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletRequestWrapper;
-
-import static com.sun.org.apache.xml.internal.serialize.Method.HTML;
 
 /**
  * XSS具体过滤实现,连特殊字符和sql注入一起过滤
@@ -21,6 +19,8 @@ import static com.sun.org.apache.xml.internal.serialize.Method.HTML;
  * @author mr.g
  **/
 public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
+
+    private static final String HTML = "html";
 
     @Getter
     private HttpServletRequest originalRequest;
@@ -41,13 +41,13 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
     @Override
     public String getParameter(String name) {
 
-        if(StringUtil.contains(name,HTML) && isIncludeRichText){
+        if(StringUtil.contains(name, HTML) && isIncludeRichText){
             return super.getParameter(name);
         }
 
         name = XssInjectionUtil.filter(name);
         String value = super.getParameter(name);
-        if (StringUtils.isNotBlank(value)) {
+        if (Fc.isNotBlank(value)) {
             value = XssInjectionUtil.filter(value);
             if (StringUtil.equals(value, StringPool.NULL) || StringUtil.equals(value, StringPool.UNDEFINED)){
                 value = null;
@@ -82,7 +82,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
         name = XssInjectionUtil.filter(name);
         String value = super.getHeader(name);
 
-        if (StringUtils.isNotBlank(value) && !Header.contains(name)) {
+        if (Fc.isNotBlank(value) && !Header.contains(name)) {
             value = XssInjectionUtil.filter(value);
             if (StringUtils.equals(value, StringPool.NULL) || StringUtils.equals(value, StringPool.UNDEFINED)){
                 value = null;

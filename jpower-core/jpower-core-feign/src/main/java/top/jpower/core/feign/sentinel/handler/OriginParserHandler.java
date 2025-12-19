@@ -1,10 +1,9 @@
 package top.jpower.core.feign.sentinel.handler;
 
-import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.RequestOriginParser;
-import top.jpower.core.util.constants.StringPool;
-import top.jpower.core.auth.utils.ShieldUtil;
-
+import com.alibaba.csp.sentinel.adapter.spring.webmvc_v6x.callback.RequestOriginParser;
 import jakarta.servlet.http.HttpServletRequest;
+import top.jpower.core.auth.utils.ShieldUtil;
+import top.jpower.core.util.constants.StringPool;
 
 /**
  * @ClassName OriginParserHandler
