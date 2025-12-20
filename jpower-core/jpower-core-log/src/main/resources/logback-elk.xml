@@ -6,6 +6,7 @@
         <!-- 日志输出编码 -->
         <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder">
             <includeContext>false</includeContext>
+            <timeZone>Asia/Shanghai</timeZone>
             <timestampPattern>yyyy-MM-dd HH:mm:ss.SSS</timestampPattern>
             <writeVersionAsInteger>false</writeVersionAsInteger>
             <version>${version}</version>

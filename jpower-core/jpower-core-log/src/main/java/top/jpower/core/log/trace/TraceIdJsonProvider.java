@@ -2,13 +2,14 @@ package top.jpower.core.log.trace;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import cn.hutool.core.util.StrUtil;
-import com.fasterxml.jackson.core.JsonGenerator;
 import lombok.NoArgsConstructor;
+import net.logstash.logback.composite.AbstractFieldJsonProvider;
+import net.logstash.logback.composite.FieldNamesAware;
 import net.logstash.logback.composite.JsonWritingUtils;
 import net.logstash.logback.fieldnames.LogstashFieldNames;
+import tools.jackson.core.JsonGenerator;
 import top.jpower.core.util.utils.Fc;
 
-import java.io.IOException;
 import java.util.Map;
 
 import static top.jpower.core.log.trace.TraceIdPatternConverter.TRACE_ID;
@@ -21,9 +22,9 @@ import static top.jpower.core.log.trace.TraceIdPatternConverter.TRACING_NONE;
  * @description
  */
 @NoArgsConstructor
-public class TraceIdJsonProvider extends org.apache.skywalking.apm.toolkit.log.logback.v1.x.logstash.TraceIdJsonProvider {
+public class TraceIdJsonProvider extends AbstractFieldJsonProvider<ILoggingEvent> implements FieldNamesAware<LogstashFieldNames> {
 
-    public void writeTo(JsonGenerator generator, ILoggingEvent event) throws IOException {
+    public void writeTo(JsonGenerator generator, ILoggingEvent event) {
 
 
         String tracingId = this.getTracingId(event);

@@ -1,6 +1,11 @@
 package top.jpower.core.log.apm;
 
 import com.google.common.collect.ImmutableSet;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpFilter;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.skywalking.apm.toolkit.trace.ActiveSpan;
@@ -10,11 +15,6 @@ import top.jpower.core.util.utils.ExceptionUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.StringUtil;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpFilter;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -36,7 +36,6 @@ public class SkywalkingHttpInfoFilter extends HttpFilter {
     private final SkywalkingApmProperties apmProperties;
 
     private static final ImmutableSet<String> IGNORED_HEADERS;
-    private static final long serialVersionUID = 3019775050229344922L;
 
     static {
         Set<String> ignoredHeaders = ImmutableSet.of(

@@ -7,29 +7,27 @@
         <groupId>top.jpower</groupId>
         <version>3.0.0</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
+    <modelVersion>4.0.0</modelVersion>
     <artifactId>jpower-core-seata</artifactId>
-    <name>JPower-Core-Seata</name>
+    <packaging>jar</packaging>
+    <name>JPower Core Seata</name>
+    <description>
+        JPower Seata分布式事务
+    </description>
+
     <dependencies>
 
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-deploy</artifactId>
             <version>${top.jpower.version}</version>
-            <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>top.jpower</groupId>
-            <artifactId>jpower-core-feign</artifactId>
-            <version>${top.jpower.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-commons</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.cloud</groupId>-->
+<!--            <artifactId>spring-cloud-commons</artifactId>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>com.alibaba.cloud</groupId>

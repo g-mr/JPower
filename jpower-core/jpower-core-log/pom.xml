@@ -7,50 +7,64 @@
         <groupId>top.jpower</groupId>
         <version>3.0.0</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
+    <modelVersion>4.0.0</modelVersion>
     <artifactId>jpower-core-log</artifactId>
-    <name>JPower-Core-Log</name>
+    <name>JPower Core Log</name>
+    <packaging>jar</packaging>
+    <description>
+        JPower 日志服务
+    </description>
 
     <dependencies>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-logging</artifactId>
+        </dependency>
+
+        <!--skywalking的日志追踪-->
+        <dependency>
             <groupId>org.apache.skywalking</groupId>
             <artifactId>apm-toolkit-logback-1.x</artifactId>
+            <version>${skywalking.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.codehaus.janino</groupId>
-            <artifactId>janino</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>net.logstash.logback</groupId>
-            <artifactId>logstash-logback-encoder</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>top.jpower</groupId>
-            <artifactId>jpower-core-deploy</artifactId>
-            <version>${top.jpower.version}</version>
-        </dependency>
-
+        <!--skywalking打印请求信息-->
         <dependency>
             <groupId>org.apache.skywalking</groupId>
             <artifactId>apm-toolkit-trace</artifactId>
             <version>${skywalking.version}</version>
         </dependency>
 
+        <!--嵌入式 Java 编译器,用于logback.xml中可以编写判断逻辑-->
+        <dependency>
+            <groupId>org.codehaus.janino</groupId>
+            <artifactId>janino</artifactId>
+        </dependency>
 
+        <!--TODO 这个升级到9.0以后底层的jackson变成了3.0.1；但是框架和skywalking-1.x底层用的还是2.19.4版本，后续需要大量测试一下是否兼容-->
+        <!--ELK中的logstash-->
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>${logstash.version}</version>
+        </dependency>
 
-
+        <!-- TODO sleuth在新版本中被移除了，需要测试micrometer是否好使-->
 <!--        <dependency>-->
 <!--            <groupId>org.springframework.cloud</groupId>-->
 <!--            <artifactId>spring-cloud-starter-sleuth</artifactId>-->
 <!--        </dependency>-->
-        <!-- TODO sleuth在新版本中被移除了，需要测试micrometer是否好使-->
+        <!--sleuth的日志追踪，在没有skywalking的情况下用的是这个-->
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-tracing-bridge-brave</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>top.jpower</groupId>
+            <artifactId>jpower-core-deploy</artifactId>
+            <version>${top.jpower.version}</version>
         </dependency>
 
     </dependencies>

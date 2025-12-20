@@ -53,6 +53,8 @@
         <hutool.version>5.8.42</hutool.version>
         <redisson.version>3.52.0</redisson.version>
         <druid-spring.version>1.2.27</druid-spring.version>
+        <logstash.version>9.0</logstash.version>
+        <skywalking.version>9.5.0</skywalking.version>
 
         <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
 
@@ -74,9 +76,7 @@
         <knife4j.version>4.4.0</knife4j.version>
         <swagger-annotations.version>1.6.2</swagger-annotations.version>
         <common-io.version>2.8.0</common-io.version>
-        <skywalking.version>9.1.0</skywalking.version>
         <spring-boot-admin.version>2.7.15</spring-boot-admin.version>
-        <logstash.version>7.0.1</logstash.version>
 
 
 
