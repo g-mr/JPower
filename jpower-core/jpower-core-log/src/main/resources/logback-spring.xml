@@ -9,9 +9,9 @@
 
     <!-- 彩色日志 -->
     <!-- 彩色日志依赖的渲染类 -->
-    <conversionRule conversionWord="clr" converterClass="top.jpower.core.log.color.ColorConverter" />
-    <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
-    <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
+    <conversionRule conversionWord="clr" class="top.jpower.core.log.color.ColorConverter" />
+    <conversionRule conversionWord="wex" class="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+    <conversionRule conversionWord="wEx" class="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
     <!-- 彩色日志格式 -->
     <property name="CONSOLE_LOG_PATTERN" value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){blue} %clr(%5level) %clr(${spring.application.name:- }:${jpower.version:- }){bright_yellow} %clr(%traceId){red} %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%logger){cyan}%clr(\(){bright_cyan}%clr(%clr(%line){bright_cyan}){bold}%clr(\)){bright_cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
 
@@ -63,6 +63,18 @@
     <logger name="springfox.documentation" level="info" />
     <logger name="_org.springframework.web.servlet.HandlerMapping.Mappings" level="info" />
     <logger name="_org.springframework.web.reactive.HandlerMapping.Mappings" level="info" />
+
+<!--    &lt;!&ndash; condition-if-then form &ndash;&gt;-->
+<!--    <condition class="a.class.implementing.PropertyCondition">-->
+<!--        &lt;!&ndash; additional parameters if needed &ndash;&gt;-->
+
+<!--    </condition>-->
+<!--    &lt;!&ndash; if-then form &ndash;&gt;-->
+<!--    <if>-->
+<!--        <then>-->
+<!--            ...-->
+<!--        </then>-->
+<!--    </if>-->
 
     <!-- 日志输出级别 -->
     <if condition='property("mode").contains("file")'>
