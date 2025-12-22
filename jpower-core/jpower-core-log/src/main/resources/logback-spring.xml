@@ -26,26 +26,6 @@
         </encoder>
     </appender>
 
-    <!--  日志文件输出  -->
-    <if condition='property("mode").contains("file")'>
-        <then>
-            <include resource="logback-file.xml" />
-        </then>
-    </if>
-
-    <!--  skywalking日志输出  -->
-    <if condition='property("mode").contains("skywalking")'>
-        <then>
-            <include resource="logback-skywalking.xml" />
-        </then>
-    </if>
-
-    <!--  ELK日志输出  -->
-    <if condition='property("mode").contains("elk")'>
-        <then>
-            <include resource="logback-elk.xml" />
-        </then>
-    </if>
 
     <logger name="org.apache" level="info"/>
     <logger name="org.hibernate" level="info"/>
@@ -64,41 +44,47 @@
     <logger name="_org.springframework.web.servlet.HandlerMapping.Mappings" level="info" />
     <logger name="_org.springframework.web.reactive.HandlerMapping.Mappings" level="info" />
 
-<!--    &lt;!&ndash; condition-if-then form &ndash;&gt;-->
-<!--    <condition class="a.class.implementing.PropertyCondition">-->
-<!--        &lt;!&ndash; additional parameters if needed &ndash;&gt;-->
 
-<!--    </condition>-->
-<!--    &lt;!&ndash; if-then form &ndash;&gt;-->
-<!--    <if>-->
-<!--        <then>-->
-<!--            ...-->
-<!--        </then>-->
-<!--    </if>-->
-
-    <!-- 日志输出级别 -->
-    <if condition='property("mode").contains("file")'>
+    <condition class="top.jpower.core.log.boolex.PropertyContainsCondition">
+        <key>mode</key>
+        <value>file</value>
+    </condition>
+    <if>
         <then>
+            <include resource="logback-file.xml" />
             <root level="${level}">
                 <appender-ref ref="log_file"/>
                 <appender-ref ref="error_file"/>
             </root>
         </then>
     </if>
-    <if condition='property("mode").contains("skywalking")'>
+
+    <condition class="top.jpower.core.log.boolex.PropertyContainsCondition">
+        <key>mode</key>
+        <value>skywalking</value>
+    </condition>
+    <if>
         <then>
+            <include resource="logback-skywalking.xml" />
             <root level="${level}">
                 <appender-ref ref="log_skywalking"/>
             </root>
         </then>
     </if>
-    <if condition='property("mode").contains("elk")'>
+
+    <condition class="top.jpower.core.log.boolex.PropertyContainsCondition">
+        <key>mode</key>
+        <value>elk</value>
+    </condition>
+    <if>
         <then>
+            <include resource="logback-elk.xml" />
             <root level="${level}">
                 <appender-ref ref="log_logstash"/>
             </root>
         </then>
     </if>
+
 
     <springProfile name="dev">
         <root level="${level}">

@@ -17,7 +17,11 @@
             <charset>UTF-8</charset>
         </encoder>
         <!-- 打印日志级别 -->
-        <if condition='property("log.file.info").contains("threshold")'>
+        <condition class="ch.qos.logback.core.boolex.PropertyEqualityCondition">
+            <key>log.file.info</key>
+            <value>threshold</value>
+        </condition>
+        <if>
             <then>
                 <!-- 阈值过滤 -->
                 <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -27,7 +31,11 @@
             <else>
                 <then>
                     <!-- 级别过滤 -->
-                    <if condition='property("log.file.info").contains("warn")'>
+                    <condition class="ch.qos.logback.core.boolex.PropertyEqualityCondition">
+                        <key>log.file.info</key>
+                        <value>warn</value>
+                    </condition>
+                    <if>
                         <then>
                             <filter class="ch.qos.logback.classic.filter.LevelFilter">
                                 <level>WARN</level>
