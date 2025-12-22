@@ -67,7 +67,7 @@ public class ErrorExceptionHandler implements ErrorWebExceptionHandler {
         }
 
         StringBuilder message = new StringBuilder("请求[");
-        message.append(request.getMethodValue());
+        message.append(request.getMethod().name());
         message.append(" ");
         message.append(request.getURI());
         message.append("]失败 : ");
@@ -76,9 +76,8 @@ public class ErrorExceptionHandler implements ErrorWebExceptionHandler {
         if (ex instanceof NotFoundException) {
             httpStatus = HttpStatus.NOT_FOUND.value();
             message.append("请求地址找不到");
-        } else if(ex instanceof ResponseStatusException){
-            ResponseStatusException responseStatusException = (ResponseStatusException) ex;
-            httpStatus = responseStatusException.getStatus().value();
+        } else if(ex instanceof ResponseStatusException responseStatusException){
+            httpStatus = responseStatusException.getStatusCode().value();
             message.append(ex.getMessage());
         }else if (ex instanceof RuntimeException) {
             Throwable cause = ex.getCause();

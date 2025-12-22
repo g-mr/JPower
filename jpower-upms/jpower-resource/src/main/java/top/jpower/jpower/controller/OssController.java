@@ -25,7 +25,7 @@ import top.jpower.core.dbs.mp.support.Condition;
 import top.jpower.jpower.operate.FileOperateBuilder;
 import top.jpower.jpower.service.ResourceOssService;
 
-import javax.validation.groups.Default;
+import jakarta.validation.groups.Default;
 import java.util.List;
 import java.util.Map;
 

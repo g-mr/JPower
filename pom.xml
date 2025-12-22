@@ -55,36 +55,30 @@
         <druid-spring.version>1.2.27</druid-spring.version>
         <logstash.version>9.0</logstash.version>
         <skywalking.version>9.5.0</skywalking.version>
+        <easy-captcha.version>1.6.2</easy-captcha.version>
+        <fastdfs.version>1.27.2</fastdfs.version>
+        <aliyun.sms.version>4.3.1</aliyun.sms.version> <!--2.0.24-->
+        <aliyun.oss.version>3.18.3</aliyun.oss.version><!--3.17.4-->
+        <qiniu.oss.version>7.19.0</qiniu.oss.version><!--7.15.0-->
 
         <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
+        <maven-resources.version>3.4.0</maven-resources.version><!--3.3.1-->
+        <maven-gpg.version>3.2.8</maven-gpg.version><!--3.1.0-->
+        <dockerfile-maven-plugin.version>1.4.13</dockerfile-maven-plugin.version>
 
+        <docker.image.prefix>jpower</docker.image.prefix>
+        <docker.registry>118.31.115.232:5000</docker.registry>
 
         <!-- ****************** 升级中 ********************** -->
 
 
-        <mybatis-plus.version>3.5.5</mybatis-plus.version>
-        <easy-captcha.version>1.6.2</easy-captcha.version>
         <pagehelper-spring.version>1.4.1</pagehelper-spring.version>
-        <javax.mail.version>1.6.2</javax.mail.version>
+        <mybatis-plus.version>3.5.5</mybatis-plus.version>
         <jwt.version>0.6.0</jwt.version>
-        <fastdfs.version>1.27.2</fastdfs.version>
-        <aliyun.sms.version>2.0.24</aliyun.sms.version>
-        <aliyun.oss.version>3.17.4</aliyun.oss.version>
-        <qiniu.oss.version>7.15.0</qiniu.oss.version>
-        <httpclient.version>4.5.13</httpclient.version>
-        <guava.version>32.1.3-jre</guava.version>
         <knife4j.version>4.4.0</knife4j.version>
         <swagger-annotations.version>1.6.2</swagger-annotations.version>
-        <common-io.version>2.8.0</common-io.version>
         <spring-boot-admin.version>2.7.15</spring-boot-admin.version>
 
-
-
-        <maven-resources.version>3.3.1</maven-resources.version>
-
-        <dockerfile-maven-plugin.version>1.4.13</dockerfile-maven-plugin.version>
-        <docker.image.prefix>jpower</docker.image.prefix>
-        <docker.registry>118.31.115.232:5000</docker.registry>
 
     </properties>
 
@@ -179,7 +173,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>3.1.0</version>
+                        <version>${maven-gpg.version}</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>

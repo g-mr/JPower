@@ -5,6 +5,7 @@ import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.extra.servlet.JakartaServletUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONWriter;
 import jakarta.servlet.http.Cookie;
@@ -36,7 +37,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
  * @author mr.g
  */
 @Slf4j
-public class WebUtil extends org.springframework.web.util.WebUtils {
+public class WebUtil extends JakartaServletUtil {
 
     /**
      * 读取cookie

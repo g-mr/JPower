@@ -3,13 +3,14 @@ package top.jpower.jpower.dbs.entity;
 import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModelProperty;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import top.jpower.core.dbs.dictbind.annotation.Dict;
 import top.jpower.core.dbs.tenant.entity.TenantEntity;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -22,6 +23,7 @@ import java.io.Serializable;
 @EqualsAndHashCode(callSuper = true)
 public class TbCorePost extends TenantEntity implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -4758533573737613002L;
 
     @NotBlank(message = "岗位名称不可为空")

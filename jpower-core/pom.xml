@@ -48,38 +48,6 @@
 
     </dependencies>
 
-    <dependencyManagement>
-        <dependencies>
-
-            <dependency>
-                <groupId>com.github.pagehelper</groupId>
-                <artifactId>pagehelper-spring-boot-starter</artifactId>
-                <version>${pagehelper-spring.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>mybatis-spring</artifactId>
-                        <groupId>org.mybatis</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>mybatis</artifactId>
-                        <groupId>org.mybatis</groupId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-boot-starter</artifactId>
-                <version>${mybatis-plus.version}</version>
-            </dependency>
-
-
-
-
-
-        </dependencies>
-    </dependencyManagement>
-
     <build>
         <plugins>
             <!-- Source -->

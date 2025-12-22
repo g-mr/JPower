@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 import top.jpower.core.dbs.dictbind.annotation.Dict;
 import top.jpower.core.dbs.dbs.entity.base.BaseEntity;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 /**
  * 短信

@@ -8,6 +8,7 @@ import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.config.listener.Listener;
 import com.alibaba.nacos.api.exception.NacosException;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.route.RouteDefinition;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Component;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.gateway.utils.NacosUtils;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Executor;

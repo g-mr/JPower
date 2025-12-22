@@ -1,12 +1,12 @@
 package top.jpower.jpower.dbs.entity;
 
 import io.swagger.annotations.ApiModelProperty;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import top.jpower.core.dbs.dictbind.annotation.Dict;
 import top.jpower.core.dbs.dbs.entity.base.BaseEntity;
+import top.jpower.core.dbs.dictbind.annotation.Dict;
 
-import javax.validation.constraints.NotBlank;
 
 /**
  * @author mr.g

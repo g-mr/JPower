@@ -1,6 +1,6 @@
 package top.jpower.jpower.gateway.utils;
 
-import org.apache.commons.lang3.StringUtils;
+import cn.hutool.core.util.StrUtil;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import top.jpower.core.auth.properties.AuthProperties;
@@ -43,7 +43,7 @@ public class TokenUtil {
             cookies = Fc.isNull(httpCookie)?null:httpCookie.getValue();
         }
 
-        if (StringUtils.isAllBlank(header,cookies)){
+        if (StrUtil.isAllBlank(header,cookies)){
             String param = request.getQueryParams().getFirst(JpowerConstants.AUTH_HEADER);
             if (StringUtil.isNotBlank(param)) {
                 return param;

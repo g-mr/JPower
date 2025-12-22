@@ -33,7 +33,7 @@ public class RestfulMonitorTask implements SchedulingConfigurer {
                             if (Fc.isBlank(cron)) {
                                 throw new RuntimeException("restfulMonitorTask cron is null");
                             }
-                            return new CronTrigger(cron).nextExecutionTime(triggerContext);
+                            return new CronTrigger(cron).nextExecutionTime(triggerContext).toInstant();
                         })
             );
         }

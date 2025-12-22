@@ -1,24 +1,29 @@
 package top.jpower.jpower.utils;
 
-import cn.hutool.extra.servlet.ServletUtil;
 import top.jpower.common.constants.CacheNames;
 import top.jpower.common.enums.YN01Enum;
+import top.jpower.core.auth.dto.UserInfo;
+import top.jpower.core.auth.properties.AuthProperties;
+import top.jpower.core.auth.utils.JwtUtil;
+import top.jpower.core.auth.utils.ShieldUtil;
+import top.jpower.core.dbs.datascope.DataScope;
 import top.jpower.core.exception.throwable.BusinessException;
 import top.jpower.core.redis.cache.RedisService;
 import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.constants.TokenConstant;
-import top.jpower.core.util.utils.*;
+import top.jpower.core.util.utils.BeanUtil;
+import top.jpower.core.util.utils.ChainMap;
+import top.jpower.core.util.utils.DateUtil;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.SpringUtil;
+import top.jpower.core.util.utils.StringUtil;
+import top.jpower.core.util.utils.WebUtil;
 import top.jpower.jpower.cache.SystemCache;
 import top.jpower.jpower.dbs.entity.client.TbCoreClient;
 import top.jpower.jpower.dbs.entity.function.TbCoreDataScope;
 import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
 import top.jpower.jpower.dto.AuthInfo;
-import top.jpower.core.auth.dto.UserInfo;
-import top.jpower.core.auth.utils.JwtUtil;
-import top.jpower.core.auth.utils.ShieldUtil;
-import top.jpower.core.dbs.datascope.DataScope;
-import top.jpower.core.auth.properties.AuthProperties;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -198,7 +203,7 @@ public class TokenUtil {
 
         // cookie
         if (AUTH_PROPERTIES.getCookie()){
-            ServletUtil.addCookie(WebUtil.getResponse(), JpowerConstants.AUTH_HEADER, authInfo.getAccessToken(), Fc.toInt(authInfo.getExpiresIn(), 0));
+            WebUtil.addCookie(WebUtil.getResponse(), JpowerConstants.AUTH_HEADER, authInfo.getAccessToken(), Fc.toInt(authInfo.getExpiresIn(), 0));
         }
     }
 }

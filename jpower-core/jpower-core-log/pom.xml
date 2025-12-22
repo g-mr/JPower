@@ -42,6 +42,18 @@
             <artifactId>janino</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
         <!--TODO 这个升级到9.0以后底层的jackson变成了3.0.1；但是框架和skywalking-1.x底层用的还是2.19.4版本，后续需要大量测试一下是否兼容-->
         <!--ELK中的logstash-->
         <dependency>

@@ -7,12 +7,32 @@
         <groupId>top.jpower</groupId>
         <version>3.0.0</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
+    <modelVersion>4.0.0</modelVersion>
     <artifactId>jpower-core-boot</artifactId>
-    <name>JPower-Core-Boot</name>
+    <name>JPower Core Boot</name>
     <packaging>jar</packaging>
+    <description>
+        JPower Boot服务核心
+    </description>
+
     <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-undertow</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
@@ -38,7 +58,7 @@
 
         <dependency>
             <groupId>top.jpower</groupId>
-            <artifactId>jpower-core-deploy</artifactId>
+            <artifactId>jpower-core-util</artifactId>
             <version>${top.jpower.version}</version>
         </dependency>
 

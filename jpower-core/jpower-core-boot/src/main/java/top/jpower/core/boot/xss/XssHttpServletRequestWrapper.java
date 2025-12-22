@@ -23,8 +23,8 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
     private static final String HTML = "html";
 
     @Getter
-    private HttpServletRequest originalRequest;
-    private boolean isIncludeRichText;
+    private final HttpServletRequest originalRequest;
+    private final boolean isIncludeRichText;
 
     XssHttpServletRequestWrapper(HttpServletRequest request, boolean isIncludeRichText) {
         super(request);

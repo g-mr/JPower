@@ -1,14 +1,14 @@
 package top.jpower.jpower.properties;
 
 import com.alibaba.fastjson2.JSON;
+import jakarta.annotation.PostConstruct;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.validation.annotation.Validated;
 
-import javax.annotation.PostConstruct;
-import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

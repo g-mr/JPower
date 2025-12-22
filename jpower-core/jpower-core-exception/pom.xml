@@ -10,8 +10,11 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jpower-core-exception</artifactId>
-    <name>JPower-Core-Exception</name>
+    <name>JPower Core Exception</name>
     <packaging>jar</packaging>
+    <description>
+        JPower 异常捕获、日志记录
+    </description>
 
     <dependencies>
 
@@ -22,16 +25,39 @@
         </dependency>
 
         <dependency>
+            <groupId>top.jpower</groupId>
+            <artifactId>jpower-core-feign</artifactId>
+            <version>${top.jpower.version}</version>
+            <optional>true</optional>
+            <exclusions>
+                <exclusion>
+                    <groupId>top.jpower</groupId>
+                    <artifactId>jpower-core-deploy</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
             <optional>true</optional>
         </dependency>
 
         <dependency>
-            <groupId>top.jpower</groupId>
-            <artifactId>jpower-core-feign</artifactId>
-            <version>${top.jpower.version}</version>
-            <optional>true</optional>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>

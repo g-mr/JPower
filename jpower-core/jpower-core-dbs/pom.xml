@@ -7,20 +7,37 @@
         <groupId>top.jpower</groupId>
         <version>3.0.0</version>
     </parent>
+
     <modelVersion>4.0.0</modelVersion>
-    <name>JPower-Core-Dbs</name>
+    <name>JPower Core Dbs</name>
     <artifactId>jpower-core-dbs</artifactId>
+    <packaging>jar</packaging>
+    <description>
+        JPower 数据库操作
+    </description>
 
     <dependencies>
 
         <dependency>
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper-spring-boot-starter</artifactId>
+            <version>${pagehelper-spring.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>mybatis-spring</artifactId>
+                    <groupId>org.mybatis</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>mybatis</artifactId>
+                    <groupId>org.mybatis</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>${mybatis-plus.version}</version>
         </dependency>
 
         <dependency>
@@ -40,8 +57,19 @@
         </dependency>
 
         <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>top.jpower</groupId>
-            <artifactId>jpower-core-util</artifactId>
+            <artifactId>jpower-core-deploy</artifactId>
             <version>${top.jpower.version}</version>
             <exclusions>
                 <exclusion>
@@ -49,12 +77,6 @@
                     <artifactId>jsqlparser</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>top.jpower</groupId>
-            <artifactId>jpower-core-deploy</artifactId>
-            <version>${top.jpower.version}</version>
         </dependency>
 
     </dependencies>

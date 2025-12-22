@@ -7,11 +7,15 @@
         <groupId>top.jpower</groupId>
         <version>3.0.0</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
+    <modelVersion>4.0.0</modelVersion>
     <artifactId>jpower-core-swagger</artifactId>
-    <name>JPower-Core-Swagger</name>
+    <name>JPower Core Swagger</name>
     <packaging>jar</packaging>
+    <description>
+        Jpower 接口文档服务
+    </description>
+
     <dependencies>
 
         <dependency>
@@ -31,10 +35,21 @@
         </dependency>
 
         <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-deploy</artifactId>
             <version>${top.jpower.version}</version>
-            <optional>true</optional>
         </dependency>
 
     </dependencies>

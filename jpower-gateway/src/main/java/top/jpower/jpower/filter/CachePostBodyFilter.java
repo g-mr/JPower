@@ -17,6 +17,10 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import static org.springframework.http.HttpMethod.PATCH;
+import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
+
 /**
  * @author mr.g
  * @date 2022-06-01 12:11
@@ -57,14 +61,7 @@ public class CachePostBodyFilter implements GlobalFilter, Ordered {
     }
 
     private boolean requiresBody(HttpMethod method) {
-        switch(method) {
-            case PUT:
-            case POST:
-            case PATCH:
-                return true;
-            default:
-                return false;
-        }
+        return method.equals(PUT) || method.equals(POST) || method.equals(PATCH);
     }
 
 }

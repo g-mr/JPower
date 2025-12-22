@@ -47,7 +47,7 @@ import top.jpower.core.dbs.tenant.JpowerTenantProperties;
 import top.jpower.jpower.service.CoreUserService;
 import top.jpower.jpower.vo.UserVo;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
