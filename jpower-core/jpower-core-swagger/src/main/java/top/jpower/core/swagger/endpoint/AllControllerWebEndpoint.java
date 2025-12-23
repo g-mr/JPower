@@ -1,6 +1,7 @@
 package top.jpower.core.swagger.endpoint;
 
 import io.swagger.models.Swagger;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.http.HttpStatus;
@@ -20,11 +21,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 import springfox.documentation.swagger2.mappers.ServiceModelToSwagger2Mapper;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
-import static org.springframework.util.StringUtils.isEmpty;
-import static springfox.documentation.swagger.common.HostNameProvider.componentsFrom;
 
 /**
  * @author mr.g
@@ -59,11 +56,11 @@ public class AllControllerWebEndpoint {
 
         Documentation documentation = documentationCache.documentationByGroup(Docket.DEFAULT_GROUP_NAME);
         Swagger swagger = mapper.mapDocumentation(documentation);
-        UriComponents uriComponents = componentsFrom(servletRequest, swagger.getBasePath());
-        swagger.basePath(isEmpty(uriComponents.getPath()) ? "/" : uriComponents.getPath());
-        if (isEmpty(swagger.getHost())) {
-            swagger.host(hostName(uriComponents));
-        }
+//        UriComponents uriComponents = componentsFrom(servletRequest, swagger.getBasePath());
+//        swagger.basePath(isEmpty(uriComponents.getPath()) ? "/" : uriComponents.getPath());
+//        if (isEmpty(swagger.getHost())) {
+//            swagger.host(hostName(uriComponents));
+//        }
         return new ResponseEntity<>(jsonSerializer.toJson(swagger), HttpStatus.OK);
     }
 

@@ -85,7 +85,6 @@
         </then>
     </if>
 
-
     <springProfile name="dev">
         <root level="${level}">
             <appender-ref ref="stdout" />

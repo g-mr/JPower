@@ -2,7 +2,16 @@ package top.jpower.core.swagger.config;
 
 import com.github.xiaoymin.knife4j.spring.extension.OpenApiExtensionResolver;
 import io.swagger.annotations.Api;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.Paths;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.customizers.OpenApiBuilderCustomizer;
+import org.springdoc.core.customizers.ServerBaseUrlCustomizer;
+import org.springdoc.core.properties.SpringDocConfigProperties;
+import org.springdoc.core.providers.JavadocProvider;
+import org.springdoc.core.service.OpenAPIService;
+import org.springdoc.core.service.SecurityService;
+import org.springdoc.core.utils.PropertyResolverUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -10,6 +19,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -35,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -49,27 +60,50 @@ import static springfox.documentation.spring.web.plugins.Docket.DEFAULT_GROUP_NA
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties({SwaggerProperties.class})
 @ConditionalOnProperty(prefix = "knife4j", name = "enable", havingValue = "true", matchIfMissing = false)
-@Import({BeanValidatorPluginsConfiguration.class})
+//@Import({BeanValidatorPluginsConfiguration.class})
 @RequiredArgsConstructor
 public class SwaggerConfig {
+
+
+    @Bean
+    public OpenAPI createApi(SwaggerProperties swaggerProperties) {
+
+
+        return new OpenAPI()
+                .paths(PathMatch.ant(swaggerProperties.getBath()).and(PathMatch.ant(swaggerProperties.getExcludePath()).negate()))
+                .host(properties.getHost());
+    }
+
+    @Bean
+    public OpenAPIService openApiBuilder(Optional<OpenAPI> openAPI,
+                                         SecurityService securityParser,
+                                         SpringDocConfigProperties springDocConfigProperties,
+                                         PropertyResolverUtils propertyResolverUtils,
+                                         Optional<List<OpenApiBuilderCustomizer>> openApiBuilderCustomizers,
+                                         Optional<List<ServerBaseUrlCustomizer>> serverBaseUrlCustomizers,
+                                         Optional<JavadocProvider> javadocProvider) {
+        return new OpenAPIService(openAPI, securityParser, springDocConfigProperties,
+                propertyResolverUtils, openApiBuilderCustomizers, serverBaseUrlCustomizers, javadocProvider);
+    }
+
 
     /**
      * 引入Knife4j扩展类
      */
-    private final OpenApiExtensionResolver openApiExtensionResolver;
+//    private final OpenApiExtensionResolver openApiExtensionResolver;
 
-    @Bean
-    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-    public WebMvcConfigurer swaggerWebMvcConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addResourceHandlers(ResourceHandlerRegistry registry) {
-                registry.addResourceHandler("/js/**").addResourceLocations("classpath:/js/");
-                registry.addResourceHandler("doc.html").addResourceLocations("classpath:/META-INF/resources/");
-                registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
-            }
-        };
-    }
+//    @Bean
+//    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
+//    public WebMvcConfigurer swaggerWebMvcConfigurer() {
+//        return new WebMvcConfigurer() {
+//            @Override
+//            public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//                registry.addResourceHandler("/js/**").addResourceLocations("classpath:/js/");
+//                registry.addResourceHandler("doc.html").addResourceLocations("classpath:/META-INF/resources/");
+//                registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
+//            }
+//        };
+//    }
 
     private Docket createRestApi(String name, Predicate<RequestHandler> controllerSelects, SwaggerProperties swaggerProperties, ApiInfo apiInfo, SecurityApi securityApi) {
         return new Docket(DocumentationType.SWAGGER_2)
@@ -104,9 +138,14 @@ public class SwaggerConfig {
                 .collect(Collectors.toList());
 
         AtomicInteger count = new AtomicInteger(0);
-        list.forEach(group -> SpringUtil.registerBean("docket"+(count.getAndIncrement()), createRestApi(group, PathMatch.withGroupName(group), swaggerProperties, apiInfo, securityApi)));
+        list.forEach(group -> SpringUtil.registerBean("docket"+(count.getAndIncrement()),
+                createRestApi(group, PathMatch.withGroupName(group), swaggerProperties, apiInfo, securityApi)));
 
-        return createRestApi(DEFAULT_GROUP_NAME, ApiSelector.DEFAULT.getRequestHandlerSelector().and(RequestHandlerSelectors.withClassAnnotation(Api.class)), swaggerProperties, apiInfo, securityApi);
+        return createRestApi(DEFAULT_GROUP_NAME,
+                ApiSelector.DEFAULT.getRequestHandlerSelector().and(RequestHandlerSelectors.withClassAnnotation(Api.class)),
+                swaggerProperties,
+                apiInfo,
+                securityApi);
     }
 
 

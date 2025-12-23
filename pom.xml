@@ -60,6 +60,7 @@
         <aliyun.sms.version>4.3.1</aliyun.sms.version> <!--2.0.24-->
         <aliyun.oss.version>3.18.3</aliyun.oss.version><!--3.17.4-->
         <qiniu.oss.version>7.19.0</qiniu.oss.version><!--7.15.0-->
+        <knife4j.version>4.5.0</knife4j.version>
 
         <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
         <maven-resources.version>3.4.0</maven-resources.version><!--3.3.1-->
@@ -75,7 +76,6 @@
         <pagehelper-spring.version>1.4.1</pagehelper-spring.version>
         <mybatis-plus.version>3.5.5</mybatis-plus.version>
         <jwt.version>0.6.0</jwt.version>
-        <knife4j.version>4.4.0</knife4j.version>
         <swagger-annotations.version>1.6.2</swagger-annotations.version>
         <spring-boot-admin.version>2.7.15</spring-boot-admin.version>
 
@@ -140,13 +140,6 @@
                 <version>${knife4j.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-
-            <!-- 排除knife4j中的hutool -->
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-all</artifactId>
-                <version>${hutool.version}</version>
             </dependency>
 
             <!-- spring-boot-admin -->
