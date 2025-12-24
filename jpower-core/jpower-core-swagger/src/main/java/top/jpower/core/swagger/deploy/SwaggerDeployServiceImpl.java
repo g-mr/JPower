@@ -19,7 +19,7 @@ public class SwaggerDeployServiceImpl implements DeployService {
 		Properties props = System.getProperties();
 
 		props.setProperty("knife4j.enable", "true");
-		props.setProperty("spring.mvc.pathmatch.matching-strategy", "ANT_PATH_MATCHER");
+//		props.setProperty("spring.mvc.pathmatch.matching-strategy", "ANT_PATH_MATCHER"); todo 先注释掉，回头看看是否有影响没影响就删除
 
 		if (profile.equals(JpowerConstants.PROD_CODE)) {
 			props.setProperty("knife4j.production", "true");

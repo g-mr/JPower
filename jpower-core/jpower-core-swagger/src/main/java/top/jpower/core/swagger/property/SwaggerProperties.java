@@ -1,13 +1,17 @@
 package top.jpower.core.swagger.property;
 
 import cn.hutool.core.collection.ListUtil;
-import lombok.AllArgsConstructor;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.http.HttpHeaders;
 import top.jpower.core.util.constants.JpowerConstants;
 
 import java.util.List;
+import java.util.Map;
+
+import static top.jpower.core.util.constants.JpowerConstants.JPOWER;
 
 /**
  * swagger配置参数
@@ -18,23 +22,23 @@ import java.util.List;
 @ConfigurationProperties(prefix = "jpower.swagger")
 public class SwaggerProperties {
 
-    private static final String BASIC_HEADER_KEY = "Authorization";
-    private static final String HEADER = JpowerConstants.AUTH_HEADER;
-    private static final String MENU_CODE = JpowerConstants.HEADER_MENU;
+    public static final String CLIENT = HttpHeaders.AUTHORIZATION;
+    public static final String JPOWER_AUTH = JpowerConstants.AUTH_HEADER;
+    public static final String MENU_CODE = JpowerConstants.HEADER_MENU;
 
     /**
      * swagger会解析的url规则
      **/
-    private List<String> bath = ListUtil.of("/**");
+//    private List<String> bath = ListUtil.of("/**");
     /**
      * 在basePath基础上需要排除的url规则
      **/
-    private List<String> excludePath = ListUtil.of("/error", "/actuator/**", "/getAllFunction");
+//    private List<String> excludePath = ListUtil.of("/error", "/actuator/**", "/getAllFunction");
 
     /**
      * host信息
      **/
-    private String host = "";
+//    private String host = "";
     /**
      * 接口文档名称
      **/
@@ -52,7 +56,7 @@ public class SwaggerProperties {
      **/
     private String licenseUrl = "https://gitee.com/gdzWork/JPower";
     /**
-     * 服务地址
+     * 服务条款
      **/
     private String termsOfServiceUrl = "http:localhost";
     /**
@@ -60,43 +64,44 @@ public class SwaggerProperties {
      **/
     private String version = JpowerConstants.JPOWER_VESION;
     /**
+     * 摘要
+     **/
+    private String summary;
+    /**
      * 联系人信息
      **/
-    private Contact contact = new Contact("mr.g","localhost","");
+    private Contact contact = new Contact().name("mr.g").url("localhost").email("");
     /**
      * 鉴权信息
      **/
-    private List<Authorization> authorization = ListUtil.of(new Authorization(BASIC_HEADER_KEY, ListUtil.of("/**"), ListUtil.of("/auth/**")), new Authorization(HEADER, ListUtil.of("/**"), ListUtil.of("/auth/**")), new Authorization(MENU_CODE, ListUtil.of("/**"), ListUtil.of("/auth/**")));
+    private List<SecurityScheme> authorization = ListUtil.of
+            (new SecurityScheme()
+                            .name(JPOWER_AUTH)
+                            .type(SecurityScheme.Type.HTTP)
+                            .scheme(JPOWER)
+                            .bearerFormat("JWT")
+                            .description("请输入TOKEN"),
+                    new SecurityScheme()
+                            .name(CLIENT)
+                            .type(SecurityScheme.Type.HTTP)
+                            .scheme("basic")
+                            .description("请输入客户端"),
+                    new SecurityScheme()
+                            .name(MENU_CODE)
+                            .type(SecurityScheme.Type.APIKEY)
+                            .in(SecurityScheme.In.HEADER)
+                            .description("请输入上级菜单用于数据权限"));
+
+    /**
+     * 接口分组
+     **/
+    private Map<String, GroupInfo> groups;
 
     @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class Contact {
-        private String name;
-        private String url;
-        private String email;
+    public static class GroupInfo {
+        private List<String> pathsToMatch;
+        private List<String> packagesToScan;
+        private List<String> pathsToExclude;
+        private List<String> packagesToExclude;
     }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class Authorization {
-
-        /**
-         * 授权header头名称
-         **/
-        private String name;
-
-        /**
-         * 需要在哪些url规则上展示授权
-         **/
-        private List<String> path = ListUtil.of("/**");
-
-        /**
-         * 需要在哪些url规则上不展示授权
-         **/
-        private List<String> excludePath;
-
-    }
-
 }

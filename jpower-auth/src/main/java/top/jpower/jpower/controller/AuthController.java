@@ -5,10 +5,19 @@ import cn.hutool.core.util.NumberUtil;
 import cn.hutool.extra.mail.MailUtil;
 import com.wf.captcha.SpecCaptcha;
 import io.swagger.annotations.*;
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.common.constants.CacheNames;
 import top.jpower.common.constants.ParamsConstants;
@@ -23,11 +32,18 @@ import top.jpower.core.dbs.tenant.JpowerTenantProperties;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.core.redis.cache.RedisService;
+import top.jpower.core.swagger.property.SwaggerProperties;
 import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.rsp.ResponseData;
 import top.jpower.core.util.rsp.ReturnJsonUtil;
-import top.jpower.core.util.utils.*;
+import top.jpower.core.util.utils.ChainMap;
+import top.jpower.core.util.utils.DateUtil;
+import top.jpower.core.util.utils.DigestUtil;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.MapUtil;
+import top.jpower.core.util.utils.StringUtil;
+import top.jpower.core.util.utils.WebUtil;
 import top.jpower.jpower.auth.TokenGranterBuilder;
 import top.jpower.jpower.auth.granter.RefreshTokenGranter;
 import top.jpower.jpower.cache.SystemCache;
@@ -60,9 +76,10 @@ import static top.jpower.core.util.constants.JpowerConstants.HEADER_TENANT;
  * @Date 2020-02-13 14:10
  * @Version 1.0
  */
-@Api(tags = "授权相关")
+@Tag(name = "授权相关")
 @RestController
 @RequestMapping("/auth")
+@SecurityRequirement(name = SwaggerProperties.CLIENT)
 //@AllArgsConstructor
 public class AuthController extends BaseController {
 

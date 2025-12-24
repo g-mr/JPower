@@ -70,6 +70,17 @@ management:
         #开启所有接口
         include: "*"
 
+springdoc:
+  api-docs:
+    resolve-extensions-properties: true
+  servers:
+    - url: https://api.example.com
+      description: 生产服务器
+    - url: https://sandbox.example.com
+      description: 测试服务器
+    - url: /  # 相对路径，指向应用当前部署的根地址
+      description: 本地或默认上下文
+
 #knife4j配置
 knife4j:
   #启用

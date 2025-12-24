@@ -42,6 +42,7 @@ public class JpowerConstants {
      **/
     public static final String VALIDATE_SMS_CODE = "validate";
 
+    public static final String JPOWER = "jpower";
     /** 国际化语言HEADER **/
     public static final String I18N_KEY = "Jpower-Language";
     /** token请求头 **/
