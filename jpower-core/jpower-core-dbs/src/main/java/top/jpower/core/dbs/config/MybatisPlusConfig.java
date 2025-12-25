@@ -6,6 +6,7 @@ import com.mybatisflex.annotation.InsertListener;
 import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.UpdateListener;
 import com.mybatisflex.core.FlexGlobalConfig;
+import com.mybatisflex.core.datasource.DataSourceMissingHandler;
 import com.mybatisflex.core.keygen.KeyGenerators;
 import com.mybatisflex.core.logicdelete.LogicDeleteProcessor;
 import com.mybatisflex.core.logicdelete.impl.TimeStampLogicDeleteProcessor;
@@ -33,10 +34,13 @@ import top.jpower.core.dbs.config.interceptor.MybatisSqlPrintInterceptor;
 import top.jpower.core.dbs.config.interceptor.chain.MybatisInterceptor;
 import top.jpower.core.dbs.config.properties.DemoProperties;
 import top.jpower.core.dbs.config.properties.MybatisProperties;
+import top.jpower.core.dbs.tenant.JpowerTenantProperties;
 import top.jpower.core.deploy.support.YamlAndPropertySourceFactory;
 import top.jpower.core.util.user.UserConfig;
 import top.jpower.core.util.utils.Fc;
 
+import javax.sql.DataSource;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -123,7 +127,8 @@ public class MybatisPlusConfig {
     public MyBatisFlexCustomizer myBatisFlexCustomizer(@Autowired(required = false) InsertListener insertListener,
                                                        @Autowired(required = false) UpdateListener updateListener,
                                                        FlexGlobalConfig.KeyConfig keyConfig,
-                                                       MybatisProperties mybatisProperties) {
+                                                       MybatisProperties mybatisProperties,
+                                                       JpowerTenantProperties tenantProperties) {
         return config -> {
             if (Fc.notNull(insertListener)){
                 config.registerInsertListener(insertListener);
@@ -134,6 +139,13 @@ public class MybatisPlusConfig {
             config.setKeyConfig(keyConfig);
             config.setDefaultMaxPageSize(mybatisProperties.getPage().getMaxLimit());
             config.setDefaultPageSize(mybatisProperties.getPage().getDefaultLimit());
+            // config.setDataSourceMissingHandler(new DataSourceMissingHandler() {
+            //     @Override
+            //     public Map<String, DataSource> handle(String s, Map<String, DataSource> map) {
+            //         return null;
+            //     }
+            // });
+            config.setTenantColumn(tenantProperties.getColumn()); // TODO 需要试试全局配置了然后在字段上再加注解，会产生什么？其他配置都一样
         };
     }
 
@@ -160,10 +172,10 @@ public class MybatisPlusConfig {
             interceptor.addInnerInterceptor(dataPermissionInterceptor);
         }
 
-        // 动态表名插件
-        if (dynamicTableNameInnerInterceptor != null){
-            interceptor.addInnerInterceptor(dynamicTableNameInnerInterceptor);
-        }
+        // // 动态表名插件
+        // if (dynamicTableNameInnerInterceptor != null){
+        //     interceptor.addInnerInterceptor(dynamicTableNameInnerInterceptor);
+        // }
 
 
         // 占位符替换插件（暂不加入）
@@ -171,9 +183,9 @@ public class MybatisPlusConfig {
 
 
         // 乐观锁插件
-        if (mybatisProperties.isOptimisticLocker()){
-            interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
-        }
+        // if (mybatisProperties.isOptimisticLocker()){
+        //     interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
+        // }
 
         // 分页插件
 //        PaginationInnerInterceptor paginationInterceptor = new PaginationInnerInterceptor();

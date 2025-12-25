@@ -19,6 +19,7 @@ import top.jpower.core.dbs.dynatable.handler.DynamicTableNameHandler;
  */
 @AutoConfiguration
 @AutoConfigureBefore({MybatisPlusConfig.class})
+@ConditionalOnProperty(value = {"jpower.mybatis.dynamicTableName"}, matchIfMissing = false)
 public class DynamicTableNameConfig {
 
     @Bean
@@ -31,7 +32,6 @@ public class DynamicTableNameConfig {
      * 配置动态表名拦截器
      **/
     @Bean
-    @ConditionalOnProperty(value = {"jpower.mybatis.dynamicTableName"}, matchIfMissing = false)
     @ConditionalOnBean(TableNameHandler.class)
     @ConditionalOnMissingBean({DynamicTableNameInnerInterceptor.class})
     public DynamicTableNameInnerInterceptor dataScopeQueryInterceptor(TableNameHandler tableNameHandler) {
