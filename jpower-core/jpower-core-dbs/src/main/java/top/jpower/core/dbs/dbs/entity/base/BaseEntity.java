@@ -2,13 +2,15 @@ package top.jpower.core.dbs.dbs.entity.base;
 
 import cn.hutool.core.date.DatePattern;
 import com.alibaba.fastjson2.annotation.JSONField;
-import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.mybatisflex.annotation.Column;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
+import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,24 +22,17 @@ import java.util.Map;
 @Data
 public class BaseEntity implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
-
-    /**
-     * 主健
-     **/
-    @TableId(value = "id",type = IdType.ASSIGN_ID)
-    private Long id;
 
     /**
      * 创建部门
      **/
-    @TableField(value = "create_org", fill = FieldFill.INSERT)
     private Long createOrg;
 
     /**
      * 创建人
      **/
-    @TableField(value = "create_user", fill = FieldFill.INSERT)
     private Long createUser;
 
     /**
@@ -45,13 +40,11 @@ public class BaseEntity implements Serializable {
      **/
     @JSONField(format= DatePattern.NORM_DATETIME_PATTERN)
     @JsonFormat(shape = JsonFormat.Shape.STRING,timezone = "GMT+8", pattern = DatePattern.NORM_DATETIME_PATTERN,locale = "zh_CN")
-    @TableField(value = "create_time", fill = FieldFill.INSERT)
-    private Date createTime;
+    private LocalDateTime createTime;
 
     /**
      * 修改人
      **/
-    @TableField(value = "update_user", fill = FieldFill.INSERT_UPDATE)
     private Long updateUser;
 
     /**
@@ -59,22 +52,20 @@ public class BaseEntity implements Serializable {
      **/
     @JsonFormat(shape = JsonFormat.Shape.STRING,timezone = "GMT+8", pattern = DatePattern.NORM_DATETIME_PATTERN,locale = "zh_CN")
     @JSONField(format= DatePattern.NORM_DATETIME_PATTERN)
-    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
-    private Date updateTime;
+    private LocalDateTime updateTime;
 
     /**
-     * 是否删除
+     * 删除时间戳
      **/
-    @TableField(fill = FieldFill.INSERT)
-    @TableLogic
+    @Column(isLogicDelete = true)
     @JsonIgnore
     @JSONField(serialize = false)
-    private Boolean isDeleted;
+    private BigInteger deleteTime;
 
     /**
      * 扩展参数/字典翻译
      **/
-    @TableField(exist = false)
+    @Column(ignore = true)
     private Map<String, Object> params = new HashMap<>();
 
 }

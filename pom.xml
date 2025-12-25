@@ -61,6 +61,7 @@
         <aliyun.oss.version>3.18.3</aliyun.oss.version><!--3.17.4-->
         <qiniu.oss.version>7.19.0</qiniu.oss.version><!--7.15.0-->
         <knife4j.version>4.5.0</knife4j.version>
+        <mybatis-flex.version>1.11.5</mybatis-flex.version>
 
         <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
         <maven-resources.version>3.4.0</maven-resources.version><!--3.3.1-->
@@ -73,8 +74,7 @@
         <!-- ****************** 升级中 ********************** -->
 
 
-        <pagehelper-spring.version>1.4.1</pagehelper-spring.version>
-        <mybatis-plus.version>3.5.5</mybatis-plus.version>
+<!--        <mybatis-plus.version>3.5.5</mybatis-plus.version>-->
         <jwt.version>0.6.0</jwt.version>
         <spring-boot-admin.version>2.7.15</spring-boot-admin.version>
 
@@ -137,6 +137,15 @@
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-dependencies</artifactId>
                 <version>${knife4j.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- mybatis-flex -->
+            <dependency>
+                <groupId>com.mybatis-flex</groupId>
+                <artifactId>mybatis-flex-dependencies</artifactId>
+                <version>${mybatis-flex.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -292,6 +301,11 @@
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
                             <version>1.18.42</version>
+                        </path>
+                        <path>
+                            <groupId>com.mybatis-flex</groupId>
+                            <artifactId>mybatis-flex-processor</artifactId>
+                            <version>${mybatis-flex.version}</version>
                         </path>
                     </annotationProcessorPaths>
                     <debug>false</debug>

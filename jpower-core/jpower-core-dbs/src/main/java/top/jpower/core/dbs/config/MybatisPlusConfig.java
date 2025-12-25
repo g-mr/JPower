@@ -1,12 +1,17 @@
 package top.jpower.core.dbs.config;
 
-import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
-import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
-import com.baomidou.mybatisplus.core.config.GlobalConfig;
-import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.baomidou.mybatisplus.core.injector.ISqlInjector;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.*;
+import com.mybatisflex.annotation.InsertListener;
+import com.mybatisflex.annotation.KeyType;
+import com.mybatisflex.annotation.UpdateListener;
+import com.mybatisflex.core.FlexGlobalConfig;
+import com.mybatisflex.core.keygen.KeyGenerators;
+import com.mybatisflex.core.logicdelete.LogicDeleteProcessor;
+import com.mybatisflex.core.logicdelete.impl.TimeStampLogicDeleteProcessor;
+import com.mybatisflex.spring.boot.ConfigurationCustomizer;
+import com.mybatisflex.spring.boot.MyBatisFlexCustomizer;
+import com.mybatisflex.spring.boot.MybatisFlexAutoConfiguration;
 import org.apache.ibatis.logging.nologging.NoLoggingImpl;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +25,14 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import top.jpower.core.dbs.config.filling.InsertFieldsListener;
+import top.jpower.core.dbs.config.filling.UpdateFieldsListener;
 import top.jpower.core.dbs.config.interceptor.DemoInterceptor;
 import top.jpower.core.dbs.config.interceptor.JpowerMybatisInterceptor;
 import top.jpower.core.dbs.config.interceptor.MybatisSqlPrintInterceptor;
 import top.jpower.core.dbs.config.interceptor.chain.MybatisInterceptor;
 import top.jpower.core.dbs.config.properties.DemoProperties;
 import top.jpower.core.dbs.config.properties.MybatisProperties;
-import top.jpower.core.dbs.mp.CustomSqlInjector;
-import top.jpower.core.dbs.tenant.JpowerTenantProperties;
 import top.jpower.core.deploy.support.YamlAndPropertySourceFactory;
 import top.jpower.core.util.user.UserConfig;
 import top.jpower.core.util.utils.Fc;
@@ -39,36 +44,75 @@ import java.util.stream.Collectors;
  *
  * @author mr.g
  */
-@AutoConfiguration(before = MybatisPlusAutoConfiguration.class)
+@AutoConfiguration(before = MybatisFlexAutoConfiguration.class)
 @EnableTransactionManagement
 @EnableConfigurationProperties({DemoProperties.class, MybatisProperties.class})
 @PropertySource(value = "classpath:./jpower-db.yml",factory = YamlAndPropertySourceFactory.class)
 public class MybatisPlusConfig {
 
+
     /**
-     * 关闭MyBatis日志
+     * 一些mybatis配置
      *
      * @author mr.g
      * @return com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer
      **/
    @Bean
+   @ConditionalOnMissingBean
    public ConfigurationCustomizer mybatisConfigurationCustomizer() {
        return configuration -> {
+//           // 关闭缓存
+//           configuration.setCacheEnabled(false);
+//           // 开启驼峰命名转换
+//           configuration.setMapUnderscoreToCamelCase(true);
+//           // 设置空值时是否调用 setter
+           configuration.setCallSettersOnNulls(true);
+           // TODO 回头看看这里打印的SQL长啥样子
+//           configuration.setLogImpl(StdOutImpl.class);
            configuration.setLogImpl(NoLoggingImpl.class);
        };
    }
 
+   /**
+    * 逻辑删除插件
+    **/
     @Bean
     @ConditionalOnMissingBean
-    public ISqlInjector sqlInjector(@Autowired(required = false) JpowerTenantProperties tenantProperties) {
-        return new CustomSqlInjector(tenantProperties);
+    public LogicDeleteProcessor logicDeleteProcessor(){
+        return new TimeStampLogicDeleteProcessor();
     }
 
+    /**
+     * 插入字段填充
+     **/
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnBean(UserConfig.class)
-    public MetaObjectHandler metaObjectHandler(UserConfig userConfig){
-        return new UpdateRelatedFieldsMetaHandler(userConfig);
+    public InsertListener insertListener(UserConfig userConfig){
+        return new InsertFieldsListener(userConfig);
+    }
+
+    /**
+     * 更新字段填充
+     **/
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnBean(UserConfig.class)
+    public UpdateListener updateListener(UserConfig userConfig){
+        return new UpdateFieldsListener(userConfig);
+    }
+
+    /**
+     * 默认的主键生成策略
+     **/
+    @Bean
+    @ConditionalOnMissingBean
+    public FlexGlobalConfig.KeyConfig keyConfig(){
+        FlexGlobalConfig.KeyConfig keyConfig = new FlexGlobalConfig.KeyConfig();
+        keyConfig.setKeyType(KeyType.Generator);
+        keyConfig.setValue(KeyGenerators.flexId);
+        keyConfig.setBefore(true);
+        return keyConfig;
     }
 
     /**
@@ -76,13 +120,21 @@ public class MybatisPlusConfig {
      **/
     @Bean
     @ConditionalOnMissingBean
-    public GlobalConfig globalConfig(@Autowired(required = false) MetaObjectHandler metaHandler, ISqlInjector sqlInjector) {
-        GlobalConfig globalConfig = new GlobalConfig();
-        if (Fc.notNull(metaHandler)){
-            globalConfig.setMetaObjectHandler(metaHandler);
-        }
-        globalConfig.setSqlInjector(sqlInjector);
-        return globalConfig;
+    public MyBatisFlexCustomizer myBatisFlexCustomizer(@Autowired(required = false) InsertListener insertListener,
+                                                       @Autowired(required = false) UpdateListener updateListener,
+                                                       FlexGlobalConfig.KeyConfig keyConfig,
+                                                       MybatisProperties mybatisProperties) {
+        return config -> {
+            if (Fc.notNull(insertListener)){
+                config.registerInsertListener(insertListener);
+            }
+            if (Fc.notNull(insertListener)){
+                config.registerUpdateListener(updateListener);
+            }
+            config.setKeyConfig(keyConfig);
+            config.setDefaultMaxPageSize(mybatisProperties.getPage().getMaxLimit());
+            config.setDefaultPageSize(mybatisProperties.getPage().getDefaultLimit());
+        };
     }
 
     @Bean
@@ -124,21 +176,21 @@ public class MybatisPlusConfig {
         }
 
         // 分页插件
-        PaginationInnerInterceptor paginationInterceptor = new PaginationInnerInterceptor();
-        paginationInterceptor.setOverflow(mybatisProperties.getPage().isOverflow());
-        paginationInterceptor.setMaxLimit(mybatisProperties.getPage().getMaxLimit());
-        paginationInterceptor.setOptimizeJoin(mybatisProperties.getPage().isOptimizeJoin());
-        interceptor.addInnerInterceptor(paginationInterceptor);
+//        PaginationInnerInterceptor paginationInterceptor = new PaginationInnerInterceptor();
+//        paginationInterceptor.setOverflow(mybatisProperties.getPage().isOverflow());
+//        paginationInterceptor.setMaxLimit(mybatisProperties.getPage().getMaxLimit());
+//        paginationInterceptor.setOptimizeJoin(mybatisProperties.getPage().isOptimizeJoin());
+//        interceptor.addInnerInterceptor(paginationInterceptor);
 
 
         // 攻击SQL拦截,防止全表更新与删除
-        if (mybatisProperties.isBlockAttack()){
-            interceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
-        }
+//        if (mybatisProperties.isBlockAttack()){
+//            interceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
+//        }
         // 垃圾SQL拦截插件
-        if (mybatisProperties.isIllegalSQL()){
-            interceptor.addInnerInterceptor(new IllegalSQLInnerInterceptor());
-        }
+//        if (mybatisProperties.isIllegalSQL()){
+//            interceptor.addInnerInterceptor(new IllegalSQLInnerInterceptor());
+//        }
         //演示环境
         if (demoProperties.isEnable()){
             interceptor.addInnerInterceptor(new DemoInterceptor(demoProperties));

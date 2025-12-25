@@ -3,11 +3,7 @@ package top.jpower.core.dbs.config.properties;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import top.jpower.core.dbs.dbs.dao.mapper.base.JpowerBaseMapper;
-
-import java.util.List;
 
 /**
  * @ClassName DemoProperties
@@ -33,12 +29,12 @@ public class MybatisProperties {
     /**
      * 是否开启垃圾SQL拦截
      */
-    private boolean illegalSQL = false;
+//    private boolean illegalSQL = false;
 
     /**
      * 是否开启全表更新删除拦截（防止攻击）
      */
-    private boolean blockAttack = true;
+//    private boolean blockAttack = true;
 
     /**
      * mp分页配置
@@ -53,18 +49,13 @@ public class MybatisProperties {
     @Data
     public static class Page {
         /**
-         * 溢出总页数后是否进行处理
+         * 单页分页条数默认条数
          */
-        private boolean overflow = false;
+        private Integer defaultLimit = 20;
         /**
          * 单页分页条数最高限制
          */
-        private Long maxLimit = 5000L;
-        /**
-         * 生成 countSql 优化掉 join
-         * 现在只支持 left join
-         */
-        private boolean optimizeJoin = true;
+        private Integer maxLimit = 5000;
     }
 
     @Data

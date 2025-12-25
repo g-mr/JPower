@@ -28,10 +28,13 @@ mybatis-plus:
     db-config:
       where-strategy: NOT_EMPTY
       update-strategy: NOT_EMPTY
-      insert-str  ategy: NOT_EMPTY
+      insert-strategy: NOT_EMPTY
       #表名驼峰下划线转换
       table-underline: true
   configuration:
     map-underscore-to-camel-case: true
     call-setters-on-nulls: true
     cache-enabled: false
+
+mybatis-flex:
+  type-aliases-super-type: top.jpower.core.dbs.dbs.entity.base.BaseEntity

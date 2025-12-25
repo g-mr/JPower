@@ -1,17 +1,22 @@
 package top.jpower.core.dbs.dbs.dao;
 
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.tree.Tree;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.toolkit.Assert;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
+import com.mybatisflex.core.logicdelete.LogicDeleteManager;
+import com.mybatisflex.core.query.QueryCondition;
+import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.util.SqlUtil;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 import top.jpower.core.dbs.dbs.dao.mapper.base.JpowerBaseMapper;
 import top.jpower.core.dbs.dbs.entity.base.BaseEntity;
+import top.jpower.core.dbs.mp.support.ForestNodeMerger;
 import top.jpower.core.util.utils.BeanUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.ReflectUtil;
-import top.jpower.core.dbs.mp.support.ForestNodeMerger;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -74,7 +79,7 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
      * @Date 16:00 2020-08-11
      **/
     public boolean removeRealById(Serializable id) {
-        return SqlHelper.retBool(getBaseMapper().deleteRealById(id));
+        return SqlUtil.toBool(getMapper().deleteRealById(id));
     }
 
     /**
@@ -82,8 +87,8 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
      *
      * @param queryWrapper 实体包装类 {@link com.baomidou.mybatisplus.core.conditions.query.QueryWrapper}
      */
-    public boolean removeReal(Wrapper<T> queryWrapper) {
-        return SqlHelper.retBool(getBaseMapper().deleteReal(queryWrapper));
+    public boolean removeReal(QueryWrapper queryWrapper) {
+        return SqlUtil.toBool(getMapper().deleteReal(queryWrapper));
     }
 
     /**
@@ -92,10 +97,10 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
      * @param idList 主键ID列表
      */
     public boolean removeRealByIds(Collection<? extends Serializable> idList) {
-        if (CollectionUtils.isEmpty(idList)) {
+        if (Fc.isEmpty(idList)) {
             return false;
         }
-        return SqlHelper.retBool(getBaseMapper().deleteRealBatchIds(idList));
+        return SqlUtil.toBool(getMapper().deleteRealBatchIds(idList));
     }
 
     /**
@@ -105,7 +110,11 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
      */
     public boolean removeRealByMap(Map<String, Object> columnMap) {
         Assert.notEmpty(columnMap, "error: columnMap must not be empty");
-        return SqlHelper.retBool(getBaseMapper().deleteRealByMap(columnMap));
+        return SqlUtil.toBool(getMapper().deleteRealByMap(columnMap));
+    }
+
+    public boolean deleteRealByCondition(QueryCondition whereConditions) {
+        return SqlUtil.toBool(getMapper().deleteRealByCondition(whereConditions));
     }
 
     /**
@@ -114,7 +123,7 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
      * @param entity 实体
      */
     public boolean updateAllById(T entity) {
-        return SqlHelper.retBool(getBaseMapper().updateAllById(entity));
+        return SqlUtil.toBool(getMapper().update(entity, false));
     }
 
     /**
@@ -123,7 +132,7 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
      * @param entityList 实体列表
      */
     public boolean addBatchSomeColumn(List<T> entityList) {
-        return SqlHelper.retBool(getBaseMapper().insertBatchSomeColumn(entityList));
+        return SqlUtil.toBool(getMapper().insertBatchSelective(entityList));
     }
 
     /**

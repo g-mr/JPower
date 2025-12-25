@@ -15,14 +15,13 @@
  */
 package top.jpower.core.dbs.dbs.dao.mapper.base;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.toolkit.Constants;
-import org.apache.ibatis.annotations.Param;
+import com.mybatisflex.core.BaseMapper;
+import com.mybatisflex.core.logicdelete.LogicDeleteManager;
+import com.mybatisflex.core.query.QueryCondition;
+import com.mybatisflex.core.query.QueryWrapper;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,45 +34,42 @@ import java.util.Map;
 public interface JpowerBaseMapper<T> extends BaseMapper<T> {
 
     /**
-     * 批量新增指定列
-     *
-     * @param entityList 实体对象列表
-     */
-    int insertBatchSomeColumn(List<T> entityList);
-
-    /**
-     * 根据 ID 更新所有列
-     *
-     * @param entity 实体对象
-     */
-    int updateAllById(@Param(Constants.ENTITY) T entity);
-
-    /**
      * 根据 ID 真实删除
      *
      * @param id 主键ID
      */
-    int deleteRealById(Serializable id);
+    default int deleteRealById(Serializable id) {
+        return LogicDeleteManager.execWithoutLogicDelete(()-> this.deleteById(id));
+    }
 
     /**
      * 根据 columnMap 条件，删除记录
      *
      * @param columnMap 表字段 map 对象
      */
-    int deleteRealByMap(@Param(Constants.COLUMN_MAP) Map<String, Object> columnMap);
+    default int deleteRealByMap(Map<String, Object> columnMap) {
+        return LogicDeleteManager.execWithoutLogicDelete(() -> this.deleteByMap(columnMap));
+    }
 
     /**
      * 根据 entity 条件，删除记录
      *
      * @param wrapper 实体对象封装操作类（可以为 null）
      */
-    int deleteReal(@Param(Constants.WRAPPER) Wrapper<T> wrapper);
+    default int deleteReal(QueryWrapper wrapper) {
+        return LogicDeleteManager.execWithoutLogicDelete(() -> this.deleteByQuery(wrapper));
+    }
 
     /**
      * 删除（根据ID 批量删除）
      *
      * @param idList 主键ID列表(不能为 null 以及 empty)
      */
-    int deleteRealBatchIds(@Param(Constants.COLLECTION) Collection<? extends Serializable> idList);
+    default int deleteRealBatchIds(Collection<? extends Serializable> idList) {
+        return LogicDeleteManager.execWithoutLogicDelete(() -> this.deleteBatchByIds(idList));
+    }
 
+    default int deleteRealByCondition(QueryCondition whereConditions) {
+        return LogicDeleteManager.execWithoutLogicDelete(() -> this.deleteByCondition(whereConditions));
+    }
 }
