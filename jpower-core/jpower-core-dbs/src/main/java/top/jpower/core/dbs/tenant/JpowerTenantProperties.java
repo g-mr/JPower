@@ -8,11 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @ClassName JpowerTenantProperties
- * @Description TODO 多租户配置
- * @Author 郭丁志
- * @Date 2020-10-14 21:12
- * @Version 1.0
+ * 多租户配置类
+ *
+ * @author mr.g
  */
 @Data
 @ConfigurationProperties(prefix = "jpower.tenant")

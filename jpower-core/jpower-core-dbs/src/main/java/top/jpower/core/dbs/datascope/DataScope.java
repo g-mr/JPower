@@ -2,20 +2,21 @@ package top.jpower.core.dbs.datascope;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
- * @ClassName DataAuth
- * @Description TODO
- * @Author 郭丁志
- * @Date 2020/11/5 0005 1:10
- * @Version 1.0
+ * 数据权限配置
  */
 @Data
 public class DataScope {
 
-    private String scopeClass;
+    /** 权限表 **/
+    private List<String> scopeTables;
 
+    /** 权限类型 **/
     private Integer scopeType;
 
+    /** 权限列 **/
     private String scopeColumn;
 
     /** 自定义值域 **/

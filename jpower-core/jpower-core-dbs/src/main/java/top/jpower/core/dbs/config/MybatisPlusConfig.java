@@ -1,12 +1,9 @@
 package top.jpower.core.dbs.config;
 
-import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.inner.*;
 import com.mybatisflex.annotation.InsertListener;
 import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.UpdateListener;
 import com.mybatisflex.core.FlexGlobalConfig;
-import com.mybatisflex.core.datasource.DataSourceMissingHandler;
 import com.mybatisflex.core.keygen.KeyGenerators;
 import com.mybatisflex.core.logicdelete.LogicDeleteProcessor;
 import com.mybatisflex.core.logicdelete.impl.TimeStampLogicDeleteProcessor;
@@ -28,7 +25,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import top.jpower.core.dbs.config.filling.InsertFieldsListener;
 import top.jpower.core.dbs.config.filling.UpdateFieldsListener;
-import top.jpower.core.dbs.config.interceptor.DemoInterceptor;
 import top.jpower.core.dbs.config.interceptor.JpowerMybatisInterceptor;
 import top.jpower.core.dbs.config.interceptor.MybatisSqlPrintInterceptor;
 import top.jpower.core.dbs.config.interceptor.chain.MybatisInterceptor;
@@ -39,8 +35,6 @@ import top.jpower.core.deploy.support.YamlAndPropertySourceFactory;
 import top.jpower.core.util.user.UserConfig;
 import top.jpower.core.util.utils.Fc;
 
-import javax.sql.DataSource;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -139,83 +133,18 @@ public class MybatisPlusConfig {
             config.setKeyConfig(keyConfig);
             config.setDefaultMaxPageSize(mybatisProperties.getPage().getMaxLimit());
             config.setDefaultPageSize(mybatisProperties.getPage().getDefaultLimit());
-            // config.setDataSourceMissingHandler(new DataSourceMissingHandler() {
-            //     @Override
-            //     public Map<String, DataSource> handle(String s, Map<String, DataSource> map) {
-            //         return null;
-            //     }
-            // });
-            config.setTenantColumn(tenantProperties.getColumn()); // TODO 需要试试全局配置了然后在字段上再加注解，会产生什么？其他配置都一样
+            // 实现不同的租户使用不同的数据源可以使用这个方式
+//             config.setDataSourceMissingHandler(new DataSourceMissingHandler() {
+//                 @Override
+//                 public Map<String, DataSource> handle(String s, Map<String, DataSource> map) {
+//                     return null;
+//                 }
+//             });
+            // TODO 需要试试全局配置了然后在字段上再加注解，会产生什么？其他配置都一样
+            config.setVersionColumn(mybatisProperties.getOptimisticLockerColumn());
+            config.setLogicDeleteColumn(mybatisProperties.getLogicDeleteColumn());
+            config.setTenantColumn(tenantProperties.getColumn());
         };
-    }
-
-    @Bean
-    @ConditionalOnMissingBean({MybatisPlusInterceptor.class})
-    public MybatisPlusInterceptor mybatisPlusInterceptor(@Autowired(required = false) DataPermissionInterceptor dataPermissionInterceptor,
-                                                         @Autowired(required = false) TenantLineInnerInterceptor tenantLineInnerInterceptor,
-                                                         @Autowired(required = false) DynamicTableNameInnerInterceptor dynamicTableNameInnerInterceptor,
-                                                         ObjectProvider<InnerInterceptor> innerInterceptors,
-                                                         DemoProperties demoProperties,
-                                                         MybatisProperties mybatisProperties) {
-
-        // TODO: 2021/11/22 0022 拦截器顺序最好不要改变
-
-        MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-
-        // 多租户插件
-        if (tenantLineInnerInterceptor != null){
-            interceptor.addInnerInterceptor(tenantLineInnerInterceptor);
-        }
-
-        //数据权限插件
-        if (dataPermissionInterceptor != null){
-            interceptor.addInnerInterceptor(dataPermissionInterceptor);
-        }
-
-        // // 动态表名插件
-        // if (dynamicTableNameInnerInterceptor != null){
-        //     interceptor.addInnerInterceptor(dynamicTableNameInnerInterceptor);
-        // }
-
-
-        // 占位符替换插件（暂不加入）
-//        interceptor.addInnerInterceptor(new ReplacePlaceholderInnerInterceptor());
-
-
-        // 乐观锁插件
-        // if (mybatisProperties.isOptimisticLocker()){
-        //     interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
-        // }
-
-        // 分页插件
-//        PaginationInnerInterceptor paginationInterceptor = new PaginationInnerInterceptor();
-//        paginationInterceptor.setOverflow(mybatisProperties.getPage().isOverflow());
-//        paginationInterceptor.setMaxLimit(mybatisProperties.getPage().getMaxLimit());
-//        paginationInterceptor.setOptimizeJoin(mybatisProperties.getPage().isOptimizeJoin());
-//        interceptor.addInnerInterceptor(paginationInterceptor);
-
-
-        // 攻击SQL拦截,防止全表更新与删除
-//        if (mybatisProperties.isBlockAttack()){
-//            interceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
-//        }
-        // 垃圾SQL拦截插件
-//        if (mybatisProperties.isIllegalSQL()){
-//            interceptor.addInnerInterceptor(new IllegalSQLInnerInterceptor());
-//        }
-        //演示环境
-        if (demoProperties.isEnable()){
-            interceptor.addInnerInterceptor(new DemoInterceptor(demoProperties));
-        }
-
-
-        innerInterceptors.orderedStream().collect(Collectors.toList()).forEach(innerInterceptor -> {
-            if (!interceptor.getInterceptors().contains(innerInterceptor)){
-                interceptor.addInnerInterceptor(innerInterceptor);
-            }
-        });
-
-        return interceptor;
     }
 
     @Bean

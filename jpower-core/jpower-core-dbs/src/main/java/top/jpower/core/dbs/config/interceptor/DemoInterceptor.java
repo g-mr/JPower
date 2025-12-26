@@ -1,14 +1,18 @@
 package top.jpower.core.dbs.config.interceptor;
 
-import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.executor.Executor;
+import org.apache.ibatis.executor.statement.StatementHandler;
+import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.springframework.util.AntPathMatcher;
+import top.jpower.core.dbs.config.interceptor.chain.ChainFilter;
+import top.jpower.core.dbs.config.interceptor.chain.MybatisInterceptor;
 import top.jpower.core.dbs.config.properties.DemoProperties;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.WebUtil;
+
+import java.sql.Statement;
 
 /**
  * @ClassName DemoInterceptor
@@ -19,25 +23,25 @@ import top.jpower.core.util.utils.WebUtil;
  */
 @Slf4j
 @RequiredArgsConstructor
-public class DemoInterceptor implements InnerInterceptor {
+public class DemoInterceptor implements MybatisInterceptor {
 
     private final DemoProperties properties;
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
     @Override
-    public boolean willDoUpdate(Executor executor, MappedStatement ms, Object parameter) {
+    public Object aroundUpdate(ChainFilter chainFilter, final StatementHandler sh, MappedStatement ms, BoundSql boundSql, Statement statement) {
 
         if (properties.isEnable()){
             String path = Fc.notNull(WebUtil.getRequest()) ? WebUtil.getRequest().getServletPath() : null;
 
             // 匹配的接口进行放行
             if (Fc.notNull(path) && properties.getSkipUrl().stream().anyMatch(pattern -> antPathMatcher.match(pattern, path))){
-                return true;
+                return chainFilter.proceed();
             }
 
             log.warn("拦截到操作数据得SQL,演示环境不可操作数据");
-            return false;
+            return 0;
         }
-        return true;
+        return chainFilter.proceed();
     }
 }

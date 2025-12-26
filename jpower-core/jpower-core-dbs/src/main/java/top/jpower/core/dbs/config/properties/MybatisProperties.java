@@ -19,12 +19,20 @@ public class MybatisProperties {
     /**
      * 是否开启动态表名
      */
-    private Boolean dynamicTableName = false;
+//    private Boolean dynamicTableName = false;
 
     /**
      * 是否开启动乐观锁
      */
-    private boolean optimisticLocker = true;
+    private boolean optimisticLocker = false;
+    /**
+     * 是否开启动乐观锁
+     */
+    private String optimisticLockerColumn = "version";
+    /**
+     * 逻辑删除字段
+     */
+    private String logicDeleteColumn = "delete_time";
 
     /**
      * 是否开启垃圾SQL拦截
