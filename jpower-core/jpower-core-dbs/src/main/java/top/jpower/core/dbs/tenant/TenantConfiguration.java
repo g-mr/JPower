@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import top.jpower.core.dbs.config.MybatisPlusConfig;
+import top.jpower.core.dbs.config.MybatisFlexConfig;
 import top.jpower.core.util.user.UserConfig;
 
 /**
@@ -19,7 +19,7 @@ import top.jpower.core.util.user.UserConfig;
  * @date 2020-10-14 20:54
  */
 @AutoConfiguration
-@AutoConfigureBefore({MybatisPlusConfig.class})
+@AutoConfigureBefore({MybatisFlexConfig.class})
 @AutoConfigureAfter(UserConfig.class)
 @EnableConfigurationProperties({JpowerTenantProperties.class})
 @ConditionalOnProperty(value = {"jpower.tenant.enable"}, matchIfMissing = true)

@@ -2,6 +2,7 @@ package top.jpower.core.dbs.mp.support;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
+import com.mybatisflex.core.query.QueryWrapper;
 import top.jpower.core.util.utils.BeanUtil;
 import top.jpower.core.util.utils.ChainMap;
 
@@ -19,36 +20,33 @@ public class Condition<T> {
     public Condition() {
     }
 
-    public static <T> QueryWrapper<T> getQueryWrapper() {
-        return new QueryWrapper<T>();
+    public static QueryWrapper getQueryWrapper() {
+        return QueryWrapper.create();
     }
 
-    public static <T> QueryWrapper<T> getQueryWrapper(Class<T> clz) {
-        QueryWrapper<T> qw = new QueryWrapper();
-        qw.setEntity(BeanUtil.newBean(clz));
-        return qw;
+    public static <T> QueryWrapper getQueryWrapper(Class<T> clz) {
+        return QueryWrapper.create(BeanUtil.newBean(clz));
     }
 
-    public static <T> QueryWrapper<T> getQueryWrapper(T entity) {
-        return new QueryWrapper<T>(entity);
+    public static <T> QueryWrapper getQueryWrapper(T entity) {
+        return QueryWrapper.create(entity);
     }
 
-    public static <T> QueryWrapper<T> getQueryWrapper(Map<String, Object> query, Class<T> clazz) {
+    public static <T> QueryWrapper getQueryWrapper(Map<String, Object> query, Class<T> clazz) {
         Map<String,Object> exclude = ChainMap.<String,Object>create().put("pageNum", "pageNum").put("pageSize", "pageSize").put("asc", "asc").put("desc", "desc").put("tenantCode", "tenantCode").build();
         return getQueryWrapper(query, exclude, clazz);
     }
 
-    public static <T> QueryWrapper<T> getQueryWrapper(Map<String, Object> query, Map<String, Object> exclude, Class<T> clazz) {
+    public static <T> QueryWrapper getQueryWrapper(Map<String, Object> query, Map<String, Object> exclude, Class<T> clazz) {
         exclude.forEach((k, v) -> {
             query.remove(k);
         });
-        QueryWrapper<T> qw = new QueryWrapper();
-        qw.setEntity(BeanUtil.newBean(clazz));
+        QueryWrapper qw = QueryWrapper.create(BeanUtil.newBean(clazz));
         SqlWrapper.buildCondition(qw, query);
         return qw;
     }
 
-    public static <T> TreeWrapper<T> getTreeWrapper(Class<T> clz,String id,String parentId) {
+    public static <T> TreeWrapper<T> getTreeWrapper(Class<T> clz, String id, String parentId) {
         TreeWrapper<T> qw = new TreeWrapper(clz,id,parentId);
         qw.setEntity(BeanUtil.newBean(clz));
         return qw;

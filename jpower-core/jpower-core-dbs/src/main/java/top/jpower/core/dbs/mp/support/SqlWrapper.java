@@ -1,7 +1,7 @@
 package top.jpower.core.dbs.mp.support;
 
 import cn.hutool.core.util.ArrayUtil;
-import com.baomidou.mybatisplus.core.conditions.AbstractWrapper;
+import com.mybatisflex.core.query.QueryWrapper;
 import top.jpower.core.util.support.XssInjectionUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.StringUtil;
@@ -27,7 +27,7 @@ class SqlWrapper {
      * @param wrapper   查询包装类
      * @param query     查询字段
      */
-    static void buildCondition(AbstractWrapper<?, String, ?> wrapper, Map<String, Object> query) {
+    static void buildCondition(QueryWrapper wrapper, Map<String, Object> query) {
         if (Fc.isEmpty(query)) {
             return;
         }

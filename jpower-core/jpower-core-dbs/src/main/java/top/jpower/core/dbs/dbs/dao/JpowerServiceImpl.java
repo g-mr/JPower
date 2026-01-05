@@ -2,11 +2,6 @@ package top.jpower.core.dbs.dbs.dao;
 
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.tree.Tree;
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.toolkit.Assert;
-import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
-import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
-import com.mybatisflex.core.logicdelete.LogicDeleteManager;
 import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.util.SqlUtil;
@@ -14,9 +9,7 @@ import com.mybatisflex.spring.service.impl.ServiceImpl;
 import top.jpower.core.dbs.dbs.dao.mapper.base.JpowerBaseMapper;
 import top.jpower.core.dbs.dbs.entity.base.BaseEntity;
 import top.jpower.core.dbs.mp.support.ForestNodeMerger;
-import top.jpower.core.util.utils.BeanUtil;
 import top.jpower.core.util.utils.Fc;
-import top.jpower.core.util.utils.ReflectUtil;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -27,11 +20,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * @ClassName JpowerServiceImpl
- * @Description TODO
- * @Author 郭丁志
- * @Date 2020-07-03 14:02
- * @Version 1.0
+ * 抽象Service实现类
+ * @param <M>
+ * @param <T>
  */
 public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEntity> extends ServiceImpl<M, T> {
 
@@ -55,22 +46,10 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
         return super.saveOrUpdateBatch(entityList,batchSize);
     }
 
-    @Override
-    public boolean updateBatchById(Collection<T> entityList) {
-        return super.updateBatchById(entityList);
-    }
 
     @Override
     public boolean updateById(T entity) {
         return super.updateById(entity);
-    }
-
-    @Override
-    public boolean update(T entity, Wrapper<T> updateWrapper) {
-        if (Fc.isNull(entity)){
-            entity = BeanUtil.newBean(ReflectUtil.getClassGenricType(this.getClass(),1));
-        }
-        return super.update(entity,updateWrapper);
     }
 
     /**
@@ -85,7 +64,6 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
     /**
      * 根据 entity 条件，真实删除记录
      *
-     * @param queryWrapper 实体包装类 {@link com.baomidou.mybatisplus.core.conditions.query.QueryWrapper}
      */
     public boolean removeReal(QueryWrapper queryWrapper) {
         return SqlUtil.toBool(getMapper().deleteReal(queryWrapper));
@@ -136,18 +114,19 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
     }
 
     /**
-     * @Author 郭丁志
-     * @Description //TODO 把查询结果转换成任何类型
-     * @Date 21:22 2020-07-30
-     * @Param [queryWrapper, mapper]
-     * @return java.util.List<V>
-     **/
-    public <V> List<V> listConver(Wrapper<T> queryWrapper, Function<T, V> function) {
+     * 把查询结果转换成任何类型
+     *
+     * @param queryWrapper
+     * @param function
+     * @return
+     * @param <V>
+     */
+    public <V> List<V> listConver(QueryWrapper queryWrapper, Function<T, V> function) {
         return list(queryWrapper).stream().filter(Objects::nonNull).map(function).collect(Collectors.toList());
     }
 
-    public <E extends Serializable> List<Tree<E>> tree(Wrapper<T> treeWrapper) {
-        List<Map<String,Object>> list = listMaps(treeWrapper);
+    public <E extends Serializable> List<Tree<E>> tree(QueryWrapper treeWrapper) {
+        List<Map> list = listAs(treeWrapper, Map.class);
         return ForestNodeMerger.mergeTree(list);
     }
 

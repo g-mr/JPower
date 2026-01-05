@@ -2,13 +2,19 @@ package top.jpower.core.dbs.mp.support;
 
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.ArrayUtil;
-import com.baomidou.mybatisplus.core.conditions.AbstractWrapper;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.SharedString;
-import com.baomidou.mybatisplus.core.conditions.query.Query;
 import com.baomidou.mybatisplus.core.conditions.segments.MergeSegments;
 import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
+import com.mybatisflex.core.exception.MybatisFlexException;
+import com.mybatisflex.core.query.QueryColumn;
+import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.query.RawQueryColumn;
+import com.mybatisflex.core.util.LambdaGetter;
+import com.mybatisflex.core.util.LambdaUtil;
+import org.apache.poi.ss.formula.functions.T;
 import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.StringUtil;
@@ -24,173 +30,62 @@ import java.util.function.Predicate;
  *
  * @author mr.g
  **/
-@SuppressWarnings("serial")
-public class TreeWrapper<T> extends AbstractWrapper<T, String, TreeWrapper<T>>
-        implements Query<TreeWrapper<T>, T, String> {
+public class TreeWrapper extends QueryWrapper {
 
-    private String id;
-    private String parentId;
-
+    private final QueryColumn id;
+    private final QueryColumn parentId;
     private final String idAlias = ForestNodeMerger.CONFIG.getIdKey();
     private final String parentIdAlias = ForestNodeMerger.CONFIG.getParentIdKey();
 
     private String hasChildren;
-    /**
-     * 查询字段
-     */
-    private SharedString sqlSelect = new SharedString();
 
-    /**
-     * 存储用户的查询字段
-     **/
-    private List<String> list = new ArrayList<>();
 
-    public TreeWrapper(T entity,String id,String parentId) {
-        super.setEntity(entity);
-        this.id = id;
-        this.parentId = parentId;
-        super.initNeed();
-
-        this.select(Fc.toStrArray(TableInfoHelper.getTableInfo(getEntityClass()).getAllSqlSelect()));
+    public TreeWrapper(String id, String parentId) {
+        this.id = new RawQueryColumn(id).as(idAlias);
+        this.parentId = new RawQueryColumn(parentId).as(parentIdAlias);
+        init();
     }
 
-    public TreeWrapper(Class<T> entityClass,String id,String parentId) {
-        super.setEntityClass(entityClass);
-        this.id = id;
-        this.parentId = parentId;
-        super.initNeed();
-        this.select(Fc.toStrArray(TableInfoHelper.getTableInfo(getEntityClass()).getAllSqlSelect()));
+    public <T> TreeWrapper(LambdaGetter<T> id, LambdaGetter<T> parentId) {
+        this.id = LambdaUtil.getQueryColumn(id).as(idAlias);
+        this.parentId = LambdaUtil.getQueryColumn(parentId).as(parentIdAlias);
+        init();
     }
 
-    public TreeWrapper(T entity,String id,String parentId, String... columns) {
-        super.setEntity(entity);
-        this.id = id;
-        this.parentId = parentId;
-        super.initNeed();
-        this.select(columns);
+    public TreeWrapper(QueryColumn id, QueryColumn parentId) {
+        this.id = id.as(idAlias);
+        this.parentId = parentId.as(parentIdAlias);
+        init();
     }
 
-    /**
-     * 非对外公开的构造方法,只用于生产嵌套 sql
-     *
-     * @param entityClass 本不应该需要的
-     */
-    TreeWrapper(T entity, Class<T> entityClass, AtomicInteger paramNameSeq,SharedString sqlSelect,
-                         Map<String, Object> paramNameValuePairs, MergeSegments mergeSegments, SharedString paramAlias,
-                         SharedString lastSql, SharedString sqlComment, SharedString sqlFirst,
-                         String id,String parentId,String hasChildren,List<String> list) {
-        super.setEntity(entity);
-        super.setEntityClass(entityClass);
-        this.paramNameSeq = paramNameSeq;
-        this.paramNameValuePairs = paramNameValuePairs;
-        this.expression = mergeSegments;
-        this.paramAlias = paramAlias;
-        this.lastSql = lastSql;
-        this.sqlComment = sqlComment;
-        this.sqlFirst = sqlFirst;
-        this.sqlSelect = sqlSelect;
-        this.id = id;
-        this.parentId = parentId;
-        this.hasChildren = hasChildren;
-        this.list = list;
+    private void init(){
+        super.addSelectColumn(this.id);
+        super.addSelectColumn(this.parentId);
     }
 
-    /**
-     * 指定查询字段
-     *
-     * @param condition 执行条件
-     * @param columns   字段列表
-     * @return children
-     */
-    @Override
-    public TreeWrapper<T> select(boolean condition, List<String> columns) {
-        if (condition){
-            if (Fc.isNotEmpty(columns)) {
-                this.list = ListUtil.toList(columns);
-            }
-
-            List<String> list = ListUtil.toCopyOnWriteArrayList(columns);
-            if (Fc.isNoneBlank(id,parentId)){
-                list.remove(id);
-                list.add(id+" AS "+idAlias);
-                list.remove(parentId);
-                list.add(parentId+" AS "+parentIdAlias);
-            }
-
-            if (Fc.isNoneBlank(hasChildren)){
-                list.add(hasChildren);
-            }
-
-            if (Fc.isNotEmpty(list)) {
-                this.sqlSelect.setStringValue(Fc.join(list,StringPool.COMMA));
-            }
-
-        }
-        return typedThis;
-    }
-
-
-    @Override
-    public TreeWrapper<T> select(Class<T> entityClass, Predicate<TableFieldInfo> predicate) {
-        if (entityClass == null) {
-            entityClass = getEntityClass();
-        } else {
-            setEntityClass(entityClass);
-        }
-        String select = TableInfoHelper.getTableInfo(entityClass).chooseSelect(predicate);
-        select(Fc.toStrArray(select));
-        return typedThis;
-    }
 
     /**
      * 懒加载
-     * @Author mr.g
+     *
+     * @author mr.g
      **/
-    public TreeWrapper<T> lazy(String parentIdValue){
-        String tableName = TableInfoHelper.getTableInfo(getEntityClass()).getTableName();
-        this.hasChildren = "( SELECT CASE WHEN count( 1 ) > 0 THEN 1 ELSE 0 END FROM "+tableName+" as c WHERE "+this.parentId+" = "+tableName+"."+this.id+" ) AS "+ForestNodeMerger.HAS_CHILDREN;
-        select(ArrayUtil.toArray(this.list,String.class));
+    public TreeWrapper lazy(String parentIdValue){
+        if (Fc.isEmpty(queryTables)) {
+            throw new MybatisFlexException("请先from表");
+        }
+
+        String tableNameAlias = StrUtil.blankToDefault(queryTables.get(0).getAlias(), queryTables.get(0).getNameWithSchema());
+
+
+        this.hasChildren = "( SELECT CASE WHEN count( 1 ) > 0 THEN 1 ELSE 0 END FROM "+queryTables.get(0).getNameWithSchema()+" as c WHERE "+this.parentId+" = "+tableNameAlias+"."+this.id+" ) AS "+ForestNodeMerger.HAS_CHILDREN;
+        select(ArrayUtil.toArray(this.list, String.class));
         eq(this.parentId, StringUtil.isBlank(parentIdValue)? JpowerConstants.TOP_CODE:parentIdValue);
-        return typedThis;
-    }
-
-    /**
-     * Map条件增强
-     * @Author mr.g
-     **/
-    public TreeWrapper<T> map(Map<String,Object> query){
-        SqlWrapper.buildCondition(this, query);
-        return typedThis;
-    }
-
-    @Override
-    public String getSqlSelect() {
-        return sqlSelect.getStringValue();
-    }
-
-    /**
-     * 用于生成嵌套 sql
-     * <p>
-     * 故 sqlSelect 不向下传递
-     * </p>
-     */
-    @Override
-    protected TreeWrapper<T> instance() {
-        return new TreeWrapper<>(getEntity(), getEntityClass(), paramNameSeq, sqlSelect, paramNameValuePairs, new MergeSegments(),
-                paramAlias, SharedString.emptyString(), SharedString.emptyString(), SharedString.emptyString(),
-                id, parentId,hasChildren,list);
+        return this;
     }
 
     @Override
     public void clear() {
-        paramNameSeq.set(0);
-        paramNameValuePairs.clear();
-        expression.clear();
-        lastSql.toEmpty();
-        sqlComment.toEmpty();
-        sqlFirst.toEmpty();
-        this.hasChildren = null;
-        this.list.clear();
-        this.select(Fc.toStrArray(TableInfoHelper.getTableInfo(getEntityClass()).getAllSqlSelect()));
+        super.clear();
+        init();
     }
 }

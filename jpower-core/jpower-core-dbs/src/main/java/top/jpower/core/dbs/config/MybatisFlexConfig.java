@@ -38,7 +38,7 @@ import top.jpower.core.util.utils.Fc;
 import java.util.stream.Collectors;
 
 /**
- * MybatisPlus 配置
+ * MybatisFlex 配置
  *
  * @author mr.g
  */
@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
 @EnableTransactionManagement
 @EnableConfigurationProperties({DemoProperties.class, MybatisProperties.class})
 @PropertySource(value = "classpath:./jpower-db.yml",factory = YamlAndPropertySourceFactory.class)
-public class MybatisPlusConfig {
+public class MybatisFlexConfig {
 
 
     /**
