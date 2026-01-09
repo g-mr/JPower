@@ -46,7 +46,6 @@ import java.util.stream.Collectors;
 @AutoConfiguration(before = MybatisFlexAutoConfiguration.class)
 @EnableTransactionManagement
 @EnableConfigurationProperties({DemoProperties.class, MybatisProperties.class})
-@PropertySource(value = "classpath:./jpower-db.yml",factory = YamlAndPropertySourceFactory.class)
 public class MybatisFlexConfig {
 
 
