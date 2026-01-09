@@ -1,4 +1,4 @@
-package top.jpower.core.dbs.mp.support;
+package top.jpower.core.dbs.support;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

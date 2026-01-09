@@ -9,7 +9,7 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <name>JPower Core Dbs</name>
+    <name>JPower Core DBS</name>
     <artifactId>jpower-core-dbs</artifactId>
     <packaging>jar</packaging>
     <description>
@@ -22,12 +22,6 @@
             <groupId>com.mybatis-flex</groupId>
             <artifactId>mybatis-flex-spring-boot3-starter</artifactId>
         </dependency>
-
-<!--        <dependency>-->
-<!--            <groupId>com.baomidou</groupId>-->
-<!--            <artifactId>mybatis-plus-boot-starter</artifactId>-->
-<!--            <version>${mybatis-plus.version}</version>-->
-<!--        </dependency>-->
 
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -69,6 +63,5 @@
         </dependency>
 
     </dependencies>
-
 
 </project>

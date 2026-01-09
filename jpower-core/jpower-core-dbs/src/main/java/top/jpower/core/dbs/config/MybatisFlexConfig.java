@@ -7,6 +7,7 @@ import com.mybatisflex.core.FlexGlobalConfig;
 import com.mybatisflex.core.keygen.KeyGenerators;
 import com.mybatisflex.core.logicdelete.LogicDeleteProcessor;
 import com.mybatisflex.core.logicdelete.impl.TimeStampLogicDeleteProcessor;
+import com.mybatisflex.core.query.QueryColumnBehavior;
 import com.mybatisflex.spring.boot.ConfigurationCustomizer;
 import com.mybatisflex.spring.boot.MyBatisFlexCustomizer;
 import com.mybatisflex.spring.boot.MybatisFlexAutoConfiguration;
@@ -123,6 +124,14 @@ public class MybatisFlexConfig {
                                                        FlexGlobalConfig.KeyConfig keyConfig,
                                                        MybatisProperties mybatisProperties,
                                                        JpowerTenantProperties tenantProperties) {
+        if (mybatisProperties.getWhereStrategy() != null){
+            switch (mybatisProperties.getWhereStrategy()) {
+                case IGNORE_NONE -> QueryColumnBehavior.setIgnoreFunction(QueryColumnBehavior.IGNORE_NONE);
+                case IGNORE_BLANK -> QueryColumnBehavior.setIgnoreFunction(QueryColumnBehavior.IGNORE_BLANK);
+                case IGNORE_NULL -> QueryColumnBehavior.setIgnoreFunction(QueryColumnBehavior.IGNORE_NULL);
+                default -> QueryColumnBehavior.setIgnoreFunction(QueryColumnBehavior.IGNORE_EMPTY);
+            }
+        }
         return config -> {
             if (Fc.notNull(insertListener)){
                 config.registerInsertListener(insertListener);

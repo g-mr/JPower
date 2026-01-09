@@ -1,29 +1,17 @@
-package top.jpower.core.dbs.mp.support;
+package top.jpower.core.dbs.support;
 
-import cn.hutool.core.collection.ListUtil;
-import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.SharedString;
-import com.baomidou.mybatisplus.core.conditions.segments.MergeSegments;
-import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
-import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
-import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.mybatisflex.core.exception.MybatisFlexException;
 import com.mybatisflex.core.query.QueryColumn;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.query.RawQueryColumn;
 import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.LambdaUtil;
-import org.apache.poi.ss.formula.functions.T;
-import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.utils.Fc;
-import top.jpower.core.util.utils.StringUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Predicate;
+import static com.mybatisflex.core.query.QueryMethods.case_;
+import static com.mybatisflex.core.query.QueryMethods.exists;
+import static top.jpower.core.util.constants.JpowerConstants.TOP_CODE;
 
 /**
  * 树形条件构造器
@@ -36,9 +24,6 @@ public class TreeWrapper extends QueryWrapper {
     private final QueryColumn parentId;
     private final String idAlias = ForestNodeMerger.CONFIG.getIdKey();
     private final String parentIdAlias = ForestNodeMerger.CONFIG.getParentIdKey();
-
-    private String hasChildren;
-
 
     public TreeWrapper(String id, String parentId) {
         this.id = new RawQueryColumn(id).as(idAlias);
@@ -69,6 +54,15 @@ public class TreeWrapper extends QueryWrapper {
      *
      * @author mr.g
      **/
+    public TreeWrapper lazy(){
+        return lazy(TOP_CODE);
+    }
+
+    /**
+     * 懒加载
+     *
+     * @author mr.g
+     **/
     public TreeWrapper lazy(String parentIdValue){
         if (Fc.isEmpty(queryTables)) {
             throw new MybatisFlexException("请先from表");
@@ -76,10 +70,19 @@ public class TreeWrapper extends QueryWrapper {
 
         String tableNameAlias = StrUtil.blankToDefault(queryTables.get(0).getAlias(), queryTables.get(0).getNameWithSchema());
 
+        super.select(
+                case_()
+                .when(exists(QueryWrapper.create()
+                        .select("1")
+                        .from(queryTables.get(0))
+                        .where(this.parentId.eq(tableNameAlias+"."+this.id.getName()))))
+                    .then(1)
+                .else_(0)
+                .end()
+                .as(ForestNodeMerger.HAS_CHILDREN)
+        );
 
-        this.hasChildren = "( SELECT CASE WHEN count( 1 ) > 0 THEN 1 ELSE 0 END FROM "+queryTables.get(0).getNameWithSchema()+" as c WHERE "+this.parentId+" = "+tableNameAlias+"."+this.id+" ) AS "+ForestNodeMerger.HAS_CHILDREN;
-        select(ArrayUtil.toArray(this.list, String.class));
-        eq(this.parentId, StringUtil.isBlank(parentIdValue)? JpowerConstants.TOP_CODE:parentIdValue);
+        super.addWhereQueryCondition(this.parentId.eq(parentIdValue));
         return this;
     }
 

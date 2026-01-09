@@ -1,4 +1,4 @@
-package top.jpower.core.dbs.mp.support;
+package top.jpower.core.dbs.support;
 
 import cn.hutool.core.lang.TypeReference;
 import cn.hutool.core.lang.tree.Tree;
@@ -20,9 +20,9 @@ import java.util.stream.Collectors;
 import static top.jpower.core.util.constants.StringPool.*;
 
 /**
+ * 森林节点归并类
+ *
  * @author mr.g
- * @Desc TODO 森林节点归并类
- * @Date 2020-07-25 22:45
  */
 public class ForestNodeMerger {
 

@@ -22,6 +22,10 @@ public class MybatisProperties {
 //    private Boolean dynamicTableName = false;
 
     /**
+     * where条件字段忽略规则
+     */
+    private FieldStrategy whereStrategy = FieldStrategy.IGNORE_EMPTY;
+    /**
      * 是否开启动乐观锁
      */
     private boolean optimisticLocker = false;
@@ -64,6 +68,10 @@ public class MybatisProperties {
          * 单页分页条数最高限制
          */
         private Integer maxLimit = 5000;
+        /**
+         * 是否自动优化count查询语句
+         */
+        private boolean optimizeCountQuery = true;
     }
 
     @Data
@@ -75,4 +83,30 @@ public class MybatisProperties {
         private long printTimeout;
     }
 
+    /**
+     * 字段策略枚举类
+     * <p>
+     * 如果字段是基本数据类型则最终效果等同于 {@link #ALWAYS}
+     *
+     * @author mr.g
+     * @since 2016-09-09
+     */
+    public enum FieldStrategy {
+        /**
+         * 自动忽略 null
+         */
+        IGNORE_NULL,
+        /**
+         * 忽略
+         */
+        IGNORE_NONE,
+        /**
+         * 自动忽略 null 和 空字符串
+         */
+        IGNORE_EMPTY,
+        /**
+         * 自动忽略 null 和 空白字符串
+         */
+        IGNORE_BLANK
+    }
 }

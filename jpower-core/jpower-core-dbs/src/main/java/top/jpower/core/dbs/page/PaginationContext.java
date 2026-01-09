@@ -1,75 +1,58 @@
 package top.jpower.core.dbs.page;
 
 
-import com.baomidou.mybatisplus.core.metadata.OrderItem;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageHelper;
-import top.jpower.core.util.constants.StringPool;
+import com.mybatisflex.core.constant.SqlConsts;
+import com.mybatisflex.core.paginate.Page;
+import com.mybatisflex.core.query.QueryColumn;
+import com.mybatisflex.core.query.QueryOrderBy;
+import lombok.Setter;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.SqlUtil;
 import top.jpower.core.util.utils.StringUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * @ClassName PaginationContext
- * @Description TODO 分页
- * @Author 郭丁志
- * @Date 2020-02-14 23:27
- * @Version 1.0
+ * 分页上下文
+ *
+ * @author mr.g
  */
 public class PaginationContext {
     /** 保存第几页 **/
-    private static ThreadLocal<Integer> pageNum = new ThreadLocal<Integer>();
+    private static final ThreadLocal<Integer> pageNum = new ThreadLocal<Integer>();
     /** 保存每页记录条数 **/
-    private static ThreadLocal<Integer> pageSize = new ThreadLocal<Integer>();
+    private static final ThreadLocal<Integer> pageSize = new ThreadLocal<Integer>();
     /** 升序排序字段 **/
-    private static ThreadLocal<String> asc = new ThreadLocal<String>();
+    private static final ThreadLocal<String> asc = new ThreadLocal<String>();
     /** 降序排序字段 **/
-    private static ThreadLocal<String> desc = new ThreadLocal<String>();
+    private static final ThreadLocal<String> desc = new ThreadLocal<String>();
+
+    @Setter
+    private static Boolean optimizeCountQuery;
 
     /**
-     * @author 郭丁志
-     * @Description //TODO 分页工具分页
-     * @date 1:13 2020/8/9 0009
+     * 获取分页
+     *
+     * @return 分页
      */
-    public static void startPage() {
-        PageHelper.startPage(PaginationContext.getPageNum(), PaginationContext.getPageSize());
-
-        String asc = StringUtil.removeAllPrefixAndSuffixLowerFirst(Fc.toStr(PaginationContext.getAsc()), StringPool.COMMA);
-        String desc = StringUtil.removeAllPrefixAndSuffixLowerFirst(Fc.toStr(PaginationContext.getDesc()),StringPool.COMMA);
-
-        if (Fc.isNotBlank(desc)){
-            desc = StringUtil.replace(desc,StringPool.COMMA,StringPool.SPACE+StringPool.DESC+StringPool.COMMA)+StringPool.SPACE+StringPool.DESC;
-        }
-
-        if (Fc.isNotBlank(asc)){
-            asc = StringUtil.replace(asc,StringPool.COMMA,StringPool.SPACE+StringPool.ASC+StringPool.COMMA)+StringPool.SPACE+StringPool.ASC;
-        }
-
-        String orderBy = StringUtil.removeAllPrefixAndSuffix(asc + StringPool.COMMA + desc,StringPool.COMMA);
-
-        if (Fc.isNotBlank(orderBy)){
-            PageHelper.orderBy(orderBy);
-        }
+    public static <T> Page<T> page() {
+        Page<T> page = Page.of(PaginationContext.getPageNum(), PaginationContext.getPageSize());
+//        page.setTotalRow();
+        page.setOptimizeCountQuery(optimizeCountQuery);
+        return page;
     }
 
     /**
-     * @author 郭丁志
-     * @Description //TODO 获取MP的分页类
-     * @date 1:14 2020/8/9 0009
+     * 获取排序
+     *
+     * @return 排序
      */
-    public static <T> Page<T> getMpPage() {
-        Page<T> page = new Page<T>(PaginationContext.getPageNum(),PaginationContext.getPageSize());
-
-        String asc = PaginationContext.getAsc();
-        if (Fc.isNotBlank(asc)){
-            page.addOrder(OrderItem.ascs(Fc.toStrArray(asc)));
-        }
-
-        String desc = PaginationContext.getDesc();
-        if (Fc.isNotBlank(desc)){
-            page.addOrder(OrderItem.descs(Fc.toStrArray(desc)));
-        }
-        return page;
+    public static List<QueryOrderBy> orderBy() {
+        List<QueryOrderBy> orderBys = new ArrayList<>(2);
+        Fc.toStrList(PaginationContext.getAsc()).forEach(asc -> orderBys.add(new QueryOrderBy(new QueryColumn(asc), SqlConsts.ASC)));
+        Fc.toStrList(PaginationContext.getDesc()).forEach(desc -> orderBys.add(new QueryOrderBy(new QueryColumn(desc), SqlConsts.DESC)));
+        return orderBys;
     }
 
     /**

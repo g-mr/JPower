@@ -1,4 +1,4 @@
-package top.jpower.core.dbs.mp.support;
+package top.jpower.core.dbs.support;
 
 import cn.hutool.core.util.ArrayUtil;
 import com.mybatisflex.core.query.QueryWrapper;
@@ -7,9 +7,6 @@ import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.StringUtil;
 
 import java.util.Map;
-
-import static top.jpower.core.dbs.mp.support.WrapperKeyword.IGNORE;
-import static top.jpower.core.dbs.mp.support.WrapperKeyword.LIKE;
 
 /**
  * SQL条件构造器
@@ -40,7 +37,7 @@ class SqlWrapper {
 
             String column = filter(keyword.getColumn(k));
             if (Fc.isBlank(column)){
-                keyword = IGNORE;
+                keyword = WrapperKeyword.IGNORE;
             }
             
             switch (keyword){
@@ -105,7 +102,7 @@ class SqlWrapper {
             }
         }
 
-        return LIKE;
+        return WrapperKeyword.LIKE;
     }
 
     /**

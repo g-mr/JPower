@@ -1,8 +1,9 @@
 package top.jpower.core.dbs.service;
 
 import cn.hutool.core.lang.tree.Tree;
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.service.IService;
+import top.jpower.core.dbs.support.TreeWrapper;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -21,7 +22,7 @@ public interface BaseService<T> extends IService<T> {
      * @date 23:22 2020/10/21 0021
      * @param treeWrapper 查询条件
      */
-    <E extends Serializable> List<Tree<E>> tree(Wrapper<T> treeWrapper);
+    <E extends Serializable> List<Tree<E>> tree(TreeWrapper treeWrapper);
 
     /**
      * @author 郭丁志
@@ -31,7 +32,7 @@ public interface BaseService<T> extends IService<T> {
      * @param function 转换方法
      * @return java.util.List<V>
      */
-    <V> List<V> listConver(Wrapper<T> queryWrapper, Function<T, V> function);
+    <V> List<V> listConver(QueryWrapper queryWrapper, Function<T, V> function);
 
     /**
      * 根据 ID 真实删除
@@ -40,13 +41,14 @@ public interface BaseService<T> extends IService<T> {
     boolean removeRealById(Serializable id);
 
     /**
-     * @Description 根据 entity 条件，删除记录
-     * @param queryWrapper 实体包装类 {@link com.baomidou.mybatisplus.core.conditions.query.QueryWrapper}
+     * 根据 entity 条件，删除记录
+     *
+     * @param queryWrapper
      */
-    boolean removeReal(Wrapper<T> queryWrapper);
+    boolean removeReal(QueryWrapper queryWrapper);
 
     /**
-     * @Description 删除（根据ID 批量删除）
+     * 删除（根据ID 批量删除）
      * @param idList 主键ID列表
      */
     boolean removeRealByIds(Collection<? extends Serializable> idList);

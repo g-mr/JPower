@@ -1,9 +1,16 @@
 package top.jpower.core.dbs.page;
 
 import cn.hutool.core.util.StrUtil;
-import jakarta.servlet.*;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.annotation.Order;
+import top.jpower.core.dbs.config.properties.MybatisProperties;
 import top.jpower.core.util.utils.Fc;
 
 import java.io.IOException;
@@ -14,7 +21,10 @@ import java.io.IOException;
  * @author mr.g
  */
 @Order(10)
+@RequiredArgsConstructor
 public class PageFilter implements Filter {
+
+    private final MybatisProperties.Page page;
 
     @Override
     public void destroy() {}
@@ -24,6 +34,7 @@ public class PageFilter implements Filter {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
+        PaginationContext.setOptimizeCountQuery(page.isOptimizeCountQuery());
 
         PaginationContext.setPageNum(getPageNum(httpRequest));
         PaginationContext.setPageSize(getPageSize(httpRequest));
@@ -52,7 +63,7 @@ public class PageFilter implements Filter {
         int pageNum = 1;
         try {
             String pageNums = request.getParameter("pageNum");
-            if (pageNums != null && StrUtil.isNumeric(pageNums)) {
+            if (StrUtil.isNumeric(pageNums)) {
                 pageNum = Integer.parseInt(pageNums);
             }
         } catch (NumberFormatException e) {
@@ -71,7 +82,7 @@ public class PageFilter implements Filter {
         int pageSize = 10;
         try {
             String pageSizes = request.getParameter("pageSize");
-            if (pageSizes != null && StrUtil.isNumeric(pageSizes)) {
+            if (StrUtil.isNumeric(pageSizes)) {
                 pageSize = Integer.parseInt(pageSizes);
             }
         } catch (NumberFormatException e) {
@@ -81,12 +92,11 @@ public class PageFilter implements Filter {
     }
 
     /**
-     * @Author 郭丁志
-     * @Description //TODO 获取升序排序方式字段
-     * @Date 15:43 2020-04-05
-     * @Param [request]
-     * @return int
-     **/
+     * 获取升序排序方式字段
+     *
+     * @param request
+     * @return
+     */
     protected String getAsc(HttpServletRequest request) {
         String asc = null;
         String ascs = request.getParameter("asc");
@@ -97,12 +107,11 @@ public class PageFilter implements Filter {
     }
 
     /**
-     * @Author 郭丁志
-     * @Description //TODO 获取降序排序方式字段
-     * @Date 15:43 2020-04-05
-     * @Param [request]
-     * @return int
-     **/
+     * 获取降序排序方式字段
+     *
+     * @param request
+     * @return
+     */
     protected String getDesc(HttpServletRequest request) {
         String desc = null;
         String descs = request.getParameter("desc");

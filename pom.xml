@@ -62,6 +62,8 @@
         <qiniu.oss.version>7.19.0</qiniu.oss.version><!--7.15.0-->
         <knife4j.version>4.5.0</knife4j.version>
         <mybatis-flex.version>1.11.5</mybatis-flex.version>
+        <spring-boot-admin.version>3.5.6</spring-boot-admin.version>
+        <jwt.version>0.6.0</jwt.version>
 
         <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
         <maven-resources.version>3.4.0</maven-resources.version><!--3.3.1-->
@@ -70,15 +72,6 @@
 
         <docker.image.prefix>jpower</docker.image.prefix>
         <docker.registry>118.31.115.232:5000</docker.registry>
-
-        <!-- ****************** 升级中 ********************** -->
-
-
-<!--        <mybatis-plus.version>3.5.5</mybatis-plus.version>-->
-        <jwt.version>0.6.0</jwt.version>
-        <spring-boot-admin.version>2.7.15</spring-boot-admin.version>
-
-
     </properties>
 
     <modules>
@@ -148,13 +141,6 @@
                 <version>${mybatis-flex.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-
-            <!-- spring-boot-admin -->
-            <dependency>
-                <groupId>de.codecentric</groupId>
-                <artifactId>spring-boot-admin-starter-server</artifactId>
-                <version>${spring-boot-admin.version}</version>
             </dependency>
 
         </dependencies>

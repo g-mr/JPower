@@ -21,7 +21,7 @@ import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
 import top.jpower.core.auth.annotation.Function;
 import top.jpower.core.auth.annotation.Menu;
 import top.jpower.common.constants.CacheNames;
-import top.jpower.core.dbs.mp.support.ForestNodeMerger;
+import top.jpower.core.dbs.support.ForestNodeMerger;
 import top.jpower.core.redis.cache.CacheUtil;
 import top.jpower.core.auth.utils.ShieldUtil;
 import top.jpower.core.dbs.mp.support.Condition;

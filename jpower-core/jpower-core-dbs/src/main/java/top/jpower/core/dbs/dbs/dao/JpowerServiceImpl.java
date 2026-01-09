@@ -8,7 +8,8 @@ import com.mybatisflex.core.util.SqlUtil;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import top.jpower.core.dbs.dbs.dao.mapper.base.JpowerBaseMapper;
 import top.jpower.core.dbs.dbs.entity.base.BaseEntity;
-import top.jpower.core.dbs.mp.support.ForestNodeMerger;
+import top.jpower.core.dbs.support.ForestNodeMerger;
+import top.jpower.core.dbs.support.TreeWrapper;
 import top.jpower.core.util.utils.Fc;
 
 import java.io.Serializable;
@@ -125,7 +126,7 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
         return list(queryWrapper).stream().filter(Objects::nonNull).map(function).collect(Collectors.toList());
     }
 
-    public <E extends Serializable> List<Tree<E>> tree(QueryWrapper treeWrapper) {
+    public <E extends Serializable> List<Tree<E>> tree(TreeWrapper treeWrapper) {
         List<Map> list = listAs(treeWrapper, Map.class);
         return ForestNodeMerger.mergeTree(list);
     }
