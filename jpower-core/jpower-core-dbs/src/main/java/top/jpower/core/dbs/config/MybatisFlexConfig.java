@@ -31,6 +31,7 @@ import top.jpower.core.dbs.config.interceptor.MybatisSqlPrintInterceptor;
 import top.jpower.core.dbs.config.interceptor.chain.MybatisInterceptor;
 import top.jpower.core.dbs.config.properties.DemoProperties;
 import top.jpower.core.dbs.config.properties.MybatisProperties;
+import top.jpower.core.dbs.dbs.entity.base.BaseEntity;
 import top.jpower.core.dbs.tenant.JpowerTenantProperties;
 import top.jpower.core.deploy.support.YamlAndPropertySourceFactory;
 import top.jpower.core.util.user.UserConfig;
@@ -133,10 +134,10 @@ public class MybatisFlexConfig {
         }
         return config -> {
             if (Fc.notNull(insertListener)){
-                config.registerInsertListener(insertListener);
+                config.registerInsertListener(insertListener, BaseEntity.class);
             }
             if (Fc.notNull(insertListener)){
-                config.registerUpdateListener(updateListener);
+                config.registerUpdateListener(updateListener, BaseEntity.class);
             }
             config.setKeyConfig(keyConfig);
             config.setDefaultMaxPageSize(mybatisProperties.getPage().getMaxLimit());
