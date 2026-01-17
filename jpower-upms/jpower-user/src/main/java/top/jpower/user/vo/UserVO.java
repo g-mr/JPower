@@ -1,0 +1,39 @@
+package top.jpower.user.vo;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import top.jpower.core.util.support.excel.Excel;
+import top.jpower.user.dbs.entity.CoreUser;
+
+import java.io.Serial;
+
+/**
+ * 用户信息
+ */
+@EqualsAndHashCode(callSuper = true)
+@Data
+public class UserVO extends CoreUser {
+    @Serial
+    private static final long serialVersionUID = -7254193410221595563L;
+
+    @Schema(description = "是否激活")
+    private String activationStatusStr;
+    @Schema(description = "用户类型")
+    private String userTypeStr;
+    @Schema(description = "证件类型")
+    private String idTypeStr;
+
+    @Schema(description = "部门名称")
+    @Excel(name = "部门名称",type = Excel.Type.EXPORT)
+    private String orgName;
+    @Schema(description = "岗位名称")
+    @Excel(name = "岗位名称",type = Excel.Type.EXPORT)
+    private String postName;
+    @Schema(description = "角色名称")
+    @Excel(name = "角色名称",type = Excel.Type.EXPORT)
+    private String roleName;
+    @Schema(description = "在线数量")
+    private Integer onLine;
+
+}

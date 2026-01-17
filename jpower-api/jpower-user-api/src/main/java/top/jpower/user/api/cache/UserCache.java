@@ -1,0 +1,129 @@
+package top.jpower.user.api.cache;
+
+import top.jpower.common.constants.CacheNames;
+import top.jpower.core.redis.cache.CacheUtil;
+import top.jpower.core.util.constants.StringPool;
+import top.jpower.core.util.rsp.ResponseData;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.SpringUtil;
+import top.jpower.jpower.dbs.entity.CorePost;
+import top.jpower.jpower.dbs.entity.CoreUser;
+import top.jpower.user.api.feign.UserClient;
+import top.jpower.jpower.vo.UserVO;
+
+import java.util.List;
+
+/**
+ * 用户缓存
+ *
+ * @author mr.g
+ **/
+public class UserCache {
+
+    private static final UserClient userClient;
+
+    static {
+        userClient = SpringUtil.getBean(UserClient.class);
+    }
+
+    /**
+     * 通过手机号查询用户
+     *
+     * @author mr.g
+     * @param telephone 手机号
+     * @param tenantCode 租户CODE
+     * @return 用户信息
+     **/
+    public static CoreUser getUserByPhone(String telephone, String tenantCode) {
+        return CacheUtil.get(CacheNames.USER_KEY,CacheNames.USER_PHPNE_KEY, telephone,() -> {
+            ResponseData<CoreUser> responseData = userClient.queryUserByPhone(telephone,tenantCode);
+            return responseData.getData();
+        });
+    }
+
+    /**
+     * 通过账号查询用户
+     *
+     * @author mr.g
+     * @param loginId 账号
+     * @param tenantCode 租户CODE
+     * @return 用户信息
+     **/
+    public static CoreUser getUserByLoginId(String loginId, String tenantCode) {
+        return CacheUtil.get(CacheNames.USER_KEY,CacheNames.USER_LOGINID_KEY,loginId,() -> {
+            ResponseData<CoreUser> responseData = userClient.queryUserByLoginId(loginId,tenantCode);
+            return responseData.getData();
+        });
+    }
+
+    /**
+     * 获取用户的所有角色ID
+     *
+     * @author mr.g
+     * @param userId
+     * @return 角色ID列表
+     **/
+    public static List<Long> getRoleIds(Long userId) {
+        return CacheUtil.get(CacheNames.USER_KEY,CacheNames.USER_ROLEID_KEY,userId,() -> {
+            ResponseData<List<Long>> responseData = userClient.getRoleIds(userId);
+            return responseData.getData();
+        });
+    }
+
+    /**
+     * 通过第三方CODE获取用户
+     *
+     * @author mr.g
+     * @param otherCode 三方CODE
+     * @param tenantCode 租户
+     * @return 用户信息
+     **/
+    public static CoreUser getUserByCode(String otherCode, String tenantCode) {
+        return CacheUtil.get(CacheNames.USER_KEY,CacheNames.USER_OTHERCODE_KEY,otherCode,() -> {
+            ResponseData<CoreUser> responseData = userClient.queryUserByCode(otherCode,tenantCode);
+            return responseData.getData();
+        });
+    }
+
+    /**
+     * 通过ID获取用户信息
+     *
+     * @author mr.g
+     * @param userId 用户ID
+     * @return 用户信息
+     **/
+    public static UserVO getById(Long userId) {
+        return CacheUtil.get(CacheNames.USER_KEY,CacheNames.USER_DETAIL_KEY, userId,() -> {
+            ResponseData<UserVO> responseData = userClient.get(userId);
+            return responseData.getData();
+        });
+    }
+
+    /**
+     * 获取岗位名称
+     *
+     * @author mr.g
+     * @param postId 岗位ID
+     * @return java.lang.String
+     **/
+    public static String getPostName(Long postId) {
+        CorePost post = getPost(postId);
+        if (Fc.isNull(post)){
+            return StringPool.EMPTY;
+        }
+        return post.getName();
+    }
+
+    /**
+     * 通过ID获取岗位
+     *
+     * @param postId 岗位ID
+     * @return 岗位详情
+     */
+    public static CorePost getPost(Long postId){
+        return CacheUtil.get(CacheNames.POST_KEY,CacheNames.POST_DETAIL_KEY,postId,() -> {
+            ResponseData<CorePost> responseData = userClient.queryPostById(postId);
+            return responseData.getData();
+        });
+    }
+}

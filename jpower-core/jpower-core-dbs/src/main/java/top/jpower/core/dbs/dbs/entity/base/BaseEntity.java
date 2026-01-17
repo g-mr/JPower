@@ -27,19 +27,25 @@ public class BaseEntity implements Serializable {
 
     /**
      * 创建部门
+     * 设置onUpdateValue保证更新得时候不会被更新掉
      **/
+    @Column(onUpdateValue = "create_org")
     private Long createOrg;
 
     /**
      * 创建人
+     * 设置onUpdateValue保证更新得时候不会被更新掉
      **/
+    @Column(onUpdateValue = "create_user")
     private Long createUser;
 
     /**
      * 创建时间
+     * 设置onUpdateValue保证更新得时候不会被更新掉
      **/
     @JSONField(format= DatePattern.NORM_DATETIME_PATTERN)
     @JsonFormat(shape = JsonFormat.Shape.STRING,timezone = "GMT+8", pattern = DatePattern.NORM_DATETIME_PATTERN,locale = "zh_CN")
+    @Column(onUpdateValue = "create_time")
     private LocalDateTime createTime;
 
     /**

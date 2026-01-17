@@ -5,10 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * @author Administrator
+ * 返回信息包装类
+ *
+ * @author mr.g
  */
 @Data
 @Builder
@@ -16,6 +19,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class ResponseData<T> implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

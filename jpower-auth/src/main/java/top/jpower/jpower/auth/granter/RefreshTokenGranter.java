@@ -8,7 +8,7 @@ import top.jpower.core.util.constants.TokenConstant;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.auth.AuthUserInfo;
 import top.jpower.jpower.auth.TokenGranter;
-import top.jpower.jpower.cache.UserCache;
+import top.jpower.user.api.cache.UserCache;
 import top.jpower.jpower.dto.TokenParameter;
 import top.jpower.core.exception.throwable.JpowerException;
 import top.jpower.core.auth.dto.UserInfo;

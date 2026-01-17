@@ -6,11 +6,11 @@ import org.springframework.stereotype.Component;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.auth.AuthUserInfo;
 import top.jpower.jpower.auth.TokenGranter;
-import top.jpower.jpower.cache.UserCache;
+import top.jpower.user.api.cache.UserCache;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
 import top.jpower.jpower.dto.TokenParameter;
 import top.jpower.jpower.dto.ValidatePasswordDto;
-import top.jpower.jpower.feign.UserClient;
+import top.jpower.user.api.feign.UserClient;
 import top.jpower.core.auth.dto.UserInfo;
 import top.jpower.jpower.utils.UserUtil;
 

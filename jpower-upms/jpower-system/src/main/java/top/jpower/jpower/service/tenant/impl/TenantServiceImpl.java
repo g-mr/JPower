@@ -27,7 +27,7 @@ import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
 import top.jpower.jpower.dbs.entity.org.TbCoreOrg;
 import top.jpower.jpower.dbs.entity.role.TbCoreRole;
 import top.jpower.jpower.dbs.entity.tenant.TbCoreTenant;
-import top.jpower.jpower.feign.UserClient;
+import top.jpower.user.api.feign.UserClient;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.core.exception.throwable.JpowerException;
