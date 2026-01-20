@@ -5,7 +5,11 @@ import cn.hutool.core.util.NumberUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -48,6 +52,8 @@ import top.jpower.user.service.CoreUserService;
 import top.jpower.jpower.vo.UserVo;
 
 import jakarta.validation.constraints.NotBlank;
+import top.jpower.user.vo.UserVO;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -61,20 +67,20 @@ import static top.jpower.core.dbs.tenant.TenantConstant.TENANT_ACCOUNT_NUMBER;
 import static top.jpower.core.dbs.tenant.TenantConstant.getAccountNumber;
 
 @Slf4j
-@Api(tags = "用户管理")
+@Tag(name = "用户管理")
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/core/user")
 public class UserController extends BaseController {
 
-    private JpowerTenantProperties tenantProperties;
-    private CoreUserService coreUserService;
-    private RedisService redisService;
-    private SmsClient smsClient;
+    private final JpowerTenantProperties tenantProperties;
+    private final CoreUserService coreUserService;
+    private final RedisService redisService;
+    private final SmsClient smsClient;
 
-    @ApiOperation("查询当前登录用户信息")
-    @GetMapping(value = "/getLoginInfo", produces = "application/json")
-    public ResponseData<UserVo> getLoginInfo() {
+    @Operation(summary = "查询当前登录用户信息")
+    @GetMapping(value = "/getLoginInfo")
+    public ResponseData<UserVO> getLoginInfo() {
         Long id = ShieldUtil.getUserId();
         JpowerAssert.notNull(id,JpowerError.Arg,"用户未登录");
         return ReturnJsonUtil.ok("获取成功", coreUserService.getById(id));

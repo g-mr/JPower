@@ -1,7 +1,11 @@
 package top.jpower.core.util.rsp;
 
 import top.jpower.core.util.constants.ReturnConstants;
-import top.jpower.core.util.utils.*;
+import top.jpower.core.util.utils.ClassUtil;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.ReflectUtil;
+import top.jpower.core.util.utils.SpringUtil;
+import top.jpower.core.util.utils.StringUtil;
 
 /**
  * 返回封装工具
@@ -57,6 +61,7 @@ public class ReturnJsonUtil {
         return ok("成功", data);
     }
 
+
     /**
      * 成功的数据结果封装
      *
@@ -71,12 +76,12 @@ public class ReturnJsonUtil {
         }
 
         if (!ClassUtil.isSimpleValueType(data.getClass())){
-            if (StringUtil.startWith(data.getClass().getName(),MP_PACKAGE)){
+            if (StringUtil.startWith(data.getClass().getName(), MP_PACKAGE)) {
                 return print(ReturnConstants.RECODE_SUCCESS, msg, new Pg<>(ReflectUtil.invoke(data,"getTotal"),ReflectUtil.invoke(data,"getRecords")), true);
             }
 
-            if (StringUtil.startWith(data.getClass().getName(),PH_PACKAGE)){
-                return ReturnJsonUtil.print(ReturnConstants.RECODE_SUCCESS, msg, new Pg<>(ReflectUtil.invoke(data,"getTotal"),ReflectUtil.invoke(data,"getList")), true);
+            if (StringUtil.startWith(data.getClass().getName(), PH_PACKAGE)) {
+                return print(ReturnConstants.RECODE_SUCCESS, msg, new Pg<>(ReflectUtil.invoke(data,"getTotal"),ReflectUtil.invoke(data,"getList")), true);
             }
 
         }

@@ -3,16 +3,17 @@ package top.jpower.user.service;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageInfo;
-import top.jpower.jpower.dbs.entity.TbCoreUser;
 import top.jpower.core.dbs.service.BaseService;
+import top.jpower.jpower.dbs.entity.TbCoreUser;
 import top.jpower.jpower.vo.UserVo;
+import top.jpower.user.dbs.entity.CoreUser;
 
 import java.util.List;
 
 /**
  * @author mr.gmac
  */
-public interface CoreUserService extends BaseService<TbCoreUser> {
+public interface CoreUserService extends BaseService<CoreUser> {
 
     /**
      * @Author 郭丁志

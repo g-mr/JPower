@@ -10,9 +10,6 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFDataValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.jpower.core.util.constants.ReturnConstants;
-import top.jpower.core.util.rsp.ResponseData;
-import top.jpower.core.util.rsp.ReturnJsonUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.ReflectUtil;
 
@@ -24,7 +21,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * @ClassName BeanExcelUtil
@@ -112,7 +115,7 @@ public class BeanExcelUtil<T> {
      * @param sheetName 工作表的名称
      * @return 结果
      */
-    public ResponseData<String> exportExcel(List<T> list, String sheetName)
+    public String exportExcel(List<T> list, String sheetName)
     {
         this.init(list, sheetName, Excel.Type.EXPORT);
         return exportExcel();
@@ -166,7 +169,7 @@ public class BeanExcelUtil<T> {
      *
      * @return 结果
      */
-    public ResponseData<String> exportExcel(){
+    public String exportExcel(){
         OutputStream out = null;
         try
         {
@@ -191,7 +194,7 @@ public class BeanExcelUtil<T> {
             log.info("文件生成路径={}",path);
             out = new FileOutputStream(path);
             wb.write(out);
-            return ReturnJsonUtil.print(ReturnConstants.RECODE_SUCCESS,"生成成功",filename,Boolean.TRUE);
+            return filename;
         }
         catch (Exception e){
             log.error("导出Excel异常{}", e.getMessage());

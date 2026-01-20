@@ -1,9 +1,7 @@
 package top.jpower.core.redis.topic;
 
 import lombok.Data;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
+import lombok.experimental.Accessors;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
 
@@ -18,6 +16,7 @@ import static org.springframework.util.Assert.notEmpty;
  * @description
  */
 @Data
+@Accessors(chain = false)
 public class RedisTopicScannerConfigurer implements InitializingBean, BeanNameAware {
 
     private String beanName;
