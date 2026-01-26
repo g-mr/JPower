@@ -1,5 +1,6 @@
 package top.jpower.core.util.rsp;
 
+import org.apache.poi.ss.formula.functions.T;
 import top.jpower.core.util.constants.ReturnConstants;
 import top.jpower.core.util.utils.ClassUtil;
 import top.jpower.core.util.utils.Fc;
@@ -14,14 +15,6 @@ import top.jpower.core.util.utils.StringUtil;
  **/
 public class ReturnJsonUtil {
 
-    /**
-     * MybatisPlus的包路径
-     **/
-    private static final String MP_PACKAGE = "com.baomidou.mybatisplus";
-    /**
-     * PageHelper的包路径
-     **/
-    private static final String PH_PACKAGE = "com.github.pagehelper";
 
     /**
      * 封装
@@ -57,7 +50,7 @@ public class ReturnJsonUtil {
      * @param data 返回数据
      * @return 返回实体
      **/
-    public static <T> ResponseData data(T data){
+    public static <T> ResponseData<T> data(T data){
         return ok("成功", data);
     }
 
@@ -70,21 +63,7 @@ public class ReturnJsonUtil {
      * @param data 返回数据
      * @return 返回实体
      **/
-    public static <T> ResponseData ok(String msg, T data){
-        if (Fc.isNull(data)){
-            return print(ReturnConstants.RECODE_SUCCESS, msg, data, true);
-        }
-
-        if (!ClassUtil.isSimpleValueType(data.getClass())){
-            if (StringUtil.startWith(data.getClass().getName(), MP_PACKAGE)) {
-                return print(ReturnConstants.RECODE_SUCCESS, msg, new Pg<>(ReflectUtil.invoke(data,"getTotal"),ReflectUtil.invoke(data,"getRecords")), true);
-            }
-
-            if (StringUtil.startWith(data.getClass().getName(), PH_PACKAGE)) {
-                return print(ReturnConstants.RECODE_SUCCESS, msg, new Pg<>(ReflectUtil.invoke(data,"getTotal"),ReflectUtil.invoke(data,"getList")), true);
-            }
-
-        }
+    public static <T> ResponseData<T> ok(String msg, T data){
         return print(ReturnConstants.RECODE_SUCCESS, msg, data, true);
     }
 

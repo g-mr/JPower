@@ -48,6 +48,7 @@ import top.jpower.core.auth.dto.UserInfo;
 import top.jpower.core.auth.utils.ShieldUtil;
 import top.jpower.core.dbs.mp.support.Condition;
 import top.jpower.core.dbs.tenant.JpowerTenantProperties;
+import top.jpower.user.dbs.entity.CoreUser;
 import top.jpower.user.service.CoreUserService;
 import top.jpower.jpower.vo.UserVo;
 
@@ -80,7 +81,7 @@ public class UserController extends BaseController {
 
     @Operation(summary = "查询当前登录用户信息")
     @GetMapping(value = "/getLoginInfo")
-    public ResponseData<UserVO> getLoginInfo() {
+    public ResponseData<CoreUser> getLoginInfo() {
         Long id = ShieldUtil.getUserId();
         JpowerAssert.notNull(id,JpowerError.Arg,"用户未登录");
         return ReturnJsonUtil.ok("获取成功", coreUserService.getById(id));
@@ -91,7 +92,7 @@ public class UserController extends BaseController {
     })
     @ApiOperation("查询用户在线信息")
     @GetMapping(value = "/online", produces = "application/json")
-    public ResponseData<List<Map<String,String>>> online(Long userId) {
+    public ResponseData<List<Map<String,Object>>> online(Long userId) {
         JpowerAssert.notNull(userId,JpowerError.Arg,"用户ID不可为空");
 
         Set<String> keys = redisService.keys(TOKEN_USER_KEY + userId + StringPool.COLON + StringPool.ASTERISK);

@@ -10,6 +10,8 @@ import java.io.Serial;
 
 /**
  * 用户信息
+ *
+ * @author mr.g
  */
 @EqualsAndHashCode(callSuper = true)
 @Data

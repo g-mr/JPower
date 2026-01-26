@@ -125,6 +125,7 @@ public class MybatisFlexConfig {
                                                        MybatisProperties mybatisProperties,
                                                        JpowerTenantProperties tenantProperties) {
         if (mybatisProperties.getWhereStrategy() != null){
+            //noinspection AlibabaSwitchStatement
             switch (mybatisProperties.getWhereStrategy()) {
                 case IGNORE_NONE -> QueryColumnBehavior.setIgnoreFunction(QueryColumnBehavior.IGNORE_NONE);
                 case IGNORE_BLANK -> QueryColumnBehavior.setIgnoreFunction(QueryColumnBehavior.IGNORE_BLANK);
