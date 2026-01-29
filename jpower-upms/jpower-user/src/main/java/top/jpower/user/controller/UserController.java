@@ -90,7 +90,7 @@ public class UserController extends BaseController {
     @Function(value = "用户在线信息",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_USER", btnCode = "USER_OFFLINE",code = "USER_ONLINE",type = Menu.TYPE.BTN)
     })
-    @ApiOperation("查询用户在线信息")
+    @Operation(summary = "查询用户在线信息")
     @GetMapping(value = "/online", produces = "application/json")
     public ResponseData<List<Map<String,Object>>> online(Long userId) {
         JpowerAssert.notNull(userId,JpowerError.Arg,"用户ID不可为空");

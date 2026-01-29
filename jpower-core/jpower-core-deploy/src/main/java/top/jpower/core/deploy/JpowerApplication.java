@@ -125,7 +125,7 @@ public class JpowerApplication {
         deployServiceList.stream().sorted(Comparator.comparing(DeployService::getOrder)).collect(Collectors.toList())
                 .forEach(deployService -> deployService.deploy(builder, props, appName, profile));
 
-        log.info("{}项目已启动,运行环境：{}",appName,profile);
+        log.info("{}项目启动,运行环境：{}",appName,profile);
         return builder;
     }
 

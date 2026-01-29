@@ -5,6 +5,8 @@ spring:
   config:
     import:
       - classpath:/bootstrap-jpower.yml  # 导入顶级配置
+      - optional:nacos:jpower.yml
+      - optional:nacos:${spring.application.name}.yml
 
 knife4j:
   enableAggregation: true
