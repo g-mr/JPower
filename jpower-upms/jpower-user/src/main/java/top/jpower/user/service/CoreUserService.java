@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageInfo;
 import top.jpower.core.dbs.service.BaseService;
+import top.jpower.core.util.rsp.Pg;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
 import top.jpower.jpower.vo.UserVo;
 import top.jpower.user.dbs.entity.CoreUser;
+import top.jpower.user.vo.UserVO;
 
 import java.util.List;
 
@@ -16,13 +18,11 @@ import java.util.List;
 public interface CoreUserService extends BaseService<CoreUser> {
 
     /**
-     * @Author 郭丁志
-     * @Description //TODO 查询用户列表
-     * @Date 17:30 2020-05-18
-     * @Param [coreParam]
-     * @return java.util.List<top.jpower.jpower.module.dbs.entity.core.user.TbCoreUser>
+     * 查询用户列表
+     *
+     * @author mr.g
      **/
-    PageInfo<UserVo> listPage(TbCoreUser coreUser);
+    Pg<UserVO> listPage(CoreUser coreUser);
 
     /**
      * @Author 郭丁志

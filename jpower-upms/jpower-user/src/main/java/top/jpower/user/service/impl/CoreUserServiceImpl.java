@@ -22,6 +22,7 @@ import top.jpower.core.exception.throwable.BusinessException;
 import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.core.redis.cache.RedisService;
 import top.jpower.core.util.constants.StringPool;
+import top.jpower.core.util.rsp.Pg;
 import top.jpower.core.util.utils.DigestUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.MD5;
@@ -40,8 +41,10 @@ import top.jpower.core.auth.utils.ShieldUtil;
 import top.jpower.core.dbs.mp.support.Condition;
 import top.jpower.core.dbs.page.PaginationContext;
 import top.jpower.core.dbs.service.impl.BaseServiceImpl;
+import top.jpower.user.dbs.entity.CoreUser;
 import top.jpower.user.service.CoreUserService;
 import top.jpower.jpower.vo.UserVo;
+import top.jpower.user.vo.UserVO;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -60,19 +63,18 @@ import static top.jpower.core.dbs.tenant.TenantConstant.getAccountNumber;
 @Slf4j
 @AllArgsConstructor
 @Service
-public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, TbCoreUser> implements CoreUserService {
+public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, CoreUser> implements CoreUserService {
 
     private TbCoreUserDao coreUserDao;
     private TbCoreUserRoleDao coreUserRoleDao;
     private RedisService redisService;
 
     @Override
-    public PageInfo<UserVo> listPage(TbCoreUser coreUser) {
-        PaginationContext.startPage();
-        List<UserVo> userVo = coreUserDao.listVo(coreUser);
+    public Pg<UserVO> listPage(CoreUser coreUser) {
+        Pg<UserVO> userVo = coreUserDao.listVo(coreUser);
         //查询用户在线信息
-        userVo.forEach(user-> user.setOnLine(redisService.keys(TOKEN_USER_KEY+user.getId() + StringPool.COLON + StringPool.ASTERISK).size()));
-        return new PageInfo<>(userVo);
+        userVo.getList().forEach(user-> user.setOnLine(redisService.keys(TOKEN_USER_KEY+user.getId() + StringPool.COLON + StringPool.ASTERISK).size()));
+        return userVo;
     }
 
     @Override

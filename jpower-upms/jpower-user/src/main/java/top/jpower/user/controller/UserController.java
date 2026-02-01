@@ -4,14 +4,20 @@ import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.NumberUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.PageInfo;
+import com.github.xiaoymin.knife4j.annotations.Ignore;
 import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
@@ -59,6 +65,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 import static top.jpower.common.constants.CacheNames.TOKEN_USER_KEY;
 import static top.jpower.core.exception.annotation.OperateLog.BusinessType.DELETE;
 import static top.jpower.core.exception.annotation.OperateLog.BusinessType.UPDATE;
@@ -72,6 +79,7 @@ import static top.jpower.core.dbs.tenant.TenantConstant.getAccountNumber;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/core/user")
+@Validated
 public class UserController extends BaseController {
 
     private final JpowerTenantProperties tenantProperties;
@@ -92,9 +100,7 @@ public class UserController extends BaseController {
     })
     @Operation(summary = "查询用户在线信息")
     @GetMapping(value = "/online", produces = "application/json")
-    public ResponseData<List<Map<String,Object>>> online(Long userId) {
-        JpowerAssert.notNull(userId,JpowerError.Arg,"用户ID不可为空");
-
+    public ResponseData<List<Map<String,Object>>> online(@Parameter(description = "用户ID") @NotEmpty(message = "用户ID不可为空") @RequestParam Long userId) {
         Set<String> keys = redisService.keys(TOKEN_USER_KEY + userId + StringPool.COLON + StringPool.ASTERISK);
         List<Map<String,Object>> list = new ArrayList<>();
         keys.forEach(key -> {
@@ -110,11 +116,10 @@ public class UserController extends BaseController {
     @Function(value = "踢下线",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "USER_OFFLINE",type = Menu.TYPE.BTN)
     })
-    @ApiOperation("踢下线")
+    @Operation(summary = "踢下线")
     @PostMapping(value = "/offline", produces = "application/json")
-    public ResponseData offline(Long userId,String token) {
-        JpowerAssert.notNull(userId,JpowerError.Arg,"用户ID不可为空");
-        JpowerAssert.notEmpty(token,JpowerError.Arg,"TOKEN不可为空");
+    public ResponseData offline(@Parameter(description = "用户ID") @NotEmpty(message = "用户ID不可为空") @RequestSingleBody Long userId,
+                                @Parameter(description = "TOKEN") @NotBlank(message = "TOKEN不可为空") @RequestSingleBody String token) {
 
         redisService.delete(CacheNames.TOKEN_URL_KEY+token);
         redisService.delete(CacheNames.TOKEN_DATA_SCOPE_KEY+token);
@@ -126,23 +131,14 @@ public class UserController extends BaseController {
     @Function(value = "用户列表",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "USER_LIST",type = Menu.TYPE.INTERFACE)
     })
-    @ApiOperation("查询用户分页列表")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "pageNum", value = "第几页", defaultValue = "1", paramType = "query", dataType = "int", required = true),
-            @ApiImplicitParam(name = "pageSize", value = "每页长度", defaultValue = "10", paramType = "query", dataType = "int", required = true),
-            @ApiImplicitParam(name = "orgId", value = "部门ID", paramType = "query", required = false),
-            @ApiImplicitParam(name = "postId", value = "岗位ID", paramType = "query", required = false),
-            @ApiImplicitParam(name = "loginId", value = "登录名", paramType = "query", required = false),
-            @ApiImplicitParam(name = "nickName", value = "昵称", paramType = "query", required = false),
-            @ApiImplicitParam(name = "userName", value = "姓名", paramType = "query", required = false),
-            @ApiImplicitParam(name = "idNo", value = "证件号码", paramType = "query", required = false),
-            @ApiImplicitParam(name = "userType", value = "用户类型 字典USER_TYPE", paramType = "query", required = false),
-            @ApiImplicitParam(name = "telephone", value = "电话", paramType = "query", required = false)
+    @Operation(summary = "查询用户分页列表")
+    @Parameters({
+        @Parameter(name = "pageNum", description = "第几页",  example = "1", in = QUERY, schema = @Schema(type = "int"), required = true),
+        @Parameter(name = "pageSize", description = "每页长度", example = "10", in = QUERY, schema = @Schema(type = "int"), required = true)
     })
     @GetMapping(value = "/list", produces = "application/json")
-    public ResponseData<Pg<UserVo>> list(@ApiIgnore TbCoreUser coreUser) {
-        PageInfo<UserVo> list = coreUserService.listPage(coreUser);
-        return ReturnJsonUtil.ok("获取成功", list);
+    public ResponseData<Pg<UserVO>> list(@RequestParam CoreUser coreUser) {
+        return ReturnJsonUtil.ok("获取成功", coreUserService.listPage(coreUser));
     }
 
     @Function(value = "导出用户",menus = {

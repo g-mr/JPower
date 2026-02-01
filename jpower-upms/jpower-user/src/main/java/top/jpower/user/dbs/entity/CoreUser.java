@@ -99,8 +99,4 @@ public class CoreUser extends TenantEntity implements Serializable {
     @Schema(description = "岗位ID")
     private Long postId;
 
-    @Schema(description = "角色ID，多个逗号分割")
-    @Column(ignore = true)
-    private String roleIds;
-
 }

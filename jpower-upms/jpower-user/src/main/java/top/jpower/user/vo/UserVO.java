@@ -1,5 +1,6 @@
 package top.jpower.user.vo;
 
+import com.mybatisflex.annotation.Column;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,6 +19,10 @@ import java.io.Serial;
 public class UserVO extends CoreUser {
     @Serial
     private static final long serialVersionUID = -7254193410221595563L;
+
+    @Schema(description = "角色ID，多个逗号分割")
+    @Column(ignore = true)
+    private String roleIds;
 
     @Schema(description = "是否激活")
     private String activationStatusStr;

@@ -11,14 +11,13 @@ import java.io.Serializable;
 
 /**
  * 用户角色关联信息
+ *
+ * @author mr.g
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Table("tb_core_user_role")
-public class CoreUserRole extends BaseEntity implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
+public class CoreUserRole extends BaseEntity {
 
     private Long userId;
     private Long roleId;
