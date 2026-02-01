@@ -4,7 +4,6 @@ import com.mybatisflex.core.dialect.DbType;
 import com.mybatisflex.core.dialect.DialectFactory;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.spring.boot.MybatisFlexAutoConfiguration;
-import jakarta.annotation.PostConstruct;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -38,13 +37,14 @@ public class DataScopeConfig {
     @ConditionalOnMissingBean
     @ConditionalOnBean(UserConfig.class)
     public IDialect dialect(UserConfig userConfig) {
-        return new DataScopeHandler(userConfig);
+        IDialect dialect = new DataScopeHandler(userConfig);
+        registerDataScope(dialect);
+        return dialect;
     }
 
     /**
      * 配置数据权限拦截器
      **/
-    @PostConstruct
     public void registerDataScope(IDialect dialect) {
         // 注册数据权限
         DbType[] supportedDbTypes = {

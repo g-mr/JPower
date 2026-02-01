@@ -1,5 +1,6 @@
 package top.jpower.core.boot.config;
 
+import cn.hutool.core.util.StrUtil;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
@@ -17,6 +18,8 @@ import org.springframework.transaction.interceptor.NameMatchTransactionAttribute
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 import top.jpower.core.boot.transaction.TransactionProperties;
 
+import java.util.List;
+
 /**
  * 全局事务配置
  *
@@ -26,12 +29,11 @@ import top.jpower.core.boot.transaction.TransactionProperties;
 @AutoConfiguration
 @EnableTransactionManagement
 @EnableConfigurationProperties(TransactionProperties.class)
-@ConditionalOnProperty(prefix = "jpower.transaction", name = "enable", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "jpower.transaction", name = "auto", havingValue = "true", matchIfMissing = true)
 public class TransactionConfig {
 
     @Bean
-    @ConditionalOnBean(PlatformTransactionManager.class)
-    public TransactionInterceptor txAdvice(PlatformTransactionManager transactionManager) {
+    public NameMatchTransactionAttributeSource source() {
 
         DefaultTransactionAttribute attributeWrite = new DefaultTransactionAttribute();
         attributeWrite.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
@@ -56,17 +58,17 @@ public class TransactionConfig {
         source.addTransactionalMethod("list*", attributeReadOnly);
         source.addTransactionalMethod("count*", attributeReadOnly);
         source.addTransactionalMethod("is*", attributeReadOnly);
-        TransactionInterceptor transactionInterceptor = new TransactionInterceptor();
-        transactionInterceptor.setTransactionManager(transactionManager);
-        transactionInterceptor.setTransactionAttributeSource(source);
-        return transactionInterceptor;
+        return source;
     }
 
     @Bean
     @ConditionalOnBean(TransactionInterceptor.class)
-    public Advisor txAdviceAdvisor(TransactionInterceptor txAdvice, TransactionProperties transactionProperties) {
+    public Advisor txAdviceAdvisor(NameMatchTransactionAttributeSource source, TransactionInterceptor transactionInterceptor, TransactionProperties transactionProperties) {
         AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
-        pointcut.setExpression(transactionProperties.getExecution());
-        return new DefaultPointcutAdvisor(pointcut, txAdvice);
+        pointcut.setExpression(StrUtil.concat(true,"(", transactionProperties.getExecution(), ") && !@annotation(org.springframework.transaction.annotation.Transactional)"));
+
+        transactionInterceptor.setTransactionAttributeSource(source);
+
+        return new DefaultPointcutAdvisor(pointcut, transactionInterceptor);
     }
 }

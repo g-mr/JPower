@@ -1,6 +1,8 @@
 package top.jpower.core.auth.config;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -27,12 +29,15 @@ import java.util.Map;
  */
 @Component
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-@AllArgsConstructor
 public class FunctionGenerate implements ApplicationRunner {
 
-    private RequestMappingHandlerMapping requestMappingHandlerMapping;
+    private final RequestMappingHandlerMapping requestMappingHandlerMapping;
 
     public final static Map<String,List<Map<String,Object>>> functions = new HashMap<>();
+
+    public FunctionGenerate(@Qualifier("requestMappingHandlerMapping") RequestMappingHandlerMapping requestMappingHandlerMapping) {
+        this.requestMappingHandlerMapping = requestMappingHandlerMapping;
+    }
 
     @Override
     public void run(ApplicationArguments args) {

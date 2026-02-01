@@ -15,7 +15,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class TransactionProperties {
 
     /** 是否开事务 **/
-    private Boolean enable = true;
+    private Boolean auto = true;
 
     /** 事务方法扫描配置 todo 如果不继承dbs会报错,回头需要解决 **/
     private String execution = "execution(* top.jpower.core.dbs.service.BaseService+.*(..))";
