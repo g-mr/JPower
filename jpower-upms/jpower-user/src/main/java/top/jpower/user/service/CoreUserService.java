@@ -68,7 +68,7 @@ public interface CoreUserService extends BaseService<CoreUser> {
      * @param id 用户id
      * @return top.jpower.jpower.module.dbs.entity.core.user.TbCoreUser
      */
-    UserVo selectUserById(Long id);
+    UserVO selectUserById(Long id);
 
     /**
      * @author 郭丁志
@@ -122,7 +122,7 @@ public interface CoreUserService extends BaseService<CoreUser> {
      * @Date 14:49 2020-08-20
      * @Param [coreUser, orgCode]
      **/
-    List<UserVo> list(TbCoreUser coreUser);
+    List<UserVO> list(CoreUser coreUser);
 
     /**
      * @author 郭丁志

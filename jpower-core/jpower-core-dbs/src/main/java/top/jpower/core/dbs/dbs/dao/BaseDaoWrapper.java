@@ -8,44 +8,62 @@ import top.jpower.core.util.utils.BeanUtil;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
  * @Author mr.g
  * @Date 2021/11/22 0022 23:33
  */
-public interface BaseDaoWrapper<T,V> {
+public interface BaseDaoWrapper<T> {
 
-    V build(V entity);
-
-    default V conver(T entity) {
-        Type type = TypeUtil.getTypeArgument(getClass(), 1);
-
-        //noinspection unchecked
-        V v = Objects.requireNonNull(BeanUtil.copyProperties(entity, (Class<V>)type));
-        build(v);
+    default <V> V convert(T entity, Class<V> targetClass, Consumer<V> postProcessor) {
+        if (entity == null) {
+            return null;
+        }
+        V v = BeanUtil.copyProperties(entity, targetClass);
+        if (postProcessor != null && v != null) {
+            postProcessor.accept(v);
+        }
         return v;
     }
 
-    default List<V> listConver(List<T> list){
-        return list.stream().filter(Objects::nonNull).map(this::conver).collect(Collectors.toList());
+    default <V> List<V> listConvert(List<T> list, Class<V> targetClass, Consumer<V> postProcessor) {
+        return list.stream()
+                .filter(Objects::nonNull)
+                .map(e -> convert(e, targetClass, postProcessor))
+                .collect(Collectors.toList());
     }
 
-    default Page<V> pageConver(Page<T> page){
-        List<V> list = listConver(page.getRecords());
-        Page<V> pageVo = new Page<>(page.getPageNumber(),page.getPageSize(),page.getTotalRow());
-        pageVo.setRecords(list);
-        return pageVo;
+    default <V> Pg<V> pageConvert(Page<T> page, Class<V> targetClass, Consumer<V> postProcessor) {
+        List<V> list = listConvert(page.getRecords(), targetClass, postProcessor);
+        return Pg.of(page.getTotalRow(), list);
     }
 
-    default List<V> listBuild(List<V> list){
-        list.forEach(this::build);
-        return list;
+    default <V> V convert(V entity, Consumer<V> postProcessor) {
+        if (entity == null) {
+            return null;
+        }
+        if (postProcessor != null) {
+            postProcessor.accept(entity);
+        }
+        return entity;
     }
 
-    default Pg<V> pageBuild(Pg<V> page){
-        listBuild(page.getList());
-        return page;
+    default <V> List<V> listConvert(List<V> list, Consumer<V> postProcessor) {
+        return list.stream()
+                .filter(Objects::nonNull)
+                .map(e -> convert(e, postProcessor))
+                .collect(Collectors.toList());
     }
 
+    default <V> Pg<V> pageConvert(Page<V> page, Consumer<V> postProcessor) {
+        List<V> list = listConvert(page.getRecords(), postProcessor);
+        return Pg.of(page.getTotalRow(), list);
+    }
+
+    default <V> Pg<V> pageConvert(Pg<V> page, Consumer<V> postProcessor) {
+        List<V> list = listConvert(page.getList(), postProcessor);
+        return Pg.of(page.getTotal(), list);
+    }
 }

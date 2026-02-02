@@ -71,14 +71,14 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, CoreU
 
     @Override
     public Pg<UserVO> listPage(CoreUser coreUser) {
-        Pg<UserVO> userVo = coreUserDao.listVo(coreUser);
+        Pg<UserVO> userVo = coreUserDao.pageVo(coreUser);
         //查询用户在线信息
         userVo.getList().forEach(user-> user.setOnLine(redisService.keys(TOKEN_USER_KEY+user.getId() + StringPool.COLON + StringPool.ASTERISK).size()));
         return userVo;
     }
 
     @Override
-    public List<UserVo> list(TbCoreUser coreUser) {
+    public List<UserVO> list(CoreUser coreUser) {
         return coreUserDao.listVo(coreUser);
     }
 
@@ -156,8 +156,8 @@ public class CoreUserServiceImpl extends BaseServiceImpl<TbCoreUserMapper, CoreU
     }
 
     @Override
-    public UserVo selectUserById(Long id) {
-        return coreUserDao.conver(getBaseMapper().selectAllById(id));
+    public UserVO selectUserById(Long id) {
+        return coreUserDao.selectAllById(id);
     }
 
     @Override

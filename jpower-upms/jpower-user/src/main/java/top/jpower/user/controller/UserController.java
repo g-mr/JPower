@@ -144,36 +144,34 @@ public class UserController extends BaseController {
     @Function(value = "导出用户",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_EXPORTUSER",type = Menu.TYPE.BTN)
     })
-    @ApiOperation(value = "导出用户")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "orgId", value = "部门ID", paramType = "query", required = false),
-            @ApiImplicitParam(name = "loginId", value = "登录名", paramType = "query", required = false),
-            @ApiImplicitParam(name = "nickName", value = "昵称", paramType = "query", required = false),
-            @ApiImplicitParam(name = "userName", value = "姓名", paramType = "query", required = false),
-            @ApiImplicitParam(name = "idNo", value = "证件号码", paramType = "query", required = false),
-            @ApiImplicitParam(name = "userType", value = "用户类型 字典USER_TYPE", paramType = "query", required = false),
-            @ApiImplicitParam(name = "telephone", value = "电话", paramType = "query", required = false)
+    @Operation(summary = "导出用户")
+    @Parameters({
+            @Parameter(name = "orgId", description = "部门ID", in = QUERY),
+            @Parameter(name = "loginId", description = "登录名", in = QUERY),
+            @Parameter(name = "nickName", description = "昵称", in = QUERY),
+            @Parameter(name = "userName", description = "姓名", in = QUERY),
+            @Parameter(name = "idNo", description = "证件号码", in = QUERY),
+            @Parameter(name = "userType", description = "用户类型 字典USER_TYPE", in = QUERY),
+            @Parameter(name = "telephone", description = "电话", in = QUERY)
     })
     @GetMapping(value = "/exportUser")
-    public void exportUser(@ApiIgnore TbCoreUser coreUser) throws IOException {
-        List<UserVo> list = coreUserService.list(coreUser);
+    public void exportUser(@Ignore @RequestParam CoreUser coreUser) throws IOException {
+        List<UserVO> list = coreUserService.list(coreUser);
 
-        BeanExcelUtil<UserVo> beanExcelUtil = new BeanExcelUtil<>(UserVo.class, ImportExportConstants.EXPORT_PATH);
-        ResponseData<String> responseData = beanExcelUtil.exportExcel(list, "用户列表");
-        File file = new File(ImportExportConstants.EXPORT_PATH + responseData.getData());
+        BeanExcelUtil<UserVO> beanExcelUtil = new BeanExcelUtil<>(UserVO.class, ImportExportConstants.EXPORT_PATH);
+        String responseData = beanExcelUtil.exportExcel(list, "用户列表");
+        File file = new File(ImportExportConstants.EXPORT_PATH + responseData);
         FileUtil.download(file, getResponse(), "用户数据.xlsx");
     }
 
     @Function(value = "用户详情",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "USER_DETAIL",type = Menu.TYPE.BTN)
     })
-    @ApiOperation("查询用户详情")
+    @Operation(summary = "查询用户详情")
     @RequestMapping(value = "/getById", method = RequestMethod.GET, produces = "application/json")
-    public ResponseData<UserVo> getById(@ApiParam(value = "主键", required = true) @RequestParam @NotBlank(message = "主键不可为空") Long id) {
+    public ResponseData<UserVO> getById(@Parameter(description = "主键", required = true) @RequestParam @NotBlank(message = "主键不可为空") Long id) {
         JpowerAssert.notNull(id, JpowerError.Arg, "id不可为空");
-
-        UserVo user = coreUserService.selectUserById(id);
-        return ReturnJsonUtil.ok("查询成功", user);
+        return ReturnJsonUtil.ok("查询成功", coreUserService.selectUserById(id));
     }
 
     @Function(value = "新增用户",menus = {

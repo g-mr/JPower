@@ -32,27 +32,45 @@ import static top.jpower.core.dbs.tenant.TenantConstant.DEFAULT_TENANT_CODE;
  * @author mr.gmac
  */
 @Repository
-public class TbCoreUserDao extends JpowerServiceImpl<TbCoreUserMapper, CoreUser> implements BaseDaoWrapper<CoreUser, UserVO> {
+public class TbCoreUserDao extends JpowerServiceImpl<TbCoreUserMapper, CoreUser> implements BaseDaoWrapper<CoreUser> {
 
-    @Override
-    public UserVO build(UserVO userVo) {
+    public void build(UserVO userVo) {
         userVo.setOrgName(SystemCache.getOrgName(userVo.getOrgId()));
         userVo.setRoleName(Fc.join(SystemCache.getRoleNameByIds(Fc.toLongList(userVo.getRoleIds()))," | "));
         if (Fc.notNull(userVo.getPostId())){
             userVo.setPostName(UserCache.getPostName(userVo.getPostId()));
         }
-        return userVo;
     }
 
-    public Pg<UserVO> listVo(CoreUser coreUser) {
+    public Pg<UserVO> pageVo(CoreUser coreUser) {
         Pg<UserVO> pg = getMapper().pageAs(PaginationContext.page(), Wrappers.getQueryWrapper(coreUser)
                         .select(CORE_USER.DEFAULT_COLUMNS)
                         .select(groupConcat(CORE_USER_ROLE.ROLE_ID).as(UserVO::getRoleIds))
                         .leftJoin(CoreUserRole.class)
                         .on(CoreUserRole::getUserId, CoreUser::getId)
                         .groupBy(CoreUser::getId), UserVO.class);
-        pageBuild(pg);
-        return pg;
+        return pageConvert(pg, this::build);
+    }
+
+    public List<UserVO> listVo(CoreUser coreUser) {
+        List<UserVO> list = getMapper().selectListByQueryAs(Wrappers.getQueryWrapper(coreUser)
+                .select(CORE_USER.DEFAULT_COLUMNS)
+                .select(groupConcat(CORE_USER_ROLE.ROLE_ID).as(UserVO::getRoleIds))
+                .leftJoin(CoreUserRole.class)
+                .on(CoreUserRole::getUserId, CoreUser::getId)
+                .groupBy(CoreUser::getId), UserVO.class);
+        return listConvert(list, this::build);
+    }
+
+    public UserVO selectAllById(Long id) {
+        UserVO userVO = super.getOneAs(Wrappers.getQueryWrapper()
+                .select(CORE_USER.DEFAULT_COLUMNS)
+                .select(groupConcat(CORE_USER_ROLE.ROLE_ID).as(UserVO::getRoleIds))
+                .leftJoin(CoreUserRole.class)
+                .on(CoreUserRole::getUserId, CoreUser::getId)
+                .eq(CoreUser::getId, id)
+                .groupBy(CoreUser::getId), UserVO.class);
+        return convert(userVO, this::build);
     }
 
     private List<Long> getChildOrg(Long orgId){
@@ -104,4 +122,5 @@ public class TbCoreUserDao extends JpowerServiceImpl<TbCoreUserMapper, CoreUser>
                 .set(TbCoreUser::getEmail, email)
                 .eq(TbCoreUser::getId, userId));
     }
+
 }
