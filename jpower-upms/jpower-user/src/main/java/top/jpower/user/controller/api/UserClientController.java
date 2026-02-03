@@ -1,21 +1,21 @@
 package top.jpower.user.controller.api;
 
+import com.github.xiaoymin.knife4j.annotations.Ignore;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
-import top.jpower.core.util.rsp.ResponseData;
-import top.jpower.core.util.rsp.ReturnJsonUtil;
+import top.jpower.core.dbs.mp.support.Condition;
+import top.jpower.core.util.rsp.R;
+import top.jpower.core.util.rsp.R;
 import top.jpower.jpower.dbs.entity.TbCorePost;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
 import top.jpower.jpower.dto.ValidatePasswordDto;
+import top.jpower.jpower.vo.UserVo;
 import top.jpower.user.api.feign.UserClient;
-import top.jpower.core.dbs.mp.support.Condition;
 import top.jpower.user.service.CorePostService;
 import top.jpower.user.service.CoreUserRoleService;
 import top.jpower.user.service.CoreUserService;
-import top.jpower.jpower.vo.UserVo;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ import java.util.List;
  * @Date 2020/9/3 0003 1:00
  * @Version 1.0
  */
-@ApiIgnore
+@Ignore
 @RestController
 @RequestMapping("/core/user")
 @AllArgsConstructor
@@ -39,64 +39,64 @@ public class UserClientController implements UserClient {
     @ApiOperation(value = "通过账号查询用户")
     @Override
     @GetMapping("/queryUserByLoginId")
-    public ResponseData<TbCoreUser> queryUserByLoginId(@RequestParam String loginId, @RequestParam String tenantCode){
-        return ReturnJsonUtil.ok("查询成功",coreUserService.selectUserLoginId(loginId,tenantCode));
+    public R<TbCoreUser> queryUserByLoginId(@RequestParam String loginId, @RequestParam String tenantCode){
+        return R.ok("查询成功",coreUserService.selectUserLoginId(loginId,tenantCode));
     }
 
     @ApiOperation(value = "通过用户ID查询所有角色ID")
     @Override
     @GetMapping("/getRoleIdsByUserId")
-    public ResponseData<List<Long>> getRoleIds(@RequestParam Long userId){
-        return ReturnJsonUtil.ok("查询成功",coreUserRoleService.queryRoleIds(userId));
+    public R<List<Long>> getRoleIds(@RequestParam Long userId){
+        return R.ok("查询成功",coreUserRoleService.queryRoleIds(userId));
     }
 
     @ApiOperation(value = "更新用户登陆信息")
     @Override
     @PutMapping("/updateUserLoginInfo/{userId}")
-    public ResponseData updateUserLoginInfo(@PathVariable("userId") Long userId){
-        return ReturnJsonUtil.status(coreUserService.updateLoginInfo(userId));
+    public R updateUserLoginInfo(@PathVariable("userId") Long userId){
+        return R.status(coreUserService.updateLoginInfo(userId));
     }
 
     @ApiOperation(value = "通过第三方CODE查询")
     @Override
     @GetMapping("/queryUserByCode")
-    public ResponseData<TbCoreUser> queryUserByCode(@RequestParam String otherCode, @RequestParam String tenantCode){
-        return ReturnJsonUtil.ok("查询成功",coreUserService.selectUserByOtherCode(otherCode,tenantCode));
+    public R<TbCoreUser> queryUserByCode(@RequestParam String otherCode, @RequestParam String tenantCode){
+        return R.ok("查询成功",coreUserService.selectUserByOtherCode(otherCode,tenantCode));
     }
 
     @ApiOperation("查询用户详情")
     @Override
     @GetMapping(value = "/get")
-    public ResponseData<UserVo> get(@RequestParam Long id){
-        return ReturnJsonUtil.ok("查询成功", coreUserService.selectUserById(id));
+    public R<UserVo> get(@RequestParam Long id){
+        return R.ok("查询成功", coreUserService.selectUserById(id));
     }
 
     @ApiOperation(value = "通过手机号查询用户")
     @Override
     @GetMapping("/queryUserByPhone")
-    public ResponseData<TbCoreUser> queryUserByPhone(@RequestParam String phone,@RequestParam String tenantCode){
+    public R<TbCoreUser> queryUserByPhone(@RequestParam String phone,@RequestParam String tenantCode){
         TbCoreUser user = coreUserService.selectByPhone(phone,tenantCode);
-        return ReturnJsonUtil.ok("查询成功",user);
+        return R.ok("查询成功",user);
     }
 
     @Override
     @PostMapping("/saveUser")
-    public ResponseData saveUser(@RequestBody TbCoreUser user) {
-        return coreUserService.saveUser(user)?ReturnJsonUtil.ok("用户创建成功"):ReturnJsonUtil.fail("用户创建失败");
+    public R saveUser(@RequestBody TbCoreUser user) {
+        return coreUserService.saveUser(user)?R.ok("用户创建成功"):R.fail("用户创建失败");
     }
 
 
     @Override
     @GetMapping(value = "/listByUserType")
-    public ResponseData<List<TbCoreUser>> listByUserType(@ApiParam(value = "用户类型", required = true) @RequestParam Integer userType) {
+    public R<List<TbCoreUser>> listByUserType(@ApiParam(value = "用户类型", required = true) @RequestParam Integer userType) {
         List<TbCoreUser> list = coreUserService.list(Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getUserType, userType));
-        return ReturnJsonUtil.ok("获取成功", list);
+        return R.ok("获取成功", list);
     }
 
     @Override
     @GetMapping("/queryPostById")
-    public ResponseData<TbCorePost> queryPostById(@RequestParam Long postId) {
-        return ReturnJsonUtil.data(corePostService.getById(postId));
+    public R<TbCorePost> queryPostById(@RequestParam Long postId) {
+        return R.data(corePostService.getById(postId));
     }
 
     @Override

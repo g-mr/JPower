@@ -14,9 +14,12 @@ import top.jpower.core.util.constants.*;
 import top.jpower.core.util.utils.*;
 
 import jakarta.servlet.http.HttpServletRequest;
+
+import javax.security.sasl.AuthenticationException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * 系统鉴权信息获取工具
@@ -93,6 +96,17 @@ public class ShieldUtil {
     public static Long getUserId() {
         UserInfo user = getUser();
         return (null == user) ? null : user.getUserId();
+    }
+
+    /**
+     * 获取用户id
+     * 没有抛错
+     *
+     * @return userId
+     */
+    public static Long getUserIdThrow() {
+        UserInfo user = getUser();
+        return Optional.ofNullable(user).orElseThrow(() -> new RuntimeException("用户未登录")).getUserId();
     }
 
     /**

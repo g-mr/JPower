@@ -8,6 +8,7 @@ import top.jpower.core.util.rsp.Pg;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
 import top.jpower.jpower.vo.UserVo;
 import top.jpower.user.dbs.entity.CoreUser;
+import top.jpower.user.vo.LoginUserVO;
 import top.jpower.user.vo.UserVO;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public interface CoreUserService extends BaseService<CoreUser> {
      * @return java.lang.Integer
      **/
     @Override
-    boolean save(TbCoreUser coreUser);
+    boolean save(CoreUser coreUser);
 
     /**
      * @Author 郭丁志
@@ -50,7 +51,7 @@ public interface CoreUserService extends BaseService<CoreUser> {
      * @Param [coreUser]
      * @return java.lang.Integer
      **/
-    Boolean update(TbCoreUser coreUser);
+    Boolean updateUser(CoreUser coreUser);
 
     /**
      * @Author 郭丁志
@@ -59,7 +60,7 @@ public interface CoreUserService extends BaseService<CoreUser> {
      * @Param [loginId]
      * @return top.jpower.jpower.module.dbs.entity.core.user.TbCoreUser
      **/
-    TbCoreUser selectUserLoginId(String loginId,String tenantCode);
+    CoreUser selectUserLoginId(String loginId,String tenantCode);
 
     /**
      * @author 郭丁志
@@ -75,10 +76,9 @@ public interface CoreUserService extends BaseService<CoreUser> {
      * @Description //TODO 修改用户密码
      * @date 1:28 2020/5/24 0024
      * @param ids 用户id
-     * @param pass 用户加密后密码
      * @return java.lang.Integer
      */
-    Boolean updateUserPassword(List<Long> ids, String pass);
+    boolean resetPassword(List<Long> ids);
 
     /**
      * @author 郭丁志
@@ -87,7 +87,7 @@ public interface CoreUserService extends BaseService<CoreUser> {
      * @param list
      * @return java.lang.Integer
      */
-    boolean insertBatch(List<TbCoreUser> list,boolean isCover);
+    boolean insertBatch(List<CoreUser> list,boolean isCover);
 
     /**
      * @author 郭丁志
@@ -106,7 +106,7 @@ public interface CoreUserService extends BaseService<CoreUser> {
      * @Param [phone]
      * @return top.jpower.jpower.module.dbs.entity.core.user.TbCoreUser
      **/
-    TbCoreUser selectByPhone(String phone,String tenantCode);
+    CoreUser selectByPhone(String phone,String tenantCode);
 
     /**
      * @author 郭丁志
@@ -178,4 +178,9 @@ public interface CoreUserService extends BaseService<CoreUser> {
      **/
     boolean updateEmail(String email, Long userId);
 
+    boolean createUser(CoreUser coreUser);
+
+    boolean updateUserInfo(LoginUserVO userVO);
+
+    boolean updatePassword(String oldPw, String newPw);
 }

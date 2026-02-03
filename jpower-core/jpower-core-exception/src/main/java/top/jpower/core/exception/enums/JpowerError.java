@@ -1,5 +1,7 @@
 package top.jpower.core.exception.enums;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import top.jpower.core.util.constants.ReturnConstants;
 
 /**
@@ -7,7 +9,8 @@ import top.jpower.core.util.constants.ReturnConstants;
  *
  * @author mr.gmac
  */
-
+@RequiredArgsConstructor
+@Getter
 public enum JpowerError {
 
     // 异常信息
@@ -19,25 +22,12 @@ public enum JpowerError {
     Auth(ReturnConstants.RECODE_AUTH, "权限异常:%s"),
     Unknown(ReturnConstants.RECODE_SYSTEM, "系统异常:%s"),
     Arg(ReturnConstants.RECODE_NULL, "参数错误:%s"),
-    Business(ReturnConstants.RECODE_ERROR, "%s"),
+    Business(ReturnConstants.RECODE_BUSINESS, "%s"),
     NotFind(ReturnConstants.RECODE_NOTFOUND, "未找到:%s");
 
-    private int    code;
-    private String message;
+    private final int    code;
+    private final String message;
 
-
-    JpowerError(int code, String message) {
-        this.code = code;
-        this.message = message;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
 
 
 }

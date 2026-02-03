@@ -1,4 +1,4 @@
-package top.jpower.core.util.validated;
+package top.jpower.common.validated.group;
 
 /**
  * @author mr.g

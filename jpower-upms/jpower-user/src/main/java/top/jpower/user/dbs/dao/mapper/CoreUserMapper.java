@@ -8,6 +8,6 @@ import top.jpower.user.dbs.entity.CoreUser;
  * @author mr.gmac
  */
 @Mapper
-public interface TbCoreUserMapper extends JpowerBaseMapper<CoreUser> {
+public interface CoreUserMapper extends JpowerBaseMapper<CoreUser> {
 
 }

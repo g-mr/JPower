@@ -1,31 +1,26 @@
 package top.jpower.user.controller;
 
-import cn.hutool.core.lang.Validator;
-import cn.hutool.core.util.NumberUtil;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.github.pagehelper.PageInfo;
 import com.github.xiaoymin.knife4j.annotations.Ignore;
-import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.common.constants.CacheNames;
-import top.jpower.common.constants.DefaultValConstants;
-import top.jpower.common.constants.ParamsConstants;
-import top.jpower.common.enums.IdTypeEnum;
-import top.jpower.common.enums.UserTypeEnum;
+import top.jpower.common.validated.Mobile;
+import top.jpower.core.auth.annotation.Function;
+import top.jpower.core.auth.annotation.Menu;
+import top.jpower.core.auth.utils.ShieldUtil;
 import top.jpower.core.boot.argument.RequestSingleBody;
 import top.jpower.core.boot.controller.BaseController;
 import top.jpower.core.exception.annotation.OperateLog;
@@ -35,44 +30,35 @@ import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.core.redis.cache.CacheUtil;
 import top.jpower.core.redis.cache.RedisService;
 import top.jpower.core.util.constants.ImportExportConstants;
-import top.jpower.core.util.constants.ReturnConstants;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.rsp.Pg;
-import top.jpower.core.util.rsp.ResponseData;
-import top.jpower.core.util.rsp.ReturnJsonUtil;
+import top.jpower.core.util.rsp.R;
 import top.jpower.core.util.support.excel.BeanExcelUtil;
-import top.jpower.core.util.utils.*;
-import top.jpower.jpower.cache.SystemCache;
-import top.jpower.jpower.cache.param.ParamConfig;
-import top.jpower.jpower.dbs.entity.TbCoreUser;
-import top.jpower.jpower.dbs.entity.tenant.TbCoreTenant;
+import top.jpower.core.util.utils.ExceptionUtil;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.FileUtil;
+import top.jpower.core.util.utils.StringUtil;
 import top.jpower.jpower.dto.ValidateDto;
 import top.jpower.jpower.feign.SmsClient;
-import top.jpower.core.auth.annotation.Function;
-import top.jpower.core.auth.annotation.Menu;
-import top.jpower.core.auth.dto.UserInfo;
-import top.jpower.core.auth.utils.ShieldUtil;
-import top.jpower.core.dbs.mp.support.Condition;
-import top.jpower.core.dbs.tenant.JpowerTenantProperties;
 import top.jpower.user.dbs.entity.CoreUser;
 import top.jpower.user.service.CoreUserService;
-import top.jpower.jpower.vo.UserVo;
-
-import jakarta.validation.constraints.NotBlank;
+import top.jpower.user.vo.LoginUserVO;
 import top.jpower.user.vo.UserVO;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 import static top.jpower.common.constants.CacheNames.TOKEN_USER_KEY;
+import static top.jpower.common.constants.ServiceCodeConstants.EMAIL_NOT_LEGAL;
+import static top.jpower.common.constants.ServiceCodeConstants.NOT_LOGIN;
 import static top.jpower.core.exception.annotation.OperateLog.BusinessType.DELETE;
 import static top.jpower.core.exception.annotation.OperateLog.BusinessType.UPDATE;
 import static top.jpower.core.util.constants.JpowerConstants.VALIDATE_SMS_CODE;
-import static top.jpower.core.dbs.tenant.TenantConstant.DEFAULT_TENANT_CODE;
-import static top.jpower.core.dbs.tenant.TenantConstant.TENANT_ACCOUNT_NUMBER;
-import static top.jpower.core.dbs.tenant.TenantConstant.getAccountNumber;
 
 @Slf4j
 @Tag(name = "用户管理")
@@ -82,17 +68,16 @@ import static top.jpower.core.dbs.tenant.TenantConstant.getAccountNumber;
 @Validated
 public class UserController extends BaseController {
 
-    private final JpowerTenantProperties tenantProperties;
     private final CoreUserService coreUserService;
     private final RedisService redisService;
     private final SmsClient smsClient;
 
     @Operation(summary = "查询当前登录用户信息")
     @GetMapping(value = "/getLoginInfo")
-    public ResponseData<CoreUser> getLoginInfo() {
+    public R<CoreUser> getLoginInfo() {
         Long id = ShieldUtil.getUserId();
-        JpowerAssert.notNull(id,JpowerError.Arg,"用户未登录");
-        return ReturnJsonUtil.ok("获取成功", coreUserService.getById(id));
+        JpowerAssert.notNull(id, JpowerError.Auth,NOT_LOGIN);
+        return R.ok(coreUserService.getById(id));
     }
 
     @Function(value = "用户在线信息",menus = {
@@ -100,7 +85,7 @@ public class UserController extends BaseController {
     })
     @Operation(summary = "查询用户在线信息")
     @GetMapping(value = "/online", produces = "application/json")
-    public ResponseData<List<Map<String,Object>>> online(@Parameter(description = "用户ID") @NotEmpty(message = "用户ID不可为空") @RequestParam Long userId) {
+    public R<List<Map<String,Object>>> online(@Parameter(description = "用户ID") @NotEmpty(message = "用户ID不可为空") @RequestParam Long userId) {
         Set<String> keys = redisService.keys(TOKEN_USER_KEY + userId + StringPool.COLON + StringPool.ASTERISK);
         List<Map<String,Object>> list = new ArrayList<>();
         keys.forEach(key -> {
@@ -110,7 +95,7 @@ public class UserController extends BaseController {
             list.add(map);
         });
 
-        return ReturnJsonUtil.ok("获取成功", list);
+        return R.ok(list);
     }
 
     @Function(value = "踢下线",menus = {
@@ -118,14 +103,14 @@ public class UserController extends BaseController {
     })
     @Operation(summary = "踢下线")
     @PostMapping(value = "/offline", produces = "application/json")
-    public ResponseData offline(@Parameter(description = "用户ID") @NotEmpty(message = "用户ID不可为空") @RequestSingleBody Long userId,
+    public R offline(@Parameter(description = "用户ID") @NotEmpty(message = "用户ID不可为空") @RequestSingleBody Long userId,
                                 @Parameter(description = "TOKEN") @NotBlank(message = "TOKEN不可为空") @RequestSingleBody String token) {
 
         redisService.delete(CacheNames.TOKEN_URL_KEY+token);
         redisService.delete(CacheNames.TOKEN_DATA_SCOPE_KEY+token);
         redisService.delete(TOKEN_USER_KEY + userId + StringPool.COLON + token);
 
-        return ReturnJsonUtil.ok("操作成功");
+        return R.ok();
     }
 
     @Function(value = "用户列表",menus = {
@@ -137,8 +122,8 @@ public class UserController extends BaseController {
         @Parameter(name = "pageSize", description = "每页长度", example = "10", in = QUERY, schema = @Schema(type = "int"), required = true)
     })
     @GetMapping(value = "/list", produces = "application/json")
-    public ResponseData<Pg<UserVO>> list(@RequestParam CoreUser coreUser) {
-        return ReturnJsonUtil.ok("获取成功", coreUserService.listPage(coreUser));
+    public R<Pg<UserVO>> list(@RequestParam CoreUser coreUser) {
+        return R.ok(coreUserService.listPage(coreUser));
     }
 
     @Function(value = "导出用户",menus = {
@@ -159,8 +144,8 @@ public class UserController extends BaseController {
         List<UserVO> list = coreUserService.list(coreUser);
 
         BeanExcelUtil<UserVO> beanExcelUtil = new BeanExcelUtil<>(UserVO.class, ImportExportConstants.EXPORT_PATH);
-        String responseData = beanExcelUtil.exportExcel(list, "用户列表");
-        File file = new File(ImportExportConstants.EXPORT_PATH + responseData);
+        String R = beanExcelUtil.exportExcel(list, "用户列表");
+        File file = new File(ImportExportConstants.EXPORT_PATH + R);
         FileUtil.download(file, getResponse(), "用户数据.xlsx");
     }
 
@@ -168,212 +153,90 @@ public class UserController extends BaseController {
             @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "USER_DETAIL",type = Menu.TYPE.BTN)
     })
     @Operation(summary = "查询用户详情")
-    @RequestMapping(value = "/getById", method = RequestMethod.GET, produces = "application/json")
-    public ResponseData<UserVO> getById(@Parameter(description = "主键", required = true) @RequestParam @NotBlank(message = "主键不可为空") Long id) {
+    @GetMapping(value = "/getById", produces = "application/json")
+    public R<UserVO> getById(@Parameter(description = "主键", required = true) @RequestParam @NotBlank(message = "主键不可为空") Long id) {
         JpowerAssert.notNull(id, JpowerError.Arg, "id不可为空");
-        return ReturnJsonUtil.ok("查询成功", coreUserService.selectUserById(id));
+        return R.ok(coreUserService.selectUserById(id));
     }
 
     @Function(value = "新增用户",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_ADD",type = Menu.TYPE.BTN)
     })
-    @ApiOperation(value = "新增", notes = "主键不用传")
-    @RequestMapping(value = "/add", method = {RequestMethod.POST}, produces = "application/json")
-    public ResponseData add(TbCoreUser coreUser) {
-
-        JpowerAssert.notEmpty(coreUser.getLoginId(), JpowerError.Arg, "用户名不可为空");
-
-        if (coreUser.getIdType() != null && IdTypeEnum.ID_CARD.getValue().equals(coreUser.getIdType())) {
-            if (Fc.isNotBlank(coreUser.getIdNo()) && !Validator.isCitizenId(coreUser.getIdNo())) {
-                return ReturnJsonUtil.busFail("身份证不合法");
-            }
-        }
-
-        if (StringUtils.isNotBlank(coreUser.getTelephone()) && !Validator.isMobile(coreUser.getTelephone())) {
-            return ReturnJsonUtil.print(ReturnConstants.RECODE_BUSINESS, "手机号不合法", false);
-        }
-        if (StringUtils.isNotBlank(coreUser.getEmail()) && !Validator.isEmail(coreUser.getEmail())) {
-            return ReturnJsonUtil.busFail("邮箱不合法");
-        }
-
-        String tenantCode = Fc.toStr(coreUser.getTenantCode(), ShieldUtil.getTenantCode());
-        if (tenantProperties.getEnable()){
-            if (ShieldUtil.isRoot()) {
-                tenantCode = Fc.isBlank(coreUser.getTenantCode()) ? DEFAULT_TENANT_CODE : coreUser.getTenantCode();
-            }
-            TbCoreTenant tenant = SystemCache.getTenantByCode(tenantCode);
-            if (Fc.isNull(tenant)) {
-                return ReturnJsonUtil.fail("租户不存在");
-            }
-            long accountNumber = getAccountNumber(tenant.getLicenseKey());
-            if (!Fc.equalsValue(accountNumber, TENANT_ACCOUNT_NUMBER)) {
-                long count = coreUserService.count(Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getTenantCode, tenantCode));
-                if (count >= accountNumber) {
-                    return ReturnJsonUtil.busFail("账号额度已不足");
-                }
-            }
-        }
-
-        if (StringUtils.isNotBlank(coreUser.getTelephone())) {
-            JpowerAssert.isNull(coreUserService.selectByPhone(coreUser.getTelephone(), tenantCode), JpowerError.Business, "手机号已存在");
-        }
-        JpowerAssert.isNull(coreUserService.selectUserLoginId(coreUser.getLoginId(), tenantCode), JpowerError.Business, "当前登陆名已存在");
-
-        coreUser.setPassword(DigestUtil.pwdEncrypt(MD5.md5HexToUpperCase(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD, DefaultValConstants.DEFAULT_USER_PASSWORD))));
-        if (Fc.isNull(coreUser.getUserType())){
-            coreUser.setUserType(UserTypeEnum.USER_TYPE_SYSTEM.getValue());
-        }
-        CacheUtil.clear(CacheNames.USER_KEY);
-        return ReturnJsonUtil.status(coreUserService.save(coreUser));
+    @Operation(summary = "新增", description = "主键不用传")
+    @PostMapping(value = "/add", produces = "application/json")
+    public R<Boolean> add(@Valid @NotNull(message = "用户信息不能为空") @RequestBody CoreUser coreUser) {
+        return R.status(coreUserService.createUser(coreUser));
     }
 
     @Function(value = "删除用户",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_DELETE",type = Menu.TYPE.BTN)
     })
-    @ApiOperation(value = "删除用户")
+    @Operation(summary = "删除用户")
     @OperateLog(title = "删除登录用户", businessType = DELETE)
-    @RequestMapping(value = "/delete", method = {RequestMethod.DELETE}, produces = "application/json")
-    public ResponseData delete(@ApiParam(value = "主键 多个逗号分割", required = true) @RequestParam String ids) {
-
-        JpowerAssert.notEmpty(ids, JpowerError.Arg, "ids不可为空");
-
-        if (coreUserService.delete(Fc.toLongList(ids))) {
-            CacheUtil.clear(CacheNames.USER_KEY);
-            return ReturnJsonUtil.ok("删除成功");
-        } else {
-            return ReturnJsonUtil.fail("删除失败");
-        }
+    @DeleteMapping(value = "/delete", produces = "application/json")
+    public R<Boolean> delete(@Parameter(description = "主键 多个逗号分割", required = true) @NotBlank(message = "ids不可为空") @RequestParam String ids) {
+        CacheUtil.clear(CacheNames.USER_KEY);
+        return R.status(coreUserService.delete(Fc.toLongList(ids)));
     }
 
     @Function(value = "修改用户",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_UPDATE",type = Menu.TYPE.BTN)
     })
-    @ApiOperation(value = "修改用户信息")
+    @Operation(summary = "修改用户信息")
     @OperateLog(title = "修改系统用户信息", businessType = UPDATE)
-    @RequestMapping(value = "/update", method = {RequestMethod.PUT}, produces = "application/json")
-    public ResponseData update(TbCoreUser coreUser) {
-
-        JpowerAssert.notNull(coreUser.getId(), JpowerError.Arg, "用户ID不可为空");
-
-        if (Fc.notNull(coreUser.getIdType()) && IdTypeEnum.ID_CARD.getValue().equals(coreUser.getIdType())) {
-            if (Fc.isNotBlank(coreUser.getIdNo()) && !Validator.isCitizenId(coreUser.getIdNo())) {
-                return ReturnJsonUtil.busFail("身份证不合法");
-            }
-        }
-
-        if (StringUtils.isNotBlank(coreUser.getTelephone()) && !Validator.isMobile(coreUser.getTelephone())) {
-            return ReturnJsonUtil.busFail("手机号不合法");
-        }
-
-        if (StringUtils.isNotBlank(coreUser.getEmail()) && !Validator.isEmail(coreUser.getEmail())) {
-            return ReturnJsonUtil.busFail("邮箱不合法");
-        }
-
-        if (StringUtils.isNotBlank(coreUser.getLoginId())) {
-            TbCoreUser user = coreUserService.selectUserLoginId(coreUser.getLoginId(), coreUser.getTenantCode());
-            if (user != null && !NumberUtil.equals(user.getId(), coreUser.getId())) {
-                return ReturnJsonUtil.busFail("该登录用户名已存在");
-            }
-        }
-
-        if (StringUtils.isNotBlank(coreUser.getTelephone())) {
-            TbCoreUser user = coreUserService.selectByPhone(coreUser.getTelephone(), coreUser.getTenantCode());
-            if (user != null && !NumberUtil.equals(user.getId(), coreUser.getId())) {
-                return ReturnJsonUtil.busFail("该手机号已存在");
-            }
-        }
-
-        coreUser.setPassword(null);
-        CacheUtil.clear(CacheNames.USER_KEY);
-        return ReturnJsonUtil.status(coreUserService.update(coreUser));
+    @PutMapping(value = "/update", produces = "application/json")
+    public R<Boolean> update(@Valid @RequestBody CoreUser coreUser) {
+        return R.status(coreUserService.updateUser(coreUser));
     }
 
-    @ApiOperation(value = "修改个人信息")
+    @Operation(summary = "修改个人信息")
     @OperateLog(title = "修改个人信息", businessType = UPDATE)
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "avatar", value = "头像", paramType = "query", required = false),
-        @ApiImplicitParam(name = "nickName", value = "昵称", paramType = "query", required = false),
-        @ApiImplicitParam(name = "userName", value = "姓名", paramType = "query", required = false),
-        @ApiImplicitParam(name = "idType", value = "证件类型", paramType = "query", required = false),
-        @ApiImplicitParam(name = "idNo", value = "证件号码", paramType = "query", required = false),
-        @ApiImplicitParam(name = "birthday", value = "出生日期", paramType = "query", required = false),
-        @ApiImplicitParam(name = "postCode", value = "邮编", paramType = "query", required = false),
-        @ApiImplicitParam(name = "address", value = "地址", paramType = "query", required = false)
-    })
     @PutMapping(value = "/updateLogin", produces = "application/json")
-    public ResponseData updateLogin(@ApiIgnore TbCoreUser coreUser) {
-        JpowerAssert.notNull(coreUser.getId(), JpowerError.Arg, "用户ID不可为空");
-        JpowerAssert.notNull(ShieldUtil.getUser(), JpowerError.Arg, "用户未登录");
-
-        if (coreUser.getIdType() != null && IdTypeEnum.ID_CARD.getValue().equals(coreUser.getIdType())) {
-            if (Fc.isNotBlank(coreUser.getIdNo()) && !Validator.isCitizenId(coreUser.getIdNo())) {
-                return ReturnJsonUtil.busFail("身份证不合法");
-            }
-        }
-
-        CacheUtil.clear(CacheNames.USER_KEY);
-        return ReturnJsonUtil.status(coreUserService.update(Wrappers.lambdaUpdate(TbCoreUser.class)
-                .set(TbCoreUser::getAvatar,coreUser.getAvatar())
-                .set(TbCoreUser::getNickName,coreUser.getNickName())
-                .set(TbCoreUser::getUserName,coreUser.getUserName())
-                .set(TbCoreUser::getIdType,coreUser.getIdType())
-                .set(TbCoreUser::getIdNo,coreUser.getIdNo())
-                .set(TbCoreUser::getBirthday,coreUser.getBirthday())
-                .set(TbCoreUser::getPostCode,coreUser.getPostCode())
-                .set(TbCoreUser::getAddress,coreUser.getAddress())
-                .eq(TbCoreUser::getId,ShieldUtil.getUser().getUserId())));
+    public R<Boolean> updateLogin(@Valid @RequestBody LoginUserVO userVO) {
+        // 防御性编程
+        JpowerAssert.notNull(ShieldUtil.getUser(), JpowerError.Auth, NOT_LOGIN);
+        return R.status(coreUserService.updateUserInfo(userVO));
     }
 
     @Function(value = "重置密码",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_RESETPASSWORD",type = Menu.TYPE.BTN)
     })
-    @ApiOperation(value = "重置用户登陆密码")
+    @Operation(summary = "重置用户登陆密码")
     @PutMapping(value = "/resetPassword", produces = "application/json")
-    public ResponseData resetPassword(@ApiParam(value = "主键 多个逗号分割", required = true) @RequestParam String ids) {
-
-        String pass = DigestUtil.pwdEncrypt(MD5.md5HexToUpperCase(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD, DefaultValConstants.DEFAULT_USER_PASSWORD)));
-
-        JpowerAssert.notEmpty(ids, JpowerError.Arg, "用户ids不可为空");
-
-        if (coreUserService.updateUserPassword(Fc.toLongList(ids), pass)) {
-            CacheUtil.clear(CacheNames.USER_KEY);
-            return ReturnJsonUtil.ok(Fc.toLongArray(ids).length + "位用户密码重置成功");
+    public R<Boolean> resetPassword(@Parameter(description = "主键 多个逗号分割", required = true) @NotBlank(message = "用户ID不可为空") @RequestSingleBody String ids) {
+        CacheUtil.clear(CacheNames.USER_KEY);
+        if (coreUserService.resetPassword(Fc.toLongList(ids))) {
+            return R.ok(Fc.toLongArray(ids).length + "位用户密码重置成功", null);
         } else {
-            return ReturnJsonUtil.fail("重置失败");
+            return R.fail();
         }
     }
 
     @Function(value = "导入用户",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_IMPORTUSER",type = Menu.TYPE.BTN)
     })
-    @ApiOperation(value = "批量导入用户")
+    @Operation(summary = "批量导入用户")
     @PostMapping(value = "/importUser", produces = "application/json")
-    public ResponseData importUser(@ApiParam(value = "Excel文件", required = true) MultipartFile file,
-                                   @ApiParam(value = "是否覆盖数据 1是 0否", required = false) @RequestParam(required = false, defaultValue = "0") Integer isCover) {
-
-        JpowerAssert.notTrue(file == null || file.isEmpty(), JpowerError.Arg, "文件不可为空");
+    public R<Boolean> importUser(@Parameter(description = "Excel文件", required = true) @NotNull(message = "文件不可为空") MultipartFile file,
+                                   @Parameter(description = "是否覆盖数据") @RequestParam(required = false, defaultValue = "false") Boolean isCover) {
 
         try {
             File saveFile = FileUtil.saveFile(file, "xls,xlsx", ImportExportConstants.IMPORT_PATH);
 
             if (saveFile.exists()) {
-                BeanExcelUtil<TbCoreUser> beanExcelUtil = new BeanExcelUtil<>(TbCoreUser.class);
-                List<TbCoreUser> list = beanExcelUtil.importExcel(saveFile);
+                BeanExcelUtil<CoreUser> beanExcelUtil = new BeanExcelUtil<>(CoreUser.class);
+                List<CoreUser> list = beanExcelUtil.importExcel(saveFile);
                 //获取完数据之后删除文件
                 FileUtil.deleteFile(saveFile);
-                if (coreUserService.insertBatch(list, isCover == 1)) {
-                    CacheUtil.clear(CacheNames.USER_KEY);
-                    return ReturnJsonUtil.ok("新增成功");
-                } else {
-                    return ReturnJsonUtil.fail("新增失败,请检查文件数据");
-                }
+                CacheUtil.clear(CacheNames.USER_KEY);
+                return R.status(coreUserService.insertBatch(list, isCover));
             }
 
             log.error("文件上传出错，文件不存在,{}", saveFile.getAbsolutePath());
-            return ReturnJsonUtil.fail("上传出错，请稍后重试");
+            return R.fail();
         } catch (Exception e) {
             log.error("文件上传出错，error={}", ExceptionUtil.getStackTraceAsString(e));
-            return ReturnJsonUtil.print(ReturnConstants.RECODE_ERROR, "上传出错，请稍后重试", false);
+            return R.fail();
         }
 
     }
@@ -381,10 +244,10 @@ public class UserController extends BaseController {
     @Function(value = "模板下载",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_USER", btnCode = "SYSTEM_USER_IMPORTUSER",code = "SYSTEM_USER_DOWNLOADTEMPLATE",type = Menu.TYPE.INTERFACE)
     })
-    @ApiOperation(value = "用户上传模板下载")
+    @Operation(summary = "用户上传模板下载")
     @GetMapping(value = "/downloadTemplate")
     public void downloadTemplate() {
-        BeanExcelUtil<TbCoreUser> beanExcelUtil = new BeanExcelUtil<>(TbCoreUser.class, ImportExportConstants.EXPORT_TEMPLATE_PATH);
+        BeanExcelUtil<CoreUser> beanExcelUtil = new BeanExcelUtil<>(CoreUser.class, ImportExportConstants.EXPORT_TEMPLATE_PATH);
         String fileName = beanExcelUtil.template("用户模板");
 
         if (Fc.isBlank(fileName)) {
@@ -406,58 +269,30 @@ public class UserController extends BaseController {
         }
     }
 
-    @ApiOperation(value = "修改密码")
-    @GetMapping(value = "/updatePassword")
-    public ResponseData<String> updatePassword(@ApiParam(value = "旧密码", required = true) @RequestParam String oldPw,
-                                               @ApiParam(value = "新密码", required = true) @RequestParam String newPw) {
-        UserInfo userInfo = ShieldUtil.getUser();
-        JpowerAssert.notNull(userInfo, JpowerError.Business, "用户未登录");
-
-        TbCoreUser user = coreUserService.getById(userInfo.getUserId());
-
-        if (Fc.isNull(user) || !coreUserService.validatePassword(user.getLoginId(), oldPw, user.getTenantCode())) {
-            return ReturnJsonUtil.fail("原密码错误");
-        }
-        CacheUtil.clear(CacheNames.USER_KEY);
-        return ReturnJsonUtil.status(coreUserService.updateUserPassword(Collections.singletonList(user.getId()), DigestUtil.pwdEncrypt(newPw)));
+    @Operation(summary = "修改密码")
+    @PutMapping(value = "/updatePassword")
+    public R<Boolean> updatePassword(@Parameter(description = "旧密码", required = true) @NotBlank(message = "旧密码不可为空") @RequestSingleBody String oldPw,
+                                               @Parameter(description = "新密码", required = true) @NotBlank(message = "新密码不可为空") @RequestSingleBody String newPw) {
+        return R.status(coreUserService.updatePassword(oldPw, newPw));
     }
 
-    @ApiOperation(value = "修改手机号")
-    @PostMapping(value = "/updatePhone")
-    public ResponseData updatePhone(@ApiParam(value = "手机号", required = true) @RequestSingleBody String phone,
-                                    @ApiParam(value = "验证码", required = true) @RequestSingleBody String phoneCode) {
-        UserInfo userInfo = ShieldUtil.getUser();
-        JpowerAssert.notNull(userInfo, JpowerError.Business, "请登录");
-        JpowerAssert.isTrue(Validator.isMobile(phone), JpowerError.Business, "手机号不合法");
+    @Operation(summary = "修改手机号")
+    @PutMapping(value = "/updatePhone")
+    public R<Boolean> updatePhone(@Parameter(description = "手机号", required = true) @Mobile @RequestSingleBody String phone,
+                                    @Parameter(description = "验证码", required = true) @NotBlank(message = "验证码不可为空") @RequestSingleBody String phoneCode) {
         JpowerAssert.isTrue(smsClient.validate(new ValidateDto().setCode(VALIDATE_SMS_CODE).setPhone(phone).setPhoneCode(phoneCode)), JpowerError.Business, "验证码错误");
-
-        boolean is = coreUserService.exists(Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getTelephone, phone));
-        if (is){
-            return ReturnJsonUtil.fail("该手机号已被绑定");
-        }
-
-        CacheUtil.clear(CacheNames.USER_KEY);
-        return ReturnJsonUtil.status(coreUserService.updatePhone(phone, userInfo.getUserId()));
+        return R.status(coreUserService.updatePhone(phone, ShieldUtil.getUserIdThrow()));
     }
 
-    @ApiOperation(value = "修改邮箱")
-    @PostMapping(value = "/updateEmail")
-    public ResponseData updateEmail(@ApiParam(value = "邮箱", required = true) @RequestSingleBody String email,
-                                    @ApiParam(value = "邮箱消息ID", required = true) @RequestSingleBody String msgId,
-                                    @ApiParam(value = "验证码", required = true) @RequestSingleBody String emailCode) {
-        UserInfo userInfo = ShieldUtil.getUser();
-        JpowerAssert.notNull(userInfo, JpowerError.Business, "请登录");
-        JpowerAssert.isTrue(Validator.isEmail(email), JpowerError.Business, "邮箱 不合法");
+    @Operation(summary = "修改邮箱")
+    @PutMapping(value = "/updateEmail")
+    public R<Boolean> updateEmail(@Parameter(description = "邮箱", required = true) @Email(message = EMAIL_NOT_LEGAL) @RequestSingleBody String email,
+                                    @Parameter(description = "邮箱消息ID", required = true) @NotBlank(message = "验证ID不可为空") @RequestSingleBody String msgId,
+                                    @Parameter(description = "验证码", required = true) @NotBlank(message = "验证码不可为空") @RequestSingleBody String emailCode) {
         String code = redisService.valueOps(String.class).get("email:"+email+":"+msgId);
         JpowerAssert.notTrue(Fc.notEqualsValue(code, emailCode), JpowerError.Business, "验证码错误");
 
-        boolean is = coreUserService.exists(Condition.<TbCoreUser>getQueryWrapper().lambda().eq(TbCoreUser::getEmail, email));
-        if (is){
-            return ReturnJsonUtil.fail("该邮箱已被绑定");
-        }
-
-        CacheUtil.clear(CacheNames.USER_KEY);
-        return ReturnJsonUtil.status(coreUserService.updateEmail(email, userInfo.getUserId()));
+        return R.status(coreUserService.updateEmail(email, ShieldUtil.getUserIdThrow()));
     }
 
 }

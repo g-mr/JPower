@@ -13,7 +13,7 @@ import top.jpower.core.util.rsp.Pg;
 import top.jpower.core.util.rsp.ResponseData;
 import top.jpower.core.util.rsp.ReturnJsonUtil;
 import top.jpower.core.util.utils.Fc;
-import top.jpower.core.util.validated.UpdateGroup;
+import top.jpower.common.validated.group.UpdateGroup;
 import top.jpower.jpower.dbs.entity.TbResourceOss;
 import top.jpower.core.auth.annotation.Function;
 import top.jpower.core.auth.annotation.Menu;

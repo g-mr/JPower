@@ -7,7 +7,6 @@ import top.jpower.core.exception.enums.JpowerError;
  * @author mr.gmac
  */
 public class JpowerException extends RuntimeException {
-    private static final long serialVersionUID = -3288337436322386813L;
     private int code;
 
     public JpowerException(String message) {

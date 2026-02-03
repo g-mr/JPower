@@ -9,8 +9,12 @@ import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.Table;
 import com.mybatisflex.core.keygen.KeyGenerators;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import top.jpower.common.validated.Mobile;
 import top.jpower.core.dbs.dictbind.annotation.Dict;
 import top.jpower.core.dbs.tenant.entity.TenantEntity;
 import top.jpower.core.util.support.excel.Excel;
@@ -18,6 +22,8 @@ import top.jpower.core.util.support.excel.Excel;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
+
+import static top.jpower.common.constants.ServiceCodeConstants.EMAIL_NOT_LEGAL;
 
 /**
  * 用户信息
@@ -37,6 +43,7 @@ public class CoreUser extends TenantEntity implements Serializable {
     private Long id;
     @Schema(description = "登录用户名")
     @Excel(name = "登录用户名")
+    @NotBlank(message = "用户名不可为空")
     private String loginId;
     @Schema(description = "密码",hidden = true)
     @Column(isLarge=true)
@@ -67,9 +74,12 @@ public class CoreUser extends TenantEntity implements Serializable {
     private Date birthday;
     @Schema(description = "邮箱")
     @Excel(name ="邮箱")
+    @Nullable
+    @Email(message = EMAIL_NOT_LEGAL)
     private String email;
     @Schema(description = "电话")
     @Excel(name ="电话")
+    @Mobile
     private String telephone;
     @Schema(description = "地址")
     @Excel(name ="地址")

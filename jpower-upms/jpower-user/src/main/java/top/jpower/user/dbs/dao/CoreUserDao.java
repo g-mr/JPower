@@ -2,14 +2,18 @@ package top.jpower.user.dbs.dao;
 
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.mybatisflex.core.query.QueryColumn;
+import com.mybatisflex.core.query.QueryCondition;
+import com.mybatisflex.core.update.UpdateWrapper;
+import com.mybatisflex.core.util.UpdateEntity;
 import org.springframework.stereotype.Repository;
 import top.jpower.core.dbs.page.PaginationContext;
 import top.jpower.core.dbs.support.Wrappers;
 import top.jpower.core.util.rsp.Pg;
-import top.jpower.core.util.utils.BeanUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.cache.SystemCache;
 import top.jpower.user.api.cache.UserCache;
+import top.jpower.user.dbs.dao.mapper.CoreUserMapper;
 import top.jpower.user.dbs.dao.mapper.TbCoreUserMapper;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
 import top.jpower.core.auth.utils.ShieldUtil;
@@ -19,11 +23,11 @@ import top.jpower.core.dbs.mp.support.Condition;
 import top.jpower.jpower.vo.UserVo;
 import top.jpower.user.dbs.entity.CoreUser;
 import top.jpower.user.dbs.entity.CoreUserRole;
+import top.jpower.user.vo.LoginUserVO;
 import top.jpower.user.vo.UserVO;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static com.mybatisflex.core.query.QueryMethods.groupConcat;
 import static top.jpower.core.dbs.tenant.TenantConstant.DEFAULT_TENANT_CODE;
@@ -32,7 +36,7 @@ import static top.jpower.core.dbs.tenant.TenantConstant.DEFAULT_TENANT_CODE;
  * @author mr.gmac
  */
 @Repository
-public class TbCoreUserDao extends JpowerServiceImpl<TbCoreUserMapper, CoreUser> implements BaseDaoWrapper<CoreUser> {
+public class CoreUserDao extends JpowerServiceImpl<CoreUserMapper, CoreUser> implements BaseDaoWrapper<CoreUser> {
 
     public void build(UserVO userVo) {
         userVo.setOrgName(SystemCache.getOrgName(userVo.getOrgId()));
@@ -98,15 +102,15 @@ public class TbCoreUserDao extends JpowerServiceImpl<TbCoreUserMapper, CoreUser>
 
     /**
      * 修改用户手机号
+     *
      * @author mr.g
-     * @param userId
-     * @param phone
-     * @return
+     * @param userId 用户ID
+     * @param phone 新手机号
+     * @return 是否成功
      **/
     public boolean updatePhone(Long userId, String phone) {
-        return super.update(Wrappers.<TbCoreUser>lambdaUpdate()
-                .set(TbCoreUser::getTelephone, phone)
-                .eq(TbCoreUser::getId, userId));
+        return super.update(UpdateEntity.of(CoreUser.class).setTelephone(phone),
+                Wrappers.getQueryWrapper().eq(CoreUser::getId, userId));
     }
 
     /**
@@ -123,4 +127,40 @@ public class TbCoreUserDao extends JpowerServiceImpl<TbCoreUserMapper, CoreUser>
                 .eq(TbCoreUser::getId, userId));
     }
 
+    public long countByTentant(String tenantCode) {
+        return super.count(QueryCondition.create(CORE_USER.TENANT_CODE, tenantCode));
+    }
+
+    /**
+     * 修改当前用户信息
+     *
+     * @author mr.g
+     * @param userVO 用户信息
+     * @return 是否成功
+     **/
+    public boolean updateUserInfo(LoginUserVO userVO) {
+        return super.update(UpdateWrapper.of(CoreUser.class)
+                        .set(CoreUser::getAvatar,userVO.getAvatar())
+                        .set(CoreUser::getNickName,userVO.getNickName())
+                        .set(CoreUser::getUserName,userVO.getUserName())
+                        .set(CoreUser::getIdType,userVO.getIdType())
+                        .set(CoreUser::getIdNo,userVO.getIdNo())
+                        .set(CoreUser::getBirthday,userVO.getBirthday())
+                        .set(CoreUser::getPostCode,userVO.getPostCode())
+                        .set(CoreUser::getAddress,userVO.getAddress()).toEntity(),
+                Wrappers.getQueryWrapper().eq(CoreUser::getId, ShieldUtil.getUserId()));
+    }
+
+    /**
+     * 修改用户密码
+     *
+     * @author mr.g
+     * @param pass 新密码
+     * @param ids 用户ID
+     * @return 是否成功
+     **/
+    public boolean updatePassword(String pass, List<Long> ids) {
+        return super.update(UpdateEntity.of(CoreUser.class).setPassword(pass),
+                Wrappers.getQueryWrapper().in(CoreUser::getId, ids));
+    }
 }

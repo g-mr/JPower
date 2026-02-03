@@ -1,15 +1,46 @@
 package top.jpower.core.util.rsp;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import top.jpower.core.util.constants.ReturnConstants;
 import top.jpower.core.util.utils.SpringUtil;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
- * 返回封装工具
+ * 返回信息包装类
  *
  * @author mr.g
- **/
-public class ReturnJsonUtil {
+ */
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@SuppressWarnings("AlibabaClassNamingShouldBeCamel")
+public class R<T> implements Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 结果码
+     **/
+    private int code = -1;
+    /**
+     * 返回状态
+     **/
+    private boolean status = false;
+    /**
+     * 返回信息
+     **/
+    private String message = "请求失败";
+    /**
+     * 返回数据
+     **/
+    private T data;
 
     /**
      * 封装
@@ -21,8 +52,8 @@ public class ReturnJsonUtil {
      * @param status 返回状态
      * @return 返回实体
      **/
-    public static <T> ResponseData<T> print(Integer code, String msg, T data, boolean status){
-        return ResponseData.<T>builder().data(data).code(code).message(msg).status(status).build();
+    public static <T> R<T> print(Integer code, String msg, T data, boolean status){
+        return R.<T>builder().data(data).code(code).message(msg).status(status).build();
     }
 
     /**
@@ -34,8 +65,8 @@ public class ReturnJsonUtil {
      * @param status 返回状态
      * @return 返回实体
      **/
-    public static <T> ResponseData<T> print(Integer code,String msg,boolean status){
-        return ResponseData.<T>builder().data(null).code(code).message(msg).status(status).build();
+    public static <T> R<T> print(Integer code,String msg,boolean status){
+        return R.<T>builder().data(null).code(code).message(msg).status(status).build();
     }
 
     /**
@@ -45,7 +76,7 @@ public class ReturnJsonUtil {
      * @param data 返回数据
      * @return 返回实体
      **/
-    public static <T> ResponseData<T> data(T data){
+    public static <T> R<T> data(T data){
         return ok("成功", data);
     }
 
@@ -58,19 +89,29 @@ public class ReturnJsonUtil {
      * @param data 返回数据
      * @return 返回实体
      **/
-    public static <T> ResponseData<T> ok(String msg, T data){
+    public static <T> R<T> ok(String msg, T data){
         return print(ReturnConstants.RECODE_SUCCESS, msg, data, true);
+    }
+
+    /**
+     * 成功的数据结果封装
+     *
+     * @author mr.g
+     * @param data 返回数据
+     * @return 返回实体
+     **/
+    public static <T> R<T> ok(T data){
+        return print(ReturnConstants.RECODE_SUCCESS, "获取成功", data, true);
     }
 
     /**
      * 成功的结果封装
      *
      * @author mr.g
-     * @param msg 返回信息
      * @return 返回实体
      **/
-    public static <T> ResponseData<T> ok(String msg){
-        return print(ReturnConstants.RECODE_SUCCESS, msg, null, true);
+    public static <T> R<T> ok(){
+        return print(ReturnConstants.RECODE_SUCCESS, "操作成功", null, true);
     }
 
     /**
@@ -80,11 +121,11 @@ public class ReturnJsonUtil {
      * @param is 是否成功
      * @return 返回实体
      **/
-    public static <T> ResponseData<T> status(Boolean is) {
+    public static <T> R<T> status(Boolean is) {
         return status(is,null);
     }
 
-    public static <T> ResponseData<T> status(Boolean is, T data) {
+    public static <T> R<T> status(Boolean is, T data) {
         if(is){
             return ok("操作成功", data);
         }else {
@@ -103,7 +144,7 @@ public class ReturnJsonUtil {
      * @param data 返回数据
      * @return 返回实体
      **/
-    public static <T> ResponseData<T> fail(String msg, T data){
+    public static <T> R<T> fail(String msg, T data){
         return print(ReturnConstants.RECODE_FAIL, msg, data, false);
     }
 
@@ -114,8 +155,18 @@ public class ReturnJsonUtil {
      * @param msg 返回信息
      * @return 返回实体
      **/
-    public static <T> ResponseData<T> fail(String msg){
+    public static <T> R<T> fail(String msg){
         return fail( msg, null);
+    }
+
+    /**
+     * 失败的结果封装
+     *
+     * @author mr.g
+     * @return 返回实体
+     **/
+    public static <T> R<T> fail(){
+        return fail("操作失败", null);
     }
 
     /**
@@ -126,7 +177,7 @@ public class ReturnJsonUtil {
      * @param msg 返回信息
      * @return 返回实体
      **/
-    public static <T> ResponseData<T> fail(Integer code, String msg){
+    public static <T> R<T> fail(Integer code, String msg){
         return print(code, msg, null, false);
     }
 
@@ -137,7 +188,7 @@ public class ReturnJsonUtil {
      * @param msg 返回信息
      * @return 返回实体
      **/
-    public static <T> ResponseData<T> notFind(String msg){
+    public static <T> R<T> notFind(String msg){
         return print(ReturnConstants.RECODE_NOTFOUND, msg, false);
     }
 
@@ -148,7 +199,7 @@ public class ReturnJsonUtil {
      * @param msg 返回消息
      * @return 返回实体
      **/
-    public static <T> ResponseData<T> busFail(String msg) {
+    public static <T> R<T> busFail(String msg) {
         return print(ReturnConstants.RECODE_BUSINESS,msg,false);
     }
 
