@@ -76,58 +76,58 @@ public class UserController extends BaseController {
     @GetMapping(value = "/getLoginInfo")
     public R<CoreUser> getLoginInfo() {
         Long id = ShieldUtil.getUserId();
-        JpowerAssert.notNull(id, JpowerError.Auth,NOT_LOGIN);
+        JpowerAssert.notNull(id, JpowerError.Auth, NOT_LOGIN);
         return R.ok(coreUserService.getById(id));
     }
 
-    @Function(value = "用户在线信息",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_USER", btnCode = "USER_OFFLINE",code = "USER_ONLINE",type = Menu.TYPE.BTN)
+    @Function(value = "用户在线信息", menus = {
+            @Menu(client = "admin", menuCode = "SYSTEM_USER", btnCode = "USER_OFFLINE", code = "USER_ONLINE", type = Menu.TYPE.BTN)
     })
     @Operation(summary = "查询用户在线信息")
     @GetMapping(value = "/online", produces = "application/json")
-    public R<List<Map<String,Object>>> online(@Parameter(description = "用户ID") @NotEmpty(message = "用户ID不可为空") @RequestParam Long userId) {
+    public R<List<Map<String, Object>>> online(@Parameter(description = "用户ID") @NotEmpty(message = "用户ID不可为空") @RequestParam Long userId) {
         Set<String> keys = redisService.keys(TOKEN_USER_KEY + userId + StringPool.COLON + StringPool.ASTERISK);
-        List<Map<String,Object>> list = new ArrayList<>();
+        List<Map<String, Object>> list = new ArrayList<>();
         keys.forEach(key -> {
-            Map<String,Object> map = redisService.valueOps(Map.class).get(key);
-            map.put("token", StringUtil.split(key,StringPool.COLON).get(4));
-            map.put("userId",userId);
+            Map<String, Object> map = redisService.valueOps(Map.class).get(key);
+            map.put("token", StringUtil.split(key, StringPool.COLON).get(4));
+            map.put("userId", userId);
             list.add(map);
         });
 
         return R.ok(list);
     }
 
-    @Function(value = "踢下线",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "USER_OFFLINE",type = Menu.TYPE.BTN)
+    @Function(value = "踢下线", menus = {
+            @Menu(client = "admin", menuCode = "SYSTEM_USER", code = "USER_OFFLINE", type = Menu.TYPE.BTN)
     })
     @Operation(summary = "踢下线")
     @PostMapping(value = "/offline", produces = "application/json")
     public R offline(@Parameter(description = "用户ID") @NotEmpty(message = "用户ID不可为空") @RequestSingleBody Long userId,
-                                @Parameter(description = "TOKEN") @NotBlank(message = "TOKEN不可为空") @RequestSingleBody String token) {
+                     @Parameter(description = "TOKEN") @NotBlank(message = "TOKEN不可为空") @RequestSingleBody String token) {
 
-        redisService.delete(CacheNames.TOKEN_URL_KEY+token);
-        redisService.delete(CacheNames.TOKEN_DATA_SCOPE_KEY+token);
+        redisService.delete(CacheNames.TOKEN_URL_KEY + token);
+        redisService.delete(CacheNames.TOKEN_DATA_SCOPE_KEY + token);
         redisService.delete(TOKEN_USER_KEY + userId + StringPool.COLON + token);
 
         return R.ok();
     }
 
-    @Function(value = "用户列表",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "USER_LIST",type = Menu.TYPE.INTERFACE)
+    @Function(value = "用户列表", menus = {
+            @Menu(client = "admin", menuCode = "SYSTEM_USER", code = "USER_LIST", type = Menu.TYPE.INTERFACE)
     })
     @Operation(summary = "查询用户分页列表")
     @Parameters({
-        @Parameter(name = "pageNum", description = "第几页",  example = "1", in = QUERY, schema = @Schema(type = "int"), required = true),
-        @Parameter(name = "pageSize", description = "每页长度", example = "10", in = QUERY, schema = @Schema(type = "int"), required = true)
+            @Parameter(name = "pageNum", description = "第几页", example = "1", in = QUERY, schema = @Schema(type = "int"), required = true),
+            @Parameter(name = "pageSize", description = "每页长度", example = "10", in = QUERY, schema = @Schema(type = "int"), required = true)
     })
     @GetMapping(value = "/list", produces = "application/json")
     public R<Pg<UserVO>> list(@RequestParam CoreUser coreUser) {
         return R.ok(coreUserService.listPage(coreUser));
     }
 
-    @Function(value = "导出用户",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_EXPORTUSER",type = Menu.TYPE.BTN)
+    @Function(value = "导出用户", menus = {
+            @Menu(client = "admin", menuCode = "SYSTEM_USER", code = "SYSTEM_USER_EXPORTUSER", type = Menu.TYPE.BTN)
     })
     @Operation(summary = "导出用户")
     @Parameters({
@@ -149,8 +149,8 @@ public class UserController extends BaseController {
         FileUtil.download(file, getResponse(), "用户数据.xlsx");
     }
 
-    @Function(value = "用户详情",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "USER_DETAIL",type = Menu.TYPE.BTN)
+    @Function(value = "用户详情", menus = {
+            @Menu(client = "admin", menuCode = "SYSTEM_USER", code = "USER_DETAIL", type = Menu.TYPE.BTN)
     })
     @Operation(summary = "查询用户详情")
     @GetMapping(value = "/getById", produces = "application/json")
@@ -159,8 +159,8 @@ public class UserController extends BaseController {
         return R.ok(coreUserService.selectUserById(id));
     }
 
-    @Function(value = "新增用户",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_ADD",type = Menu.TYPE.BTN)
+    @Function(value = "新增用户", menus = {
+            @Menu(client = "admin", menuCode = "SYSTEM_USER", code = "SYSTEM_USER_ADD", type = Menu.TYPE.BTN)
     })
     @Operation(summary = "新增", description = "主键不用传")
     @PostMapping(value = "/add", produces = "application/json")
@@ -168,19 +168,19 @@ public class UserController extends BaseController {
         return R.status(coreUserService.createUser(coreUser));
     }
 
-    @Function(value = "删除用户",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_DELETE",type = Menu.TYPE.BTN)
+    @Function(value = "删除用户", menus = {
+            @Menu(client = "admin", menuCode = "SYSTEM_USER", code = "SYSTEM_USER_DELETE", type = Menu.TYPE.BTN)
     })
     @Operation(summary = "删除用户")
     @OperateLog(title = "删除登录用户", businessType = DELETE)
     @DeleteMapping(value = "/delete", produces = "application/json")
     public R<Boolean> delete(@Parameter(description = "主键 多个逗号分割", required = true) @NotBlank(message = "ids不可为空") @RequestParam String ids) {
         CacheUtil.clear(CacheNames.USER_KEY);
-        return R.status(coreUserService.delete(Fc.toLongList(ids)));
+        return R.status(coreUserService.deleteByIds(Fc.toLongList(ids)));
     }
 
-    @Function(value = "修改用户",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_UPDATE",type = Menu.TYPE.BTN)
+    @Function(value = "修改用户", menus = {
+            @Menu(client = "admin", menuCode = "SYSTEM_USER", code = "SYSTEM_USER_UPDATE", type = Menu.TYPE.BTN)
     })
     @Operation(summary = "修改用户信息")
     @OperateLog(title = "修改系统用户信息", businessType = UPDATE)
@@ -198,8 +198,8 @@ public class UserController extends BaseController {
         return R.status(coreUserService.updateUserInfo(userVO));
     }
 
-    @Function(value = "重置密码",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_RESETPASSWORD",type = Menu.TYPE.BTN)
+    @Function(value = "重置密码", menus = {
+            @Menu(client = "admin", menuCode = "SYSTEM_USER", code = "SYSTEM_USER_RESETPASSWORD", type = Menu.TYPE.BTN)
     })
     @Operation(summary = "重置用户登陆密码")
     @PutMapping(value = "/resetPassword", produces = "application/json")
@@ -212,13 +212,13 @@ public class UserController extends BaseController {
         }
     }
 
-    @Function(value = "导入用户",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_IMPORTUSER",type = Menu.TYPE.BTN)
+    @Function(value = "导入用户", menus = {
+            @Menu(client = "admin", menuCode = "SYSTEM_USER", code = "SYSTEM_USER_IMPORTUSER", type = Menu.TYPE.BTN)
     })
     @Operation(summary = "批量导入用户")
     @PostMapping(value = "/importUser", produces = "application/json")
     public R<Boolean> importUser(@Parameter(description = "Excel文件", required = true) @NotNull(message = "文件不可为空") MultipartFile file,
-                                   @Parameter(description = "是否覆盖数据") @RequestParam(required = false, defaultValue = "false") Boolean isCover) {
+                                 @Parameter(description = "是否覆盖数据") @RequestParam(required = false, defaultValue = "false") Boolean isCover) {
 
         try {
             File saveFile = FileUtil.saveFile(file, "xls,xlsx", ImportExportConstants.IMPORT_PATH);
@@ -241,8 +241,8 @@ public class UserController extends BaseController {
 
     }
 
-    @Function(value = "模板下载",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_USER", btnCode = "SYSTEM_USER_IMPORTUSER",code = "SYSTEM_USER_DOWNLOADTEMPLATE",type = Menu.TYPE.INTERFACE)
+    @Function(value = "模板下载", menus = {
+            @Menu(client = "admin", menuCode = "SYSTEM_USER", btnCode = "SYSTEM_USER_IMPORTUSER", code = "SYSTEM_USER_DOWNLOADTEMPLATE", type = Menu.TYPE.INTERFACE)
     })
     @Operation(summary = "用户上传模板下载")
     @GetMapping(value = "/downloadTemplate")
@@ -272,14 +272,14 @@ public class UserController extends BaseController {
     @Operation(summary = "修改密码")
     @PutMapping(value = "/updatePassword")
     public R<Boolean> updatePassword(@Parameter(description = "旧密码", required = true) @NotBlank(message = "旧密码不可为空") @RequestSingleBody String oldPw,
-                                               @Parameter(description = "新密码", required = true) @NotBlank(message = "新密码不可为空") @RequestSingleBody String newPw) {
+                                     @Parameter(description = "新密码", required = true) @NotBlank(message = "新密码不可为空") @RequestSingleBody String newPw) {
         return R.status(coreUserService.updatePassword(oldPw, newPw));
     }
 
     @Operation(summary = "修改手机号")
     @PutMapping(value = "/updatePhone")
     public R<Boolean> updatePhone(@Parameter(description = "手机号", required = true) @Mobile @RequestSingleBody String phone,
-                                    @Parameter(description = "验证码", required = true) @NotBlank(message = "验证码不可为空") @RequestSingleBody String phoneCode) {
+                                  @Parameter(description = "验证码", required = true) @NotBlank(message = "验证码不可为空") @RequestSingleBody String phoneCode) {
         JpowerAssert.isTrue(smsClient.validate(new ValidateDto().setCode(VALIDATE_SMS_CODE).setPhone(phone).setPhoneCode(phoneCode)), JpowerError.Business, "验证码错误");
         return R.status(coreUserService.updatePhone(phone, ShieldUtil.getUserIdThrow()));
     }
@@ -287,9 +287,9 @@ public class UserController extends BaseController {
     @Operation(summary = "修改邮箱")
     @PutMapping(value = "/updateEmail")
     public R<Boolean> updateEmail(@Parameter(description = "邮箱", required = true) @Email(message = EMAIL_NOT_LEGAL) @RequestSingleBody String email,
-                                    @Parameter(description = "邮箱消息ID", required = true) @NotBlank(message = "验证ID不可为空") @RequestSingleBody String msgId,
-                                    @Parameter(description = "验证码", required = true) @NotBlank(message = "验证码不可为空") @RequestSingleBody String emailCode) {
-        String code = redisService.valueOps(String.class).get("email:"+email+":"+msgId);
+                                  @Parameter(description = "邮箱消息ID", required = true) @NotBlank(message = "验证ID不可为空") @RequestSingleBody String msgId,
+                                  @Parameter(description = "验证码", required = true) @NotBlank(message = "验证码不可为空") @RequestSingleBody String emailCode) {
+        String code = redisService.valueOps(String.class).get("email:" + email + ":" + msgId);
         JpowerAssert.notTrue(Fc.notEqualsValue(code, emailCode), JpowerError.Business, "验证码错误");
 
         return R.status(coreUserService.updateEmail(email, ShieldUtil.getUserIdThrow()));

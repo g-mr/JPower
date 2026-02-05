@@ -2,7 +2,7 @@ package top.jpower.core.util.rsp;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import top.jpower.core.util.constants.ReturnConstants;
 import top.jpower.core.util.utils.SpringUtil;
@@ -15,7 +15,7 @@ import java.io.Serializable;
  *
  * @author mr.g
  */
-@Data
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -41,6 +41,16 @@ public class R<T> implements Serializable {
      * 返回数据
      **/
     private T data;
+
+    /**
+     * 是否成功
+     *
+     * @author mr.g
+     * @return 是否成功
+     **/
+    public boolean isSuccess(){
+        return status;
+    }
 
     /**
      * 封装

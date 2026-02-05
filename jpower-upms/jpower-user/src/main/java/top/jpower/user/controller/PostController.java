@@ -1,17 +1,17 @@
 package top.jpower.user.controller;
 
+import com.github.xiaoymin.knife4j.annotations.Ignore;
 import com.mybatisflex.core.util.UpdateEntity;
 import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import springfox.documentation.annotations.ApiIgnore;
+import org.springframework.web.bind.annotation.*;
 import top.jpower.common.constants.CacheNames;
 import top.jpower.common.enums.YN01Enum;
 import top.jpower.core.auth.annotation.Function;
@@ -23,13 +23,12 @@ import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.core.redis.cache.CacheUtil;
 import top.jpower.core.util.rsp.Pg;
-import top.jpower.core.util.rsp.ResponseData;
-import top.jpower.core.util.rsp.ReturnJsonUtil;
+import top.jpower.core.util.rsp.R;
 import top.jpower.core.util.utils.Fc;
-import top.jpower.user.dbs.entity.CorePost;
 import top.jpower.jpower.dbs.entity.TbCorePost;
+import top.jpower.user.dbs.entity.CorePost;
 import top.jpower.user.service.CorePostService;
-import top.jpower.jpower.vo.PostVo;
+import top.jpower.user.vo.PostVO;
 
 import java.util.List;
 import java.util.Map;
@@ -38,38 +37,38 @@ import java.util.Map;
  * @author mr.g
  * @date 2022-09-16 18:12
  */
-@Api(tags = "岗位管理")
+@Tag(name = "岗位管理")
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/core/post")
+@RequiredArgsConstructor
 public class PostController extends BaseController {
 
     private final CorePostService postService;
 
     @Function(value = "岗位列表",menus = {
-            @Menu(client = "admin",menuCode = "POST",code = "POST_PAGE",type = Menu.TYPE.INTERFACE)
+        @Menu(client = "admin",menuCode = "POST",code = "POST_PAGE",type = Menu.TYPE.INTERFACE)
     })
-    @ApiOperation(value = "分页")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "pageNum", value = "第几页", defaultValue = "1", paramType = "query", dataTypeClass = Integer.class, required = true),
-            @ApiImplicitParam(name = "pageSize", value = "每页长度", defaultValue = "10", paramType = "query", dataTypeClass = Integer.class, required = true),
-            @ApiImplicitParam(name = "name", value = "岗位名称", paramType = "query", required = false),
-            @ApiImplicitParam(name = "code", value = "岗位编码", paramType = "query", required = false),
-            @ApiImplicitParam(name = "type_eq", value = "岗位类型 字典：POST_TYPE", paramType = "query", required = false),
-            @ApiImplicitParam(name = "status_eq", value = "是否启用 字典：YN01", paramType = "query", required = false)
+    @Operation(summary = "分页")
+    @Parameters({
+        @Parameter(name = "pageNum", description = "第几页", example = "1", schema = @Schema(defaultValue = "1", type = "integer"), in = ParameterIn.QUERY, required = true),
+        @Parameter(name = "pageSize", description = "每页长度", example = "10", schema = @Schema(defaultValue = "10", type = "integer"), in = ParameterIn.QUERY, required = true),
+        @Parameter(name = "name", description = "岗位名称", in = ParameterIn.QUERY),
+        @Parameter(name = "code", description = "岗位编码", in = ParameterIn.QUERY),
+        @Parameter(name = "type_eq", description = "岗位类型 字典：POST_TYPE", in = ParameterIn.QUERY),
+        @Parameter(name = "status_eq", description = "是否启用 字典：YN01", in = ParameterIn.QUERY)
     })
     @GetMapping(value = "/list", produces = "application/json")
-    public ResponseData<Pg<PostVo>> list(@ApiIgnore @RequestParam Map<String,Object> map) {
-        return ReturnJsonUtil.data(postService.pageVo(map));
+    public R<Pg<PostVO>> list(@Ignore @RequestParam Map<String,Object> map) {
+        return R.data(postService.pageVo(map));
     }
 
     @Function(value = "岗位下拉",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "POST_SELECT",type = Menu.TYPE.INTERFACE)
+        @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "POST_SELECT",type = Menu.TYPE.INTERFACE)
     })
-    @ApiOperation(value = "下拉列表")
+    @Operation(summary = "下拉列表")
     @GetMapping(value = "/select", produces = "application/json")
-    public ResponseData<List<Map<String,String>>> select(@ApiParam("岗位名称") String name,@ApiParam("所属租户") String tenantCode) {
-        return ReturnJsonUtil.data(postService.listMaps(Condition.<TbCorePost>getQueryWrapper()
+    public R<List<Map<String,String>>> select(@ApiParam("岗位名称") String name,@ApiParam("所属租户") String tenantCode) {
+        return R.data(postService.listMaps(Condition.<TbCorePost>getQueryWrapper()
                         .lambda()
                         .select(TbCorePost::getId,TbCorePost::getName,TbCorePost::getCode)
                         .eq(TbCorePost::getStatus, YN01Enum.Y.getValue())
@@ -81,9 +80,9 @@ public class PostController extends BaseController {
     @Function(value = "新增岗位",menus = {
             @Menu(client = "admin",menuCode = "POST",code = "POST_ADD",type = Menu.TYPE.BTN)
     })
-    @ApiOperation(value = "新增")
+    @Operation(summary = "新增")
     @PostMapping(value = "/add", produces = "application/json")
-    public ResponseData add(@Validated TbCorePost corePost) {
+    public R add(@Validated TbCorePost corePost) {
         corePost.setId(null);
         if (Fc.isNull(corePost.getSort())){
             corePost.setSort(0);
@@ -94,22 +93,22 @@ public class PostController extends BaseController {
 
         JpowerAssert.geZero(postService.count(Condition.<TbCorePost>getQueryWrapper().lambda().eq(TbCorePost::getCode,corePost.getCode())),JpowerError.Arg,"编码已存在");
 
-        return ReturnJsonUtil.status(postService.save(corePost));
+        return R.status(postService.save(corePost));
     }
 
     @Function(value = "编辑岗位",menus = {
             @Menu(client = "admin",menuCode = "POST",code = "POST_UPDATE",type = Menu.TYPE.BTN)
     })
-    @ApiOperation(value = "编辑")
+    @Operation(summary = "编辑")
     @PutMapping(value = "/update", produces = "application/json")
-    public ResponseData update(CorePost corePost) {
+    public R update(CorePost corePost) {
         JpowerAssert.notNull(corePost.getId(), JpowerError.Arg,"主键不可为空");
 
         TbCorePost post = postService.getOne(Condition.<TbCorePost>getQueryWrapper().lambda().eq(TbCorePost::getCode,corePost.getCode()));
         JpowerAssert.notTrue(Fc.notNull(post)&&!Fc.equalsValue(post.getId(),corePost.getId()),JpowerError.Arg,"该编码已存在");
 
         CacheUtil.clear(CacheNames.POST_KEY);
-        return ReturnJsonUtil.status(postService.updateById(UpdateEntity.ofNotNull(corePost)
+        return R.status(postService.updateById(UpdateEntity.ofNotNull(corePost)
                 .setDescribe(corePost.getDescribe())
                 .setCondition(corePost.getCondition())));
     }
@@ -117,22 +116,22 @@ public class PostController extends BaseController {
     @Function(value = "删除岗位",menus = {
             @Menu(client = "admin",menuCode = "POST",code = "POST_DELETE",type = Menu.TYPE.BTN)
     })
-    @ApiOperation(value = "删除")
+    @Operation(summary = "删除")
     @DeleteMapping(value = "/delete", produces = "application/json")
-    public ResponseData delete(@ApiParam("主键，多个逗号分割") String ids) {
+    public R delete(@ApiParam("主键，多个逗号分割") String ids) {
         JpowerAssert.notEmpty(ids, JpowerError.Arg,"主键不可为空");
         CacheUtil.clear(CacheNames.POST_KEY);
-        return ReturnJsonUtil.status(postService.delete(Fc.toLongList(ids)));
+        return R.status(postService.delete(Fc.toLongList(ids)));
     }
 
     @Function(value = "岗位详情",menus = {
             @Menu(client = "admin",menuCode = "POST",code = "POST_DETAIL",type = Menu.TYPE.BTN)
     })
-    @ApiOperation(value = "详情")
+    @Operation(summary = "详情")
     @DeleteMapping(value = "/get", produces = "application/json")
-    public ResponseData<TbCorePost> get(@ApiParam("主键") Long id) {
+    public R<TbCorePost> get(@ApiParam("主键") Long id) {
         JpowerAssert.notNull(id, JpowerError.Arg,"主键不可为空");
-        return ReturnJsonUtil.data(postService.getById(id));
+        return R.data(postService.getById(id));
     }
 
 }

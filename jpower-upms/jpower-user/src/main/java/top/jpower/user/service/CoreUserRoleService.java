@@ -1,7 +1,7 @@
 package top.jpower.user.service;
 
-import top.jpower.jpower.dbs.entity.TbCoreUserRole;
 import top.jpower.core.dbs.service.BaseService;
+import top.jpower.user.dbs.entity.CoreUserRole;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import java.util.List;
  * @Description //TODO 用户角色
  * @date 22:45 2020/5/26 0026
  */
-public interface CoreUserRoleService extends BaseService<TbCoreUserRole> {
+public interface CoreUserRoleService extends BaseService<CoreUserRole> {
 
     /**
      * @author 郭丁志

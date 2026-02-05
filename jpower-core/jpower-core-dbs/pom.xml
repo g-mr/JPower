@@ -10,6 +10,19 @@
 
     <modelVersion>4.0.0</modelVersion>
     <name>JPower Core DBS</name>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>17</source>
+                    <target>17</target>
+                    <compilerArgs>--enable-preview</compilerArgs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
     <artifactId>jpower-core-dbs</artifactId>
     <packaging>jar</packaging>
     <description>

@@ -1,18 +1,11 @@
 package top.jpower.user.api.feign;
 
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import top.jpower.common.constants.AppConstant;
-import top.jpower.core.util.rsp.ResponseData;
-import top.jpower.jpower.dbs.entity.CorePost;
-import top.jpower.jpower.dbs.entity.CoreUser;
+import top.jpower.core.util.rsp.R;
+import top.jpower.user.api.dto.CoreUserDTO;
 import top.jpower.user.api.dto.ValidatePasswordDTO;
-import top.jpower.jpower.vo.UserVO;
 
 import java.util.List;
 
@@ -27,38 +20,25 @@ import java.util.List;
 public interface UserClient {
 
     @GetMapping("/queryUserByLoginId")
-    ResponseData<CoreUser> queryUserByLoginId(@RequestParam("loginId") String loginId, @RequestParam("tenantCode") String tenantCode);
+    R<CoreUserDTO> queryUserByLoginId(@RequestParam("loginId") String loginId, @RequestParam("tenantCode") String tenantCode);
 
     @GetMapping("/getRoleIdsByUserId")
-    ResponseData<List<Long>> getRoleIds(@RequestParam("userId") Long userId);
+    R<List<Long>> getRoleIds(@RequestParam("userId") Long userId);
 
     @PutMapping("/updateUserLoginInfo/{userId}")
-    ResponseData<?> updateUserLoginInfo(@PathVariable("userId") Long userId);
+    R<Boolean> updateLoginCount(@PathVariable("userId") Long userId);
 
     @GetMapping("/queryUserByCode")
-    ResponseData<CoreUser> queryUserByCode(@RequestParam("otherCode") String otherCode, @RequestParam("tenantCode") String tenantCode);
+    R<CoreUserDTO> queryUserByCode(@RequestParam("otherCode") String otherCode, @RequestParam("tenantCode") String tenantCode);
 
     @GetMapping("/get")
-    ResponseData<UserVO> get(@RequestParam("id") Long id);
+    R<CoreUserDTO> get(@RequestParam("id") Long id);
 
     @GetMapping("/queryUserByPhone")
-    ResponseData<CoreUser> queryUserByPhone(@RequestParam("phone") String phone, @RequestParam("tenantCode") String tenantCode);
+    R<CoreUserDTO> queryUserByPhone(@RequestParam("phone") String phone, @RequestParam("tenantCode") String tenantCode);
 
     @PostMapping("/saveUser")
-    ResponseData saveUser(@RequestBody CoreUser user);
-
-    @GetMapping("/listByUserType")
-    ResponseData<List<CoreUser>> listByUserType(@RequestParam("userType") Integer userType);
-
-    /**
-     * 通过ID查询岗位信息
-     *
-     * @author mr.g
-     * @param postId
-     * @return 岗位信息
-     **/
-    @GetMapping("/queryPostById")
-    ResponseData<CorePost> queryPostById(@RequestParam("postId") Long postId);
+    R<String> saveUser(@RequestBody CoreUserDTO user);
 
     /**
      * 验证账号密码是否正确
@@ -67,6 +47,6 @@ public interface UserClient {
      * @return 是否正确
      **/
     @PostMapping("/validatePassword")
-    boolean validatePassword(@RequestBody ValidatePasswordDTO validatePasswordDto);
+    R<Boolean> validatePassword(@RequestBody ValidatePasswordDTO validatePasswordDto);
 
 }

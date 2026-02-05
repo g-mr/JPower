@@ -166,7 +166,7 @@ public class AuthController extends BaseController {
 
         // 登录成功要刷新用户登录数据
         if (!Fc.equalsValue(parameter.getGrantType(), RefreshTokenGranter.GRANT_TYPE)){
-            userClient.updateUserLoginInfo(userInfo.getUserId());
+            userClient.updateLoginCount(userInfo.getUserId());
         }
 
         return ReturnJsonUtil.data(TokenUtil.createAuthInfo(userInfo));

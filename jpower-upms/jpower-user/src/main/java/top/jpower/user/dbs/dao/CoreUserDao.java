@@ -1,36 +1,33 @@
 package top.jpower.user.dbs.dao;
 
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.mybatisflex.core.query.QueryColumn;
 import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.update.UpdateWrapper;
+import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.UpdateEntity;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.stereotype.Repository;
+import top.jpower.core.auth.utils.ShieldUtil;
+import top.jpower.core.dbs.dbs.dao.BaseDaoWrapper;
+import top.jpower.core.dbs.dbs.dao.JpowerServiceImpl;
+import top.jpower.core.dbs.mp.support.Condition;
 import top.jpower.core.dbs.page.PaginationContext;
 import top.jpower.core.dbs.support.Wrappers;
 import top.jpower.core.util.rsp.Pg;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.cache.SystemCache;
-import top.jpower.user.api.cache.UserCache;
 import top.jpower.user.dbs.dao.mapper.CoreUserMapper;
-import top.jpower.user.dbs.dao.mapper.TbCoreUserMapper;
-import top.jpower.jpower.dbs.entity.TbCoreUser;
-import top.jpower.core.auth.utils.ShieldUtil;
-import top.jpower.core.dbs.dbs.dao.BaseDaoWrapper;
-import top.jpower.core.dbs.dbs.dao.JpowerServiceImpl;
-import top.jpower.core.dbs.mp.support.Condition;
-import top.jpower.jpower.vo.UserVo;
+import top.jpower.user.dbs.entity.CorePost;
 import top.jpower.user.dbs.entity.CoreUser;
 import top.jpower.user.dbs.entity.CoreUserRole;
 import top.jpower.user.vo.LoginUserVO;
 import top.jpower.user.vo.UserVO;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.mybatisflex.core.query.QueryMethods.groupConcat;
-import static top.jpower.core.dbs.tenant.TenantConstant.DEFAULT_TENANT_CODE;
 
 /**
  * @author mr.gmac
@@ -41,26 +38,26 @@ public class CoreUserDao extends JpowerServiceImpl<CoreUserMapper, CoreUser> imp
     public void build(UserVO userVo) {
         userVo.setOrgName(SystemCache.getOrgName(userVo.getOrgId()));
         userVo.setRoleName(Fc.join(SystemCache.getRoleNameByIds(Fc.toLongList(userVo.getRoleIds()))," | "));
-        if (Fc.notNull(userVo.getPostId())){
-            userVo.setPostName(UserCache.getPostName(userVo.getPostId()));
-        }
     }
 
-    public Pg<UserVO> pageVo(CoreUser coreUser) {
+    public Pg<UserVO> pageVO(CoreUser coreUser) {
         Pg<UserVO> pg = getMapper().pageAs(PaginationContext.page(), Wrappers.getQueryWrapper(coreUser)
                         .select(CORE_USER.DEFAULT_COLUMNS)
                         .select(groupConcat(CORE_USER_ROLE.ROLE_ID).as(UserVO::getRoleIds))
-                        .leftJoin(CoreUserRole.class)
-                        .on(CoreUserRole::getUserId, CoreUser::getId)
+                        .select(CORE_POST.NAME.as(UserVO::getPostName))
+                        .leftJoin(CoreUserRole.class).on(CoreUserRole::getUserId, CoreUser::getId)
+                        .leftJoin(CorePost.class).on(CoreUser::getPostId, CorePost::getId)
                         .groupBy(CoreUser::getId), UserVO.class);
         return pageConvert(pg, this::build);
     }
 
-    public List<UserVO> listVo(CoreUser coreUser) {
+    public List<UserVO> listVO(CoreUser coreUser) {
         List<UserVO> list = getMapper().selectListByQueryAs(Wrappers.getQueryWrapper(coreUser)
                 .select(CORE_USER.DEFAULT_COLUMNS)
                 .select(groupConcat(CORE_USER_ROLE.ROLE_ID).as(UserVO::getRoleIds))
+                .select(CORE_POST.NAME.as(UserVO::getPostName))
                 .leftJoin(CoreUserRole.class)
+                .leftJoin(CorePost.class).on(CoreUser::getPostId, CorePost::getId)
                 .on(CoreUserRole::getUserId, CoreUser::getId)
                 .groupBy(CoreUser::getId), UserVO.class);
         return listConvert(list, this::build);
@@ -70,7 +67,9 @@ public class CoreUserDao extends JpowerServiceImpl<CoreUserMapper, CoreUser> imp
         UserVO userVO = super.getOneAs(Wrappers.getQueryWrapper()
                 .select(CORE_USER.DEFAULT_COLUMNS)
                 .select(groupConcat(CORE_USER_ROLE.ROLE_ID).as(UserVO::getRoleIds))
+                .select(CORE_POST.NAME.as(UserVO::getPostName))
                 .leftJoin(CoreUserRole.class)
+                .leftJoin(CorePost.class).on(CoreUser::getPostId, CorePost::getId)
                 .on(CoreUserRole::getUserId, CoreUser::getId)
                 .eq(CoreUser::getId, id)
                 .groupBy(CoreUser::getId), UserVO.class);
@@ -89,15 +88,11 @@ public class CoreUserDao extends JpowerServiceImpl<CoreUserMapper, CoreUser> imp
     /**
      * 获取用户密码
      * @author mr.g
-     * @param account
-     * @param tenantCode
-     * @return
+     * @param account 账号
+     * @return 密码
      **/
-    public String getPassword(String account, String tenantCode) {
-        return super.getObj(Condition.<TbCoreUser>getQueryWrapper().lambda()
-                .select(TbCoreUser::getPassword)
-                .eq(TbCoreUser::getLoginId, account)
-                .eq(ShieldUtil.isRoot(), TbCoreUser::getTenantCode, Fc.isBlank(tenantCode)?DEFAULT_TENANT_CODE:tenantCode), Fc::toStr);
+    public String getPassword(String account) {
+        return super.getObjAs(Wrappers.getQueryWrapper().select(CoreUser::getPassword).eq(CoreUser::getLoginId, account), String.class);
     }
 
     /**
@@ -163,4 +158,12 @@ public class CoreUserDao extends JpowerServiceImpl<CoreUserMapper, CoreUser> imp
         return super.update(UpdateEntity.of(CoreUser.class).setPassword(pass),
                 Wrappers.getQueryWrapper().in(CoreUser::getId, ids));
     }
+
+    public boolean updateLoginCount(Long id) {
+        return super.update(UpdateWrapper.of(CoreUser.class)
+                        .set(CoreUser::getLoginCount, CORE_USER.LOGIN_COUNT.add(1))
+                        .set(CoreUser::getLastLoginTime, new Date()),
+                Wrappers.getQueryWrapper().eq(CoreUser::getId,id));
+    }
+
 }

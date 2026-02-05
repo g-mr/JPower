@@ -1,6 +1,9 @@
 package top.jpower.user.dbs.entity;
 
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.Table;
+import com.mybatisflex.core.keygen.KeyGenerators;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -26,6 +29,9 @@ public class CorePost extends TenantEntity implements Serializable {
     @Serial
     private static final long serialVersionUID = -4758533573737613002L;
 
+    @Id(keyType = KeyType.Generator, value = KeyGenerators.flexId)
+    @Schema(description = "主键")
+    private Long id;
     @NotBlank(message = "岗位名称不可为空")
     @Schema(description = "岗位名称")
     private String name;

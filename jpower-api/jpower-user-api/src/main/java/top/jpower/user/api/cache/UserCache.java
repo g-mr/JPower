@@ -2,10 +2,9 @@ package top.jpower.user.api.cache;
 
 import top.jpower.common.constants.CacheNames;
 import top.jpower.core.redis.cache.CacheUtil;
-import top.jpower.core.util.constants.StringPool;
-import top.jpower.core.util.rsp.ResponseData;
-import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.rsp.R;
 import top.jpower.core.util.utils.SpringUtil;
+import top.jpower.user.api.dto.CoreUserDTO;
 import top.jpower.user.api.feign.UserClient;
 
 import java.util.List;
@@ -17,10 +16,10 @@ import java.util.List;
  **/
 public class UserCache {
 
-    private static final UserClient userClient;
+    private static final UserClient USER_CLIENT;
 
     static {
-        userClient = SpringUtil.getBean(UserClient.class);
+        USER_CLIENT = SpringUtil.getBean(UserClient.class);
     }
 
     /**
@@ -31,10 +30,10 @@ public class UserCache {
      * @param tenantCode 租户CODE
      * @return 用户信息
      **/
-    public static CoreUser getUserByPhone(String telephone, String tenantCode) {
+    public static CoreUserDTO getUserByPhone(String telephone, String tenantCode) {
         return CacheUtil.get(CacheNames.USER_KEY,CacheNames.USER_PHPNE_KEY, telephone,() -> {
-            ResponseData<CoreUser> responseData = userClient.queryUserByPhone(telephone,tenantCode);
-            return responseData.getData();
+            R<CoreUserDTO> r = USER_CLIENT.queryUserByPhone(telephone,tenantCode);
+            return r.getData();
         });
     }
 
@@ -46,10 +45,10 @@ public class UserCache {
      * @param tenantCode 租户CODE
      * @return 用户信息
      **/
-    public static CoreUser getUserByLoginId(String loginId, String tenantCode) {
+    public static CoreUserDTO getUserByLoginId(String loginId, String tenantCode) {
         return CacheUtil.get(CacheNames.USER_KEY,CacheNames.USER_LOGINID_KEY,loginId,() -> {
-            ResponseData<CoreUser> responseData = userClient.queryUserByLoginId(loginId,tenantCode);
-            return responseData.getData();
+            R<CoreUserDTO> r = USER_CLIENT.queryUserByLoginId(loginId,tenantCode);
+            return r.getData();
         });
     }
 
@@ -57,13 +56,13 @@ public class UserCache {
      * 获取用户的所有角色ID
      *
      * @author mr.g
-     * @param userId
+     * @param userId 用户ID
      * @return 角色ID列表
      **/
     public static List<Long> getRoleIds(Long userId) {
         return CacheUtil.get(CacheNames.USER_KEY,CacheNames.USER_ROLEID_KEY,userId,() -> {
-            ResponseData<List<Long>> responseData = userClient.getRoleIds(userId);
-            return responseData.getData();
+            R<List<Long>> r = USER_CLIENT.getRoleIds(userId);
+            return r.getData();
         });
     }
 
@@ -75,10 +74,10 @@ public class UserCache {
      * @param tenantCode 租户
      * @return 用户信息
      **/
-    public static CoreUser getUserByCode(String otherCode, String tenantCode) {
+    public static CoreUserDTO getUserByCode(String otherCode, String tenantCode) {
         return CacheUtil.get(CacheNames.USER_KEY,CacheNames.USER_OTHERCODE_KEY,otherCode,() -> {
-            ResponseData<CoreUser> responseData = userClient.queryUserByCode(otherCode,tenantCode);
-            return responseData.getData();
+            R<CoreUserDTO> r = USER_CLIENT.queryUserByCode(otherCode,tenantCode);
+            return r.getData();
         });
     }
 
@@ -89,38 +88,11 @@ public class UserCache {
      * @param userId 用户ID
      * @return 用户信息
      **/
-    public static UserVO getById(Long userId) {
+    public static CoreUserDTO getById(Long userId) {
         return CacheUtil.get(CacheNames.USER_KEY,CacheNames.USER_DETAIL_KEY, userId,() -> {
-            ResponseData<UserVO> responseData = userClient.get(userId);
-            return responseData.getData();
+            R<CoreUserDTO> r = USER_CLIENT.get(userId);
+            return r.getData();
         });
     }
 
-    /**
-     * 获取岗位名称
-     *
-     * @author mr.g
-     * @param postId 岗位ID
-     * @return java.lang.String
-     **/
-    public static String getPostName(Long postId) {
-        CorePost post = getPost(postId);
-        if (Fc.isNull(post)){
-            return StringPool.EMPTY;
-        }
-        return post.getName();
-    }
-
-    /**
-     * 通过ID获取岗位
-     *
-     * @param postId 岗位ID
-     * @return 岗位详情
-     */
-    public static CorePost getPost(Long postId){
-        return CacheUtil.get(CacheNames.POST_KEY,CacheNames.POST_DETAIL_KEY,postId,() -> {
-            ResponseData<CorePost> responseData = userClient.queryPostById(postId);
-            return responseData.getData();
-        });
-    }
 }

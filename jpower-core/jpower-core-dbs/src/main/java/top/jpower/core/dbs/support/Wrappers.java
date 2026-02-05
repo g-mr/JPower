@@ -1,12 +1,12 @@
 package top.jpower.core.dbs.support;
 
+import cn.hutool.core.collection.ListUtil;
 import com.mybatisflex.core.query.CPI;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.util.LambdaGetter;
 import top.jpower.core.dbs.page.PaginationContext;
-import top.jpower.core.util.utils.BeanUtil;
-import top.jpower.core.util.utils.ChainMap;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,16 +28,14 @@ public class Wrappers {
         return wrapper;
     }
 
-    public static <T> QueryWrapper getQueryWrapper(Map<String, Object> query, Class<T> clazz) {
-        Map<String,Object> exclude = ChainMap.<String,Object>create().put("pageNum", "pageNum").put("pageSize", "pageSize").put("asc", "asc").put("desc", "desc").put("tenantCode", "tenantCode").build();
-        return getQueryWrapper(query, exclude, clazz);
+    public static QueryWrapper getQueryWrapper(Map<String, Object> query) {
+        List<String> exclude = ListUtil.of("pageNum", "pageSize", "asc", "desc", "tenantCode");
+        return getQueryWrapper(query, exclude);
     }
 
-    public static <T> QueryWrapper getQueryWrapper(Map<String, Object> query, Map<String, Object> exclude, Class<T> clazz) {
-        exclude.forEach((k, v) -> {
-            query.remove(k);
-        });
-        QueryWrapper qw = QueryWrapper.create(BeanUtil.newBean(clazz));
+    public static QueryWrapper getQueryWrapper(Map<String, Object> query, List<String> exclude) {
+        exclude.forEach(query::remove);
+        QueryWrapper qw = QueryWrapper.create();
         CPI.setOrderBys(qw, PaginationContext.orderBy());
         SqlWrapper.buildCondition(qw, query);
         return qw;

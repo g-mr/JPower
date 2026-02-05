@@ -2,12 +2,12 @@ package top.jpower.user.dbs.dao.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import top.jpower.core.dbs.dbs.dao.mapper.base.JpowerBaseMapper;
-import top.jpower.user.dbs.entity.CorePost;
+import top.jpower.user.dbs.entity.CoreUserRole;
 
 /**
- * @author mr.g
- * @date 2022-09-16 17:57
+ * @author mr.gmac
  */
 @Mapper
-public interface TbCorePostMapper extends JpowerBaseMapper<CorePost> {
+public interface CoreUserRoleMapper extends JpowerBaseMapper<CoreUserRole> {
+
 }

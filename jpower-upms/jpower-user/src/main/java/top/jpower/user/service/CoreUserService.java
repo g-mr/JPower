@@ -42,7 +42,7 @@ public interface CoreUserService extends BaseService<CoreUser> {
      * @Param [ids]
      * @return java.lang.Integer
      **/
-    Boolean delete(List<Long> ids);
+    Boolean deleteByIds(List<Long> ids);
 
     /**
      * @Author 郭丁志
@@ -114,7 +114,7 @@ public interface CoreUserService extends BaseService<CoreUser> {
      * @date 0:02 2020/10/21 0021
      * @param id
      */
-    Boolean updateLoginInfo(Long id);
+    Boolean updateLoginCount(Long id);
 
     /**
      * @Author 郭丁志
@@ -131,7 +131,7 @@ public interface CoreUserService extends BaseService<CoreUser> {
      * @param otherCode
      * @param tenantCode
      */
-    TbCoreUser selectUserByOtherCode(String otherCode, String tenantCode);
+    CoreUser selectUserByOtherCode(String otherCode, String tenantCode);
 
     /**
      * @author 郭丁志
@@ -139,13 +139,11 @@ public interface CoreUserService extends BaseService<CoreUser> {
      * @date 0:09 2020/10/25 0025
      * @param user 用户信息
      */
-    boolean saveUser(TbCoreUser user);
+    boolean saveUser(CoreUser user, List<Long> roleIds);
 
     boolean addRoleUsers(Long roleId, List<Long> userIds);
 
     boolean deleteRoleUsers(Long roleId, List<Long> userIds);
-
-    Page<UserVo> page(Page<TbCoreUser> page, Wrapper<TbCoreUser> queryWrapper);
 
     /**
      * 验证登录名的密码

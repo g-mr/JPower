@@ -20,10 +20,13 @@ import com.mybatisflex.core.logicdelete.LogicDeleteManager;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.util.LambdaGetter;
+import top.jpower.core.dbs.support.Wrappers;
 import top.jpower.core.util.rsp.Pg;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -109,5 +112,29 @@ public interface JpowerBaseMapper<T> extends BaseMapper<T> {
     default <R> Pg<R> pageAs(Page<R> page, QueryWrapper queryWrapper, Class<R> asType) {
         Page<R> result = BaseMapper.super.paginateAs(page, queryWrapper, asType);
         return Pg.of(result.getTotalRow(), result.getRecords());
+    }
+
+    /**
+     * 通过一个字段查询数据
+     *
+     * @author mr.g
+     * @param column 字段
+     * @param value 值
+     * @return java.util.List<T>
+     **/
+    default List<T> listByField(LambdaGetter<T> column, Object value) {
+        return selectListByQuery(Wrappers.getQueryWrapper().eq(column, value));
+    }
+
+    /**
+     * 通过一个字段查询数据
+     *
+     * @author mr.g
+     * @param column 字段
+     * @param value 值
+     * @return java.util.List<T>
+     **/
+    default T getOneByField(LambdaGetter<T> column, Object value) {
+        return selectOneByQuery(Wrappers.getQueryWrapper().eq(column, value));
     }
 }

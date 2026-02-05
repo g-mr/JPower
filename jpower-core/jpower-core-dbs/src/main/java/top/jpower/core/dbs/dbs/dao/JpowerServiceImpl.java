@@ -4,12 +4,14 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.tree.Tree;
 import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.SqlUtil;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import top.jpower.core.dbs.dbs.dao.mapper.base.JpowerBaseMapper;
 import top.jpower.core.dbs.dbs.entity.base.BaseEntity;
 import top.jpower.core.dbs.support.ForestNodeMerger;
 import top.jpower.core.dbs.support.TreeWrapper;
+import top.jpower.core.dbs.support.Wrappers;
 import top.jpower.core.util.utils.Fc;
 
 import java.io.Serializable;
@@ -112,6 +114,30 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
      */
     public boolean addBatchSomeColumn(List<T> entityList) {
         return SqlUtil.toBool(getMapper().insertBatchSelective(entityList));
+    }
+
+    /**
+     * 通过一个字段查询
+     *
+     * @author mr.g
+     * @param column 字段
+     * @param value 值
+     * @return 数据
+     **/
+    public List<T> listByField(LambdaGetter<T> column, Object value) {
+        return super.list(Wrappers.getQueryWrapper().eq(column, value));
+    }
+
+    /**
+     * 通过一个字段查询数据
+     *
+     * @author mr.g
+     * @param column 字段
+     * @param value 值
+     * @return java.util.List<T>
+     **/
+    public T getOneByField(LambdaGetter<T> column, Object value) {
+        return super.getOne(Wrappers.getQueryWrapper().eq(column, value));
     }
 
     /**

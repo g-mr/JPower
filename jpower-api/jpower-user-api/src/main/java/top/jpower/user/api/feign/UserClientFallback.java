@@ -5,12 +5,9 @@ import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestParam;
 import top.jpower.core.util.constants.ReturnConstants;
-import top.jpower.core.util.rsp.ResponseData;
-import top.jpower.core.util.rsp.ReturnJsonUtil;
-import top.jpower.jpower.dbs.entity.CorePost;
-import top.jpower.jpower.dbs.entity.CoreUser;
+import top.jpower.core.util.rsp.R;
+import top.jpower.user.api.dto.CoreUserDTO;
 import top.jpower.user.api.dto.ValidatePasswordDTO;
-import top.jpower.jpower.vo.UserVO;
 
 import java.util.List;
 
@@ -28,53 +25,41 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
     public UserClient create(Throwable cause) {
         return new UserClient() {
             @Override
-            public ResponseData<CoreUser> queryUserByLoginId(String loginId, String tenantCode) {
+            public R<CoreUserDTO> queryUserByLoginId(String loginId, String tenantCode) {
                 log.error("调用queryUserByLoginIdPwd失败，参数：loginId={}，e={}", loginId, cause);
-                return ReturnJsonUtil.fail("查询失败");
+                return R.fail("查询失败");
             }
 
             @Override
-            public ResponseData<List<Long>> getRoleIds(Long userId) {
-                return ReturnJsonUtil.fail("查询失败");
+            public R<List<Long>> getRoleIds(Long userId) {
+                return R.fail("查询失败");
             }
 
             @Override
-            public ResponseData updateUserLoginInfo(@RequestParam Long userId) {
+            public R<Boolean> updateLoginCount(@RequestParam Long userId) {
                 log.error("调用updateUserLoginInfo失败，参数：{}，e={}", userId, cause);
-                return ReturnJsonUtil.fail("更新失败");
+                return R.fail("更新失败");
             }
 
             @Override
-            public ResponseData<CoreUser> queryUserByCode(String otherCode, String tenantCode) {
-                return ReturnJsonUtil.fail("查询失败");
+            public R<CoreUserDTO> queryUserByCode(String otherCode, String tenantCode) {
+                return R.fail("查询失败");
             }
 
             @Override
-            public ResponseData<UserVO> get(Long id) {
-                return ReturnJsonUtil.fail("查询失败");
+            public R<CoreUserDTO> get(Long id) {
+                return R.fail("查询失败");
             }
 
             @Override
-            public ResponseData<CoreUser> queryUserByPhone(String phone, String tenantCode) {
-                return ReturnJsonUtil.fail("查询失败");
+            public R<CoreUserDTO> queryUserByPhone(String phone, String tenantCode) {
+                return R.fail("查询失败");
             }
 
             @Override
-            public ResponseData saveUser(CoreUser user) {
+            public R<String> saveUser(CoreUserDTO user) {
                 log.error("调用saveUser失败，参数：user={} ，e={}", user, cause);
-                return ReturnJsonUtil.print(ReturnConstants.RECODE_API, cause.getMessage(), false);
-            }
-
-            @Override
-            public ResponseData<List<CoreUser>> listByUserType(Integer userType) {
-                log.error("调用listByUserType失败，参数：userType={}", userType);
-                return ReturnJsonUtil.print(ReturnConstants.RECODE_API, cause.getMessage(), false);
-            }
-
-            @Override
-            public ResponseData<CorePost> queryPostById(Long postId) {
-                log.error("调用queryPostById失败，参数：postId={}", postId);
-                return ReturnJsonUtil.print(ReturnConstants.RECODE_API, cause.getMessage(), false);
+                return R.print(ReturnConstants.RECODE_API, cause.getMessage(), false);
             }
 
             /**
@@ -85,9 +70,9 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
              * @author mr.g
              **/
             @Override
-            public boolean validatePassword(ValidatePasswordDTO validatePasswordDto) {
+            public R<Boolean> validatePassword(ValidatePasswordDTO validatePasswordDto) {
                 log.error("调用validatePassword失败，参数：validatePasswordDto={}", validatePasswordDto);
-                return false;
+                return R.fail("请求失败");
             }
         };
     }

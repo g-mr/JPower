@@ -6,6 +6,8 @@ import java.io.Serializable;
 
 /**
  * 账号密码
+ *
+ * @author mr.g
  */
 @Data
 public class ValidatePasswordDTO implements Serializable {
