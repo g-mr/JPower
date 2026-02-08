@@ -14,7 +14,7 @@ import top.jpower.core.auth.dto.UserInfo;
 import top.jpower.core.auth.properties.AuthProperties;
 import top.jpower.core.auth.utils.ShieldUtil;
 import top.jpower.core.util.constants.TokenConstant;
-import top.jpower.core.util.rsp.ReturnJsonUtil;
+import top.jpower.core.util.rsp.R;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.WebUtil;
 
@@ -49,7 +49,7 @@ public class ClientInterceptor implements HandlerInterceptor {
 
         if (!isSkip || !validateClient()){
             log.warn("客户端认证失败，请求接口：{}，请求IP：{}，请求参数：{}，请求客户端信息：{}", request.getRequestURI(), WebUtil.getIp(request), JSON.toJSONString(request.getParameterMap()), ShieldUtil.getClientCodeFromHeader()+":"+ShieldUtil.getClientSecretFromHeader());
-            WebUtil.renderJson(response, ReturnJsonUtil.print(HttpStatus.NOT_ACCEPTABLE.value(),"无效的客户端请求",false));
+            WebUtil.renderJson(response, R.print(HttpStatus.NOT_ACCEPTABLE.value(),"无效的客户端请求",false));
         }
         return isSkip;
     }

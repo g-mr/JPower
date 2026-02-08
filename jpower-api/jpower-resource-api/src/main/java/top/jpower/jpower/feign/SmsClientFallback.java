@@ -18,42 +18,42 @@ public class SmsClientFallback implements FallbackFactory<SmsClient> {
         return new SmsClient() {
 
             @Override
-            public SmsResponse sendSms(SmsRequestDto requestDto) {
+            public SmsResponse sendSms(SmsRequestDTO requestDTO) {
                 throw new JpowerFeignException("短信发送失败==>"+cause.getMessage());
             }
 
             @Override
-            public SmsResponse sendSingleSms(SmsRequestSingleDto requestSingleDto) {
+            public SmsResponse sendSingleSms(SmsRequestSingleDTO requestSingleDTO) {
                 throw new JpowerFeignException("短信发送失败==>"+cause.getMessage());
             }
 
             @Override
-            public boolean send(SmsRequestDto requestDto) {
+            public boolean send(SmsRequestDTO requestDTO) {
                 throw new JpowerFeignException("短信发送失败==>"+cause.getMessage());
             }
 
             @Override
-            public boolean sendSingle(SmsRequestSingleDto requestSingleDto) {
+            public boolean sendSingle(SmsRequestSingleDTO requestSingleDTO) {
                 throw new JpowerFeignException("短信发送失败==>"+cause.getMessage());
             }
 
             @Override
-            public void sendThrow(SmsRequestDto requestDto) {
+            public void sendThrow(SmsRequestDTO requestDTO) {
                 throw new JpowerFeignException("短信发送失败==>"+cause.getMessage());
             }
 
             @Override
-            public void sendSingleThrow(SmsRequestSingleDto requestSingleDto) {
+            public void sendSingleThrow(SmsRequestSingleDTO requestSingleDTO) {
                 throw new JpowerFeignException("短信发送失败==>"+cause.getMessage());
             }
 
             @Override
-            public boolean sendValidate(SmsValidateDto smsValidateDto) {
+            public boolean sendValidate(SmsValidateDTO smsValidateDTO) {
                 throw new JpowerFeignException("短信发送失败==>"+cause.getMessage());
             }
 
             @Override
-            public boolean validate(ValidateDto validateDto) {
+            public boolean validate(ValidateDTO validateDTO) {
                 throw new JpowerFeignException("短信验证失败==>"+cause.getMessage());
             }
         };

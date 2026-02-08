@@ -6,13 +6,13 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 
 /**
+ * 短信验证参数
+ *
  * @author mr.g
- * @date 2024/4/16 22:09
- * @description
  */
 @Data
 @Accessors(chain = true)
-public class ValidateDto implements Serializable {
+public class ValidateDTO implements Serializable {
 
     /**
      * 编码

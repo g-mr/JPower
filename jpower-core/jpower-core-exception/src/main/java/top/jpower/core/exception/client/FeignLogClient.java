@@ -6,7 +6,7 @@ import top.jpower.core.exception.enums.constants.LogConstant;
 import top.jpower.core.exception.feign.LogTraceClient;
 import top.jpower.core.exception.model.ErrorLogDto;
 import top.jpower.core.exception.model.OperateLogDto;
-import top.jpower.core.util.rsp.ResponseData;
+import top.jpower.core.util.rsp.R;
 import top.jpower.core.util.utils.ExceptionUtil;
 import top.jpower.core.util.utils.Fc;
 
@@ -30,9 +30,9 @@ public class FeignLogClient implements LogClient {
     @Override
     public void saveOperateLog(OperateLogDto operateLog) {
         try {
-            ResponseData responseData = logTraceClient.saveOperateLog(LogConstant.getInstance().getJpowerLog(), operateLog);
-            if (Fc.isNull(responseData) || !responseData.isStatus()){
-                log.error("操作日志保存失败={}",responseData);
+            R<Long> r = logTraceClient.saveOperateLog(LogConstant.getInstance().getJpowerLog(), operateLog);
+            if (Fc.isNull(r) || !r.isSuccess()){
+                log.error("操作日志保存失败={}",r);
             }
         }catch (Exception e){
             log.error("操作日志保存失败={}", ExceptionUtil.getMessage(e));
@@ -53,9 +53,9 @@ public class FeignLogClient implements LogClient {
         }
 
         try {
-            ResponseData responseData = logTraceClient.saveErrorLog(LogConstant.getInstance().getJpowerLog(), errorLog);
-            if (Fc.isNull(responseData) || !responseData.isStatus()){
-                log.error("错误日志保存失败={}", responseData);
+            R<Long> r = logTraceClient.saveErrorLog(LogConstant.getInstance().getJpowerLog(), errorLog);
+            if (Fc.isNull(r) || !r.isSuccess()){
+                log.error("错误日志保存失败={}", r);
             }
         }catch (Exception e){
             log.error("错误日志保存失败={}", ExceptionUtil.getMessage(e));

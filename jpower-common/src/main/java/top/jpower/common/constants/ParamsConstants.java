@@ -1,11 +1,9 @@
 package top.jpower.common.constants;
 
 /**
- * @ClassName ParamsConstants
- * @Description TODO 系统参数CODE值
- * @Author 郭丁志
- * @Date 2020-07-31 21:49
- * @Version 1.0
+ * 系统参数CODE值
+ *
+ * @author mr.g
  */
 public class ParamsConstants {
 

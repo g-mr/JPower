@@ -43,10 +43,6 @@
             <exclusions>
                 <exclusion>
                     <groupId>top.jpower</groupId>
-                    <artifactId>jpower-core-dbs</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>top.jpower</groupId>
                     <artifactId>jpower-core-exception</artifactId>
                 </exclusion>
             </exclusions>

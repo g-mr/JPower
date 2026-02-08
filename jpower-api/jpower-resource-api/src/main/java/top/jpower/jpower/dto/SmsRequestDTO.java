@@ -3,15 +3,16 @@ package top.jpower.jpower.dto;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 /**
+ * 短信请求参数
+ *
  * @author mr.g
- * @date 2024/4/16 22:04
- * @description
  */
 @Data
-public class SmsRequestSingleDto implements Serializable {
+public class SmsRequestDTO implements Serializable {
 
     /**
      * 编码
@@ -24,6 +25,6 @@ public class SmsRequestSingleDto implements Serializable {
     /**
      * 手机号码
      **/
-    String phone;
+    List<String> phones;
 
 }

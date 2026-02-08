@@ -5,7 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.RestTemplate;
 import top.jpower.core.auth.utils.constant.ClientNameConstant;
 import top.jpower.core.deploy.property.JpowerProperties;
-import top.jpower.core.util.rsp.ResponseData;
+import top.jpower.core.util.rsp.R;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.GuavaCache;
 import top.jpower.core.util.utils.MapUtil;
@@ -34,8 +34,8 @@ public class SystemClient {
                     map = null;
                 }
             }else {
-                ResponseData<Map<String,Object>> responseData = SpringUtil.getBean(RestTemplate.class).getForObject("http://"+ ClientNameConstant.getInstance().getJpowerSystem()+"/core/client/getClientByClientCode?clientCode="+code, ResponseData.class);
-                map = responseData.getData();
+                R<Map<String,Object>> r = SpringUtil.getBean(RestTemplate.class).getForObject("http://"+ ClientNameConstant.getInstance().getJpowerSystem()+"/core/client/getClientByClientCode?clientCode="+code, R.class);
+                map = r.getData();
             }
             CLIENT_CACHE.put(code,map);
         }

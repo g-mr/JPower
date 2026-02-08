@@ -1,28 +1,24 @@
 package top.jpower.jpower.wrapper;
 
+import top.jpower.core.dbs.dictbind.handler.IDictBindHandler;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
-import top.jpower.common.enums.YYZLEnum;
 import top.jpower.core.dbs.dictbind.annotation.Dict;
-import top.jpower.core.dbs.dictbind.handler.IDictBindHandler;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.GuavaCache;
 import top.jpower.core.util.utils.MapUtil;
-import top.jpower.core.util.utils.WebUtil;
 import top.jpower.jpower.cache.dict.DictCache;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static top.jpower.core.util.constants.JpowerConstants.I18N_KEY;
-
 /**
- * @Author mr.g
- * @Date 2021/11/16 0016 0:56
+ * 字典查询
+ *
+ * @author mr.g
  */
 @Component
 public class DictWrapper implements IDictBindHandler {
@@ -56,13 +52,7 @@ public class DictWrapper implements IDictBindHandler {
                 String value = null;
                 if (Fc.isNotEmpty(list)){
                     value = list.stream()
-                            .filter(map -> {
-                                String requestLocale = YYZLEnum.CHINA.getValue();
-                                if (Fc.notNull(WebUtil.getRequest())){
-                                    requestLocale = Fc.toStr(Objects.requireNonNull(WebUtil.getRequest()).getHeader(I18N_KEY), YYZLEnum.CHINA.getValue());
-                                }
-                                return Fc.equalsValue(MapUtil.getStr(map,"code"),fieldValue) && Fc.equalsValue(MapUtil.getStr(map,"locale"), requestLocale);
-                            })
+                            .filter(map -> Fc.equalsValue(MapUtil.getStr(map,"code"),fieldValue))
                             .map(map-> MapUtil.getStr(map,"name"))
                             .collect(Collectors.joining(StringPool.SPILT));
                 }

@@ -12,12 +12,12 @@ import top.jpower.core.redis.cache.CacheUtil;
  *
  * @author mr.g
  **/
-public class ParamConfig {
+public class ParamCache {
 
-    private static ParamsClient paramsClient;
+    private static final ParamsClient PARAMS_CLIENT;
 
     static {
-        paramsClient = SpringUtil.getBean(ParamsClient.class);
+        PARAMS_CLIENT = SpringUtil.getBean(ParamsClient.class);
     }
 
     /**
@@ -28,7 +28,7 @@ public class ParamConfig {
      * @return 值
      **/
     public static String getString(String code){
-        return CacheUtil.get(CacheNames.PARAM_KEY,CacheNames.PARAM_CODE_KEY,code,() -> paramsClient.queryByCode(code).getData());
+        return CacheUtil.get(CacheNames.PARAM_KEY,CacheNames.PARAM_CODE_KEY,code,() -> PARAMS_CLIENT.queryByCode(code).getData());
     }
 
     /**

@@ -15,7 +15,7 @@ import java.util.List;
 @FeignClient(
         value = AppConstant.JPOWER_USER,
         fallbackFactory = UserClientFallback.class,
-        path = "/core/user"
+        path = "/feign/core/user"
 )
 public interface UserClient {
 

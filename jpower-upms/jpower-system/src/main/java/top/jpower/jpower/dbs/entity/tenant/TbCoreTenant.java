@@ -2,13 +2,16 @@ package top.jpower.jpower.dbs.entity.tenant;
 
 import cn.hutool.core.date.DatePattern;
 import com.alibaba.fastjson2.annotation.JSONField;
-import com.baomidou.mybatisplus.annotation.FieldStrategy;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModelProperty;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.KeyType;
+import com.mybatisflex.annotation.Table;
+import com.mybatisflex.core.handler.JacksonTypeHandler;
+import com.mybatisflex.core.keygen.KeyGenerators;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
 import top.jpower.core.dbs.dbs.entity.base.BaseEntity;
 
@@ -23,35 +26,36 @@ import java.util.Map;
  * @Version 1.0
  */
 @Data
-@TableName(autoResultMap = true)
+@Table("tb_core_tenant")
+@EqualsAndHashCode(callSuper = true)
 public class TbCoreTenant extends BaseEntity {
 
-    private static final long serialVersionUID = 1L;
-
-    @ApiModelProperty(value = "租户Code",hidden = true)
+    @Schema(description = "主键")
+    @Id(keyType = KeyType.Generator, value = KeyGenerators.flexId)
+    private Long id;
+    @Schema(description = "租户Code",hidden = true)
     private String tenantCode;
-    @ApiModelProperty(value = "租户名称")
+    @Schema(description = "租户名称")
     private String tenantName;
-    @ApiModelProperty(value = "域名地址")
+    @Schema(description = "域名地址")
     private String domain;
-    @ApiModelProperty(value = "联系人")
+    @Schema(description = "联系人")
     private String contactName;
-    @ApiModelProperty(value = "联系电话")
+    @Schema(description = "联系电话")
     private String contactPhone;
-    @ApiModelProperty(value = "联系地址")
+    @Schema(description = "联系地址")
     private String address;
-    @ApiModelProperty(value = "账号额度")
+    @Schema(description = "账号额度")
     private Integer accountNumber;
     @DateTimeFormat(pattern = DatePattern.NORM_DATETIME_PATTERN)
     @JsonFormat(shape = JsonFormat.Shape.STRING,timezone = "GMT+8", pattern = DatePattern.NORM_DATETIME_PATTERN,locale = "zh_CN")
     @JSONField(format= DatePattern.NORM_DATETIME_PATTERN)
-    @ApiModelProperty(value = "过期时间")
-    @TableField(updateStrategy = FieldStrategy.ALWAYS)
+    @Schema(description = "过期时间")
     private Date expireTime;
-    @ApiModelProperty(value = "授权码",hidden = true)
+    @Schema(description = "授权码",hidden = true)
     private String licenseKey;
-    @ApiModelProperty(value = "设置内容")
-    @TableField(value = "`config`", typeHandler = JacksonTypeHandler.class, select = false)
+    @Schema(description = "设置内容")
+    @Column(typeHandler = JacksonTypeHandler.class, isLarge = true)
     private Map<String, String> config;
 
 }

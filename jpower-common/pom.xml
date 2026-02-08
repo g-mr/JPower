@@ -29,11 +29,6 @@
             <artifactId>jpower-core-exception</artifactId>
             <version>${top.jpower.version}</version>
         </dependency>
-        <dependency>
-            <groupId>top.jpower</groupId>
-            <artifactId>jpower-core-boot</artifactId>
-            <version>${top.jpower.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>top.jpower</groupId>
@@ -41,11 +36,6 @@
             <version>${top.jpower.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>top.jpower</groupId>
-            <artifactId>jpower-core-dbs</artifactId>
-            <version>${top.jpower.version}</version>
-        </dependency>
     </dependencies>
 
     <build>

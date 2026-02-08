@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.jpower.common.enums.YNEnum;
+import top.jpower.common.enums.YYZLEnum;
 import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.WebUtil;
 import top.jpower.jpower.dbs.dao.dict.TbCoreDictDao;
 import top.jpower.jpower.dbs.dao.dict.mapper.TbCoreDictMapper;
 import top.jpower.jpower.dbs.entity.dict.TbCoreDict;
@@ -19,8 +21,10 @@ import top.jpower.jpower.vo.DictVo;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static top.jpower.common.enums.YYZLEnum.CHINA;
+import static top.jpower.core.util.constants.JpowerConstants.I18N_KEY;
 import static top.jpower.core.util.constants.JpowerConstants.TOP_CODE;
 import static top.jpower.core.dbs.tenant.TenantConstant.DEFAULT_TENANT_CODE;
 
@@ -69,10 +73,15 @@ public class CoreDictServiceImpl extends BaseServiceImpl<TbCoreDictMapper, TbCor
 
     @Override
     public List<Map<String, Object>> listByTypeCode(String dictTypeCode) {
+        String requestLocale = YYZLEnum.CHINA.getValue();
+        if (Fc.notNull(WebUtil.getRequest())){
+            requestLocale = Fc.toStr(Objects.requireNonNull(WebUtil.getRequest()).getHeader(I18N_KEY), YYZLEnum.CHINA.getValue());
+        }
         //这里不能返回实体类，不然会造成字典回写的死循环
         return dictDao.listMaps(Condition.<TbCoreDict>getQueryWrapper().lambda()
                 .select(TbCoreDict::getCode, TbCoreDict::getName, TbCoreDict::getLocale)
                 .eq(TbCoreDict::getDictTypeCode, dictTypeCode)
+                .eq(TbCoreDict::getLocale, requestLocale)
                 .eq(ShieldUtil.isRoot(), TbCoreDict::getTenantCode, DEFAULT_TENANT_CODE));
     }
 

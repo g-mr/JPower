@@ -1,18 +1,13 @@
 package top.jpower.jpower.cache;
 
-import top.jpower.core.util.constants.StringPool;
-import top.jpower.core.util.rsp.ResponseData;
-import top.jpower.core.util.utils.Fc;
-import top.jpower.core.util.utils.SpringUtil;
-import top.jpower.jpower.dbs.entity.city.TbCoreCity;
-import top.jpower.jpower.dbs.entity.client.TbCoreClient;
-import top.jpower.jpower.dbs.entity.function.TbCoreDataScope;
-import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
-import top.jpower.jpower.dbs.entity.org.TbCoreOrg;
-import top.jpower.jpower.dbs.entity.tenant.TbCoreTenant;
-import top.jpower.jpower.feign.SystemClient;
 import top.jpower.common.constants.CacheNames;
 import top.jpower.core.redis.cache.CacheUtil;
+import top.jpower.core.util.constants.StringPool;
+import top.jpower.core.util.rsp.R;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.SpringUtil;
+import top.jpower.jpower.dto.*;
+import top.jpower.jpower.feign.SystemClient;
 
 import java.util.List;
 
@@ -23,10 +18,10 @@ import java.util.List;
  **/
 public class SystemCache {
 
-    private static SystemClient systemClient;
+    private static final SystemClient SYSTEM_CLIENT;
 
     static {
-        systemClient = SpringUtil.getBean(SystemClient.class);
+        SYSTEM_CLIENT = SpringUtil.getBean(SystemClient.class);
     }
 
     /**
@@ -36,8 +31,8 @@ public class SystemCache {
      * @param orgId 组织机构ID
      * @return 组织机构名称
      **/
-    public static String getOrgName(Long orgId){
-        TbCoreOrg org = getOrg(orgId);
+    public static String getOrgName(Long orgId) {
+        OrgDTO org = getOrg(orgId);
         if (Fc.isNull(org)){
             return StringPool.EMPTY;
         }
@@ -50,10 +45,10 @@ public class SystemCache {
      * @param orgId 组织机构ID
      * @return 部门详情
      */
-    public static TbCoreOrg getOrg(Long orgId){
+    public static OrgDTO getOrg(Long orgId){
         return CacheUtil.get(CacheNames.ORG_KEY,CacheNames.ORG_DETAIL_KEY,orgId,() -> {
-            ResponseData<TbCoreOrg> responseData = systemClient.queryOrgById(orgId);
-            return responseData.getData();
+            R<OrgDTO> r = SYSTEM_CLIENT.queryOrgById(orgId);
+            return r.getData();
         });
     }
 
@@ -65,8 +60,8 @@ public class SystemCache {
      */
     public static List<Long> getChildIdOrgById(Long orgId) {
         return CacheUtil.get(CacheNames.ORG_KEY,CacheNames.ORG_CHILDID_KEY,orgId,() -> {
-            ResponseData<List<Long>> responseData = systemClient.queryChildOrgById(orgId);
-            return responseData.getData();
+            R<List<Long>> r = SYSTEM_CLIENT.queryChildOrgById(orgId);
+            return r.getData();
         });
     }
     
@@ -74,12 +69,11 @@ public class SystemCache {
      * 获取地区名称
      *
      * @author mr.g
-     * @date 23:38 2021-02-21
-     * @param code
+     * @param code 地区CODE
      * @return java.lang.String
      **/
     public static String getCityName(String code) {
-        TbCoreCity city = getCity(code);
+        CityDTO city = getCity(code);
         if (Fc.isNull(city)){
             return StringPool.EMPTY;
         }
@@ -93,10 +87,10 @@ public class SystemCache {
      * @param code 城市CODE
      * @return 城市详情
      **/
-    public static TbCoreCity getCity(String code) {
+    public static CityDTO getCity(String code) {
         return CacheUtil.get(CacheNames.CITY_KEY,CacheNames.CITY_CODE_KEY,code,() -> {
-            ResponseData<TbCoreCity> responseData = systemClient.getCityByCode(code);
-            return responseData.getData();
+            R<CityDTO> r = SYSTEM_CLIENT.getCityByCode(code);
+            return r.getData();
         });
     }
 
@@ -107,10 +101,10 @@ public class SystemCache {
      * @param clientCode 客户端CODE
      * @return 客户端详情
      **/
-    public static TbCoreClient getClientByClientCode(String clientCode) {
+    public static ClientDTO getClientByClientCode(String clientCode) {
         return CacheUtil.get(CacheNames.CLIENT_KEY,CacheNames.CLIENTCODE_KEY,clientCode,() -> {
-            ResponseData<TbCoreClient> responseData = systemClient.getClientByClientCode(clientCode);
-            return responseData.getData();
+            R<ClientDTO> r = SYSTEM_CLIENT.getClientByClientCode(clientCode);
+            return r.getData();
         });
     }
 
@@ -123,8 +117,8 @@ public class SystemCache {
      **/
     public static List<String> getUrlsByRoleIds(List<Long> roleIds, String clientCode) {
         return CacheUtil.get(CacheNames.FUNCTION_KEY,CacheNames.URL_CLIENT_ROLE_KEY,clientCode+StringPool.COLON+roleIds,() -> {
-            ResponseData<List<String>> responseData = systemClient.getUrlsByRoleIds(roleIds,clientCode);
-            return responseData.getData();
+            R<List<String>> r = SYSTEM_CLIENT.getUrlsByRoleIds(roleIds,clientCode);
+            return r.getData();
         });
     }
 
@@ -135,24 +129,10 @@ public class SystemCache {
      * @date 23:28 2020/11/5 0005
      * @param roleIds 角色ID
      */
-    public static List<TbCoreFunction> getMenuListByRole(List<Long> roleIds, String clientCode) {
+    public static List<FunctionDTO> getMenuListByRole(List<Long> roleIds, String clientCode) {
         return CacheUtil.get(CacheNames.FUNCTION_KEY,CacheNames.MENU_CLIENT_ROLE_KEY,clientCode+StringPool.COLON+roleIds,() -> {
-            ResponseData<List<TbCoreFunction>> responseData = systemClient.getMenuListByRole(roleIds, clientCode, null);
-            return responseData.getData();
-        });
-    }
-
-    /**
-     * 查询可所有角色执行得数据权限
-     *
-     * @author mr.g
-     * @date 23:31 2020/11/5 0005
-     * @return 数据权限列表
-     */
-    public static List<TbCoreDataScope> getAllRoleDataScope() {
-        return CacheUtil.get(CacheNames.DATASCOPE_KEY,CacheNames.DATASCOPE_ALLROLE_KEY,"all",() -> {
-            ResponseData<List<TbCoreDataScope>> responseData = systemClient.getAllRoleDataScope();
-            return responseData.getData();
+            R<List<FunctionDTO>> r = SYSTEM_CLIENT.getMenuListByRole(roleIds, clientCode, null);
+            return r.getData();
         });
     }
 
@@ -164,10 +144,10 @@ public class SystemCache {
      * @param roleIds  角色ID
      * @return 数据权限列表
      */
-    public static List<TbCoreDataScope> getDataScopeByRole(List<Long> roleIds,String clientCode) {
+    public static List<DataScopeDTO> getDataScopeByRole(List<Long> roleIds, String clientCode) {
         return CacheUtil.get(CacheNames.DATASCOPE_KEY,CacheNames.DATASCOPE_CLIENT_ROLE_KEY,clientCode+StringPool.COLON+roleIds,() -> {
-            ResponseData<List<TbCoreDataScope>> responseData = systemClient.getDataScopeByRole(roleIds,clientCode);
-            return responseData.getData();
+            R<List<DataScopeDTO>> r = SYSTEM_CLIENT.getDataScopeByRole(roleIds,clientCode);
+            return r.getData();
         });
     }
 
@@ -181,8 +161,8 @@ public class SystemCache {
      */
     public static List<String> getRoleNameByIds(List<Long> roleIds) {
         return CacheUtil.get(CacheNames.ROLE_KEY,CacheNames.ROLENAME_KEY,roleIds,() -> {
-            ResponseData<List<String>> responseData = systemClient.getRoleNameByIds(roleIds);
-            return responseData.getData();
+            R<List<String>> r = SYSTEM_CLIENT.getRoleNameByIds(roleIds);
+            return r.getData();
         });
     }
 
@@ -193,10 +173,10 @@ public class SystemCache {
      * @param tenantCode 租户CODE
      * @return 租户信息
      **/
-    public static TbCoreTenant getTenantByCode(String tenantCode) {
+    public static TenantDTO getTenantByCode(String tenantCode) {
         return CacheUtil.get(CacheNames.TENANT_KEY,CacheNames.TENANT_CODE_KEY,tenantCode,() -> {
-            ResponseData<TbCoreTenant> responseData = systemClient.getTenantByCode(tenantCode);
-            return responseData.getData();
+            R<TenantDTO> r = SYSTEM_CLIENT.getTenantByCode(tenantCode);
+            return r.getData();
         });
     }
 

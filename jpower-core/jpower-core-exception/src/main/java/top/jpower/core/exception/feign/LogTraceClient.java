@@ -8,7 +8,7 @@ import top.jpower.core.exception.enums.constants.LogConstant;
 import top.jpower.core.exception.model.ErrorLogDto;
 import top.jpower.core.exception.model.OperateLogDto;
 import top.jpower.core.feign.config.DynamicFeignConfig;
-import top.jpower.core.util.rsp.ResponseData;
+import top.jpower.core.util.rsp.R;
 
 import static top.jpower.core.feign.config.DynamicFeignConfig.SERVICE_PARAM_NAME;
 
@@ -21,13 +21,13 @@ import static top.jpower.core.feign.config.DynamicFeignConfig.SERVICE_PARAM_NAME
 public interface LogTraceClient {
 
     @PostMapping("/saveOperateLog")
-    ResponseData saveOperateLog(
+    R<Long> saveOperateLog(
             @RequestParam(SERVICE_PARAM_NAME) String serviceName,
             @RequestBody OperateLogDto operateLog
     );
 
     @PostMapping("/saveErrorLog")
-    ResponseData saveErrorLog(
+    R<Long> saveErrorLog(
             @RequestParam(SERVICE_PARAM_NAME) String serviceName,
             @RequestBody ErrorLogDto errorLogDto
     );

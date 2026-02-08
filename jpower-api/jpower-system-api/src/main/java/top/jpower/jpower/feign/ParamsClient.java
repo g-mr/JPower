@@ -4,33 +4,23 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import top.jpower.common.constants.AppConstant;
-import top.jpower.core.util.rsp.ResponseData;
-import top.jpower.jpower.dbs.entity.params.TbCoreParam;
+import top.jpower.core.util.rsp.R;
 
 /**
- * @author mr.gmac
+ * 系统参数客户端
+ *
+ * @author mr.g
  */
-@FeignClient(name = AppConstant.JPOWER_SYSTEM, fallback = ParamsClientFallback.class, path = "/core/param/feign")
+@FeignClient(name = AppConstant.JPOWER_SYSTEM, fallback = ParamsClientFallback.class, path = "/feign/core/param")
 public interface ParamsClient {
 
     /**
-     * @author 郭丁志
-     * @Description //TODO 查询系统参数值
-     * @date 16:42 2020/8/30 0030
-     * @param code
-     * @return top.jpower.jpower.module.base.vo.ResponseData<java.lang.Boolean>
+     * 查询系统参数值
+     *
+     * @author mr.g
      */
     @GetMapping("/queryByCode")
-    ResponseData<String> queryByCode(@RequestParam("code") String code);
+    R<String> queryByCode(@RequestParam("code") String code);
 
-    /**
-     * @author 郭丁志
-     * @Description //TODO 查询系统参数详情
-     * @date 16:42 2020/8/30 0030
-     * @param id
-     * @return top.jpower.jpower.module.base.vo.ResponseData<java.lang.Boolean>
-     */
-    @GetMapping("/queryById")
-    TbCoreParam queryById(@RequestParam("id") Long id);
 
 }

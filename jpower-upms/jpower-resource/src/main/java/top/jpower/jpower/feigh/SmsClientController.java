@@ -61,7 +61,7 @@ public class SmsClientController implements SmsClient {
 
     @Override
     @PostMapping(value = "/sendValidate",produces =  MediaType.APPLICATION_JSON_VALUE)
-    public boolean sendValidate(@RequestBody SmsValidateDto smsValidateDto) {
+    public boolean sendValidate(@RequestBody SmsValidateDTO smsValidateDto) {
         return smsBuilder.getTemplate(smsValidateDto.getCode()).sendValidate(smsValidateDto.getPhone());
     }
 

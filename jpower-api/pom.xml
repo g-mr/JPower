@@ -19,6 +19,7 @@
     </modules>
 
     <dependencies>
+
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-common</artifactId>
@@ -33,16 +34,8 @@
 
         <dependency>
             <groupId>top.jpower</groupId>
-            <artifactId>jpower-core-dbs</artifactId>
-            <version>${top.jpower.version}</version>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>top.jpower</groupId>
             <artifactId>jpower-core-redis</artifactId>
             <version>${top.jpower.version}</version>
-            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -50,11 +43,6 @@
             <artifactId>swagger-annotations</artifactId>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>io.swagger</groupId>-->
-<!--            <artifactId>swagger-annotations</artifactId>-->
-<!--            <version>${swagger-annotations.version}</version>-->
-<!--        </dependency>-->
     </dependencies>
 
     <build>

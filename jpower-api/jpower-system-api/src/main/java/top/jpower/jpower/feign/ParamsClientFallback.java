@@ -2,9 +2,7 @@ package top.jpower.jpower.feign;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import top.jpower.core.util.rsp.ResponseData;
-import top.jpower.core.util.rsp.ReturnJsonUtil;
-import top.jpower.jpower.dbs.entity.params.TbCoreParam;
+import top.jpower.core.util.rsp.R;
 
 /**
  * @ClassName ParamsClientFallback
@@ -18,13 +16,8 @@ import top.jpower.jpower.dbs.entity.params.TbCoreParam;
 public class ParamsClientFallback implements ParamsClient {
 
     @Override
-    public ResponseData<String> queryByCode(String code) {
-        return ReturnJsonUtil.fail("查询失败");
+    public R<String> queryByCode(String code) {
+        return R.fail("查询失败");
     }
 
-    @Override
-    public TbCoreParam queryById(Long id) {
-        log.error("feign->>查询系统参数详情失败:{}",id);
-        return null;
-    }
 }

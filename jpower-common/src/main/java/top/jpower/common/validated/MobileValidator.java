@@ -5,6 +5,11 @@ import cn.hutool.core.util.StrUtil;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
+/**
+ * 手机号验证
+ *
+ * @author mr.g
+ */
 public class MobileValidator implements ConstraintValidator<Mobile, String> {
 
     @Override

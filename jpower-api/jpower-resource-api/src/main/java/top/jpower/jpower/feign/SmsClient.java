@@ -11,82 +11,82 @@ import top.jpower.jpower.dto.*;
  * @author mr.g
  * @date 2024/3/6 5:54 PM
  */
-@FeignClient(value = AppConstant.JPOWER_RESOURCE, fallbackFactory = SmsClientFallback.class, path = "/resource/sms")
+@FeignClient(value = AppConstant.JPOWER_RESOURCE, fallbackFactory = SmsClientFallback.class, path = "/feign/resource/sms")
 public interface SmsClient {
 
     /**
      * 发送短信
      *
      * @author mr.g
-     * @param requestDto 请求参数
+     * @param requestDTO 请求参数
      * @return SmsResponse
      **/
     @PostMapping(value = "/sendSms",produces =  MediaType.APPLICATION_JSON_VALUE)
-    SmsResponse sendSms(@RequestBody SmsRequestDto requestDto);
+    SmsResponse sendSms(@RequestBody SmsRequestDTO requestDTO);
 
     /**
      * 发送短信
      *
      * @author mr.g
-     * @param requestSingleDto 请求参数
+     * @param requestSingleDTO 请求参数
      * @return SmsResponse
      **/
     @PostMapping(value = "/sendSingleSms",produces =  MediaType.APPLICATION_JSON_VALUE)
-    SmsResponse sendSingleSms(@RequestBody SmsRequestSingleDto requestSingleDto);
+    SmsResponse sendSingleSms(@RequestBody SmsRequestSingleDTO requestSingleDTO);
 
     /**
      * 发送短信
      *
      * @author mr.g
-     * @param requestDto 参数
+     * @param requestDTO 参数
      * @return boolean
      **/
     @PostMapping(value = "/send",produces =  MediaType.APPLICATION_JSON_VALUE)
-    boolean send(@RequestBody SmsRequestDto requestDto);
+    boolean send(@RequestBody SmsRequestDTO requestDTO);
 
     /**
      * 发送短信
      *
      * @author mr.g
-     * @param requestSingleDto 参数
+     * @param requestSingleDTO 参数
      * @return boolean
      **/
     @PostMapping(value = "/sendSingle",produces =  MediaType.APPLICATION_JSON_VALUE)
-    boolean sendSingle(@RequestBody SmsRequestSingleDto requestSingleDto);
+    boolean sendSingle(@RequestBody SmsRequestSingleDTO requestSingleDTO);
 
     /**
      * 给多个手机号发送短信，发送失败抛出异常
      *
      * @author mr.g
-     * @param requestDto 参数
+     * @param requestDTO 参数
      **/
     @PostMapping(value = "/sendThrow",produces =  MediaType.APPLICATION_JSON_VALUE)
-    void sendThrow(@RequestBody SmsRequestDto requestDto);
+    void sendThrow(@RequestBody SmsRequestDTO requestDTO);
 
     /**
      * 给一个手机号发送短信，发送失败抛出异常
      *
      * @author mr.g
-     * @param requestSingleDto 参数
+     * @param requestSingleDTO 参数
      **/
     @PostMapping(value = "/sendSingleThrow",produces =  MediaType.APPLICATION_JSON_VALUE)
-    void sendSingleThrow(@RequestBody SmsRequestSingleDto requestSingleDto);
+    void sendSingleThrow(@RequestBody SmsRequestSingleDTO requestSingleDTO);
 
     /**
      * 发送验证码
      *
      * @author mr.g
-     * @param smsValidateDto 参数
+     * @param smsValidateDTO 参数
      **/
     @PostMapping(value = "/sendValidate",produces =  MediaType.APPLICATION_JSON_VALUE)
-    boolean sendValidate(@RequestBody SmsValidateDto smsValidateDto);
+    boolean sendValidate(@RequestBody SmsValidateDTO smsValidateDTO);
 
     /**
      * 验证码验证
      *
      * @author mr.g
-     * @param validateDto 参数
+     * @param validateDTO 参数
      **/
     @PostMapping(value = "/validate",produces =  MediaType.APPLICATION_JSON_VALUE)
-    boolean validate(@RequestBody ValidateDto validateDto);
+    boolean validate(@RequestBody ValidateDTO validateDTO);
 }

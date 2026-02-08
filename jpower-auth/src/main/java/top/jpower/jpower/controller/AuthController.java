@@ -52,7 +52,7 @@ import top.jpower.jpower.dbs.entity.TbCoreUser;
 import top.jpower.jpower.dbs.entity.client.TbCoreClient;
 import top.jpower.jpower.dbs.entity.tenant.TbCoreTenant;
 import top.jpower.jpower.dto.AuthInfo;
-import top.jpower.jpower.dto.SmsValidateDto;
+import top.jpower.jpower.dto.SmsValidateDTO;
 import top.jpower.jpower.dto.TokenParameter;
 import top.jpower.jpower.feign.SmsClient;
 import top.jpower.user.api.feign.UserClient;
@@ -207,7 +207,7 @@ public class AuthController extends BaseController {
     @ApiOperation(value = "发送手机验证码")
     @PostMapping(value = "/captcha/{phone}",produces="application/json")
     public ResponseData phoneCaptcha(@ApiParam(value = "手机号", required = true) @PathVariable("phone") String phone) {
-        return ReturnJsonUtil.status(smsClient.sendValidate(new SmsValidateDto().setCode(VALIDATE_SMS_CODE).setPhone(phone)));
+        return ReturnJsonUtil.status(smsClient.sendValidate(new SmsValidateDTO().setCode(VALIDATE_SMS_CODE).setPhone(phone)));
     }
 
     @ApiOperation(value = "发送邮箱验证码")

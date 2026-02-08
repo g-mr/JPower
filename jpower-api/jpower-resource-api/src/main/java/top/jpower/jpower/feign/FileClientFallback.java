@@ -3,9 +3,8 @@ package top.jpower.jpower.feign;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
-import top.jpower.core.util.rsp.ResponseData;
-import top.jpower.core.util.rsp.ReturnJsonUtil;
-import top.jpower.jpower.dbs.entity.TbResourceFile;
+import top.jpower.core.util.rsp.R;
+import top.jpower.jpower.dto.FileDTO;
 
 import java.io.File;
 
@@ -21,8 +20,8 @@ public class FileClientFallback implements FallbackFactory<FileClient> {
         return new FileClient() {
 
             @Override
-            public ResponseData uploadFile(File file, String storageType) {
-                return ReturnJsonUtil.fail("上传服务器失败");
+            public R<Boolean> uploadFile(File file, String storageType) {
+                return R.fail("上传服务器失败");
             }
 
             /**
@@ -33,13 +32,13 @@ public class FileClientFallback implements FallbackFactory<FileClient> {
              * @author mr.g
              **/
             @Override
-            public ResponseData<String> fileUrl(String base) {
-                return ReturnJsonUtil.fail("获取文件外链失败");
+            public R<String> fileUrl(String base) {
+                return R.fail("获取文件外链失败");
             }
 
             @Override
-            public ResponseData<TbResourceFile> getFileDetail(String base) {
-                return ReturnJsonUtil.fail("获取文件详情失败");
+            public R<FileDTO> getFileDetail(String base) {
+                return R.fail("获取文件详情失败");
             }
         };
     }

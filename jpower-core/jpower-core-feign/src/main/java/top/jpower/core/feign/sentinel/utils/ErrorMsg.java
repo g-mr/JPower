@@ -7,7 +7,7 @@ import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowException;
 import com.alibaba.csp.sentinel.slots.system.SystemBlockException;
 import lombok.SneakyThrows;
 import org.apache.hc.core5.http.HttpStatus;
-import top.jpower.core.util.rsp.ResponseData;
+import top.jpower.core.util.rsp.R;
 
 /**
  * @ClassName ErrorMsg
@@ -18,40 +18,40 @@ import top.jpower.core.util.rsp.ResponseData;
  */
 public class ErrorMsg {
     /** 限流后的异常提示 **/
-    public static ResponseData getFlow(){
-        return ResponseData.builder()
+    public static R<?> getFlow(){
+        return R.builder()
                 .code(HttpStatus.SC_CONTINUE)
                 .message("当前流量太大：请稍后访问")
                 .build();
     }
 
     /** 降级后的异常提示 **/
-    public static ResponseData getDegrade(){
-        return ResponseData.builder()
+    public static R<?> getDegrade(){
+        return R.builder()
                 .code(HttpStatus.SC_SWITCHING_PROTOCOLS)
                 .message("服务暂停访问：请稍后访问")
                 .build();
     }
 
     /** 降级后的异常提示 **/
-    public static ResponseData getParamFlow(){
-        return ResponseData.builder()
+    public static R<?> getParamFlow(){
+        return R.builder()
                 .code(HttpStatus.SC_PROCESSING)
                 .message("当前参数请求量过大：请稍后访问")
                 .build();
     }
 
     /** 系统规则异常提示 **/
-    public static ResponseData getSystemBlock(){
-        return ResponseData.builder()
+    public static R<?> getSystemBlock(){
+        return R.builder()
                 .code(HttpStatus.SC_NON_AUTHORITATIVE_INFORMATION)
                 .message("不满足系统规则，拒绝访问")
                 .build();
     }
 
     /** 授权规则异常提示 **/
-    public static ResponseData getAuthority(){
-        return ResponseData.builder()
+    public static R<?> getAuthority(){
+        return R.builder()
                 .code(HttpStatus.SC_NON_AUTHORITATIVE_INFORMATION)
                 .message("授权规则不通过")
                 .build();
@@ -59,7 +59,7 @@ public class ErrorMsg {
 
     /** 统一返回 **/
     @SneakyThrows
-    public static ResponseData blockException(Throwable ex) {
+    public static R<?> blockException(Throwable ex) {
         if(ex instanceof FlowException){
             return getFlow();
         }

@@ -1,74 +1,59 @@
 package top.jpower.jpower.feign;
 
 import org.springframework.stereotype.Component;
-import top.jpower.core.util.rsp.ResponseData;
-import top.jpower.core.util.rsp.ReturnJsonUtil;
-import top.jpower.jpower.dbs.entity.city.TbCoreCity;
-import top.jpower.jpower.dbs.entity.client.TbCoreClient;
-import top.jpower.jpower.dbs.entity.function.TbCoreDataScope;
-import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
-import top.jpower.jpower.dbs.entity.org.TbCoreOrg;
-import top.jpower.jpower.dbs.entity.tenant.TbCoreTenant;
+import top.jpower.core.util.rsp.R;
+import top.jpower.jpower.dto.*;
 
 import java.util.List;
 
 /**
- * @ClassName ParamsClientFallback
- * @Description TODO
- * @Author 郭丁志
- * @Date 2020-09-01 15:31
- * @Version 1.0
+ * @author mr.g
  */
 @Component
 public class SystemClientFallback implements SystemClient {
 
     @Override
-    public ResponseData<List<Long>> queryChildOrgById(Long id) {
-        return ReturnJsonUtil.fail("查询失败");
+    public R<List<Long>> queryChildOrgById(Long id) {
+        return R.fail("查询失败");
     }
 
     @Override
-    public ResponseData<TbCoreOrg> queryOrgById(Long orgId) {
-        return ReturnJsonUtil.fail("查询失败");
+    public R<OrgDTO> queryOrgById(Long orgId) {
+        return R.fail("查询失败");
     }
 
     @Override
-    public ResponseData<TbCoreClient> getClientByClientCode(String clientCode) {
-        return ReturnJsonUtil.fail("查询失败");
+    public R<ClientDTO> getClientByClientCode(String clientCode) {
+        return R.fail("查询失败");
     }
 
     @Override
-    public ResponseData<List<String>> getUrlsByRoleIds(List<Long> roleIds, String clientCode) {
-        return ReturnJsonUtil.fail("查询失败");
+    public R<List<String>> getUrlsByRoleIds(List<Long> roleIds, String clientCode) {
+        return R.fail("查询失败");
     }
 
     @Override
-    public ResponseData<TbCoreTenant> getTenantByCode(String tenantCode) {
-        return ReturnJsonUtil.fail("查询失败");
+    public R<TenantDTO> getTenantByCode(String tenantCode) {
+        return R.fail("查询失败");
     }
 
     @Override
-    public ResponseData<List<TbCoreFunction>> getMenuListByRole(List<Long> roleIds, String clientCode, Long topMenuId) {
-        return ReturnJsonUtil.fail("查询失败");
+    public R<List<FunctionDTO>> getMenuListByRole(List<Long> roleIds, String clientCode, Long topMenuId) {
+        return R.fail("查询失败");
     }
 
     @Override
-    public ResponseData<List<TbCoreDataScope>> getAllRoleDataScope() {
-        return ReturnJsonUtil.fail("查询失败");
+    public R<List<DataScopeDTO>> getDataScopeByRole(List<Long> roleIds,String clientCode) {
+        return R.fail("查询失败");
     }
 
     @Override
-    public ResponseData<List<TbCoreDataScope>> getDataScopeByRole(List<Long> roleIds,String clientCode) {
-        return ReturnJsonUtil.fail("查询失败");
+    public R<List<String>> getRoleNameByIds(List<Long> roleIds) {
+        return R.fail("查询失败");
     }
 
     @Override
-    public ResponseData<List<String>> getRoleNameByIds(List<Long> roleIds) {
-        return ReturnJsonUtil.fail("查询失败");
-    }
-
-    @Override
-    public ResponseData<TbCoreCity> getCityByCode(String code) {
-        return ReturnJsonUtil.fail("查询失败");
+    public R<CityDTO> getCityByCode(String code) {
+        return R.fail("查询失败");
     }
 }
