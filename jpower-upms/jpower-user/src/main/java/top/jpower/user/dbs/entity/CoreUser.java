@@ -12,9 +12,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import top.jpower.common.validated.Mobile;
+import top.jpower.common.validated.group.Validation;
 import top.jpower.core.dbs.dictbind.annotation.Dict;
 import top.jpower.core.dbs.tenant.entity.TenantEntity;
 import top.jpower.core.util.support.excel.Excel;
@@ -40,10 +42,11 @@ public class CoreUser extends TenantEntity implements Serializable {
 
     @Id(keyType = KeyType.Generator, value = KeyGenerators.flexId)
     @Schema(description = "主键")
+    @NotNull(groups = Validation.Update.class, message = "主键不能为空")
     private Long id;
     @Schema(description = "登录用户名")
     @Excel(name = "登录用户名")
-    @NotBlank(message = "用户名不可为空")
+    @NotBlank(groups = {Validation.Create.class, Validation.Update.class}, message = "用户名不可为空")
     private String loginId;
     @Schema(description = "密码",hidden = true)
     @Column(isLarge=true)
@@ -75,11 +78,11 @@ public class CoreUser extends TenantEntity implements Serializable {
     @Schema(description = "邮箱")
     @Excel(name ="邮箱")
     @Nullable
-    @Email(message = EMAIL_NOT_LEGAL)
+    @Email(groups = {Validation.Create.class, Validation.Update.class}, message = EMAIL_NOT_LEGAL)
     private String email;
     @Schema(description = "电话")
     @Excel(name ="电话")
-    @Mobile
+    @Mobile(groups = {Validation.Create.class, Validation.Update.class})
     private String telephone;
     @Schema(description = "地址")
     @Excel(name ="地址")

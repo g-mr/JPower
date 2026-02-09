@@ -2,10 +2,6 @@ package top.jpower.user.service.impl;
 
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.NumberUtil;
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.mybatisflex.core.query.QueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -18,7 +14,6 @@ import top.jpower.common.enums.IdTypeEnum;
 import top.jpower.common.enums.UserTypeEnum;
 import top.jpower.core.auth.utils.ShieldUtil;
 import top.jpower.core.auth.utils.constant.RoleConstant;
-import top.jpower.core.dbs.mp.support.Condition;
 import top.jpower.core.dbs.service.impl.BaseServiceImpl;
 import top.jpower.core.dbs.support.Wrappers;
 import top.jpower.core.dbs.tenant.JpowerTenantProperties;
@@ -34,11 +29,8 @@ import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.MD5;
 import top.jpower.core.util.utils.UuidUtil;
 import top.jpower.jpower.cache.SystemCache;
-import top.jpower.jpower.cache.param.ParamConfig;
-import top.jpower.jpower.dbs.entity.TbCoreUser;
-import top.jpower.jpower.dbs.entity.TbCoreUserRole;
-import top.jpower.jpower.dbs.entity.tenant.TbCoreTenant;
-import top.jpower.jpower.vo.UserVo;
+import top.jpower.jpower.cache.param.ParamCache;
+import top.jpower.jpower.dto.TenantDTO;
 import top.jpower.user.dbs.dao.CoreUserDao;
 import top.jpower.user.dbs.dao.CoreUserRoleDao;
 import top.jpower.user.dbs.dao.mapper.CoreUserMapper;
@@ -99,7 +91,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
 
     private void setActivationStatus(CoreUser coreUser) {
         if (Fc.isNull(coreUser.getActivationStatus())){
-            Integer isActivation = ParamConfig.getInt(ParamsConstants.IS_ACTIVATION, DefaultValConstants.DEFAULT_USER_ACTIVATION);
+            Integer isActivation = ParamCache.getInt(ParamsConstants.IS_ACTIVATION, DefaultValConstants.DEFAULT_USER_ACTIVATION);
             coreUser.setActivationStatus(isActivation);
         }
 
@@ -121,9 +113,9 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
 
         boolean is = coreUserDao.removeByIds(ids);
         if (is){
-            coreUserRoleDao.deleteByUserIds(ids);
+            return coreUserRoleDao.deleteByUserIds(ids);
         }
-        return is;
+        return false;
     }
 
     @Override
@@ -204,7 +196,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
 
     @Override
     public boolean resetPassword(List<Long> ids) {
-        String pass = DigestUtil.pwdEncrypt(MD5.md5HexToUpperCase(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD, DefaultValConstants.DEFAULT_USER_PASSWORD)));
+        String pass = DigestUtil.pwdEncrypt(MD5.md5HexToUpperCase(ParamCache.getString(ParamsConstants.USER_DEFAULT_PASSWORD, DefaultValConstants.DEFAULT_USER_PASSWORD)));
         return coreUserDao.updatePassword(pass, ids);
     }
 
@@ -227,7 +219,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
 
         List<CoreUser> userList = new ArrayList<>();
 
-        String password = DigestUtil.pwdEncrypt(MD5.md5HexToUpperCase(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD, DefaultValConstants.DEFAULT_USER_PASSWORD)));
+        String password = DigestUtil.pwdEncrypt(MD5.md5HexToUpperCase(ParamCache.getString(ParamsConstants.USER_DEFAULT_PASSWORD, DefaultValConstants.DEFAULT_USER_PASSWORD)));
 
         for (CoreUser coreUser : list) {
             if (Fc.isBlank(coreUser.getLoginId())){
@@ -289,7 +281,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
         List<String> tenantCodes = userList.stream().map(CoreUser::getTenantCode).distinct().toList();
         tenantCodes.forEach(tenantCode -> {
 
-            TbCoreTenant tenant = SystemCache.getTenantByCode(tenantCode);
+            TenantDTO tenant = SystemCache.getTenantByCode(tenantCode);
             if (Fc.isNull(tenant)){
                 throw new BusinessException(tenantCode+TENANT_NOT_EXIST);
             }
@@ -308,73 +300,67 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
 
     @Override
     public Boolean updateUsersRole(List<Long> userIds, List<Long> roleIds) {
+        coreUserRoleDao.deleteByUserIds(userIds);
+        // 清除缓存
+        CacheUtil.clear(CacheNames.USER_KEY);
 
-        LambdaQueryWrapper<TbCoreUserRole> wrapper = new QueryWrapper<TbCoreUserRole>().lambda().in(TbCoreUserRole::getUserId,userIds);
-        coreUserRoleDao.removeReal(wrapper);
-
-        if (Fc.isNotEmpty(roleIds)){
-
-            List<TbCoreUserRole> userRoles = new ArrayList<>();
-            for (Long rId : roleIds) {
-                for (Long userId : userIds) {
-                    TbCoreUserRole userRole = new TbCoreUserRole();
-                    userRole.setUserId(userId);
-                    userRole.setRoleId(rId);
-                    userRoles.add(userRole);
-                }
-            }
-
-            //如果修改超级用户，并且角色不包含超级用户角色，则给超级用户添加超级用户角色
-            if (Fc.contains(userIds,RoleConstant.ROOT_ID) && !Fc.contains(roleIds,RoleConstant.ROOT_ID)){
-                TbCoreUserRole userRole = new TbCoreUserRole();
-                userRole.setUserId(RoleConstant.ROOT_ID);
-                userRole.setRoleId(RoleConstant.ROOT_ID);
-                userRoles.add(userRole);
-            }
-            //如果修改匿名用户，并且角色不包含匿名用户角色，则给匿名用户添加匿名用户角色
-            if (Fc.contains(userIds,RoleConstant.ANONYMOUS_ID) && !Fc.contains(roleIds,RoleConstant.ANONYMOUS_ID)){
-                TbCoreUserRole userRole = new TbCoreUserRole();
-                userRole.setUserId(RoleConstant.ANONYMOUS_ID);
-                userRole.setRoleId(RoleConstant.ANONYMOUS_ID);
-                userRoles.add(userRole);
-            }
-
-            if (userRoles.size() > 0){
-                return coreUserRoleDao.saveBatch(userRoles);
-            }
+        List<CoreUserRole> userRoles = new ArrayList<>();
+        if (Fc.isNotEmpty(roleIds)) {
+            userRoles = roleIds.stream()
+                    .flatMap(roleId -> userIds.stream()
+                            .map(userId -> {
+                                CoreUserRole userRole = new CoreUserRole();
+                                userRole.setRoleId(roleId);
+                                userRole.setUserId(userId);
+                                return userRole;
+                            }))
+                    .collect(Collectors.toList());
         }
+
+        //如果修改超级用户，并且角色不包含超级用户角色，则给超级用户添加超级用户角色
+        if (Fc.contains(userIds,RoleConstant.ROOT_ID) && !Fc.contains(roleIds,RoleConstant.ROOT_ID)){
+            CoreUserRole userRole = new CoreUserRole();
+            userRole.setUserId(RoleConstant.ROOT_ID);
+            userRole.setRoleId(RoleConstant.ROOT_ID);
+            userRoles.add(userRole);
+        }
+
+        //如果修改匿名用户，并且角色不包含匿名用户角色，则给匿名用户添加匿名用户角色
+        if (Fc.contains(userIds,RoleConstant.ANONYMOUS_ID) && !Fc.contains(roleIds,RoleConstant.ANONYMOUS_ID)){
+            CoreUserRole userRole = new CoreUserRole();
+            userRole.setUserId(RoleConstant.ANONYMOUS_ID);
+            userRole.setRoleId(RoleConstant.ANONYMOUS_ID);
+            userRoles.add(userRole);
+        }
+
+        if (userRoles.size() > 0){
+            return coreUserRoleDao.saveBatch(userRoles, userRoles.size());
+        }
+
         return true;
     }
 
     @Override
     public boolean addRoleUsers(Long roleId, List<Long> userIds) {
-        List<TbCoreUserRole> list = new ArrayList<>();
-        userIds.forEach((userId)->{
-            TbCoreUserRole userRole = new TbCoreUserRole();
-            userRole.setRoleId(roleId);
-            userRole.setUserId(userId);
-            list.add(userRole);
-        });
-
+        List<CoreUserRole> list = new ArrayList<>();
+        userIds.forEach((userId)-> list.add(new CoreUserRole()
+                .setRoleId(roleId)
+                .setUserId(userId)));
+        CacheUtil.clear(CacheNames.USER_KEY);
         return coreUserRoleDao.saveBatch(list);
     }
 
     @Override
     public boolean deleteRoleUsers(Long roleId, List<Long> userIds) {
-
         userIds.removeIf(userId->
-                (Fc.equalsValue(roleId,RoleConstant.ROOT_ID)&&Fc.equalsValue(userId,RoleConstant.ROOT_ID))
+                (Fc.equalsValue(roleId, RoleConstant.ROOT_ID) && Fc.equalsValue(userId,RoleConstant.ROOT_ID))
                 ||
-                (Fc.equalsValue(roleId,RoleConstant.ANONYMOUS_ID)&&Fc.equalsValue(userId,RoleConstant.ANONYMOUS_ID)));
+                (Fc.equalsValue(roleId, RoleConstant.ANONYMOUS_ID) && Fc.equalsValue(userId,RoleConstant.ANONYMOUS_ID)));
 
-        if (userIds.size() <= 0){
-            throw new BusinessException("不可去除超级用户或匿名用户的角色");
-        }
+        JpowerAssert.notEmpty(userIds, JpowerError.Business, USER_ROLE_NOT_DELETE);
 
-        return coreUserRoleDao.removeReal(Condition.<TbCoreUserRole>getQueryWrapper()
-                .lambda()
-                .eq(TbCoreUserRole::getRoleId,roleId)
-                .in(TbCoreUserRole::getUserId,userIds));
+        CacheUtil.clear(CacheNames.USER_KEY);
+        return coreUserRoleDao.deleteByRoleAndUserIds(roleId, userIds);
     }
 
     @Override
@@ -427,7 +413,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
             if (ShieldUtil.isRoot()) {
                 tenantCode = Fc.isBlank(coreUser.getTenantCode()) ? DEFAULT_TENANT_CODE : coreUser.getTenantCode();
             }
-            TbCoreTenant tenant = SystemCache.getTenantByCode(tenantCode);
+            TenantDTO tenant = SystemCache.getTenantByCode(tenantCode);
             if (Fc.isNull(tenant)) {
                 JpowerAssert.createException(JpowerError.NotFind, TENANT_NOT_EXIST);
                 long accountNumber = getAccountNumber(tenant.getLicenseKey());
@@ -444,7 +430,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
             }
             JpowerAssert.isNull(this.selectUserLoginId(coreUser.getLoginId(), tenantCode), JpowerError.Business, LOGIN_ID_EXISTS);
 
-            coreUser.setPassword(DigestUtil.pwdEncrypt(MD5.md5HexToUpperCase(ParamConfig.getString(ParamsConstants.USER_DEFAULT_PASSWORD, DefaultValConstants.DEFAULT_USER_PASSWORD))));
+            coreUser.setPassword(DigestUtil.pwdEncrypt(MD5.md5HexToUpperCase(ParamCache.getString(ParamsConstants.USER_DEFAULT_PASSWORD, DefaultValConstants.DEFAULT_USER_PASSWORD))));
             if (Fc.isNull(coreUser.getUserType())) {
                 coreUser.setUserType(UserTypeEnum.USER_TYPE_SYSTEM.getValue());
             }
@@ -473,6 +459,11 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
         }
         CacheUtil.clear(CacheNames.USER_KEY);
         return coreUserDao.updatePassword(DigestUtil.pwdEncrypt(newPw), Collections.singletonList(user.getId()));
+    }
+
+    @Override
+    public Pg<UserVO> pageByRoleId(Map<String, Object> map) {
+        return coreUserDao.pageByRoleId(map);
     }
 
 }

@@ -28,5 +28,6 @@ public interface ServiceCodeConstants {
     String EMAIL_BINGING = "该邮箱已被绑定";
 
     String USER_NOT_DELETE = "超级用户和匿名用户不可删除";
+    String USER_ROLE_NOT_DELETE = "不可去除超级用户或匿名用户的角色";
 
 }

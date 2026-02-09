@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import top.jpower.common.constants.CacheNames;
 import top.jpower.common.validated.Mobile;
+import top.jpower.common.validated.group.Validation;
 import top.jpower.core.auth.annotation.Function;
 import top.jpower.core.auth.annotation.Menu;
 import top.jpower.core.auth.utils.ShieldUtil;
@@ -38,7 +38,7 @@ import top.jpower.core.util.utils.ExceptionUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.FileUtil;
 import top.jpower.core.util.utils.StringUtil;
-import top.jpower.jpower.dto.ValidateDto;
+import top.jpower.jpower.dto.ValidateDTO;
 import top.jpower.jpower.feign.SmsClient;
 import top.jpower.user.dbs.entity.CoreUser;
 import top.jpower.user.service.CoreUserService;
@@ -85,7 +85,7 @@ public class UserController extends BaseController {
     })
     @Operation(summary = "查询用户在线信息")
     @GetMapping(value = "/online", produces = "application/json")
-    public R<List<Map<String, Object>>> online(@Parameter(description = "用户ID") @NotEmpty(message = "用户ID不可为空") @RequestParam Long userId) {
+    public R<List<Map<String, Object>>> online(@Parameter(description = "用户ID") @NotNull(message = "用户ID不可为空") @RequestParam Long userId) {
         Set<String> keys = redisService.keys(TOKEN_USER_KEY + userId + StringPool.COLON + StringPool.ASTERISK);
         List<Map<String, Object>> list = new ArrayList<>();
         keys.forEach(key -> {
@@ -103,7 +103,7 @@ public class UserController extends BaseController {
     })
     @Operation(summary = "踢下线")
     @PostMapping(value = "/offline", produces = "application/json")
-    public R offline(@Parameter(description = "用户ID") @NotEmpty(message = "用户ID不可为空") @RequestSingleBody Long userId,
+    public R offline(@Parameter(description = "用户ID") @NotNull(message = "用户ID不可为空") @RequestSingleBody Long userId,
                      @Parameter(description = "TOKEN") @NotBlank(message = "TOKEN不可为空") @RequestSingleBody String token) {
 
         redisService.delete(CacheNames.TOKEN_URL_KEY + token);
@@ -122,7 +122,7 @@ public class UserController extends BaseController {
             @Parameter(name = "pageSize", description = "每页长度", example = "10", in = QUERY, schema = @Schema(type = "int"), required = true)
     })
     @GetMapping(value = "/list", produces = "application/json")
-    public R<Pg<UserVO>> list(@RequestParam CoreUser coreUser) {
+    public R<Pg<UserVO>> list(@RequestParam(required = false) CoreUser coreUser) {
         return R.ok(coreUserService.listPage(coreUser));
     }
 
@@ -140,12 +140,12 @@ public class UserController extends BaseController {
             @Parameter(name = "telephone", description = "电话", in = QUERY)
     })
     @GetMapping(value = "/exportUser")
-    public void exportUser(@Ignore @RequestParam CoreUser coreUser) throws IOException {
+    public void exportUser(@Ignore @RequestParam(required = false) CoreUser coreUser) throws IOException {
         List<UserVO> list = coreUserService.list(coreUser);
 
         BeanExcelUtil<UserVO> beanExcelUtil = new BeanExcelUtil<>(UserVO.class, ImportExportConstants.EXPORT_PATH);
-        String R = beanExcelUtil.exportExcel(list, "用户列表");
-        File file = new File(ImportExportConstants.EXPORT_PATH + R);
+        String str = beanExcelUtil.exportExcel(list, "用户列表");
+        File file = new File(ImportExportConstants.EXPORT_PATH + str);
         FileUtil.download(file, getResponse(), "用户数据.xlsx");
     }
 
@@ -164,7 +164,7 @@ public class UserController extends BaseController {
     })
     @Operation(summary = "新增", description = "主键不用传")
     @PostMapping(value = "/add", produces = "application/json")
-    public R<Boolean> add(@Valid @NotNull(message = "用户信息不能为空") @RequestBody CoreUser coreUser) {
+    public R<Boolean> add(@Validated(Validation.Create.class) @NotNull(message = "用户信息不能为空") @RequestBody CoreUser coreUser) {
         return R.status(coreUserService.createUser(coreUser));
     }
 
@@ -185,7 +185,7 @@ public class UserController extends BaseController {
     @Operation(summary = "修改用户信息")
     @OperateLog(title = "修改系统用户信息", businessType = UPDATE)
     @PutMapping(value = "/update", produces = "application/json")
-    public R<Boolean> update(@Valid @RequestBody CoreUser coreUser) {
+    public R<Boolean> update(@Validated(Validation.Update.class) @RequestBody CoreUser coreUser) {
         return R.status(coreUserService.updateUser(coreUser));
     }
 
@@ -280,7 +280,7 @@ public class UserController extends BaseController {
     @PutMapping(value = "/updatePhone")
     public R<Boolean> updatePhone(@Parameter(description = "手机号", required = true) @Mobile @RequestSingleBody String phone,
                                   @Parameter(description = "验证码", required = true) @NotBlank(message = "验证码不可为空") @RequestSingleBody String phoneCode) {
-        JpowerAssert.isTrue(smsClient.validate(new ValidateDto().setCode(VALIDATE_SMS_CODE).setPhone(phone).setPhoneCode(phoneCode)), JpowerError.Business, "验证码错误");
+        JpowerAssert.isTrue(smsClient.validate(new ValidateDTO().setCode(VALIDATE_SMS_CODE).setPhone(phone).setPhoneCode(phoneCode)), JpowerError.Business, "验证码错误");
         return R.status(coreUserService.updatePhone(phone, ShieldUtil.getUserIdThrow()));
     }
 

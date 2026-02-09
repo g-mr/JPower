@@ -1,137 +1,105 @@
 package top.jpower.user.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import io.swagger.annotations.*;
-import lombok.AllArgsConstructor;
+import com.github.xiaoymin.knife4j.annotations.Ignore;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
-import top.jpower.common.enums.YNEnum;
+import top.jpower.common.validated.NotBlankSpilt;
+import top.jpower.core.auth.annotation.Function;
+import top.jpower.core.auth.annotation.Menu;
+import top.jpower.core.boot.argument.RequestSingleBody;
 import top.jpower.core.boot.controller.BaseController;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.core.util.rsp.Pg;
-import top.jpower.core.util.rsp.ResponseData;
-import top.jpower.core.util.rsp.ReturnJsonUtil;
+import top.jpower.core.util.rsp.R;
 import top.jpower.core.util.utils.Fc;
-import top.jpower.jpower.dbs.entity.TbCoreUser;
-import top.jpower.jpower.dbs.entity.TbCoreUserRole;
-import top.jpower.core.auth.annotation.Function;
-import top.jpower.core.auth.annotation.Menu;
-import top.jpower.common.constants.CacheNames;
-import top.jpower.core.redis.cache.CacheUtil;
-import top.jpower.core.dbs.mp.support.Condition;
-import top.jpower.core.dbs.page.PaginationContext;
+import top.jpower.core.util.utils.MapUtil;
 import top.jpower.user.service.CoreUserRoleService;
 import top.jpower.user.service.CoreUserService;
-import top.jpower.jpower.vo.UserVo;
+import top.jpower.user.vo.UserVO;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Api(tags = "用户角色")
+/**
+ * 用户角色关联Controller
+ * 
+ * @author mr.g
+ */
+@Tag(name = "用户角色")
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/core/user")
+@Validated
 public class RoleUserController extends BaseController {
 
-    private CoreUserService coreUserService;
-    private CoreUserRoleService coreUserRoleService;
+    private final CoreUserService coreUserService;
+    private final CoreUserRoleService coreUserRoleService;
 
     @Function(value = "设置角色",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_UPDATEROLE",type = Menu.TYPE.BTN)
+        @Menu(client = "admin",menuCode = "SYSTEM_USER",code = "SYSTEM_USER_UPDATEROLE",type = Menu.TYPE.BTN)
     })
-    @ApiOperation(value = "给用户重新设置角色")
+    @Operation(summary = "给用户设置角色")
     @PostMapping(value = "/addRole", produces = "application/json")
-    public ResponseData addRole(@ApiParam(value = "用户主键 多个逗号分割", required = true) @RequestParam String userIds,
-                                @ApiParam(value = "角色主键 多个逗号分割") @RequestParam(required = false) String roleIds) {
-
-        JpowerAssert.notEmpty(userIds, JpowerError.Arg, "userIds不可为空");
-        JpowerAssert.notTrue(Fc.toStrArray(userIds).length <= 0, JpowerError.Arg, "userIds不可为空");
-
-        CacheUtil.clear(CacheNames.USER_KEY);
-        return ReturnJsonUtil.status(coreUserService.updateUsersRole(Fc.toLongList(userIds), Fc.toLongList(roleIds)));
+    public R<Boolean> addRole(@Parameter(description = "用户主键 多个逗号分割", required = true) @NotBlankSpilt(message = "用户ID不能为空") @RequestSingleBody String userIds,
+                              @Parameter(description = "角色主键 多个逗号分割") @RequestSingleBody(required = false) String roleIds) {
+        return R.status(coreUserService.updateUsersRole(Fc.toLongList(userIds), Fc.toLongList(roleIds)));
     }
 
     @Function(value = "角色新增用户",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_ROLE_USER",code = "SYSTEM_ROLE_ADDUSER",type = Menu.TYPE.BTN)
+        @Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_ROLE_USER",code = "SYSTEM_ROLE_ADDUSER",type = Menu.TYPE.BTN)
     })
-    @ApiOperation(value = "给角色新增用户")
-    @PutMapping(value = "/addRoleUser", produces = "application/json")
-    public ResponseData addRoleUser(@ApiParam(value = "用户主键 多个逗号分割", required = true) @RequestParam String userIds,
-                                @ApiParam(value = "角色主键") @RequestParam Long roleId) {
-
-        JpowerAssert.notEmpty(userIds, JpowerError.Arg, "userIds不可为空");
-        JpowerAssert.notTrue(Fc.toStrArray(userIds).length <= 0, JpowerError.Arg, "userIds不可为空");
-        JpowerAssert.notNull(roleId, JpowerError.Arg, "roleId不可为空");
-
-        CacheUtil.clear(CacheNames.USER_KEY);
-        return ReturnJsonUtil.status(coreUserService.addRoleUsers(roleId, new ArrayList<>(Fc.toLongList(userIds))));
+    @Operation(summary = "给角色新增用户")
+    @PostMapping(value = "/addRoleUser", produces = "application/json")
+    public R<Boolean> addRoleUser(@Parameter(description = "用户主键 多个逗号分割", required = true) @NotBlankSpilt(message = "用户ID不能为空") @RequestSingleBody String userIds,
+                                  @Parameter(description = "角色主键") @NotNull(message = "角色ID不能为空") @RequestSingleBody Long roleId) {
+        return R.status(coreUserService.addRoleUsers(roleId, Fc.toLongList(userIds)));
     }
 
     @Function(value = "角色去除用户",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_ROLE_USER",code = "SYSTEM_ROLE_DELUSER",type = Menu.TYPE.BTN)
+        @Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_ROLE_USER",code = "SYSTEM_ROLE_DELUSER",type = Menu.TYPE.BTN)
     })
-    @ApiOperation(value = "给角色去除用户")
-    @DeleteMapping(value = "/deleteRoleUser", produces = "application/json")
-    public ResponseData deleteRoleUser(@ApiParam(value = "用户主键 多个逗号分割", required = true) @RequestParam String userIds,
-                                    @ApiParam(value = "角色主键") @RequestParam Long roleId) {
-
-        JpowerAssert.notEmpty(userIds, JpowerError.Arg, "userIds不可为空");
-        JpowerAssert.notTrue(Fc.toStrArray(userIds).length <= 0, JpowerError.Arg, "userIds不可为空");
-        JpowerAssert.notNull(roleId, JpowerError.Arg, "roleId不可为空");
-
-        CacheUtil.clear(CacheNames.USER_KEY);
-        return ReturnJsonUtil.status(coreUserService.deleteRoleUsers(roleId, new ArrayList<>(Fc.toLongList(userIds))));
+    @Operation(summary = "给角色去除用户")
+    @PostMapping(value = "/deleteRoleUser", produces = "application/json")
+    public R<Boolean> deleteRoleUser(@Parameter(description = "用户主键 多个逗号分割", required = true) @NotBlankSpilt(message = "用户ID不能为空") @RequestSingleBody String userIds,
+                                     @Parameter(description = "角色主键") @NotNull(message = "角色ID不能为空") @RequestSingleBody Long roleId) {
+        return R.status(coreUserService.deleteRoleUsers(roleId, Fc.toLongList(userIds)));
     }
 
-    @ApiOperation(value = "查询用户所有角色ID")
+    @Operation(summary = "查询用户所有角色ID")
     @GetMapping(value = "/userRole", produces = "application/json")
-    public ResponseData<List<Long>> userRole(@ApiParam(value = "用户主键", required = true) @RequestParam Long userId) {
-
-        JpowerAssert.notNull(userId, JpowerError.Arg, "用户ID不可为空");
-
-        List<Long> userRoleList = coreUserRoleService.listObjs(Condition.<TbCoreUserRole>getQueryWrapper().lambda().select(TbCoreUserRole::getRoleId).eq(TbCoreUserRole::getUserId, userId), Fc::toLong);
-        return ReturnJsonUtil.ok("查询成功", userRoleList);
+    public R<List<Long>> userRole(@Parameter(description = "用户主键", required = true) @NotNull(message = "用户ID不可为空") @RequestParam Long userId) {
+        return R.data(coreUserRoleService.queryRoleIds(userId));
     }
 
     @Function(value = "角色成员",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_USER",type = Menu.TYPE.BTN)
+        @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_USER",type = Menu.TYPE.BTN)
     })
-    @ApiOperation(value = "通过角色查询用户列表")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "pageNum", value = "第几页", defaultValue = "1", paramType = "query", dataType = "int", required = true),
-            @ApiImplicitParam(name = "pageSize", value = "每页长度", defaultValue = "10", paramType = "query", dataType = "int", required = true),
-            @ApiImplicitParam(name = "orgId_eq", value = "部门ID", paramType = "query", required = false),
-            @ApiImplicitParam(name = "loginId", value = "登录名", paramType = "query", required = false),
-            @ApiImplicitParam(name = "nickName", value = "昵称", paramType = "query", required = false),
-            @ApiImplicitParam(name = "userName", value = "姓名", paramType = "query", required = false),
-            @ApiImplicitParam(name = "idNo", value = "证件号码", paramType = "query", required = false),
-            @ApiImplicitParam(name = "userType_eq", value = "用户类型 字典USER_TYPE", paramType = "query", required = false),
-            @ApiImplicitParam(name = "telephone", value = "电话", paramType = "query", required = false)
+    @Operation(summary = "通过角色查询用户列表")
+    @Parameters({
+        @Parameter(name = "pageNum", description = "第几页", example = "1", schema = @Schema(defaultValue = "1", type = "integer"), in = ParameterIn.QUERY, required = true),
+        @Parameter(name = "pageSize", description = "每页长度", example = "10", schema = @Schema(defaultValue = "10", type = "integer"), in = ParameterIn.QUERY, required = true),
+        @Parameter(name = "roleId_eq", description = "查询角色ID", in = ParameterIn.QUERY),
+        @Parameter(name = "roleId_ne", description = "不查询角色ID", in = ParameterIn.QUERY),
+        @Parameter(name = "orgId_eq", description = "部门ID", in = ParameterIn.QUERY),
+        @Parameter(name = "loginId", description = "登录名", in = ParameterIn.QUERY),
+        @Parameter(name = "nickName", description = "昵称", in = ParameterIn.QUERY),
+        @Parameter(name = "userName", description = "姓名", in = ParameterIn.QUERY),
+        @Parameter(name = "idNo", description = "证件号码", in = ParameterIn.QUERY),
+        @Parameter(name = "userType_eq", description = "用户类型 字典USER_TYPE", in = ParameterIn.QUERY),
+        @Parameter(name = "telephone", description = "电话", in = ParameterIn.QUERY)
     })
     @GetMapping(value = "/listByRole", produces = "application/json")
-    public ResponseData<Pg<UserVo>> listByRole(@ApiParam(value = "角色主键", required = true) @RequestParam Long roleId,
-                                               @ApiParam(value = "是否查询相等该角色", required = false) @RequestParam(required = false, defaultValue = "Y") String isEq,
-                                               @ApiIgnore @RequestParam Map<String,Object> map) {
-        map.remove("roleId");
-        map.remove("isEq");
-        JpowerAssert.notNull(roleId, JpowerError.Arg, "角色ID不可为空");
-
-        StringBuffer buffer = new StringBuffer("select user_id from tb_core_user_role ");
-        buffer.append("where role_id = ").append(roleId);
-
-        LambdaQueryWrapper<TbCoreUser> wrapper = Condition.getQueryWrapper(map,TbCoreUser.class)
-                .lambda()
-                .orderByDesc(TbCoreUser::getCreateTime);
-
-
-        if (Fc.equalsValue(isEq, YNEnum.N.getValue())){
-            wrapper.notInSql(TbCoreUser::getId,buffer.toString());
-        } else {
-            wrapper.inSql(TbCoreUser::getId,buffer.toString());
-        }
-
-        return ReturnJsonUtil.ok("查询成功", coreUserService.page(PaginationContext.getMpPage(), wrapper));
+    public R<Pg<UserVO>> listByRole(@Ignore @RequestParam(required = false) Map<String,Object> map) {
+        JpowerAssert.isTrue(MapUtil.containsAnyKey(map, "roleId_eq", "roleId_ne"), JpowerError.Arg, "角色ID不能为空");
+        return R.data(coreUserService.pageByRoleId(map));
     }
 }

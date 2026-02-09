@@ -6,17 +6,18 @@ import top.jpower.user.dbs.entity.CoreUserRole;
 import java.util.List;
 
 /**
- * @author 郭丁志
- * @Description //TODO 用户角色
- * @date 22:45 2020/5/26 0026
- */
+ * 用户角色关系
+ *
+ * @author mr.g
+ **/
 public interface CoreUserRoleService extends BaseService<CoreUserRole> {
 
     /**
-     * @author 郭丁志
-     * @Description //TODO 查询用户角色ID
-     * @date 0:04 2020/10/21 0021
-     * @param userId
-     */
+     * 根据用户ID查询角色ID列表
+     *
+     * @author mr.g
+     * @param userId 用户ID
+     * @return 角色ID列表
+     **/
     List<Long> queryRoleIds(Long userId);
 }

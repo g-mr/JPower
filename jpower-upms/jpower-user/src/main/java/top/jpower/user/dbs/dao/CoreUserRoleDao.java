@@ -26,4 +26,28 @@ public class CoreUserRoleDao extends JpowerServiceImpl<CoreUserRoleMapper, CoreU
         return super.removeReal(Wrappers.getQueryWrapper().in(CoreUserRole::getUserId, userIds));
     }
 
+    /**
+     * 根据角色ID和用户ID列表删除用户角色关系
+     *
+     * @author mr.g
+     * @param roleId 角色ID
+     * @param userIds 用户ID列表
+     * @return boolean 是否删除成功
+     **/
+    public boolean deleteByRoleAndUserIds(Long roleId, List<Long> userIds) {
+        return super.removeReal(Wrappers.getQueryWrapper().eq(CoreUserRole::getRoleId, roleId).in(CoreUserRole::getUserId, userIds));
+    }
+
+    /**
+     * 根据用户ID查询角色ID列表
+     *
+     * @author mr.g
+     * @param userId 用户ID
+     * @return 角色ID列表
+     **/
+    public List<Long> queryRoleIds(Long userId) {
+        return super.objListAs(Wrappers.getQueryWrapper()
+                .select(CoreUserRole::getRoleId)
+                .eq(CoreUserRole::getUserId, userId), Long.TYPE);
+    }
 }

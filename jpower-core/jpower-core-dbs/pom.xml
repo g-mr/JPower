@@ -9,8 +9,8 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <name>JPower Core DBS</name>
     <artifactId>jpower-core-dbs</artifactId>
+    <name>JPower Core DBS</name>
     <packaging>jar</packaging>
     <description>
         JPower 数据库操作

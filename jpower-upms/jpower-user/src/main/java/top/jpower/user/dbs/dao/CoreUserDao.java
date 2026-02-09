@@ -26,6 +26,7 @@ import top.jpower.user.vo.UserVO;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import static com.mybatisflex.core.query.QueryMethods.groupConcat;
 
@@ -166,4 +167,18 @@ public class CoreUserDao extends JpowerServiceImpl<CoreUserMapper, CoreUser> imp
                 Wrappers.getQueryWrapper().eq(CoreUser::getId,id));
     }
 
+    /**
+     * 根据角色ID分页查询用户
+     *
+     * @author mr.g
+     * @param map 查询参数
+     * @return 用户列表
+     **/
+    public Pg<UserVO> pageByRoleId(Map<String, Object> map) {
+        return getMapper().pageAs(PaginationContext.page(), Wrappers.getQueryWrapper(map)
+                        .from(CoreUser.class)
+                        .leftJoin(CoreUserRole.class).on(CoreUserRole::getUserId, CoreUser::getId)
+                        .orderBy(CoreUser::getCreateTime).desc()
+                , UserVO.class);
+    }
 }

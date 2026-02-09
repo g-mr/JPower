@@ -1,17 +1,13 @@
 package top.jpower.user.service;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageInfo;
 import top.jpower.core.dbs.service.BaseService;
 import top.jpower.core.util.rsp.Pg;
-import top.jpower.jpower.dbs.entity.TbCoreUser;
-import top.jpower.jpower.vo.UserVo;
 import top.jpower.user.dbs.entity.CoreUser;
 import top.jpower.user.vo.LoginUserVO;
 import top.jpower.user.vo.UserVO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author mr.gmac
@@ -90,12 +86,12 @@ public interface CoreUserService extends BaseService<CoreUser> {
     boolean insertBatch(List<CoreUser> list,boolean isCover);
 
     /**
-     * @author 郭丁志
-     * @Description //TODO 更新用户角色
-     * @date 0:44 2020/5/25 0025
+     * 更新用户角色
+     *
+     * @author mr.g
      * @param userIds 用户ID 多个逗号分隔
      * @param roleIds  角色ID 多个逗号分隔
-     * @return java.lang.Integer
+     * @return 是否成功
      */
     Boolean updateUsersRole(List<Long> userIds, List<Long> roleIds);
 
@@ -141,8 +137,24 @@ public interface CoreUserService extends BaseService<CoreUser> {
      */
     boolean saveUser(CoreUser user, List<Long> roleIds);
 
+    /**
+     * 为角色添加用户
+     *
+     * @author mr.g
+     * @param roleId 角色ID
+     * @param userIds 用户ID
+     * @return 是否成功
+     **/
     boolean addRoleUsers(Long roleId, List<Long> userIds);
 
+    /**
+     * 为角色删除用户
+     *
+     * @author mr.g
+     * @param roleId 角色ID
+     * @param userIds 用户ID
+     * @return 是否成功
+     **/
     boolean deleteRoleUsers(Long roleId, List<Long> userIds);
 
     /**
@@ -181,4 +193,13 @@ public interface CoreUserService extends BaseService<CoreUser> {
     boolean updateUserInfo(LoginUserVO userVO);
 
     boolean updatePassword(String oldPw, String newPw);
+
+    /**
+     * 通过角色ID查询用户信息
+     *
+     * @author mr.g
+     * @param map 查询条件
+     * @return 分页用户列表
+     **/
+    Pg<UserVO> pageByRoleId(Map<String, Object> map);
 }

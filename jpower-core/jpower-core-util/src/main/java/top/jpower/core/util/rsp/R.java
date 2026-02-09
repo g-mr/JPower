@@ -213,4 +213,8 @@ public class R<T> implements Serializable {
         return print(ReturnConstants.RECODE_BUSINESS,msg,false);
     }
 
+    public static <T> R<T> arg(String msg) {
+        return print(ReturnConstants.RECODE_NULL, msg, false);
+    }
+
 }

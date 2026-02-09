@@ -22,7 +22,7 @@ import java.util.List;
  **/
 @Ignore
 @RestController
-@RequestMapping("/core/user")
+@RequestMapping("/feign/core/user")
 @AllArgsConstructor
 public class UserClientController implements UserClient {
 

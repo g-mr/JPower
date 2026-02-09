@@ -1,13 +1,12 @@
 package top.jpower.user.dbs.entity;
 
-import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.Table;
+import com.mybatisflex.core.keygen.KeyGenerators;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import top.jpower.core.dbs.dbs.entity.base.BaseEntity;
-
-import java.io.Serial;
-import java.io.Serializable;
 
 /**
  * 用户角色关联信息
@@ -19,9 +18,18 @@ import java.io.Serializable;
 @Table("tb_core_user_role")
 public class CoreUserRole extends BaseEntity {
 
+    /**
+     * 主键
+     */
+    @Id(keyType = KeyType.Generator, value = KeyGenerators.flexId)
+    private Long id;
+    /**
+     * 用户ID
+     */
     private Long userId;
+    /**
+     * 角色ID
+     */
     private Long roleId;
 
-    @Column(ignore = true)
-    private String roleName;
 }
