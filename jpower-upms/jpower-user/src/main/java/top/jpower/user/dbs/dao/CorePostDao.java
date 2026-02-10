@@ -1,7 +1,6 @@
 package top.jpower.user.dbs.dao;
 
 import com.mybatisflex.core.query.QueryMethods;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import top.jpower.common.enums.YN01Enum;
 import top.jpower.core.dbs.dbs.dao.BaseDaoWrapper;
@@ -11,7 +10,6 @@ import top.jpower.core.dbs.support.Wrappers;
 import top.jpower.core.util.rsp.Pg;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.user.dbs.dao.mapper.CorePostMapper;
-import top.jpower.user.dbs.dao.mapper.CoreUserMapper;
 import top.jpower.user.dbs.entity.CorePost;
 import top.jpower.user.dbs.entity.CoreUser;
 import top.jpower.user.vo.PostSelectVO;
@@ -19,6 +17,8 @@ import top.jpower.user.vo.PostVO;
 
 import java.util.List;
 import java.util.Map;
+
+import static top.jpower.user.dbs.entity.table.CorePostTableDef.CORE_POST;
 
 /**
  * 岗位SQL

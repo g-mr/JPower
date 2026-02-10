@@ -3,14 +3,11 @@ package top.jpower.user.dbs.dao;
 
 import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.update.UpdateWrapper;
-import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.UpdateEntity;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.stereotype.Repository;
 import top.jpower.core.auth.utils.ShieldUtil;
 import top.jpower.core.dbs.dbs.dao.BaseDaoWrapper;
 import top.jpower.core.dbs.dbs.dao.JpowerServiceImpl;
-import top.jpower.core.dbs.mp.support.Condition;
 import top.jpower.core.dbs.page.PaginationContext;
 import top.jpower.core.dbs.support.Wrappers;
 import top.jpower.core.util.rsp.Pg;
@@ -29,9 +26,12 @@ import java.util.List;
 import java.util.Map;
 
 import static com.mybatisflex.core.query.QueryMethods.groupConcat;
+import static top.jpower.user.dbs.entity.table.CorePostTableDef.CORE_POST;
+import static top.jpower.user.dbs.entity.table.CoreUserRoleTableDef.CORE_USER_ROLE;
+import static top.jpower.user.dbs.entity.table.CoreUserTableDef.CORE_USER;
 
 /**
- * @author mr.gmac
+ * @author mr.g
  */
 @Repository
 public class CoreUserDao extends JpowerServiceImpl<CoreUserMapper, CoreUser> implements BaseDaoWrapper<CoreUser> {
@@ -57,9 +57,8 @@ public class CoreUserDao extends JpowerServiceImpl<CoreUserMapper, CoreUser> imp
                 .select(CORE_USER.DEFAULT_COLUMNS)
                 .select(groupConcat(CORE_USER_ROLE.ROLE_ID).as(UserVO::getRoleIds))
                 .select(CORE_POST.NAME.as(UserVO::getPostName))
-                .leftJoin(CoreUserRole.class)
+                .leftJoin(CoreUserRole.class).on(CoreUserRole::getUserId, CoreUser::getId)
                 .leftJoin(CorePost.class).on(CoreUser::getPostId, CorePost::getId)
-                .on(CoreUserRole::getUserId, CoreUser::getId)
                 .groupBy(CoreUser::getId), UserVO.class);
         return listConvert(list, this::build);
     }
@@ -69,9 +68,8 @@ public class CoreUserDao extends JpowerServiceImpl<CoreUserMapper, CoreUser> imp
                 .select(CORE_USER.DEFAULT_COLUMNS)
                 .select(groupConcat(CORE_USER_ROLE.ROLE_ID).as(UserVO::getRoleIds))
                 .select(CORE_POST.NAME.as(UserVO::getPostName))
-                .leftJoin(CoreUserRole.class)
+                .leftJoin(CoreUserRole.class).on(CoreUserRole::getUserId, CoreUser::getId)
                 .leftJoin(CorePost.class).on(CoreUser::getPostId, CorePost::getId)
-                .on(CoreUserRole::getUserId, CoreUser::getId)
                 .eq(CoreUser::getId, id)
                 .groupBy(CoreUser::getId), UserVO.class);
         return convert(userVO, this::build);
@@ -118,12 +116,10 @@ public class CoreUserDao extends JpowerServiceImpl<CoreUserMapper, CoreUser> imp
      * @return 是否成功
      **/
     public boolean updateEmail(Long userId, String email) {
-        return super.update(Wrappers.<TbCoreUser>lambdaUpdate()
-                .set(TbCoreUser::getEmail, email)
-                .eq(TbCoreUser::getId, userId));
+        return super.updateChain().set(CoreUser::getEmail, email).eq(CoreUser::getId, userId).update();
     }
 
-    public long countByTentant(String tenantCode) {
+    public long countByTenant(String tenantCode) {
         return super.count(QueryCondition.create(CORE_USER.TENANT_CODE, tenantCode));
     }
 
@@ -163,7 +159,7 @@ public class CoreUserDao extends JpowerServiceImpl<CoreUserMapper, CoreUser> imp
     public boolean updateLoginCount(Long id) {
         return super.update(UpdateWrapper.of(CoreUser.class)
                         .set(CoreUser::getLoginCount, CORE_USER.LOGIN_COUNT.add(1))
-                        .set(CoreUser::getLastLoginTime, new Date()),
+                        .set(CoreUser::getLastLoginTime, new Date()).toEntity(),
                 Wrappers.getQueryWrapper().eq(CoreUser::getId,id));
     }
 

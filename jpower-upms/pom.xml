@@ -86,14 +86,6 @@
             <resource>
                 <directory>src/main/resources</directory>
             </resource>
-            <!-- 编译 根 目录下的 bootstrap-jpower.yml 文件 -->
-            <resource>
-                <directory>${maven.multiModuleProjectDirectory}/config</directory>
-                <filtering>false</filtering>
-                <includes>
-                    <include>bootstrap-jpower.yml</include>
-                </includes>
-            </resource>
         </resources>
     </build>
 </project>

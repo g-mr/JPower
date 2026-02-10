@@ -287,7 +287,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
             }
             long accountNumber = getAccountNumber(tenant.getLicenseKey());
             if (!Fc.equals(accountNumber, TENANT_ACCOUNT_NUMBER)){
-                long count = coreUserDao.countByTentant(tenantCode);
+                long count = coreUserDao.countByTenant(tenantCode);
                 if (!NumberUtil.equals(accountNumber,-1L) && count >= accountNumber){
                     throw new BusinessException(tenant.getTenantName()+ACCOUNT_LIMIT);
                 }
@@ -418,7 +418,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
                 JpowerAssert.createException(JpowerError.NotFind, TENANT_NOT_EXIST);
                 long accountNumber = getAccountNumber(tenant.getLicenseKey());
                 if (!Fc.equalsValue(accountNumber, TENANT_ACCOUNT_NUMBER)) {
-                    long count = coreUserDao.countByTentant(tenantCode);
+                    long count = coreUserDao.countByTenant(tenantCode);
                     if (count >= accountNumber) {
                         JpowerAssert.createException(JpowerError.NotFind, ACCOUNT_LIMIT);
                     }
