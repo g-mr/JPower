@@ -19,7 +19,7 @@ import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.SpringUtil;
 import top.jpower.core.util.utils.StringUtil;
 import top.jpower.core.util.utils.WebUtil;
-import top.jpower.jpower.cache.SystemCache;
+import top.jpower.system.api.cache.SystemCache;
 import top.jpower.jpower.dbs.entity.client.TbCoreClient;
 import top.jpower.jpower.dbs.entity.function.TbCoreDataScope;
 import top.jpower.jpower.dbs.entity.function.TbCoreFunction;

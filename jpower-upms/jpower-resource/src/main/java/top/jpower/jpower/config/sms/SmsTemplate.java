@@ -12,7 +12,7 @@ import top.jpower.core.util.utils.ChainMap;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.SpringUtil;
 import top.jpower.core.util.utils.StringUtil;
-import top.jpower.jpower.dto.SmsResponse;
+import top.jpower.resource.api.dto.SmsResponse;
 import top.jpower.common.constants.CacheNames;
 
 import java.util.Collections;

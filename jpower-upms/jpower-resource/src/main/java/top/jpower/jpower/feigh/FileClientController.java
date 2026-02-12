@@ -13,7 +13,7 @@ import top.jpower.core.util.utils.DesUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.FileUtil;
 import top.jpower.jpower.dbs.entity.TbResourceFile;
-import top.jpower.jpower.feign.FileClient;
+import top.jpower.resource.api.feign.FileClient;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.jpower.operate.FileOperateBuilder;

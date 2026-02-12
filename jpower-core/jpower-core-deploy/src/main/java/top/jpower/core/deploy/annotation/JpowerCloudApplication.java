@@ -8,6 +8,7 @@ import java.lang.annotation.*;
 
 /**
  * Cloud启动注解配置
+ *
  * @author mr.g
  */
 @Target(ElementType.TYPE)
@@ -15,7 +16,7 @@ import java.lang.annotation.*;
 @Documented
 @Inherited
 // @EnableDiscoveryClient
-@EnableAutoConfiguration
+// @EnableAutoConfiguration
 @SpringBootApplication
 public @interface JpowerCloudApplication {
 

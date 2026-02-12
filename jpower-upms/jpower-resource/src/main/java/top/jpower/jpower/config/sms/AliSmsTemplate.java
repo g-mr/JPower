@@ -13,7 +13,7 @@ import top.jpower.core.util.constants.ReturnConstants;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.config.sms.properties.AliSmsProperties;
-import top.jpower.jpower.dto.SmsResponse;
+import top.jpower.resource.api.dto.SmsResponse;
 import top.jpower.core.exception.throwable.JpowerException;
 
 import java.util.List;

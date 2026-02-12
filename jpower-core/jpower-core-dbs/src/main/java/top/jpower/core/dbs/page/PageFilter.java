@@ -22,7 +22,7 @@ import java.io.IOException;
  */
 @Order(10)
 @RequiredArgsConstructor
-public class PageFilter implements Filter {
+public class PageFilter implements Filter {//OncePerRequestFilter
 
     private final MybatisProperties.Page page;
 

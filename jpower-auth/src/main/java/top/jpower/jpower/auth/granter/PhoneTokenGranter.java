@@ -9,7 +9,7 @@ import top.jpower.user.api.cache.UserCache;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
 import top.jpower.jpower.dto.TokenParameter;
 import top.jpower.jpower.dto.ValidateDto;
-import top.jpower.jpower.feign.SmsClient;
+import top.jpower.resource.api.feign.SmsClient;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.BusinessException;
 import top.jpower.core.exception.throwable.JpowerAssert;

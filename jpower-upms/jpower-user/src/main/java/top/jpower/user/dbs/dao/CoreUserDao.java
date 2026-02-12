@@ -12,7 +12,7 @@ import top.jpower.core.dbs.page.PaginationContext;
 import top.jpower.core.dbs.support.Wrappers;
 import top.jpower.core.util.rsp.Pg;
 import top.jpower.core.util.utils.Fc;
-import top.jpower.jpower.cache.SystemCache;
+import top.jpower.system.api.cache.SystemCache;
 import top.jpower.user.dbs.dao.mapper.CoreUserMapper;
 import top.jpower.user.dbs.entity.CorePost;
 import top.jpower.user.dbs.entity.CoreUser;

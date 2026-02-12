@@ -8,7 +8,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.core.util.rsp.ResponseData;
 import top.jpower.core.util.rsp.ReturnJsonUtil;
 import top.jpower.jpower.dbs.entity.params.TbCoreParam;
-import top.jpower.jpower.feign.ParamsClient;
+import top.jpower.system.api.feign.ParamsClient;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.jpower.service.params.CoreParamService;

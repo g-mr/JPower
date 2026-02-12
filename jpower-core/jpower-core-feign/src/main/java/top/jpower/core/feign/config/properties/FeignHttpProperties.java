@@ -3,9 +3,6 @@ package top.jpower.core.feign.config.properties;
 import feign.Logger;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import top.jpower.core.deploy.property.JpowerProperties;
-import top.jpower.core.util.constants.JpowerConstants;
-import top.jpower.core.util.utils.Fc;
 
 import java.util.concurrent.TimeUnit;
 
@@ -19,14 +16,8 @@ import static org.springframework.cloud.openfeign.support.FeignHttpClientPropert
 @ConfigurationProperties(prefix = "jpower.feign.http")
 public class FeignHttpProperties {
 
-    public FeignHttpProperties(JpowerProperties jpowerProperties){
-        if (Fc.equals(jpowerProperties.getEnv(), JpowerConstants.PROD_CODE)){
-            logLevel = Logger.Level.BASIC;
-        }
-    }
-
     /** 日志级别 **/
-    private Logger.Level logLevel = Logger.Level.FULL;
+    private Logger.Level logLevel;
 
     /** 线程池最大连接数 **/
     private int maxConnections = DEFAULT_MAX_CONNECTIONS;

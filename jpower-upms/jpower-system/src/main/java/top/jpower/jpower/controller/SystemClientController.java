@@ -16,7 +16,7 @@ import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
 import top.jpower.jpower.dbs.entity.org.TbCoreOrg;
 import top.jpower.jpower.dbs.entity.role.TbCoreRole;
 import top.jpower.jpower.dbs.entity.tenant.TbCoreTenant;
-import top.jpower.jpower.feign.SystemClient;
+import top.jpower.system.api.feign.SystemClient;
 import top.jpower.core.boot.controller.BaseController;
 import top.jpower.core.auth.utils.ShieldUtil;
 import top.jpower.core.dbs.mp.support.Condition;

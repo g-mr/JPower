@@ -4,6 +4,7 @@ import cn.hutool.core.io.IORuntimeException;
 import cn.hutool.core.net.DefaultTrustManager;
 import cn.hutool.core.net.SSLUtil;
 import cn.hutool.http.ssl.DefaultSSLInfo;
+import feign.Logger;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.ConnectionPool;
@@ -14,8 +15,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.openfeign.loadbalancer.FeignLoadBalancerAutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import top.jpower.core.deploy.property.JpowerProperties;
 import top.jpower.core.feign.config.interceptor.HttpLogInterceptor;
 import top.jpower.core.feign.config.properties.FeignHttpProperties;
+import top.jpower.core.util.constants.JpowerConstants;
+import top.jpower.core.util.utils.Fc;
 
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
@@ -39,7 +43,14 @@ public class FeignOkHttpConfiguration {
     private okhttp3.OkHttpClient okHttpClient;
 
     @Bean
-    public HttpLogInterceptor httpLogInterceptor(FeignHttpProperties httpProperties) {
+    public HttpLogInterceptor httpLogInterceptor(JpowerProperties jpowerProperties, FeignHttpProperties httpProperties) {
+		if (Fc.isNull(httpProperties.getLogLevel())) {
+			if (Fc.equalsValue(jpowerProperties.getEnv(), JpowerConstants.PROD_CODE)){
+				httpProperties.setLogLevel(Logger.Level.BASIC);
+			} else {
+				httpProperties.setLogLevel(Logger.Level.FULL);
+			}
+		}
         return new HttpLogInterceptor(httpProperties.getLogLevel());
     }
 

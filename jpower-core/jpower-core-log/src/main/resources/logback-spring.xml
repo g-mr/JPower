@@ -37,6 +37,7 @@
     <logger name="org.springframework.core.env" level="info"/>
     <logger name="org.springframework.web" level="info"/>
     <logger name="druid.sql" level="info"/>
+	<logger name="org.redisson" level="info"/>
     <logger name="com.springboot" level="info"/>
     <logger name="com.alibaba" level="info"/>
     <logger name="_org.springframework.web.servlet.HandlerMapping.Mappings" level="info" />

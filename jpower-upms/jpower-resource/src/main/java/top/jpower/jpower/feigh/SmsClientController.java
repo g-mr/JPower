@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.jpower.config.sms.SmsBuilder;
 import top.jpower.jpower.dto.*;
-import top.jpower.jpower.feign.SmsClient;
+import top.jpower.resource.api.dto.SmsResponse;
+import top.jpower.resource.api.dto.SmsValidateDTO;
+import top.jpower.resource.api.feign.SmsClient;
 
 /**
  * @author mr.g

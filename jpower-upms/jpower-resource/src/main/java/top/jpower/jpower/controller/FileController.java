@@ -37,7 +37,7 @@ import top.jpower.core.util.rsp.ReturnJsonUtil;
 import top.jpower.core.util.utils.DesUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.FileUtil;
-import top.jpower.jpower.cache.dict.DictCache;
+import top.jpower.system.api.cache.dict.DictCache;
 import top.jpower.jpower.dbs.entity.TbResourceFile;
 import top.jpower.jpower.operate.FileOperateBuilder;
 import top.jpower.jpower.service.ResourceFileService;

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.core.util.rsp.ResponseData;
 import top.jpower.core.util.rsp.ReturnJsonUtil;
-import top.jpower.jpower.feign.DictClient;
+import top.jpower.system.api.feign.DictClient;
 import top.jpower.jpower.service.dict.CoreDictService;
 
 import java.util.List;
