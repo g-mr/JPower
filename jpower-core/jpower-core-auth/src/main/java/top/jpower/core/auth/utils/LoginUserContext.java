@@ -21,11 +21,9 @@ import java.util.Objects;
 public class LoginUserContext {
 
     /**
-     * @Author 郭丁志
-     * @Description //TODO 返回用户登录名
-     * @Date 17:12 2020-07-09
-     * @Param []
-     * @return java.lang.String
+     * 返回用户登录名
+	 *
+	 * @author 郭丁志
      **/
     public static String getLoginId() {
         UserInfo user = get();
@@ -36,10 +34,9 @@ public class LoginUserContext {
     }
 
     /**
-     * @Author 郭丁志
-     * @Description //TODO 返回用户ID
-     * @Date 17:12 2020-07-09
-     * @Param []
+     * 返回用户ID
+	 *
+	 * @author 郭丁志
      * @return java.lang.String
      **/
     public static Long getUserId() {
@@ -51,10 +48,9 @@ public class LoginUserContext {
     }
 
     /**
-     * @Author 郭丁志
-     * @Description //TODO 返回部门ID
-     * @Date 17:12 2020-07-09
-     * @Param []
+     * 返回部门ID
+	 *
+	 * @author mr.g
      * @return java.lang.String
      **/
     public static Long getOrgId() {
@@ -66,10 +62,9 @@ public class LoginUserContext {
     }
 
     /**
-     * @Author 郭丁志
-     * @Description //TODO 返回用户名称
-     * @Date 17:12 2020-07-09
-     * @Param []
+     * 返回用户名称
+	 *
+	 * @author mr.g
      * @return java.lang.String
      **/
     public static String getUserName() {

@@ -54,7 +54,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <!--TODO 这个升级到9.0以后底层的jackson变成了3.0.1；但是框架和skywalking-1.x底层用的还是2.19.4版本，后续需要大量测试一下是否兼容-->
         <!--ELK中的logstash-->
         <dependency>
             <groupId>net.logstash.logback</groupId>
@@ -62,12 +61,7 @@
             <version>${logstash.version}</version>
         </dependency>
 
-        <!-- TODO sleuth在新版本中被移除了，需要测试micrometer是否好使-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.cloud</groupId>-->
-<!--            <artifactId>spring-cloud-starter-sleuth</artifactId>-->
-<!--        </dependency>-->
-        <!--sleuth的日志追踪，在没有skywalking的情况下用的是这个-->
+        <!--micrometer的日志追踪，在没有skywalking的情况下用的是这个-->
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-tracing-bridge-brave</artifactId>

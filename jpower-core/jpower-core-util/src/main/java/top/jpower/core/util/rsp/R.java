@@ -16,6 +16,7 @@ import java.io.Serializable;
  * @author mr.g
  */
 @Getter
+//@UtilityClass
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -41,16 +42,6 @@ public class R<T> implements Serializable {
      * 返回数据
      **/
     private T data;
-
-    /**
-     * 是否成功
-     *
-     * @author mr.g
-     * @return 是否成功
-     **/
-    public boolean isSuccess(){
-        return status;
-    }
 
     /**
      * 封装

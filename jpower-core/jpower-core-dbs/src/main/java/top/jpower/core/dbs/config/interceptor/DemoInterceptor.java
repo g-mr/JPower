@@ -15,11 +15,9 @@ import top.jpower.core.util.utils.WebUtil;
 import java.sql.Statement;
 
 /**
- * @ClassName DemoInterceptor
- * @Description TODO 演示环境拦截器
- * @Author 郭丁志
- * @Date 2021/3/5 0005 22:31
- * @Version 1.0
+ * 演示环境拦截器
+ *
+ * @author 郭丁志
  */
 @Slf4j
 @RequiredArgsConstructor

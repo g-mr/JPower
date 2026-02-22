@@ -18,21 +18,21 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @ClassName ExcelUtil
- * @Description TODO excel操作类
- * @Author 郭丁志
- * @Date 2020-04-03 10:25
- * @Version 1.0
+ * excel操作工具类
+ *
+ * @author mr.g
  */
 public class ExcelUtil {
 
     private static Logger logger = LoggerFactory.getLogger(ExcelUtil.class);
 
     /**
-     * @Author 郭丁志
-     * @Description //TODO 把excel报表转换成list信息,开始行不传默认是第2行，结束行不传默认是最后一行
-     * @Date 10:34 2020-04-03
-     * @Param [path, startRow 开始行, endRow 结束行]
+     * 把excel报表转换成list信息,开始行不传默认是第2行，结束行不传默认是最后一行
+	 *
+	 * @author mr.g
+     * @param path 文件路径
+	 * @param startRow 开始行
+	 * @param endRow 结束行
      * @return java.util.List<java.util.Map<java.lang.String,java.lang.String>>
      **/
     public static List<Map<String,Object>> excel2List(String path,Integer startRow,Integer endRow){
@@ -152,11 +152,14 @@ public class ExcelUtil {
     }
 
     /**
-     * @Author 郭丁志
-     * @Description //TODO 生成Ecel
-     * @Date 01:08 2020-04-06
-     * @Param [path, fileName, fileType, list, titleRow]
-     * @return void
+     * 生成Ecel
+	 *
+	 * @author mr.g
+     * @param path 文件路径
+	 * @param fileName 文件名
+	 * @param fileType 文件类型
+	 * @param list 数据
+	 * @param titleRow 标题行
      **/
     public static void writer(String path, String fileName,String sheetName,String fileType,List<Map<String,Object>> list,List<String> titleRow) throws Exception {
         String excelPath = path+File.separator+fileName+"."+fileType;

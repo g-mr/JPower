@@ -30,11 +30,9 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * @ClassName BeanExcelUtil
- * @Description TODO 把并导出excel
- * @Author 郭丁志
- * @Date 2020-04-11 20:58
- * @Version 1.0
+ * 导出excel
+ *
+ * @author mr.g
  */
 public class BeanExcelUtil<T> {
 
@@ -208,10 +206,10 @@ public class BeanExcelUtil<T> {
     }
 
     /**
-     * @author 郭丁志
-     * @Description //TODO 导出模板
-     * @date 0:15 2020/9/8 0008
-     * @param sheetName
+     * 导出模板
+	 *
+	 * @author mr.g
+     * @param sheetName sheet页
      * @return java.lang.String
      */
     public String template(String sheetName){
@@ -248,12 +246,11 @@ public class BeanExcelUtil<T> {
     }
 
     /**
-     * @author 郭丁志
-     * @Description //TODO 生成表头
-     * @date 0:14 2020/9/8 0008
-     * @param cell
-     * @param row
-     * @return void
+     * 生成表头
+	 *
+	 * @author mr.g
+     * @param cell 列
+     * @param row  行
      */
     public void createHeader(Cell cell,Row row){
         // 写入各个字段的列头名称

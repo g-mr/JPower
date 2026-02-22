@@ -20,7 +20,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -33,7 +32,6 @@ import top.jpower.core.dbs.config.properties.DemoProperties;
 import top.jpower.core.dbs.config.properties.MybatisProperties;
 import top.jpower.core.dbs.dbs.entity.base.BaseEntity;
 import top.jpower.core.dbs.tenant.JpowerTenantProperties;
-import top.jpower.core.deploy.support.YamlAndPropertySourceFactory;
 import top.jpower.core.util.user.UserConfig;
 import top.jpower.core.util.utils.Fc;
 
@@ -66,8 +64,6 @@ public class MybatisFlexConfig {
 //           configuration.setMapUnderscoreToCamelCase(true);
 //           // 设置空值时是否调用 setter
            configuration.setCallSettersOnNulls(true);
-           // TODO 回头看看这里打印的SQL长啥样子
-//           configuration.setLogImpl(StdOutImpl.class);
            configuration.setLogImpl(NoLoggingImpl.class);
        };
    }
@@ -150,7 +146,7 @@ public class MybatisFlexConfig {
 //                     return null;
 //                 }
 //             });
-            // TODO 需要试试全局配置了然后在字段上再加注解，会产生什么？其他配置都一样
+            // 注解的优先级高于全局的优先级，框架会在全部配置，如果自定义的实体只要存在这三个字段就会产生对应的功能
             config.setVersionColumn(mybatisProperties.getOptimisticLockerColumn());
             config.setLogicDeleteColumn(mybatisProperties.getLogicDeleteColumn());
             config.setTenantColumn(tenantProperties.getColumn());

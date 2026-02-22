@@ -8,11 +8,9 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * @ClassName TenantEntity
- * @Description TODO 租户信息
- * @Author 郭丁志
- * @Date 2020-10-16 10:11
- * @Version 1.0
+ * 租户信息
+ *
+ * @author mr.g
  */
 @Data
 public class TenantEntity extends BaseEntity implements Serializable {

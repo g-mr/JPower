@@ -5,11 +5,9 @@ import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.utils.Fc;
 
 /**
- * @ClassName UrlCleanerHandler
- * @Description TODO 不做流控的URL去除
- * @Author 郭丁志
- * @Date 2020/9/13 0013 0:17
- * @Version 1.0
+ * 不做流控的URL去除
+ *
+ * @author 郭丁志
  */
 public class UrlCleanerHandler implements UrlCleaner {
 

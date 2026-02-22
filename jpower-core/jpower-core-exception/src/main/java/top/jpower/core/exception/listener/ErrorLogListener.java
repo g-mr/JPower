@@ -6,7 +6,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import top.jpower.core.deploy.property.JpowerProperties;
 import top.jpower.core.exception.client.LogClient;
-import top.jpower.core.exception.model.ErrorLogDto;
+import top.jpower.core.exception.model.ErrorLogDTO;
 import top.jpower.core.exception.utils.FieldCompletionUtil;
 import top.jpower.core.util.utils.Fc;
 
@@ -26,7 +26,7 @@ public class ErrorLogListener {
     @Async
     @EventListener(ErrorLogEvent.class)
     public void saveApiLog(ErrorLogEvent event) {
-        ErrorLogDto errorLog = (ErrorLogDto) event.getSource();
+        ErrorLogDTO errorLog = (ErrorLogDTO) event.getSource();
         FieldCompletionUtil.serverInfo(errorLog,properties);
         if (Fc.notNull(logClient)){
             logClient.saveErrorLog(errorLog);

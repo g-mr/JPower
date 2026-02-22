@@ -57,17 +57,18 @@
         <skywalking.version>9.5.0</skywalking.version>
         <easy-captcha.version>1.6.2</easy-captcha.version>
         <fastdfs.version>1.27.2</fastdfs.version>
-        <aliyun.sms.version>4.3.1</aliyun.sms.version> <!--2.0.24-->
-        <aliyun.oss.version>3.18.3</aliyun.oss.version><!--3.17.4-->
-        <qiniu.oss.version>7.19.0</qiniu.oss.version><!--7.15.0-->
+        <aliyun.sms.version>4.3.1</aliyun.sms.version>
+        <aliyun.oss.version>3.18.3</aliyun.oss.version>
+        <qiniu.oss.version>7.19.0</qiniu.oss.version>
         <knife4j.version>4.5.0</knife4j.version>
         <mybatis-flex.version>1.11.5</mybatis-flex.version>
+        <auto.service.version>1.1.1</auto.service.version>
         <spring-boot-admin.version>3.5.6</spring-boot-admin.version>
         <jwt.version>0.6.0</jwt.version>
 
         <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
-        <maven-resources.version>3.4.0</maven-resources.version><!--3.3.1-->
-        <maven-gpg.version>3.2.8</maven-gpg.version><!--3.1.0-->
+        <maven-resources.version>3.4.0</maven-resources.version>
+        <maven-gpg.version>3.2.8</maven-gpg.version>
         <dockerfile-maven-plugin.version>1.4.13</dockerfile-maven-plugin.version>
 
         <docker.image.prefix>jpower</docker.image.prefix>
@@ -296,6 +297,11 @@
                             <groupId>com.mybatis-flex</groupId>
                             <artifactId>mybatis-flex-processor</artifactId>
                             <version>${mybatis-flex.version}</version>
+                        </path>
+                        <path>
+                            <groupId>com.google.auto.service</groupId>
+                            <artifactId>auto-service</artifactId>
+                            <version>${auto.service.version}</version>
                         </path>
                     </annotationProcessorPaths>
                     <debug>false</debug>

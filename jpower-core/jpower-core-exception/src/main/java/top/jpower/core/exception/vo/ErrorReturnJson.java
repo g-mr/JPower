@@ -2,11 +2,9 @@ package top.jpower.core.exception.vo;
 
 
 /**
- * @ClassName ResponseData
- * @Description TODO
- * @Author 郭丁志
- * @Date 2020-01-27 17:26
- * @Version 1.0
+ * 错误信息返回实体
+ *
+ * @author mr.g
  */
 public class ErrorReturnJson {
 

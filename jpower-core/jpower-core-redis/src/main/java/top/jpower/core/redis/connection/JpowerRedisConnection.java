@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 /**
  * redis 连接器
  *
- * TODO 新版本都是Commands来实现，回头这里需要优化，重写Commands来实现
+ * TODO 新版本都是基于Commands来实现，等升级版本DefaultedRedisConnection类被删除了，这里就需要优化基于RedisCommandsProvider接口里返回的Commands进行重写来实现
  * @author mr.g
  */
 @Slf4j
@@ -53,6 +53,9 @@ public class JpowerRedisConnection implements RedisConnection {
 
     private final RedisProperties.Prefix prefixProperties;
     private final RedisPrefixHandler redisPrefixHandler;
+	/**
+	 * 就是为了实现所有的redis操作都能进行nameMapper，所以进行了重写
+	 **/
     private final NameMapper nameMapper;
     private final RedisSerializer<String> serializer;
 

@@ -3,9 +3,9 @@
 
     <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
 
-    <include resource="property.xml" />
-
     <contextListener class="top.jpower.core.log.listener.LoggerStartupListener"/>
+
+    <include resource="property.xml" />
 
     <!-- 彩色日志 -->
     <!-- 彩色日志依赖的渲染类 -->
@@ -13,7 +13,7 @@
     <conversionRule conversionWord="wex" class="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
     <conversionRule conversionWord="wEx" class="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
     <!-- 彩色日志格式 -->
-    <property name="CONSOLE_LOG_PATTERN" value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){blue} %clr(%5level) %clr(${spring.application.name:- }:${jpower.version:- }){bright_yellow} %clr(%traceId){red} %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%logger){cyan}%clr(\(){bright_cyan}%clr(%clr(%line){bright_cyan}){bold}%clr(\)){bright_cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+    <property name="CONSOLE_LOG_PATTERN" value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){blue} %clr(%5level) %clr(${appName:- }:${version:- }){bright_yellow} %clr(%traceId){red} %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%logger){cyan}%clr(\(){bright_cyan}%clr(%clr(%line){bright_cyan}){bold}%clr(\)){bright_cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
 
     <!--控制台日志， 控制台输出 -->
     <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">

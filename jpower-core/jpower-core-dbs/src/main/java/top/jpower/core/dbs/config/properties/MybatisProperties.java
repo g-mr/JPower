@@ -6,20 +6,13 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * @ClassName DemoProperties
- * @Description TODO mybatis配置
- * @Author 郭丁志
- * @Date 2020-10-14 21:12
- * @Version 1.0
+ * mybatis配置
+ *
+ * @author mr.g
  */
 @Data
 @ConfigurationProperties(prefix = "jpower.mybatis")
 public class MybatisProperties {
-
-    /**
-     * 是否开启动态表名
-     */
-//    private Boolean dynamicTableName = false;
 
     /**
      * where条件字段忽略规则
@@ -30,23 +23,13 @@ public class MybatisProperties {
      */
     private boolean optimisticLocker = false;
     /**
-     * 是否开启动乐观锁
+     * 乐观锁字段
      */
     private String optimisticLockerColumn = "version";
     /**
      * 逻辑删除字段
      */
     private String logicDeleteColumn = "delete_time";
-
-    /**
-     * 是否开启垃圾SQL拦截
-     */
-//    private boolean illegalSQL = false;
-
-    /**
-     * 是否开启全表更新删除拦截（防止攻击）
-     */
-//    private boolean blockAttack = true;
 
     /**
      * mp分页配置

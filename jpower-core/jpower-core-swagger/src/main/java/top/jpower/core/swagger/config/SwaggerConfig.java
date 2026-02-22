@@ -40,19 +40,6 @@ import java.util.function.Consumer;
 @RequiredArgsConstructor
 public class SwaggerConfig {
 
-//    @Bean
-//    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-//    public WebMvcConfigurer swaggerWebMvcConfigurer() {
-//        return new WebMvcConfigurer() {
-//            @Override
-//            public void addResourceHandlers(ResourceHandlerRegistry registry) {
-//                registry.addResourceHandler("/js/**").addResourceLocations("classpath:/js/");
-//                registry.addResourceHandler("doc.html").addResourceLocations("classpath:/META-INF/resources/");
-//                registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
-//            }
-//        };
-//    }
-
     /**
      * 接口文档信息
      *
@@ -71,17 +58,6 @@ public class SwaggerConfig {
                 .version(properties.getVersion())
                 .summary(properties.getSummary());
     }
-
-    /**
-     * 让Springdoc自动从Spring Security的@Secured等注解推断安全要求
-     * TODO 有待测试，暂时注掉
-     * @return
-     */
-//    @Bean
-//    public SpringDocConfiguration springDocConfiguration() {
-//        // 这样没有安全注解的方法默认就是公开的
-//        return new SpringDocConfiguration();
-//    }
 
     /**
      * 接口文档安全配置

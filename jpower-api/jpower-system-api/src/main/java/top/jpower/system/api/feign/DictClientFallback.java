@@ -7,11 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @ClassName ParamsClientFallback
- * @Description TODO
- * @Author 郭丁志
- * @Date 2020-09-01 15:31
- * @Version 1.0
+ * 字典Fallback
+ *
+ * @author mr.g
  */
 @Component
 public class DictClientFallback implements DictClient {

@@ -23,9 +23,9 @@ import top.jpower.core.util.utils.Fc;
 import java.lang.reflect.Method;
 
 /**
- * @Author 郭丁志
- * @Description //TODO 操作日志记录处理
- * @Date 17:38 2020-07-10
+ * 操作日志记录处理
+ *
+ * @author mr.g
  **/
 @Aspect
 @RequiredArgsConstructor

@@ -1,31 +1,30 @@
-package top.jpower.core.nacos.deploy;
+package top.jpower.core.redis.deploy;
 
 import com.google.auto.service.AutoService;
 import org.springframework.boot.SpringApplication;
-import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 import top.jpower.core.deploy.service.DeployService;
-import top.jpower.core.nacos.constants.NacosConstants;
+import top.jpower.core.util.constants.JpowerConstants;
+import top.jpower.core.util.utils.Fc;
 
 import java.util.Collections;
 
 /**
- * Nacos默认配置
+ * 启动初始化
  *
  * @author mr.g
+ * @date 2024-11-7 22:50
  */
 @AutoService(DeployService.class)
-public class NacosServiceImpl implements DeployService {
+public class RedisServiceImpl implements DeployService {
 
     @Override
     public void deploy(SpringApplication builder, ConfigurableEnvironment properties, String appName, String profile) {
-		properties.getPropertySources().addLast(new MapPropertySource("nacosService", Collections.singletonMap("spring.cloud.nacos.config.file-extension", NacosConstants.FILE_EXTENSION)));
-    }
-
-    @Override
-    public int getOrder() {
-        return Ordered.HIGHEST_PRECEDENCE;
+        if (Fc.equalsValue(profile, JpowerConstants.PROD_CODE)){
+			properties.getPropertySources()
+					.addLast(new MapPropertySource("redisDeploy", Collections.singletonMap("jpower.redis.log", false)));
+        }
     }
 
 }

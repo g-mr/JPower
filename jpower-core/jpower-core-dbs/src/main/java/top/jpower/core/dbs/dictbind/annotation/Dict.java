@@ -5,9 +5,9 @@ import java.lang.annotation.*;
 
 
 /**
- * @Author 郭丁志
- * @Description //TODO 自定义字典查询
- * @Date 11:16 2020-07-17
+ * 字典翻译注解
+ *
+ * @author mr.g
  **/
 @Target({ ElementType.FIELD, ElementType.ANNOTATION_TYPE })
 @Retention(RetentionPolicy.RUNTIME)

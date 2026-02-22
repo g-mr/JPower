@@ -17,24 +17,16 @@
     </description>
 
     <dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
 
-        <dependency>
+		<dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-util</artifactId>
             <version>${top.jpower.version}</version>
         </dependency>
-
-        <!-- TODO 新版本中这个不需要了，后续测试没问题删掉这个注释-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.cloud</groupId>-->
-<!--            <artifactId>spring-cloud-starter-bootstrap</artifactId>-->
-<!--        </dependency>-->
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
-
     </dependencies>
 
 </project>

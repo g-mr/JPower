@@ -1,5 +1,6 @@
 package top.jpower.core.feign.sentinel.utils;
 
+import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.csp.sentinel.slots.block.authority.AuthorityException;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeException;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowException;
@@ -10,11 +11,9 @@ import org.apache.hc.core5.http.HttpStatus;
 import top.jpower.core.util.rsp.R;
 
 /**
- * @ClassName ErrorMsg
- * @Description TODO
- * @Author 郭丁志
- * @Date 2020/9/12 0012 22:33
- * @Version 1.0
+ * 流控异常返回
+ *
+ * @author mr.g
  */
 public class ErrorMsg {
     /** 限流后的异常提示 **/
@@ -58,8 +57,8 @@ public class ErrorMsg {
     }
 
     /** 统一返回 **/
-    @SneakyThrows
-    public static R<?> blockException(Throwable ex) {
+    @SneakyThrows(BlockException.class)
+    public static R<?> blockException(BlockException ex) {
         if(ex instanceof FlowException){
             return getFlow();
         }

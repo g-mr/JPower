@@ -30,10 +30,10 @@ public class BeanUtil extends cn.hutool.core.bean.BeanUtil {
     }
 
     /**
-     * @Author 郭丁志
-     * @Description //TODO 获取属性列表
-     * @Date 18:50 2020-03-03
-     * @Param [clazz]
+     * 获取属性列表
+	 *
+	 * @author mr.g
+     * @param clazz  类
      * @return java.util.List<java.lang.reflect.Field>
      **/
     public static List<Field> getFieldList(Class<?> clazz){
@@ -52,9 +52,9 @@ public class BeanUtil extends cn.hutool.core.bean.BeanUtil {
     }
 
     /**
-     * @author 郭丁志
-     * @Description //TODO 获取所有拥有指定注解得属性
-     * @date 22:23 2020/8/9 0009
+     * 获取所有拥有指定注解得属性
+	 *
+	 * @author mr.g
      * @param cls BEAN类
      * @param annotationType 指定得注解
      * @return java.util.List<java.lang.reflect.Field>

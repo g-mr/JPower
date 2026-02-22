@@ -8,11 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @ClassName DemoProperties
- * @Description TODO 演示环境配置
- * @Author 郭丁志
- * @Date 2020-10-14 21:12
- * @Version 1.0
+ * 演示环境配置
+ *
+ * @author mr.g
  */
 @Data
 @ConfigurationProperties(prefix = "jpower.demo")

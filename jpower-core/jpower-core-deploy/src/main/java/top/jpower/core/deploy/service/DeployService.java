@@ -1,9 +1,8 @@
 package top.jpower.core.deploy.service;
 
-import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.SpringApplication;
 import org.springframework.core.Ordered;
-
-import java.util.Properties;
+import org.springframework.core.env.ConfigurableEnvironment;
 
 /**
  * 启动前置处理器
@@ -19,7 +18,7 @@ public interface DeployService extends Ordered {
      * @param appName 项目名称
      * @param profile 环境变量
      */
-    void deploy(SpringApplicationBuilder builder, Properties properties, String appName, String profile);
+    void deploy(SpringApplication builder, ConfigurableEnvironment properties, String appName, String profile);
 
     /**
      * 获取排列顺序

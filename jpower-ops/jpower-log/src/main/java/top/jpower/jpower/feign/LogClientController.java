@@ -12,8 +12,8 @@ import top.jpower.core.util.rsp.ReturnJsonUtil;
 import top.jpower.core.util.utils.BeanUtil;
 import top.jpower.jpower.dbs.entity.TbLogError;
 import top.jpower.jpower.dbs.entity.TbLogOperate;
-import top.jpower.core.exception.model.ErrorLogDto;
-import top.jpower.core.exception.model.OperateLogDto;
+import top.jpower.core.exception.model.ErrorLogDTO;
+import top.jpower.core.exception.model.OperateLogDTO;
 import top.jpower.jpower.service.ErrorLogService;
 import top.jpower.jpower.service.OperateLogService;
 
@@ -36,7 +36,7 @@ public class LogClientController{
      * @param operateLog
      */
     @PostMapping("/saveOperateLog")
-    public ResponseData<Boolean> saveOperateLog(@RequestBody OperateLogDto operateLog){
+    public ResponseData<Boolean> saveOperateLog(@RequestBody OperateLogDTO operateLog){
         TbLogOperate logOperate = BeanUtil.copyProperties(operateLog, TbLogOperate.class);
         return ReturnJsonUtil.status(operateLogService.save(logOperate));
     }
@@ -47,7 +47,7 @@ public class LogClientController{
      * @param errorLog
      */
     @PostMapping("/saveErrorLog")
-    public ResponseData<Boolean> saveErrorLog(@RequestBody ErrorLogDto errorLog){
+    public ResponseData<Boolean> saveErrorLog(@RequestBody ErrorLogDTO errorLog){
         TbLogError logError = BeanUtil.copyProperties(errorLog, TbLogError.class);
         return ReturnJsonUtil.status(errorLogService.save(logError));
     }

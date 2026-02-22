@@ -1,7 +1,7 @@
 package top.jpower.core.exception.listener;
 
 import org.springframework.context.ApplicationEvent;
-import top.jpower.core.exception.model.ErrorLogDto;
+import top.jpower.core.exception.model.ErrorLogDTO;
 
 /**
  * 异步监听操作日志
@@ -16,7 +16,7 @@ public class ErrorLogEvent extends ApplicationEvent {
     /**
      * Create a new {@code ApplicationEvent}.
      */
-    public ErrorLogEvent(ErrorLogDto log) {
+    public ErrorLogEvent(ErrorLogDTO log) {
         super(log);
     }
 }

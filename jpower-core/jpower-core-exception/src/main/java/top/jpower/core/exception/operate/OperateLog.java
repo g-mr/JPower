@@ -7,7 +7,7 @@ import org.aspectj.lang.JoinPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.jpower.core.exception.listener.OperateLogEvent;
-import top.jpower.core.exception.model.OperateLogDto;
+import top.jpower.core.exception.model.OperateLogDTO;
 import top.jpower.core.exception.utils.FieldCompletionUtil;
 import top.jpower.core.util.user.model.UserDto;
 import top.jpower.core.util.utils.Fc;
@@ -38,7 +38,7 @@ public class OperateLog {
     public void info(final OperateInfo controllerLog, JoinPoint joinPoint, Object rvt, Exception e){
 
         try {
-            OperateLogDto operLog = new OperateLogDto();
+            OperateLogDTO operLog = new OperateLogDTO();
             StringBuilder builder = new StringBuilder("["+controllerLog.title()+"]");
             builder.append(" 记录操作日志==> ");
             // 获取当前的用户

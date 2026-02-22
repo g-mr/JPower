@@ -840,7 +840,6 @@ public class RedisExecutor<V, R> {
 
     final CompletableFuture<RedisConnection> connectionReadOp(RedisCommand<?> command, CompletableFuture<R> attemptPromise) {
         try {
-            // TODO make the method async
             entry = getEntry(true);
         } catch (Exception e) {
             attemptPromise.completeExceptionally(e);
@@ -866,7 +865,6 @@ public class RedisExecutor<V, R> {
 
     final CompletableFuture<RedisConnection> connectionWriteOp(RedisCommand<?> command, CompletableFuture<R> attemptPromise) {
         try {
-            // TODO make the method async
             entry = getEntry(false);
         } catch (Exception e) {
             attemptPromise.completeExceptionally(e);

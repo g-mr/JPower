@@ -6,11 +6,9 @@ import top.jpower.core.auth.utils.ShieldUtil;
 import top.jpower.core.util.constants.StringPool;
 
 /**
- * @ClassName OriginParserHandler
- * @Description TODO 设置流控 来源
- * @Author 郭丁志
- * @Date 2020/9/13 0013 0:09
- * @Version 1.0
+ * 设置流控 来源
+ *
+ * @author mr.g
  */
 public class OriginParserHandler implements RequestOriginParser {
     @Override

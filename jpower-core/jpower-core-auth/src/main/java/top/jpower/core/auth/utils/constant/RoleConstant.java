@@ -2,9 +2,9 @@ package top.jpower.core.auth.utils.constant;
 
 
 /**
- * @author 郭丁志
- * @Description //TODO 系统默认角色
- * @date 21:32 2020/8/24 0024
+ * 系统默认角色
+ *
+ * @author mr.g
  */
 public class RoleConstant {
 

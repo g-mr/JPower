@@ -5,11 +5,9 @@ import org.springframework.stereotype.Component;
 import top.jpower.core.util.rsp.R;
 
 /**
- * @ClassName ParamsClientFallback
- * @Description TODO
- * @Author 郭丁志
- * @Date 2020-09-01 15:31
- * @Version 1.0
+ * 系统参数Fallback
+ *
+ * @author mr.g
  */
 @Slf4j
 @Component

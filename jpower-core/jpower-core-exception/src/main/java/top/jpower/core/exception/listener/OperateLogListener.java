@@ -6,7 +6,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import top.jpower.core.deploy.property.JpowerProperties;
 import top.jpower.core.exception.client.LogClient;
-import top.jpower.core.exception.model.OperateLogDto;
+import top.jpower.core.exception.model.OperateLogDTO;
 import top.jpower.core.exception.utils.FieldCompletionUtil;
 import top.jpower.core.util.utils.Fc;
 
@@ -26,7 +26,7 @@ public class OperateLogListener {
     @Async
     @EventListener(OperateLogEvent.class)
     public void saveApiLog(OperateLogEvent event) {
-        OperateLogDto operateLog = (OperateLogDto) event.getSource();
+        OperateLogDTO operateLog = (OperateLogDTO) event.getSource();
         FieldCompletionUtil.serverInfo(operateLog,properties);
         if (Fc.notNull(logClient)){
             logClient.saveOperateLog(operateLog);

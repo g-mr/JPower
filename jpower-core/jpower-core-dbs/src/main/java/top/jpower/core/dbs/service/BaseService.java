@@ -17,17 +17,17 @@ import java.util.function.Function;
 public interface BaseService<T> extends IService<T> {
 
     /**
-     * @author 郭丁志
-     * @Description //TODO 查询树形结构
-     * @date 23:22 2020/10/21 0021
+     * 查询树形结构
+	 *
+	 * @author mr.g
      * @param treeWrapper 查询条件
      */
     <E extends Serializable> List<Tree<E>> tree(TreeWrapper treeWrapper);
 
     /**
-     * @author 郭丁志
-     * @Description //TODO 把查询结果转换成任何类型
-     * @date 23:21 2020/10/21 0021
+     * 把查询结果转换成任何类型
+	 *
+	 * @author mr.g
      * @param queryWrapper 查询条件
      * @param function 转换方法
      * @return java.util.List<V>

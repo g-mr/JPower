@@ -5,12 +5,12 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * @Author 郭丁志
- * @Description //TODO 日志记录
- * @Date 17:00 2020-07-10
+ * 日志记录
+ *
+ * @author mr.g
  **/
 @Data
-public class LogDto implements Serializable {
+public class LogDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

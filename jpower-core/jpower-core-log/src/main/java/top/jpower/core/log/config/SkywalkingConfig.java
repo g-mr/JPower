@@ -14,8 +14,6 @@ import jakarta.servlet.http.HttpFilter;
  * TODO 这里应该做个开关，没有集成Skywalking不开启，回头研究下如何判断是否集成了Skywalking
  *
  * @author mr.g
- * @date 2024-8-24 18:50
- * @description
  */
 @AutoConfiguration
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)

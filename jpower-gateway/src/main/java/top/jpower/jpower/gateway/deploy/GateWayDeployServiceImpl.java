@@ -1,16 +1,18 @@
 package top.jpower.jpower.gateway.deploy;
 
-import org.springframework.boot.builder.SpringApplicationBuilder;
+import com.google.auto.service.AutoService;
+import org.springframework.boot.SpringApplication;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.MapPropertySource;
 import top.jpower.core.deploy.service.DeployService;
-import top.jpower.core.util.annotation.LoaderService;
 
-import java.util.Properties;
+import java.util.Collections;
 
 /**
  * @author mr.g
  * @date 2024/2/26 9:56 AM
  */
-@LoaderService(DeployService.class)
+@AutoService(DeployService.class)
 public class GateWayDeployServiceImpl implements DeployService {
     /**
      * 启动时 处理 SpringApplicationBuilder
@@ -21,7 +23,7 @@ public class GateWayDeployServiceImpl implements DeployService {
      * @param profile    环境变量
      */
     @Override
-    public void deploy(SpringApplicationBuilder builder, Properties properties, String appName, String profile) {
-        System.setProperty("csp.sentinel.app.type", "1");
+    public void deploy(SpringApplication builder, ConfigurableEnvironment properties, String appName, String profile) {
+		properties.getPropertySources().addFirst(new MapPropertySource("gateWayDeployService", Collections.singletonMap("csp.sentinel.app.type", "1")));
     }
 }

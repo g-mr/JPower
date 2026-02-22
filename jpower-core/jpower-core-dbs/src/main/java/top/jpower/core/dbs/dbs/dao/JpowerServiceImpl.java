@@ -56,9 +56,9 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
     }
 
     /**
-     * @Author 郭丁志
-     * @Description //TODO 根据ID 真实删除
-     * @Date 16:00 2020-08-11
+     * 根据ID 真实删除
+	 *
+	 * @author 郭丁志
      **/
     public boolean removeRealById(Serializable id) {
         return SqlUtil.toBool(getMapper().deleteRealById(id));

@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import top.jpower.core.exception.enums.constants.LogConstant;
 import top.jpower.core.exception.feign.LogTraceClient;
-import top.jpower.core.exception.model.ErrorLogDto;
-import top.jpower.core.exception.model.OperateLogDto;
+import top.jpower.core.exception.model.ErrorLogDTO;
+import top.jpower.core.exception.model.OperateLogDTO;
 import top.jpower.core.util.rsp.R;
 import top.jpower.core.util.utils.ExceptionUtil;
 import top.jpower.core.util.utils.Fc;
@@ -28,10 +28,10 @@ public class FeignLogClient implements LogClient {
      * @param operateLog 操作日志
      */
     @Override
-    public void saveOperateLog(OperateLogDto operateLog) {
+    public void saveOperateLog(OperateLogDTO operateLog) {
         try {
             R<Long> r = logTraceClient.saveOperateLog(LogConstant.getInstance().getJpowerLog(), operateLog);
-            if (Fc.isNull(r) || !r.isSuccess()){
+            if (Fc.isNull(r) || !r.isStatus()){
                 log.error("操作日志保存失败={}",r);
             }
         }catch (Exception e){
@@ -46,7 +46,7 @@ public class FeignLogClient implements LogClient {
      * @param errorLog 错误日志
      */
     @Override
-    public void saveErrorLog(ErrorLogDto errorLog) {
+    public void saveErrorLog(ErrorLogDTO errorLog) {
         if (!isSaveError(errorLog)){
             log.error("保存错误日志接口错误={}",errorLog);
             return;
@@ -54,7 +54,7 @@ public class FeignLogClient implements LogClient {
 
         try {
             R<Long> r = logTraceClient.saveErrorLog(LogConstant.getInstance().getJpowerLog(), errorLog);
-            if (Fc.isNull(r) || !r.isSuccess()){
+            if (Fc.isNull(r) || !r.isStatus()){
                 log.error("错误日志保存失败={}", r);
             }
         }catch (Exception e){
@@ -62,7 +62,7 @@ public class FeignLogClient implements LogClient {
         }
     }
 
-    public boolean isSaveError(ErrorLogDto errorLog){
+    public boolean isSaveError(ErrorLogDTO errorLog){
         if (Fc.equalsValue(errorLog.getServerName(), LogConstant.getInstance().getJpowerLog()) &&
                 Fc.equalsValue(errorLog.getUrl(),"/log/saveErrorLog")){
             return false;

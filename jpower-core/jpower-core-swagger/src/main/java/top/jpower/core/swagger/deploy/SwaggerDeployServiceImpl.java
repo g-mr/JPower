@@ -1,29 +1,32 @@
 package top.jpower.core.swagger.deploy;
 
-import org.springframework.boot.builder.SpringApplicationBuilder;
+import com.google.auto.service.AutoService;
+import org.springframework.boot.SpringApplication;
 import org.springframework.core.Ordered;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.MapPropertySource;
 import top.jpower.core.deploy.service.DeployService;
-import top.jpower.core.util.annotation.LoaderService;
 import top.jpower.core.util.constants.JpowerConstants;
+import top.jpower.core.util.utils.MapUtil;
 
-import java.util.Properties;
+import java.util.Map;
 
 /**
  * 初始化Swagger配置
  * @author mr.g
  */
-@LoaderService(DeployService.class)
+@AutoService(DeployService.class)
 public class SwaggerDeployServiceImpl implements DeployService {
 	@Override
-	public void deploy(SpringApplicationBuilder builder, Properties properties, String appName, String profile) {
-		Properties props = System.getProperties();
+	public void deploy(SpringApplication builder, ConfigurableEnvironment properties, String appName, String profile) {
 
-		props.setProperty("knife4j.enable", "true");
-//		props.setProperty("spring.mvc.pathmatch.matching-strategy", "ANT_PATH_MATCHER"); todo 先注释掉，回头看看是否有影响没影响就删除
-
+		Map<String, Object> map = MapUtil.newHashMap();
+		map.put("knife4j.enable", true);
 		if (profile.equals(JpowerConstants.PROD_CODE)) {
-			props.setProperty("knife4j.production", "true");
+			map.put("knife4j.production", true);
 		}
+		properties.getPropertySources().addLast(new MapPropertySource("swaggerDeployService", map));
+
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package top.jpower.core.deploy.property;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import top.jpower.core.util.constants.JpowerConstants;
 
 /**
  * 配置文件
@@ -30,6 +31,11 @@ public class JpowerProperties {
 	 * 判断是否为 本地开发环境
 	 */
 	private Boolean isLocal = Boolean.FALSE;
+
+	/**
+	 * 版本
+	 **/
+	private String version = JpowerConstants.JPOWER_VESION;
 
 	/**
 	 * hostName

@@ -1,12 +1,8 @@
 package top.jpower.common.constants;
 
 import lombok.Data;
-import top.jpower.core.nacos.constants.NacosConstants;
-import top.jpower.core.util.constants.JpowerConstants;
-import top.jpower.core.util.constants.StringPool;
-import top.jpower.core.util.utils.Fc;
-import top.jpower.core.exception.enums.constants.LogConstant;
 import top.jpower.core.auth.utils.constant.ClientNameConstant;
+import top.jpower.core.exception.enums.constants.LogConstant;
 
 /**
  * 服务名常量
@@ -14,7 +10,7 @@ import top.jpower.core.auth.utils.constant.ClientNameConstant;
  * @author mr.g
  **/
 @Data
-public class AppConstant implements NacosConstants, LogConstant, ClientNameConstant {
+public class AppConstant implements LogConstant, ClientNameConstant {
 
     /** 项目名称 **/
     public static final String JPOWER = "jpower";
@@ -47,31 +43,6 @@ public class AppConstant implements NacosConstants, LogConstant, ClientNameConst
      * 单体模块
      **/
     public static final String JPOWER_BOOT = JPOWER + "-boot";
-
-    /**
-     * 动态获取公共nacos地址
-     *
-     * @param profile 环境变量
-     * @return addr
-     */
-    @Override
-    public String nacosProfileDataId(String profile) {
-        if (Fc.isBlank(profile)){
-            profile = JpowerConstants.DEV_CODE;
-        }
-
-        return JPOWER.concat(StringPool.DASH).concat(profile).concat(StringPool.DOT).concat(FILE_EXTENSION);
-    }
-
-    /**
-     * 动态获取公共nacos地址
-     *
-     * @return addr
-     */
-    @Override
-    public String nacosDataId() {
-        return JPOWER.concat(StringPool.DOT).concat(FILE_EXTENSION);
-    }
 
     @Override
     public String getJpowerLog() {

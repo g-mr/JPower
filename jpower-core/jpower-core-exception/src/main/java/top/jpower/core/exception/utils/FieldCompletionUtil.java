@@ -2,7 +2,7 @@ package top.jpower.core.exception.utils;
 
 import com.alibaba.fastjson2.JSONObject;
 import top.jpower.core.deploy.property.JpowerProperties;
-import top.jpower.core.exception.model.LogDto;
+import top.jpower.core.exception.model.LogDTO;
 import top.jpower.core.util.user.model.UserDto;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.WebUtil;
@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public class FieldCompletionUtil {
 
-    public static void requestInfo(LogDto operLog, HttpServletRequest request){
+    public static void requestInfo(LogDTO operLog, HttpServletRequest request){
         if (Fc.isNull(request)){
             return;
         }
@@ -31,7 +31,7 @@ public class FieldCompletionUtil {
         operLog.setOperIp(WebUtil.getIp());
     }
 
-    public static void userInfo(LogDto operLog, UserDto currentUser){
+    public static void userInfo(LogDTO operLog, UserDto currentUser){
         if (Fc.isNull(currentUser)){
             return;
         }
@@ -41,7 +41,7 @@ public class FieldCompletionUtil {
         operLog.setOperUserType(currentUser.getIsSysUser());
     }
 
-    public static void serverInfo(LogDto operateLog, JpowerProperties properties) {
+    public static void serverInfo(LogDTO operateLog, JpowerProperties properties) {
         operateLog.setEnv(properties.getEnv());
         operateLog.setServerName(properties.getApplicationName());
         operateLog.setServerHost(properties.getHostName());

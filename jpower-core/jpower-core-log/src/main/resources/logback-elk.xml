@@ -14,7 +14,7 @@
             <customFields>
                 {
                     "pid":"${PID:-}",
-                    "serviceName":"${appName:-JPowerApp}"
+                    "serviceName":"${appName:-jpower-app}"
                 }
             </customFields>
         </encoder>

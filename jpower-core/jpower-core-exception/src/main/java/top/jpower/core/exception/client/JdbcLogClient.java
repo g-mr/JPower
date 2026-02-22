@@ -4,10 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
-import top.jpower.core.exception.model.ErrorLogDto;
-import top.jpower.core.exception.model.OperateLogDto;
+import top.jpower.core.exception.model.ErrorLogDTO;
+import top.jpower.core.exception.model.OperateLogDTO;
 import top.jpower.core.util.utils.Fc;
-import top.jpower.core.util.utils.SpringUtil;
 
 /**
  * 日志默认处理器，保存到数据库
@@ -37,7 +36,7 @@ public class JdbcLogClient implements LogClient {
      */
     @Override
     @SneakyThrows(Exception.class)
-    public void saveOperateLog(OperateLogDto operateLog) {
+    public void saveOperateLog(OperateLogDTO operateLog) {
         int count = jdbcTemplate.update(OPERATE_LOG_SQL,
                 Fc.randomSnowFlakeId(),operateLog.getServerName(),operateLog.getServerIp(),operateLog.getServerHost(),operateLog.getEnv(),operateLog.getUrl(),operateLog.getMethod(),operateLog.getMethodClass(),operateLog.getMethodName(),operateLog.getParam(),operateLog.getOperIp(),operateLog.getOperName(),operateLog.getOperUserType(),operateLog.getClientCode(),operateLog.getTitle(),operateLog.getBusinessType(),operateLog.getReturnContent(),operateLog.getStatus(),operateLog.getErrorMsg(),operateLog.getRecordId(),operateLog.getContent());
         if (count <= 0){
@@ -53,7 +52,7 @@ public class JdbcLogClient implements LogClient {
      */
     @Override
     @SneakyThrows(Exception.class)
-    public void saveErrorLog(ErrorLogDto errorLog) {
+    public void saveErrorLog(ErrorLogDTO errorLog) {
         int count = jdbcTemplate.update(ERROR_LOG_SQL,
                 Fc.randomSnowFlakeId(),errorLog.getServerName(),errorLog.getServerIp(),errorLog.getServerHost(),errorLog.getEnv(),errorLog.getUrl(),errorLog.getMethod(),errorLog.getMethodClass(),errorLog.getMethodName(),errorLog.getParam(),errorLog.getOperIp(),errorLog.getOperName(),errorLog.getOperUserType(),errorLog.getClientCode(),errorLog.getError(),errorLog.getLineNumber(),errorLog.getExceptionName(),errorLog.getMessage());
         if (count <= 0){

@@ -31,8 +31,7 @@ import top.jpower.core.redis.serializer.JpowerStringSerializer;
 @EnableCaching
 @AutoConfiguration
 @EnableConfigurationProperties(RedisProperties.class)
-@AutoConfigureBefore({RedisAutoConfiguration.class, RedissonAutoConfigurationV2.class}) // 这个是高版本的Redisson
-// @AutoConfigureBefore({RedisAutoConfiguration.class, RedissonAutoConfiguration.class}) // TODO 回头这一行测试没问题删除掉
+@AutoConfigureBefore({RedisAutoConfiguration.class, RedissonAutoConfigurationV2.class})
 public class RedisConfig {
 
     @Bean

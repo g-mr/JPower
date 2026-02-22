@@ -1,11 +1,9 @@
 package top.jpower.core.seata.constants;
 
 /**
- * @ClassName NacosConstants
- * @Description TODO
- * @Author 郭丁志
- * @Date 2020-08-19 16:03
- * @Version 1.0
+ * Seata常量
+ *
+ * @author mr.g
  */
 public interface SeataConstants {
 

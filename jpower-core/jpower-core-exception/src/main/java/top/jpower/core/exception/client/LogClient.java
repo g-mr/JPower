@@ -1,7 +1,7 @@
 package top.jpower.core.exception.client;
 
-import top.jpower.core.exception.model.ErrorLogDto;
-import top.jpower.core.exception.model.OperateLogDto;
+import top.jpower.core.exception.model.ErrorLogDTO;
+import top.jpower.core.exception.model.OperateLogDTO;
 
 /**
  * Feign接口类
@@ -15,7 +15,7 @@ public interface LogClient {
 	 * @param operateLog
 	 * @return
 	 */
-	void saveOperateLog(OperateLogDto operateLog);
+	void saveOperateLog(OperateLogDTO operateLog);
 
 	/**
 	 * 保存错误日志
@@ -23,6 +23,6 @@ public interface LogClient {
 	 * @param errorLog
 	 * @return top.jpower.jpower.module.base.vo.ResponseData<java.lang.Boolean>
 	 */
-	void saveErrorLog(ErrorLogDto errorLog);
+	void saveErrorLog(ErrorLogDTO errorLog);
 
 }

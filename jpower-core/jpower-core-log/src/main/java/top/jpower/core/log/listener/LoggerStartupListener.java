@@ -61,8 +61,8 @@ public class LoggerStartupListener extends ContextAwareBase
 
         Properties props = System.getProperties();
 
-        context.putProperty("appName",props.getProperty("jpower.applicationName"));
         context.putProperty("version", JpowerConstants.JPOWER_VESION);
+        context.putProperty("appName", props.getProperty("jpower.applicationName"));
 
         started = true;
     }

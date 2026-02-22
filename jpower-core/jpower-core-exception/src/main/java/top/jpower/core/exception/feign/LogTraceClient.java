@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import top.jpower.core.exception.enums.constants.LogConstant;
-import top.jpower.core.exception.model.ErrorLogDto;
-import top.jpower.core.exception.model.OperateLogDto;
+import top.jpower.core.exception.model.ErrorLogDTO;
+import top.jpower.core.exception.model.OperateLogDTO;
 import top.jpower.core.feign.config.DynamicFeignConfig;
 import top.jpower.core.util.rsp.R;
 
@@ -23,13 +23,13 @@ public interface LogTraceClient {
     @PostMapping("/saveOperateLog")
     R<Long> saveOperateLog(
             @RequestParam(SERVICE_PARAM_NAME) String serviceName,
-            @RequestBody OperateLogDto operateLog
+            @RequestBody OperateLogDTO operateLog
     );
 
     @PostMapping("/saveErrorLog")
     R<Long> saveErrorLog(
             @RequestParam(SERVICE_PARAM_NAME) String serviceName,
-            @RequestBody ErrorLogDto errorLogDto
+            @RequestBody ErrorLogDTO errorLogDto
     );
 
 }

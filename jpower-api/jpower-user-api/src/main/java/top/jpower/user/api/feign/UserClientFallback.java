@@ -12,11 +12,9 @@ import top.jpower.user.api.dto.ValidatePasswordDTO;
 import java.util.List;
 
 /**
- * @ClassName UserClientFallback
- * @Description TODO USER 熔断
- * @Author 郭丁志
- * @Date 2020/9/3 0003 1:11
- * @Version 1.0
+ * USER 熔断
+ *
+ * @author mr.g
  */
 @Component
 @Slf4j

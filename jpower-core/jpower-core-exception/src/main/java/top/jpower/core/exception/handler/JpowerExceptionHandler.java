@@ -14,7 +14,7 @@ import org.springframework.web.context.request.async.AsyncRequestTimeoutExceptio
 import org.springframework.web.servlet.NoHandlerFoundException;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.listener.ErrorLogEvent;
-import top.jpower.core.exception.model.ErrorLogDto;
+import top.jpower.core.exception.model.ErrorLogDTO;
 import top.jpower.core.exception.throwable.BusinessException;
 import top.jpower.core.exception.throwable.JpowerException;
 import top.jpower.core.exception.utils.FieldCompletionUtil;
@@ -121,7 +121,7 @@ public class JpowerExceptionHandler {
      * @return void
      */
     private void createLog(HttpServletRequest request, Exception e) {
-        ErrorLogDto errorLog = new ErrorLogDto();
+        ErrorLogDTO errorLog = new ErrorLogDTO();
 
         FieldCompletionUtil.requestInfo(errorLog, request);
         if (Fc.notNull(userConfig)){

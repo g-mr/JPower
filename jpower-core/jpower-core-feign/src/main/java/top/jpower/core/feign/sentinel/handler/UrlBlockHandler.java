@@ -12,18 +12,15 @@ import top.jpower.core.feign.sentinel.utils.ErrorMsg;
 import top.jpower.core.util.constants.StringPool;
 
 /**
- * @ClassName JpowerUrlBlockHandler
- * @Description TODO 限流降级后出返回结果
- * @Author 郭丁志
- * @Date 2020/9/12 0012 21:41
- * @Version 1.0
+ * 限流降级后出返回结果
+ *
+ * @author mr.g
  */
 @Slf4j
 public class UrlBlockHandler implements BlockExceptionHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, String resourceName, BlockException ex) throws Exception {
-        // TODO 回头需要看下resourceName和ex.getRule().getResource()是否一致
-        log.error("sentinel 降级 资源名称{}", ex.getRule().getResource(), ex);
+        log.error("sentinel 降级 资源名称{}", resourceName, ex);
 
         response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
         response.setCharacterEncoding(StringPool.UTF_8);

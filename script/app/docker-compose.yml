@@ -53,7 +53,7 @@ services:
       - jpower_net
 
   nacos:
-    image: "nacos/nacos-server:v3.0.0"
+    image: "nacos/nacos-server:v3.0.3"
     hostname: "nacos-standalone"
     privileged: true
     depends_on:
