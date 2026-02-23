@@ -34,14 +34,14 @@ public class UserClientController implements UserClient {
     @GetMapping("/queryUserByLoginId")
     public R<CoreUserDTO> queryUserByLoginId(@RequestParam String loginId, @RequestParam String tenantCode) {
         CoreUser user = coreUserService.selectUserLoginId(loginId,tenantCode);
-        return R.ok(BeanUtil.copyProperties(user, CoreUserDTO.class));
+        return R.data(BeanUtil.copyProperties(user, CoreUserDTO.class));
     }
 
     @Override
     @Operation(summary = "通过用户ID查询所有角色ID")
     @GetMapping("/getRoleIdsByUserId")
     public R<List<Long>> getRoleIds(@RequestParam Long userId){
-        return R.ok("查询成功", coreUserRoleService.queryRoleIds(userId));
+        return R.data(coreUserRoleService.queryRoleIds(userId));
     }
 
     @Override
@@ -56,7 +56,7 @@ public class UserClientController implements UserClient {
     @GetMapping("/queryUserByCode")
     public R<CoreUserDTO> queryUserByCode(@RequestParam String otherCode, @RequestParam String tenantCode){
         CoreUser coreUser = coreUserService.selectUserByOtherCode(otherCode,tenantCode);
-        return R.ok(BeanUtil.copyProperties(coreUser, CoreUserDTO.class));
+        return R.data(BeanUtil.copyProperties(coreUser, CoreUserDTO.class));
     }
 
     @Override
@@ -64,7 +64,7 @@ public class UserClientController implements UserClient {
     @GetMapping(value = "/get")
     public R<CoreUserDTO> get(@RequestParam Long id){
         CoreUser user = coreUserService.selectUserById(id);
-        return R.ok(BeanUtil.copyProperties(user, CoreUserDTO.class));
+        return R.data(BeanUtil.copyProperties(user, CoreUserDTO.class));
     }
 
     @Override
@@ -72,7 +72,7 @@ public class UserClientController implements UserClient {
     @GetMapping("/queryUserByPhone")
     public R<CoreUserDTO> queryUserByPhone(@RequestParam String phone, @RequestParam String tenantCode){
         CoreUser user = coreUserService.selectByPhone(phone,tenantCode);
-        return R.ok(BeanUtil.copyProperties(user, CoreUserDTO.class));
+        return R.data(BeanUtil.copyProperties(user, CoreUserDTO.class));
     }
 
     @Override
@@ -86,6 +86,6 @@ public class UserClientController implements UserClient {
     @Operation(summary = "校验密码")
     @PostMapping("/validatePassword")
     public R<Boolean> validatePassword(@RequestBody ValidatePasswordDTO validatePasswordDto) {
-        return R.ok(coreUserService.validatePassword(validatePasswordDto.getAccount(), validatePasswordDto.getPassword(), validatePasswordDto.getTenantCode()));
+        return R.data(coreUserService.validatePassword(validatePasswordDto.getAccount(), validatePasswordDto.getPassword(), validatePasswordDto.getTenantCode()));
     }
 }

@@ -17,6 +17,8 @@ public interface ServiceCodeConstants {
 
     String EMAIL_NOT_LEGAL = "邮箱不合法";
 
+	String MOBILE_NOT_LEGAL = "手机号不合法";
+
     String TENANT_NOT_EXIST = "租户不存在";
 
     String ACCOUNT_LIMIT = "账号额度已不足";
@@ -29,5 +31,35 @@ public interface ServiceCodeConstants {
 
     String USER_NOT_DELETE = "超级用户和匿名用户不可删除";
     String USER_ROLE_NOT_DELETE = "不可去除超级用户或匿名用户的角色";
+
+    String CODE_EXIST = "编码已存在";
+
+	String FILE_ID_NOT_LEGAL = "文件标识不合法";
+
+	String FILE_NOT_EXIST = "文件不存在";
+
+	String FILE_PATH_NOT_EXIST = "文件路径为空";
+
+	String FILE_SAVE_PATH_NOT_CONFIG = "未配置文件保存路径";
+
+	String NOT_FOUND_FILE_INFO = "文件信息";
+
+	String NOT_FOUND_OSS = "对象存储";
+
+	String INVALID_STORAGE_TYPE = "storageType无效，请传递正确的storageType参数";
+
+	String NOT_FOUND_SMS_TEMPLATE = "短信发送模版";
+
+	String SMS_CODE_SENT = "该验证码已经发送，请一分钟后重试";
+
+	String SMS_CODE_ERROR = "验证码错误";
+
+	String NOT_FOUND_USER = "用户";
+
+    String DOWNLOAD_FILE_ERROR = "下载文件出错，请联系网站管理员";
+
+	String GENERATE_FILE_ERROR = "生成失败，无法下载";
+
+	String ROLE_ID_NOT_NULL = "角色ID不能为空";
 
 }

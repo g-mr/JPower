@@ -40,7 +40,7 @@
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>s3</artifactId>
-            <version>2.29.32</version>
+            <version>${amazon.s3.version}</version>
         </dependency>
 
         <dependency>

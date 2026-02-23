@@ -17,8 +17,6 @@ import top.jpower.common.validated.group.Validation;
 import top.jpower.core.auth.annotation.Function;
 import top.jpower.core.auth.annotation.Menu;
 import top.jpower.core.boot.controller.BaseController;
-import top.jpower.core.exception.enums.JpowerError;
-import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.core.util.rsp.Pg;
 import top.jpower.core.util.rsp.R;
 import top.jpower.core.util.utils.Fc;
@@ -111,7 +109,6 @@ public class PostController extends BaseController {
     @Operation(summary = "详情")
     @GetMapping(value = "/get/{id}", produces = "application/json")
     public R<CorePost> get(@Parameter(description = "主键") @NotNull(message = "主键不可为空") @PathVariable("id") Long id) {
-        JpowerAssert.notNull(id, JpowerError.Arg,"主键不可为空");
         return R.data(postService.getById(id));
     }
 

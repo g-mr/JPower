@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import top.jpower.common.constants.AppConstant;
 import top.jpower.core.util.rsp.R;
+import top.jpower.system.api.dto.SelectDTO;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * system服务字典Feign客户端
@@ -23,5 +23,5 @@ public interface DictClient {
      * @author mr.g
      */
     @GetMapping("/queryDictByType")
-    R<List<Map<String, Object>>> queryDictByType(@RequestParam("dictTypeCode") String dictTypeCode);
+    R<List<SelectDTO>> queryDictByType(@RequestParam("dictTypeCode") String dictTypeCode);
 }

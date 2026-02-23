@@ -54,8 +54,7 @@ import java.util.Set;
 
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY;
 import static top.jpower.common.constants.CacheNames.TOKEN_USER_KEY;
-import static top.jpower.common.constants.ServiceCodeConstants.EMAIL_NOT_LEGAL;
-import static top.jpower.common.constants.ServiceCodeConstants.NOT_LOGIN;
+import static top.jpower.common.constants.ServiceCodeConstants.*;
 import static top.jpower.core.exception.annotation.OperateLog.BusinessType.DELETE;
 import static top.jpower.core.exception.annotation.OperateLog.BusinessType.UPDATE;
 import static top.jpower.core.util.constants.JpowerConstants.VALIDATE_SMS_CODE;
@@ -77,7 +76,7 @@ public class UserController extends BaseController {
     public R<CoreUser> getLoginInfo() {
         Long id = ShieldUtil.getUserId();
         JpowerAssert.notNull(id, JpowerError.Auth, NOT_LOGIN);
-        return R.ok(coreUserService.getById(id));
+        return R.data(coreUserService.getById(id));
     }
 
     @Function(value = "用户在线信息", menus = {
@@ -95,7 +94,7 @@ public class UserController extends BaseController {
             list.add(map);
         });
 
-        return R.ok(list);
+        return R.data(list);
     }
 
     @Function(value = "踢下线", menus = {
@@ -103,7 +102,7 @@ public class UserController extends BaseController {
     })
     @Operation(summary = "踢下线")
     @PostMapping(value = "/offline", produces = "application/json")
-    public R offline(@Parameter(description = "用户ID") @NotNull(message = "用户ID不可为空") @RequestSingleBody Long userId,
+    public R<Boolean> offline(@Parameter(description = "用户ID") @NotNull(message = "用户ID不可为空") @RequestSingleBody Long userId,
                      @Parameter(description = "TOKEN") @NotBlank(message = "TOKEN不可为空") @RequestSingleBody String token) {
 
         redisService.delete(CacheNames.TOKEN_URL_KEY + token);
@@ -123,7 +122,7 @@ public class UserController extends BaseController {
     })
     @GetMapping(value = "/list", produces = "application/json")
     public R<Pg<UserVO>> list(@RequestParam(required = false) CoreUser coreUser) {
-        return R.ok(coreUserService.listPage(coreUser));
+        return R.data(coreUserService.listPage(coreUser));
     }
 
     @Function(value = "导出用户", menus = {
@@ -154,9 +153,8 @@ public class UserController extends BaseController {
     })
     @Operation(summary = "查询用户详情")
     @GetMapping(value = "/getById", produces = "application/json")
-    public R<UserVO> getById(@Parameter(description = "主键", required = true) @RequestParam @NotBlank(message = "主键不可为空") Long id) {
-        JpowerAssert.notNull(id, JpowerError.Arg, "id不可为空");
-        return R.ok(coreUserService.selectUserById(id));
+    public R<UserVO> getById(@Parameter(description = "主键", required = true) @RequestParam @NotNull(message = "主键不可为空") Long id) {
+        return R.data(coreUserService.selectUserById(id));
     }
 
     @Function(value = "新增用户", menus = {
@@ -250,9 +248,7 @@ public class UserController extends BaseController {
         BeanExcelUtil<CoreUser> beanExcelUtil = new BeanExcelUtil<>(CoreUser.class, ImportExportConstants.EXPORT_TEMPLATE_PATH);
         String fileName = beanExcelUtil.template("用户模板");
 
-        if (Fc.isBlank(fileName)) {
-            throw new BusinessException(fileName + "生成失败");
-        }
+		JpowerAssert.notEmpty(fileName, JpowerError.Business, fileName + GENERATE_FILE_ERROR);
 
         File file = new File(beanExcelUtil.getAbsoluteFile(fileName));
         if (file.exists()) {
@@ -260,12 +256,12 @@ public class UserController extends BaseController {
                 FileUtil.download(file, getResponse(), "用户导入模板.xlsx");
             } catch (IOException e) {
                 log.error("下载文件出错。file={},error={}", file.getAbsolutePath(), e.getMessage());
-                throw new BusinessException("下载文件出错，请联系网站管理员");
+                throw new BusinessException(DOWNLOAD_FILE_ERROR);
             }
 
             FileUtil.deleteFile(file);
         } else {
-            throw new BusinessException(fileName + "生成失败，无法下载");
+            throw new BusinessException(fileName + GENERATE_FILE_ERROR);
         }
     }
 
@@ -280,7 +276,7 @@ public class UserController extends BaseController {
     @PutMapping(value = "/updatePhone")
     public R<Boolean> updatePhone(@Parameter(description = "手机号", required = true) @Mobile @RequestSingleBody String phone,
                                   @Parameter(description = "验证码", required = true) @NotBlank(message = "验证码不可为空") @RequestSingleBody String phoneCode) {
-        JpowerAssert.isTrue(smsClient.validate(new ValidateDTO().setCode(VALIDATE_SMS_CODE).setPhone(phone).setPhoneCode(phoneCode)), JpowerError.Business, "验证码错误");
+        JpowerAssert.isTrue(smsClient.validate(new ValidateDTO().setCode(VALIDATE_SMS_CODE).setPhone(phone).setPhoneCode(phoneCode)).isStatus(), JpowerError.Business, SMS_CODE_ERROR);
         return R.status(coreUserService.updatePhone(phone, ShieldUtil.getUserIdThrow()));
     }
 
@@ -290,7 +286,7 @@ public class UserController extends BaseController {
                                   @Parameter(description = "邮箱消息ID", required = true) @NotBlank(message = "验证ID不可为空") @RequestSingleBody String msgId,
                                   @Parameter(description = "验证码", required = true) @NotBlank(message = "验证码不可为空") @RequestSingleBody String emailCode) {
         String code = redisService.valueOps(String.class).get("email:" + email + ":" + msgId);
-        JpowerAssert.notTrue(Fc.notEqualsValue(code, emailCode), JpowerError.Business, "验证码错误");
+        JpowerAssert.notTrue(Fc.notEqualsValue(code, emailCode), JpowerError.Business, SMS_CODE_ERROR);
 
         return R.status(coreUserService.updateEmail(email, ShieldUtil.getUserIdThrow()));
     }

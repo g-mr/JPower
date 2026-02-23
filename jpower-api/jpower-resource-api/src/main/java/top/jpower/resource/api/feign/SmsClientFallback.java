@@ -3,12 +3,16 @@ package top.jpower.resource.api.feign;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
-import top.jpower.core.feign.exception.JpowerFeignException;
-import top.jpower.resource.api.dto.*;
+import top.jpower.core.exception.enums.JpowerError;
+import top.jpower.core.exception.throwable.JpowerAssert;
+import top.jpower.core.util.rsp.R;
+import top.jpower.resource.api.dto.SmsValidateDTO;
+import top.jpower.resource.api.dto.ValidateDTO;
+
+import static top.jpower.core.util.constants.ReturnConstants.RECODE_SYSTEM;
 
 /**
  * @author mr.g
- * @date 2024/3/6 5:56 PM
  */
 @Slf4j
 @Component
@@ -18,43 +22,15 @@ public class SmsClientFallback implements FallbackFactory<SmsClient> {
         return new SmsClient() {
 
             @Override
-            public SmsResponse sendSms(SmsRequestDTO requestDTO) {
-                throw new JpowerFeignException("短信发送失败==>"+cause.getMessage());
+            public R<Boolean> sendValidate(SmsValidateDTO smsValidateDTO) {
+				JpowerAssert.createException(JpowerError.Rpc, RECODE_SYSTEM, cause.getMessage());
+                return R.fail("短信发送失败");
             }
 
             @Override
-            public SmsResponse sendSingleSms(SmsRequestSingleDTO requestSingleDTO) {
-                throw new JpowerFeignException("短信发送失败==>"+cause.getMessage());
-            }
-
-            @Override
-            public boolean send(SmsRequestDTO requestDTO) {
-                throw new JpowerFeignException("短信发送失败==>"+cause.getMessage());
-            }
-
-            @Override
-            public boolean sendSingle(SmsRequestSingleDTO requestSingleDTO) {
-                throw new JpowerFeignException("短信发送失败==>"+cause.getMessage());
-            }
-
-            @Override
-            public void sendThrow(SmsRequestDTO requestDTO) {
-                throw new JpowerFeignException("短信发送失败==>"+cause.getMessage());
-            }
-
-            @Override
-            public void sendSingleThrow(SmsRequestSingleDTO requestSingleDTO) {
-                throw new JpowerFeignException("短信发送失败==>"+cause.getMessage());
-            }
-
-            @Override
-            public boolean sendValidate(SmsValidateDTO smsValidateDTO) {
-                throw new JpowerFeignException("短信发送失败==>"+cause.getMessage());
-            }
-
-            @Override
-            public boolean validate(ValidateDTO validateDTO) {
-                throw new JpowerFeignException("短信验证失败==>"+cause.getMessage());
+            public R<Boolean> validate(ValidateDTO validateDTO) {
+				JpowerAssert.createException(JpowerError.Rpc, RECODE_SYSTEM, cause.getMessage());
+				return R.fail("短信验证失败");
             }
         };
     }

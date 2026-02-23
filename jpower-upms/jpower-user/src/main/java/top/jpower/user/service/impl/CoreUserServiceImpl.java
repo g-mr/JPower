@@ -6,12 +6,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 import top.jpower.common.constants.CacheNames;
 import top.jpower.common.constants.DefaultValConstants;
 import top.jpower.common.constants.ParamsConstants;
 import top.jpower.common.enums.ActivationStatusEnum;
 import top.jpower.common.enums.IdTypeEnum;
 import top.jpower.common.enums.UserTypeEnum;
+import top.jpower.common.validated.group.Validation;
 import top.jpower.core.auth.utils.ShieldUtil;
 import top.jpower.core.auth.utils.constant.RoleConstant;
 import top.jpower.core.dbs.service.impl.BaseServiceImpl;
@@ -119,9 +121,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
     }
 
     @Override
-    public Boolean updateUser(CoreUser coreUser) {
-        JpowerAssert.notNull(coreUser.getId(), JpowerError.Arg, "用户ID不可为空");
-
+    public Boolean updateUser(@Validated(Validation.Update.class) CoreUser coreUser) {
         if (Fc.notNull(coreUser.getIdType()) && IdTypeEnum.ID_CARD.getValue().equals(coreUser.getIdType())) {
             if (Fc.isNotBlank(coreUser.getIdNo()) && !Validator.isCitizenId(coreUser.getIdNo())) {
                 JpowerAssert.createException(JpowerError.Business, IDCARD_NOT_LEGAL);
@@ -143,7 +143,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
         }
 
         CoreUser user = coreUserDao.getById(coreUser.getId());
-        JpowerAssert.notNull(user, JpowerError.NotFind,"该用户");
+        JpowerAssert.notNull(user, JpowerError.NotFind,NOT_FOUND_USER);
 
         // 不能修改密码和租户
         coreUser.setPassword(null);

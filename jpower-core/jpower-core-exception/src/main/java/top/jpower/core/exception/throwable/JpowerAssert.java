@@ -4,6 +4,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import top.jpower.core.exception.enums.JpowerError;
+import top.jpower.core.feign.exception.JpowerFeignException;
 
 import java.util.Collection;
 import java.util.Map;
@@ -12,6 +13,9 @@ public class JpowerAssert {
 
     public static void createException(JpowerError err, Object... args) {
         String message = String.format(err.getMessage(), args);
+		if (JpowerError.Rpc.equals(err)) {
+			throw new JpowerFeignException(err.getCode(), message);
+		}
         throw new JpowerException(err.getCode(), message);
     }
 

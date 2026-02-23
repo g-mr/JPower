@@ -41,7 +41,7 @@ public class PasswordTokenGranter implements TokenGranter {
 			if (!Fc.isNull(authUserInfo)){
 				return authUserInfo.getPasswordUserInfo(tokenParameter);
 			}else {
-				if (userClient.validatePassword(new ValidatePasswordDto().setPassword(password).setAccount(account).setTenantCode(tenantCode))){
+				if (userClient.validatePassword(new ValidatePasswordDto().setPassword(password).setAccount(account).setTenantCode(tenantCode)).getData()){
 					TbCoreUser result = UserCache.getUserByLoginId(account, tenantCode);
 					return UserUtil.toUserInfo(result);
 				}

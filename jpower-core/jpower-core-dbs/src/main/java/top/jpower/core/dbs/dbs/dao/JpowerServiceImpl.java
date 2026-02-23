@@ -9,9 +9,11 @@ import com.mybatisflex.core.util.SqlUtil;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import top.jpower.core.dbs.dbs.dao.mapper.base.JpowerBaseMapper;
 import top.jpower.core.dbs.dbs.entity.base.BaseEntity;
+import top.jpower.core.dbs.page.PaginationContext;
 import top.jpower.core.dbs.support.ForestNodeMerger;
 import top.jpower.core.dbs.support.TreeWrapper;
 import top.jpower.core.dbs.support.Wrappers;
+import top.jpower.core.util.rsp.Pg;
 import top.jpower.core.util.utils.Fc;
 
 import java.io.Serializable;
@@ -156,5 +158,27 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
         List<Map> list = listAs(treeWrapper, Map.class);
         return ForestNodeMerger.mergeTree(list);
     }
+
+	/**
+	 * 分页查询
+	 *
+	 * @param query 查询条件
+	 * @return 分页结果
+	 */
+	public Pg<T> pg(QueryWrapper query){
+		return getMapper().page(PaginationContext.page(), query);
+	}
+
+	/**
+	 * 分页查询
+	 *
+	 * @param query 查询条件
+	 * @param asType 转换类型
+	 * @return 分页结果
+	 */
+	public <R> Pg<R> pgAs(QueryWrapper query, Class<R> asType){
+		return getMapper().pageAs(PaginationContext.page(), query, asType);
+	}
+
 
 }

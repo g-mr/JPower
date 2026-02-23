@@ -4,6 +4,7 @@ import cn.hutool.core.lang.tree.Tree;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.service.IService;
 import top.jpower.core.dbs.support.TreeWrapper;
+import top.jpower.core.util.rsp.Pg;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -70,5 +71,21 @@ public interface BaseService<T> extends IService<T> {
      * @param entity 实体
      */
     boolean updateAllById(T entity);
+
+	/**
+	 * <p>根据查询条件分页查询数据。</p>
+	 *
+	 * @param query 查询条件
+	 * @return 分页对象
+	 */
+	Pg<T> pg(QueryWrapper query);
+
+	/**
+	 * <p>根据查询条件分页查询数据。</p>
+	 *
+	 * @param query 查询条件
+	 * @return 分页对象
+	 */
+	<R> Pg<R> pgAs(QueryWrapper query, Class<R> asType);
 
 }

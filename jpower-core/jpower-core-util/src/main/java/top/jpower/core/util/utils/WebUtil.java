@@ -25,6 +25,7 @@ import top.jpower.core.util.constants.StringPool;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.Objects;
 
@@ -323,6 +324,21 @@ public class WebUtil extends JakartaServletUtil {
         }
         return str.replaceAll("&amp;", "&");
     }
+
+	/**
+	 * 获取请求头
+	 *
+	 * @author mr.g
+	 * @param name 名称
+	 * @return 值
+	 */
+    public static String getHeader(String name) {
+		HttpServletRequest request = getRequest();
+		if (request == null){
+			return null;
+		}
+		return getHeader(request, name, Charset.defaultCharset());
+	}
 
 }
 

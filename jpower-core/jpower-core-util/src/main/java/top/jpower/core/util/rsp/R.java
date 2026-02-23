@@ -95,17 +95,6 @@ public class R<T> implements Serializable {
     }
 
     /**
-     * 成功的数据结果封装
-     *
-     * @author mr.g
-     * @param data 返回数据
-     * @return 返回实体
-     **/
-    public static <T> R<T> ok(T data){
-        return print(ReturnConstants.RECODE_SUCCESS, "获取成功", data, true);
-    }
-
-    /**
      * 成功的结果封装
      *
      * @author mr.g

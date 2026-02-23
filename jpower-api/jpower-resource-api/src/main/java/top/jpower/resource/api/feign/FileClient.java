@@ -12,6 +12,8 @@ import top.jpower.resource.api.dto.FileDTO;
 
 import java.io.File;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 /**
  * 文件客户端
  * 
@@ -27,23 +29,23 @@ public interface FileClient {
      * @return R
      **/
     @PostMapping(value = "/uploadFile",consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces =  MediaType.APPLICATION_PROBLEM_JSON_VALUE)
-    R<Boolean> uploadFile(@RequestPart("file") File file,@RequestParam("storageType") String storageType);
+    R<Long> uploadFile(@RequestPart("file") File file,@RequestParam("storageType") String storageType);
 
     /**
      * 获取文件外链
      * @author mr.g
-     * @param base
+     * @param id
      * @return
      **/
-    @GetMapping(value = "/fileUrl",produces="application/json")
-    R<String> fileUrl(@RequestParam("base") String base);
+    @GetMapping(value = "/fileUrl",produces=APPLICATION_JSON_VALUE)
+    R<String> fileUrl(@RequestParam("base") Long id);
 
     /**
      * 获取文件内容
      * @author mr.g
-     * @param base
+     * @param id
      * @return R
      **/
-    @GetMapping(value = "/getFileDetail",produces="application/json")
-    R<FileDTO> getFileDetail(@RequestParam("base") String base);
+    @GetMapping(value = "/getFileDetail",produces=APPLICATION_JSON_VALUE)
+    R<FileDTO> getFileDetail(@RequestParam("base") Long id);
 }

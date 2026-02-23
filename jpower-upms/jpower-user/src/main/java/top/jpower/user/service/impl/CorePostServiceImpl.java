@@ -23,6 +23,8 @@ import top.jpower.user.vo.PostVO;
 import java.util.List;
 import java.util.Map;
 
+import static top.jpower.common.constants.ServiceCodeConstants.CODE_EXIST;
+
 /**
  * @author mr.g
  */
@@ -55,7 +57,7 @@ public class CorePostServiceImpl extends BaseServiceImpl<CorePostMapper, CorePos
 
     @Override
     public Long createPost(CorePost corePost) {
-        JpowerAssert.geZero(postDao.count(Wrappers.getQueryWrapper().eq(CorePost::getCode, corePost.getCode())), JpowerError.Arg, "编码已存在");
+        JpowerAssert.geZero(postDao.count(Wrappers.getQueryWrapper().eq(CorePost::getCode, corePost.getCode())), JpowerError.Arg, CODE_EXIST);
         postDao.save(corePost);
         return corePost.getId();
     }
@@ -63,7 +65,7 @@ public class CorePostServiceImpl extends BaseServiceImpl<CorePostMapper, CorePos
     @Override
     public Long editById(CorePost corePost) {
         CorePost post = postDao.getOneByField(CorePost::getCode, corePost.getCode());
-        JpowerAssert.notTrue(Fc.notNull(post) && Fc.notEqualsValue(post.getId(),corePost.getId()),JpowerError.Arg,"该编码已存在");
+        JpowerAssert.notTrue(Fc.notNull(post) && Fc.notEqualsValue(post.getId(),corePost.getId()),JpowerError.Arg,CODE_EXIST);
 
         if (postDao.updateById(UpdateEntity.ofNotNull(corePost)
                 .setDescribe(corePost.getDescribe())

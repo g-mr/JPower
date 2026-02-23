@@ -2,9 +2,9 @@ package top.jpower.system.api.feign;
 
 import org.springframework.stereotype.Component;
 import top.jpower.core.util.rsp.R;
+import top.jpower.system.api.dto.SelectDTO;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 字典Fallback
@@ -15,7 +15,7 @@ import java.util.Map;
 public class DictClientFallback implements DictClient {
 
     @Override
-    public R<List<Map<String,Object>>> queryDictByType(String dictTypeCode) {
+    public R<List<SelectDTO>> queryDictByType(String dictTypeCode) {
         return R.fail("查询失败");
     }
 }

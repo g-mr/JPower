@@ -1,14 +1,14 @@
 package top.jpower.system.api.wrapper;
 
-import top.jpower.core.dbs.dictbind.handler.IDictBindHandler;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 import top.jpower.core.dbs.dictbind.annotation.Dict;
+import top.jpower.core.dbs.dictbind.handler.IDictBindHandler;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.GuavaCache;
-import top.jpower.core.util.utils.MapUtil;
 import top.jpower.system.api.cache.dict.DictCache;
+import top.jpower.system.api.dto.SelectDTO;
 
 import java.util.List;
 import java.util.Map;
@@ -40,8 +40,8 @@ public class DictWrapper implements IDictBindHandler {
     public void setMetaObject(Dict dict, String fieldName, Object fieldValue, MetaObject metaObject){
         if (Fc.isNotEmpty(fieldValue)){
             if (Fc.isNotBlank(dict.name())){
-                GuavaCache<List<Map<String, Object>>> guavaCache = GuavaCache.getInstance(EXPIRE_TIME, TimeUnit.SECONDS);
-                List<Map<String, Object>> list;
+                GuavaCache<List<SelectDTO>> guavaCache = GuavaCache.getInstance(EXPIRE_TIME, TimeUnit.SECONDS);
+                List<SelectDTO> list;
                 if (guavaCache.isExist(dict.name())){
                     list = guavaCache.get(dict.name());
                 }else {
@@ -52,8 +52,8 @@ public class DictWrapper implements IDictBindHandler {
                 String value = null;
                 if (Fc.isNotEmpty(list)){
                     value = list.stream()
-                            .filter(map -> Fc.equalsValue(MapUtil.getStr(map,"code"),fieldValue))
-                            .map(map-> MapUtil.getStr(map,"name"))
+                            .filter(vo -> Fc.equalsValue(vo.getCode(), fieldValue))
+                            .map(SelectDTO::getName)
                             .collect(Collectors.joining(StringPool.SPILT));
                 }
 

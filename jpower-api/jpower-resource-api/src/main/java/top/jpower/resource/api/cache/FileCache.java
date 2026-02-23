@@ -21,9 +21,9 @@ public class FileCache {
         FILE_CLIENT = SpringUtil.getBean(FileClient.class);
     }
 
-    public static FileDTO getFileDetail(String base) {
-        return CacheUtil.get(CacheNames.FILE_KEY,CacheNames.FILE_BASE_KEY, base,() -> {
-            R<FileDTO> r = FILE_CLIENT.getFileDetail(base);
+    public static FileDTO getFileDetail(Long id) {
+        return CacheUtil.get(CacheNames.FILE_KEY,CacheNames.FILE_BASE_KEY, id,() -> {
+            R<FileDTO> r = FILE_CLIENT.getFileDetail(id);
             return r.getData();
         });
     }

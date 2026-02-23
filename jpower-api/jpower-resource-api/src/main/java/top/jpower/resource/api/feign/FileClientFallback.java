@@ -10,7 +10,7 @@ import java.io.File;
 
 /**
  * FILE 熔断
- * @Author mr.g
+ * @author mr.g
  **/
 @Component
 @Slf4j
@@ -20,24 +20,23 @@ public class FileClientFallback implements FallbackFactory<FileClient> {
         return new FileClient() {
 
             @Override
-            public R<Boolean> uploadFile(File file, String storageType) {
+            public R<Long> uploadFile(File file, String storageType) {
                 return R.fail("上传服务器失败");
             }
 
             /**
              * 获取文件外链
              *
-             * @param base
-             * @return
+             * @param id
              * @author mr.g
              **/
             @Override
-            public R<String> fileUrl(String base) {
+            public R<String> fileUrl(Long id) {
                 return R.fail("获取文件外链失败");
             }
 
             @Override
-            public R<FileDTO> getFileDetail(String base) {
+            public R<FileDTO> getFileDetail(Long id) {
                 return R.fail("获取文件详情失败");
             }
         };

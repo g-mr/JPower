@@ -29,6 +29,8 @@ import top.jpower.user.vo.UserVO;
 import java.util.List;
 import java.util.Map;
 
+import static top.jpower.common.constants.ServiceCodeConstants.ROLE_ID_NOT_NULL;
+
 /**
  * 用户角色关联Controller
  * 
@@ -99,7 +101,7 @@ public class RoleUserController extends BaseController {
     })
     @GetMapping(value = "/listByRole", produces = "application/json")
     public R<Pg<UserVO>> listByRole(@Ignore @RequestParam(required = false) Map<String,Object> map) {
-        JpowerAssert.isTrue(MapUtil.containsAnyKey(map, "roleId_eq", "roleId_ne"), JpowerError.Arg, "角色ID不能为空");
+        JpowerAssert.isTrue(MapUtil.containsAnyKey(map, "roleId_eq", "roleId_ne"), JpowerError.Arg, ROLE_ID_NOT_NULL);
         return R.data(coreUserService.pageByRoleId(map));
     }
 }

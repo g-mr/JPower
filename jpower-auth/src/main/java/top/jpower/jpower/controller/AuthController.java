@@ -22,6 +22,7 @@ import top.jpower.common.constants.CacheNames;
 import top.jpower.common.constants.ParamsConstants;
 import top.jpower.common.enums.LoginLimitEnum;
 import top.jpower.common.enums.UserTypeEnum;
+import top.jpower.common.validated.Mobile;
 import top.jpower.core.auth.dto.UserInfo;
 import top.jpower.core.auth.utils.JwtUtil;
 import top.jpower.core.auth.utils.ShieldUtil;
@@ -206,8 +207,8 @@ public class AuthController extends BaseController {
 
     @ApiOperation(value = "发送手机验证码")
     @PostMapping(value = "/captcha/{phone}",produces="application/json")
-    public ResponseData phoneCaptcha(@ApiParam(value = "手机号", required = true) @PathVariable("phone") String phone) {
-        return ReturnJsonUtil.status(smsClient.sendValidate(new SmsValidateDTO().setCode(VALIDATE_SMS_CODE).setPhone(phone)));
+    public ResponseData phoneCaptcha(@ApiParam(value = "手机号", required = true) @Mobile @PathVariable("phone") String phone) {
+        return ReturnJsonUtil.status(smsClient.sendValidate(new SmsValidateDTO().setCode(VALIDATE_SMS_CODE).setPhone(phone)).isStatus());
     }
 
     @ApiOperation(value = "发送邮箱验证码")

@@ -43,7 +43,7 @@ public class PhoneTokenGranter implements TokenGranter {
         String phone = tokenParameter.getPhone();
         String phoneCode = tokenParameter.getPhoneCode();
         String tenantCode = tokenParameter.getTenantCode();
-        if (!smsClient.validate(new ValidateDto().setCode(VALIDATE_SMS_CODE).setPhone(phone).setPhoneCode(phoneCode))){
+        if (!smsClient.validate(new ValidateDto().setCode(VALIDATE_SMS_CODE).setPhone(phone).setPhoneCode(phoneCode)).isStatus()){
             throw new BusinessException(TokenUtil.PHONE_NOT_CORRECT);
         }
 

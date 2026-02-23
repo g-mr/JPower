@@ -27,6 +27,8 @@ public class FileDTO implements Serializable {
     private String path;
     @Schema(description = "文件标识")
     private String mark;
+    @Schema(description = "文件内容")
+    private byte[] content;
     @Schema(description = "存储类型")
     private String storageType;
     @Schema(description = "备注")

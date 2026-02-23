@@ -60,6 +60,7 @@
         <aliyun.sms.version>4.3.1</aliyun.sms.version>
         <aliyun.oss.version>3.18.3</aliyun.oss.version>
         <qiniu.oss.version>7.19.0</qiniu.oss.version>
+		<amazon.s3.version>2.29.32</amazon.s3.version>
         <knife4j.version>4.5.0</knife4j.version>
         <mybatis-flex.version>1.11.5</mybatis-flex.version>
         <auto.service.version>1.1.1</auto.service.version>
