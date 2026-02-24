@@ -29,9 +29,9 @@ import top.jpower.core.util.utils.BeanUtil;
 import top.jpower.core.util.utils.ChainMap;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.WebUtil;
-import top.jpower.jpower.dbs.entity.function.TbCoreDataScope;
-import top.jpower.jpower.service.role.CoreDataScopeService;
-import top.jpower.jpower.service.role.CoreFunctionService;
+import top.jpower.system.dbs.entity.function.TbCoreDataScope;
+import top.jpower.system.service.role.CoreDataScopeService;
+import top.jpower.system.service.role.CoreFunctionService;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;

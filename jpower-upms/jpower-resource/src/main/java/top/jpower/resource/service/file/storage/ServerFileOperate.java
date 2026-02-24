@@ -73,13 +73,13 @@ public class ServerFileOperate implements FileOperate {
 	@Override
 	public Boolean download(ResourceFile coreFile) throws IOException {
 		String path = coreFile.getPath();
-		if(StringUtils.isBlank(path)){
+		if(StringUtils.isBlank(path)) {
 			WebUtil.getResponse().setHeader("iserror", "true");
 			JpowerAssert.createException(JpowerError.NotFind, FILE_PATH_NOT_EXIST);
 		}
 
 		File file = new File(path);
-		if (!file.exists()){
+		if (!file.exists()) {
 			WebUtil.getResponse().setHeader("iserror", "true");
 			JpowerAssert.createException(JpowerError.NotFind, FILE_NOT_EXIST);
 		}
@@ -87,7 +87,7 @@ public class ServerFileOperate implements FileOperate {
 	}
 
 	@Override
-	public byte[] getByte(ResourceFile coreFile){
+	public byte[] getByte(ResourceFile coreFile) {
 		String path = coreFile.getPath();
 		JpowerAssert.notEmpty(path,JpowerError.Parser,FILE_PATH_NOT_EXIST);
 

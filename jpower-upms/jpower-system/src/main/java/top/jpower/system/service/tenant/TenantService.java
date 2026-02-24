@@ -1,0 +1,68 @@
+package top.jpower.system.service.tenant;
+
+import top.jpower.core.dbs.service.BaseService;
+import top.jpower.system.dbs.entity.tenant.CoreTenant;
+import top.jpower.system.dbs.entity.tenant.TbCoreTenant;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * 租户服务接口
+ * 
+ * @author mr.g
+ */
+public interface TenantService extends BaseService<CoreTenant> {
+
+    /**
+     * 根据ID修改信息
+     * 
+     * @author mr.g
+     * @param tenant 租户信息
+     * @return boolean 是否修改成功
+     */
+    @Override
+    boolean updateById(TbCoreTenant tenant);
+
+    /**
+     * 新增信息
+     * 
+     * @author mr.g
+     * @param tenant 租户信息
+     * @param functionCodes 权限Code
+     * @return boolean 是否新增成功
+     */
+    boolean save(TbCoreTenant tenant, Set<String> functionCodes);
+
+    /**
+     * 租户授权配置
+     * 
+     * @author mr.g
+     * @param ids 租户ID
+     * @param accountNumber 额度
+     * @param expireTime 过期时间
+     * @return boolean 是否配置成功
+     */
+    boolean setting(List<Long> ids, Integer accountNumber, Date expireTime);
+
+    /**
+     * 查询租户得设置
+     *
+     * @author mr.g
+     * @param id
+     * @return java.util.Map<java.lang.String,java.lang.String>
+     **/
+    Map<String, String> config(Long id);
+
+    /**
+     * 租户设置
+     *
+     * @author mr.g
+     * @param id 租户ID
+     * @param config 设置内容
+     * @return boolean 是否成功
+     **/
+    boolean updateConfig(Long id, Map<String, String> config);
+}
