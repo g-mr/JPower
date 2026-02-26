@@ -11,7 +11,6 @@ import top.jpower.core.dbs.dbs.dao.mapper.base.JpowerBaseMapper;
 import top.jpower.core.dbs.dbs.entity.base.BaseEntity;
 import top.jpower.core.dbs.page.PaginationContext;
 import top.jpower.core.dbs.support.ForestNodeMerger;
-import top.jpower.core.dbs.support.TreeWrapper;
 import top.jpower.core.dbs.support.Wrappers;
 import top.jpower.core.util.rsp.Pg;
 import top.jpower.core.util.utils.Fc;
@@ -145,19 +144,50 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
     /**
      * 把查询结果转换成任何类型
      *
-     * @param queryWrapper
-     * @param function
-     * @return
-     * @param <V>
+     * @param queryWrapper 查询条件
+     * @param function 转换函数
+     * @return 转换结果
      */
     public <V> List<V> listConver(QueryWrapper queryWrapper, Function<T, V> function) {
         return list(queryWrapper).stream().filter(Objects::nonNull).map(function).collect(Collectors.toList());
     }
 
-    public <E extends Serializable> List<Tree<E>> tree(TreeWrapper treeWrapper) {
+	/**
+	 * 获取树形结构
+	 *
+	 * @param treeWrapper 树形结构条件
+	 * @return 树形结构
+	 */
+    public <TREE extends QueryWrapper, E extends Serializable> List<Tree<E>> tree(TREE treeWrapper) {
         List<Map> list = listAs(treeWrapper, Map.class);
         return ForestNodeMerger.mergeTree(list);
     }
+
+	/**
+	 * 通过字段查询数量
+	 *
+	 * @param column 字段
+	 * @param value 值
+	 * @return 数量
+	 */
+	public long countByField(LambdaGetter<T> column, Object value) {
+		return getMapper().countByField(column, value);
+	}
+
+	public long countInField(LambdaGetter<T> column, List<? extends Serializable> value) {
+		return count(Wrappers.getQueryWrapper().in(column, value));
+	}
+
+	/**
+	 * 通过字段查询是否存在
+	 *
+	 * @param column 字段
+	 * @param value 值
+	 * @return 是否存在
+	 */
+	public boolean existsByField(LambdaGetter<T> column, Object value) {
+		return exists(Wrappers.getQueryWrapper().eq(column, value));
+	}
 
 	/**
 	 * 分页查询

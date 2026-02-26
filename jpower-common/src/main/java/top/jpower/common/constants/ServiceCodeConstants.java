@@ -62,4 +62,12 @@ public interface ServiceCodeConstants {
 
 	String ROLE_ID_NOT_NULL = "角色ID不能为空";
 
+	String DELETE_CHILD = "请先删除子区域";
+
+	String REFRESH_TOKEN_LESS_ACCESS_TOKEN = "刷新令牌时长不可小于令牌时长";
+
+	String NOT_FOUND_DATA = "数据";
+
+	String NOT_FOUND_CLIENT = "客户端不存在";
+
 }

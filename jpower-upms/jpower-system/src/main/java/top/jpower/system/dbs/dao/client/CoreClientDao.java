@@ -2,9 +2,15 @@ package top.jpower.system.dbs.dao.client;
 
 import org.springframework.stereotype.Repository;
 import top.jpower.core.dbs.dbs.dao.JpowerServiceImpl;
-import top.jpower.core.util.utils.Fc;
+import top.jpower.core.dbs.support.Wrappers;
 import top.jpower.system.dbs.dao.client.mapper.CoreClientMapper;
 import top.jpower.system.dbs.entity.client.CoreClient;
+import top.jpower.system.vo.SelectVO;
+
+import java.util.List;
+import java.util.Optional;
+
+import static top.jpower.system.dbs.entity.client.table.CoreClientTableDef.CORE_CLIENT;
 
 /**
  * 客户端数据访问对象
@@ -21,8 +27,19 @@ public class CoreClientDao extends JpowerServiceImpl<CoreClientMapper, CoreClien
      * @param code 客户端编码
      * @return id
      **/
-	public Long queryIdByCode(String code){
-		return super.getObj(Condition.<CoreClient>getQueryWrapper().lambda().select(CoreClient::getId).eq(CoreClient::getClientCode, code), Fc::toLong);
+	public Optional<Long> queryIdByCode(String code){
+		return super.getObjAsOpt(Wrappers.getQueryWrapper().select(CoreClient::getId).eq(CoreClient::getClientCode, code), Long.TYPE);
 	}
 
+	/**
+	 * 查询下拉列表
+	 *
+	 * @author mr.g
+	 * @return  数据
+	 **/
+	public List<SelectVO> select() {
+		return super.listAs(Wrappers.getQueryWrapper()
+				.select(CORE_CLIENT.ID.as(SelectVO::getCode), CORE_CLIENT.NAME)
+				.orderBy(CoreClient::getSortNum).asc(), SelectVO.class);
+	}
 }

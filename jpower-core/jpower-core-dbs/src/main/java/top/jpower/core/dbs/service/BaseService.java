@@ -3,7 +3,7 @@ package top.jpower.core.dbs.service;
 import cn.hutool.core.lang.tree.Tree;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.service.IService;
-import top.jpower.core.dbs.support.TreeWrapper;
+import com.mybatisflex.core.util.LambdaGetter;
 import top.jpower.core.util.rsp.Pg;
 
 import java.io.Serializable;
@@ -22,8 +22,9 @@ public interface BaseService<T> extends IService<T> {
 	 *
 	 * @author mr.g
      * @param treeWrapper 查询条件
+	 * @return java.util.List<Tree<E>> 树形结构
      */
-    <E extends Serializable> List<Tree<E>> tree(TreeWrapper treeWrapper);
+    <TREE extends QueryWrapper, E extends Serializable> List<Tree<E>> tree(TREE treeWrapper);
 
     /**
      * 把查询结果转换成任何类型
@@ -31,7 +32,7 @@ public interface BaseService<T> extends IService<T> {
 	 * @author mr.g
      * @param queryWrapper 查询条件
      * @param function 转换方法
-     * @return java.util.List<V>
+     * @return java.util.List<V> 转换结果
      */
     <V> List<V> listConver(QueryWrapper queryWrapper, Function<T, V> function);
 
@@ -87,5 +88,23 @@ public interface BaseService<T> extends IService<T> {
 	 * @return 分页对象
 	 */
 	<R> Pg<R> pgAs(QueryWrapper query, Class<R> asType);
+
+	/**
+	 * 通过字段查询是否存在
+	 *
+	 * @param column 字段
+	 * @param value 值
+	 * @return 是否存在
+	 */
+	boolean existsByField(LambdaGetter<T> column, Object value);
+
+	/**
+	 * 通过字段信息
+	 *
+	 * @param column 字段
+	 * @param value 值
+	 * @return 数量
+	 */
+	T getOneByField(LambdaGetter<T> column, Object value);
 
 }

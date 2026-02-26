@@ -114,7 +114,19 @@ public interface JpowerBaseMapper<T> extends BaseMapper<T> {
         return Pg.of(result.getTotalRow(), result.getRecords());
     }
 
-    /**
+	/**
+	 * 通过一个字段查询数量
+	 *
+	 * @author mr.g
+	 * @param column 字段
+	 * @param value 值
+	 * @return java.util.List<T>
+	 **/
+	default long countByField(LambdaGetter<T> column, Object value) {
+		return selectCountByQuery(Wrappers.getQueryWrapper().eq(column, value));
+	}
+
+	/**
      * 通过一个字段查询数据
      *
      * @author mr.g

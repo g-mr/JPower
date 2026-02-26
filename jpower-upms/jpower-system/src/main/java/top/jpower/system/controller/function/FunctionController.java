@@ -11,6 +11,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.core.boot.controller.BaseController;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
+import top.jpower.core.exception.throwable.JpowerException;
 import top.jpower.core.util.rsp.ResponseData;
 import top.jpower.core.util.rsp.ReturnJsonUtil;
 import top.jpower.core.util.utils.BeanUtil;
@@ -35,6 +36,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static top.jpower.common.constants.ServiceCodeConstants.NOT_FOUND_CLIENT;
 import static top.jpower.core.util.constants.JpowerConstants.TOP_CODE;
 
 /**
@@ -254,7 +256,7 @@ public class FunctionController extends BaseController {
     public ResponseData<List<Tree<Long>>> listTree(){
         List<Tree<Long>> list = ShieldUtil.isRoot()?
                 coreFunctionService.tree(Condition.getLambdaTreeWrapper(TbCoreFunction.class,TbCoreFunction::getId,TbCoreFunction::getParentId)
-                        .eq(TbCoreFunction::getClientId,clientService.queryIdByCode(ShieldUtil.getClientCode()))):
+                        .eq(TbCoreFunction::getClientId, clientService.queryIdByCode(ShieldUtil.getClientCode()).orElseThrow(() -> new JpowerException(JpowerError.NotFind.getCode(), NOT_FOUND_CLIENT)))):
                 coreFunctionService.listTreeByRoleId(ShieldUtil.getUserRole());
         return ReturnJsonUtil.data(list);
     }

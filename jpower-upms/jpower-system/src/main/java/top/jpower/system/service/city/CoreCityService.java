@@ -4,10 +4,10 @@ package top.jpower.system.service.city;
 import cn.hutool.core.lang.tree.Tree;
 import top.jpower.core.dbs.service.BaseService;
 import top.jpower.system.dbs.entity.city.CoreCity;
-import top.jpower.system.vo.CityVo;
+import top.jpower.system.vo.CityVO;
+import top.jpower.system.vo.SelectVO;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 城市服务接口
@@ -20,19 +20,11 @@ public interface CoreCityService extends BaseService<CoreCity> {
      * 通过code查询下级元素
      *
      * @author mr.g
-     * @param city 城市查询条件
+     * @param pcode 父级code
+	 * @param name 名称
      * @return 下级元素列表
      */
-    List<Map<String, Object>> listChild(Map<String, Object> city);
-
-    /**
-     * 查询行政区域列表
-     *
-     * @author mr.g
-     * @param coreCity 查询条件
-     * @return 城市列表
-     */
-    List<CoreCity> list(CoreCity coreCity);
+    List<SelectVO> listChild(String pcode, String name);
 
     /**
      * 新增行政区域
@@ -70,7 +62,21 @@ public interface CoreCityService extends BaseService<CoreCity> {
      */
     List<Tree<String>> lazyTree(String pcode);
 
+	/**
+     * 修改行政区域
+     *
+     * @author mr.g
+     * @param coreCity 行政区域信息
+     * @return 是否修改成功
+     */
     Boolean update(CoreCity coreCity);
 
-    CityVo getById(Long id);
+	/**
+     * 通过ID查询城市
+     *
+     * @author mr.g
+     * @param id ID
+     * @return 城市信息
+     */
+	CityVO getById(Long id);
 }
