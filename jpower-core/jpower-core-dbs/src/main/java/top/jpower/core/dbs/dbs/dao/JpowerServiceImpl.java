@@ -30,31 +30,6 @@ import java.util.stream.Collectors;
  */
 public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEntity> extends ServiceImpl<M, T> {
 
-    @Override
-    public boolean save(T entity) {
-        return super.save(entity);
-    }
-
-    @Override
-    public boolean saveBatch(Collection<T> entityList, int batchSize) {
-        return super.saveBatch(entityList,batchSize);
-    }
-
-    @Override
-    public boolean saveOrUpdate(T entity) {
-        return super.saveOrUpdate(entity);
-    }
-
-    @Override
-    public boolean saveOrUpdateBatch(Collection<T> entityList, int batchSize) {
-        return super.saveOrUpdateBatch(entityList,batchSize);
-    }
-
-
-    @Override
-    public boolean updateById(T entity) {
-        return super.updateById(entity);
-    }
 
     /**
      * 根据ID 真实删除

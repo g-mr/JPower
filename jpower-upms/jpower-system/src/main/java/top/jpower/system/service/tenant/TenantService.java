@@ -1,8 +1,10 @@
 package top.jpower.system.service.tenant;
 
 import top.jpower.core.dbs.service.BaseService;
+import top.jpower.core.util.rsp.Pg;
 import top.jpower.system.dbs.entity.tenant.CoreTenant;
 import top.jpower.system.dbs.entity.tenant.TbCoreTenant;
+import top.jpower.system.vo.SelectVO;
 
 import java.util.Date;
 import java.util.List;
@@ -65,4 +67,22 @@ public interface TenantService extends BaseService<CoreTenant> {
      * @return boolean 是否成功
      **/
     boolean updateConfig(Long id, Map<String, String> config);
+
+	/**
+     * 根据条件查询
+     *
+     * @author mr.g
+     * @param map 查询条件
+     * @return 租户分页数据
+     **/
+    Pg<CoreTenant> pageByMap(Map<String, Object> map);
+
+	/**
+	 * 下拉列表
+	 *
+	 * @author mr.g
+	 * @param tenantName 租户名称
+	 * @return 下拉选项
+	 **/
+	List<SelectVO> select(String tenantName);
 }

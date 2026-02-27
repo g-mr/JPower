@@ -72,7 +72,7 @@ public class CoreCityDao extends JpowerServiceImpl<CoreCityMapper, CoreCity> imp
 	}
 
 	public List<Tree<String>> lazyTree(String pcode) {
-		return super.tree(Wrappers.getLambdaTreeWrapper(CoreCity::getCode,CoreCity::getPcode)
+		return super.tree(Wrappers.getTreeWrapper(CoreCity::getCode,CoreCity::getPcode)
 				.lazy(pcode)
 				.select(CORE_CITY.SORT_NUM.as("sort"), CORE_CITY.FULLNAME.as("name"), CORE_CITY.ID.as("key")));
 	}

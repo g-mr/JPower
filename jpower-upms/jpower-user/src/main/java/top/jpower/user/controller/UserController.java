@@ -117,8 +117,8 @@ public class UserController extends BaseController {
     })
     @Operation(summary = "查询用户分页列表")
     @Parameters({
-            @Parameter(name = "pageNum", description = "第几页", example = "1", in = QUERY, schema = @Schema(type = "int"), required = true),
-            @Parameter(name = "pageSize", description = "每页长度", example = "10", in = QUERY, schema = @Schema(type = "int"), required = true)
+		@Parameter(name = "pageNum", description = "第几页", example = "1", in = QUERY, schema = @Schema(type = "int"), required = true),
+		@Parameter(name = "pageSize", description = "每页长度", example = "10", in = QUERY, schema = @Schema(type = "int"), required = true)
     })
     @GetMapping(value = "/list", produces = "application/json")
     public R<Pg<UserVO>> list(@RequestParam(required = false) CoreUser coreUser) {

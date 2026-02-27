@@ -56,18 +56,26 @@ public interface ServiceCodeConstants {
 
 	String NOT_FOUND_USER = "用户";
 
+	String NOT_FOUND_DICT_RYPE = "字典类型";
+
     String DOWNLOAD_FILE_ERROR = "下载文件出错，请联系网站管理员";
 
 	String GENERATE_FILE_ERROR = "生成失败，无法下载";
 
 	String ROLE_ID_NOT_NULL = "角色ID不能为空";
 
-	String DELETE_CHILD = "请先删除子区域";
+	String DELETE_CHILD = "请先删除子级";
 
 	String REFRESH_TOKEN_LESS_ACCESS_TOKEN = "刷新令牌时长不可小于令牌时长";
 
 	String NOT_FOUND_DATA = "数据";
 
 	String NOT_FOUND_CLIENT = "客户端不存在";
+
+	String MISS_REQUIRED_PARAMETER = "缺失必须参数";
+
+	String PARAMETER_ILLEGAL = "参数非法";
+
+	String DICT_EXIST_CHILD = "存在启用的下级字典，不可停用";
 
 }

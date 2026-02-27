@@ -1,50 +1,33 @@
 package top.jpower.system.controller.api;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
-import top.jpower.core.util.rsp.ResponseData;
-import top.jpower.core.util.rsp.ReturnJsonUtil;
-import top.jpower.jpower.dbs.entity.params.TbCoreParam;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import top.jpower.core.util.rsp.R;
 import top.jpower.system.api.feign.ParamsClient;
-import top.jpower.core.exception.enums.JpowerError;
-import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.system.service.params.CoreParamService;
 
 /**
  * 
  * @author mr.g
  */
-@ApiIgnore
+@Hidden
 @RestController
-@RequestMapping("/core/param/feign")
-@AllArgsConstructor
+@RequestMapping("/feign/core/param")
+@RequiredArgsConstructor
 public class ParamsClientController implements ParamsClient {
 
-    private CoreParamService paramService;
+    private final CoreParamService paramService;
 
-    @ApiOperation(value = "通过Code获取参数值")
     @Override
-    @RequestMapping(value = "/queryByCode",method = RequestMethod.GET,produces="application/json")
-    public ResponseData<String> queryByCode(String code){
-        JpowerAssert.notEmpty(code, JpowerError.Arg,"编号值不可为空");
-        return ReturnJsonUtil.ok("查询成功",paramService.selectByCode(code));
-    }
-
-    /**
-     * 查询系统参数
-     * 
-     * @author mr.g
-     * @param id 参数ID
-     * @return TbCoreParam 参数详情
-     */
-    @ApiOperation(value = "通过Id获取参数详情")
-    @Override
-    @GetMapping("/queryById")
-    public TbCoreParam queryById(@ApiParam("主键ID") @RequestParam Long id){
-        return paramService.getById(id);
+    @Operation(summary = "通过Code获取参数值")
+    @GetMapping(value = "/queryByCode", produces="application/json")
+    public R<String> queryByCode(@RequestParam("code") String code){
+        return R.data(paramService.selectByCode(code));
     }
 
 }

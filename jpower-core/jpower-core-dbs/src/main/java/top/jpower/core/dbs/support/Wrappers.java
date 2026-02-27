@@ -47,7 +47,7 @@ public class Wrappers {
         return wrapper;
     }
 
-    public static <T> TreeWrapper getLambdaTreeWrapper(LambdaGetter<T> id, LambdaGetter<T> parentId) {
+    public static <T> TreeWrapper getTreeWrapper(LambdaGetter<T> id, LambdaGetter<T> parentId) {
         TreeWrapper wrapper = new TreeWrapper(id, parentId);
         CPI.setOrderBys(wrapper, PaginationContext.orderBy());
         return wrapper;

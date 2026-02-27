@@ -1,27 +1,25 @@
 package top.jpower.system.service.dict.impl;
 
 import cn.hutool.core.lang.tree.Tree;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import top.jpower.common.enums.YNEnum;
-import top.jpower.core.dbs.mp.support.Condition;
+import top.jpower.common.constants.CacheNames;
 import top.jpower.core.dbs.service.impl.BaseServiceImpl;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
+import top.jpower.core.redis.cache.CacheUtil;
 import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.utils.Fc;
+import top.jpower.system.dbs.dao.dict.CoreDictDao;
 import top.jpower.system.dbs.dao.dict.CoreDictTypeDao;
 import top.jpower.system.dbs.dao.dict.mapper.CoreDictTypeMapper;
 import top.jpower.system.dbs.entity.dict.CoreDictType;
-import top.jpower.system.dbs.entity.dict.TbCoreDict;
-import top.jpower.system.dbs.entity.dict.TbCoreDictType;
-import top.jpower.system.service.dict.CoreDictService;
 import top.jpower.system.service.dict.CoreDictTypeService;
 
 import java.util.List;
+
+import static top.jpower.common.constants.ServiceCodeConstants.CODE_EXIST;
+import static top.jpower.common.constants.ServiceCodeConstants.DELETE_CHILD;
 
 /**
  * 字典类型服务实现
@@ -33,34 +31,23 @@ import java.util.List;
 public class CoreDictTypeServiceImpl extends BaseServiceImpl<CoreDictTypeMapper, CoreDictType> implements CoreDictTypeService {
 
     private CoreDictTypeDao coreDictTypeDao;
-    private CoreDictService coreDictService;
+    private CoreDictDao coreDictDao;
 
     @Override
     public List<Tree<Long>> tree() {
-        return coreDictTypeDao.tree(Condition.getLambdaTreeWrapper(TbCoreDictType.class, TbCoreDictType::getId, TbCoreDictType::getParentId)
-                .select(TbCoreDictType::getDictTypeName,
-                        TbCoreDictType::getDictTypeCode,
-                        TbCoreDictType::getIsTree).orderByAsc(TbCoreDictType::getSortNum));
+        return coreDictTypeDao.tree();
     }
 
     @Override
     public Boolean deleteDictType(List<Long> ids) {
-        List<TbCoreDictType> listType = coreDictTypeDao.list(Condition.<TbCoreDictType>getQueryWrapper().lambda()
-                .in(TbCoreDictType::getId,ids)
-                .eq(TbCoreDictType::getDelEnabled, YNEnum.Y.getValue()));
-        if (listType.size() > 0){
-            JpowerAssert.geZero(coreDictTypeDao.count(Condition.<TbCoreDictType>getQueryWrapper().lambda()
-                    .in(TbCoreDictType::getParentId,ids)), JpowerError.Business,"请先删除下级字典类型");
+        List<String> listCode = coreDictTypeDao.listCodeByIdsDel(ids);
+        if (listCode.size() > 0){
+            JpowerAssert.notTrue(coreDictTypeDao.existsByQuery(ids), JpowerError.Business, DELETE_CHILD);
         }
 
-        if (coreDictTypeDao.removeReal(Condition.<TbCoreDictType>getQueryWrapper().lambda()
-                .in(TbCoreDictType::getId,ids)
-                .eq(TbCoreDictType::getDelEnabled, YNEnum.Y.getValue()))){
-            listType.forEach(type ->
-                coreDictService.removeReal(Condition.<TbCoreDict>getQueryWrapper()
-                        .lambda()
-                        .eq(TbCoreDict::getDictTypeCode,type.getDictTypeCode()))
-            );
+        if (coreDictTypeDao.removeByIdsDel(ids)){
+			coreDictDao.removeByTypeCode(listCode);
+			CacheUtil.clear(CacheNames.DICT_KEY);
             return true;
         }else {
             return false;
@@ -69,26 +56,23 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<CoreDictTypeMapper,
 
     @Override
     public Boolean addDictType(CoreDictType dictType) {
-        dictType.setParentId(Fc.isNull(dictType.getParentId())? Fc.toLong(JpowerConstants.TOP_CODE):dictType.getParentId());
-        dictType.setDelEnabled(Fc.isBlank(dictType.getDelEnabled())? YNEnum.Y.getValue() :dictType.getDelEnabled());
+        dictType.setParentId(Fc.isNull(dictType.getParentId()) ? Fc.toLong(JpowerConstants.TOP_CODE) : dictType.getParentId());
+        dictType.setDelEnabled(dictType.getDelEnabled() ? Boolean.TRUE : dictType.getDelEnabled());
 
-        LambdaQueryWrapper<TbCoreDictType> queryWrapper = Condition.<TbCoreDictType>getQueryWrapper().lambda().eq(TbCoreDictType::getDictTypeCode,dictType.getDictTypeCode());
-        JpowerAssert.geZero(coreDictTypeDao.count(queryWrapper),JpowerError.Business,"该字典类型已存在");
-
+        JpowerAssert.notTrue(coreDictTypeDao.existsByField(CoreDictType::getDictTypeCode,dictType.getDictTypeCode()), JpowerError.Business, CODE_EXIST);
+		CacheUtil.clear(CacheNames.DICT_KEY);
         return coreDictTypeDao.save(dictType);
     }
 
     @Override
     public Boolean updateDictType(CoreDictType dictType) {
-        TbCoreDictType coreDictType = coreDictTypeDao.getById(dictType.getId());
+        String code = coreDictTypeDao.getCodeByIdsDel(dictType.getId());
 
         if (coreDictTypeDao.updateById(dictType)){
             if (Fc.isNotBlank(dictType.getDictTypeCode())){
-                LambdaUpdateWrapper<TbCoreDict> queryWrapper = new UpdateWrapper<TbCoreDict>().lambda()
-                        .set(TbCoreDict::getDictTypeCode,dictType.getDictTypeCode())
-                        .eq(TbCoreDict::getDictTypeCode,coreDictType.getDictTypeCode());
-                coreDictService.update(queryWrapper);
+				coreDictDao.updateDictTypeCode(dictType.getDictTypeCode(), code);
             }
+			CacheUtil.clear(CacheNames.DICT_KEY);
             return true;
         }
         return false;

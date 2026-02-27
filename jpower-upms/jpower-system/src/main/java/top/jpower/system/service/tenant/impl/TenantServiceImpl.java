@@ -1,7 +1,8 @@
 package top.jpower.system.service.tenant.impl;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.thread.ThreadUtil;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.jpower.common.constants.DefaultValConstants;
@@ -12,9 +13,11 @@ import top.jpower.common.enums.YN01Enum;
 import top.jpower.core.auth.utils.ShieldUtil;
 import top.jpower.core.dbs.mp.support.Condition;
 import top.jpower.core.dbs.service.impl.BaseServiceImpl;
+import top.jpower.core.dbs.support.Wrappers;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.core.exception.throwable.JpowerException;
+import top.jpower.core.util.rsp.Pg;
 import top.jpower.core.util.rsp.ResponseData;
 import top.jpower.core.util.utils.DigestUtil;
 import top.jpower.core.util.utils.Fc;
@@ -22,12 +25,12 @@ import top.jpower.core.util.utils.MD5;
 import top.jpower.jpower.cache.param.ParamConfig;
 import top.jpower.jpower.dbs.entity.TbCoreUser;
 import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
-import top.jpower.system.dbs.dao.dict.TbCoreDictDao;
-import top.jpower.system.dbs.dao.org.TbCoreOrgDao;
-import top.jpower.system.dbs.dao.role.TbCoreFunctionDao;
-import top.jpower.system.dbs.dao.role.TbCoreRoleDao;
-import top.jpower.system.dbs.dao.role.TbCoreRoleFunctionDao;
-import top.jpower.system.dbs.dao.tenant.TbCoreTenantDao;
+import top.jpower.system.dbs.dao.dict.CoreDictDao;
+import top.jpower.system.dbs.dao.org.CoreOrgDao;
+import top.jpower.system.dbs.dao.role.CoreFunctionDao;
+import top.jpower.system.dbs.dao.role.CoreRoleDao;
+import top.jpower.system.dbs.dao.role.CoreRoleFunctionDao;
+import top.jpower.system.dbs.dao.tenant.CoreTenantDao;
 import top.jpower.system.dbs.dao.tenant.mapper.CoreTenantMapper;
 import top.jpower.system.dbs.entity.dict.TbCoreDict;
 import top.jpower.system.dbs.entity.org.TbCoreOrg;
@@ -35,6 +38,7 @@ import top.jpower.system.dbs.entity.role.TbCoreRole;
 import top.jpower.system.dbs.entity.tenant.CoreTenant;
 import top.jpower.system.dbs.entity.tenant.TbCoreTenant;
 import top.jpower.system.service.tenant.TenantService;
+import top.jpower.system.vo.SelectVO;
 import top.jpower.user.api.feign.UserClient;
 
 import java.util.*;
@@ -52,16 +56,16 @@ import static top.jpower.core.util.constants.JpowerConstants.TOP_CODE;
  * @author mr.g
  */
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class TenantServiceImpl extends BaseServiceImpl<CoreTenantMapper, CoreTenant> implements TenantService {
 
-    private TbCoreTenantDao tenantDao;
-    private TbCoreOrgDao orgDao;
-    private TbCoreRoleDao roleDao;
-    private TbCoreFunctionDao functionDao;
-    private TbCoreRoleFunctionDao roleFunctionDao;
-    private TbCoreDictDao dictDao;
-    private UserClient userClient;
+    private final CoreTenantDao tenantDao;
+    private final CoreOrgDao orgDao;
+    private final CoreRoleDao roleDao;
+    private final CoreFunctionDao functionDao;
+    private final CoreRoleFunctionDao roleFunctionDao;
+    private final CoreDictDao dictDao;
+    private final UserClient userClient;
 
     @Override
     public boolean updateById(TbCoreTenant tenant){
@@ -206,5 +210,15 @@ public class TenantServiceImpl extends BaseServiceImpl<CoreTenantMapper, CoreTen
     public boolean updateConfig(Long id, Map<String, String> config) {
         return tenantDao.updateConfig(id, config);
     }
+
+	@Override
+	public Pg<CoreTenant> pageByMap(Map<String, Object> map) {
+		return tenantDao.pg(Wrappers.getQueryWrapper(map));
+	}
+
+	@Override
+	public List<SelectVO> select(String tenantName) {
+		return tenantDao.select(tenantName);
+	}
 
 }
