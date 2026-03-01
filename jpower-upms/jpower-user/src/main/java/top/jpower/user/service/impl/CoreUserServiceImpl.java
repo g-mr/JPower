@@ -10,7 +10,6 @@ import org.springframework.validation.annotation.Validated;
 import top.jpower.common.constants.CacheNames;
 import top.jpower.common.constants.DefaultValConstants;
 import top.jpower.common.constants.ParamsConstants;
-import top.jpower.common.enums.ActivationStatusEnum;
 import top.jpower.common.enums.IdTypeEnum;
 import top.jpower.common.enums.UserTypeEnum;
 import top.jpower.common.validated.group.Validation;
@@ -88,18 +87,21 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
     @Override
     public boolean save(CoreUser coreUser) {
         setActivationStatus(coreUser);
+		if (Fc.isBlank(coreUser.getPassword())) {
+			coreUser.setPassword(DigestUtil.pwdEncrypt(MD5.md5HexToUpperCase(ParamCache.getString(ParamsConstants.USER_DEFAULT_PASSWORD, DefaultValConstants.DEFAULT_USER_PASSWORD))));
+		}
         return coreUserDao.save(coreUser);
     }
 
     private void setActivationStatus(CoreUser coreUser) {
         if (Fc.isNull(coreUser.getActivationStatus())){
             Integer isActivation = ParamCache.getInt(ParamsConstants.IS_ACTIVATION, DefaultValConstants.DEFAULT_USER_ACTIVATION);
-            coreUser.setActivationStatus(isActivation);
+            coreUser.setActivationStatus(Fc.toBool(isActivation));
         }
 
-        if (!ActivationStatusEnum.ACTIVATION_YES.getValue().equals(coreUser.getActivationStatus())){
+        if (!coreUser.getActivationStatus()){
             coreUser.setActivationCode(UuidUtil.create10UUidNum());
-            coreUser.setActivationStatus(ActivationStatusEnum.ACTIVATION_NO.getValue());
+            coreUser.setActivationStatus(Boolean.FALSE);
         }
     }
 
@@ -175,7 +177,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
     }
 
     @Override
-    public boolean saveUser(CoreUser user, List<Long> roleIds) {
+    public Long saveUser(CoreUser user, List<Long> roleIds) {
         if (coreUserDao.save(user)){
             if (Fc.isNotEmpty(roleIds)) {
                 List<CoreUserRole> userRoleList = new ArrayList<>();
@@ -186,12 +188,12 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
                     userRoleList.add(userRole);
                 });
                 if (Fc.isNotEmpty(userRoleList)){
-                    return coreUserRoleDao.saveBatch(userRoleList);
+                    coreUserRoleDao.saveBatch(userRoleList);
                 }
             }
-            return true;
+            return user.getId();
         }
-        return false;
+        return null;
     }
 
     @Override

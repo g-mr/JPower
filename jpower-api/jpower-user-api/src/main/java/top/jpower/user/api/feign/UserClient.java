@@ -38,7 +38,7 @@ public interface UserClient {
     R<CoreUserDTO> queryUserByPhone(@RequestParam("phone") String phone, @RequestParam("tenantCode") String tenantCode);
 
     @PostMapping("/saveUser")
-    R<String> saveUser(@RequestBody CoreUserDTO user);
+    R<Long> saveUser(@RequestBody CoreUserDTO user);
 
     /**
      * 验证账号密码是否正确

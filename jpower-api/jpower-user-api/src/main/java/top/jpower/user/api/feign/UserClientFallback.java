@@ -55,7 +55,7 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
             }
 
             @Override
-            public R<String> saveUser(CoreUserDTO user) {
+            public R<Long> saveUser(CoreUserDTO user) {
                 log.error("调用saveUser失败，参数：user={} ，e={}", user, cause);
                 return R.print(ReturnConstants.RECODE_API, cause.getMessage(), false);
             }

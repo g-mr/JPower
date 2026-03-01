@@ -9,8 +9,11 @@ import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.LambdaUtil;
 import top.jpower.core.util.utils.Fc;
 
+import java.util.Map;
+
 import static com.mybatisflex.core.query.QueryMethods.case_;
 import static com.mybatisflex.core.query.QueryMethods.exists;
+import static top.jpower.core.dbs.support.Wrappers.EXCLUDE;
 import static top.jpower.core.util.constants.JpowerConstants.TOP_CODE;
 
 /**
@@ -63,7 +66,7 @@ public class TreeWrapper extends QueryWrapper {
      *
      * @author mr.g
      **/
-    public TreeWrapper lazy(String parentIdValue){
+    public TreeWrapper lazy(Object parentIdValue){
         if (Fc.isEmpty(queryTables)) {
             throw new MybatisFlexException("请先from表");
         }
@@ -91,4 +94,12 @@ public class TreeWrapper extends QueryWrapper {
         super.clear();
         init();
     }
+
+	public TreeWrapper map(Map<String, Object> query) {
+		EXCLUDE.forEach(query::remove);
+		where(w->{
+			SqlWrapper.buildCondition(w, query);
+		});
+		return this;
+	}
 }

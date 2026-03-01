@@ -135,7 +135,7 @@ public interface CoreUserService extends BaseService<CoreUser> {
      * @date 0:09 2020/10/25 0025
      * @param user 用户信息
      */
-    boolean saveUser(CoreUser user, List<Long> roleIds);
+    Long saveUser(CoreUser user, List<Long> roleIds);
 
     /**
      * 为角色添加用户

@@ -3,6 +3,7 @@ package top.jpower.core.dbs.dbs.dao;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.tree.Tree;
 import com.mybatisflex.core.query.QueryCondition;
+import com.mybatisflex.core.query.QueryMethods;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.SqlUtil;
@@ -30,6 +31,16 @@ import java.util.stream.Collectors;
  */
 public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEntity> extends ServiceImpl<M, T> {
 
+	/**
+	 * 根据ID查询
+	 *
+	 * @param id 主键ID
+	 * @param clz 查询结果类型
+	 * @return 查询结果
+	 */
+	public <R> R getByIdAs(Serializable id, Class<R> clz) {
+		return super.getOneAs(Wrappers.getQueryWrapper().where(QueryMethods.column("id").eq(id)), clz);
+	}
 
     /**
      * 根据ID 真实删除

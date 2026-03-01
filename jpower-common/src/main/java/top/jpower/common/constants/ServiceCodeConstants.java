@@ -34,6 +34,8 @@ public interface ServiceCodeConstants {
 
     String CODE_EXIST = "编码已存在";
 
+	String DOMAIN_EXIST = "该域名已存在";
+
 	String FILE_ID_NOT_LEGAL = "文件标识不合法";
 
 	String FILE_NOT_EXIST = "文件不存在";
@@ -77,5 +79,11 @@ public interface ServiceCodeConstants {
 	String PARAMETER_ILLEGAL = "参数非法";
 
 	String DICT_EXIST_CHILD = "存在启用的下级字典，不可停用";
+
+	String NOT_SUPER_ADMIN_MODIFY_TENANT = "只可超级管理员操作租户";
+
+	String USER_SAVE_FAILURE = "用户保存失败";
+
+	String DELETE_ORG_EXIST_CHILD = "您删除的组织机构存在下级机构，请先删除下级机构";
 
 }

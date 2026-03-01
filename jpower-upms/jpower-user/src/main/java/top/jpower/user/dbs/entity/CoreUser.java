@@ -100,10 +100,9 @@ public class CoreUser extends TenantEntity implements Serializable {
     @Schema(description = "登录次数")
     @Excel(name ="登录次数",type = Excel.Type.EXPORT)
     private Integer loginCount;
-    @Schema(description = "是否激活 字典YN01")
+    @Schema(description = "是否激活")
     @Excel(name ="是否激活",readConverterExp = "1=是,0=否",combo={"是,","否"})
-    @Dict(name = "YN01")
-    private Integer activationStatus;
+    private Boolean activationStatus;
     @Schema(description = "激活码")
     private String activationCode;
     @Schema(description = "部门主键")

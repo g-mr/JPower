@@ -17,7 +17,16 @@ import java.util.function.Function;
  */
 public interface BaseService<T> extends IService<T> {
 
-    /**
+	/**
+	 * 根据ID查询
+	 *
+	 * @param id 主键ID
+	 * @param clz 查询结果类型
+	 * @return 查询结果
+	 */
+	<R> R getByIdAs(Serializable id, Class<R> clz);
+
+	/**
      * 查询树形结构
 	 *
 	 * @author mr.g

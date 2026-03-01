@@ -16,6 +16,8 @@ import java.util.Map;
  */
 public class Wrappers {
 
+	public final static List<String> EXCLUDE = ListUtil.of("pageNum", "pageSize", "asc", "desc", "tenantCode");
+
     public static QueryWrapper getQueryWrapper() {
         QueryWrapper wrapper = QueryWrapper.create();
         CPI.setOrderBys(wrapper, PaginationContext.orderBy());
@@ -29,8 +31,7 @@ public class Wrappers {
     }
 
     public static QueryWrapper getQueryWrapper(Map<String, Object> query) {
-        List<String> exclude = ListUtil.of("pageNum", "pageSize", "asc", "desc", "tenantCode");
-        return getQueryWrapper(query, exclude);
+        return getQueryWrapper(query, EXCLUDE);
     }
 
     public static QueryWrapper getQueryWrapper(Map<String, Object> query, List<String> exclude) {

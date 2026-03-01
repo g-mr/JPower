@@ -16,14 +16,4 @@ import java.util.List;
  */
 @Mapper
 public interface CoreOrgMapper extends JpowerBaseMapper<CoreOrg> {
-
-    /**
-     * 根据父级加载部门列表
-     * 
-     * @author mr.g
-     * @param coreOrg 查询条件
-     * @return java.util.List<top.jpower.system.vo.OrgVo> 部门列表
-     */
-    List<OrgVo> listLazyByParent(@Param("org") CoreOrg coreOrg);
-
 }

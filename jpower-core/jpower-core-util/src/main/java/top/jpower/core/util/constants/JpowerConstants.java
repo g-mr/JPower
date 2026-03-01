@@ -1,6 +1,8 @@
 package top.jpower.core.util.constants;
 
 
+import top.jpower.core.util.utils.Fc;
+
 /**
  * 系统常量
  *
@@ -24,7 +26,8 @@ public class JpowerConstants {
     public static final String TEST_CODE = "test";
 
     /** 顶级节点CODE **/
-    public static final String TOP_CODE = "-1";
+	public static final String TOP_CODE = "-1";
+	public static final Long TOP_CODE_LONG = Fc.toLong(TOP_CODE);
 
     /** 默认国家编码 **/
     public static final String COUNTRY_CODE = "CHN";

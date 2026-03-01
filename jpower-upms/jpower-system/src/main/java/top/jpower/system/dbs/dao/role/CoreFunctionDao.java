@@ -7,6 +7,7 @@ import top.jpower.common.enums.FunctionTypeEnum;
 import top.jpower.core.auth.utils.ShieldUtil;
 import top.jpower.core.dbs.dbs.dao.JpowerServiceImpl;
 import top.jpower.core.dbs.mp.support.Condition;
+import top.jpower.core.dbs.support.Wrappers;
 import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.utils.Fc;
@@ -16,6 +17,7 @@ import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
 import top.jpower.system.dbs.dao.role.mapper.CoreFunctionMapper;
 import top.jpower.system.dbs.entity.function.CoreFunction;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -92,6 +94,30 @@ public class CoreFunctionDao extends JpowerServiceImpl<CoreFunctionMapper, CoreF
                 .apply(where)));
         return functionIds;
     }
+
+	/**
+	 * 根据功能CODE获取功能ID以及子孙功能ID
+	 *
+	 * @author mr.g
+	 * @param functionCodes 功能CODE
+	 * @return 功能ID
+	 **/
+	public List<Long> getAllIdByCode(Set<String> functionCodes) {
+		List<Long> ids = super.objListAs(Wrappers.getQueryWrapper().select(CoreFunction::getId).in(CoreFunction::getCode, functionCodes), Long.class);
+
+		if (Fc.isNotEmpty(ids)) {
+			ids.forEach(id->{
+				List<Long> descendants = super.objListAs(Wrappers.getQueryWrapper()
+						.select(CoreFunction::getId)
+						.ne(CoreFunction::getFunctionType, FunctionTypeEnum.MENU.getValue())
+						.like(CoreFunction::getAncestorId, id), Long.class);
+
+				ids.addAll(descendants);
+			});
+		}
+
+		return ids;
+	}
 }
 
 

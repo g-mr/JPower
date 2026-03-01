@@ -78,8 +78,8 @@ public class UserClientController implements UserClient {
     @Override
     @Operation(summary = "保存用户")
     @PostMapping("/saveUser")
-    public R<String> saveUser(@RequestBody CoreUserDTO user) {
-        return R.status(coreUserService.saveUser(BeanUtil.copyProperties(user, CoreUser.class), user.getRoleIds()));
+    public R<Long> saveUser(@RequestBody CoreUserDTO user) {
+        return R.data(coreUserService.saveUser(BeanUtil.copyProperties(user, CoreUser.class), user.getRoleIds()));
     }
 
     @Override

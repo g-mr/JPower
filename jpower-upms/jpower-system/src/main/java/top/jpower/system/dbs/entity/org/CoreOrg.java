@@ -5,8 +5,11 @@ import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.Table;
 import com.mybatisflex.core.keygen.KeyGenerators;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import top.jpower.common.validated.group.Validation;
 import top.jpower.core.dbs.dictbind.annotation.Dict;
 import top.jpower.core.dbs.tenant.entity.TenantEntity;
 
@@ -22,10 +25,13 @@ public class CoreOrg extends TenantEntity {
 
     @Schema(description = "主键")
     @Id(keyType = KeyType.Generator, value = KeyGenerators.flexId)
+	@NotNull(message = "id不能为空", groups = {Validation.Update.class})
     private Long id;
     @Schema(description = "编码")
+	@NotBlank(message = "编码不能为空", groups = {Validation.Create.class, Validation.Update.class})
     private String code;
     @Schema(description = "名称")
+	@NotBlank(message = "名称不能为空", groups = {Validation.Create.class, Validation.Update.class})
     private String name;
     @Schema(description = "父级ID")
     private Long parentId;

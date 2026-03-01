@@ -1,6 +1,8 @@
 package top.jpower.system.dbs.dao.tenant;
 
 import com.alibaba.fastjson2.JSON;
+import com.mybatisflex.core.query.QueryMethods;
+import com.mybatisflex.core.util.UpdateEntity;
 import org.springframework.stereotype.Repository;
 import top.jpower.core.dbs.dbs.dao.JpowerServiceImpl;
 import top.jpower.core.dbs.support.Wrappers;
@@ -11,6 +13,7 @@ import top.jpower.system.vo.SelectVO;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * 租户数据访问对象
@@ -28,7 +31,10 @@ public class CoreTenantDao extends JpowerServiceImpl<CoreTenantMapper, CoreTenan
 	 * @return java.util.Map<java.lang.String,java.lang.String> 设置内容
 	 **/
 	public Map<String, String> config(Long id) {
-		return super.getObj(Condition.<CoreTenant>getQueryWrapper().lambda().select(CoreTenant::getConfig).eq(CoreTenant::getId, id), config-> JSON.parseObject(Fc.toStr(config, "{}"), Map.class));
+		String config = super.getObjAs(Wrappers.getQueryWrapper()
+				.select(CoreTenant::getConfig)
+				.eq(CoreTenant::getId, id), String.class);
+		return JSON.parseObject(Fc.toStr(config, "{}"), Map.class);
 	}
 
 	/**
@@ -43,7 +49,7 @@ public class CoreTenantDao extends JpowerServiceImpl<CoreTenantMapper, CoreTenan
 		CoreTenant tenant = new CoreTenant();
 		tenant.setId(id);
 		tenant.setConfig(config);
-		return super.updateById(tenant);
+		return super.updateById(UpdateEntity.ofNotNull(tenant));
 	}
 
 	/**
@@ -54,8 +60,24 @@ public class CoreTenantDao extends JpowerServiceImpl<CoreTenantMapper, CoreTenan
 	 * @return java.util.List<top.jpower.system.vo.SelectVO> 列表
 	 **/
 	public List<SelectVO> select(String tenantName) {
-		return super.listAs(Wrappers.getQueryWrapper().select(CoreTenant::getTenantName, CoreTenant::getTenantCode)
+		return super.listAs(Wrappers.getQueryWrapper()
+				.select(CoreTenant::getTenantName, CoreTenant::getTenantCode)
 				.like(CoreTenant::getTenantName, tenantName, Fc.isNoneBlank(tenantName))
 				.orderBy(CoreTenant::getCreateTime).desc(), SelectVO.class);
+	}
+
+	public List<String> listTenantCode() {
+		return super.objListAs(Wrappers.getQueryWrapper().select(CoreTenant::getTenantCode), String.class);
+	}
+
+	/**
+	 * 根据域名查询租户
+	 *
+	 * @author mr.g
+	 * @param domain 域名
+	 * @return 租户
+	 **/
+	public Optional<CoreTenant> getByDomain(String domain) {
+		return super.getOneOpt(Wrappers.getQueryWrapper().where(QueryMethods.length(CoreTenant::getDomain).gt(0)).and("? like concat('%', domain)", domain).limit(1));
 	}
 }

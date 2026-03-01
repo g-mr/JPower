@@ -56,6 +56,7 @@ import top.jpower.jpower.dto.AuthInfo;
 import top.jpower.resource.api.dto.SmsValidateDTO;
 import top.jpower.jpower.dto.TokenParameter;
 import top.jpower.resource.api.feign.SmsClient;
+import top.jpower.user.api.dto.CoreUserDTO;
 import top.jpower.user.api.feign.UserClient;
 import top.jpower.jpower.utils.TokenUtil;
 
@@ -225,7 +226,7 @@ public class AuthController extends BaseController {
 
     @ApiOperation(value = "用户注册")
     @PostMapping(value = "/register")
-    public ResponseData register(TbCoreUser coreUser,@RequestHeader(HEADER_TENANT) String tenantCode) {
+    public ResponseData register(CoreUserDTO coreUser, @RequestHeader(HEADER_TENANT) String tenantCode) {
 
         if (!ParamConfig.getBoolean(ParamsConstants.IS_REGISTER,Boolean.FALSE)){
             return ReturnJsonUtil.fail("未开启注册功能");
@@ -239,12 +240,12 @@ public class AuthController extends BaseController {
         }
         coreUser.setUserType(UserTypeEnum.USER_TYPE_GENERAL.getValue());
 
-        TbCoreUser user = UserCache.getUserByLoginId(coreUser.getLoginId(),tenantCode);
+		CoreUserDTO user = UserCache.getUserByLoginId(coreUser.getLoginId(),tenantCode);
         if (Fc.notNull(user)){
             return ReturnJsonUtil.fail("该用户已注册");
         }
 
-        user.setPassword(DigestUtil.pwdEncrypt(coreUser.getPassword()));
+		coreUser.setPassword(DigestUtil.pwdEncrypt(coreUser.getPassword()));
         coreUser.setRoleIds(ParamConfig.getString(ParamsConstants.REGISTER_ROLE_ID));
         return userClient.saveUser(coreUser);
     }

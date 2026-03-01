@@ -26,6 +26,8 @@ public class CoreUserDTO implements Serializable {
     private Long id;
     @Schema(description = "登录用户名")
     private String loginId;
+	@Schema(description = "密码")
+	private String password;
     @Schema(description = "头像")
     private String avatar;
     @Schema(description = "昵称")
@@ -54,5 +56,11 @@ public class CoreUserDTO implements Serializable {
     private Long postId;
     @Schema(description = "角色ID")
     private List<Long> roleIds;
+	@Schema(description = "用户类型")
+	private Integer userType;
+	@Schema(description = "是否激活")
+	private Boolean activationStatus;
+	@Schema(description = "租户CODE")
+	private String tenantCode;
 
 }

@@ -2,12 +2,11 @@ package top.jpower.system.controller.api;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.AllArgsConstructor;
-import org.springframework.context.annotation.Bean;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.core.auth.utils.ShieldUtil;
 import top.jpower.core.boot.controller.BaseController;
 import top.jpower.core.dbs.mp.support.Condition;
@@ -17,14 +16,14 @@ import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
 import top.jpower.system.api.dto.CityDTO;
 import top.jpower.system.api.dto.ClientDTO;
+import top.jpower.system.api.dto.OrgDTO;
+import top.jpower.system.api.dto.TenantDTO;
 import top.jpower.system.api.feign.SystemClient;
-import top.jpower.system.dbs.entity.city.CoreCity;
 import top.jpower.system.dbs.entity.client.CoreClient;
-import top.jpower.system.dbs.entity.client.TbCoreClient;
 import top.jpower.system.dbs.entity.function.TbCoreDataScope;
-import top.jpower.system.dbs.entity.org.TbCoreOrg;
+import top.jpower.system.dbs.entity.org.CoreOrg;
 import top.jpower.system.dbs.entity.role.TbCoreRole;
-import top.jpower.system.dbs.entity.tenant.TbCoreTenant;
+import top.jpower.system.dbs.entity.tenant.CoreTenant;
 import top.jpower.system.service.city.CoreCityService;
 import top.jpower.system.service.client.CoreClientService;
 import top.jpower.system.service.org.CoreOrgService;
@@ -42,22 +41,28 @@ import java.util.List;
 @Hidden
 @RestController
 @RequestMapping("feign/core")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SystemClientController extends BaseController implements SystemClient {
 
-    private CoreOrgService coreOrgService;
-    private CoreClientService coreClientService;
-    private CoreFunctionService coreFunctionService;
-    private TenantService tenantService;
-    private CoreDataScopeService coreDataScopeService;
-    private CoreRoleService coreRoleService;
-    private CoreCityService coreCityService;
+    private final CoreOrgService coreOrgService;
+    private final CoreClientService coreClientService;
+    private final CoreFunctionService coreFunctionService;
+    private final TenantService tenantService;
+    private final CoreDataScopeService coreDataScopeService;
+    private final CoreRoleService coreRoleService;
+    private final CoreCityService coreCityService;
 
     @Override
     @GetMapping("/org/queryChildById")
     public R<List<Long>> queryChildOrgById(@RequestParam Long id){
-        return R.ok("查询成功",coreOrgService.queryChildById(id));
+        return R.data(coreOrgService.queryChildIdById(id));
     }
+
+	@Override
+	@GetMapping("/org/queryOrgById")
+	public R<OrgDTO> queryOrgById(@RequestParam Long orgId) {
+		return R.data(coreOrgService.getByIdAs(orgId, OrgDTO.class));
+	}
 
     @Override
     @GetMapping("/function/getUrlsByRoleIds")
@@ -93,14 +98,8 @@ public class SystemClientController extends BaseController implements SystemClie
 
     @Override
     @GetMapping("/tenant/getTenantByCode")
-    public R<TbCoreTenant> getTenantByCode(@RequestParam String tenantCode){
-        return R.ok("查询成功",tenantService.getOne(Condition.<TbCoreTenant>getQueryWrapper().lambda().eq(TbCoreTenant::getTenantCode,tenantCode)));
-    }
-
-    @Override
-    @GetMapping("/org/queryOrgById")
-    public R<TbCoreOrg> queryOrgById(@RequestParam Long orgId) {
-        return R.ok("查询成功",coreOrgService.getById(orgId));
+    public R<TenantDTO> getTenantByCode(@RequestParam String tenantCode){
+        return R.data(BeanUtil.copyProperties(tenantService.getOneByField(CoreTenant::getTenantCode, tenantCode), TenantDTO.class));
     }
 
     @Override

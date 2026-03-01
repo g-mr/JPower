@@ -62,7 +62,7 @@ public class CoreDictDao extends JpowerServiceImpl<CoreDictMapper, CoreDict> {
 		return Wrappers.getQueryWrapper(map)
 				.select(CORE_DICT.DEFAULT_COLUMNS)
 				.select(CORE_DICT.as("p").NAME.as(DictVo::getParentName))
-				.select(QueryMethods.exists(selectOne().from(CORE_DICT).where(CORE_DICT.PARENT_ID.eq(CORE_DICT.as("t").ID))).toSql(Collections.singletonList(CORE_DICT), dialect) + "AS has_children")
+				.select(QueryMethods.column(QueryMethods.exists(selectOne().from(CORE_DICT).where(CORE_DICT.PARENT_ID.eq(CORE_DICT.as("t").ID))).toSql(Collections.singletonList(CORE_DICT), dialect)).as(DictVo::getHasChildren))
 				.from(CORE_DICT.as("t"))
 				.leftJoin(CORE_DICT.as("p")).on(CORE_DICT.as("p").ID.eq(CORE_DICT.as("t").PARENT_ID))
 				.orderBy(CoreDict::getSortNum).asc();
