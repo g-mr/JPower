@@ -20,8 +20,7 @@ public interface CoreDataScopeService extends BaseService<CoreDataScope> {
      * @param dataScope 数据权限bean
      * @return 是否保存成功
      */
-    @Override
-    boolean save(TbCoreDataScope dataScope);
+    Long create(CoreDataScope dataScope);
 
     /**
      * 给角色设置数据权限

@@ -85,6 +85,14 @@ public interface BaseService<T> extends IService<T> {
 	/**
 	 * <p>根据查询条件分页查询数据。</p>
 	 *
+	 * @param map 查询条件
+	 * @return 分页对象
+	 */
+	Pg<T> pg(Map<String,Object> map);
+
+	/**
+	 * <p>根据查询条件分页查询数据。</p>
+	 *
 	 * @param query 查询条件
 	 * @return 分页对象
 	 */
@@ -99,6 +107,14 @@ public interface BaseService<T> extends IService<T> {
 	<R> Pg<R> pgAs(QueryWrapper query, Class<R> asType);
 
 	/**
+	 * <p>根据查询条件分页查询数据。</p>
+	 *
+	 * @param map 查询条件
+	 * @return 分页对象
+	 */
+	<R> Pg<R> pgAs(Map<String,Object> map, Class<R> asType);
+
+	/**
 	 * 通过字段查询是否存在
 	 *
 	 * @param column 字段
@@ -106,6 +122,15 @@ public interface BaseService<T> extends IService<T> {
 	 * @return 是否存在
 	 */
 	boolean existsByField(LambdaGetter<T> column, Object value);
+
+	/**
+	 * 通过字段查询列表
+	 *
+	 * @param column 字段
+	 * @param value 值
+	 * @return 是否存在
+	 */
+	List<T> listByField(LambdaGetter<T> column, Object value);
 
 	/**
 	 * 通过字段信息

@@ -6,6 +6,7 @@ import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
 import top.jpower.system.dbs.entity.function.CoreFunction;
 import top.jpower.system.vo.DataFunctionVo;
 import top.jpower.system.vo.FunctionVo;
+import top.jpower.system.vo.SelectIdNameVO;
 
 import java.util.List;
 import java.util.Map;
@@ -190,10 +191,10 @@ public interface CoreFunctionService extends BaseService<CoreFunction> {
      * 查询菜单列表
      * 
      * @author mr.g
-     * @param coreFunction 查询条件
+     * @param map 查询条件
      * @return 数据功能列表
      */
-    List<DataFunctionVo> listDataFunction(Map<String, Object> coreFunction);
+    List<DataFunctionVo> listDataFunction(Map<String, Object> map);
 
     /**
      * 客户端下的接口资源
@@ -204,4 +205,13 @@ public interface CoreFunctionService extends BaseService<CoreFunction> {
      * @return 接口资源列表
      */
     List<Map<String, Object>> listInterface(List<Long> roleIds, Long clientId);
+
+	/**
+     * 根据客户端查询功能
+     *
+     * @author mr.g
+     * @param clientId 客户端ID
+     * @return 功能列表
+     */
+    List<SelectIdNameVO> selectByClientId(Long clientId);
 }

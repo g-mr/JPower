@@ -82,8 +82,10 @@ public interface ServiceCodeConstants {
 
 	String NOT_SUPER_ADMIN_MODIFY_TENANT = "只可超级管理员操作租户";
 
-	String USER_SAVE_FAILURE = "用户保存失败";
+	String SAVE_FAILURE = "保存失败";
 
-	String DELETE_ORG_EXIST_CHILD = "您删除的组织机构存在下级机构，请先删除下级机构";
+	String DELETE_EXIST_CHILD = "您删除的信息存在下级，请先删除下级信息";
+
+	String DATA_SCOPE_NOT_NULL = "数据权限值域不可为空";
 
 }

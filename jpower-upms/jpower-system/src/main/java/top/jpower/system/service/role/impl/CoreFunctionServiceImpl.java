@@ -4,7 +4,7 @@ import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.lang.tree.Tree;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -24,10 +24,10 @@ import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.MapUtil;
 import top.jpower.core.util.utils.StringUtil;
 import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
-import top.jpower.system.dbs.dao.client.TbCoreClientDao;
-import top.jpower.system.dbs.dao.role.TbCoreFunctionDao;
-import top.jpower.system.dbs.dao.role.TbCoreFunctionMenuDao;
-import top.jpower.system.dbs.dao.role.TbCoreRoleFunctionDao;
+import top.jpower.system.dbs.dao.client.CoreClientDao;
+import top.jpower.system.dbs.dao.role.CoreFunctionDao;
+import top.jpower.system.dbs.dao.role.CoreFunctionMenuDao;
+import top.jpower.system.dbs.dao.role.CoreRoleFunctionDao;
 import top.jpower.system.dbs.dao.role.mapper.CoreFunctionMapper;
 import top.jpower.system.dbs.entity.function.CoreFunction;
 import top.jpower.system.dbs.entity.function.TbCoreFunctionMenu;
@@ -35,6 +35,7 @@ import top.jpower.system.dbs.entity.role.TbCoreRoleFunction;
 import top.jpower.system.service.role.CoreFunctionService;
 import top.jpower.system.vo.DataFunctionVo;
 import top.jpower.system.vo.FunctionVo;
+import top.jpower.system.vo.SelectIdNameVO;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -48,16 +49,16 @@ import static top.jpower.core.util.constants.JpowerConstants.TOP_CODE;
  * @author mr.g
  */
 @Service("coreFunctionService")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CoreFunctionServiceImpl extends BaseServiceImpl<CoreFunctionMapper, CoreFunction> implements CoreFunctionService {
 
     private final String ROLE_SQL = "select function_id from tb_core_role_function where role_id in ({})";
 
-    private RestTemplate restTemplate;
-    private TbCoreFunctionDao coreFunctionDao;
-    private TbCoreRoleFunctionDao coreRoleFunctionDao;
-    private TbCoreFunctionMenuDao functionMenuDao;
-    private TbCoreClientDao clientDao;
+    private final RestTemplate restTemplate;
+    private final CoreFunctionDao coreFunctionDao;
+    private final CoreRoleFunctionDao coreRoleFunctionDao;
+    private final CoreFunctionMenuDao functionMenuDao;
+    private final CoreClientDao clientDao;
 
     @Override
     public List<Tree<String>> treeMenuTypeByClientId(List<Long> roleIds, Long clientId) {
@@ -173,17 +174,14 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<CoreFunctionMapper,
      * 查询菜单列表
      * 
      * @author mr.g
-     * @param coreFunction 查询条件
+     * @param map 查询条件
      * @return 数据功能列表
      */
     @Override
-    public List<DataFunctionVo> listDataFunction(Map<String, Object> coreFunction) {
-        Long menuId = Fc.toLong(coreFunction.remove("menuId_eq"));
+    public List<DataFunctionVo> listDataFunction(Map<String, Object> map) {
+        Long menuId = Fc.toLong(map.remove("menuId_eq"));
 
-        return coreFunctionDao.getBaseMapper().listDataFunction(Condition.getQueryWrapper(coreFunction,TbCoreFunction.class).lambda()
-                .inSql(!ShieldUtil.isRoot(),TbCoreFunction::getId,StringUtil.format(ROLE_SQL,Fc.join(ShieldUtil.getUserRole())))
-                .inSql(Fc.notNull(menuId),TbCoreFunction::getId,StringUtil.format("select function_id from tb_core_function_menu where menu_id = {}",menuId))
-                .orderByAsc(TbCoreFunction::getSort));
+        return coreFunctionDao.listDataFunction(menuId, map, ShieldUtil.isRoot() ? null : ShieldUtil.getUserRole());
     }
 
     /**
@@ -199,7 +197,12 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<CoreFunctionMapper,
         return coreFunctionDao.listInterface(roleIds,clientId);
     }
 
-    @Override
+	@Override
+	public List<SelectIdNameVO> selectByClientId(Long clientId) {
+		return coreFunctionDao.selectByClientId(clientId);
+	}
+
+	@Override
     public Set<Long> queryUrlIdByRole(List<Long> roleIds) {
         return new HashSet<>(coreRoleFunctionDao.listObjs(Condition.<TbCoreRoleFunction>getQueryWrapper()
                 .lambda()

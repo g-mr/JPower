@@ -2,6 +2,10 @@ package top.jpower.system.dbs.dao.role;
 
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.lang.tree.Tree;
+import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.query.QueryMethods;
+import com.mybatisflex.core.util.LambdaUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import top.jpower.common.enums.FunctionTypeEnum;
 import top.jpower.core.auth.utils.ShieldUtil;
@@ -16,12 +20,20 @@ import top.jpower.core.util.utils.StringUtil;
 import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
 import top.jpower.system.dbs.dao.role.mapper.CoreFunctionMapper;
 import top.jpower.system.dbs.entity.function.CoreFunction;
+import top.jpower.system.dbs.entity.function.CoreFunctionMenu;
+import top.jpower.system.dbs.entity.role.CoreRoleFunction;
+import top.jpower.system.vo.DataFunctionVo;
+import top.jpower.system.vo.SelectIdNameVO;
 
-import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static top.jpower.core.util.constants.JpowerConstants.TOP_CODE;
+import static top.jpower.system.dbs.entity.function.table.CoreFunctionTableDef.CORE_FUNCTION;
+import static top.jpower.system.dbs.entity.role.table.CoreRoleFunctionTableDef.CORE_ROLE_FUNCTION;
 
 /**
  * 功能数据访问对象
@@ -29,7 +41,10 @@ import java.util.stream.Collectors;
  * @author mr.g
  */
 @Repository
+@RequiredArgsConstructor
 public class CoreFunctionDao extends JpowerServiceImpl<CoreFunctionMapper, CoreFunction> {
+
+	private final IDialect dialect;
 
     private static final String ROLE_SQL = "select function_id from tb_core_role_function where role_id in ({})";
 
@@ -83,15 +98,21 @@ public class CoreFunctionDao extends JpowerServiceImpl<CoreFunctionMapper, CoreF
         })).collect(Collectors.toList());
     }
 
-    public List<Long> queryIdByTopChild() {
-        List<Long> functionIds = super.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda().select(TbCoreFunction::getId)
-                .eq(TbCoreFunction::getParentId, Fc.toLong(JpowerConstants.TOP_CODE))
-                .ne(TbCoreFunction::getFunctionType, FunctionTypeEnum.MENU.getValue()), Fc::toLong);
+	/**
+	 * 获取顶级功能ID
+	 *
+	 * @author mr.g
+	 * @return 顶级功能ID
+	 **/
+    public List<Long> queryNoMenuIdByTop() {
+        List<Long> functionIds = super.objListAs(Wrappers.getQueryWrapper()
+				.select(CoreFunction::getId)
+                .eq(CoreFunction::getParentId, Fc.toLong(JpowerConstants.TOP_CODE))
+                .ne(CoreFunction::getFunctionType, FunctionTypeEnum.MENU.getValue()), Long.class);
 
-        String where = StringUtil.concat("ancestor_id REGEXP ",StringPool.SINGLE_QUOTE,StringPool.LEFT_BRACKET,StringUtil.join(functionIds, StringPool.SPILT),StringPool.RIGHT_BRACKET,StringPool.SINGLE_QUOTE);
-        functionIds.addAll(super.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
-                .select(TbCoreFunction::getId)
-                .apply(where)));
+        functionIds.addAll(super.objListAs(Wrappers.getQueryWrapper()
+                .select(CoreFunction::getId)
+                .where(LambdaUtil.getFieldName(CoreFunction::getAncestorId) + " REGEXP ?", StringUtil.concat(StringPool.LEFT_BRACKET, StringUtil.join(functionIds, StringPool.SPILT), StringPool.RIGHT_BRACKET)), Long.class));
         return functionIds;
     }
 
@@ -117,6 +138,59 @@ public class CoreFunctionDao extends JpowerServiceImpl<CoreFunctionMapper, CoreF
 		}
 
 		return ids;
+	}
+
+	/**
+	 * 根据父ID获取接口的功能ID
+	 *
+	 * @author mr.g
+	 * @param functionIds 功能ID
+	 * @return 接口功能ID
+	 **/
+	public List<Long> getIdByParentIdInterface(List<Long> functionIds) {
+		return super.objListAs(Wrappers.getQueryWrapper()
+				.select(CoreFunction::getId)
+				.eq(CoreFunction::getFunctionType, FunctionTypeEnum.INTERFACE.getValue())
+				.in(CoreFunction::getParentId, functionIds), Long.class);
+	}
+
+	/**
+	 * 根据客户端ID获取功能ID和名称
+	 *
+	 * @author mr.g
+	 * @param clientId 客户端ID
+	 * @return 功能ID和名称
+	 **/
+	public List<SelectIdNameVO> selectByClientId(Long clientId) {
+		return super.listAs(Wrappers.getQueryWrapper()
+				.select(CoreFunction::getId, CoreFunction::getFunctionName)
+				.eq(CoreFunction::getParentId, Fc.toLong(TOP_CODE))
+				.eq(CoreFunction::getFunctionType, FunctionTypeEnum.MENU.getValue())
+				.eq(CoreFunction::getClientId, clientId), SelectIdNameVO.class);
+	}
+
+	/**
+	 * 获取数据权限功能
+	 *
+	 * @author mr.g
+	 * @param menuId 菜单ID
+	 * @param map    查询条件
+	 * @param roleIds 角色ID
+	 * @return 数据权限功能
+	 **/
+	public List<DataFunctionVo> listDataFunction(Long menuId, Map<String, Object> map, List<Long> roleIds) {
+		return super.listAs(Wrappers.getQueryWrapper(map)
+						.as("t")
+						.select(CORE_ROLE_FUNCTION.DEFAULT_COLUMNS)
+						.select(QueryMethods.column(QueryMethods.exists(QueryMethods.selectOne()
+								.where(CORE_FUNCTION.PARENT_ID.eq(CORE_FUNCTION.as("t").ID).and(CORE_FUNCTION.FUNCTION_TYPE.eq(FunctionTypeEnum.MENU.getValue())))).toSql(Collections.singletonList(CORE_FUNCTION), dialect)).as(DataFunctionVo::getHasChildren))
+						.select(QueryMethods.column(QueryMethods.exists(QueryMethods.selectOne()
+								.where(CORE_FUNCTION.PARENT_ID.eq(CORE_FUNCTION.as("t").ID).and(CORE_FUNCTION.FUNCTION_TYPE.ne(FunctionTypeEnum.MENU.getValue())))).toSql(Collections.singletonList(CORE_FUNCTION), dialect)).as(DataFunctionVo::getIsData))
+						.leftJoin(CoreRoleFunction.class, Fc.isNotEmpty(roleIds)).on(CoreRoleFunction::getFunctionId, CoreFunction::getId)
+						.in(CoreRoleFunction::getRoleId, roleIds, Fc.isNotEmpty(roleIds))
+						.leftJoin(CoreFunctionMenu.class, Fc.notNull(menuId)).on(CoreFunctionMenu::getFunctionId, CoreFunction::getId)
+						.eq(CoreFunctionMenu::getMenuId, menuId, Fc.notNull(menuId))
+						.orderBy(CoreFunction::getSort).asc(), DataFunctionVo.class);
 	}
 }
 

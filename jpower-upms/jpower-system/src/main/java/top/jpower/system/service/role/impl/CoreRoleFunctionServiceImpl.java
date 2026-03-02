@@ -1,73 +1,87 @@
 package top.jpower.system.service.role.impl;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import top.jpower.common.enums.FunctionTypeEnum;
-import top.jpower.core.dbs.mp.support.Condition;
+import top.jpower.common.constants.CacheNames;
 import top.jpower.core.dbs.service.impl.BaseServiceImpl;
-import top.jpower.core.util.utils.ChainMap;
+import top.jpower.core.exception.enums.JpowerError;
+import top.jpower.core.exception.throwable.JpowerAssert;
+import top.jpower.core.exception.throwable.JpowerException;
+import top.jpower.core.redis.cache.CacheUtil;
 import top.jpower.core.util.utils.Fc;
-import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
-import top.jpower.system.dbs.dao.role.TbCoreRoleFunctionDao;
+import top.jpower.system.dbs.dao.role.CoreFunctionDao;
+import top.jpower.system.dbs.dao.role.CoreRoleFunctionDao;
 import top.jpower.system.dbs.dao.role.mapper.CoreRoleFunctionMapper;
+import top.jpower.system.dbs.entity.role.CoreRole;
 import top.jpower.system.dbs.entity.role.CoreRoleFunction;
-import top.jpower.system.dbs.entity.role.TbCoreRoleFunction;
-import top.jpower.system.service.role.CoreFunctionService;
 import top.jpower.system.service.role.CoreRoleFunctionService;
+import top.jpower.system.service.role.CoreRoleService;
+import top.jpower.system.vo.RoleFunctionSaveVO;
+import top.jpower.system.vo.RoleFunctionVO;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
+import static top.jpower.common.constants.ServiceCodeConstants.NOT_FOUND_DATA;
+import static top.jpower.common.constants.ServiceCodeConstants.SAVE_FAILURE;
 
 /**
  * 角色功能服务实现
  * 
  * @author mr.g
  */
-@AllArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class CoreRoleFunctionServiceImpl extends BaseServiceImpl<CoreRoleFunctionMapper, CoreRoleFunction> implements CoreRoleFunctionService {
 
-    public TbCoreRoleFunctionDao coreRoleFunctionDao;
-    public CoreFunctionService coreFunctionService;
+    public final CoreRoleFunctionDao coreRoleFunctionDao;
+    public final CoreFunctionDao coreFunctionDao;
+	public final CoreRoleService coreRoleService;
 
     @Override
-    public List<Map<String,Object>> selectRoleFunctionByRoleId(Long roleId) {
-        return coreRoleFunctionDao.getBaseMapper().selectRoleFunctionByRoleId(roleId);
+    public List<RoleFunctionVO> selectRoleFunctionByRoleId(Long roleId) {
+        return coreRoleFunctionDao.selectRoleFunctionByRoleId(roleId);
     }
 
     @Override
-    public boolean addRoleFunctions(Long roleId, List<Long> funcIds, boolean isAutoSaveInterface) {
+    public boolean addRoleFunctions(RoleFunctionSaveVO roleFunctionSaveVO) {
 
-        //先删除角色原有权限
-        coreRoleFunctionDao.removeRealByMap(ChainMap.<String,Object>create().put("role_id",roleId).build());
+		JpowerAssert.notNull(coreRoleService.existsByField(CoreRole::getId, roleFunctionSaveVO.getRoleId()), JpowerError.NotFind, NOT_FOUND_DATA);
+
+		//先删除角色原有权限
+        coreRoleFunctionDao.removeRealByRoleId(roleFunctionSaveVO.getRoleId());
 
         //把下级的接口权限自动给
-        if (isAutoSaveInterface){
-            List<Long> fIds = coreFunctionService.listObjs(Condition.<TbCoreFunction>getQueryWrapper().lambda()
-                    .select(TbCoreFunction::getId)
-                    .eq(TbCoreFunction::getFunctionType, FunctionTypeEnum.INTERFACE.getValue())
-                    .in(TbCoreFunction::getParentId, funcIds), Fc::toLong);
+        if (roleFunctionSaveVO.getIsAutoSaveInterface() && Fc.isNotEmpty(roleFunctionSaveVO.getFunctionIds())){
+            List<Long> fIds = coreFunctionDao.getIdByParentIdInterface(roleFunctionSaveVO.getFunctionIds());
             if (Fc.isNotEmpty(fIds)){
-                funcIds.addAll(fIds);
+				roleFunctionSaveVO.getFunctionIds().addAll(fIds);
             }
         }
 
-        List<TbCoreRoleFunction> roleFunctions = new ArrayList<>();
-        if (Fc.isNotEmpty(funcIds)){
-            for (Long fId : funcIds) {
-                TbCoreRoleFunction roleFunction = new TbCoreRoleFunction();
+        List<CoreRoleFunction> roleFunctions = new ArrayList<>();
+        if (Fc.isNotEmpty(roleFunctionSaveVO.getFunctionIds())){
+            for (Long fId : roleFunctionSaveVO.getFunctionIds()) {
+                CoreRoleFunction roleFunction = new CoreRoleFunction();
                 roleFunction.setId(Fc.randomSnowFlakeId());
                 roleFunction.setFunctionId(fId);
-                roleFunction.setRoleId(roleId);
+                roleFunction.setRoleId(roleFunctionSaveVO.getRoleId());
                 roleFunctions.add(roleFunction);
             }
         }
 
         if (roleFunctions.size() > 0){
-            return coreRoleFunctionDao.saveBatch(roleFunctions);
+			coreRoleFunctionDao.saveBatch(roleFunctions);
         }
-        return true;
+
+
+		if (coreRoleService.saveTopMenu(roleFunctionSaveVO.getRoleId(), roleFunctionSaveVO.getTopMenuIds())) {
+			CacheUtil.clear(CacheNames.ROLE_KEY);
+			CacheUtil.clear(CacheNames.FUNCTION_KEY);
+			return true;
+		}
+		// 让事务进行回滚
+		throw new JpowerException(SAVE_FAILURE);
     }
 
 }

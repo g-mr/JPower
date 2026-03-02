@@ -1,8 +1,8 @@
 package top.jpower.system.service.role;
 
+import cn.hutool.core.lang.tree.Tree;
 import top.jpower.core.dbs.service.BaseService;
 import top.jpower.system.dbs.entity.role.CoreRole;
-import top.jpower.system.dbs.entity.role.TbCoreRole;
 
 import java.util.List;
 
@@ -20,16 +20,25 @@ public interface CoreRoleService extends BaseService<CoreRole> {
      * @param coreRole 角色实体
      * @return 是否新增成功
      */
-    Boolean add(TbCoreRole coreRole);
+    Boolean add(CoreRole coreRole);
 
-    /**
-     * 根据批量id查询下级角色数量
-     * 
+	/**
+     * 批量删除角色
+     *
      * @author mr.g
-     * @param ids ID列表
-     * @return 下级角色数量
+     * @param ids 角色ID列表
+     * @return 是否删除成功
+	 */
+	boolean removeByIds(List<Long> ids);
+
+	/**
+     * 修改角色信息
+     *
+     * @author mr.g
+     * @param coreRole 角色实体
+     * @return 是否修改成功
      */
-    long listByPids(List<Long> ids);
+	boolean updateById(CoreRole coreRole);
 
     /**
      * 保存顶部菜单关联信息
@@ -41,12 +50,28 @@ public interface CoreRoleService extends BaseService<CoreRole> {
      */
     boolean saveTopMenu(Long roleId, List<Long> menuIds);
 
-    /**
-     * 角色关联的顶部菜单ID
-     * 
+	/**
+     * 获取角色树形结构
+     *
      * @author mr.g
-     * @param roleId 角色ID
-     * @return 顶部菜单ID列表
+     * @return 角色树形结构
      */
-    List<Long> topMenuId(Long roleId);
+    List<Tree<Long>> listTree();
+
+	/**
+     * 获取角色树形结构
+     *
+     * @author mr.g
+     * @return 角色树形结构
+     */
+	List<Tree<Long>> treeSelect();
+
+	/**
+	 * 根据角色ID查询顶级菜单ID
+	 *
+	 * @author mr.g
+	 * @param roleId 角色ID
+	 * @return 菜单ID列表
+	 */
+	List<Long> queryMenuIdByRoleId(Long roleId);
 }

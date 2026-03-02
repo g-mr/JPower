@@ -5,6 +5,8 @@ import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.Table;
 import com.mybatisflex.core.keygen.KeyGenerators;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import top.jpower.core.dbs.tenant.entity.TenantEntity;
@@ -21,10 +23,12 @@ public class CoreRole extends TenantEntity {
 
     @Schema(description = "主键")
     @Id(keyType = KeyType.Generator, value = KeyGenerators.flexId)
+	@NotNull(message = "主键不能为空")
     private Long id;
     @Schema(description = "角色别名")
     private String alias;
     @Schema(description = "角色名称")
+	@NotBlank(message = "角色名称不能为空")
     private String name;
     @Schema(description = "角色父级ID")
     private Long parentId;

@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 
 import static top.jpower.common.constants.ServiceCodeConstants.CODE_EXIST;
 import static top.jpower.common.constants.ServiceCodeConstants.DOMAIN_EXIST;
-import static top.jpower.common.constants.ServiceCodeConstants.USER_SAVE_FAILURE;
+import static top.jpower.common.constants.ServiceCodeConstants.SAVE_FAILURE;
 import static top.jpower.core.dbs.tenant.TenantConstant.DEFAULT_TENANT_CODE;
 import static top.jpower.core.dbs.tenant.TenantConstant.TENANT_ACCOUNT_NUMBER;
 import static top.jpower.core.dbs.tenant.TenantConstant.getLicenseKey;
@@ -126,7 +126,7 @@ public class TenantServiceImpl extends BaseServiceImpl<CoreTenantMapper, CoreTen
             roleDao.save(role);
             //创建租户初始权限
 
-            List<Long> functionIds = functionDao.queryIdByTopChild();
+            List<Long> functionIds = functionDao.queryNoMenuIdByTop();
 
             if (Fc.isNotEmpty(tenant.getFunctionCode())){
                 functionIds.addAll(functionDao.getAllIdByCode(tenant.getFunctionCode()));
@@ -164,7 +164,7 @@ public class TenantServiceImpl extends BaseServiceImpl<CoreTenantMapper, CoreTen
 
             R<Long> r = userClient.saveUser(user);
             JpowerAssert.isTrue(r.isStatus(), JpowerError.Rpc, r.getCode(), r.getMessage());
-			JpowerAssert.notTrue(Fc.isNull(r.getData()), JpowerError.Rpc, r.getCode(), USER_SAVE_FAILURE);
+			JpowerAssert.notTrue(Fc.isNull(r.getData()), JpowerError.Rpc, r.getCode(), SAVE_FAILURE);
 
 			CacheUtil.clear(CacheNames.TENANT_KEY);
             return tenant.getId();

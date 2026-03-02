@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static top.jpower.common.constants.ServiceCodeConstants.DELETE_ORG_EXIST_CHILD;
+import static top.jpower.common.constants.ServiceCodeConstants.DELETE_EXIST_CHILD;
 
 /**
  * 组织机构管理
@@ -107,7 +107,7 @@ public class OrgController extends BaseController {
     @Operation(summary = "删除组织机构")
     @DeleteMapping(value = "/delete", produces = APPLICATION_JSON_VALUE)
     public R<Boolean> deleteStatus(@Parameter(description = "主键 多个逗号分割",required = true) @NotBlank(message = "ids不可为空") @RequestParam String ids){
-        JpowerAssert.geZero(coreOrgService.countByParentids(Fc.toLongList(ids)), JpowerError.Business, DELETE_ORG_EXIST_CHILD);
+        JpowerAssert.geZero(coreOrgService.countByParentids(Fc.toLongList(ids)), JpowerError.Business, DELETE_EXIST_CHILD);
         if (coreOrgService.removeByIds(Fc.toLongList(ids))){
             CacheUtil.clear(CacheNames.ORG_KEY);
             return R.data(true);

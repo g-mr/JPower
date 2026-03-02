@@ -160,8 +160,26 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
 		return getMapper().countByField(column, value);
 	}
 
-	public long countInField(LambdaGetter<T> column, List<? extends Serializable> value) {
+	/**
+	 * 通过字段列表查询数量
+	 *
+	 * @param column 字段
+	 * @param value 值
+	 * @return 数量
+	 */
+	public long countInField(LambdaGetter<T> column, List<? extends Object> value) {
 		return count(Wrappers.getQueryWrapper().in(column, value));
+	}
+
+	/**
+	 * 通过字段列表查询是否存在
+	 *
+	 * @param column 字段
+	 * @param value 值
+	 * @return 是否存在
+	 */
+	public boolean existsInField(LambdaGetter<T> column, List<? extends Object> value) {
+		return exists(Wrappers.getQueryWrapper().in(column, value));
 	}
 
 	/**
@@ -188,12 +206,33 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
 	/**
 	 * 分页查询
 	 *
+	 * @param map 查询条件
+	 * @return 分页结果
+	 */
+	public Pg<T> pg(Map<String,Object> map){
+		return getMapper().page(PaginationContext.page(), Wrappers.getQueryWrapper(map));
+	}
+
+	/**
+	 * 分页查询
+	 *
 	 * @param query 查询条件
 	 * @param asType 转换类型
 	 * @return 分页结果
 	 */
 	public <R> Pg<R> pgAs(QueryWrapper query, Class<R> asType){
 		return getMapper().pageAs(PaginationContext.page(), query, asType);
+	}
+
+	/**
+	 * 分页查询
+	 *
+	 * @param map 查询条件
+	 * @param asType 转换类型
+	 * @return 分页结果
+	 */
+	public <R> Pg<R> pgAs(Map<String,Object> map, Class<R> asType){
+		return getMapper().pageAs(PaginationContext.page(), Wrappers.getQueryWrapper(map), asType);
 	}
 
 

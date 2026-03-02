@@ -2,9 +2,11 @@ package top.jpower.system.service.role;
 
 import top.jpower.core.dbs.service.BaseService;
 import top.jpower.system.dbs.entity.function.CoreTopMenu;
+import top.jpower.system.vo.MenuClientVO;
+import top.jpower.system.vo.MenuSelectVO;
+import top.jpower.system.vo.MenuVO;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 顶部菜单服务接口
@@ -38,7 +40,7 @@ public interface CoreMenuService extends BaseService<CoreTopMenu> {
      * @author mr.g
      * @return 顶部菜单列表
      */
-    List<Map<String,Object>> roleMenu();
+    List<MenuVO> roleMenu();
 
     /**
      * 通过客户端ID查询登录用户的顶级菜单
@@ -47,5 +49,33 @@ public interface CoreMenuService extends BaseService<CoreTopMenu> {
      * @param clientId 客户端ID
      * @return 顶级菜单列表
      */
-    List<Map<String,Object>> selectList(Long clientId);
+    List<MenuClientVO> selectList(Long clientId);
+
+	/**
+	 * 创建菜单
+	 * @param topMenu 菜单信息
+	 * @return 菜单ID
+	 */
+	Long create(CoreTopMenu topMenu);
+
+	/**
+	 * 修改菜单
+	 * @param topMenu 菜单信息
+	 * @return 是否成功
+	 */
+	boolean editById(CoreTopMenu topMenu);
+
+	/**
+	 * 修改菜单状态
+	 * @param id 菜单ID
+	 * @param status 状态
+	 * @return 是否成功
+	 */
+	boolean updateStatusById(Long id, Boolean status);
+
+	/**
+	 * 客户端顶级菜单
+	 * @return 客户端菜单列表
+	 */
+	List<MenuSelectVO> clientMenu();
 }

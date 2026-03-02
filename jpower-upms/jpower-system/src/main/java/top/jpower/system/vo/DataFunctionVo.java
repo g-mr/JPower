@@ -1,9 +1,10 @@
 package top.jpower.system.vo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -14,32 +15,33 @@ import java.io.Serializable;
 @Data
 public class DataFunctionVo implements Serializable {
 
-    private static final long serialVersionUID = 7120949826947710266L;
+    @Serial
+	private static final long serialVersionUID = 7120949826947710266L;
 
     private Long id;
 
-    @ApiModelProperty("功能名称")
+    @Schema(description = "功能名称")
     private String functionName;
 
-    @ApiModelProperty("地址")
+    @Schema(description = "地址")
     private String url;
 
-    @ApiModelProperty("图标")
+    @Schema(description = "图标")
     private String icon;
 
-    @ApiModelProperty("编码")
+    @Schema(description = "编码")
     private String code;
 
-    @ApiModelProperty("父级ID")
+    @Schema(description = "父级ID")
     private Long parentId;
 
-    @ApiModelProperty("别名")
+    @Schema(description = "别名")
     private String alias;
 
-    @ApiModelProperty("是否有下级接口或者按钮")
+    @Schema(description = "是否有下级接口或者按钮")
     private Boolean isData;
 
-    @ApiModelProperty("页面打开方式")
+    @Schema(description = "页面打开方式")
     private String targetStr;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)

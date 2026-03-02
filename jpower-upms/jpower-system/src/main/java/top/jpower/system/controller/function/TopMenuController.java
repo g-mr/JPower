@@ -1,45 +1,45 @@
 package top.jpower.system.controller.function;
 
-import cn.hutool.core.util.NumberUtil;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import io.swagger.annotations.*;
+import com.github.xiaoymin.knife4j.annotations.Ignore;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
-import top.jpower.common.enums.FunctionTypeEnum;
-import top.jpower.common.enums.YN01Enum;
-import top.jpower.core.util.rsp.Pg;
-import top.jpower.core.util.rsp.ResponseData;
-import top.jpower.core.util.rsp.ReturnJsonUtil;
-import top.jpower.core.util.utils.ChainMap;
-import top.jpower.core.util.utils.Fc;
-import top.jpower.core.util.utils.MapUtil;
-import top.jpower.system.dbs.entity.client.TbCoreClient;
-import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
-import top.jpower.system.dbs.entity.function.TbCoreTopMenu;
+import top.jpower.common.validated.group.Validation;
 import top.jpower.core.auth.annotation.Function;
 import top.jpower.core.auth.annotation.Menu;
-import top.jpower.core.exception.enums.JpowerError;
-import top.jpower.core.exception.throwable.JpowerAssert;
+import top.jpower.core.boot.argument.RequestSingleBody;
 import top.jpower.core.boot.controller.BaseController;
-import top.jpower.core.dbs.page.PaginationContext;
-import top.jpower.core.dbs.mp.support.Condition;
-import top.jpower.system.service.client.CoreClientService;
+import top.jpower.core.util.rsp.Pg;
+import top.jpower.core.util.rsp.R;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.system.dbs.entity.function.CoreTopMenu;
 import top.jpower.system.service.role.CoreFunctionService;
 import top.jpower.system.service.role.CoreMenuService;
+import top.jpower.system.vo.MenuClientVO;
+import top.jpower.system.vo.MenuSelectVO;
+import top.jpower.system.vo.MenuVO;
+import top.jpower.system.vo.SelectIdNameVO;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static top.jpower.core.util.constants.JpowerConstants.TOP_CODE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
  * 顶级菜单接口
  * 
  * @author mr.g
  */
-@Api(tags = "顶部菜单管理")
+@Tag(name = "顶部菜单管理")
+@Validated
 @RestController
 @RequestMapping("/core/menu")
 @RequiredArgsConstructor
@@ -47,166 +47,111 @@ public class TopMenuController extends BaseController {
 
     private final CoreMenuService menuService;
     private final CoreFunctionService functionService;
-    private final CoreClientService clientService;
 
     @Function(value = "新增菜单",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_ADD",type = Menu.TYPE.BTN)
+		@Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_ADD",type = Menu.TYPE.BTN)
     })
-    @ApiOperation("新增菜单")
-    @PostMapping(value = "/add",produces="application/json")
-    public ResponseData add(TbCoreTopMenu topMenu){
-        topMenu.setId(null);
-        JpowerAssert.notEmpty(topMenu.getCode(), JpowerError.Arg,"编号不可为空");
-        JpowerAssert.notEmpty(topMenu.getName(), JpowerError.Arg,"名称不可为空");
-        JpowerAssert.notNull(topMenu.getClientId(), JpowerError.Arg,"客户端ID不可为空");
-
-        long c = menuService.count(Condition.<TbCoreTopMenu>getQueryWrapper().lambda().eq(TbCoreTopMenu::getCode,topMenu.getCode()));
-        JpowerAssert.geZero(c,JpowerError.Business, "菜单编号不可重复");
-
-        if (Fc.isNull(topMenu.getStatus())){
-            topMenu.setStatus(YN01Enum.Y.getValue());
-        }
-
-        if (Fc.isNull(topMenu.getSortNum())){
-            topMenu.setSortNum(1);
-        }
-
-        return ReturnJsonUtil.status(menuService.save(topMenu));
+    @Operation(summary = "新增菜单")
+    @PostMapping(value = "/add", produces = APPLICATION_JSON_VALUE)
+    public R<Long> add(@Validated(Validation.Create.class) @RequestBody CoreTopMenu topMenu){
+        return R.data(menuService.create(topMenu));
     }
 
     @Function(value = "更新菜单",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_UPDATE",type = Menu.TYPE.BTN)
+		@Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_UPDATE",type = Menu.TYPE.BTN)
     })
-    @ApiOperation("更新菜单")
-    @PutMapping(value = "/update",produces="application/json")
-    public ResponseData update(TbCoreTopMenu topMenu){
-        JpowerAssert.notNull(topMenu.getId(), JpowerError.Arg,"主键不可为空");
-
-        long c = menuService.count(Condition.<TbCoreTopMenu>getQueryWrapper().lambda().eq(TbCoreTopMenu::getCode,topMenu.getCode()).ne(TbCoreTopMenu::getId,topMenu.getId()));
-        JpowerAssert.geZero(c,JpowerError.Business, "菜单编号不可重复");
-
-        return ReturnJsonUtil.status(menuService.updateAllById(topMenu));
+    @Operation(summary = "更新菜单")
+    @PutMapping(value = "/update", produces = APPLICATION_JSON_VALUE)
+    public R<Boolean> update(@Validated(Validation.Update.class) @RequestBody CoreTopMenu topMenu){
+        return R.status(menuService.editById(topMenu));
     }
 
     @Function(value = "菜单开关",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_SWITCH",type = Menu.TYPE.BTN)
+		@Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_SWITCH",type = Menu.TYPE.BTN)
     })
-    @ApiOperation("菜单开关")
-    @PutMapping(value = "/switch",produces="application/json")
-    public ResponseData statusSwitch(@ApiParam(value = "主键",required = true) Long id,@ApiParam(value = "开关状态",required = true) Integer status){
-        JpowerAssert.notNull(id, JpowerError.Arg,"主键不可为空");
-        JpowerAssert.notNull(status, JpowerError.Arg,"开关状态不可为空");
-
-        JpowerAssert.isTrue(YN01Enum.isExist(status), JpowerError.Arg,"开关状态值不合法");
-
-        return ReturnJsonUtil.status(menuService.update(Wrappers.<TbCoreTopMenu>lambdaUpdate()
-                .set(TbCoreTopMenu::getStatus,status)
-                .eq(TbCoreTopMenu::getId,id)));
+    @Operation(summary = "菜单开关")
+    @PutMapping(value = "/switch/{id}", produces = APPLICATION_JSON_VALUE)
+    public R<Boolean> statusSwitch(@Parameter(description = "主键",required = true) @PathVariable("id") Long id,
+								   @Parameter(description = "开关状态",required = true) @NotNull(message = "开关状态不可为空") @RequestSingleBody Boolean status){
+        return R.status(menuService.updateStatusById(id, status));
     }
 
     @Function(value = "删除菜单",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_DELETE",type = Menu.TYPE.BTN)
+		@Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_DELETE",type = Menu.TYPE.BTN)
     })
-    @ApiOperation("删除菜单")
-    @DeleteMapping(value = "/delete",produces="application/json")
-    public ResponseData delete(String ids){
-        JpowerAssert.notEmpty(ids, JpowerError.Arg,"主键不可为空");
-        return ReturnJsonUtil.status(menuService.removeByIds(Fc.toLongList(ids)));
+    @Operation(summary = "删除菜单")
+    @DeleteMapping(value = "/delete", produces = APPLICATION_JSON_VALUE)
+    public R<Boolean> delete(@Parameter(description = "主键", required = true) @NotBlank(message = "ids不可为空") @RequestParam String ids){
+        return R.status(menuService.removeByIds(Fc.toLongList(ids)));
     }
 
     @Function(value = "菜单列表",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_LIST",type = Menu.TYPE.INTERFACE)
+		@Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_LIST",type = Menu.TYPE.INTERFACE)
     })
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "pageNum",value = "第几页",defaultValue = "1",paramType = "query",dataTypeClass = Integer.class,required = true),
-            @ApiImplicitParam(name = "pageSize",value = "每页长度",defaultValue = "10",paramType = "query",dataTypeClass = Integer.class,required = true),
-            @ApiImplicitParam(name = "code",value = "菜单编号",paramType = "query",dataTypeClass = String.class),
-            @ApiImplicitParam(name = "name",value = "菜单名称",paramType = "query",dataTypeClass = String.class),
-            @ApiImplicitParam(name = "status",value = "状态 字典：YN01",paramType = "query",dataTypeClass = String.class)
+    @Parameters({
+		@Parameter(name = "pageNum", description = "第几页", example = "1", schema = @Schema(defaultValue = "1", type = "integer"), in = ParameterIn.QUERY, required = true),
+		@Parameter(name = "pageSize", description = "每页长度", example = "10", schema = @Schema(defaultValue = "10", type = "integer"), in = ParameterIn.QUERY, required = true),
+		@Parameter(name = "code", description = "菜单编号", in = ParameterIn.QUERY),
+		@Parameter(name = "name", description = "菜单名称", in = ParameterIn.QUERY),
+		@Parameter(name = "status_eq", description = "是否启用", in = ParameterIn.QUERY)
     })
-    @ApiOperation("菜单列表")
-    @GetMapping(value = "/list",produces="application/json")
-    public ResponseData<Pg<TbCoreTopMenu>> list(@ApiIgnore @RequestParam Map<String,Object> map){
-        return ReturnJsonUtil.data(menuService.page(PaginationContext.getMpPage(), Condition.getQueryWrapper(map,TbCoreTopMenu.class)));
+    @Operation(summary = "菜单列表")
+    @GetMapping(value = "/list", produces = APPLICATION_JSON_VALUE)
+    public R<Pg<CoreTopMenu>> list(@Ignore @RequestParam(required = false) Map<String,Object> map){
+        return R.data(menuService.pg(map));
     }
 
     @Function(value = "客户端顶部菜单树",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_DATASCOPE_LIST",code = "ROLE_CLIENT_TOPMENU",type = Menu.TYPE.INTERFACE)
+		@Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_DATASCOPE_LIST",code = "ROLE_CLIENT_TOPMENU",type = Menu.TYPE.INTERFACE)
     })
-    @ApiOperation("客户端顶部菜单树")
-    @GetMapping(value = "/listName",produces="application/json")
-    public ResponseData<List<Map<String,Object>>> listName(){
-
-        List<Map<String, Object>> menuList = menuService.selectList(null);
-
-        List<TbCoreClient> coreClients = clientService.list();
-
-        List<Map<String,Object>> list = new ArrayList<>();
-        coreClients.forEach(client -> {
-            Map<String,Object> map = ChainMap.<String,Object>create().put("name",client.getName()).put("id",client.getId()).build();
-
-            map.put("children",menuList.stream().filter(topMenu -> NumberUtil.equals(MapUtil.getLong(topMenu, "client_id"),client.getId())));
-            map.put("hasChildren",Fc.isNotEmpty(map.get("children")));
-
-            list.add(map);
-        });
-
-        return ReturnJsonUtil.data(list);
+    @Operation(summary = "客户端顶部菜单树")
+    @GetMapping(value = "/listName", produces = APPLICATION_JSON_VALUE)
+    public R<List<MenuSelectVO>> listName(){
+        return R.data(menuService.clientMenu());
     }
 
     @Function(value = "关联一级菜单ID",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_FUNCTION_ID",type = Menu.TYPE.INTERFACE)
+		@Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_FUNCTION_ID",type = Menu.TYPE.INTERFACE)
     })
-    @ApiOperation("顶部菜单关联的左侧第一级菜单ID")
-    @GetMapping(value = "/listFunctionId",produces="application/json")
-    public ResponseData<List<Long>> listFunctionId(@ApiParam(value = "顶部菜单ID",required = true) Long menuId){
-        JpowerAssert.notNull(menuId,JpowerError.Arg,"顶部菜单ID不可为空");
-        return ReturnJsonUtil.data(menuService.listFunctionId(menuId));
+    @Operation(summary = "顶部菜单关联的左侧第一级菜单ID")
+    @GetMapping(value = "/listFunctionId/{menuId}", produces = APPLICATION_JSON_VALUE)
+    public R<List<Long>> listFunctionId(@Parameter(description = "顶部菜单ID",required = true) @PathVariable("menuId") Long menuId){
+        return R.data(menuService.listFunctionId(menuId));
     }
 
     @Function(value = "关联菜单",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_FUNCTION",type = Menu.TYPE.BTN)
+		@Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_FUNCTION",type = Menu.TYPE.BTN)
     })
-    @ApiOperation("一级菜单列表")
-    @GetMapping(value = "/listFunction",produces="application/json")
-    public ResponseData<List<Map<String,Object>>> listFunction(@ApiParam(value = "客户端ID",required = true) Long clientId){
-        JpowerAssert.notNull(clientId,JpowerError.Arg,"客户端ID不可为空");
-
-        return ReturnJsonUtil.data(functionService.listMaps(Condition.<TbCoreFunction>getQueryWrapper().lambda()
-                        .select(TbCoreFunction::getId,TbCoreFunction::getFunctionName)
-                        .eq(TbCoreFunction::getParentId, Fc.toLong(TOP_CODE))
-                        .eq(TbCoreFunction::getFunctionType, FunctionTypeEnum.MENU.getValue())
-                        .eq(TbCoreFunction::getClientId,clientId)));
+    @Operation(summary = "一级菜单列表")
+    @GetMapping(value = "/listFunction/{clientId}", produces = APPLICATION_JSON_VALUE)
+    public R<List<SelectIdNameVO>> listFunction(@Parameter(description = "客户端ID",required = true) @PathVariable("clientId") Long clientId){
+        return R.data(functionService.selectByClientId(clientId));
     }
 
     @Function(value = "保存一级菜单",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_FUNCTION_SAVE",type = Menu.TYPE.BTN)
+		@Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_FUNCTION_SAVE",type = Menu.TYPE.BTN)
     })
-    @ApiOperation("设置顶部菜单关联的一级菜单")
-    @PostMapping(value = "/saveFunction",produces="application/json")
-    public ResponseData saveFunction(@ApiParam(value = "顶部菜单ID",required = true) Long menuId,@ApiParam(value = "功能ID，多个逗号分割") String functionIds){
-        JpowerAssert.notNull(menuId,JpowerError.Arg,"顶部菜单ID不可为空");
-
-        return ReturnJsonUtil.status(menuService.saveFunction(menuId,Fc.toLongList(functionIds)));
+    @Operation(summary = "设置顶部菜单关联的一级菜单")
+    @PostMapping(value = "/saveFunction/{menuId}", produces = APPLICATION_JSON_VALUE)
+    public R<Boolean> saveFunction(@Parameter(description = "顶部菜单ID",required = true) @PathVariable("menuId") Long menuId,
+								   @Parameter(description = "功能ID") @RequestSingleBody List<Long> functionIds){
+        return R.status(menuService.saveFunction(menuId, functionIds));
     }
 
-    @ApiOperation("获取当前登录用户的顶级菜单")
-    @GetMapping(value = "/roleMenu",produces="application/json")
-    public ResponseData<List<Map<String,Object>>> roleMenu(){
-        return ReturnJsonUtil.data(menuService.roleMenu());
+    @Operation(summary = "获取当前登录用户的顶级菜单")
+    @GetMapping(value = "/roleMenu", produces = APPLICATION_JSON_VALUE)
+    public R<List<MenuVO>> roleMenu(){
+        return R.data(menuService.roleMenu());
     }
 
     @Function(value = "顶级菜单选项",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "FUNCTION_TOPMENU_SELECT",type = Menu.TYPE.INTERFACE),
-            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "DATASCOPE_TOPMENU_SELECT",type = Menu.TYPE.INTERFACE),
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_ROLE_SELECT_URL",code = "ROLE_TOPMENU",type = Menu.TYPE.INTERFACE)
+		@Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "FUNCTION_TOPMENU_SELECT",type = Menu.TYPE.INTERFACE),
+		@Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "DATASCOPE_TOPMENU_SELECT",type = Menu.TYPE.INTERFACE),
+		@Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_ROLE_SELECT_URL",code = "ROLE_TOPMENU",type = Menu.TYPE.INTERFACE)
     })
-    @ApiOperation(value = "获取顶级菜单下拉框",notes = "只获取当前用户的权限")
-    @GetMapping(value = "/select",produces="application/json")
-    public ResponseData<List<Map<String,Object>>> select(@ApiParam(value = "客户端ID",required = true) Long clientId){
-
-        JpowerAssert.notNull(clientId,JpowerError.Arg,"客户端ID不可为空");
-
-        return ReturnJsonUtil.data(menuService.selectList(clientId));
+    @Operation(summary = "获取顶级菜单下拉框", description = "只获取当前用户的权限")
+    @GetMapping(value = "/select/{clientId}", produces = APPLICATION_JSON_VALUE)
+    public R<List<MenuClientVO>> select(@Parameter(description = "客户端ID",required = true) @PathVariable("clientId") Long clientId){
+        return R.data(menuService.selectList(clientId));
     }
 }
