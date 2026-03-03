@@ -17,6 +17,7 @@ import top.jpower.system.dbs.dao.client.CoreClientDao;
 import top.jpower.system.dbs.dao.client.mapper.CoreClientMapper;
 import top.jpower.system.dbs.entity.client.CoreClient;
 import top.jpower.system.service.client.CoreClientService;
+import top.jpower.system.vo.SelectIdNameVO;
 import top.jpower.system.vo.SelectVO;
 
 import java.util.List;
@@ -72,7 +73,7 @@ public class CoreClientServiceImpl extends BaseServiceImpl<CoreClientMapper, Cor
 	}
 
 	@Override
-	public List<SelectVO> select() {
+	public List<SelectIdNameVO> select() {
 		return coreClientDao.select();
 	}
 

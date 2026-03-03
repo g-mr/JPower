@@ -36,4 +36,13 @@ public class CoreFunctionMenuDao extends JpowerServiceImpl<CoreFunctionMenuMappe
 	public void removeByMenuId(Long menuId) {
 		super.removeReal(Wrappers.getQueryWrapper().eq(CoreFunctionMenu::getMenuId, menuId));
 	}
+
+	/**
+	 * 根据功能ID删除
+	 *
+	 * @param ids 功能ID列表
+	 */
+	public void removeRealByFunctionId(List<Long> ids) {
+		super.removeReal(Wrappers.getQueryWrapper().in(CoreFunctionMenu::getFunctionId, ids));
+	}
 }

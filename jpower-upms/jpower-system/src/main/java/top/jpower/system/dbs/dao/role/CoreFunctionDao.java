@@ -3,26 +3,28 @@ package top.jpower.system.dbs.dao.role;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.lang.tree.Tree;
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryMethods;
 import com.mybatisflex.core.util.LambdaUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import top.jpower.common.enums.FunctionTypeEnum;
+import top.jpower.common.enums.YN01Enum;
 import top.jpower.core.auth.utils.ShieldUtil;
 import top.jpower.core.dbs.dbs.dao.JpowerServiceImpl;
-import top.jpower.core.dbs.mp.support.Condition;
 import top.jpower.core.dbs.support.Wrappers;
 import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.MapUtil;
 import top.jpower.core.util.utils.StringUtil;
-import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
 import top.jpower.system.dbs.dao.role.mapper.CoreFunctionMapper;
 import top.jpower.system.dbs.entity.function.CoreFunction;
 import top.jpower.system.dbs.entity.function.CoreFunctionMenu;
 import top.jpower.system.dbs.entity.role.CoreRoleFunction;
 import top.jpower.system.vo.DataFunctionVo;
+import top.jpower.system.vo.FunctionSimpleVO;
+import top.jpower.system.vo.FunctionVo;
 import top.jpower.system.vo.SelectIdNameVO;
 
 import java.util.Collections;
@@ -46,17 +48,74 @@ public class CoreFunctionDao extends JpowerServiceImpl<CoreFunctionMapper, CoreF
 
 	private final IDialect dialect;
 
-    private static final String ROLE_SQL = "select function_id from tb_core_role_function where role_id in ({})";
-
-    public List<Tree<String>> treeMenuTypeByClientId(List<Long> roleIds, Long clientId) {
-        return super.tree(Condition.getLambdaTreeWrapper(TbCoreFunction.class,TbCoreFunction::getId,TbCoreFunction::getParentId)
-                        .select(TbCoreFunction::getFunctionName,TbCoreFunction::getFunctionType,TbCoreFunction::getSort)
-                        .in(TbCoreFunction::getFunctionType, ListUtil.of(FunctionTypeEnum.MENU.getValue(),FunctionTypeEnum.BTN.getValue()))
-                        // 如果不是超级用户，则查出自己权限的菜单
-                        .inSql(!ShieldUtil.isRoot(),TbCoreFunction::getId, StringUtil.format(ROLE_SQL, StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE)))
-                        .eq(TbCoreFunction::getClientId,clientId)
-                        .orderByAsc(TbCoreFunction::getSort));
+	/**
+     * 获取功能树
+     *
+     * @author mr.g
+     * @param roleIds 角色ID
+     * @param clientId 客户端ID
+     * @return 功能树
+     **/
+    public List<Tree<Long>> treeMenuTypeByClientId(List<Long> roleIds, Long clientId) {
+        return super.tree(Wrappers.getTreeWrapper(CoreFunction::getId, CoreFunction::getParentId)
+								.select(CoreFunction::getFunctionName,CoreFunction::getFunctionType,CoreFunction::getSort)
+								.in(CoreFunction::getFunctionType, ListUtil.of(FunctionTypeEnum.MENU.getValue(), FunctionTypeEnum.BTN.getValue()))
+								.eq(CoreFunction::getClientId,clientId)
+								.leftJoin(CoreRoleFunction.class, !ShieldUtil.isRoot()).on(CoreRoleFunction::getFunctionId, CoreFunction::getId)
+								.in(CoreRoleFunction::getRoleId, roleIds, !ShieldUtil.isRoot())
+                        		.orderBy(CoreFunction::getSort).asc());
     }
+
+	/**
+     * 获取功能树
+     *
+     * @author mr.g
+     * @param roleIds 角色ID
+     * @param clientId 客户端ID
+     * @return 功能树
+     **/
+	public List<Tree<Long>> treeFunction(List<Long> roleIds, Long clientId) {
+		return super.tree(Wrappers.getTreeWrapper(CoreFunction::getId, CoreFunction::getParentId)
+				.eq(CoreFunction::getClientId, clientId)
+				.leftJoin(CoreRoleFunction.class, !ShieldUtil.isRoot()).on(CoreRoleFunction::getFunctionId, CoreFunction::getId)
+				.in(CoreRoleFunction::getRoleId, roleIds, !ShieldUtil.isRoot())
+				.orderBy(CoreFunction::getSort).asc());
+    }
+
+	/**
+	 * 获取功能URL
+	 *
+	 * @author mr.g
+	 * @param roleIds 角色ID
+	 * @param clientId 客户端ID
+	 * @return 功能URL
+	 **/
+	public List<String> listUrlByRole(List<Long> roleIds, Long clientId) {
+		return super.objListAs(Wrappers.getQueryWrapper()
+				.select(CoreFunction::getUrl)
+				.eq(CoreFunction::getClientId, clientId)
+				.isNotNull(CoreFunction::getUrl)
+				.leftJoin(CoreRoleFunction.class).on(CoreRoleFunction::getFunctionId, CoreFunction::getId)
+				.in(CoreRoleFunction::getRoleId, roleIds), String.class);
+	}
+
+	/**
+	 * 获取功能树
+	 *
+	 * @author mr.g
+	 * @param roleIds 角色ID
+	 * @param clientId 客户端ID
+	 * @return 功能树
+	 **/
+	public List<Tree<Long>> treeMenu(List<Long> roleIds, Long clientId) {
+		return super.tree(Wrappers.getTreeWrapper(CoreFunction::getId, CoreFunction::getParentId)
+				.select(CoreFunction::getFunctionName,CoreFunction::getCode,CoreFunction::getUrl,CoreFunction::getSort, CoreFunction::getClientId)
+				.eq(CoreFunction::getFunctionType, FunctionTypeEnum.MENU.getValue())
+				.eq(CoreFunction::getClientId, clientId)
+				.leftJoin(CoreRoleFunction.class, !ShieldUtil.isRoot()).on(CoreRoleFunction::getFunctionId, CoreFunction::getId)
+				.in(CoreRoleFunction::getRoleId, roleIds, !ShieldUtil.isRoot())
+				.orderBy(CoreFunction::getSort).asc());
+	}
 
     /**
      * 获取功能的CODE和ID
@@ -65,38 +124,47 @@ public class CoreFunctionDao extends JpowerServiceImpl<CoreFunctionMapper, CoreF
      * @param codes CODE
      * @return code,id
      **/
-    public Map<String, TbCoreFunction> selectIdByCode(Set<String> codes) {
-        List<TbCoreFunction> functions = super.list(Condition.<TbCoreFunction>getQueryWrapper().lambda()
-                .select(TbCoreFunction::getId,TbCoreFunction::getCode,TbCoreFunction::getAncestorId)
-                .in(TbCoreFunction::getCode, codes));
-        return functions.stream().collect(Collectors.toMap(TbCoreFunction::getCode, f->f));
+    public Map<String, CoreFunction> selectIdByCode(Set<String> codes) {
+        List<CoreFunction> functions = super.list(Wrappers.getQueryWrapper()
+                .select(CoreFunction::getId,CoreFunction::getCode,CoreFunction::getAncestorId)
+                .in(CoreFunction::getCode, codes));
+        return functions.stream().collect(Collectors.toMap(CoreFunction::getCode, f->f));
     }
 
-    public List<Map<String, Object>> listInterface(List<Long> roleIds, Long clientId) {
-        List<Map<String, Object>> list = super.listMaps(Condition.<TbCoreFunction>getQueryWrapper().lambda()
-                        .select(TbCoreFunction::getId,TbCoreFunction::getParentId,TbCoreFunction::getCode,TbCoreFunction::getFunctionName,TbCoreFunction::getAlias,TbCoreFunction::getUrl,TbCoreFunction::getFunctionType)
-                        .eq(TbCoreFunction::getFunctionType, FunctionTypeEnum.INTERFACE.getValue())
-                        .eq(TbCoreFunction::getClientId,clientId)
-                        .inSql(!ShieldUtil.isRoot(), TbCoreFunction::getId, StringUtil.format("select function_id from tb_core_role_function where role_id in ({})",StringPool.SINGLE_QUOTE.concat(Fc.join(roleIds,StringPool.SINGLE_QUOTE_CONCAT)).concat(StringPool.SINGLE_QUOTE))));
-
-        return list.stream().map(map-> MapUtil.edit(map, mp -> new Map.Entry<String, Object>() {
-            @Override
-            public String getKey() {
-                return StringUtil.underlineToHump(mp.getKey());
-            }
-
-            @Override
-            public Object getValue() {
-                return mp.getValue();
-            }
-
-            @Override
-            public Object setValue(Object value) {
-                return mp.setValue(value);
-            }
-
-        })).collect(Collectors.toList());
+	/**
+     * 接口列表
+     *
+     * @author mr.g
+     * @param roleIds 角色ID
+     * @param clientId 客户端ID
+     * @return 功能树
+     **/
+    public List<FunctionSimpleVO> listInterface(List<Long> roleIds, Long clientId) {
+        return super.listAs(Wrappers.getQueryWrapper()
+                        .select(CoreFunction::getId,CoreFunction::getParentId,CoreFunction::getCode,CoreFunction::getFunctionName,CoreFunction::getAlias,CoreFunction::getUrl,CoreFunction::getFunctionType)
+                        .eq(CoreFunction::getFunctionType, FunctionTypeEnum.INTERFACE.getValue())
+                        .eq(CoreFunction::getClientId,clientId)
+						.leftJoin(CoreRoleFunction.class, !ShieldUtil.isRoot()).on(CoreRoleFunction::getFunctionId, CoreFunction::getId)
+						.in(CoreRoleFunction::getRoleId, roleIds, !ShieldUtil.isRoot())
+						.orderBy(CoreFunction::getSort).asc(), FunctionSimpleVO.class);
     }
+
+	/**
+	 * 获取按钮CODE
+	 *
+	 * @author mr.g
+	 * @param roleIds 角色ID
+	 * @param clientId 客户端ID
+	 * @return 功能CODE
+	 **/
+	public List<String> listCodeByRoleIdClientBtn(List<Long> roleIds, Long clientId) {
+		return super.objListAs(Wrappers.getQueryWrapper()
+				.select(CoreFunction::getCode)
+				.eq(CoreFunction::getClientId, clientId)
+				.eq(CoreFunction::getFunctionType, FunctionTypeEnum.BTN.getValue())
+				.leftJoin(CoreRoleFunction.class, !ShieldUtil.isRoot()).on(CoreRoleFunction::getFunctionId, CoreFunction::getId)
+				.in(CoreRoleFunction::getRoleId, roleIds, !ShieldUtil.isRoot()), String.class);
+	}
 
 	/**
 	 * 获取顶级功能ID
@@ -191,6 +259,134 @@ public class CoreFunctionDao extends JpowerServiceImpl<CoreFunctionMapper, CoreF
 						.leftJoin(CoreFunctionMenu.class, Fc.notNull(menuId)).on(CoreFunctionMenu::getFunctionId, CoreFunction::getId)
 						.eq(CoreFunctionMenu::getMenuId, menuId, Fc.notNull(menuId))
 						.orderBy(CoreFunction::getSort).asc(), DataFunctionVo.class);
+	}
+
+	/**
+	 * 根据角色ID、父ID、客户端ID获取功能ID
+	 *
+	 * @author mr.g
+	 * @param roleIds 角色ID
+	 * @param parentId 父ID
+	 * @param clientId 客户端ID
+	 * @return 功能ID
+	 **/
+	public List<Long> listIdByRoleIdParentId(List<Long> roleIds, Long parentId, Long clientId) {
+		return super.objListAs(Wrappers.getQueryWrapper()
+						.select(CoreFunction::getId)
+						.eq(CoreFunction::getClientId,clientId)
+						.eq(CoreFunction::getFunctionType, FunctionTypeEnum.BTN.getValue())
+						.eq(CoreFunction::getParentId,parentId)
+						.leftJoin(CoreRoleFunction.class, !ShieldUtil.isRoot()).on(CoreRoleFunction::getFunctionId, CoreFunction::getId)
+						.in(CoreRoleFunction::getRoleId, roleIds, !ShieldUtil.isRoot())
+				, Long.class);
+	}
+
+	/**
+	 * 获取功能树
+	 *
+	 * @author mr.g
+	 * @param roleIds 角色ID
+	 * @param parentId 父ID
+	 * @param clientId 客户端ID
+	 * @param topBtnIds 顶级按钮ID列表
+	 * @return 功能树
+	 **/
+	public List<Tree<Long>> treeInfo(List<Long> roleIds, Long parentId, Long clientId, List<Long> topBtnIds, FunctionTypeEnum functionType, boolean isHide) {
+		return super.tree(Wrappers.getTreeWrapper(CoreFunction::getId, CoreFunction::getParentId)
+				.select(CoreFunction::getFunctionName, CoreFunction::getAlias, CoreFunction::getCode, CoreFunction::getUrl, CoreFunction::getFunctionType)
+				.eq(CoreFunction::getFunctionType, functionType.getValue())
+				.eq(CoreFunction::getClientId, clientId)
+				.eq(CoreFunction::getIsHide, YN01Enum.N.getValue(), isHide)
+				.leftJoin(CoreRoleFunction.class, !ShieldUtil.isRoot()).on(CoreRoleFunction::getFunctionId, CoreFunction::getId)
+				.in(CoreRoleFunction::getRoleId, roleIds, !ShieldUtil.isRoot())
+				.and(q->{
+					if (Fc.equalsValue(parentId, TOP_CODE)){
+						QueryCondition condition = CORE_FUNCTION.PARENT_ID.eq(parentId);
+						for (Long pId: topBtnIds){
+							condition.or(CORE_FUNCTION.ANCESTOR_ID.like(pId));
+						}
+						q.and(condition);
+					} else {
+						q.like(CoreFunction::getAncestorId, parentId);
+					}
+				}, Fc.notNull(parentId))
+				.orderBy(CoreFunction::getSort).asc());
+	}
+
+	/**
+	 * 获取功能列表
+	 *
+	 * @author mr.g
+	 * @param map 查询条件
+	 * @return 功能列表
+	 **/
+	public List<FunctionVo> listFunction(Map<String, Object> map) {
+		Integer functionType = MapUtil.getInt(map, "functionType_eq");
+		Long menuId = MapUtil.getLongRemoveKey(map, "menuId_eq");
+
+		return super.listAs(Wrappers.getQueryWrapper(map)
+					.as("t")
+					.select(CORE_FUNCTION.DEFAULT_COLUMNS)
+					.select(QueryMethods.column(QueryMethods.exists(QueryMethods.selectOne()
+							.where(CORE_FUNCTION.PARENT_ID.eq(CORE_FUNCTION.as("t").ID).and(CORE_FUNCTION.FUNCTION_TYPE.eq(functionType)))).toSql(Collections.singletonList(CORE_FUNCTION), dialect))
+							.as(FunctionVo::getHasChildren))
+					.leftJoin(CoreFunctionMenu.class, Fc.notNull(menuId)).on(CoreFunctionMenu::getFunctionId, CoreFunction::getId)
+					.eq(CoreFunctionMenu::getMenuId, menuId)
+					.orderBy(CoreFunction::getSort).asc(), FunctionVo.class);
+	}
+
+	/**
+	 * 根据功能ID获取功能祖级ID
+	 *
+	 * @author mr.g
+	 * @param id 功能ID
+	 * @return 祖级ID
+	 **/
+	public String selectAncestorIdById(Long id) {
+		return super.getObjAs(Wrappers.getQueryWrapper().select(CoreFunction::getAncestorId).eq(CoreFunction::getId, id), String.class);
+	}
+
+	/**
+	 * 根据功能ID获取功能所有子功能
+	 *
+	 * @author mr.g
+	 * @param ids 功能ID
+	 * @return 功能列表
+	 **/
+	public List<CoreFunction> listDescendantsByIds(List<Long> ids) {
+		return super.list(Wrappers.getQueryWrapper().in(CoreFunction::getId,ids).and(and->{
+			for (Long id : ids) {
+				and.or(CORE_FUNCTION.ANCESTOR_ID.like(id));
+			}
+		}));
+	}
+
+	/**
+	 * 懒加载功能树
+	 *
+	 * @author mr.g
+	 * @param parentId 父ID
+	 * @param roleIds 角色ID
+	 * @return 功能树
+	 **/
+	public List<Tree<Long>> lazyTreeByRoleIds(Long parentId, List<Long> roleIds) {
+		return super.tree(Wrappers.getTreeWrapper(CoreFunction::getId, CoreFunction::getParentId)
+					.lazy(parentId)
+					.select(CoreFunction::getFunctionName,CoreFunction::getUrl, CoreFunction::getSort)
+					.leftJoin(CoreRoleFunction.class, !ShieldUtil.isRoot()).on(CoreRoleFunction::getFunctionId, CoreFunction::getId)
+					.in(CoreRoleFunction::getRoleId, roleIds, !ShieldUtil.isRoot())
+					.orderBy(CoreFunction::getSort).asc());
+	}
+
+	/**
+	 * 获取功能菜单
+	 *
+	 * @author mr.g
+	 * @param functionTypeEnum 功能类型
+	 * @return 功能菜单
+	 **/
+	public List<CoreFunction> listMenu(FunctionTypeEnum functionTypeEnum) {
+		return super.list(Wrappers.getQueryWrapper().eq(CoreFunction::getFunctionType, functionTypeEnum.getValue()));
 	}
 }
 

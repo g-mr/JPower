@@ -22,7 +22,7 @@ import top.jpower.core.util.rsp.R;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.system.dbs.entity.client.CoreClient;
 import top.jpower.system.service.client.CoreClientService;
-import top.jpower.system.vo.SelectVO;
+import top.jpower.system.vo.SelectIdNameVO;
 
 import java.util.List;
 import java.util.Map;
@@ -92,7 +92,7 @@ public class ClientController extends BaseController {
     })
     @Operation(summary = "下拉客户端列表")
     @GetMapping("selectList")
-    public R<List<SelectVO>> selectList() {
+    public R<List<SelectIdNameVO>> selectList() {
         return R.data(coreClientService.select());
     }
 }

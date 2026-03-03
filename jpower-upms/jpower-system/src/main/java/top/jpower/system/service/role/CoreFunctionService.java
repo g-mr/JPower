@@ -2,9 +2,9 @@ package top.jpower.system.service.role;
 
 import cn.hutool.core.lang.tree.Tree;
 import top.jpower.core.dbs.service.BaseService;
-import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
 import top.jpower.system.dbs.entity.function.CoreFunction;
 import top.jpower.system.vo.DataFunctionVo;
+import top.jpower.system.vo.FunctionSimpleVO;
 import top.jpower.system.vo.FunctionVo;
 import top.jpower.system.vo.SelectIdNameVO;
 
@@ -27,45 +27,25 @@ public interface CoreFunctionService extends BaseService<CoreFunction> {
      * @param clientId 客户端ID
      * @return 功能层级树列表
      */
-    List<Tree<String>> treeMenuTypeByClientId(List<Long> userRole, Long clientId);
+    List<Tree<Long>> treeMenuTypeByClientId(List<Long> userRole, Long clientId);
 
     /**
      * map查询
      * 
      * @author mr.g
-     * @param coreFunction 查询条件
+     * @param map 查询条件
      * @return 功能列表
      */
-    List<FunctionVo> listFunction(Map<String,Object> coreFunction);
+    List<FunctionVo> listFunction(Map<String,Object> map);
 
     /**
      * 通过code查询菜单
      * 
      * @author mr.g
-     * @param code 菜单编码
+     * @param coreFunction 菜单
      * @return 菜单实体
      */
-    TbCoreFunction selectFunctionByCode(String code);
-
-    Boolean add(TbCoreFunction coreFunction);
-
-    /**
-     * 通过url查询菜单
-     * 
-     * @author mr.g
-     * @param url 菜单URL
-     * @return 菜单实体
-     */
-    TbCoreFunction selectFunctionByUrl(String url);
-
-    /**
-     * 批量查询id下的子节点数量
-     * 
-     * @author mr.g
-     * @param ids ID列表
-     * @return 子节点数量
-     */
-    long listByPids(List<Long> ids);
+    Long create(CoreFunction coreFunction);
 
     /**
      * 删除菜单
@@ -83,7 +63,7 @@ public interface CoreFunctionService extends BaseService<CoreFunction> {
      * @param coreFunction 菜单实体
      * @return 是否修改成功
      */
-    Boolean update(TbCoreFunction coreFunction);
+    Boolean update(CoreFunction coreFunction);
 
     /**
      * 查询角色所有权限ID
@@ -114,7 +94,7 @@ public interface CoreFunctionService extends BaseService<CoreFunction> {
      * @param isHide 是否去除隐藏的菜单
      * @return 菜单列表
      */
-    List<TbCoreFunction> listMenuByRoleId(List<Long> roleIds, String clientCode, Long topMenuId, boolean isHide);
+	List<Tree<Long>> listMenuByRoleId(List<Long> roleIds, String clientCode, Long topMenuId, boolean isHide);
 
     /**
      * 根据角色，查询一个角色下的所有可用按钮
@@ -133,8 +113,6 @@ public interface CoreFunctionService extends BaseService<CoreFunction> {
      * @return 功能树列表
      */
     List<Tree<Long>> listTreeByRoleId(List<Long> roleIds);
-
-    long queryRoleByUrl(String url);
 
     List<String> getUrlsByRoleIds(List<Long> roleIds, String clientCode);
 
@@ -156,7 +134,7 @@ public interface CoreFunctionService extends BaseService<CoreFunction> {
      * @param roleIds 角色ID列表
      * @return 菜单列表
      */
-    List<TbCoreFunction> menuByRoleIds(List<Long> roleIds);
+	List<Tree<Long>> treeClientMenu(List<Long> roleIds);
 
     /**
      * 查询接口按钮
@@ -167,7 +145,7 @@ public interface CoreFunctionService extends BaseService<CoreFunction> {
      * @param clientId 客户端ID
      * @return 按钮树列表
      */
-    List<Tree<String>> treeButByMenu(List<Long> roleIds, Long id, Long clientId);
+    List<Tree<Long>> treeButByMenu(List<Long> roleIds, Long id, Long clientId);
 
     /**
      * 生成功能点
@@ -185,7 +163,7 @@ public interface CoreFunctionService extends BaseService<CoreFunction> {
      * @param ids 主键列表
      * @return 是否保存成功
      */
-    boolean hierarchySave(Long parentId, List<Long> ids);
+    boolean saveHierarchy(Long parentId, List<Long> ids);
 
     /**
      * 查询菜单列表
@@ -204,7 +182,7 @@ public interface CoreFunctionService extends BaseService<CoreFunction> {
      * @param clientId 客户端ID
      * @return 接口资源列表
      */
-    List<Map<String, Object>> listInterface(List<Long> roleIds, Long clientId);
+    List<FunctionSimpleVO> listInterface(List<Long> roleIds, Long clientId);
 
 	/**
      * 根据客户端查询功能

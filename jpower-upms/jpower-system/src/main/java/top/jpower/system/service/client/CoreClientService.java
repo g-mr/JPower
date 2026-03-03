@@ -3,7 +3,7 @@ package top.jpower.system.service.client;
 import top.jpower.core.dbs.service.BaseService;
 import top.jpower.core.util.rsp.Pg;
 import top.jpower.system.dbs.entity.client.CoreClient;
-import top.jpower.system.vo.SelectVO;
+import top.jpower.system.vo.SelectIdNameVO;
 
 import java.util.List;
 import java.util.Map;
@@ -46,5 +46,5 @@ public interface CoreClientService extends BaseService<CoreClient> {
 	 * @author mr.g
 	 * @return  数据
 	 **/
-	List<SelectVO> select();
+	List<SelectIdNameVO> select();
 }

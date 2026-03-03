@@ -63,4 +63,20 @@ public class CoreRoleFunctionDao extends JpowerServiceImpl<CoreRoleFunctionMappe
 	public void removeRealByRoleId(Long roleId) {
 		super.removeReal(Wrappers.getQueryWrapper().eq(CoreRoleFunction::getRoleId, roleId));
 	}
+
+	/**
+	 * 根据功能ID删除权限
+	 *
+	 * @author mr.g
+	 * @param ids 功能ID
+	 **/
+	public void removeRealByFunctionId(List<Long> ids) {
+		super.removeReal(Wrappers.getQueryWrapper().in(CoreRoleFunction::getFunctionId, ids));
+	}
+
+	public List<Long> listFunctionIdByRole(List<Long> roleIds) {
+		return super.objListAs(Wrappers.getQueryWrapper()
+					.select(CoreRoleFunction::getFunctionId)
+					.in(CoreRoleFunction::getRoleId, roleIds), Long.class);
+	}
 }

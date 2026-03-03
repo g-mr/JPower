@@ -5,7 +5,7 @@ import top.jpower.core.dbs.dbs.dao.JpowerServiceImpl;
 import top.jpower.core.dbs.support.Wrappers;
 import top.jpower.system.dbs.dao.client.mapper.CoreClientMapper;
 import top.jpower.system.dbs.entity.client.CoreClient;
-import top.jpower.system.vo.SelectVO;
+import top.jpower.system.vo.SelectIdNameVO;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,9 +37,9 @@ public class CoreClientDao extends JpowerServiceImpl<CoreClientMapper, CoreClien
 	 * @author mr.g
 	 * @return  数据
 	 **/
-	public List<SelectVO> select() {
+	public List<SelectIdNameVO> select() {
 		return super.listAs(Wrappers.getQueryWrapper()
-				.select(CORE_CLIENT.ID.as(SelectVO::getCode), CORE_CLIENT.NAME)
-				.orderBy(CoreClient::getSortNum).asc(), SelectVO.class);
+				.select(CORE_CLIENT.ID.as(SelectIdNameVO::getId), CORE_CLIENT.NAME)
+				.orderBy(CoreClient::getSortNum).asc(), SelectIdNameVO.class);
 	}
 }

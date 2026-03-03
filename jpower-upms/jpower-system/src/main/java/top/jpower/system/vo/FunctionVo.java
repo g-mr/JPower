@@ -1,9 +1,9 @@
 package top.jpower.system.vo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
+import top.jpower.system.dbs.entity.function.CoreFunction;
 
 /**
  * 菜单返回视图
@@ -11,9 +11,9 @@ import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
  * @author mr.g
  */
 @Data
-public class FunctionVo extends TbCoreFunction {
+public class FunctionVo extends CoreFunction {
 
-    @ApiModelProperty("页面打开方式")
+    @Schema(description = "页面打开方式")
     private String targetStr;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
