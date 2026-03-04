@@ -1,7 +1,7 @@
 package top.jpower.jpower.auth;
 
 import top.jpower.jpower.dto.TokenParameter;
-import top.jpower.core.auth.dto.UserInfo;
+import top.jpower.user.api.dto.CoreUserDTO;
 
 /**
  * @Author 郭丁志
@@ -16,6 +16,6 @@ public interface TokenGranter {
 	 * @param tokenParameter 授权参数
 	 * @return UserInfo
 	 */
-	UserInfo grant(TokenParameter tokenParameter) ;
+	CoreUserDTO grant(TokenParameter tokenParameter) ;
 
 }

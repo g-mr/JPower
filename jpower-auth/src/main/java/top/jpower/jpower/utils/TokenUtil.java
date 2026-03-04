@@ -24,6 +24,7 @@ import top.jpower.jpower.dbs.entity.client.TbCoreClient;
 import top.jpower.jpower.dbs.entity.function.TbCoreDataScope;
 import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
 import top.jpower.jpower.dto.AuthInfo;
+import top.jpower.user.api.dto.CoreUserDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,17 +112,16 @@ public class TokenUtil {
     /**
      * 创建认证token
      *
-     * @param userInfo 用户信息
+     * @param user 用户信息
      * @return token
      */
-    public static AuthInfo createAuthInfo(UserInfo userInfo) {
+    public static AuthInfo createAuthInfo(CoreUserDTO user) {
 
         TbCoreClient client = getClientDetails();
         assert client != null;
-        userInfo.setClientCode(client.getClientCode());
 
         //设置jwt参数
-        Map<String, Object> param = Fc.toMap(userInfo);
+        Map<String, Object> param = Fc.toMap(user);
         param.put(TokenConstant.TOKEN_TYPE, TokenConstant.ACCESS_TOKEN);
         param.put(TokenConstant.CLIENT_CODE, client.getClientCode());
 
@@ -129,25 +129,24 @@ public class TokenUtil {
         long expire = getExpire(client.getAccessTokenValidity());
 
         AuthInfo authInfo = new AuthInfo();
-        authInfo.setUser(userInfo);
         authInfo.setAccessToken(JwtUtil.createJwt(param, expire));
         authInfo.setExpiresIn(expire);
-        authInfo.setRefreshToken(createRefreshToken(userInfo,client));
+        authInfo.setRefreshToken(createRefreshToken(user, client));
         authInfo.setTokenType(TokenConstant.TOKEN_PREFIX);
-        cacheAuth(authInfo,client);
+        cacheAuth(authInfo, user, client);
         return authInfo;
     }
 
     /**
      * 创建refreshToken
      *
-     * @param userInfo 用户信息
+     * @param user 用户信息
      * @return refreshToken
      */
-    private static String createRefreshToken(UserInfo userInfo,TbCoreClient client) {
+    private static String createRefreshToken(CoreUserDTO user,TbCoreClient client) {
         return JwtUtil.createJwt(ChainMap.<String, Object>create()
                 .put(TokenConstant.TOKEN_TYPE, TokenConstant.REFRESH_TOKEN)
-                .put(TokenConstant.USER_ID, userInfo.getUserId())
+                .put(TokenConstant.USER_ID, user.getId())
                 .put(TokenConstant.CLIENT_CODE, client.getClientCode()).build()
                 ,getExpire(client.getRefreshTokenValidity()));
     }
@@ -158,9 +157,9 @@ public class TokenUtil {
      * @author mr.g
      * @param authInfo 鉴权信息
      **/
-    private static void cacheAuth(AuthInfo authInfo,TbCoreClient client) {
-        List<TbCoreDataScope> dataScopeRoleList = SystemCache.getDataScopeByRole(authInfo.getUser().getRoleIds(),client.getClientCode());
-        List<TbCoreFunction> menuList = SystemCache.getMenuListByRole(authInfo.getUser().getRoleIds(),client.getClientCode());
+    private static void cacheAuth(AuthInfo authInfo, CoreUserDTO user, TbCoreClient client) {
+        List<TbCoreDataScope> dataScopeRoleList = SystemCache.getDataScopeByRole(user.getRoleIds(),client.getClientCode());
+        List<TbCoreFunction> menuList = SystemCache.getMenuListByRole(user.getRoleIds(),client.getClientCode());
 
         Map<String, List<DataScope>> map = ChainMap.<String,List<DataScope>>create().build();
         if (Fc.isNotEmpty(dataScopeRoleList)){
@@ -190,16 +189,16 @@ public class TokenUtil {
 
         redisService.valueOps().set(CacheNames.TOKEN_DATA_SCOPE_KEY+authInfo.getAccessToken(), map , authInfo.getExpiresIn(), TimeUnit.SECONDS);
 
-        List<String> list = SystemCache.getUrlsByRoleIds(authInfo.getUser().getRoleIds(),client.getClientCode());
+        List<String> list = SystemCache.getUrlsByRoleIds(user.getRoleIds(),client.getClientCode());
         redisService.valueOps().set(CacheNames.TOKEN_URL_KEY+authInfo.getAccessToken(), list , authInfo.getExpiresIn(), TimeUnit.SECONDS);
 
         //缓存用户在线信息
         String oldToken = JwtUtil.getToken(WebUtil.getRequest());
         //如果有旧token代表的是刷新token
         if (Fc.isNotBlank(oldToken)){
-            redisService.delete(TOKEN_USER_KEY+authInfo.getUser().getUserId()+ StringPool.COLON+oldToken);
+            redisService.delete(TOKEN_USER_KEY+user.getId()+ StringPool.COLON+oldToken);
         }
-        redisService.valueOps().set(TOKEN_USER_KEY+authInfo.getUser().getUserId()+ StringPool.COLON+authInfo.getAccessToken(),ChainMap.<String,Object>create().put("client",client.getClientCode()).put("ip", WebUtil.getIp()).put("date", DateUtil.now()).build(),authInfo.getExpiresIn(), TimeUnit.SECONDS);
+        redisService.valueOps().set(TOKEN_USER_KEY+user.getId()+ StringPool.COLON+authInfo.getAccessToken(),ChainMap.<String,Object>create().put("client",client.getClientCode()).put("ip", WebUtil.getIp()).put("date", DateUtil.now()).build(),authInfo.getExpiresIn(), TimeUnit.SECONDS);
 
         // cookie
         if (AUTH_PROPERTIES.getCookie()){

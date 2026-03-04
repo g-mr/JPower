@@ -59,4 +59,14 @@ public class CoreRoleDao extends JpowerServiceImpl<CoreRoleMapper, CoreRole> {
 	public Optional<String> getAncestorIdByIdOpt(Long parentId) {
 		return super.getObjAsOpt(Wrappers.getQueryWrapper().select(CoreRole::getAncestorId).eq(CoreRole::getId, parentId), String.class);
 	}
+
+	/**
+	 * 获取角色名称
+	 *
+	 * @param roleIds 角色ID
+	 * @return 角色名称
+	 */
+	public List<String> getRoleNameByIds(List<Long> roleIds) {
+		return super.objListAs(Wrappers.getQueryWrapper().select(CoreRole::getName).in(CoreRole::getId,roleIds), String.class);
+	}
 }

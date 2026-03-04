@@ -25,7 +25,7 @@ import top.jpower.core.util.utils.Fc;
 import top.jpower.system.dbs.entity.function.CoreFunction;
 import top.jpower.system.service.role.CoreFunctionService;
 import top.jpower.system.vo.FunctionSimpleVO;
-import top.jpower.system.vo.FunctionVo;
+import top.jpower.system.vo.FunctionVO;
 
 import java.util.List;
 import java.util.Map;
@@ -96,8 +96,8 @@ public class FunctionController extends BaseController {
 		@Parameter(name = "menuId_eq", description = "顶级菜单ID", in = ParameterIn.QUERY)
     })
     @GetMapping(value = "/listByParent/{clientId}", produces = APPLICATION_JSON_VALUE)
-    public R<List<FunctionVo>> list(@Parameter(description = "客户端ID",required = true) @PathVariable("clientId") Long clientId,
-									@Ignore @RequestParam(required = false) Map<String,Object> map){
+    public R<List<FunctionVO>> list(@Parameter(description = "客户端ID",required = true) @PathVariable("clientId") Long clientId,
+                                    @Ignore @RequestParam(required = false) Map<String,Object> map){
 		map.put("clientId_eq", clientId);
 		map.putIfAbsent("parentId_eq", TOP_CODE_LONG);
         return R.data(coreFunctionService.listFunction(map));

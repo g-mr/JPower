@@ -30,7 +30,7 @@ import top.jpower.system.dbs.entity.dict.CoreDict;
 import top.jpower.system.dbs.entity.dict.CoreDictType;
 import top.jpower.system.service.dict.CoreDictService;
 import top.jpower.system.service.dict.CoreDictTypeService;
-import top.jpower.system.vo.DictVo;
+import top.jpower.system.vo.DictVO;
 
 import java.util.List;
 import java.util.Map;
@@ -113,7 +113,7 @@ public class DictController extends BaseController {
 		@Parameter(name = "name", description = "字典名称", in = ParameterIn.QUERY)
     })
     @GetMapping(value = "/listByType", produces=APPLICATION_JSON_VALUE)
-    public R<Pg<DictVo>> listByType(@Ignore @RequestParam(required = false) Map<String, Object> map) {
+    public R<Pg<DictVO>> listByType(@Ignore @RequestParam(required = false) Map<String, Object> map) {
         JpowerAssert.notEmpty(MapUtil.getStr(map, "dictTypeCode_eq"), JpowerError.Arg,MISS_REQUIRED_PARAMETER);
 		map.putIfAbsent("parentId_eq", Fc.toLong(TOP_CODE));
 
@@ -130,7 +130,7 @@ public class DictController extends BaseController {
 		@Parameter(name = "name", description = "字典名称", in = ParameterIn.QUERY)
     })
     @GetMapping(value = "/listDictChildList",produces=APPLICATION_JSON_VALUE)
-    public R<List<DictVo>> listDictChildList(@Ignore @RequestParam(required = false) Map<String, Object> map){
+    public R<List<DictVO>> listDictChildList(@Ignore @RequestParam(required = false) Map<String, Object> map){
         JpowerAssert.notNull(MapUtil.getStr(map, "parentId_eq"), JpowerError.Arg, MISS_REQUIRED_PARAMETER);
         JpowerAssert.notTrue(Fc.equalsValue(MapUtil.getStr(map, "parentId_eq"), TOP_CODE), JpowerError.Arg,PARAMETER_ILLEGAL);
 
@@ -176,7 +176,7 @@ public class DictController extends BaseController {
     @ApiOperationSupport(order = 100)
     @Operation(summary = "通过字典类型查询字典列表")
     @GetMapping("/getDictListByType")
-    public R<List<DictVo>> getDictListByType(@RequestParam Map<String, Object> map){
+    public R<List<DictVO>> getDictListByType(@RequestParam Map<String, Object> map){
         JpowerAssert.notEmpty(MapUtil.getStr(map, "dictTypeCode_eq"), JpowerError.Arg, MISS_REQUIRED_PARAMETER);
 		map.putIfAbsent("parentId_eq", Fc.toLong(TOP_CODE));
         //只查询未停用的

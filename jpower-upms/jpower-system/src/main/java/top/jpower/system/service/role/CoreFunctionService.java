@@ -3,9 +3,9 @@ package top.jpower.system.service.role;
 import cn.hutool.core.lang.tree.Tree;
 import top.jpower.core.dbs.service.BaseService;
 import top.jpower.system.dbs.entity.function.CoreFunction;
-import top.jpower.system.vo.DataFunctionVo;
+import top.jpower.system.vo.DataFunctionVO;
 import top.jpower.system.vo.FunctionSimpleVO;
-import top.jpower.system.vo.FunctionVo;
+import top.jpower.system.vo.FunctionVO;
 import top.jpower.system.vo.SelectIdNameVO;
 
 import java.util.List;
@@ -36,7 +36,7 @@ public interface CoreFunctionService extends BaseService<CoreFunction> {
      * @param map 查询条件
      * @return 功能列表
      */
-    List<FunctionVo> listFunction(Map<String,Object> map);
+    List<FunctionVO> listFunction(Map<String,Object> map);
 
     /**
      * 通过code查询菜单
@@ -172,7 +172,7 @@ public interface CoreFunctionService extends BaseService<CoreFunction> {
      * @param map 查询条件
      * @return 数据功能列表
      */
-    List<DataFunctionVo> listDataFunction(Map<String, Object> map);
+    List<DataFunctionVO> listDataFunction(Map<String, Object> map);
 
     /**
      * 客户端下的接口资源
@@ -192,4 +192,13 @@ public interface CoreFunctionService extends BaseService<CoreFunction> {
      * @return 功能列表
      */
     List<SelectIdNameVO> selectByClientId(Long clientId);
+
+	/**
+     * 根据功能编码查询功能ID
+     *
+     * @author mr.g
+     * @param code 功能编码
+     * @return 功能ID
+     */
+	Long getIdByCode(String code);
 }

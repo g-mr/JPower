@@ -1,8 +1,8 @@
 package top.jpower.system.service.role;
 
 import top.jpower.core.dbs.service.BaseService;
+import top.jpower.system.api.dto.DataScopeDTO;
 import top.jpower.system.dbs.entity.function.CoreDataScope;
-import top.jpower.system.dbs.entity.function.TbCoreDataScope;
 
 import java.util.List;
 
@@ -33,13 +33,6 @@ public interface CoreDataScopeService extends BaseService<CoreDataScope> {
     boolean roleDataScope(Long roleId, List<Long> dataIds);
 
     /**
-     * 查询所有角色都可执行得数据权限
-     * 
-     * @author mr.g
-     */
-    List<TbCoreDataScope> getAllRoleDataScope();
-
-    /**
      * 根据角色ID查询所有拥有权限的数据权限
      * 
      * @author mr.g
@@ -47,7 +40,7 @@ public interface CoreDataScopeService extends BaseService<CoreDataScope> {
      * @param clientCode 客户端编码
      * @return 数据权限列表
      */
-    List<TbCoreDataScope> getDataScopeByRole(List<Long> roleIds,String clientCode);
+    List<DataScopeDTO> getDataScopeByRole(List<Long> roleIds, String clientCode);
 
     /**
      * 查询角色下一个菜单的数据权限
@@ -57,5 +50,5 @@ public interface CoreDataScopeService extends BaseService<CoreDataScope> {
      * @param menuCode 菜单编码
      * @return 数据权限列表
      */
-    List<TbCoreDataScope> getDataScopeByRoleAndMenu(List<Long> roleIds,String menuCode);
+    List<DataScopeDTO> getDataScopeByRoleAndMenu(List<Long> roleIds, String menuCode);
 }

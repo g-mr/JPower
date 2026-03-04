@@ -4,7 +4,7 @@ import cn.hutool.core.lang.tree.Tree;
 import top.jpower.core.dbs.service.BaseService;
 import top.jpower.core.util.rsp.Pg;
 import top.jpower.system.dbs.entity.org.CoreOrg;
-import top.jpower.system.vo.OrgVo;
+import top.jpower.system.vo.OrgVO;
 
 import java.util.List;
 import java.util.Map;
@@ -23,7 +23,7 @@ public interface CoreOrgService extends BaseService<CoreOrg> {
      * @param map 查询条件
      * @return 组织机构视图列表
      */
-    List<OrgVo> listLazyByParent(Map<String, Object> map);
+    List<OrgVO> listLazyByParent(Map<String, Object> map);
 
 	/**
      * 分页懒加载组织机构树形列表
@@ -31,7 +31,7 @@ public interface CoreOrgService extends BaseService<CoreOrg> {
      * @param map 查询条件
      * @return 组织机构树形列表
      */
-	Pg<OrgVo> pageTop(Map<String, Object> map);
+	Pg<OrgVO> pageTop(Map<String, Object> map);
 
     /**
      * 新增组织机构

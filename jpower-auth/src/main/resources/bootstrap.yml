@@ -4,4 +4,11 @@ server:
 spring:
   config:
     import:
-      - classpath:/bootstrap-jpower.yml  # 导入顶级配置
+      - nacos:jpower.yml
+      - nacos:jpower-system.yml
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+      config:
+        import-check:
+          enabled: false   # 默认为 false，设为 true 后，缺失的配置会导致启动失败

@@ -2,6 +2,7 @@ package top.jpower.jpower.auth.granter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import top.jpower.common.constants.CacheNames;
 import top.jpower.core.exception.throwable.BusinessException;
 import top.jpower.core.redis.cache.RedisService;
 import top.jpower.core.util.utils.Fc;
@@ -9,16 +10,15 @@ import top.jpower.core.util.utils.StringUtil;
 import top.jpower.jpower.auth.AuthUserInfo;
 import top.jpower.jpower.auth.TokenGranter;
 import top.jpower.jpower.dto.TokenParameter;
-import top.jpower.core.auth.dto.UserInfo;
-import top.jpower.common.constants.CacheNames;
 import top.jpower.jpower.utils.TokenUtil;
+import top.jpower.user.api.dto.CoreUserDTO;
 
 import static top.jpower.jpower.auth.granter.CaptchaTokenGranter.GRANT_TYPE;
 
 /**
- * @Author 郭丁志
- * @Description //TODO 验证码登录默认实现类
- * @Date 00:50 2020-07-28
+ * 验证码登录默认实现类
+ *
+ * @author 郭丁志
  **/
 @Component(GRANT_TYPE)
 public class CaptchaTokenGranter implements TokenGranter {
@@ -33,7 +33,7 @@ public class CaptchaTokenGranter implements TokenGranter {
 	private AuthUserInfo authUserInfo;
 
 	@Override
-	public UserInfo grant(TokenParameter tokenParameter) {
+	public CoreUserDTO grant(TokenParameter tokenParameter) {
 
 		String key = tokenParameter.getCaptchaKey();
 		String code = tokenParameter.getCaptchaCode();

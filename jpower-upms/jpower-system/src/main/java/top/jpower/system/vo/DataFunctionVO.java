@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @author mr.g
  */
 @Data
-public class DataFunctionVo implements Serializable {
+public class DataFunctionVO implements Serializable {
 
     @Serial
 	private static final long serialVersionUID = 7120949826947710266L;

@@ -20,7 +20,7 @@ import top.jpower.system.dbs.dao.org.CoreOrgDao;
 import top.jpower.system.dbs.dao.org.mapper.CoreOrgMapper;
 import top.jpower.system.dbs.entity.org.CoreOrg;
 import top.jpower.system.service.org.CoreOrgService;
-import top.jpower.system.vo.OrgVo;
+import top.jpower.system.vo.OrgVO;
 
 import java.util.List;
 import java.util.Map;
@@ -40,13 +40,13 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<CoreOrgMapper, CoreOrg> 
     private final CoreOrgDao coreOrgDao;
 
     @Override
-    public List<OrgVo> listLazyByParent(Map<String, Object> map) {
+    public List<OrgVO> listLazyByParent(Map<String, Object> map) {
 		map.putIfAbsent("parentId_eq", JpowerConstants.TOP_CODE_LONG);
 		return coreOrgDao.listLazyByParent(map);
     }
 
 	@Override
-	public Pg<OrgVo> pageTop(Map<String, Object> map) {
+	public Pg<OrgVO> pageTop(Map<String, Object> map) {
 		map.put("parentId_eq", JpowerConstants.TOP_CODE_LONG);
 		return coreOrgDao.pageTop(map);
 	}

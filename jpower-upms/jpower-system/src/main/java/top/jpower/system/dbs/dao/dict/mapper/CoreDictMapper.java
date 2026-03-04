@@ -3,7 +3,7 @@ package top.jpower.system.dbs.dao.dict.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import top.jpower.core.dbs.dbs.dao.mapper.base.JpowerBaseMapper;
 import top.jpower.system.dbs.entity.dict.CoreDict;
-import top.jpower.system.vo.DictVo;
+import top.jpower.system.vo.DictVO;
 
 import java.util.List;
 
@@ -22,5 +22,5 @@ public interface CoreDictMapper extends JpowerBaseMapper<CoreDict> {
      * @param dict 查询条件
      * @return java.util.List<top.jpower.system.vo.DictVo> 字典列表
      */
-    List<DictVo> listByType(CoreDict dict);
+    List<DictVO> listByType(CoreDict dict);
 }

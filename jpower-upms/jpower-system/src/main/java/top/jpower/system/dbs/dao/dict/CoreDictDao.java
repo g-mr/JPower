@@ -15,7 +15,7 @@ import top.jpower.core.util.rsp.Pg;
 import top.jpower.system.api.dto.SelectDTO;
 import top.jpower.system.dbs.dao.dict.mapper.CoreDictMapper;
 import top.jpower.system.dbs.entity.dict.CoreDict;
-import top.jpower.system.vo.DictVo;
+import top.jpower.system.vo.DictVO;
 
 import java.util.Collections;
 import java.util.List;
@@ -61,19 +61,19 @@ public class CoreDictDao extends JpowerServiceImpl<CoreDictMapper, CoreDict> {
 	private QueryWrapper getQueryWrapper(Map<String, Object> map) {
 		return Wrappers.getQueryWrapper(map)
 				.select(CORE_DICT.DEFAULT_COLUMNS)
-				.select(CORE_DICT.as("p").NAME.as(DictVo::getParentName))
-				.select(QueryMethods.column(QueryMethods.exists(selectOne().from(CORE_DICT).where(CORE_DICT.PARENT_ID.eq(CORE_DICT.as("t").ID))).toSql(Collections.singletonList(CORE_DICT), dialect)).as(DictVo::getHasChildren))
+				.select(CORE_DICT.as("p").NAME.as(DictVO::getParentName))
+				.select(QueryMethods.column(QueryMethods.exists(selectOne().from(CORE_DICT).where(CORE_DICT.PARENT_ID.eq(CORE_DICT.as("t").ID))).toSql(Collections.singletonList(CORE_DICT), dialect)).as(DictVO::getHasChildren))
 				.from(CORE_DICT.as("t"))
 				.leftJoin(CORE_DICT.as("p")).on(CORE_DICT.as("p").ID.eq(CORE_DICT.as("t").PARENT_ID))
 				.orderBy(CoreDict::getSortNum).asc();
 	};
 
-	public List<DictVo> listByType(Map<String, Object> map) {
-		return super.listAs(getQueryWrapper(map), DictVo.class);
+	public List<DictVO> listByType(Map<String, Object> map) {
+		return super.listAs(getQueryWrapper(map), DictVO.class);
 	}
 
-	public Pg<DictVo> pageByType(Map<String, Object> map) {
-		return super.pgAs(getQueryWrapper(map), DictVo.class);
+	public Pg<DictVO> pageByType(Map<String, Object> map) {
+		return super.pgAs(getQueryWrapper(map), DictVO.class);
 	}
 
 	public CoreDict getByDictTypeCode(String dictTypeCode, String code) {

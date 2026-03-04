@@ -6,7 +6,7 @@ import top.jpower.core.dbs.service.BaseService;
 import top.jpower.core.util.rsp.Pg;
 import top.jpower.system.api.dto.SelectDTO;
 import top.jpower.system.dbs.entity.dict.CoreDict;
-import top.jpower.system.vo.DictVo;
+import top.jpower.system.vo.DictVO;
 
 import java.util.List;
 import java.util.Map;
@@ -34,7 +34,7 @@ public interface CoreDictService extends BaseService<CoreDict> {
      * @param map 查询条件
      * @return 字典视图列表
      */
-	List<DictVo> listByType(Map<String, Object> map);
+	List<DictVO> listByType(Map<String, Object> map);
 
 	/**
 	 * 查询字典列表
@@ -43,7 +43,7 @@ public interface CoreDictService extends BaseService<CoreDict> {
 	 * @param map 查询条件
 	 * @return 字典视图分页列表
 	 */
-	Pg<DictVo> pageByType(Map<String, Object> map);
+	Pg<DictVO> pageByType(Map<String, Object> map);
 
     /**
      * 通过字典类型查询字典列表

@@ -88,4 +88,6 @@ public interface ServiceCodeConstants {
 
 	String DATA_SCOPE_NOT_NULL = "数据权限值域不可为空";
 
+	String TENANT_CODE_NOT_NULL = "租户编码不可为空";
+
 }

@@ -26,7 +26,7 @@ import top.jpower.core.util.rsp.R;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.system.dbs.entity.org.CoreOrg;
 import top.jpower.system.service.org.CoreOrgService;
-import top.jpower.system.vo.OrgVo;
+import top.jpower.system.vo.OrgVO;
 
 import java.util.List;
 import java.util.Map;
@@ -65,7 +65,7 @@ public class OrgController extends BaseController {
 	})
     @Operation(summary = "懒加载组织机构树形列表")
     @GetMapping(value = "/listLazyByParent",produces = APPLICATION_JSON_VALUE)
-    public R<List<OrgVo>> listLazyByParent(@Ignore @RequestParam Map<String, Object> map) {
+    public R<List<OrgVO>> listLazyByParent(@Ignore @RequestParam Map<String, Object> map) {
         return R.data(coreOrgService.listLazyByParent(map));
     }
 
@@ -87,7 +87,7 @@ public class OrgController extends BaseController {
 	})
     @Operation(summary = "分页懒加载组织机构树形列表")
     @GetMapping(value = "/listLazy",produces = APPLICATION_JSON_VALUE)
-    public R<Pg<OrgVo>> listLazy(@Ignore @RequestParam Map<String, Object> map) {
+    public R<Pg<OrgVO>> listLazy(@Ignore @RequestParam Map<String, Object> map) {
         return R.data(coreOrgService.pageTop(map));
     }
 

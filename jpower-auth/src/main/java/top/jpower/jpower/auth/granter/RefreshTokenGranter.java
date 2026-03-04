@@ -4,27 +4,23 @@ import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import top.jpower.core.auth.utils.JwtUtil;
+import top.jpower.core.exception.throwable.JpowerException;
 import top.jpower.core.util.constants.TokenConstant;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.auth.AuthUserInfo;
 import top.jpower.jpower.auth.TokenGranter;
-import top.jpower.user.api.cache.UserCache;
 import top.jpower.jpower.dto.TokenParameter;
-import top.jpower.core.exception.throwable.JpowerException;
-import top.jpower.core.auth.dto.UserInfo;
-import top.jpower.core.auth.utils.JwtUtil;
 import top.jpower.jpower.utils.TokenUtil;
-import top.jpower.jpower.utils.UserUtil;
-import top.jpower.jpower.vo.UserVo;
+import top.jpower.user.api.cache.UserCache;
+import top.jpower.user.api.dto.CoreUserDTO;
 
 import static top.jpower.jpower.auth.granter.RefreshTokenGranter.GRANT_TYPE;
 
 /**
- * @Author 郭丁志
- * @Description //TODO 刷新token默认实现类
- * 		如果需要自定义实现刷新token继承该类实现grantInfo()即可
- * 			例如根据不同的用户类型查询不同的表
- * @Date 00:50 2020-07-28
+ * 刷新token默认实现类
+ *
+ * @author mr.g
  **/
 @Component(GRANT_TYPE)
 public class RefreshTokenGranter implements TokenGranter {
@@ -35,7 +31,7 @@ public class RefreshTokenGranter implements TokenGranter {
 	private AuthUserInfo authUserInfo;
 
 	@Override
-	public UserInfo grant(TokenParameter tokenParameter) {
+	public CoreUserDTO grant(TokenParameter tokenParameter) {
 		String grantType = tokenParameter.getGrantType();
 		String refreshToken = tokenParameter.getRefreshToken();
 		//业务扩展字段
@@ -52,8 +48,7 @@ public class RefreshTokenGranter implements TokenGranter {
 				if (!Fc.isNull(authUserInfo)){
 					return authUserInfo.getRefreshUserInfo(userType,userId);
 				}else {
-					UserVo result = UserCache.getById(userId);
-					return UserUtil.toUserInfo(result);
+					return UserCache.getById(userId);
 				}
 			}
 		}

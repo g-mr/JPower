@@ -11,7 +11,7 @@ import top.jpower.core.dbs.support.Wrappers;
 import top.jpower.core.util.rsp.Pg;
 import top.jpower.system.dbs.dao.org.mapper.CoreOrgMapper;
 import top.jpower.system.dbs.entity.org.CoreOrg;
-import top.jpower.system.vo.OrgVo;
+import top.jpower.system.vo.OrgVO;
 
 import java.util.Collections;
 import java.util.List;
@@ -37,12 +37,12 @@ public class CoreOrgDao extends JpowerServiceImpl<CoreOrgMapper, CoreOrg> {
 	 * @param map
 	 * @return
 	 */
-	public List<OrgVo> listLazyByParent(Map<String, Object> map) {
+	public List<OrgVO> listLazyByParent(Map<String, Object> map) {
 		return super.listAs(Wrappers.getQueryWrapper(map)
 				.select(CORE_ORG.DEFAULT_COLUMNS)
-				.select(QueryMethods.column(QueryMethods.exists(Wrappers.getQueryWrapper(map).select(selectOne().toSQL()).from(CORE_ORG).where(CORE_ORG.PARENT_ID.eq(CORE_ORG.as("t").ID))).toSql(Collections.singletonList(CORE_ORG), dialect)).as(OrgVo::getHasChildren))
+				.select(QueryMethods.column(QueryMethods.exists(Wrappers.getQueryWrapper(map).select(selectOne().toSQL()).from(CORE_ORG).where(CORE_ORG.PARENT_ID.eq(CORE_ORG.as("t").ID))).toSql(Collections.singletonList(CORE_ORG), dialect)).as(OrgVO::getHasChildren))
 				.as("t")
-				.orderBy(CORE_ORG.SORT.asc()), OrgVo.class);
+				.orderBy(CORE_ORG.SORT.asc()), OrgVO.class);
 	}
 
 	/**
@@ -51,12 +51,12 @@ public class CoreOrgDao extends JpowerServiceImpl<CoreOrgMapper, CoreOrg> {
 	 * @param map
 	 * @return
 	 */
-	public Pg<OrgVo> pageTop(Map<String, Object> map) {
+	public Pg<OrgVO> pageTop(Map<String, Object> map) {
 		return super.pgAs(Wrappers.getQueryWrapper(map)
 				.select(CORE_ORG.DEFAULT_COLUMNS)
-				.select(QueryMethods.column(QueryMethods.exists(Wrappers.getQueryWrapper(map).select(selectOne().toSQL()).from(CORE_ORG).where(CORE_ORG.PARENT_ID.eq(CORE_ORG.as("t").ID))).toSql(Collections.singletonList(CORE_ORG), dialect)).as(OrgVo::getHasChildren))
+				.select(QueryMethods.column(QueryMethods.exists(Wrappers.getQueryWrapper(map).select(selectOne().toSQL()).from(CORE_ORG).where(CORE_ORG.PARENT_ID.eq(CORE_ORG.as("t").ID))).toSql(Collections.singletonList(CORE_ORG), dialect)).as(OrgVO::getHasChildren))
 				.as("t")
-				.orderBy(CORE_ORG.SORT.asc()), OrgVo.class);
+				.orderBy(CORE_ORG.SORT.asc()), OrgVO.class);
 	}
 
 	public List<Tree<Long>> tree(Map<String, Object> map) {

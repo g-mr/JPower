@@ -31,9 +31,9 @@ import top.jpower.system.dbs.dao.role.CoreRoleFunctionDao;
 import top.jpower.system.dbs.dao.role.mapper.CoreFunctionMapper;
 import top.jpower.system.dbs.entity.function.CoreFunction;
 import top.jpower.system.service.role.CoreFunctionService;
-import top.jpower.system.vo.DataFunctionVo;
+import top.jpower.system.vo.DataFunctionVO;
 import top.jpower.system.vo.FunctionSimpleVO;
-import top.jpower.system.vo.FunctionVo;
+import top.jpower.system.vo.FunctionVO;
 import top.jpower.system.vo.SelectIdNameVO;
 
 import java.util.*;
@@ -70,7 +70,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<CoreFunctionMapper,
     }
 
     @Override
-    public List<FunctionVo> listFunction(Map<String,Object> map) {
+    public List<FunctionVO> listFunction(Map<String,Object> map) {
         return coreFunctionDao.listFunction(map);
     }
 
@@ -156,7 +156,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<CoreFunctionMapper,
      * @return 数据功能列表
      */
     @Override
-    public List<DataFunctionVo> listDataFunction(Map<String, Object> map) {
+    public List<DataFunctionVO> listDataFunction(Map<String, Object> map) {
         Long menuId = Fc.toLong(map.remove("menuId_eq"));
         return coreFunctionDao.listDataFunction(menuId, map, ShieldUtil.isRoot() ? null : ShieldUtil.getUserRole());
     }
@@ -177,6 +177,11 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<CoreFunctionMapper,
 	@Override
 	public List<SelectIdNameVO> selectByClientId(Long clientId) {
 		return coreFunctionDao.selectByClientId(clientId);
+	}
+
+	@Override
+	public Long getIdByCode(String code) {
+		return coreFunctionDao.getIdByCode(code);
 	}
 
 	@Override

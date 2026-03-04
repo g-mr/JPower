@@ -3,20 +3,20 @@ package top.jpower.jpower.auth.granter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import top.jpower.core.exception.throwable.BusinessException;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.auth.AuthUserInfo;
 import top.jpower.jpower.auth.TokenGranter;
 import top.jpower.jpower.dto.TokenParameter;
-import top.jpower.core.exception.throwable.BusinessException;
-import top.jpower.core.auth.dto.UserInfo;
+import top.jpower.user.api.dto.CoreUserDTO;
 
 import static top.jpower.jpower.auth.granter.OtherCodeTokenGranter.GRANT_TYPE;
 
 
 /**
- * @Author 郭丁志
- * @Description //TODO 第三方Code登录 默认实现类
- * @Date 00:50 2020-07-28
+ * 第三方Code登录
+ *
+ * @author mr.g
  **/
 @Slf4j
 @Component(GRANT_TYPE)
@@ -27,7 +27,7 @@ public class OtherCodeTokenGranter implements TokenGranter {
     private AuthUserInfo authUserInfo;
 
     @Override
-    public UserInfo grant(TokenParameter tokenParameter) {
+    public CoreUserDTO grant(TokenParameter tokenParameter) {
         String otherCode = tokenParameter.getOtherCode();
         String tenantCode = tokenParameter.getTenantCode();
         if (Fc.isNotBlank(otherCode)) {

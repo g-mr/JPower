@@ -3,20 +3,21 @@ package top.jpower.system.vo;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import top.jpower.system.dbs.entity.function.CoreFunction;
+import top.jpower.system.dbs.entity.dict.CoreDict;
 
 /**
- * 菜单返回视图
+ * 字典视图对象
  * 
  * @author mr.g
  */
 @Data
-public class FunctionVo extends CoreFunction {
+public class DictVO extends CoreDict {
 
-    @Schema(description = "页面打开方式")
-    private String targetStr;
+    @Schema(description = "父级字典名称")
+    private String parentName;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Boolean hasChildren;
+
 
 }

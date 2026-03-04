@@ -126,4 +126,9 @@ public class CoreRoleServiceImpl extends BaseServiceImpl<CoreRoleMapper, CoreRol
 	public List<Long> queryMenuIdByRoleId(Long roleId) {
 		return coreRoleMenuDao.queryMenuIdByRoleId(roleId);
 	}
+
+	@Override
+	public List<String> getRoleNameByIds(List<Long> roleIds) {
+		return coreRoleDao.getRoleNameByIds(roleIds);
+	}
 }

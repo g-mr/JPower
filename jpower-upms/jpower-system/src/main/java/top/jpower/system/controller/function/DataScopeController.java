@@ -27,7 +27,7 @@ import top.jpower.system.dbs.entity.function.CoreDataScope;
 import top.jpower.system.service.role.CoreDataScopeService;
 import top.jpower.system.service.role.CoreFunctionService;
 import top.jpower.system.service.role.CoreRoleDataService;
-import top.jpower.system.vo.DataFunctionVo;
+import top.jpower.system.vo.DataFunctionVO;
 
 import java.util.List;
 import java.util.Map;
@@ -67,8 +67,8 @@ public class DataScopeController {
 		@Parameter(name = "menuId_eq", description = "顶级菜单ID", in = ParameterIn.QUERY)
     })
     @GetMapping(value = "/listDataByParent/{clientId}", produces = APPLICATION_JSON_VALUE)
-    public R<List<DataFunctionVo>> listDataByParent(@Parameter(description = "客户端ID") @PathVariable("clientId") Long clientId,
-													@Ignore @RequestParam(required = false) Map<String,Object> map){
+    public R<List<DataFunctionVO>> listDataByParent(@Parameter(description = "客户端ID") @PathVariable("clientId") Long clientId,
+                                                    @Ignore @RequestParam(required = false) Map<String,Object> map){
 		map.putIfAbsent("parentId_eq", TOP_CODE_LONG);
 		map.put("clientId_eq", clientId);
         return R.data(coreFunctionService.listDataFunction(map));

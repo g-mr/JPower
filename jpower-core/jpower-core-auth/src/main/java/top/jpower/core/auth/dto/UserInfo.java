@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import top.jpower.core.util.utils.Fc;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -19,7 +20,8 @@ import java.util.Map;
 @Data
 public class UserInfo implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    @Serial
+	private static final long serialVersionUID = 1L;
 
     /** core_user表 **/
     public static final Integer TABLE_USER_TYPE_CORE = 0;

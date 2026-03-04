@@ -10,7 +10,7 @@ import top.jpower.system.dbs.entity.org.CoreOrg;
  * @author mr.g
  */
 @Data
-public class OrgVo extends CoreOrg {
+public class OrgVO extends CoreOrg {
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Boolean hasChildren;

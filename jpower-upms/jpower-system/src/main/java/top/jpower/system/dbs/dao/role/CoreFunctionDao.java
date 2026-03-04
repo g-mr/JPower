@@ -22,9 +22,9 @@ import top.jpower.system.dbs.dao.role.mapper.CoreFunctionMapper;
 import top.jpower.system.dbs.entity.function.CoreFunction;
 import top.jpower.system.dbs.entity.function.CoreFunctionMenu;
 import top.jpower.system.dbs.entity.role.CoreRoleFunction;
-import top.jpower.system.vo.DataFunctionVo;
+import top.jpower.system.vo.DataFunctionVO;
 import top.jpower.system.vo.FunctionSimpleVO;
-import top.jpower.system.vo.FunctionVo;
+import top.jpower.system.vo.FunctionVO;
 import top.jpower.system.vo.SelectIdNameVO;
 
 import java.util.Collections;
@@ -246,19 +246,19 @@ public class CoreFunctionDao extends JpowerServiceImpl<CoreFunctionMapper, CoreF
 	 * @param roleIds 角色ID
 	 * @return 数据权限功能
 	 **/
-	public List<DataFunctionVo> listDataFunction(Long menuId, Map<String, Object> map, List<Long> roleIds) {
+	public List<DataFunctionVO> listDataFunction(Long menuId, Map<String, Object> map, List<Long> roleIds) {
 		return super.listAs(Wrappers.getQueryWrapper(map)
 						.as("t")
 						.select(CORE_ROLE_FUNCTION.DEFAULT_COLUMNS)
 						.select(QueryMethods.column(QueryMethods.exists(QueryMethods.selectOne()
-								.where(CORE_FUNCTION.PARENT_ID.eq(CORE_FUNCTION.as("t").ID).and(CORE_FUNCTION.FUNCTION_TYPE.eq(FunctionTypeEnum.MENU.getValue())))).toSql(Collections.singletonList(CORE_FUNCTION), dialect)).as(DataFunctionVo::getHasChildren))
+								.where(CORE_FUNCTION.PARENT_ID.eq(CORE_FUNCTION.as("t").ID).and(CORE_FUNCTION.FUNCTION_TYPE.eq(FunctionTypeEnum.MENU.getValue())))).toSql(Collections.singletonList(CORE_FUNCTION), dialect)).as(DataFunctionVO::getHasChildren))
 						.select(QueryMethods.column(QueryMethods.exists(QueryMethods.selectOne()
-								.where(CORE_FUNCTION.PARENT_ID.eq(CORE_FUNCTION.as("t").ID).and(CORE_FUNCTION.FUNCTION_TYPE.ne(FunctionTypeEnum.MENU.getValue())))).toSql(Collections.singletonList(CORE_FUNCTION), dialect)).as(DataFunctionVo::getIsData))
+								.where(CORE_FUNCTION.PARENT_ID.eq(CORE_FUNCTION.as("t").ID).and(CORE_FUNCTION.FUNCTION_TYPE.ne(FunctionTypeEnum.MENU.getValue())))).toSql(Collections.singletonList(CORE_FUNCTION), dialect)).as(DataFunctionVO::getIsData))
 						.leftJoin(CoreRoleFunction.class, Fc.isNotEmpty(roleIds)).on(CoreRoleFunction::getFunctionId, CoreFunction::getId)
 						.in(CoreRoleFunction::getRoleId, roleIds, Fc.isNotEmpty(roleIds))
 						.leftJoin(CoreFunctionMenu.class, Fc.notNull(menuId)).on(CoreFunctionMenu::getFunctionId, CoreFunction::getId)
 						.eq(CoreFunctionMenu::getMenuId, menuId, Fc.notNull(menuId))
-						.orderBy(CoreFunction::getSort).asc(), DataFunctionVo.class);
+						.orderBy(CoreFunction::getSort).asc(), DataFunctionVO.class);
 	}
 
 	/**
@@ -320,7 +320,7 @@ public class CoreFunctionDao extends JpowerServiceImpl<CoreFunctionMapper, CoreF
 	 * @param map 查询条件
 	 * @return 功能列表
 	 **/
-	public List<FunctionVo> listFunction(Map<String, Object> map) {
+	public List<FunctionVO> listFunction(Map<String, Object> map) {
 		Integer functionType = MapUtil.getInt(map, "functionType_eq");
 		Long menuId = MapUtil.getLongRemoveKey(map, "menuId_eq");
 
@@ -329,10 +329,10 @@ public class CoreFunctionDao extends JpowerServiceImpl<CoreFunctionMapper, CoreF
 					.select(CORE_FUNCTION.DEFAULT_COLUMNS)
 					.select(QueryMethods.column(QueryMethods.exists(QueryMethods.selectOne()
 							.where(CORE_FUNCTION.PARENT_ID.eq(CORE_FUNCTION.as("t").ID).and(CORE_FUNCTION.FUNCTION_TYPE.eq(functionType)))).toSql(Collections.singletonList(CORE_FUNCTION), dialect))
-							.as(FunctionVo::getHasChildren))
+							.as(FunctionVO::getHasChildren))
 					.leftJoin(CoreFunctionMenu.class, Fc.notNull(menuId)).on(CoreFunctionMenu::getFunctionId, CoreFunction::getId)
 					.eq(CoreFunctionMenu::getMenuId, menuId)
-					.orderBy(CoreFunction::getSort).asc(), FunctionVo.class);
+					.orderBy(CoreFunction::getSort).asc(), FunctionVO.class);
 	}
 
 	/**
@@ -387,6 +387,12 @@ public class CoreFunctionDao extends JpowerServiceImpl<CoreFunctionMapper, CoreF
 	 **/
 	public List<CoreFunction> listMenu(FunctionTypeEnum functionTypeEnum) {
 		return super.list(Wrappers.getQueryWrapper().eq(CoreFunction::getFunctionType, functionTypeEnum.getValue()));
+	}
+
+	public Long getIdByCode(String code) {
+		return super.getObjAs(Wrappers.getQueryWrapper()
+				.select(CoreFunction::getId)
+				.eq(CoreFunction::getCode,code) , Long.class);
 	}
 }
 

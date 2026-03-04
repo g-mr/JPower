@@ -6,21 +6,19 @@ import org.springframework.stereotype.Component;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.jpower.auth.AuthUserInfo;
 import top.jpower.jpower.auth.TokenGranter;
-import top.jpower.user.api.cache.UserCache;
-import top.jpower.jpower.dbs.entity.TbCoreUser;
 import top.jpower.jpower.dto.TokenParameter;
-import top.jpower.jpower.dto.ValidatePasswordDto;
+import top.jpower.user.api.cache.UserCache;
+import top.jpower.user.api.dto.CoreUserDTO;
+import top.jpower.user.api.dto.ValidatePasswordDTO;
 import top.jpower.user.api.feign.UserClient;
-import top.jpower.core.auth.dto.UserInfo;
-import top.jpower.jpower.utils.UserUtil;
 
 import static top.jpower.jpower.auth.granter.PasswordTokenGranter.GRANT_TYPE;
 
 
 /**
- * @Author 郭丁志
- * @Description //TODO 密码登录默认实现类
- * @Date 00:50 2020-07-28
+ * 密码登录默认实现类
+ *
+ * @author mr.g
  **/
 @Component(GRANT_TYPE)
 @RequiredArgsConstructor
@@ -33,7 +31,7 @@ public class PasswordTokenGranter implements TokenGranter {
 	private final UserClient userClient;
 
 	@Override
-	public UserInfo grant(TokenParameter tokenParameter) {
+	public CoreUserDTO grant(TokenParameter tokenParameter) {
 		String account = tokenParameter.getLoginId();
 		String password = tokenParameter.getPassWord();
 		String tenantCode = tokenParameter.getTenantCode();
@@ -41,9 +39,8 @@ public class PasswordTokenGranter implements TokenGranter {
 			if (!Fc.isNull(authUserInfo)){
 				return authUserInfo.getPasswordUserInfo(tokenParameter);
 			}else {
-				if (userClient.validatePassword(new ValidatePasswordDto().setPassword(password).setAccount(account).setTenantCode(tenantCode)).getData()){
-					TbCoreUser result = UserCache.getUserByLoginId(account, tenantCode);
-					return UserUtil.toUserInfo(result);
+				if (userClient.validatePassword(new ValidatePasswordDTO().setPassword(password).setAccount(account).setTenantCode(tenantCode)).getData()){
+					return UserCache.getUserByLoginId(account, tenantCode);
 				}
 			}
 		}

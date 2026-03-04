@@ -2,7 +2,7 @@ package top.jpower.jpower.auth;
 
 import org.springframework.context.annotation.Configuration;
 import top.jpower.jpower.dto.TokenParameter;
-import top.jpower.core.auth.dto.UserInfo;
+import top.jpower.user.api.dto.CoreUserDTO;
 
 /**
  * 授权需求实现<br/>
@@ -20,7 +20,7 @@ public interface AuthUserInfo {
      * @param tokenParameter 前端请求参数
      * @return 返回用户信息
      **/
-    UserInfo getPasswordUserInfo(TokenParameter tokenParameter);
+	CoreUserDTO getPasswordUserInfo(TokenParameter tokenParameter);
 
     /**
      * 验证码登陆各自业务实现
@@ -29,7 +29,7 @@ public interface AuthUserInfo {
      * @param tokenParameter 前端请求参数
      * @return 返回用户信息
      **/
-    UserInfo getCaptchaUserInfo(TokenParameter tokenParameter);
+	CoreUserDTO getCaptchaUserInfo(TokenParameter tokenParameter);
 
     /**
      * 第三方Code各自业务实现
@@ -38,7 +38,7 @@ public interface AuthUserInfo {
      * @param tokenParameter 前端请求参数
      * @return 返回用户信息
      **/
-    UserInfo getOtherCodeUserInfo(TokenParameter tokenParameter);
+	CoreUserDTO getOtherCodeUserInfo(TokenParameter tokenParameter);
 
     /**
      * 刷新token各自业务实现
@@ -48,7 +48,7 @@ public interface AuthUserInfo {
      * @param userId 用户ID
      * @return 返回用户信息
      **/
-    UserInfo getRefreshUserInfo(String userType,Long userId);
+	CoreUserDTO getRefreshUserInfo(String userType,Long userId);
 
     /**
      * 手机号登录
@@ -57,6 +57,6 @@ public interface AuthUserInfo {
      * @param tokenParameter 前端请求参数
      * @return 返回用户信息
      **/
-    UserInfo getPhoneUserInfo(TokenParameter tokenParameter);
+	CoreUserDTO getPhoneUserInfo(TokenParameter tokenParameter);
 
 }

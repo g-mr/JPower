@@ -20,7 +20,7 @@ import top.jpower.system.dbs.dao.dict.mapper.CoreDictMapper;
 import top.jpower.system.dbs.entity.dict.CoreDict;
 import top.jpower.system.dbs.entity.dict.CoreDictType;
 import top.jpower.system.service.dict.CoreDictService;
-import top.jpower.system.vo.DictVo;
+import top.jpower.system.vo.DictVO;
 
 import java.util.List;
 import java.util.Map;
@@ -66,12 +66,12 @@ public class CoreDictServiceImpl extends BaseServiceImpl<CoreDictMapper, CoreDic
     }
 
     @Override
-    public List<DictVo> listByType(Map<String, Object> map) {
+    public List<DictVO> listByType(Map<String, Object> map) {
         return dictDao.listByType(map);
     }
 
 	@Override
-	public Pg<DictVo> pageByType(Map<String, Object> map) {
+	public Pg<DictVO> pageByType(Map<String, Object> map) {
 		return dictDao.pageByType(map);
 	}
 
