@@ -1,39 +1,42 @@
-package top.jpower.jpower.controller.monitor;
+package top.jpower.log.controller.monitor;
 
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
-import io.swagger.annotations.*;
-import lombok.AllArgsConstructor;
+import com.github.xiaoymin.knife4j.annotations.Ignore;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotBlank;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.common.enums.YN01Enum;
-import top.jpower.core.util.rsp.ResponseData;
-import top.jpower.core.util.rsp.ReturnJsonUtil;
-import top.jpower.core.util.utils.ChainMap;
-import top.jpower.core.util.utils.Fc;
-import top.jpower.jpower.dbs.entity.TbLogMonitorParam;
-import top.jpower.jpower.dbs.entity.TbLogMonitorSetting;
 import top.jpower.core.auth.annotation.Function;
 import top.jpower.core.auth.annotation.Menu;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
-import top.jpower.jpower.properties.MonitorRestfulProperties;
-import top.jpower.jpower.service.MonitorSettingService;
-import top.jpower.jpower.service.TaskService;
+import top.jpower.core.util.rsp.R;
+import top.jpower.core.util.utils.ChainMap;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.log.dbs.entity.LogMonitorParam;
+import top.jpower.log.dbs.entity.LogMonitorSetting;
+import top.jpower.log.properties.MonitorRestfulProperties;
+import top.jpower.log.service.MonitorSettingService;
+import top.jpower.log.service.TaskService;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 /**
- * @Author mr.g
- * @Date 2021/4/18 0018 1:16
+ * @author mr.g
  */
-@Api(tags = "监控设置")
+@Tag(name = "监控设置")
 @RestController
 @RequestMapping("/monitor/setting")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SettingController {
 
     private final MonitorRestfulProperties properties;
@@ -41,38 +44,38 @@ public class SettingController {
     private final MonitorSettingService monitorSettingService;
 
     @Function(value = "服务列表",menus = {
-            @Menu(client = "admin",menuCode = "MONITOR_RESULT",code = "MONITOR_SERVERS",type = Menu.TYPE.INTERFACE)
+		@Menu(client = "admin",menuCode = "MONITOR_RESULT",code = "MONITOR_SERVERS",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperationSupport(order = 1)
-    @ApiOperation("服务列表")
+    @Operation(description = "服务列表")
     @GetMapping(value = "/servers",produces="application/json")
-    public ResponseData<List<Map<String,Object>>> servers(){
+    public R<List<Map<String,Object>>> servers(){
         List<Map<String,Object>> list = new ArrayList<>();
         properties.getRoutes().forEach(route -> list.add(ChainMap.<String,Object>create().put("name",route.getName()).put("location",route.getLocation()).build()));
-        return ReturnJsonUtil.ok("获取成功",list);
+        return R.data(list);
     }
 
     @Function(value = "分组列表",menus = {
             @Menu(client = "admin",menuCode = "MONITOR_RESULT",code = "MONITOR_TAGS",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperationSupport(order = 2)
-    @ApiOperation("分组列表")
+    @Operation(description = "分组列表")
     @GetMapping(value = "/tags",produces="application/json")
-    public ResponseData<JSONArray> tags(@ApiParam(value = "服务名称",required = true) @RequestParam String name){
+    public R<JSONArray> tags(@Parameter(description = "服务名称",required = true) @RequestParam String name){
         JpowerAssert.notEmpty(name, JpowerError.Arg, "服务名称不可为空");
 
         MonitorRestfulProperties.Route routes = properties.getRoutes().stream().filter(route -> Fc.equals(route.getName(),name)).findFirst().get();
         JSONArray list = taskService.tagList(routes);
-        return ReturnJsonUtil.ok("获取成功",list);
+        return R.data(list);
     }
 
     @Function(value = "接口树形",menus = {
             @Menu(client = "admin",menuCode = "MONITOR_SETTING",code = "MONITOR_TREE",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperationSupport(order = 3)
-    @ApiOperation("接口树形列表")
+    @Operation(description = "接口树形列表")
     @GetMapping(value = "/monitors",produces="application/json")
-    public ResponseData<JSONArray> monitors(){
+    public R<JSONArray> monitors(){
         JSONArray array = new JSONArray();
         properties.getRoutes().forEach(route -> {
             JSONObject json = new JSONObject();
@@ -84,90 +87,89 @@ public class SettingController {
             }
             array.add(json);
         });
-        return ReturnJsonUtil.ok("获取成功",array);
+        return R.data(array);
     }
 
     @Function(value = "获取接口设置",menus = {
-            @Menu(client = "admin",menuCode = "MONITOR_SETTING",code = "MONITOR_SETUP",type = Menu.TYPE.INTERFACE)
+		@Menu(client = "admin",menuCode = "MONITOR_SETTING",code = "MONITOR_SETUP",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperationSupport(order = 4)
-    @ApiOperation("获取接口设置")
+    @Operation(description = "获取接口设置")
     @GetMapping(value = "/setup",produces="application/json")
-    public ResponseData<TbLogMonitorSetting> setup(@ApiIgnore TbLogMonitorSetting setting){
+    public R<LogMonitorSetting> setup(@Ignore LogMonitorSetting setting){
         JpowerAssert.notEmpty(setting.getServer(),JpowerError.Arg,"监控服务不可为空");
-        return ReturnJsonUtil.ok("获取成功",monitorSettingService.getOneSetting(setting));
+        return R.data(monitorSettingService.getOneSetting(setting));
     }
 
     @Function(value = "保存接口设置",menus = {
-            @Menu(client = "admin",menuCode = "MONITOR_SETTING",code = "MONITOR_SAVE_SETUP",type = Menu.TYPE.BTN)
+		@Menu(client = "admin",menuCode = "MONITOR_SETTING",code = "MONITOR_SAVE_SETUP",type = Menu.TYPE.BTN)
     })
     @ApiOperationSupport(order = 5)
-    @ApiOperation("保存接口设置")
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "server",value = "服务名称",paramType = "query",required = true),
-        @ApiImplicitParam(name = "tag",value = "所属分组",paramType = "query"),
-        @ApiImplicitParam(name = "path",value = "监控地址",paramType = "query"),
-        @ApiImplicitParam(name = "method",value = "请求方式",paramType = "query"),
-        @ApiImplicitParam(name = "isMonitor",value = "是否监控",defaultValue = "1",paramType = "query",dataType = "int",required = true),
-        @ApiImplicitParam(name = "code",value = "RESPOSE-STATUS,多个逗号分割",paramType = "query"),
-        @ApiImplicitParam(name = "execJs",value = "JS代码",paramType = "query")
+    @Operation(description = "保存接口设置")
+    @Parameters({
+        @Parameter(name = "server", description = "服务名称", in = ParameterIn.QUERY,required = true),
+        @Parameter(name = "tag",description = "所属分组", in = ParameterIn.QUERY),
+        @Parameter(name = "path",description = "监控地址", in = ParameterIn.QUERY),
+        @Parameter(name = "method",description = "请求方式", in = ParameterIn.QUERY),
+        @Parameter(name = "isMonitor",description = "是否监控", in = ParameterIn.QUERY,required = true),
+        @Parameter(name = "code",description = "RESPOSE-STATUS,多个逗号分割", in = ParameterIn.QUERY),
+        @Parameter(name = "execJs",description = "JS代码", in = ParameterIn.QUERY)
     })
     @PostMapping(value = "/save-setup",produces="application/json")
-    public ResponseData<TbLogMonitorSetting> saveSetup(@ApiIgnore TbLogMonitorSetting setting){
+    public R<LogMonitorSetting> saveSetup(@Ignore LogMonitorSetting setting){
         JpowerAssert.notEmpty(setting.getServer(),JpowerError.Arg,"服务名称不可为空");
         setting.setIsMonitor(Fc.isNull(setting.getIsMonitor())? YN01Enum.Y.getValue() :setting.getIsMonitor());
         if (monitorSettingService.save(setting)){
-            return ReturnJsonUtil.ok("保存成功",setting);
+            return R.data(setting);
         }
-        return ReturnJsonUtil.fail("保存失败");
+        return R.fail();
     }
 
     @Function(value = "删除接口设置",menus = {
             @Menu(client = "admin",menuCode = "MONITOR_SETTING",code = "MONITOR_DELETE_SETUP",type = Menu.TYPE.BTN)
     })
     @ApiOperationSupport(order = 6)
-    @ApiOperation("删除接口设置")
+    @Operation(description = "删除接口设置")
     @DeleteMapping(value = "/delete-setup",produces="application/json")
-    public ResponseData<Boolean> deleteSetup(@ApiParam("设置ID") @RequestParam Long id){
-        JpowerAssert.notNull(id,JpowerError.Arg,"ID不可为空");
-        return ReturnJsonUtil.status(monitorSettingService.removeRealById(id));
+    public R<Boolean> deleteSetup(@Parameter(description = "设置ID") @NotBlank(message = "ID不可为空") @RequestParam Long id){
+        return R.status(monitorSettingService.removeRealById(id));
     }
 
     @Function(value = "获取接口参数",menus = {
             @Menu(client = "admin",menuCode = "MONITOR_SETTING",code = "MONITOR_PARAMS",type = Menu.TYPE.INTERFACE)
     })
     @ApiOperationSupport(order = 7)
-    @ApiOperation("获取接口参数")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "server",value = "服务名称",paramType = "query",required = true),
-            @ApiImplicitParam(name = "path",value = "监控地址",paramType = "query",required = true),
-            @ApiImplicitParam(name = "method",value = "请求方式",paramType = "query",required = true),
+    @Operation(description = "获取接口参数")
+    @Parameters({
+		@Parameter(name = "server", description = "服务名称", in = ParameterIn.QUERY,required = true),
+		@Parameter(name = "path", description = "监控地址", in = ParameterIn.QUERY,required = true),
+		@Parameter(name = "method", description = "请求方式", in = ParameterIn.QUERY,required = true),
     })
     @GetMapping(value = "/param",produces="application/json")
-    public ResponseData<List<Map<String,Object>>> param(@ApiIgnore TbLogMonitorParam param){
+    public R<List<Map<String,Object>>> param(@Ignore LogMonitorParam param){
         JpowerAssert.notEmpty(param.getServer(),JpowerError.Arg,"服务名称不为空");
         JpowerAssert.notEmpty(param.getPath(),JpowerError.Arg,"监控地址不为空");
         JpowerAssert.notEmpty(param.getMethod(),JpowerError.Arg,"请求方式不为空");
 
         MonitorRestfulProperties.Route route = properties.getRoutes().stream().filter(rt -> Fc.equals(rt.getName(),param.getServer())).findFirst().get();
-        return ReturnJsonUtil.ok("获取成功",taskService.getParams(route,param.getPath(),param.getMethod()));
+        return R.data(taskService.getParams(route,param.getPath(),param.getMethod()));
     }
 
     @Function(value = "保存接口参数",menus = {
             @Menu(client = "admin",menuCode = "MONITOR_SETTING",code = "MONITOR_SAVE_PARAMS",type = Menu.TYPE.BTN)
     })
     @ApiOperationSupport(order = 8)
-    @ApiOperation("保存接口参数")
+    @Operation(description = "保存接口参数")
     @PostMapping(value = "/save-param",produces="application/json")
-    public ResponseData<Boolean> saveParam(@ApiParam("服务名称") @RequestHeader(required = false) String server,
-                                           @ApiParam("监控地址") @RequestHeader(required = false) String path,
-                                           @ApiParam("请求方式") @RequestHeader(required = false) String method,
-                                           @RequestBody List<TbLogMonitorParam> settingParams){
+    public R<Boolean> saveParam(@Parameter(description = "服务名称") @RequestHeader(required = false) String server,
+							    @Parameter(description = "监控地址") @RequestHeader(required = false) String path,
+							    @Parameter(description = "请求方式") @RequestHeader(required = false) String method,
+							    @RequestBody List<LogMonitorParam> settingParams){
         JpowerAssert.notEmpty(server,JpowerError.Arg,"服务名称不为空");
         JpowerAssert.notEmpty(path,JpowerError.Arg,"监控地址不为空");
         JpowerAssert.notEmpty(method,JpowerError.Arg,"请求方式不为空");
 
-        return ReturnJsonUtil.status(monitorSettingService.saveParams(server,path,method,settingParams));
+        return R.status(monitorSettingService.saveParams(server,path,method,settingParams));
     }
 
 }

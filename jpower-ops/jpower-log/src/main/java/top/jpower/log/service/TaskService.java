@@ -1,7 +1,7 @@
-package top.jpower.jpower.service;
+package top.jpower.log.service;
 
 import com.alibaba.fastjson2.JSONArray;
-import top.jpower.jpower.properties.MonitorRestfulProperties;
+import top.jpower.log.properties.MonitorRestfulProperties;
 
 import java.util.List;
 import java.util.Map;

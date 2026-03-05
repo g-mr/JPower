@@ -1,18 +1,17 @@
-package top.jpower.jpower.service;
+package top.jpower.log.service;
 
 import com.alibaba.fastjson2.JSONArray;
-import top.jpower.jpower.dbs.entity.TbLogMonitorParam;
-import top.jpower.jpower.dbs.entity.TbLogMonitorSetting;
 import top.jpower.core.dbs.service.BaseService;
+import top.jpower.log.dbs.entity.LogMonitorParam;
+import top.jpower.log.dbs.entity.LogMonitorSetting;
 
 import java.util.List;
 import java.util.Map;
 
 /**
- * @Author mr.g
- * @Date 2021/4/19 0019 19:15
+ * @author mr.g
  */
-public interface MonitorSettingService extends BaseService<TbLogMonitorSetting> {
+public interface MonitorSettingService extends BaseService<LogMonitorSetting> {
 
     /**
      * 保存设置
@@ -21,7 +20,7 @@ public interface MonitorSettingService extends BaseService<TbLogMonitorSetting> 
      * @return boolean
      */
     @Override
-    boolean save(TbLogMonitorSetting setting);
+    boolean save(LogMonitorSetting setting);
 
     /**
      * 保存请求参数
@@ -32,7 +31,7 @@ public interface MonitorSettingService extends BaseService<TbLogMonitorSetting> 
      * @param settingParams
      * @return java.lang.Boolean
      */
-    Boolean saveParams(String server, String path, String method, List<TbLogMonitorParam> settingParams);
+    Boolean saveParams(String server, String path, String method, List<LogMonitorParam> settingParams);
 
     /**
      * 删除不存在的配置
@@ -53,7 +52,7 @@ public interface MonitorSettingService extends BaseService<TbLogMonitorSetting> 
      * @param method
      * @return boolean
      */
-    TbLogMonitorSetting getSetting(String name, List<String> tags, String url, String method);
+    LogMonitorSetting getSetting(String name, List<String> tags, String url, String method);
 
     /**
      * 获取一个接口的配置
@@ -61,7 +60,7 @@ public interface MonitorSettingService extends BaseService<TbLogMonitorSetting> 
      * @param setting
      * @return top.jpower.jpower.dbs.entity.TbLogMonitorSetting
      **/
-    TbLogMonitorSetting getOneSetting(TbLogMonitorSetting setting);
+    LogMonitorSetting getOneSetting(LogMonitorSetting setting);
 
     /**
      * 查询一个监控地址的所有参数
@@ -70,5 +69,5 @@ public interface MonitorSettingService extends BaseService<TbLogMonitorSetting> 
      * @param url
      * @return java.util.List<top.jpower.jpower.dbs.entity.TbLogMonitorSettingParam>
      **/
-    List<TbLogMonitorParam> queryParamByPath(String server, String url);
+    List<LogMonitorParam> queryParamByPath(String server, String url);
 }

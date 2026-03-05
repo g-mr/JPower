@@ -1,4 +1,4 @@
-package top.jpower.jpower.service.impl;
+package top.jpower.log.service.impl;
 
 import cn.hutool.core.thread.ThreadUtil;
 import com.alibaba.fastjson2.JSON;
@@ -14,26 +14,20 @@ import org.springframework.stereotype.Service;
 import top.jpower.common.enums.YN01Enum;
 import top.jpower.core.exception.throwable.BusinessException;
 import top.jpower.core.util.constants.StringPool;
-import top.jpower.core.util.utils.ChainMap;
-import top.jpower.core.util.utils.Fc;
-import top.jpower.core.util.utils.JsUtil;
-import top.jpower.core.util.utils.JsonUtil;
-import top.jpower.core.util.utils.OkHttp;
-import top.jpower.core.util.utils.SpringUtil;
-import top.jpower.core.util.utils.StringUtil;
-import top.jpower.jpower.dbs.dao.LogMonitorResultDao;
-import top.jpower.jpower.dbs.entity.TbLogMonitorParam;
-import top.jpower.jpower.dbs.entity.TbLogMonitorResult;
-import top.jpower.jpower.dbs.entity.TbLogMonitorSetting;
-import top.jpower.jpower.handler.AuthBuilder;
-import top.jpower.jpower.handler.HttpInfoBuilder;
-import top.jpower.jpower.handler.HttpInfoHandler;
-import top.jpower.jpower.interceptor.AuthInterceptor;
-import top.jpower.jpower.interceptor.LogInterceptor;
-import top.jpower.jpower.interceptor.RollbackInterceptor;
-import top.jpower.jpower.properties.MonitorRestfulProperties;
-import top.jpower.jpower.service.MonitorSettingService;
-import top.jpower.jpower.service.TaskService;
+import top.jpower.core.util.utils.*;
+import top.jpower.log.dbs.dao.LogMonitorResultDao;
+import top.jpower.log.dbs.entity.LogMonitorParam;
+import top.jpower.log.dbs.entity.LogMonitorResult;
+import top.jpower.log.dbs.entity.LogMonitorSetting;
+import top.jpower.log.handler.AuthBuilder;
+import top.jpower.log.handler.HttpInfoBuilder;
+import top.jpower.log.handler.HttpInfoHandler;
+import top.jpower.log.interceptor.AuthInterceptor;
+import top.jpower.log.interceptor.LogInterceptor;
+import top.jpower.log.interceptor.RollbackInterceptor;
+import top.jpower.log.properties.MonitorRestfulProperties;
+import top.jpower.log.service.MonitorSettingService;
+import top.jpower.log.service.TaskService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,7 +104,7 @@ public class TaskServiceImpl implements TaskService {
         log.debug("---> START TEST SERVER {} {}",route.getName(),route.getLocation()+route.getUrl());
 
         authInterceptor = getAuthInterceptor(route);
-        TbLogMonitorResult result = saveResult(route.getName(), route.getUrl(), OkHttp.get(route.getLocation()+route.getUrl()).execute(authInterceptor),new TbLogMonitorSetting());
+        LogMonitorResult result = saveResult(route.getName(), route.getUrl(), OkHttp.get(route.getLocation()+route.getUrl()).execute(authInterceptor),new LogMonitorSetting());
 
         if (Fc.equals(HttpStatus.SC_OK,result.getResposeCode())){
             JSONObject restFulInfo = JSON.parseObject(result.getRestfulResponse());
@@ -127,11 +121,11 @@ public class TaskServiceImpl implements TaskService {
 
                     String httpUrl = route.getLocation().concat(Fc.equals(StringPool.SLASH,restFulInfo.getString(BASEPATH))?StringPool.EMPTY:restFulInfo.getString(BASEPATH)).concat(url);
 
-                    List<TbLogMonitorParam> paramList = monitorSettingService.queryParamByPath(route.getName(),url);
+                    List<LogMonitorParam> paramList = monitorSettingService.queryParamByPath(route.getName(),url);
                     HttpInfoHandler handler = HttpInfoBuilder.newHandler(httpUrl,paramList,JSON.parseObject(Fc.toStr(methods)),restFulInfo.getJSONObject(DEFINITIONS));
                     handler.getMethodTypes().forEach(method -> {
 
-                        TbLogMonitorSetting setting = monitorSettingService.getSetting(route.getName(),handler.getTags(method),url,method);
+                        LogMonitorSetting setting = monitorSettingService.getSetting(route.getName(),handler.getTags(method),url,method);
 
                         if (Fc.equals(setting.getIsMonitor(), YN01Enum.Y.getValue())){
                             OkHttp okHttp = null;
@@ -172,8 +166,8 @@ public class TaskServiceImpl implements TaskService {
      * @param setting
      * @return void
      **/
-    public TbLogMonitorResult saveResult(String name, String path, OkHttp okHttp, TbLogMonitorSetting setting) {
-        TbLogMonitorResult result = new TbLogMonitorResult();
+    public LogMonitorResult saveResult(String name, String path, OkHttp okHttp, LogMonitorSetting setting) {
+        LogMonitorResult result = new LogMonitorResult();
         try {
             result.setName(name);
             result.setPath(path);
@@ -185,30 +179,29 @@ public class TaskServiceImpl implements TaskService {
 
             if (Fc.isNull(okHttp.getResponse())){
                 result.setError(okHttp.getError());
-                result.setIsSuccess(YN01Enum.N.getValue());
+                result.setIsSuccess(false);
             }else {
                 result.setResponseTime(okHttp.getResponseTime());
                 result.setRespose(okHttp.getResponse().toString());
                 result.setResposeCode(okHttp.getResponse().code());
                 result.setRestfulResponse(okHttp.getBody());
 
-                int isSuccess = YN01Enum.N.getValue();
+                Boolean isSuccess = false;
 
                 if (Fc.notNull(setting.getCode())){
-                    isSuccess = setting.getCode().contains(Fc.toStr(okHttp.getResponse().code()))?YN01Enum.Y.getValue():YN01Enum.N.getValue();
+                    isSuccess = setting.getCode().contains(Fc.toStr(okHttp.getResponse().code()));
                 }
 
-                if (isSuccess==YN01Enum.Y.getValue() && Fc.notNull(setting.getExecJs())){
+                if (isSuccess && Fc.notNull(setting.getExecJs())){
                     try{
-                        boolean is = JsUtil.execJsFunction("function exc(result){"+setting.getExecJs()+"}","exc",result.getRestfulResponse());
-                        isSuccess = is?YN01Enum.Y.getValue():YN01Enum.N.getValue();
+						isSuccess = JsUtil.execJsFunction("function exc(result){"+setting.getExecJs()+"}","exc",result.getRestfulResponse());
                     }catch (Exception e){
-                        isSuccess = YN01Enum.N.getValue();
+                        isSuccess = false;
                     }
                 }
 
                 if (Fc.isNull(setting.getCode()) && Fc.isNull(setting.getExecJs())){
-                    isSuccess = okHttp.getResponse().isSuccessful()?YN01Enum.Y.getValue():YN01Enum.N.getValue();
+                    isSuccess = okHttp.getResponse().isSuccessful();
                 }
                 result.setIsSuccess(isSuccess);
             }
