@@ -15,11 +15,6 @@
     <dependencies>
         <dependency>
             <groupId>top.jpower</groupId>
-            <artifactId>jpower-core-boot</artifactId>
-            <version>${top.jpower.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>top.jpower</groupId>
             <artifactId>jpower-core-redis</artifactId>
             <version>${top.jpower.version}</version>
         </dependency>
@@ -28,16 +23,11 @@
             <artifactId>jpower-core-swagger</artifactId>
             <version>${top.jpower.version}</version>
         </dependency>
-        <dependency>
-            <groupId>top.jpower</groupId>
-            <artifactId>jpower-core-feign</artifactId>
-            <version>${top.jpower.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>top.jpower</groupId>
-            <artifactId>jpower-core-seata</artifactId>
-            <version>${top.jpower.version}</version>
-        </dependency>
+		<dependency>
+			<groupId>top.jpower</groupId>
+			<artifactId>jpower-core-seata</artifactId>
+			<version>${top.jpower.version}</version>
+		</dependency>
 
         <dependency>
             <groupId>top.jpower</groupId>
