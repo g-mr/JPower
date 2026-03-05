@@ -22,11 +22,9 @@ import java.util.Properties;
 import java.util.concurrent.Executor;
 
 /**
- * @ClassName NacosRouteDefinitionRepository
- * @Description TODO 动态路由
- * @Author mr.g
- * @Date 2020/8/25 0025 23:05
- * @Version 1.0
+ * 动态路由
+ *
+ * @author mr.g
  */
 @Order
 @Slf4j

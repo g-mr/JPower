@@ -4,6 +4,7 @@ import cn.hutool.core.date.DatePattern;
 import com.alibaba.fastjson2.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 import java.io.Serial;
@@ -25,12 +26,15 @@ public class CoreUserDTO implements Serializable {
     @Schema(description = "主键")
     private Long id;
     @Schema(description = "登录用户名")
+	@NotBlank(message = "登录用户名不能为空")
     private String loginId;
 	@Schema(description = "密码")
+	@NotBlank(message = "密码不能为空")
 	private String password;
     @Schema(description = "头像")
     private String avatar;
     @Schema(description = "昵称")
+	@NotBlank(message = "昵称不能为空")
     private String nickName;
     @Schema(description = "用户姓名")
     private String userName;

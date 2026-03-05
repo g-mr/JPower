@@ -39,7 +39,6 @@ import static top.jpower.core.util.constants.StringPool.*;
 
 /**
  * @author mr.g
- * @date 2021-05-24 10:55
  */
 @Slf4j
 @Component

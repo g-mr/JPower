@@ -14,7 +14,6 @@ import top.jpower.jpower.gateway.utils.HttpRequestContextHolder;
  * 存储请求上下文
  *
  * @author mr.g
- * @date 2022-08-26 00:11
  */
 @Component
 @RequiredArgsConstructor

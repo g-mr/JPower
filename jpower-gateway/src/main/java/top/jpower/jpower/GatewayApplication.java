@@ -1,15 +1,15 @@
 package top.jpower.jpower;
 
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import top.jpower.common.constants.AppConstant;
 import top.jpower.core.deploy.JpowerApplication;
-import top.jpower.core.deploy.annotation.JpowerCloudApplication;
 
 /**
  * 网关启动
  *
  * @author mr.g
  **/
-@JpowerCloudApplication
+@SpringBootApplication
 public class GatewayApplication {
 
     public static void main(String[] args) {

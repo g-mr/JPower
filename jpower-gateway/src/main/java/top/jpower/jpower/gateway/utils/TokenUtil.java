@@ -16,11 +16,9 @@ import top.jpower.core.util.utils.StringUtil;
 import static top.jpower.core.auth.utils.constant.SecureConstant.BASIC_HEADER_PREFIX;
 
 /**
- * @ClassName TokenUtil
- * @Description TODO
- * @Author 郭丁志
- * @Date 2020/8/30 0030 23:38
- * @Version 1.0
+ * Token工具
+ *
+ * @author mr.g
  */
 public class TokenUtil {
 
@@ -28,7 +26,7 @@ public class TokenUtil {
      * 获取token
      *
      * @author mr.g
-     * @param request
+     * @param request 请求
      * @return java.lang.String
      **/
     public static String getToken(ServerHttpRequest request) {

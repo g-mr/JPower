@@ -1,14 +1,14 @@
-package top.jpower.jpower;
+package top.jpower.admin;
 
 import de.codecentric.boot.admin.server.config.EnableAdminServer;
 import org.springframework.boot.autoconfigure.AutoConfigurationExcludeFilter;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.TypeExcludeFilter;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import top.jpower.common.constants.AppConstant;
-import top.jpower.core.deploy.JpowerApplication;
-import top.jpower.core.deploy.annotation.JpowerCloudApplication;
 import top.jpower.core.boot.config.JpowerJacksonConfig;
+import top.jpower.core.deploy.JpowerApplication;
 
 /**
  * @ClassName AdminStartApplication
@@ -17,7 +17,7 @@ import top.jpower.core.boot.config.JpowerJacksonConfig;
  * @Date 2020-02-24 18:41
  * @Version 1.0
  */
-@JpowerCloudApplication
+@SpringBootApplication
 @ComponentScan(
         excludeFilters = {@ComponentScan.Filter(
                 type = FilterType.ASSIGNABLE_TYPE,

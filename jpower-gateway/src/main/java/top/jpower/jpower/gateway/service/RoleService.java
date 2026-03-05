@@ -13,7 +13,7 @@ import reactor.util.retry.Retry;
 import top.jpower.common.enums.YN01Enum;
 import top.jpower.core.auth.utils.constant.ClientNameConstant;
 import top.jpower.core.util.constants.StringPool;
-import top.jpower.core.util.rsp.ResponseData;
+import top.jpower.core.util.rsp.R;
 import top.jpower.core.util.utils.ExceptionUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.MapUtil;
@@ -27,7 +27,6 @@ import static top.jpower.core.util.constants.StringPool.NEWLINE;
 
 /**
  * @author mr.g
- * @date 2022-08-01 23:09
  */
 @Slf4j
 @Service
@@ -53,8 +52,8 @@ public class RoleService {
                         .queryParam("clientCode", clientCode)
                         .build())
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<ResponseData<List<String>>>() {})
-                .map(ResponseData::getData)
+                .bodyToMono(new ParameterizedTypeReference<R<List<String>>>() {})
+                .map(R::getData)
                 .onErrorResume(e -> {
                     log.error("获取【{},{}】权限失败, error==>>{}{}", roleId, clientCode, NEWLINE,ExceptionUtil.getStackTraceAsString(e));
                     return Mono.just(ListUtil.empty());
@@ -78,12 +77,12 @@ public class RoleService {
                         .queryParam("code", code)
                         .build())
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<ResponseData<Long>>() {})
+                .bodyToMono(new ParameterizedTypeReference<R<Long>>() {})
                 .onErrorResume(e -> {
                     log.error("获取【{}】菜单编码失败, error={}{}", code, NEWLINE, ExceptionUtil.getStackTraceAsString(e));
                     return Mono.empty();
                 })
-                .map(ResponseData::getData)
+                .map(R::getData)
                 .map(Optional::of)
                 .defaultIfEmpty(Optional.empty())
                 .cache(Duration.ofMinutes(5));
@@ -106,8 +105,8 @@ public class RoleService {
                         .queryParam("clientCode", clientCode)
                         .build())
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<ResponseData<List<Map<String,Object>>>>() {})
-                .map(ResponseData::getData)
+                .bodyToMono(new ParameterizedTypeReference<R<List<Map<String,Object>>>>() {})
+                .map(R::getData)
                 .onErrorResume(e -> {
                     log.error("获取【{},{}】数据权限失败, error={}{}", roleIds, clientCode, NEWLINE, ExceptionUtil.getStackTraceAsString(e));
                     return Mono.just(ListUtil.empty());

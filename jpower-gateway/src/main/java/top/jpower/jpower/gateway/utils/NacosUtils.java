@@ -3,11 +3,9 @@ package top.jpower.jpower.gateway.utils;
 import java.util.Properties;
 
 /**
- * @ClassName NacosUtils
- * @Description TODO
- * @Author 郭丁志
- * @Date 2020-08-26 10:45
- * @Version 1.0
+ * Nacos 工具类
+ *
+ * @author mr.g
  */
 public class NacosUtils {
 

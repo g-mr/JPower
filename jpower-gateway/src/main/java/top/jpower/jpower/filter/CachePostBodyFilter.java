@@ -22,8 +22,9 @@ import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
 
 /**
+ * Gateway日志
+ *
  * @author mr.g
- * @date 2022-06-01 12:11
  */
 @Component
 @ConditionalOnProperty(value = "jpower.gateway.log", havingValue = "true", matchIfMissing = false)

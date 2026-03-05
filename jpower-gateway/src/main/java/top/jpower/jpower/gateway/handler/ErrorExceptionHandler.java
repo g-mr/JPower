@@ -20,11 +20,9 @@ import top.jpower.core.util.utils.ExceptionUtil;
 import top.jpower.core.util.utils.Fc;
 
 /**
- * @ClassName ErrorExceptionHandler
- * @Description TODO 异常返回
- * @Author 郭丁志
- * @Date 2020/8/27 0027 1:58
- * @Version 1.0
+ * 异常返回
+ *
+ * @author mr.g
  */
 @Slf4j
 @Order(-1)

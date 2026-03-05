@@ -18,11 +18,9 @@ import reactor.core.publisher.Mono;
 import java.util.stream.Collectors;
 
 /**
- * @ClassName CorsConfig
- * @Description TODO 跨域
- * @Author 郭丁志
- * @Date 2020/8/26 0026 23:19
- * @Version 1.0
+ * 跨域
+ *
+ * @author mr.g
  */
 @Configuration
 public class CorsConfig {

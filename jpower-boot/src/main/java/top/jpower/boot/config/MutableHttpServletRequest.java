@@ -5,11 +5,7 @@ import jakarta.servlet.http.HttpServletRequestWrapper;
 import java.util.*;
 
 /**
- * @ClassName MutableHttpServletRequest
- * @Description TODO
- * @Author 郭丁志
- * @Date 2020/8/31 0031 21:43
- * @Version 1.0
+ * @author mr.g
  */
 public final class MutableHttpServletRequest extends HttpServletRequestWrapper {
     private final Map<String, String> customHeaders;

@@ -48,6 +48,12 @@
             </exclusions>
         </dependency>
 
+		<!--应用监控和管理-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-loadbalancer</artifactId>
@@ -61,7 +67,7 @@
 
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-gateway</artifactId>
+            <artifactId>spring-cloud-starter-gateway-server-webflux</artifactId>
         </dependency>
 
     </dependencies>
@@ -108,14 +114,6 @@
             </resource>
             <resource>
                 <directory>src/main/resources</directory>
-            </resource>
-            <!-- 编译 根 目录下的 bootstrap-jpower.yml 文件 -->
-            <resource>
-                <directory>${maven.multiModuleProjectDirectory}/config</directory>
-                <filtering>false</filtering>
-                <includes>
-                    <include>bootstrap-jpower.yml</include>
-                </includes>
             </resource>
         </resources>
     </build>

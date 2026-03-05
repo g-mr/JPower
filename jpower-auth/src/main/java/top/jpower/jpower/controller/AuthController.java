@@ -4,16 +4,15 @@ import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.extra.mail.MailUtil;
 import com.wf.captcha.SpecCaptcha;
-import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 import top.jpower.common.constants.CacheNames;
 import top.jpower.common.constants.ParamsConstants;
 import top.jpower.common.enums.LoginLimitEnum;
@@ -35,26 +34,31 @@ import top.jpower.core.util.rsp.R;
 import top.jpower.core.util.utils.*;
 import top.jpower.jpower.auth.TokenGranterBuilder;
 import top.jpower.jpower.auth.granter.RefreshTokenGranter;
-import top.jpower.jpower.cache.param.ParamConfig;
-import top.jpower.jpower.dbs.entity.client.TbCoreClient;
-import top.jpower.jpower.dbs.entity.tenant.TbCoreTenant;
 import top.jpower.jpower.dto.AuthInfo;
 import top.jpower.jpower.dto.TokenParameter;
 import top.jpower.jpower.utils.TokenUtil;
+import top.jpower.jpower.vo.CaptchaVO;
 import top.jpower.resource.api.dto.SmsValidateDTO;
 import top.jpower.resource.api.feign.SmsClient;
 import top.jpower.system.api.cache.SystemCache;
+import top.jpower.system.api.cache.param.ParamCache;
+import top.jpower.system.api.dto.ClientDTO;
+import top.jpower.system.api.dto.TenantDTO;
 import top.jpower.user.api.cache.UserCache;
 import top.jpower.user.api.dto.CoreUserDTO;
 import top.jpower.user.api.feign.UserClient;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static top.jpower.common.constants.CacheNames.TOKEN_USER_KEY;
+import static top.jpower.common.constants.ServiceCodeConstants.NOT_LOGIN;
+import static top.jpower.common.constants.ServiceCodeConstants.NOT_OPEN_REGISTER;
 import static top.jpower.common.constants.ServiceCodeConstants.TENANT_CODE_NOT_NULL;
+import static top.jpower.common.constants.ServiceCodeConstants.USER_EXIST;
 import static top.jpower.core.dbs.tenant.TenantConstant.DEFAULT_TENANT_CODE;
 import static top.jpower.core.dbs.tenant.TenantConstant.getExpireTime;
 import static top.jpower.core.util.constants.JpowerConstants.HEADER_TENANT;
@@ -84,27 +88,13 @@ public class AuthController extends BaseController {
             "&nbsp;&nbsp;&nbsp;clientCode和clientSecret的值由后端统一提供，不同的登录客户端值也不一样。<br/>" +
             "token如何使用：tokenType+\" \"+token组成的值要放到header；header头是jpower-auth；具体写法如下；<br/>" +
             "&nbsp;&nbsp;&nbsp;jpower-auth=tokenType+\" \"+token")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "tenantCode",required = true,value="租户编码",paramType = "form"),
-            @ApiImplicitParam(name = "loginId",required = false,value="账号",paramType = "form"),
-            @ApiImplicitParam(name = "passWord",required = false,value="密码",paramType = "form"),
-            @ApiImplicitParam(name = "grantType",required = false,value="授权类型 (密码登录=password、验证码登录=captcha、第三方平台登录=otherCode、手机号验证码登录=phone、刷新token=refresh_token)",paramType = "form"),
-            @ApiImplicitParam(name = "refreshToken",required = false,value="刷新token   token过期时用刷新token获取新token时必填",paramType = "form"),
-            @ApiImplicitParam(name = "phone",required = false,value="手机号   grantType=phone时必填",paramType = "form"),
-            @ApiImplicitParam(name = "phoneCode",required = false,value="手机号验证码   grantType=phone时必填",paramType = "form"),
-            @ApiImplicitParam(name = "otherCode",required = false,value="第三方平台标识  grantType=otherCode时必填",paramType = "form"),
-            @ApiImplicitParam(name = "User-Type",required = true,value="用户类型   具体值由后端提供",paramType = "header"),
-            @ApiImplicitParam(name = "Authorization",required = true,value="客户端识别码",paramType = "header"),
-            @ApiImplicitParam(name = "Captcha-Key",required = false,value="验证码key  grantType=captcha时必填",paramType = "header"),
-            @ApiImplicitParam(name = "Captcha-Code",required = false,value="验证码值    grantType=captcha时必填",paramType = "header")
-    })
     @PostMapping(value = "/login",produces="application/json")
     public R<AuthInfo> login(@Valid @RequestBody TokenParameter parameter) {
 
         if (tenantProperties.getEnable()){
             JpowerAssert.notNull(parameter.getTenantCode(),JpowerError.Arg,TENANT_CODE_NOT_NULL);
             if (!Fc.equalsValue(DEFAULT_TENANT_CODE,parameter.getTenantCode())){
-                TbCoreTenant tenant = SystemCache.getTenantByCode(parameter.getTenantCode());
+				TenantDTO tenant = SystemCache.getTenantByCode(parameter.getTenantCode());
                 if (Fc.isNull(tenant)){
                     return R.notFind("租户不存在");
                 }
@@ -127,7 +117,7 @@ public class AuthController extends BaseController {
         }
 
         //判断单端登录
-        TbCoreClient client = SystemCache.getClientByClientCode(ShieldUtil.getClientCodeFromHeader());
+		ClientDTO client = SystemCache.getClientByClientCode(ShieldUtil.getClientCodeFromHeader());
         if (StringUtil.equalsIgnoreCase(client.getLoginLimit(), LoginLimitEnum.ONE.getValue())){
             Set<String> keys = redisService.keys(TOKEN_USER_KEY+user.getId()+ StringPool.COLON + StringPool.ASTERISK);
             keys.forEach(key->{
@@ -159,8 +149,7 @@ public class AuthController extends BaseController {
 
     @Operation(summary = "退出登录")
     @RequestMapping(value = "/loginOut",method = RequestMethod.POST,produces="application/json")
-    public R<String> loginOut(@ApiParam(value = "用户ID",required = true)@RequestParam Long userId) {
-        JpowerAssert.notNull(userId, JpowerError.Arg,"用户ID不可为空");
+    public R<String> loginOut(@Parameter(description = "用户ID",required = true) @NotNull(message = "用户ID不可为空") @RequestParam Long userId) {
         UserInfo user = ShieldUtil.getUser();
         if(Fc.notNull(user) && NumberUtil.equals(userId, user.getUserId())){
             getRequest().getSession().invalidate();
@@ -171,37 +160,37 @@ public class AuthController extends BaseController {
             if (Fc.isNotBlank(cookieToken)){
                 WebUtil.removeCookie(WebUtil.getResponse(), JpowerConstants.AUTH_HEADER);
             }
-            return R.ok("退出成功");
+            return R.ok();
         }else{
-            return R.fail("该用户暂未登录");
+            return R.fail(NOT_LOGIN);
         }
     }
 
     @Operation(summary = "获取验证码")
     @GetMapping("/captcha")
-    public R<Map<String,Object>> captcha() {
+    public R<CaptchaVO> captcha() {
         SpecCaptcha specCaptcha = new SpecCaptcha(130, 48, 4);
         String verCode = specCaptcha.text().toLowerCase();
         String key = Fc.randomUUID();
         // 存入redis并设置过期时间为30分钟
         redisService.valueOps().set(CacheNames.CAPTCHA_KEY + key, verCode, 30L, TimeUnit.MINUTES);
         // 将key和base64返回给前端
-        return R.ok("操作成功",ChainMap.create().put("key", key).put("image", specCaptcha.toBase64()).build());
+        return R.data(new CaptchaVO().setKey(key).setImage(specCaptcha.toBase64()));
     }
 
     @Operation(summary = "发送手机验证码")
     @PostMapping(value = "/captcha/{phone}",produces="application/json")
-    public R phoneCaptcha(@ApiParam(value = "手机号", required = true) @Mobile @PathVariable("phone") String phone) {
+    public R<Boolean> phoneCaptcha(@Parameter(description = "手机号", required = true) @Mobile @PathVariable("phone") String phone) {
         return R.status(smsClient.sendValidate(new SmsValidateDTO().setCode(VALIDATE_SMS_CODE).setPhone(phone)).isStatus());
     }
 
     @Operation(summary = "发送邮箱验证码")
     @PostMapping(value = "/sendEmailCode/{email}",produces="application/json")
-    public R<String> sendEmailCode(@ApiParam(value = "手机号", required = true) @PathVariable("email") String email) {
+    public R<String> sendEmailCode(@Parameter(description = "手机号", required = true) @PathVariable("email") String email) {
 
         JpowerAssert.isTrue(Validator.isEmail(email), JpowerError.Business, "邮箱 不合法");
 
-        String code = RandomStringUtils.randomNumeric(6);
+        String code = RandomUtil.random6Num();
         String msgId = MailUtil.sendText(email,"Jpower邮件","您得验证码："+code);
         redisService.valueOps().set("email:"+email+":"+msgId, code ,5L, TimeUnit.MINUTES);
         return R.data(msgId);
@@ -209,27 +198,24 @@ public class AuthController extends BaseController {
 
     @Operation(summary = "用户注册")
     @PostMapping(value = "/register")
-    public R register(CoreUserDTO coreUser, @RequestHeader(HEADER_TENANT) String tenantCode) {
+    public R<Long> register(@Validated @RequestBody CoreUserDTO coreUser, @RequestHeader(HEADER_TENANT) String tenantCode) {
 
-        if (!ParamConfig.getBoolean(ParamsConstants.IS_REGISTER,Boolean.FALSE)){
-            return R.fail("未开启注册功能");
+        if (!ParamCache.getBoolean(ParamsConstants.IS_REGISTER,Boolean.FALSE)){
+            return R.fail(NOT_OPEN_REGISTER);
         }
 
-        JpowerAssert.notEmpty(coreUser.getLoginId(),JpowerError.Arg,"用户名不可为空");
-        JpowerAssert.notEmpty(coreUser.getPassword(),JpowerError.Arg,"密码不可为空");
-        JpowerAssert.notEmpty(coreUser.getNickName(),JpowerError.Arg,"昵称不可为空");
         if (tenantProperties.getEnable()){
-            JpowerAssert.notEmpty(tenantCode,JpowerError.Arg,"租户不可为空");
+            JpowerAssert.notEmpty(tenantCode,JpowerError.Arg,TENANT_CODE_NOT_NULL);
         }
         coreUser.setUserType(UserTypeEnum.USER_TYPE_GENERAL.getValue());
 
 		CoreUserDTO user = UserCache.getUserByLoginId(coreUser.getLoginId(),tenantCode);
         if (Fc.notNull(user)){
-            return R.fail("该用户已注册");
+            return R.fail(USER_EXIST);
         }
 
 		coreUser.setPassword(DigestUtil.pwdEncrypt(coreUser.getPassword()));
-        coreUser.setRoleIds(ParamConfig.getString(ParamsConstants.REGISTER_ROLE_ID));
+        coreUser.setRoleIds(Collections.singletonList(ParamCache.getLong(ParamsConstants.REGISTER_ROLE_ID)));
         return userClient.saveUser(coreUser);
     }
 

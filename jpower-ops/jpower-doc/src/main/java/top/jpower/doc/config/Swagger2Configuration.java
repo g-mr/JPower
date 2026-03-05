@@ -1,4 +1,4 @@
-package top.jpower.jpower.config;
+package top.jpower.doc.config;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

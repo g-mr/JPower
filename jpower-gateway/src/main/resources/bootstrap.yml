@@ -4,14 +4,22 @@ server:
 spring:
   config:
     import:
-      - classpath:/bootstrap-jpower.yml  # 导入顶级配置
+      - nacos:jpower.yml
+      - nacos:jpower-gateway.yml
   cloud:
-    gateway:
-      discovery:
-        locator:
-          #启用自动根据服务ID建立路由
-          enabled: true
+    nacos:
+      server-addr: 127.0.0.1:8848
+      config:
+        import-check:
+          enabled: false   # 默认为 false，设为 true 后，缺失的配置会导致启动失败
     loadbalancer:
       #开启重试机制
-        retry:
-          enabled: true
+      retry:
+        enabled: true
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              #启用自动根据服务ID建立路由
+              enabled: true

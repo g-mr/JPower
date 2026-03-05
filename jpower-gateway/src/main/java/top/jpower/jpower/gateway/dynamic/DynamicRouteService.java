@@ -18,11 +18,9 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * @ClassName DynamicRouteService
- * @Description TODO
- * @Author mr.g
- * @Date 2020/8/26 0026 0:25
- * @Version 1.0
+ * 动态路由服务
+ *
+ * @author mr.g
  */
 @Slf4j
 @Service

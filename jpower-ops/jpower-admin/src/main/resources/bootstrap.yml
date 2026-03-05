@@ -14,7 +14,8 @@ server:
 spring:
   config:
     import:
-      - classpath:/bootstrap-jpower.yml  # 导入顶级配置
+      - nacos:jpower.yml
+      - nacos:${spring.application.name}.yml
   security:
     user:
       name: "admin"

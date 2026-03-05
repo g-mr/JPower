@@ -2,7 +2,6 @@ package top.jpower.jpower.utils;
 
 import top.jpower.common.constants.CacheNames;
 import top.jpower.common.enums.YN01Enum;
-import top.jpower.core.auth.dto.UserInfo;
 import top.jpower.core.auth.properties.AuthProperties;
 import top.jpower.core.auth.utils.JwtUtil;
 import top.jpower.core.auth.utils.ShieldUtil;
@@ -12,18 +11,12 @@ import top.jpower.core.redis.cache.RedisService;
 import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.constants.TokenConstant;
-import top.jpower.core.util.utils.BeanUtil;
-import top.jpower.core.util.utils.ChainMap;
-import top.jpower.core.util.utils.DateUtil;
-import top.jpower.core.util.utils.Fc;
-import top.jpower.core.util.utils.SpringUtil;
-import top.jpower.core.util.utils.StringUtil;
-import top.jpower.core.util.utils.WebUtil;
-import top.jpower.system.api.cache.SystemCache;
-import top.jpower.jpower.dbs.entity.client.TbCoreClient;
-import top.jpower.jpower.dbs.entity.function.TbCoreDataScope;
-import top.jpower.jpower.dbs.entity.function.TbCoreFunction;
+import top.jpower.core.util.utils.*;
 import top.jpower.jpower.dto.AuthInfo;
+import top.jpower.system.api.cache.SystemCache;
+import top.jpower.system.api.dto.ClientDTO;
+import top.jpower.system.api.dto.DataScopeDTO;
+import top.jpower.system.api.dto.FunctionDTO;
 import top.jpower.user.api.dto.CoreUserDTO;
 
 import java.util.ArrayList;
@@ -64,14 +57,14 @@ public class TokenUtil {
      * 获取客户端信息
      * @return 客户端信息
      */
-    public static TbCoreClient getClientDetails(){
+    public static ClientDTO getClientDetails(){
         String[] tokens = ShieldUtil.getClientInfo();
         assert tokens.length == 2;
         String clientCode = tokens[0];
         String clientSecret = tokens[1];
 
         // 获取客户端信息
-        TbCoreClient client = SystemCache.getClientByClientCode(clientCode);
+		ClientDTO client = SystemCache.getClientByClientCode(clientCode);
 
         // 校验客户端信息
         if (!validateClient(client, clientCode, clientSecret)) {
@@ -88,7 +81,7 @@ public class TokenUtil {
      * @param clientSecret 客户端密钥
      * @return boolean
      */
-    public static boolean validateClient(TbCoreClient client, String clientCode, String clientSecret) {
+    public static boolean validateClient(ClientDTO client, String clientCode, String clientSecret) {
         if (Fc.notNull(client)) {
             return StringUtil.equals(clientCode, client.getClientCode()) && StringUtil.equals(clientSecret, client.getClientSecret());
         }
@@ -116,8 +109,11 @@ public class TokenUtil {
      * @return token
      */
     public static AuthInfo createAuthInfo(CoreUserDTO user) {
+		if (!user.getActivationStatus()) {
+			throw new BusinessException(USER_NOT_ACTIVATION);
+		}
 
-        TbCoreClient client = getClientDetails();
+		ClientDTO client = getClientDetails();
         assert client != null;
 
         //设置jwt参数
@@ -143,7 +139,7 @@ public class TokenUtil {
      * @param user 用户信息
      * @return refreshToken
      */
-    private static String createRefreshToken(CoreUserDTO user,TbCoreClient client) {
+    private static String createRefreshToken(CoreUserDTO user,ClientDTO client) {
         return JwtUtil.createJwt(ChainMap.<String, Object>create()
                 .put(TokenConstant.TOKEN_TYPE, TokenConstant.REFRESH_TOKEN)
                 .put(TokenConstant.USER_ID, user.getId())
@@ -157,14 +153,14 @@ public class TokenUtil {
      * @author mr.g
      * @param authInfo 鉴权信息
      **/
-    private static void cacheAuth(AuthInfo authInfo, CoreUserDTO user, TbCoreClient client) {
-        List<TbCoreDataScope> dataScopeRoleList = SystemCache.getDataScopeByRole(user.getRoleIds(),client.getClientCode());
-        List<TbCoreFunction> menuList = SystemCache.getMenuListByRole(user.getRoleIds(),client.getClientCode());
+    private static void cacheAuth(AuthInfo authInfo, CoreUserDTO user, ClientDTO client) {
+        List<DataScopeDTO> dataScopeRoleList = SystemCache.getDataScopeByRole(user.getRoleIds(),client.getClientCode());
+        List<FunctionDTO> menuList = SystemCache.getMenuListByRole(user.getRoleIds(),client.getClientCode());
 
         Map<String, List<DataScope>> map = ChainMap.<String,List<DataScope>>create().build();
         if (Fc.isNotEmpty(dataScopeRoleList)){
             dataScopeRoleList.forEach(dataScope -> {
-                String code = Fc.isNotEmpty(menuList) ? menuList.stream().filter(menu -> Fc.equalsValue(menu.getId(),dataScope.getMenuId())).map(TbCoreFunction::getCode).findFirst().orElse(null) : null;
+                String code = Fc.isNotEmpty(menuList) ? menuList.stream().filter(menu -> Fc.equalsValue(menu.getId(),dataScope.getMenuId())).map(FunctionDTO::getCode).findFirst().orElse(null) : null;
                 if (Fc.isNotBlank(code)){
 
                     boolean is = true;

@@ -4,11 +4,9 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * @ClassName SwaggerWebConfig
- * @Description TODO swagger前端配置
- * @Author 郭丁志
- * @Date 2020-08-12 17:19
- * @Version 1.0
+ * swagger前端配置
+ *
+ * @author mr.g
  */
 public class SwaggerWebConfig implements WebMvcConfigurer {
 

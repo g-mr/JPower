@@ -13,7 +13,7 @@ import top.jpower.core.deploy.JpowerApplication;
  **/
 @EnableTransactionManagement
 @SpringBootApplication(scanBasePackages = "top.jpower")
-@EnableFeignClients(basePackages = "top.jpower")
+@EnableFeignClients(basePackages = "top.jpower.*.api")
 public class BootStartApplication {
     public static void main(String[] args) {
         JpowerApplication.run(AppConstant.JPOWER_BOOT, BootStartApplication.class, args);

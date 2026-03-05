@@ -49,11 +49,9 @@ import static top.jpower.core.auth.utils.constant.RoleConstant.*;
 import static top.jpower.core.util.constants.JpowerConstants.HEADER_MENU;
 
 /**
- * @ClassName AuthFilter
- * @Description TODO 鉴权
- * @Author 郭丁志
- * @Date 2020/8/29 0029 19:21
- * @Version 1.0
+ * 鉴权
+ *
+ * @author mr.g
  */
 @Component
 @Slf4j

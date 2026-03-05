@@ -90,4 +90,8 @@ public interface ServiceCodeConstants {
 
 	String TENANT_CODE_NOT_NULL = "租户编码不可为空";
 
+	String NOT_OPEN_REGISTER = "未开启注册功能";
+
+	String USER_EXIST = "该用户已注册";
+
 }

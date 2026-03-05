@@ -3,6 +3,9 @@ package top.jpower.boot.config;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
 import com.alibaba.fastjson2.JSON;
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,19 +26,15 @@ import top.jpower.core.redis.cache.RedisService;
 import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.constants.TokenConstant;
-import top.jpower.core.util.rsp.ResponseData;
-import top.jpower.core.util.rsp.ReturnJsonUtil;
+import top.jpower.core.util.rsp.R;
 import top.jpower.core.util.utils.BeanUtil;
 import top.jpower.core.util.utils.ChainMap;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.WebUtil;
-import top.jpower.system.dbs.entity.function.TbCoreDataScope;
+import top.jpower.system.api.dto.DataScopeDTO;
 import top.jpower.system.service.role.CoreDataScopeService;
 import top.jpower.system.service.role.CoreFunctionService;
 
-import jakarta.servlet.*;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -93,7 +92,7 @@ public class AuthFilter implements Filter {
         if (Fc.isNotBlank(token)){
 
             if (!redisUtil.exist(CacheNames.TOKEN_URL_KEY + token)){
-                ResponseData<String> responseData = ReturnJsonUtil.print(HttpStatus.PROXY_AUTHENTICATION_REQUIRED.value(),"令牌已过期，请重新登录",false);
+                R<String> responseData = R.print(HttpStatus.PROXY_AUTHENTICATION_REQUIRED.value(),"令牌已过期，请重新登录",false);
 
                 WebUtil.renderJson((HttpServletResponse) response,responseData);
                 return;
@@ -101,7 +100,7 @@ public class AuthFilter implements Filter {
 
             UserInfo user = ShieldUtil.getUser(httpRequest);
             if (Fc.isNull(user) || !isAuthByToken(token, currentPath)) {
-                ResponseData<String> responseData = ReturnJsonUtil.print(HttpStatus.UNAUTHORIZED.value(),"请求未授权",false);
+                R<String> responseData = R.print(HttpStatus.UNAUTHORIZED.value(),"请求未授权",false);
                 WebUtil.renderJson((HttpServletResponse) response,responseData);
                 return;
             }
@@ -125,7 +124,7 @@ public class AuthFilter implements Filter {
                 String menuCode = httpRequest.getHeader(HEADER_MENU);
                 List<DataScope> dataScopes = null;
                 if (Fc.isNotBlank(menuCode)){
-                    List<TbCoreDataScope> list = dataScopeService.getDataScopeByRoleAndMenu(Collections.singletonList(RoleConstant.ANONYMOUS_ID), menuCode);
+                    List<DataScopeDTO> list = dataScopeService.getDataScopeByRoleAndMenu(Collections.singletonList(RoleConstant.ANONYMOUS_ID), menuCode);
                     dataScopes = BeanUtil.copyToList(list,DataScope.class);
                 }
 
@@ -134,7 +133,7 @@ public class AuthFilter implements Filter {
             }
         }
 
-        ResponseData<String> responseData = ReturnJsonUtil.print(HttpStatus.UNAUTHORIZED.value(),"缺失令牌，鉴权失败",false);
+        R<String> responseData = R.print(HttpStatus.UNAUTHORIZED.value(),"缺失令牌，鉴权失败",false);
         WebUtil.renderJson((HttpServletResponse) response,responseData);
 
     }
