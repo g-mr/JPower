@@ -1,7 +1,7 @@
-package top.jpower.jpower.handler;
+package top.jpower.log.handler;
 
 import com.alibaba.fastjson2.JSONObject;
-import top.jpower.jpower.dbs.entity.TbLogMonitorParam;
+import top.jpower.log.dbs.entity.LogMonitorParam;
 
 import java.util.List;
 import java.util.Map;
@@ -39,7 +39,7 @@ public class HttpInfoBuilder {
      * @param paramList
      * @return HttpInfoHandler
      */
-    public static HttpInfoHandler newHandler(String url, List<TbLogMonitorParam> paramList, JSONObject methodsInfo, JSONObject definitions) {
+    public static HttpInfoHandler newHandler(String url, List<LogMonitorParam> paramList, JSONObject methodsInfo, JSONObject definitions) {
         HttpInfoHandler handler = HANDLER_POOL.get(url);
         if (handler == null) {
             handler = new HttpInfoHandler(paramList,methodsInfo,definitions);

@@ -1,8 +1,8 @@
-package top.jpower.jpower.handler;
+package top.jpower.log.handler;
 
 import top.jpower.core.util.utils.Fc;
-import top.jpower.jpower.interceptor.AuthInterceptor;
-import top.jpower.jpower.properties.MonitorRestfulProperties;
+import top.jpower.log.interceptor.AuthInterceptor;
+import top.jpower.log.properties.MonitorRestfulProperties;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

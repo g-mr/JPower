@@ -1,4 +1,4 @@
-package top.jpower.jpower.config;
+package top.jpower.log.config;
 
 import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -7,8 +7,8 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
 import top.jpower.core.util.utils.Fc;
-import top.jpower.jpower.properties.MonitorRestfulProperties;
-import top.jpower.jpower.service.TaskService;
+import top.jpower.log.properties.MonitorRestfulProperties;
+import top.jpower.log.service.TaskService;
 
 /**
  * @Description TODO 接口监控定时任务执行器

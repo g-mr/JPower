@@ -1,4 +1,4 @@
-package top.jpower.jpower.handler;
+package top.jpower.log.handler;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
@@ -9,7 +9,7 @@ import top.jpower.core.util.utils.DateUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.MapUtil;
 import top.jpower.core.util.utils.StringUtil;
-import top.jpower.jpower.dbs.entity.TbLogMonitorParam;
+import top.jpower.log.dbs.entity.LogMonitorParam;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -28,7 +28,7 @@ public class HttpInfoHandler {
     private static final String NUMBER_DEFAULT_VAL = "0";
 
 
-    private List<TbLogMonitorParam> paramList;
+    private List<LogMonitorParam> paramList;
     private JSONObject methodsInfo;
     private JSONObject definitions;
 

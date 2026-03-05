@@ -1,4 +1,4 @@
-package top.jpower.jpower.properties;
+package top.jpower.log.properties;
 
 import com.alibaba.fastjson2.JSON;
 import jakarta.annotation.PostConstruct;

@@ -1,4 +1,4 @@
-package top.jpower.jpower.interceptor;
+package top.jpower.log.interceptor;
 
 import io.seata.core.context.RootContext;
 import io.seata.core.exception.TransactionException;
@@ -14,8 +14,8 @@ import java.io.IOException;
 
 /**
  * 接口请求完成后回滚事务，不要把测试数据保存到数据库中
- * @Author mr.g
- * @Date 2021/4/4 0004 0:36
+ *
+ * @author mr.g
  */
 @Slf4j
 public final class RollbackInterceptor implements Interceptor {

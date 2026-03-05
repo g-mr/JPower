@@ -1,4 +1,4 @@
-package top.jpower.jpower.interceptor;
+package top.jpower.log.interceptor;
 
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;

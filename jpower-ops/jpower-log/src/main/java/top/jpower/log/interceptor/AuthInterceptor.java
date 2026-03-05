@@ -1,4 +1,4 @@
-package top.jpower.jpower.interceptor;
+package top.jpower.log.interceptor;
 
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.http.HttpException;
@@ -23,7 +23,7 @@ import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.JsonUtil;
 import top.jpower.core.util.utils.OkHttp;
 import top.jpower.core.util.utils.StringUtil;
-import top.jpower.jpower.properties.AuthInfoConfiguration;
+import top.jpower.log.properties.AuthInfoConfiguration;
 
 import java.nio.charset.Charset;
 import java.util.Map;

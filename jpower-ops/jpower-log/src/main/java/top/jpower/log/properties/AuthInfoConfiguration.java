@@ -1,4 +1,4 @@
-package top.jpower.jpower.properties;
+package top.jpower.log.properties;
 
 import lombok.Data;
 import top.jpower.core.util.constants.StringPool;
