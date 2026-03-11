@@ -32,6 +32,8 @@ public class CoreCity extends BaseEntity {
     private String code;
     @Schema(description = "父级编码")
     private String pcode;
+	@Schema(description = "城市区号")
+	private String cityCode;
     @Schema(description = "名称")
 	@NotBlank(message = "名称不可为空", groups = {Validation.Create.class, Validation.Update.class})
     private String name;
