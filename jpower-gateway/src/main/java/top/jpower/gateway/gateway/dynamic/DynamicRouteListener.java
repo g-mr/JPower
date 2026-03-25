@@ -1,4 +1,4 @@
-package top.jpower.jpower.gateway.dynamic;
+package top.jpower.gateway.gateway.dynamic;
 
 import com.alibaba.cloud.nacos.NacosConfigProperties;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
@@ -14,8 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import top.jpower.core.deploy.property.JpowerProperties;
 import top.jpower.core.util.utils.Fc;
-import top.jpower.jpower.gateway.utils.NacosUtils;
 
 import java.util.List;
 import java.util.Properties;
@@ -35,6 +35,7 @@ public class DynamicRouteListener {
     private final DynamicRouteService dynamicRouteService;
     private final NacosDiscoveryProperties nacosDiscoveryProperties;
     private final NacosConfigProperties nacosConfigProperties;
+	private final JpowerProperties jpowerProperties;
 
     private ConfigService configService;
 
@@ -51,7 +52,7 @@ public class DynamicRouteListener {
                 log.warn("initConfigService fail");
                 return;
             }
-            String configInfo = configService.getConfig(NacosUtils.getRouteDataId(), nacosConfigProperties.getGroup(), 3000);
+            String configInfo = configService.getConfig(getRouteDataId(), nacosConfigProperties.getGroup(), 3000);
             log.info("获取网关当前配置:\r\n{}",configInfo);
             List<RouteDefinition> definitionList = JSON.parseArray(configInfo, RouteDefinition.class);
             if (Fc.isNotEmpty(definitionList)){
@@ -63,7 +64,7 @@ public class DynamicRouteListener {
         } catch (Exception e) {
             log.error("初始化网关路由时发生错误",e);
         }
-        dynamicRouteByNacosListener(NacosUtils.getRouteDataId(),nacosConfigProperties.getGroup());
+        dynamicRouteByNacosListener(getRouteDataId(),nacosConfigProperties.getGroup());
 
     }
 
@@ -108,5 +109,12 @@ public class DynamicRouteListener {
             return null;
         }
     }
+
+	public String getRouteDataId() {
+		return jpowerProperties.getApplicationName() +
+				"-" +
+				jpowerProperties.getEnv() +
+				".json";
+	}
 
 }

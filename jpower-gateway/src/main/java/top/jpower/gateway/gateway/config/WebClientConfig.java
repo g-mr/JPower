@@ -1,4 +1,4 @@
-package top.jpower.jpower.gateway.config;
+package top.jpower.gateway.gateway.config;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.web.reactive.function.client.WebClientCustomizer;
@@ -9,7 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.WebClient;
 import top.jpower.core.util.constants.JpowerConstants;
-import top.jpower.jpower.gateway.utils.HttpRequestContextHolder;
+import top.jpower.gateway.gateway.utils.HttpRequestContextHolder;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 

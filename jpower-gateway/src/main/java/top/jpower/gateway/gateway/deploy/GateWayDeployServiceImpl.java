@@ -1,4 +1,4 @@
-package top.jpower.jpower.gateway.deploy;
+package top.jpower.gateway.gateway.deploy;
 
 import com.google.auto.service.AutoService;
 import org.springframework.boot.SpringApplication;

@@ -1,4 +1,4 @@
-package top.jpower.jpower;
+package top.jpower.gateway;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import top.jpower.common.constants.AppConstant;

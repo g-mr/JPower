@@ -1,4 +1,4 @@
-package top.jpower.jpower.filter;
+package top.jpower.gateway.filter;
 
 import cn.hutool.core.collection.ListUtil;
 import com.alibaba.fastjson2.JSON;
@@ -33,10 +33,10 @@ import top.jpower.core.util.constants.TokenConstant;
 import top.jpower.core.util.utils.ChainMap;
 import top.jpower.core.util.utils.CollectionUtil;
 import top.jpower.core.util.utils.Fc;
-import top.jpower.jpower.gateway.service.RoleService;
-import top.jpower.jpower.gateway.utils.ExculdesUrl;
-import top.jpower.jpower.gateway.utils.IpUtil;
-import top.jpower.jpower.gateway.utils.TokenUtil;
+import top.jpower.gateway.gateway.utils.ExculdesUrl;
+import top.jpower.gateway.gateway.utils.IpUtil;
+import top.jpower.gateway.gateway.utils.TokenUtil;
+import top.jpower.gateway.gateway.service.RoleService;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;

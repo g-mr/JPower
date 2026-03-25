@@ -1,4 +1,4 @@
-package top.jpower.jpower.gateway.utils;
+package top.jpower.gateway.gateway.utils;
 
 import cn.hutool.core.util.StrUtil;
 import org.springframework.http.HttpCookie;

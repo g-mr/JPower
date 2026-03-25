@@ -1,4 +1,4 @@
-package top.jpower.jpower.gateway.utils;
+package top.jpower.gateway.gateway.utils;
 
 import java.util.ArrayList;
 import java.util.List;

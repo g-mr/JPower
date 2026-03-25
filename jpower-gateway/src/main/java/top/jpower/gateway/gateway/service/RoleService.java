@@ -1,4 +1,4 @@
-package top.jpower.jpower.gateway.service;
+package top.jpower.gateway.gateway.service;
 
 import cn.hutool.core.collection.ListUtil;
 import com.alibaba.fastjson2.JSON;

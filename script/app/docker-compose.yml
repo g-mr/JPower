@@ -56,26 +56,26 @@ services:
     image: "nacos/nacos-server:v3.0.3"
     hostname: "nacos-standalone"
     privileged: true
-    depends_on:
-      - sentinel
-    links:
-      - sentinel
     environment:
       - MODE=standalone
       - TZ=Asia/Shanghai
-#      如不需要数据库做数据持久化配置删掉下面得环境变量即可
+      #      如不需要数据库做数据持久化配置删掉下面得环境变量即可
       - SPRING_DATASOURCE_PLATFORM=mysql
-      - MYSQL_SERVICE_HOST=192.168.128.97
+      - MYSQL_SERVICE_HOST=host.docker.internal
       - MYSQL_SERVICE_PORT=3306
       - MYSQL_SERVICE_DB_NAME=nacos
       - MYSQL_SERVICE_USER=root
-      - MYSQL_SERVICE_PASSWORD=Wlcb@20200515
+      - MYSQL_SERVICE_PASSWORD=12345678
+      - NACOS_AUTH_TOKEN=M2Q1YzM3NjYtNTE2OS00ODBlLTg2MWItMWNlNGE2ZWQyMTQ4
+      - NACOS_AUTH_IDENTITY_KEY=nacos
+      - NACOS_AUTH_IDENTITY_VALUE=nacos
     volumes:
-      - ../docker/nacos/standalone-logs/:/home/nacos/logs
-      - ../docker/nacos/init.d/custom.properties:/home/nacos/init.d/custom.properties
+      - config/nacos/standalone-logs/:/home/nacos/logs
+      - config/nacos/init.d/custom.properties:/home/nacos/init.d/custom.properties
     ports:
-      - 82:8848
-      - 1082:9848
+      - 8080:8080
+      - 8848:8848
+      - 9848:9848
     restart: always
     networks:
       jpower_net:

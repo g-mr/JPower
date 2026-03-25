@@ -1,4 +1,4 @@
-package top.jpower.jpower.gateway.dynamic;
+package top.jpower.gateway.gateway.dynamic;
 
 import com.alibaba.nacos.common.utils.CollectionUtils;
 import lombok.RequiredArgsConstructor;

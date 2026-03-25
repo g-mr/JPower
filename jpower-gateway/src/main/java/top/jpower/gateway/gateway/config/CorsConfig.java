@@ -1,4 +1,4 @@
-package top.jpower.jpower.gateway.config;
+package top.jpower.gateway.gateway.config;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

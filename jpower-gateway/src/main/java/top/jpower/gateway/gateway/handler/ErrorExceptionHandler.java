@@ -1,4 +1,4 @@
-package top.jpower.jpower.gateway.handler;
+package top.jpower.gateway.gateway.handler;
 
 import com.alibaba.fastjson2.JSON;
 import lombok.extern.slf4j.Slf4j;
