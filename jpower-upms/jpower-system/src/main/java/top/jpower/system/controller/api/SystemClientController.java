@@ -31,7 +31,7 @@ import java.util.List;
  */
 @Hidden
 @RestController
-@RequestMapping("feign/core")
+@RequestMapping("/feign/core")
 @RequiredArgsConstructor
 public class SystemClientController extends BaseController implements SystemClient {
 

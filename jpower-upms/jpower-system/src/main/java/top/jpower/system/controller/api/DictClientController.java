@@ -20,7 +20,7 @@ import java.util.List;
  */
 @Hidden
 @RestController
-@RequestMapping("feign//core/dict")
+@RequestMapping("/feign/core/dict")
 @RequiredArgsConstructor
 public class DictClientController implements DictClient {
 
