@@ -1,9 +1,9 @@
 package top.jpower.core.feign.config;
 
+import cn.hutool.core.text.StrPool;
 import cn.hutool.core.util.StrUtil;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
-import feign.Target;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.openfeign.FeignBuilderCustomizer;
@@ -44,14 +44,8 @@ public class BootFeignConfig {
 
             // 重写目标URL为localhost
             if (template.feignTarget() != null) {
-                // 创建新的Target指向localhost
-                Target<?> bootTarget = new Target.HardCodedTarget<>(
-                        template.feignTarget().type(),
-                        template.feignTarget().name(),
-                        baseUrl
-                );
                 String path = URI.create(template.feignTarget().url()).getPath();
-                template.target(StrUtil.appendIfMissing(baseUrl, "/") + path);
+                template.target(StrUtil.removeSuffix(baseUrl, StrPool.SLASH) + StrUtil.addPrefixIfNot(path, StrPool.SLASH));
             }
         }
     }

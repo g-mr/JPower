@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author mr.g
  */
-@FeignClient(value = AppConstant.JPOWER_SYSTEM, fallback = DictClientFallback.class, path = "/feign/core/dict")
+@FeignClient(value = AppConstant.JPOWER_SYSTEM, fallbackFactory = DictClientFallback.class, path = "feign/core/dict")
 public interface DictClient {
 
     /**

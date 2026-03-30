@@ -22,8 +22,7 @@ import static top.jpower.core.util.constants.StringPool.*;
 
 /**
  * feign日志打印
- * @Author mr.g
- * @date 2021-05-21 14:33
+ * @author mr.g
  **/
 @Slf4j
 @RequiredArgsConstructor

@@ -1,21 +1,24 @@
 package top.jpower.system.api.feign;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 import top.jpower.core.util.rsp.R;
-import top.jpower.system.api.dto.SelectDTO;
-
-import java.util.List;
 
 /**
  * 字典Fallback
  *
  * @author mr.g
  */
+@Slf4j
 @Component
-public class DictClientFallback implements DictClient {
+public class DictClientFallback implements FallbackFactory<DictClient> {
 
-    @Override
-    public R<List<SelectDTO>> queryDictByType(String dictTypeCode) {
-        return R.fail("查询失败");
-    }
+	@Override
+	public DictClient create(Throwable cause) {
+		return dictTypeCode -> {
+			log.error("查询字典失败", cause);
+			return R.fail("查询失败");
+		};
+	}
 }
