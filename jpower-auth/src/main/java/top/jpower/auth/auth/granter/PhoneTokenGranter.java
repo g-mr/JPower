@@ -1,4 +1,4 @@
-package top.jpower.jpower.auth.granter;
+package top.jpower.auth.auth.granter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -6,17 +6,17 @@ import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.BusinessException;
 import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.core.util.utils.Fc;
-import top.jpower.jpower.auth.AuthUserInfo;
-import top.jpower.jpower.auth.TokenGranter;
-import top.jpower.jpower.dto.TokenParameter;
-import top.jpower.jpower.utils.TokenUtil;
+import top.jpower.auth.auth.AuthUserInfo;
+import top.jpower.auth.auth.TokenGranter;
+import top.jpower.auth.dto.TokenParameter;
+import top.jpower.auth.utils.TokenUtil;
 import top.jpower.resource.api.dto.ValidateDTO;
 import top.jpower.resource.api.feign.SmsClient;
 import top.jpower.user.api.cache.UserCache;
 import top.jpower.user.api.dto.CoreUserDTO;
 
 import static top.jpower.core.util.constants.JpowerConstants.VALIDATE_SMS_CODE;
-import static top.jpower.jpower.auth.granter.PhoneTokenGranter.GRANT_TYPE;
+import static top.jpower.auth.auth.granter.PhoneTokenGranter.GRANT_TYPE;
 
 
 /**

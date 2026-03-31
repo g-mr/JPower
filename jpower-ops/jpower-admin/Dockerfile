@@ -1,4 +1,4 @@
-FROM openjdk:8-jre
+FROM registry.cn-hangzhou.aliyuncs.com/dockerhub_mirror/java:17-anolis
 
 MAINTAINER mr.g
 

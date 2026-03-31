@@ -468,4 +468,15 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
         return coreUserDao.pageByRoleId(map);
     }
 
+	/**
+	 * 据用户id查询用户信息
+	 *
+	 * @param id 用户id
+	 * @return 用户信息
+	 */
+	@Override
+	public LoginUserVO userInfo(Long id) {
+		return coreUserDao.userInfo(id);
+	}
+
 }

@@ -2,13 +2,13 @@
 
 #通用配置
 server:
-  port: 9003
+  port: 9001
 
 spring:
   config:
     import:
       - nacos:jpower.yml
-      - nacos:jpower-user.yml
+      - nacos:jpower-auth.yml
   redis:
     ##redis 单机环境配置
     host: 127.0.0.1
@@ -125,7 +125,7 @@ mybatis-flex:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://127.0.0.1:3306/jpower?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true&rewriteBatchedStatements=true
       username: root
-      password: 123456781
+      password: 12345678
       # 下面为连接池的补充设置
       druid:
         initialSize: 10   #初始化连接个数
@@ -148,6 +148,6 @@ mybatis-flex:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://127.0.0.1:3306/jpower?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true&rewriteBatchedStatements=true
       username: root
-      password: 123456781
+      password: 12345678
   type-aliases-super-type: top.jpower.core.dbs.dbs.entity.base.BaseEntity
   mapper-locations: classpath*:top/jpower/**/dbs/dao/mapper/**/*Mapper.xml

@@ -40,8 +40,9 @@ public class CoreFunction extends BaseEntity {
     private Long parentId;
     @Schema(description = "祖级ID")
     private String ancestorId;
-    @Schema(description = "地址")
-	@NotBlank(message = "地址不能为空", groups = {Validation.Create.class, Validation.Update.class})
+	@Schema(description = "页面地址")
+    private String route;
+    @Schema(description = "页面路径")
     private String url;
     @Schema(description = "功能类型 字典：FUNCTION_TYPE")
     @Dict(name = "FUNCTION_TYPE")

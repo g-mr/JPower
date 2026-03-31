@@ -49,7 +49,7 @@ public class JpowerConstants {
     /** 国际化语言HEADER **/
     public static final String I18N_KEY = "Jpower-Language";
     /** token请求头 **/
-    public static final String AUTH_HEADER = "jpower-auth";
+    public static final String AUTH_HEADER = "Authorization";
     /** 租户编码请求头 **/
     public static final String HEADER_TENANT = "Tenant-Code";
     /** 菜单编码请求头 **/

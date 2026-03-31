@@ -1,4 +1,4 @@
-package top.jpower.jpower.utils;
+package top.jpower.auth.utils;
 
 import top.jpower.common.constants.CacheNames;
 import top.jpower.common.enums.YN01Enum;
@@ -12,7 +12,7 @@ import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.constants.TokenConstant;
 import top.jpower.core.util.utils.*;
-import top.jpower.jpower.dto.AuthInfo;
+import top.jpower.auth.dto.AuthInfo;
 import top.jpower.system.api.cache.SystemCache;
 import top.jpower.system.api.dto.ClientDTO;
 import top.jpower.system.api.dto.DataScopeDTO;

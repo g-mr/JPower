@@ -1,7 +1,7 @@
-package top.jpower.jpower.auth;
+package top.jpower.auth.auth;
 
 import org.springframework.context.annotation.Configuration;
-import top.jpower.jpower.dto.TokenParameter;
+import top.jpower.auth.dto.TokenParameter;
 import top.jpower.user.api.dto.CoreUserDTO;
 
 /**

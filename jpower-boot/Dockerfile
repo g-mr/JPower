@@ -1,4 +1,4 @@
-FROM openjdk:8-jre
+FROM registry.cn-hangzhou.aliyuncs.com/dockerhub_mirror/java:17-anolis
 
 MAINTAINER mr.g
 
@@ -8,7 +8,7 @@ RUN mkdir -p /jpower/boot \
 
 WORKDIR /jpower/boot
 
-EXPOSE 80
+EXPOSE 8000
 
 ADD ./target/jpower-boot-exec.jar ./app.jar
 

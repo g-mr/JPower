@@ -12,6 +12,7 @@ import top.jpower.user.api.feign.UserClient;
 import top.jpower.user.dbs.entity.CoreUser;
 import top.jpower.user.service.CoreUserRoleService;
 import top.jpower.user.service.CoreUserService;
+import top.jpower.user.vo.UserVO;
 
 import java.util.List;
 
@@ -34,7 +35,9 @@ public class UserClientController implements UserClient {
     @GetMapping("/queryUserByLoginId")
     public R<CoreUserDTO> queryUserByLoginId(@RequestParam String loginId, @RequestParam String tenantCode) {
         CoreUser user = coreUserService.selectUserLoginId(loginId,tenantCode);
-        return R.data(BeanUtil.copyProperties(user, CoreUserDTO.class));
+		CoreUserDTO userDTO = BeanUtil.copyProperties(user, CoreUserDTO.class);
+		userDTO.setRoleIds(coreUserRoleService.queryRoleIds(user.getId()));
+        return R.data(userDTO);
     }
 
     @Override
@@ -63,7 +66,7 @@ public class UserClientController implements UserClient {
     @Operation(summary = "查询用户详情")
     @GetMapping(value = "/get")
     public R<CoreUserDTO> get(@RequestParam Long id){
-        CoreUser user = coreUserService.selectUserById(id);
+        UserVO user = coreUserService.selectUserById(id);
         return R.data(BeanUtil.copyProperties(user, CoreUserDTO.class));
     }
 

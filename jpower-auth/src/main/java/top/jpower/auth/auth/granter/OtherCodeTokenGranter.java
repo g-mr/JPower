@@ -1,16 +1,16 @@
-package top.jpower.jpower.auth.granter;
+package top.jpower.auth.auth.granter;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import top.jpower.core.exception.throwable.BusinessException;
 import top.jpower.core.util.utils.Fc;
-import top.jpower.jpower.auth.AuthUserInfo;
-import top.jpower.jpower.auth.TokenGranter;
-import top.jpower.jpower.dto.TokenParameter;
+import top.jpower.auth.auth.AuthUserInfo;
+import top.jpower.auth.auth.TokenGranter;
+import top.jpower.auth.dto.TokenParameter;
 import top.jpower.user.api.dto.CoreUserDTO;
 
-import static top.jpower.jpower.auth.granter.OtherCodeTokenGranter.GRANT_TYPE;
+import static top.jpower.auth.auth.granter.OtherCodeTokenGranter.GRANT_TYPE;
 
 
 /**

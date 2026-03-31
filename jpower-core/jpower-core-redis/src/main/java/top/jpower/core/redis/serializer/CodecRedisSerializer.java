@@ -82,7 +82,7 @@ public class CodecRedisSerializer implements Codec {
             @SneakyThrows
             @Override
             public String deserialize(byte[] bytes) throws SerializationException {
-                if (Fc.isNull(bytes)){
+                if (Fc.isEmpty(bytes)){
                     return null;
                 }
                 Object obj = decoder.decode(Unpooled.wrappedBuffer(bytes), new State());
@@ -121,7 +121,7 @@ public class CodecRedisSerializer implements Codec {
             @SneakyThrows
             @Override
             public Object deserialize(byte[] bytes) throws SerializationException {
-                if (Fc.isNull(bytes)){
+                if (Fc.isEmpty(bytes)){
                     return null;
                 }
                 return decoder.decode(Unpooled.wrappedBuffer(bytes), new State());

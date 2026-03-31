@@ -1,5 +1,5 @@
 server:
-  port: 84
+  port: 9004
 
 spring:
   config:

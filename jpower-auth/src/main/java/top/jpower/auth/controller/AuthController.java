@@ -1,4 +1,4 @@
-package top.jpower.jpower.controller;
+package top.jpower.auth.controller;
 
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.NumberUtil;
@@ -13,6 +13,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import top.jpower.auth.auth.TokenGranterBuilder;
+import top.jpower.auth.auth.granter.RefreshTokenGranter;
+import top.jpower.auth.dto.AuthInfo;
+import top.jpower.auth.dto.TokenParameter;
+import top.jpower.auth.utils.TokenUtil;
+import top.jpower.auth.vo.CaptchaVO;
 import top.jpower.common.constants.CacheNames;
 import top.jpower.common.constants.ParamsConstants;
 import top.jpower.common.enums.LoginLimitEnum;
@@ -21,7 +27,6 @@ import top.jpower.common.validated.Mobile;
 import top.jpower.core.auth.dto.UserInfo;
 import top.jpower.core.auth.utils.JwtUtil;
 import top.jpower.core.auth.utils.ShieldUtil;
-import top.jpower.core.auth.utils.constant.SecureConstant;
 import top.jpower.core.boot.controller.BaseController;
 import top.jpower.core.dbs.tenant.JpowerTenantProperties;
 import top.jpower.core.exception.enums.JpowerError;
@@ -32,12 +37,6 @@ import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.rsp.R;
 import top.jpower.core.util.utils.*;
-import top.jpower.jpower.auth.TokenGranterBuilder;
-import top.jpower.jpower.auth.granter.RefreshTokenGranter;
-import top.jpower.jpower.dto.AuthInfo;
-import top.jpower.jpower.dto.TokenParameter;
-import top.jpower.jpower.utils.TokenUtil;
-import top.jpower.jpower.vo.CaptchaVO;
 import top.jpower.resource.api.dto.SmsValidateDTO;
 import top.jpower.resource.api.feign.SmsClient;
 import top.jpower.system.api.cache.SystemCache;
@@ -55,10 +54,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static top.jpower.common.constants.CacheNames.TOKEN_USER_KEY;
-import static top.jpower.common.constants.ServiceCodeConstants.NOT_LOGIN;
-import static top.jpower.common.constants.ServiceCodeConstants.NOT_OPEN_REGISTER;
-import static top.jpower.common.constants.ServiceCodeConstants.TENANT_CODE_NOT_NULL;
-import static top.jpower.common.constants.ServiceCodeConstants.USER_EXIST;
+import static top.jpower.common.constants.ServiceCodeConstants.*;
 import static top.jpower.core.dbs.tenant.TenantConstant.DEFAULT_TENANT_CODE;
 import static top.jpower.core.dbs.tenant.TenantConstant.getExpireTime;
 import static top.jpower.core.util.constants.JpowerConstants.HEADER_TENANT;
@@ -92,7 +88,7 @@ public class AuthController extends BaseController {
     public R<AuthInfo> login(@Valid @RequestBody TokenParameter parameter) {
 
         if (tenantProperties.getEnable()){
-            JpowerAssert.notNull(parameter.getTenantCode(),JpowerError.Arg,TENANT_CODE_NOT_NULL);
+            JpowerAssert.notEmpty(parameter.getTenantCode(),JpowerError.Arg,TENANT_CODE_NOT_NULL);
             if (!Fc.equalsValue(DEFAULT_TENANT_CODE,parameter.getTenantCode())){
 				TenantDTO tenant = SystemCache.getTenantByCode(parameter.getTenantCode());
                 if (Fc.isNull(tenant)){
@@ -106,9 +102,6 @@ public class AuthController extends BaseController {
         }
 
         parameter.setUserType(Fc.toStr(getRequest().getHeader(TokenUtil.USER_TYPE_HEADER_KEY), TokenUtil.DEFAULT_USER_TYPE));
-        parameter.setAuthorization(getRequest().getHeader(SecureConstant.BASIC_HEADER_KEY));
-        parameter.setCaptchaKey(getRequest().getHeader(TokenUtil.CAPTCHA_HEADER_KEY));
-        parameter.setCaptchaCode(getRequest().getHeader(TokenUtil.CAPTCHA_HEADER_CODE));
 
 		CoreUserDTO user = granterBuilder.getGranter(parameter.getGrantType()).grant(parameter);
 
@@ -148,7 +141,7 @@ public class AuthController extends BaseController {
     }
 
     @Operation(summary = "退出登录")
-    @RequestMapping(value = "/loginOut",method = RequestMethod.POST,produces="application/json")
+    @GetMapping(value = "/logout", produces="application/json")
     public R<String> loginOut(@Parameter(description = "用户ID",required = true) @NotNull(message = "用户ID不可为空") @RequestParam Long userId) {
         UserInfo user = ShieldUtil.getUser();
         if(Fc.notNull(user) && NumberUtil.equals(userId, user.getUserId())){

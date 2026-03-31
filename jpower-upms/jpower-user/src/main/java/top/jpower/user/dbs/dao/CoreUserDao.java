@@ -133,8 +133,8 @@ public class CoreUserDao extends JpowerServiceImpl<CoreUserMapper, CoreUser> imp
     public boolean updateUserInfo(LoginUserVO userVO) {
         return super.update(UpdateWrapper.of(CoreUser.class)
                         .set(CoreUser::getAvatar,userVO.getAvatar())
-                        .set(CoreUser::getNickName,userVO.getNickName())
-                        .set(CoreUser::getUserName,userVO.getUserName())
+                        .set(CoreUser::getNickName,userVO.getRealName())
+                        .set(CoreUser::getUserName,userVO.getUsername())
                         .set(CoreUser::getIdType,userVO.getIdType())
                         .set(CoreUser::getIdNo,userVO.getIdNo())
                         .set(CoreUser::getBirthday,userVO.getBirthday())
@@ -177,4 +177,25 @@ public class CoreUserDao extends JpowerServiceImpl<CoreUserMapper, CoreUser> imp
                         .orderBy(CoreUser::getCreateTime).desc()
                 , UserVO.class);
     }
+
+	/**
+	 * 根据用户ID获取用户信息
+	 *
+	 * @author mr.g
+	 * @param id 用户ID
+	 * @return 用户信息
+	 **/
+	public LoginUserVO userInfo(Long id) {
+		return super.getOneAs(Wrappers.getQueryWrapper()
+				.select(CORE_USER.ID.as(LoginUserVO::getUserId))
+				.select(CORE_USER.AVATAR.as(LoginUserVO::getAvatar))
+				.select(CORE_USER.NICK_NAME.as(LoginUserVO::getRealName))
+				.select(CORE_USER.USER_NAME.as(LoginUserVO::getUsername))
+				.select(CORE_USER.ID_NO.as(LoginUserVO::getIdNo))
+				.select(CORE_USER.POST_CODE.as(LoginUserVO::getPostCode))
+				.select(CORE_USER.ADDRESS.as(LoginUserVO::getAddress))
+				.select(CORE_USER.ID_TYPE.as(LoginUserVO::getIdType))
+				.select(CORE_USER.BIRTHDAY.as(LoginUserVO::getBirthday))
+				.eq(CoreUser::getId, id), LoginUserVO.class);
+	}
 }

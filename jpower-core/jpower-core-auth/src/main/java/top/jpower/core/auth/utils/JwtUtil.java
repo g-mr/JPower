@@ -45,8 +45,10 @@ public class JwtUtil {
 
         try {
             return Jwts.parser()
-                    .setSigningKey(TokenConstant.JWT_BASE64_SECURITY)
-                    .parseClaimsJws(token).getBody();
+					.verifyWith(new SecretKeySpec(TokenConstant.JWT_BASE64_SECURITY, SignatureAlgorithm.HS256.getJcaName()))
+					.build()
+					.parseSignedClaims(token)
+					.getPayload();
         } catch (ExpiredJwtException e) {
             return null;
         }
@@ -125,7 +127,8 @@ public class JwtUtil {
         param.forEach(builder::claim);
 
         Date exp = new Date(nowMillis + expire * 1000);
-        builder.setExpiration(exp).setNotBefore(now);
+        builder.expiration(exp).notBefore(now);
+		builder.id(Fc.toStr(param.get("id")));
 
         return builder.compact();
     }

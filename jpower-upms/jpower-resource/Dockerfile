@@ -1,4 +1,4 @@
-FROM openjdk:8-jre
+FROM registry.cn-hangzhou.aliyuncs.com/dockerhub_mirror/java:17-anolis
 
 MAINTAINER mr.g
 
@@ -11,7 +11,7 @@ WORKDIR /jpower/resource
 ENV SW_AGENT_COLLECTOR_BACKEND_SERVICES=127.0.0.1:11800 \
     SW_AGENT_NAME=jpower-resource
 
-EXPOSE 84
+EXPOSE 9004
 
 ADD ./target/jpower-resource-exec.jar ./app.jar
 

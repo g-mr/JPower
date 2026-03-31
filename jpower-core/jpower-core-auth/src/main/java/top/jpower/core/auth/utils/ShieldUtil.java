@@ -5,17 +5,15 @@ import cn.hutool.core.codec.Base64Decoder;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.date.DateUnit;
 import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import top.jpower.core.auth.dto.UserInfo;
 import top.jpower.core.auth.utils.constant.RoleConstant;
 import top.jpower.core.auth.utils.constant.SecureConstant;
-import top.jpower.core.auth.dto.UserInfo;
 import top.jpower.core.util.constants.*;
 import top.jpower.core.util.utils.*;
 
-import jakarta.servlet.http.HttpServletRequest;
-
-import javax.security.sasl.AuthenticationException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Objects;
@@ -65,6 +63,7 @@ public class ShieldUtil {
         UserInfo user = new UserInfo();
         if (Fc.notNull(claims)) {
             user = BeanUtil.toBean(claims, UserInfo.class);
+			user.setUserId(Fc.toLong(claims.getId()));
         }
         return user.isEmpty()?null:user;
     }

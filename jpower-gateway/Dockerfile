@@ -1,4 +1,4 @@
-FROM openjdk:8-jre
+FROM registry.cn-hangzhou.aliyuncs.com/dockerhub_mirror/java:17-anolis
 
 MAINTAINER mr.g
 
@@ -11,7 +11,7 @@ WORKDIR /jpower/gateway
 ENV SW_AGENT_COLLECTOR_BACKEND_SERVICES=127.0.0.1:11800 \
     SW_AGENT_NAME=jpower-gateway
 
-EXPOSE 80
+EXPOSE 9000
 
 ADD ./target/jpower-gateway-exec.jar ./app.jar
 

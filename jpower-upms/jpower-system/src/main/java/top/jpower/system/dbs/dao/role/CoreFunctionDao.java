@@ -9,7 +9,6 @@ import com.mybatisflex.core.util.LambdaUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import top.jpower.common.enums.FunctionTypeEnum;
-import top.jpower.common.enums.YN01Enum;
 import top.jpower.core.auth.utils.ShieldUtil;
 import top.jpower.core.dbs.dbs.dao.JpowerServiceImpl;
 import top.jpower.core.dbs.support.Wrappers;
@@ -293,10 +292,16 @@ public class CoreFunctionDao extends JpowerServiceImpl<CoreFunctionMapper, CoreF
 	 **/
 	public List<Tree<Long>> treeInfo(List<Long> roleIds, Long parentId, Long clientId, List<Long> topBtnIds, FunctionTypeEnum functionType, boolean isHide) {
 		return super.tree(Wrappers.getTreeWrapper(CoreFunction::getId, CoreFunction::getParentId)
-				.select(CoreFunction::getFunctionName, CoreFunction::getAlias, CoreFunction::getCode, CoreFunction::getUrl, CoreFunction::getFunctionType)
+				.select(CoreFunction::getFunctionName,
+						CoreFunction::getCode,
+						CoreFunction::getRoute,
+						CoreFunction::getUrl,
+						CoreFunction::getIcon,
+						CoreFunction::getSort,
+						CoreFunction::getIsHide,
+						CoreFunction::getTarget)
 				.eq(CoreFunction::getFunctionType, functionType.getValue())
 				.eq(CoreFunction::getClientId, clientId)
-				.eq(CoreFunction::getIsHide, YN01Enum.N.getValue(), isHide)
 				.leftJoin(CoreRoleFunction.class, !ShieldUtil.isRoot()).on(CoreRoleFunction::getFunctionId, CoreFunction::getId)
 				.in(CoreRoleFunction::getRoleId, roleIds, !ShieldUtil.isRoot())
 				.and(q->{
@@ -325,9 +330,10 @@ public class CoreFunctionDao extends JpowerServiceImpl<CoreFunctionMapper, CoreF
 		Long menuId = MapUtil.getLongRemoveKey(map, "menuId_eq");
 
 		return super.listAs(Wrappers.getQueryWrapper(map)
-					.as("t")
+					.from(CoreFunction.class).as("t")
 					.select(CORE_FUNCTION.DEFAULT_COLUMNS)
 					.select(QueryMethods.column(QueryMethods.exists(QueryMethods.selectOne()
+							.from(CoreFunction.class)
 							.where(CORE_FUNCTION.PARENT_ID.eq(CORE_FUNCTION.as("t").ID).and(CORE_FUNCTION.FUNCTION_TYPE.eq(functionType)))).toSql(Collections.singletonList(CORE_FUNCTION), dialect))
 							.as(FunctionVO::getHasChildren))
 					.leftJoin(CoreFunctionMenu.class, Fc.notNull(menuId)).on(CoreFunctionMenu::getFunctionId, CoreFunction::getId)

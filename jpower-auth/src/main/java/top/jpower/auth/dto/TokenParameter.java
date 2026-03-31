@@ -1,9 +1,8 @@
-package top.jpower.jpower.dto;
+package top.jpower.auth.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import top.jpower.core.auth.utils.constant.SecureConstant;
-import top.jpower.jpower.utils.TokenUtil;
+import top.jpower.auth.utils.TokenUtil;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -38,10 +37,8 @@ public class TokenParameter implements Serializable {
     String otherCode;
     @Schema(description = "用户类型   具体值由后端提供",name = TokenUtil.USER_TYPE_HEADER_KEY)
     String userType;
-    @Schema(description = "客户端识别码",name = SecureConstant.BASIC_HEADER_KEY)
-    String authorization;
-    @Schema(description = "验证码key  grantType=captcha时必填",name = TokenUtil.CAPTCHA_HEADER_KEY)
+    @Schema(description = "验证码key  grantType=captcha时必填")
     String captchaKey;
-    @Schema(description = "验证码key  grantType=captcha时必填",name = TokenUtil.CAPTCHA_HEADER_CODE)
+    @Schema(description = "验证码key  grantType=captcha时必填")
     String captchaCode;
 }

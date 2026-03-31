@@ -202,4 +202,11 @@ public interface CoreUserService extends BaseService<CoreUser> {
      * @return 分页用户列表
      **/
     Pg<UserVO> pageByRoleId(Map<String, Object> map);
+
+	/**
+	 *据用户id查询用户信息
+	 * @param id 用户id
+	 * @return 用户信息
+	 */
+	LoginUserVO userInfo(Long id);
 }

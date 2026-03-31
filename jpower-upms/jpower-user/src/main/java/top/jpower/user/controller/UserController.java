@@ -72,12 +72,36 @@ public class UserController extends BaseController {
     private final SmsClient smsClient;
 
     @Operation(summary = "查询当前登录用户信息")
-    @GetMapping(value = "/getLoginInfo")
-    public R<CoreUser> getLoginInfo() {
+    @GetMapping(value = "/loginInfo")
+    public R<LoginUserVO> getLoginInfo() {
         Long id = ShieldUtil.getUserId();
         JpowerAssert.notNull(id, JpowerError.Auth, NOT_LOGIN);
-        return R.data(coreUserService.getById(id));
+        LoginUserVO user = coreUserService.userInfo(id);
+		user.setRoles(ShieldUtil.getUserRole());
+        return R.data(user);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Function(value = "用户在线信息", menus = {
             @Menu(client = "admin", menuCode = "SYSTEM_USER", btnCode = "USER_OFFLINE", code = "USER_ONLINE", type = Menu.TYPE.BTN)

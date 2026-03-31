@@ -54,10 +54,15 @@ public class JpowerServiceImpl implements DeployService {
         properties.setIsLocal(isLocalDev());
         properties.setMainPackages(ClassUtil.getPackage(application.getMainApplicationClass()));
         properties.setPort(environment.getProperty("server.port", Integer.TYPE));
+		properties.setServer(null);
 
-        Map<String, Object> map = BeanUtil.beanToMap(properties, ChainMap.<String, Object>create().map(), true, key -> "jpower." + key);
+        Map<String, Object> map = BeanUtil.beanToMap(properties,
+				ChainMap.<String, Object>create().map(),
+				true,
+				key -> "jpower." + key);
         map.put("spring.application.name", appName);
         map.put("spring.profiles.active", profile);
+
 
 
         environment.getPropertySources().addFirst(new MapPropertySource("jpowerService", map));

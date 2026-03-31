@@ -178,7 +178,7 @@ public class RedisLog {
      * @param param 参数
      * @return 转换结果
      **/
-    @SneakyThrows
+    @SneakyThrows(Exception.class)
     private Object convert(String oper, Object param, Integer type) {
         if (Fc.isNull(param)){
             return "";

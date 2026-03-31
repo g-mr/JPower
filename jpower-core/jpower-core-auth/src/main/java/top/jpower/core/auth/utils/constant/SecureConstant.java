@@ -10,7 +10,7 @@ public interface SecureConstant {
     /**
      * 认证请求头
      */
-    String BASIC_HEADER_KEY = "Authorization";
+    String BASIC_HEADER_KEY = "jpower-auth";
 
     /**
      * 认证请求头前缀

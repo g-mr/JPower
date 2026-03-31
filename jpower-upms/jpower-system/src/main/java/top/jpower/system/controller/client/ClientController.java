@@ -42,6 +42,32 @@ public class ClientController extends BaseController {
 
     private final CoreClientService coreClientService;
 
+	@Function(value = "客户端下拉",menus = {
+			@Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "FUNCTION_CLIENT_SELECT",type = Menu.TYPE.INTERFACE),
+			@Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_ROLE_SELECT_URL",code = "ROLE_CLIENT_SELECT",type = Menu.TYPE.INTERFACE),
+			@Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "DATASCOPE_CLIENT_SELECT",type = Menu.TYPE.INTERFACE),
+			@Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_CLIENT_SELECT",type = Menu.TYPE.INTERFACE)
+	})
+	@Operation(summary = "下拉客户端列表")
+	@GetMapping("selectList")
+	public R<List<SelectIdNameVO>> selectList() {
+		return R.data(coreClientService.select());
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /**
      * 保存或者更新客户端信息
      * 
@@ -84,15 +110,4 @@ public class ClientController extends BaseController {
         return R.data(coreClientService.page(map));
     }
 
-    @Function(value = "客户端下拉",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "FUNCTION_CLIENT_SELECT",type = Menu.TYPE.INTERFACE),
-		@Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_ROLE_SELECT_URL",code = "ROLE_CLIENT_SELECT",type = Menu.TYPE.INTERFACE),
-		@Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "DATASCOPE_CLIENT_SELECT",type = Menu.TYPE.INTERFACE),
-		@Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_CLIENT_SELECT",type = Menu.TYPE.INTERFACE)
-    })
-    @Operation(summary = "下拉客户端列表")
-    @GetMapping("selectList")
-    public R<List<SelectIdNameVO>> selectList() {
-        return R.data(coreClientService.select());
-    }
 }

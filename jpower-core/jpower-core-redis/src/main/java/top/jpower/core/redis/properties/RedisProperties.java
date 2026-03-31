@@ -55,7 +55,7 @@ public class RedisProperties {
         /**
          * 空值是否存储
          */
-        private Boolean allowNullValues = Boolean.TRUE;
+        private Boolean allowNullValues = Boolean.FALSE;
 
         /**
          * CacheManage针对某几个具体的key配置

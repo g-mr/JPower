@@ -33,6 +33,6 @@ public interface TokenConstant {
     /**
      * JWT密钥
      **/
-    String SIGN_KEY = "Jpower";
+    String SIGN_KEY = "Jpowersakdjqiwfqiownfioqwnqiwonasjjqwfwqffwqcmkwlmsklnsalalnalsalwcnlankalscnqnsnvsn";
     byte[] JWT_BASE64_SECURITY = Base64.getDecoder().decode(Base64.getEncoder().encodeToString(SIGN_KEY.getBytes(CharsetKit.CHARSET_UTF_8)));
 }

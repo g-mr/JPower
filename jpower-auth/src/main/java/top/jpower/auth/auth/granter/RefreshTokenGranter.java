@@ -1,4 +1,4 @@
-package top.jpower.jpower.auth.granter;
+package top.jpower.auth.auth.granter;
 
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,14 +8,14 @@ import top.jpower.core.auth.utils.JwtUtil;
 import top.jpower.core.exception.throwable.JpowerException;
 import top.jpower.core.util.constants.TokenConstant;
 import top.jpower.core.util.utils.Fc;
-import top.jpower.jpower.auth.AuthUserInfo;
-import top.jpower.jpower.auth.TokenGranter;
-import top.jpower.jpower.dto.TokenParameter;
-import top.jpower.jpower.utils.TokenUtil;
+import top.jpower.auth.auth.AuthUserInfo;
+import top.jpower.auth.auth.TokenGranter;
+import top.jpower.auth.dto.TokenParameter;
+import top.jpower.auth.utils.TokenUtil;
 import top.jpower.user.api.cache.UserCache;
 import top.jpower.user.api.dto.CoreUserDTO;
 
-import static top.jpower.jpower.auth.granter.RefreshTokenGranter.GRANT_TYPE;
+import static top.jpower.auth.auth.granter.RefreshTokenGranter.GRANT_TYPE;
 
 /**
  * 刷新token默认实现类

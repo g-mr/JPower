@@ -1,8 +1,6 @@
 package top.jpower.core.auth.dto;
 
-import cn.hutool.core.date.DatePattern;
 import com.alibaba.fastjson2.annotation.JSONField;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import top.jpower.core.util.utils.Fc;
 
@@ -109,7 +107,6 @@ public class UserInfo implements Serializable {
      * 出生日期
      **/
     @JSONField(format="yyyy-MM-dd")
-    @JsonFormat(shape = JsonFormat.Shape.STRING,timezone = "GMT+8", pattern = DatePattern.NORM_DATE_PATTERN,locale = "zh_CN")
     private Date birthday;
 
     /**
@@ -131,7 +128,6 @@ public class UserInfo implements Serializable {
      * 最后登录时间
      **/
     @JSONField(format="yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(shape = JsonFormat.Shape.STRING,timezone = "GMT+8", pattern = DatePattern.NORM_DATETIME_PATTERN,locale = "zh_CN")
     private Date lastLoginTime;
 
     /**

@@ -1,4 +1,4 @@
-package top.jpower.jpower.dto;
+package top.jpower.auth.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

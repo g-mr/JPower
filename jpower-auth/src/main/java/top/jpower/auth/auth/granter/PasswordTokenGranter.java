@@ -1,18 +1,18 @@
-package top.jpower.jpower.auth.granter;
+package top.jpower.auth.auth.granter;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import top.jpower.core.util.utils.Fc;
-import top.jpower.jpower.auth.AuthUserInfo;
-import top.jpower.jpower.auth.TokenGranter;
-import top.jpower.jpower.dto.TokenParameter;
+import top.jpower.auth.auth.AuthUserInfo;
+import top.jpower.auth.auth.TokenGranter;
+import top.jpower.auth.dto.TokenParameter;
 import top.jpower.user.api.cache.UserCache;
 import top.jpower.user.api.dto.CoreUserDTO;
 import top.jpower.user.api.dto.ValidatePasswordDTO;
 import top.jpower.user.api.feign.UserClient;
 
-import static top.jpower.jpower.auth.granter.PasswordTokenGranter.GRANT_TYPE;
+import static top.jpower.auth.auth.granter.PasswordTokenGranter.GRANT_TYPE;
 
 
 /**
@@ -39,7 +39,8 @@ public class PasswordTokenGranter implements TokenGranter {
 			if (!Fc.isNull(authUserInfo)){
 				return authUserInfo.getPasswordUserInfo(tokenParameter);
 			}else {
-				if (userClient.validatePassword(new ValidatePasswordDTO().setPassword(password).setAccount(account).setTenantCode(tenantCode)).getData()){
+				if (userClient.validatePassword(new ValidatePasswordDTO().setPassword(password).setAccount(account).setTenantCode(tenantCode))
+						.getData()){
 					return UserCache.getUserByLoginId(account, tenantCode);
 				}
 			}

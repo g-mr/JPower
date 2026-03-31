@@ -69,8 +69,8 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
              **/
             @Override
             public R<Boolean> validatePassword(ValidatePasswordDTO validatePasswordDto) {
-                log.error("调用validatePassword失败，参数：validatePasswordDto={}", validatePasswordDto);
-                return R.fail("请求失败");
+                log.error("调用validatePassword失败，参数：validatePasswordDto={}", validatePasswordDto, cause);
+                return R.fail("请求失败", false);
             }
         };
     }

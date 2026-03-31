@@ -29,8 +29,7 @@ public class HeaderRequestInterceptor implements RequestInterceptor {
             if (headerNames != null) {
                 while (headerNames.hasMoreElements()) {
                     String name = headerNames.nextElement();
-                    if (name.equalsIgnoreCase("Authorization")
-                            || name.equalsIgnoreCase("User-Type")
+                    if (name.equalsIgnoreCase("jpower-auth")
                             || name.equalsIgnoreCase(JpowerConstants.HEADER_MENU)
                             || name.equalsIgnoreCase(JpowerConstants.AUTH_HEADER)
                             || name.equalsIgnoreCase(JpowerConstants.HEADER_TENANT)

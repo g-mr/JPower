@@ -49,6 +49,61 @@ public class FunctionController extends BaseController {
 
     private final CoreFunctionService coreFunctionService;
 
+	@Operation(summary = "查询登录用户所有按钮接口资源（用于页面权限）", description = "用于页面权限判断，会把顶级按钮一起返回，顶级按钮代表所有菜单都可拥有权限")
+	@GetMapping(value = "/but/code", produces = APPLICATION_JSON_VALUE)
+	public R<List<String>> butCode() {
+		return R.data(coreFunctionService.listBtnByRoleId(ShieldUtil.getUserRole()));
+	}
+
+	@Operation(summary = "页面菜单获取")
+	@GetMapping(value = "/listMenuTree", produces = APPLICATION_JSON_VALUE)
+	public R<List<Tree<Long>>> listMenuTree(@Parameter(description = "顶部菜单ID") Long topMenuId){
+		return R.data(coreFunctionService.listMenuByRoleId(ShieldUtil.getUserRole(), ShieldUtil.getClientCode(), topMenuId, Boolean.TRUE));
+	}
+
+	@Function(value = "菜单列表",menus = {
+			@Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "CHILD_FUNCTION",type = Menu.TYPE.INTERFACE)
+	})
+	@Operation(summary = "根据父节点查询子节点功能")
+	@Parameters({
+			@Parameter(name = "clientId_eq", description = "客户端ID", in = ParameterIn.QUERY,required = true),
+			@Parameter(name = "parentId_eq", description = "父级节点", example = TOP_CODE,required = true, in = ParameterIn.QUERY),
+			@Parameter(name = "alias", description = "别名", in = ParameterIn.QUERY),
+			@Parameter(name = "code", description = "编码", in = ParameterIn.QUERY),
+			@Parameter(name = "functionType_eq", description = "是否菜单 字典YN01", in = ParameterIn.QUERY),
+			@Parameter(name = "functionName", description = "功能名称", in = ParameterIn.QUERY),
+			@Parameter(name = "url", description = "功能URL", in = ParameterIn.QUERY),
+			@Parameter(name = "menuId_eq", description = "顶级菜单ID", in = ParameterIn.QUERY)
+	})
+	@GetMapping(value = "/listByParent/{clientId}", produces = APPLICATION_JSON_VALUE)
+	public R<List<FunctionVO>> list(@Parameter(description = "客户端ID",required = true) @PathVariable("clientId") Long clientId,
+									@Ignore @RequestParam(required = false) Map<String,Object> map){
+		map.put("clientId_eq", clientId);
+		map.putIfAbsent("parentId_eq", TOP_CODE_LONG);
+		return R.data(coreFunctionService.listFunction(map));
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @Function(value = "菜单按钮树形",menus = {
 		@Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_MENUBTN",type = Menu.TYPE.INTERFACE)
     })
@@ -79,28 +134,6 @@ public class FunctionController extends BaseController {
     @GetMapping(value = "/listInterface", produces = APPLICATION_JSON_VALUE)
     public R<List<FunctionSimpleVO>> listInterface(@Parameter(description = "客户端ID",required = true) @NotNull(message = "客户端ID不可为空") @RequestParam(required = false) Long clientId){
         return R.data(coreFunctionService.listInterface(ShieldUtil.getUserRole(), clientId));
-    }
-
-    @Function(value = "菜单列表",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "CHILD_FUNCTION",type = Menu.TYPE.INTERFACE)
-    })
-    @Operation(summary = "根据父节点查询子节点功能")
-    @Parameters({
-		@Parameter(name = "clientId_eq", description = "客户端ID", in = ParameterIn.QUERY,required = true),
-		@Parameter(name = "parentId_eq", description = "父级节点", example = TOP_CODE,required = true, in = ParameterIn.QUERY),
-		@Parameter(name = "alias", description = "别名", in = ParameterIn.QUERY),
-		@Parameter(name = "code", description = "编码", in = ParameterIn.QUERY),
-		@Parameter(name = "functionType_eq", description = "是否菜单 字典YN01", in = ParameterIn.QUERY),
-		@Parameter(name = "functionName", description = "功能名称", in = ParameterIn.QUERY),
-		@Parameter(name = "url", description = "功能URL", in = ParameterIn.QUERY),
-		@Parameter(name = "menuId_eq", description = "顶级菜单ID", in = ParameterIn.QUERY)
-    })
-    @GetMapping(value = "/listByParent/{clientId}", produces = APPLICATION_JSON_VALUE)
-    public R<List<FunctionVO>> list(@Parameter(description = "客户端ID",required = true) @PathVariable("clientId") Long clientId,
-                                    @Ignore @RequestParam(required = false) Map<String,Object> map){
-		map.put("clientId_eq", clientId);
-		map.putIfAbsent("parentId_eq", TOP_CODE_LONG);
-        return R.data(coreFunctionService.listFunction(map));
     }
 
     @Function(value = "新增",menus = {
@@ -153,18 +186,6 @@ public class FunctionController extends BaseController {
     @GetMapping(value = "/lazyTree", produces = APPLICATION_JSON_VALUE)
     public R<List<Tree<Long>>> lazyTree(@Parameter(description = "父级编码", example = TOP_CODE,required = true) @RequestParam(defaultValue = TOP_CODE) Long parentId){
         return R.data(coreFunctionService.lazyTreeByRole(parentId, ShieldUtil.getUserRole()));
-    }
-
-    @Operation(summary = "页面菜单获取")
-    @GetMapping(value = "/listMenuTree", produces = APPLICATION_JSON_VALUE)
-    public R<List<Tree<Long>>> listMenuTree(@Parameter(description = "顶部菜单ID") Long topMenuId){
-        return R.data(coreFunctionService.listMenuByRoleId(ShieldUtil.getUserRole(), ShieldUtil.getClientCode(), topMenuId, Boolean.TRUE));
-    }
-
-    @Operation(summary = "查询登录用户所有按钮接口资源（用于页面权限）", description = "用于页面权限判断，会把顶级按钮一起返回，顶级按钮代表所有菜单都可拥有权限")
-    @GetMapping(value = "/listBut", produces = APPLICATION_JSON_VALUE)
-    public R<List<String>> listBut(){
-        return R.data(coreFunctionService.listBtnByRoleId(ShieldUtil.getUserRole()));
     }
 
     @Operation(summary = "查询登录用户所有功能的树形列表")
