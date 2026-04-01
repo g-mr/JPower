@@ -56,6 +56,33 @@ public class DictController extends BaseController {
     private final CoreDictService coreDictService;
     private final CoreDictTypeService coreDictTypeService;
 
+
+	@ApiOperationSupport(order = 102)
+	@Operation(summary = "通过字典类型查询字典列表")
+	@GetMapping("/dictSelect")
+	public R<List<Tree<Long>>> dictSelect(@NotBlank(message = "字典类型编码不可为空") @RequestParam String dictTypeCode){
+		return R.data(coreDictService.dictSelect(dictTypeCode));
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @Function(value = "字典类型树",menus = {
 		@Menu(client = "admin",menuCode = "SYSTEM_DICT",code = "SYSTEM_DICT_TYPELIST",type = Menu.TYPE.INTERFACE)
     })
@@ -173,24 +200,24 @@ public class DictController extends BaseController {
         return R.data(coreDictService.getById(id));
     }
 
-    @ApiOperationSupport(order = 100)
-    @Operation(summary = "通过字典类型查询字典列表")
-    @GetMapping("/getDictListByType")
-    public R<List<DictVO>> getDictListByType(@RequestParam Map<String, Object> map){
-        JpowerAssert.notEmpty(MapUtil.getStr(map, "dictTypeCode_eq"), JpowerError.Arg, MISS_REQUIRED_PARAMETER);
-		map.putIfAbsent("parentId_eq", Fc.toLong(TOP_CODE));
-        //只查询未停用的
-		map.put("isStop_eq", YN01Enum.N.getValue());
-        //查询的语言
-		map.put("locale_eq", Fc.toStr(getRequest().getHeader(I18N_KEY), YYZLEnum.CHINA.getValue()));
-
-        return R.data(coreDictService.listByType(map));
-    }
-
     @ApiOperationSupport(order = 101)
     @Operation(summary = "根据字典类型查询树形字典")
     @GetMapping(value = "/treeDict/{dictTypeCode}", produces = APPLICATION_JSON_VALUE)
     public R<List<Tree<Long>>> treeDict(@Parameter(description = "字典类型编码") @NotBlank(message = "字典类型编码不可为空") @PathVariable("dictTypeCode") String dictTypeCode){
         return R.data(coreDictService.tree(dictTypeCode));
     }
+
+	@ApiOperationSupport(order = 100)
+	@Operation(summary = "通过字典类型查询字典列表")
+	@GetMapping("/getDictListByType")
+	public R<List<DictVO>> getDictListByType(@RequestParam Map<String, Object> map){
+		JpowerAssert.notEmpty(MapUtil.getStr(map, "dictTypeCode_eq"), JpowerError.Arg, MISS_REQUIRED_PARAMETER);
+		map.putIfAbsent("parentId_eq", Fc.toLong(TOP_CODE));
+		//只查询未停用的
+		map.put("isStop_eq", YN01Enum.N.getValue());
+		//查询的语言
+		map.put("locale_eq", Fc.toStr(getRequest().getHeader(I18N_KEY), YYZLEnum.CHINA.getValue()));
+
+		return R.data(coreDictService.listByType(map));
+	}
 }

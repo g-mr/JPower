@@ -31,10 +31,7 @@ import top.jpower.system.dbs.dao.role.CoreRoleFunctionDao;
 import top.jpower.system.dbs.dao.role.mapper.CoreFunctionMapper;
 import top.jpower.system.dbs.entity.function.CoreFunction;
 import top.jpower.system.service.role.CoreFunctionService;
-import top.jpower.system.vo.DataFunctionVO;
-import top.jpower.system.vo.FunctionSimpleVO;
-import top.jpower.system.vo.FunctionVO;
-import top.jpower.system.vo.SelectIdNameVO;
+import top.jpower.system.vo.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -182,6 +179,18 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<CoreFunctionMapper,
 	@Override
 	public Long getIdByCode(String code) {
 		return coreFunctionDao.getIdByCode(code);
+	}
+
+	/**
+	 * 根据功能编码查询功能是否存在
+	 *
+	 * @param codeExistsBO 功能编码
+	 * @return 功能ID
+	 * @author mr.g
+	 */
+	@Override
+	public boolean existsByCode(CodeExistsBO codeExistsBO) {
+		return coreFunctionDao.existsByCode(codeExistsBO);
 	}
 
 	@Override

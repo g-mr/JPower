@@ -3,10 +3,7 @@ package top.jpower.system.service.role;
 import cn.hutool.core.lang.tree.Tree;
 import top.jpower.core.dbs.service.BaseService;
 import top.jpower.system.dbs.entity.function.CoreFunction;
-import top.jpower.system.vo.DataFunctionVO;
-import top.jpower.system.vo.FunctionSimpleVO;
-import top.jpower.system.vo.FunctionVO;
-import top.jpower.system.vo.SelectIdNameVO;
+import top.jpower.system.vo.*;
 
 import java.util.List;
 import java.util.Map;
@@ -201,4 +198,13 @@ public interface CoreFunctionService extends BaseService<CoreFunction> {
      * @return 功能ID
      */
 	Long getIdByCode(String code);
+
+	/**
+     * 根据功能编码查询功能是否存在
+     *
+     * @author mr.g
+     * @param codeExistsBO 功能编码
+     * @return 功能ID
+     */
+	boolean existsByCode(CodeExistsBO codeExistsBO);
 }

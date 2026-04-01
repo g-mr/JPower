@@ -73,4 +73,13 @@ public interface CoreDictService extends BaseService<CoreDict> {
 	boolean removeByIds(List<Long> ids);
 
 	List<Tree<Long>> tree(String dictTypeCode);
+
+	/**
+	 * 字典选择框
+	 *
+	 * @author mr.g
+	 * @param dictTypeCode 字典类型编码
+	 * @return 字典选择框
+	 */
+	List<Tree<Long>> dictSelect(String dictTypeCode);
 }

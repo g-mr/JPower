@@ -138,4 +138,14 @@ public class CoreDictDao extends JpowerServiceImpl<CoreDictMapper, CoreDict> {
 				.eq(CoreDict::getLocale, requestLocale)
 				.eq(CoreDict::getTenantCode, DEFAULT_TENANT_CODE, ShieldUtil.isRoot()), SelectDTO.class);
 	}
+
+	/**
+	 * 获取字典下拉列表
+	 *
+	 * @param dictTypeCode 字典类型编码
+	 * @return 字典下拉列表
+	 */
+	public List<Tree<Long>> dictSelect(String dictTypeCode) {
+
+	}
 }

@@ -21,10 +21,7 @@ import top.jpower.system.dbs.dao.role.mapper.CoreFunctionMapper;
 import top.jpower.system.dbs.entity.function.CoreFunction;
 import top.jpower.system.dbs.entity.function.CoreFunctionMenu;
 import top.jpower.system.dbs.entity.role.CoreRoleFunction;
-import top.jpower.system.vo.DataFunctionVO;
-import top.jpower.system.vo.FunctionSimpleVO;
-import top.jpower.system.vo.FunctionVO;
-import top.jpower.system.vo.SelectIdNameVO;
+import top.jpower.system.vo.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -399,6 +396,12 @@ public class CoreFunctionDao extends JpowerServiceImpl<CoreFunctionMapper, CoreF
 		return super.getObjAs(Wrappers.getQueryWrapper()
 				.select(CoreFunction::getId)
 				.eq(CoreFunction::getCode,code) , Long.class);
+	}
+
+	public boolean existsByCode(CodeExistsBO codeExistsBO) {
+		return super.exists(Wrappers.getQueryWrapper()
+				.eq(CoreFunction::getCode, codeExistsBO.getCode())
+				.ne(CoreFunction::getId, codeExistsBO.getId(), Fc.notNull(codeExistsBO.getId())));
 	}
 }
 

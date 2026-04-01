@@ -104,4 +104,16 @@ public class CoreDictServiceImpl extends BaseServiceImpl<CoreDictMapper, CoreDic
 		return dictDao.treeByType(dictTypeCode);
 	}
 
+	/**
+	 * 字典选择框
+	 *
+	 * @param dictTypeCode 字典类型编码
+	 * @return 字典选择框
+	 * @author mr.g
+	 */
+	@Override
+	public List<Tree<Long>> dictSelect(String dictTypeCode) {
+		return dictDao.dictSelect(dictTypeCode);
+	}
+
 }

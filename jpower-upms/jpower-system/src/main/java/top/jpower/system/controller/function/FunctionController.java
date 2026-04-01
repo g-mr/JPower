@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import top.jpower.core.util.rsp.R;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.system.dbs.entity.function.CoreFunction;
 import top.jpower.system.service.role.CoreFunctionService;
+import top.jpower.system.vo.CodeExistsBO;
 import top.jpower.system.vo.FunctionSimpleVO;
 import top.jpower.system.vo.FunctionVO;
 
@@ -83,6 +85,14 @@ public class FunctionController extends BaseController {
 		return R.data(coreFunctionService.listFunction(map));
 	}
 
+	@Function(value = "CODE是否存在",menus = {
+		@Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_CODE_EXISTS",type = Menu.TYPE.INTERFACE)
+	})
+	@Operation(summary = "根据父节点查询子节点功能")
+	@GetMapping(value = "/codeExists", produces = APPLICATION_JSON_VALUE)
+	public R<Boolean> codeExists(@Parameter(description = "客户端ID",required = true) @Valid CodeExistsBO codeExistsBO){
+		return R.data(coreFunctionService.existsByCode(codeExistsBO));
+	}
 
 
 
