@@ -146,6 +146,10 @@ public class CoreDictDao extends JpowerServiceImpl<CoreDictMapper, CoreDict> {
 	 * @return 字典下拉列表
 	 */
 	public List<Tree<Long>> dictSelect(String dictTypeCode) {
-
+		return super.tree(Wrappers.getTreeWrapper(CoreDict::getId, CoreDict::getParentId)
+				.select(CORE_DICT.CODE.as("value"))
+				.select(CORE_DICT.NAME.as("label"))
+				.eq(CoreDict::getDictTypeCode, dictTypeCode)
+				.orderBy(CoreDict::getSortNum).asc());
 	}
 }
