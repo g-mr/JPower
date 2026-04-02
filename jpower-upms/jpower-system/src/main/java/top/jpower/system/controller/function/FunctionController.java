@@ -134,6 +134,24 @@ public class FunctionController extends BaseController {
 		return R.status(coreFunctionService.updateById(UpdateEntity.of(CoreFunction.class).setId(id).setIsHide(hide)));
 	}
 
+	@Function(value = "删除",menus = {
+			@Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_DELETE",type = Menu.TYPE.BTN)
+	})
+	@Operation(summary = "删除")
+	@DeleteMapping(value = "/delete", produces = APPLICATION_JSON_VALUE)
+	public R<Boolean> delete(@Parameter(description = "主键 多个逗号分割",required = true) @NotBlank(message = "ids不可为空") @RequestParam String ids){
+		return R.status(coreFunctionService.delete(Fc.toLongList(ids)));
+	}
+
+	@Function(value = "功能点同步",alias = "同步", menus = {
+			@Menu(client = "admin",menuCode = "SYSTEM_FUNCTION", code = "SYSTEM_FUNCTION_GENERATE",type = Menu.TYPE.BTN)
+	})
+	@Operation(summary = "生成功能点")
+	@PostMapping(value = "/generate", produces = APPLICATION_JSON_VALUE)
+	public R<Boolean> generate(){
+		return R.status(coreFunctionService.generateFunction());
+	}
+
 
 
 
@@ -187,15 +205,6 @@ public class FunctionController extends BaseController {
         return R.data(coreFunctionService.listInterface(ShieldUtil.getUserRole(), clientId));
     }
 
-    @Function(value = "删除",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_DELETE",type = Menu.TYPE.BTN)
-    })
-    @Operation(summary = "删除")
-    @DeleteMapping(value = "/delete", produces = APPLICATION_JSON_VALUE)
-    public R<Boolean> delete(@Parameter(description = "主键 多个逗号分割",required = true) @NotBlank(message = "ids不可为空") @RequestParam String ids){
-		return R.status(coreFunctionService.delete(Fc.toLongList(ids)));
-    }
-
     @Function(value = "设置层级",menus = {
 		@Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_HIERARCHY",type = Menu.TYPE.BTN)
     })
@@ -234,15 +243,6 @@ public class FunctionController extends BaseController {
     @GetMapping(value = "/clientMenuTree", produces = APPLICATION_JSON_VALUE)
     public R<List<Tree<Long>>> clientMenuTree(){
         return R.data(coreFunctionService.treeClientMenu(ShieldUtil.getUserRole()));
-    }
-
-    @Function(value = "功能点同步",alias = "同步", menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_FUNCTION", code = "SYSTEM_FUNCTION_GENERATE",type = Menu.TYPE.BTN)
-    })
-    @Operation(summary = "生成功能点")
-    @PostMapping(value = "/generate", produces = APPLICATION_JSON_VALUE)
-    public R<Boolean> generate(){
-        return R.status(coreFunctionService.generateFunction());
     }
 
 }

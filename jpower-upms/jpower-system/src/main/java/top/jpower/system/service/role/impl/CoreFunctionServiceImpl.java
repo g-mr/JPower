@@ -92,7 +92,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<CoreFunctionMapper,
 
     @Override
     public Boolean delete(List<Long> ids) {
-		JpowerAssert.notTrue(coreFunctionDao.existsInField(CoreFunction::getId, ids), JpowerError.Business, DELETE_EXIST_CHILD);
+		JpowerAssert.notTrue(coreFunctionDao.existsInField(CoreFunction::getParentId, ids), JpowerError.Business, DELETE_EXIST_CHILD);
 
 		CacheUtil.clear(CacheNames.FUNCTION_KEY);
         coreRoleFunctionDao.removeRealByFunctionId(ids);
