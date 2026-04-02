@@ -54,7 +54,7 @@ public class CoreFunctionDao extends JpowerServiceImpl<CoreFunctionMapper, CoreF
      **/
     public List<Tree<Long>> treeMenuTypeByClientId(List<Long> roleIds, Long clientId) {
         return super.tree(Wrappers.getTreeWrapper(CoreFunction::getId, CoreFunction::getParentId)
-								.select(CoreFunction::getFunctionName,CoreFunction::getFunctionType,CoreFunction::getSort)
+								.select(CoreFunction::getFunctionName,CoreFunction::getFunctionType)
 								.in(CoreFunction::getFunctionType, ListUtil.of(FunctionTypeEnum.MENU.getValue(), FunctionTypeEnum.BTN.getValue()))
 								.eq(CoreFunction::getClientId,clientId)
 								.leftJoin(CoreRoleFunction.class, !ShieldUtil.isRoot()).on(CoreRoleFunction::getFunctionId, CoreFunction::getId)

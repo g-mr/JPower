@@ -94,6 +94,45 @@ public class FunctionController extends BaseController {
 		return R.data(coreFunctionService.existsByCode(codeExistsBO));
 	}
 
+	@Function(value = "菜单按钮树形",menus = {
+			@Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_MENUBTN",type = Menu.TYPE.INTERFACE)
+	})
+	@Operation(summary = "查询登录用户所有菜单按钮树形结构")
+	@GetMapping(value = "/treeMenuTypeByClientId", produces = APPLICATION_JSON_VALUE)
+	public R<List<Tree<Long>>> treeMenuTypeByClientId(@Parameter(description = "客户端ID") @RequestParam(required = false) Long clientId) {
+		if (Fc.isNull(clientId)) {
+			return R.data(ListUtil.empty());
+		}
+		return R.data(coreFunctionService.treeMenuTypeByClientId(ShieldUtil.getUserRole(), clientId));
+	}
+
+	@Function(value = "修改",menus = {
+			@Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_UPDATE",type = Menu.TYPE.BTN)
+	})
+	@Operation(summary = "修改")
+	@PutMapping(value = "/update", produces = APPLICATION_JSON_VALUE)
+	public R<Boolean> update(@Validated(Validation.Update.class) @RequestBody CoreFunction coreFunction){
+		return R.status(coreFunctionService.update(coreFunction));
+	}
+
+	@Function(value = "新增",menus = {
+			@Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_ADD",type = Menu.TYPE.BTN)
+	})
+	@Operation(summary = "新增")
+	@PostMapping(value = "/add", produces = APPLICATION_JSON_VALUE)
+	public R<Long> add(@Validated(Validation.Create.class) @RequestBody CoreFunction coreFunction){
+		return R.data(coreFunctionService.create(coreFunction));
+	}
+
+	@Function(value = "菜单开关",alias = "开关", menus = {
+			@Menu(client = "admin",menuCode = "SYSTEM_FUNCTION", code = "SYSTEM_FUNCTION_HIDE",type = Menu.TYPE.BTN)
+	})
+	@Operation(summary = "菜单开关")
+	@PostMapping(value = "/hide/{id}", produces = APPLICATION_JSON_VALUE)
+	public R<Boolean> hide(@Parameter(description = "主键",required = true) @PathVariable("id") Long id,
+						   @Parameter(description = "是否隐藏",required = true) @NotNull(message = "hide不可为空") @RequestSingleBody Boolean hide){
+		return R.status(coreFunctionService.updateById(UpdateEntity.of(CoreFunction.class).setId(id).setIsHide(hide)));
+	}
 
 
 
@@ -114,18 +153,20 @@ public class FunctionController extends BaseController {
 
 
 
-    @Function(value = "菜单按钮树形",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_MENUBTN",type = Menu.TYPE.INTERFACE)
-    })
-    @Operation(summary = "查询登录用户所有菜单按钮树形结构")
-    @GetMapping(value = "/treeMenuTypeByClientId", produces = APPLICATION_JSON_VALUE)
-    public R<List<Tree<Long>>> treeMenuTypeByClientId(@Parameter(description = "客户端ID") @RequestParam(required = false) Long clientId) {
-        if (Fc.isNull(clientId)) {
-            return R.data(ListUtil.empty());
-        }
-        return R.data(coreFunctionService.treeMenuTypeByClientId(ShieldUtil.isRoot() ? null : ShieldUtil.getUserRole(), clientId));
-    }
 
+	@Function(value = "菜单树形",menus = {
+			@Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_ROLE_SELECT_URL",code = "ROLE_MENU_TREE",type = Menu.TYPE.INTERFACE),
+			@Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_MENU",type = Menu.TYPE.INTERFACE)
+	})
+	@Operation(summary = "查询登录用户所有菜单树形结构")
+	@GetMapping(value = "/menuTree", produces = APPLICATION_JSON_VALUE)
+	public R<List<Tree<Long>>> menuTree(@Parameter(description = "客户端ID") @RequestParam(required = false) Long clientId,
+										@Parameter(description = "顶部菜单ID") @RequestParam(required = false) Long topMenuId){
+		if (Fc.isNull(clientId)){
+			return R.data(ListUtil.empty());
+		}
+		return R.data(coreFunctionService.menuTreeByRoleIds(ShieldUtil.getUserRole(), clientId, topMenuId));
+	}
 
     @Function(value = "树形按钮",menus = {
 		@Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_ROLE_SELECT_URL",code = "SYSTEM_ROLE_BUT_TREE",type = Menu.TYPE.INTERFACE)
@@ -146,15 +187,6 @@ public class FunctionController extends BaseController {
         return R.data(coreFunctionService.listInterface(ShieldUtil.getUserRole(), clientId));
     }
 
-    @Function(value = "新增",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_ADD",type = Menu.TYPE.BTN)
-    })
-    @Operation(summary = "新增")
-    @PostMapping(value = "/add", produces = APPLICATION_JSON_VALUE)
-    public R<Long> add(@Validated(Validation.Create.class) @RequestBody CoreFunction coreFunction){
-		return R.data(coreFunctionService.create(coreFunction));
-    }
-
     @Function(value = "删除",menus = {
 		@Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_DELETE",type = Menu.TYPE.BTN)
     })
@@ -162,15 +194,6 @@ public class FunctionController extends BaseController {
     @DeleteMapping(value = "/delete", produces = APPLICATION_JSON_VALUE)
     public R<Boolean> delete(@Parameter(description = "主键 多个逗号分割",required = true) @NotBlank(message = "ids不可为空") @RequestParam String ids){
 		return R.status(coreFunctionService.delete(Fc.toLongList(ids)));
-    }
-
-    @Function(value = "修改",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_UPDATE",type = Menu.TYPE.BTN)
-    })
-    @Operation(summary = "修改")
-    @PutMapping(value = "/update", produces = APPLICATION_JSON_VALUE)
-    public R<Boolean> update(@Validated(Validation.Update.class) @RequestBody CoreFunction coreFunction){
-		return R.status(coreFunctionService.update(coreFunction));
     }
 
     @Function(value = "设置层级",menus = {
@@ -204,20 +227,6 @@ public class FunctionController extends BaseController {
         return R.data(coreFunctionService.listTreeByRoleId(ShieldUtil.getUserRole()));
     }
 
-    @Function(value = "菜单树形",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_ROLE_SELECT_URL",code = "ROLE_MENU_TREE",type = Menu.TYPE.INTERFACE),
-		@Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_MENU",type = Menu.TYPE.INTERFACE)
-    })
-    @Operation(summary = "查询登录用户所有菜单树形结构")
-    @GetMapping(value = "/menuTree", produces = APPLICATION_JSON_VALUE)
-    public R<List<Tree<Long>>> menuTree(@Parameter(description = "客户端ID") @RequestParam(required = false) Long clientId,
-										@Parameter(description = "顶部菜单ID") @RequestParam(required = false) Long topMenuId){
-        if (Fc.isNull(clientId)){
-            return R.data(ListUtil.empty());
-        }
-        return R.data(coreFunctionService.menuTreeByRoleIds(ShieldUtil.getUserRole(), clientId, topMenuId));
-    }
-
     @Function(value = "客户端功能树",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "CLIENT_MENU_TREE",type = Menu.TYPE.INTERFACE)
     })
@@ -236,13 +245,4 @@ public class FunctionController extends BaseController {
         return R.status(coreFunctionService.generateFunction());
     }
 
-    @Function(value = "菜单开关",alias = "同步", menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_FUNCTION", code = "SYSTEM_FUNCTION_HIDE",type = Menu.TYPE.BTN)
-    })
-    @Operation(summary = "菜单开关")
-    @PostMapping(value = "/hide/{id}", produces = APPLICATION_JSON_VALUE)
-    public R<Boolean> hide(@Parameter(description = "主键",required = true) @PathVariable("id") Long id,
-						   @Parameter(description = "是否隐藏",required = true) @NotNull(message = "hide不可为空") @RequestSingleBody Boolean hide){
-        return R.status(coreFunctionService.updateById(UpdateEntity.of(CoreFunction.class).setId(id).setIsHide(hide)));
-    }
 }

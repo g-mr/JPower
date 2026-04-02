@@ -3,6 +3,7 @@ package top.jpower.system.service.role.impl;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,9 +37,7 @@ import top.jpower.system.vo.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static top.jpower.common.constants.ServiceCodeConstants.CODE_EXIST;
-import static top.jpower.common.constants.ServiceCodeConstants.DELETE_EXIST_CHILD;
-import static top.jpower.common.constants.ServiceCodeConstants.NOT_FOUND_CLIENT;
+import static top.jpower.common.constants.ServiceCodeConstants.*;
 import static top.jpower.core.auth.endpoint.BuiltEndpoint.PATH;
 import static top.jpower.core.util.constants.JpowerConstants.TOP_CODE;
 import static top.jpower.core.util.constants.JpowerConstants.TOP_CODE_LONG;
@@ -83,7 +82,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<CoreFunctionMapper,
             coreFunction.setAncestorId(TOP_CODE);
         }else {
 			String ancestorId = coreFunctionDao.selectAncestorIdById(coreFunction.getParentId());
-            coreFunction.setAncestorId(Fc.toStr(coreFunction.getParentId()).concat(StringPool.COMMA).concat(ancestorId));
+            coreFunction.setAncestorId(Fc.toStr(coreFunction.getParentId()).concat(StringPool.COMMA).concat(Fc.toStr(ancestorId, "")));
         }
 
         coreFunctionDao.save(coreFunction);
@@ -120,7 +119,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<CoreFunctionMapper,
 
         if (Fc.notNull(coreFunction.getParentId())){
 			String ancestorId = coreFunctionDao.selectAncestorIdById(coreFunction.getParentId());
-			coreFunction.setAncestorId(Fc.toStr(coreFunction.getParentId()).concat(StringPool.COMMA).concat(ancestorId));
+			coreFunction.setAncestorId(Fc.toStr(coreFunction.getParentId()).concat(StringPool.COMMA).concat(Fc.toStr(ancestorId, StrUtil.EMPTY)));
         }
 
 		CacheUtil.clear(CacheNames.FUNCTION_KEY);
