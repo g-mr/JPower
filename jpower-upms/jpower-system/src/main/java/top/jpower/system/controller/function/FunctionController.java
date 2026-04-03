@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -152,26 +153,6 @@ public class FunctionController extends BaseController {
 		return R.status(coreFunctionService.generateFunction());
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	@Function(value = "菜单树形",menus = {
 			@Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_ROLE_SELECT_URL",code = "ROLE_MENU_TREE",type = Menu.TYPE.INTERFACE),
 			@Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_MENU",type = Menu.TYPE.INTERFACE)
@@ -185,6 +166,38 @@ public class FunctionController extends BaseController {
 		}
 		return R.data(coreFunctionService.menuTreeByRoleIds(ShieldUtil.getUserRole(), clientId, topMenuId));
 	}
+
+	@Function(value = "设置层级",menus = {
+			@Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_HIERARCHY",type = Menu.TYPE.BTN)
+	})
+	@Operation(summary = "保存层级")
+	@PostMapping(value = "/saveHierarchy", produces = APPLICATION_JSON_VALUE)
+	public R<Boolean> saveHierarchy(@Parameter(description = "上级ID",required = true) @RequestSingleBody(defaultValue = TOP_CODE) Long parentId,
+									@Parameter(description = "主键",required = true) @NotEmpty(message = "ids不可为空") @RequestSingleBody List<Long> ids){
+		return R.status(coreFunctionService.saveHierarchy(parentId, ids));
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Function(value = "树形按钮",menus = {
 		@Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_ROLE_SELECT_URL",code = "SYSTEM_ROLE_BUT_TREE",type = Menu.TYPE.INTERFACE)
@@ -203,16 +216,6 @@ public class FunctionController extends BaseController {
     @GetMapping(value = "/listInterface", produces = APPLICATION_JSON_VALUE)
     public R<List<FunctionSimpleVO>> listInterface(@Parameter(description = "客户端ID",required = true) @NotNull(message = "客户端ID不可为空") @RequestParam(required = false) Long clientId){
         return R.data(coreFunctionService.listInterface(ShieldUtil.getUserRole(), clientId));
-    }
-
-    @Function(value = "设置层级",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "SYSTEM_FUNCTION_HIERARCHY",type = Menu.TYPE.BTN)
-    })
-    @Operation(summary = "保存层级")
-    @PostMapping(value = "/saveHierarchy", produces = APPLICATION_JSON_VALUE)
-    public R<Boolean> saveHierarchy(@Parameter(description = "上级ID",required = true) @RequestSingleBody(defaultValue = TOP_CODE) Long parentId,
-						   			@Parameter(description = "主键，多个逗号分割",required = true) @NotBlank(message = "ids不可为空") @RequestSingleBody List<Long> ids){
-		return R.status(coreFunctionService.saveHierarchy(parentId, ids));
     }
 
     @Function(value = "功能权限",menus = {
