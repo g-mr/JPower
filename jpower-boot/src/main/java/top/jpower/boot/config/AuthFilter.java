@@ -93,7 +93,7 @@ public class AuthFilter implements Filter {
 
             if (!redisUtil.exist(CacheNames.TOKEN_URL_KEY + token)){
                 R<String> responseData = R.print(HttpStatus.PROXY_AUTHENTICATION_REQUIRED.value(),"令牌已过期，请重新登录",false);
-
+				((HttpServletResponse) response).setStatus(HttpStatus.UNAUTHORIZED.value());
                 WebUtil.renderJson((HttpServletResponse) response,responseData);
                 return;
             }

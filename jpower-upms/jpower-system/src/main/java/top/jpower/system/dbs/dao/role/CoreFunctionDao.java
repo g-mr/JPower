@@ -357,9 +357,9 @@ public class CoreFunctionDao extends JpowerServiceImpl<CoreFunctionMapper, CoreF
 	 * @return 功能列表
 	 **/
 	public List<CoreFunction> listDescendantsByIds(List<Long> ids) {
-		return super.list(Wrappers.getQueryWrapper().in(CoreFunction::getId,ids).and(and->{
+		return super.list(Wrappers.getQueryWrapper().in(CoreFunction::getId,ids).or(or->{
 			for (Long id : ids) {
-				and.or(CORE_FUNCTION.ANCESTOR_ID.like(id));
+				or.or(CORE_FUNCTION.ANCESTOR_ID.like(id));
 			}
 		}));
 	}

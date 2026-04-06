@@ -24,6 +24,7 @@ import top.jpower.core.util.utils.*;
 import java.sql.Statement;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 
@@ -148,12 +149,11 @@ public class MybatisSqlPrintInterceptor implements MybatisInterceptor {
      * 获取完整的sql实体的信息
      *
      * @param boundSql
+     * @param configuration
      * @return
      */
     private String formatSql(BoundSql boundSql, Configuration configuration) {
         String sql = boundSql.getSql();
-        List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
-        Object parameterObject = boundSql.getParameterObject();
         // 输入sql字符串空判断
         if (Fc.isBlank(sql)) {
             return "";
@@ -161,36 +161,135 @@ public class MybatisSqlPrintInterceptor implements MybatisInterceptor {
         if (configuration == null) {
             return "";
         }
-        TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
-        sql = beautifySql(sql);
-        // 参考mybatis 源码 DefaultParameterHandler
-        if (parameterMappings != null) {
-            for (ParameterMapping parameterMapping : parameterMappings) {
-                if (parameterMapping.getMode() != ParameterMode.OUT) {
-                    Object value;
-                    String propertyName = parameterMapping.getProperty();
-                    if (boundSql.hasAdditionalParameter(propertyName)) {
-                        value = boundSql.getAdditionalParameter(propertyName);
-                    } else if (parameterObject == null) {
-                        value = null;
-                    } else if (typeHandlerRegistry.hasTypeHandler(parameterObject.getClass())) {
-                        value = parameterObject;
-                    } else {
-                        MetaObject metaObject = configuration.newMetaObject(parameterObject);
-                        value = metaObject.getValue(propertyName);
-                    }
-                    String paramValueStr = "";
-                    if (value instanceof String) {
-                        paramValueStr = "'" + value + "'";
-                    } else if (value instanceof Date) {
-                        paramValueStr = "'" + DateUtil.formatDateTime((Date) value) + "'";
-                    } else {
-                        paramValueStr = value + "";
-                    }
 
-                    sql = sql.replaceFirst("\\?", Matcher.quoteReplacement(paramValueStr));
-                }
+        sql = beautifySql(sql);
+
+        // 方案1: 尝试从 BoundSql 获取参数映射
+        List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
+
+        // 方案2: 如果 parameterMappings 为空，尝试从 additionalParameters 获取
+        if (parameterMappings == null || parameterMappings.isEmpty()) {
+            sql = formatSqlFromAdditionalParameters(sql, boundSql, configuration);
+        } else {
+            sql = formatSqlFromParameterMappings(sql, boundSql, configuration, parameterMappings);
+        }
+
+        return sql;
+    }
+
+    /**
+     * 使用 ParameterMappings 格式化 SQL
+     */
+    private String formatSqlFromParameterMappings(String sql, BoundSql boundSql, Configuration configuration,
+                                                   List<ParameterMapping> parameterMappings) {
+        TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
+        Object parameterObject = boundSql.getParameterObject();
+
+        for (ParameterMapping parameterMapping : parameterMappings) {
+            if (parameterMapping.getMode() != ParameterMode.OUT) {
+                Object value = getParameterValue(boundSql, configuration, typeHandlerRegistry,
+                        parameterObject, parameterMapping.getProperty());
+                sql = replaceParameter(sql, value);
             }
+        }
+        return sql;
+    }
+
+    /**
+     * 从 additionalParameters 格式化 SQL（适用于 MyBatis-Flex 动态 SQL）
+     */
+    private String formatSqlFromAdditionalParameters(String sql, BoundSql boundSql, Configuration configuration) {
+        // 获取所有的 additionalParameters
+        MetaObject metaObject = configuration.newMetaObject(boundSql);
+        @SuppressWarnings("unchecked")
+		Map<String, Object> additionalParams = (Map<String, Object>) metaObject.getValue("additionalParameters");
+
+        if (additionalParams != null && !additionalParams.isEmpty()) {
+            // 按参数名排序，确保替换顺序一致
+            List<String> sortedKeys = additionalParams.keySet().stream()
+					.sorted().toList();
+
+            for (String key : sortedKeys) {
+                Object value = additionalParams.get(key);
+                sql = replaceParameter(sql, value);
+            }
+        } else if (boundSql.getParameterObject() != null) {
+            // 如果 additionalParameters 为空，尝试直接使用 parameterObject
+            Object paramObject = boundSql.getParameterObject();
+            if (paramObject instanceof Map) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> paramMap = (Map<String, Object>) paramObject;
+                Object sqlArgs = paramMap.get("$$sql_args");
+				if (Fc.isArray(sqlArgs)) {
+					Object[] args = (Object[]) sqlArgs;
+					for (Object value : args) {
+						sql = replaceParameter(sql, value);
+					}
+				} else {
+					sql = replaceAllParameters(sql, sqlArgs);
+				}
+            } else {
+                // 单个参数对象，直接替换所有 ?
+                sql = replaceAllParameters(sql, paramObject);
+            }
+        }
+
+        return sql;
+    }
+
+    /**
+     * 获取参数值
+     */
+    private Object getParameterValue(BoundSql boundSql, Configuration configuration,
+                                      TypeHandlerRegistry typeHandlerRegistry, Object parameterObject,
+                                      String propertyName) {
+        if (boundSql.hasAdditionalParameter(propertyName)) {
+            return boundSql.getAdditionalParameter(propertyName);
+        } else if (parameterObject == null) {
+            return null;
+        } else if (typeHandlerRegistry.hasTypeHandler(parameterObject.getClass())) {
+            return parameterObject;
+        } else {
+            MetaObject metaObject = configuration.newMetaObject(parameterObject);
+            return metaObject.getValue(propertyName);
+        }
+    }
+
+    /**
+     * 替换 SQL 中的单个参数占位符
+     */
+    private String replaceParameter(String sql, Object value) {
+        String paramValueStr;
+        if (value instanceof String) {
+            paramValueStr = "'" + value + "'";
+        } else if (value instanceof Date) {
+            paramValueStr = "'" + DateUtil.formatDateTime((Date) value) + "'";
+        } else if (value == null) {
+            paramValueStr = "NULL";
+        } else {
+            paramValueStr = value.toString();
+        }
+        return sql.replaceFirst("\\?", Matcher.quoteReplacement(paramValueStr));
+    }
+
+    /**
+     * 替换 SQL 中的所有参数占位符（用于单个参数对象）
+     */
+    private String replaceAllParameters(String sql, Object paramObject) {
+        String paramValueStr;
+        if (paramObject instanceof String) {
+            paramValueStr = "'" + paramObject + "'";
+        } else if (paramObject instanceof Date) {
+            paramValueStr = "'" + DateUtil.formatDateTime((Date) paramObject) + "'";
+        } else if (paramObject == null) {
+            paramValueStr = "NULL";
+        } else {
+            paramValueStr = paramObject.toString();
+        }
+
+        // 替换所有的 ?
+        while (sql.contains("?")) {
+            sql = sql.replaceFirst("\\?", Matcher.quoteReplacement(paramValueStr));
         }
         return sql;
     }

@@ -44,8 +44,7 @@ public class CorePost extends TenantEntity {
     private String describe;
     @Schema(description = "上岗条件")
     private String condition;
-    @Schema(description = "是否启用 字典：YN01")
-    @Dict(name = "YN01")
-    private Integer status;
+    @Schema(description = "是否启用")
+    private Boolean status;
 
 }

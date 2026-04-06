@@ -3,7 +3,6 @@ package top.jpower.core.auth.utils;
 
 import cn.hutool.core.codec.Base64Decoder;
 import cn.hutool.core.collection.ListUtil;
-import cn.hutool.core.date.DateUnit;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.SneakyThrows;
@@ -12,7 +11,10 @@ import top.jpower.core.auth.dto.UserInfo;
 import top.jpower.core.auth.utils.constant.RoleConstant;
 import top.jpower.core.auth.utils.constant.SecureConstant;
 import top.jpower.core.util.constants.*;
-import top.jpower.core.util.utils.*;
+import top.jpower.core.util.utils.BeanUtil;
+import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.StringUtil;
+import top.jpower.core.util.utils.WebUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -42,19 +44,19 @@ public class ShieldUtil {
             return null;
         }
 
-        UserInfo userInfo = (UserInfo) request.getSession().getAttribute(REQUEST_USER_SESSION);
-        String sessionToken = (String) request.getSession().getAttribute(REQUEST_USER_TOKEN);
-        if (Fc.isNull(userInfo) || !Fc.equalsValue(sessionToken,token)) {
-            userInfo = getUser(request);
-            if (Fc.notNull(userInfo)){
-                long bet = DateUtil.between(DateUtil.date(),getClaims(request).getExpiration(), DateUnit.SECOND, false);
-                if (bet > 0){
-                    request.getSession().setMaxInactiveInterval((int) bet);
-                    request.getSession().setAttribute(REQUEST_USER_SESSION, userInfo);
-                    request.getSession().setAttribute(REQUEST_USER_TOKEN, token);
-                }
-            }
-        }
+        // UserInfo userInfo = (UserInfo) request.getSession().getAttribute(REQUEST_USER_SESSION);
+        // String sessionToken = (String) request.getSession().getAttribute(REQUEST_USER_TOKEN);
+        // if (Fc.isNull(userInfo) || !Fc.equalsValue(sessionToken,token)) {
+		UserInfo userInfo = getUser(request);
+		// if (Fc.notNull(userInfo)){
+		// 	long bet = DateUtil.between(DateUtil.date(),getClaims(request).getExpiration(), DateUnit.SECOND, false);
+		// 	if (bet > 0){
+		// 		request.getSession().setMaxInactiveInterval((int) bet);
+		// 		request.getSession().setAttribute(REQUEST_USER_SESSION, userInfo);
+		// 		request.getSession().setAttribute(REQUEST_USER_TOKEN, token);
+		// 	}
+		// }
+        // }
 
         return userInfo;
     }

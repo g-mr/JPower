@@ -41,6 +41,38 @@ public class RoleController extends BaseController {
     private final CoreRoleService coreRoleService;
     private final CoreRoleFunctionService coreRoleFunctionService;
 
+	@Function(value = "角色树形",menus = {
+			@Menu(client = "admin",menuCode = "SYSTEM_USER",btnCode = "SYSTEM_USER_UPDATEROLE",code = "USER_ROLE_TREE",type = Menu.TYPE.INTERFACE)
+	})
+	@Operation(summary = "查询角色树结构")
+	@GetMapping(value = "/tree",produces = APPLICATION_JSON_VALUE)
+	public R<List<Tree<Long>>> tree(){
+		return R.data(coreRoleService.treeSelect());
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @Function(value = "树形角色列表",menus = {
 		@Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_LIST_TREE",type = Menu.TYPE.INTERFACE)
     })
@@ -48,15 +80,6 @@ public class RoleController extends BaseController {
     @GetMapping(value = "/listTree", produces = APPLICATION_JSON_VALUE)
     public R<List<Tree<Long>>> listTree(){
         return R.data(coreRoleService.listTree());
-    }
-
-    @Function(value = "角色树形",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_USER",btnCode = "SYSTEM_USER_UPDATEROLE",code = "USER_ROLE_TREE",type = Menu.TYPE.INTERFACE)
-    })
-    @Operation(summary = "查询角色树结构")
-    @GetMapping(value = "/tree",produces = APPLICATION_JSON_VALUE)
-    public R<List<Tree<Long>>> tree(){
-        return R.data(coreRoleService.treeSelect());
     }
 
     @Function(value = "新增",menus = {

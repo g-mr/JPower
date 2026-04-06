@@ -58,4 +58,14 @@ public interface CorePostService extends BaseService<CorePost> {
      * @return 岗位ID
      **/
     Long editById(CorePost corePost);
+
+	/**
+	 * 启用禁用岗位
+	 *
+	 * @author mr.g
+	 * @param id 岗位ID
+	 * @param status 状态
+	 * @return boolean 操作成功返回true
+	 **/
+	boolean enable(Long id, Boolean status);
 }

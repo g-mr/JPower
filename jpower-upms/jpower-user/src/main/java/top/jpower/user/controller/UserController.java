@@ -81,6 +81,63 @@ public class UserController extends BaseController {
         return R.data(user);
     }
 
+	@Function(value = "用户列表", menus = {
+			@Menu(client = "admin", menuCode = "SYSTEM_USER", code = "USER_LIST", type = Menu.TYPE.INTERFACE)
+	})
+	@Operation(summary = "查询用户分页列表")
+	@Parameters({
+			@Parameter(name = "pageNum", description = "第几页", example = "1", in = QUERY, schema = @Schema(type = "int"), required = true),
+			@Parameter(name = "pageSize", description = "每页长度", example = "10", in = QUERY, schema = @Schema(type = "int"), required = true)
+	})
+	@GetMapping(value = "/list", produces = "application/json")
+	public R<Pg<UserVO>> list(CoreUser coreUser) {
+		return R.data(coreUserService.listPage(coreUser));
+	}
+
+	@Function(value = "新增用户", menus = {
+			@Menu(client = "admin", menuCode = "SYSTEM_USER", code = "SYSTEM_USER_ADD", type = Menu.TYPE.BTN)
+	})
+	@Operation(summary = "新增", description = "主键不用传")
+	@PostMapping(value = "/add", produces = "application/json")
+	public R<Boolean> add(@Validated(Validation.Create.class) @NotNull(message = "用户信息不能为空") @RequestBody CoreUser coreUser) {
+		return R.status(coreUserService.createUser(coreUser));
+	}
+
+	@Function(value = "修改用户", menus = {
+			@Menu(client = "admin", menuCode = "SYSTEM_USER", code = "SYSTEM_USER_UPDATE", type = Menu.TYPE.BTN)
+	})
+	@Operation(summary = "修改用户信息")
+	@OperateLog(title = "修改系统用户信息", businessType = UPDATE)
+	@PutMapping(value = "/update", produces = "application/json")
+	public R<Boolean> update(@Validated(Validation.Update.class) @RequestBody CoreUser coreUser) {
+		return R.status(coreUserService.updateUser(coreUser));
+	}
+
+	@Function(value = "删除用户", menus = {
+			@Menu(client = "admin", menuCode = "SYSTEM_USER", code = "SYSTEM_USER_DELETE", type = Menu.TYPE.BTN)
+	})
+	@Operation(summary = "删除用户")
+	@OperateLog(title = "删除登录用户", businessType = DELETE)
+	@DeleteMapping(value = "/delete", produces = "application/json")
+	public R<Boolean> delete(@Parameter(description = "主键 多个逗号分割", required = true) @NotBlank(message = "ids不可为空") @RequestParam String ids) {
+		CacheUtil.clear(CacheNames.USER_KEY);
+		return R.status(coreUserService.deleteByIds(Fc.toLongList(ids)));
+	}
+
+	@Function(value = "重置密码", menus = {
+			@Menu(client = "admin", menuCode = "SYSTEM_USER", code = "SYSTEM_USER_RESETPASSWORD", type = Menu.TYPE.BTN)
+	})
+	@Operation(summary = "重置用户登陆密码")
+	@PutMapping(value = "/resetPassword", produces = "application/json")
+	public R<Boolean> resetPassword(@Parameter(description = "主键 多个逗号分割", required = true) @NotBlank(message = "用户ID不可为空") @RequestSingleBody String ids) {
+		CacheUtil.clear(CacheNames.USER_KEY);
+		if (coreUserService.resetPassword(Fc.toLongList(ids))) {
+			return R.ok(Fc.toLongArray(ids).length + "位用户密码重置成功", null);
+		} else {
+			return R.fail();
+		}
+	}
+
 
 
 
@@ -136,19 +193,6 @@ public class UserController extends BaseController {
         return R.ok();
     }
 
-    @Function(value = "用户列表", menus = {
-            @Menu(client = "admin", menuCode = "SYSTEM_USER", code = "USER_LIST", type = Menu.TYPE.INTERFACE)
-    })
-    @Operation(summary = "查询用户分页列表")
-    @Parameters({
-		@Parameter(name = "pageNum", description = "第几页", example = "1", in = QUERY, schema = @Schema(type = "int"), required = true),
-		@Parameter(name = "pageSize", description = "每页长度", example = "10", in = QUERY, schema = @Schema(type = "int"), required = true)
-    })
-    @GetMapping(value = "/list", produces = "application/json")
-    public R<Pg<UserVO>> list(@RequestParam(required = false) CoreUser coreUser) {
-        return R.data(coreUserService.listPage(coreUser));
-    }
-
     @Function(value = "导出用户", menus = {
             @Menu(client = "admin", menuCode = "SYSTEM_USER", code = "SYSTEM_USER_EXPORTUSER", type = Menu.TYPE.BTN)
     })
@@ -181,36 +225,6 @@ public class UserController extends BaseController {
         return R.data(coreUserService.selectUserById(id));
     }
 
-    @Function(value = "新增用户", menus = {
-            @Menu(client = "admin", menuCode = "SYSTEM_USER", code = "SYSTEM_USER_ADD", type = Menu.TYPE.BTN)
-    })
-    @Operation(summary = "新增", description = "主键不用传")
-    @PostMapping(value = "/add", produces = "application/json")
-    public R<Boolean> add(@Validated(Validation.Create.class) @NotNull(message = "用户信息不能为空") @RequestBody CoreUser coreUser) {
-        return R.status(coreUserService.createUser(coreUser));
-    }
-
-    @Function(value = "删除用户", menus = {
-            @Menu(client = "admin", menuCode = "SYSTEM_USER", code = "SYSTEM_USER_DELETE", type = Menu.TYPE.BTN)
-    })
-    @Operation(summary = "删除用户")
-    @OperateLog(title = "删除登录用户", businessType = DELETE)
-    @DeleteMapping(value = "/delete", produces = "application/json")
-    public R<Boolean> delete(@Parameter(description = "主键 多个逗号分割", required = true) @NotBlank(message = "ids不可为空") @RequestParam String ids) {
-        CacheUtil.clear(CacheNames.USER_KEY);
-        return R.status(coreUserService.deleteByIds(Fc.toLongList(ids)));
-    }
-
-    @Function(value = "修改用户", menus = {
-            @Menu(client = "admin", menuCode = "SYSTEM_USER", code = "SYSTEM_USER_UPDATE", type = Menu.TYPE.BTN)
-    })
-    @Operation(summary = "修改用户信息")
-    @OperateLog(title = "修改系统用户信息", businessType = UPDATE)
-    @PutMapping(value = "/update", produces = "application/json")
-    public R<Boolean> update(@Validated(Validation.Update.class) @RequestBody CoreUser coreUser) {
-        return R.status(coreUserService.updateUser(coreUser));
-    }
-
     @Operation(summary = "修改个人信息")
     @OperateLog(title = "修改个人信息", businessType = UPDATE)
     @PutMapping(value = "/updateLogin", produces = "application/json")
@@ -218,20 +232,6 @@ public class UserController extends BaseController {
         // 防御性编程
         JpowerAssert.notNull(ShieldUtil.getUser(), JpowerError.Auth, NOT_LOGIN);
         return R.status(coreUserService.updateUserInfo(userVO));
-    }
-
-    @Function(value = "重置密码", menus = {
-            @Menu(client = "admin", menuCode = "SYSTEM_USER", code = "SYSTEM_USER_RESETPASSWORD", type = Menu.TYPE.BTN)
-    })
-    @Operation(summary = "重置用户登陆密码")
-    @PutMapping(value = "/resetPassword", produces = "application/json")
-    public R<Boolean> resetPassword(@Parameter(description = "主键 多个逗号分割", required = true) @NotBlank(message = "用户ID不可为空") @RequestSingleBody String ids) {
-        CacheUtil.clear(CacheNames.USER_KEY);
-        if (coreUserService.resetPassword(Fc.toLongList(ids))) {
-            return R.ok(Fc.toLongArray(ids).length + "位用户密码重置成功", null);
-        } else {
-            return R.fail();
-        }
     }
 
     @Function(value = "导入用户", menus = {

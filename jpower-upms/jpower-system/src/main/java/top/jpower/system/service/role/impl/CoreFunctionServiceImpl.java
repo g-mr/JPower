@@ -136,7 +136,11 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<CoreFunctionMapper,
         list.forEach(f->{
             if (ids.contains(f.getId())){
                 f.setParentId(parentId);
-                f.setAncestorId(parentFunction.getAncestorId().concat(StringPool.COMMA).concat(Fc.toStr(parentId)));
+				if (Fc.isNull(parentFunction)) {
+					f.setAncestorId(Fc.toStr(parentId));
+				} else {
+					f.setAncestorId(parentFunction.getAncestorId().concat(StringPool.COMMA).concat(Fc.toStr(parentId)));
+				}
             }else {
                 f.setAncestorId(StringUtil.replaceFirst(f.getAncestorId(), Fc.toStrList(Fc.join(oldParents)), Fc.toStr(parentId)));
             }

@@ -13,7 +13,6 @@ import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.core.redis.cache.CacheUtil;
 import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.constants.StringPool;
-import top.jpower.core.util.rsp.Pg;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.StringUtil;
 import top.jpower.system.dbs.dao.org.CoreOrgDao;
@@ -42,20 +41,20 @@ public class CoreOrgServiceImpl extends BaseServiceImpl<CoreOrgMapper, CoreOrg> 
     @Override
     public List<OrgVO> listLazyByParent(Map<String, Object> map) {
 		map.putIfAbsent("parentId_eq", JpowerConstants.TOP_CODE_LONG);
-		return coreOrgDao.listLazyByParent(map);
+		return coreOrgDao.listLazy(map);
     }
 
 	@Override
-	public Pg<OrgVO> pageTop(Map<String, Object> map) {
+	public List<OrgVO> pageTop(Map<String, Object> map) {
 		map.put("parentId_eq", JpowerConstants.TOP_CODE_LONG);
-		return coreOrgDao.pageTop(map);
+		return coreOrgDao.listLazy(map);
 	}
 
     @Override
     public Long create(CoreOrg coreOrg) {
         JpowerAssert.notTrue(coreOrgDao.existsByField(CoreOrg::getCode,coreOrg.getCode()), JpowerError.Business, CODE_EXIST);
 
-        if (Fc.isNull(coreOrg.getParentId())){
+        if (Fc.isNull(coreOrg.getParentId()) || Fc.equalsValue(coreOrg.getParentId(), JpowerConstants.TOP_CODE_LONG)){
             coreOrg.setParentId(Fc.toLong(JpowerConstants.TOP_CODE));
             coreOrg.setAncestorId(JpowerConstants.TOP_CODE);
         } else {

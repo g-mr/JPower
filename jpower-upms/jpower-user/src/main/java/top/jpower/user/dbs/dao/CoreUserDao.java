@@ -42,8 +42,9 @@ public class CoreUserDao extends JpowerServiceImpl<CoreUserMapper, CoreUser> imp
     }
 
     public Pg<UserVO> pageVO(CoreUser coreUser) {
-        Pg<UserVO> pg = getMapper().pageAs(PaginationContext.page(), Wrappers.getQueryWrapper(coreUser)
-                        .select(CORE_USER.DEFAULT_COLUMNS)
+        Pg<UserVO> pg = getMapper().pageAs(PaginationContext.page(),
+				Wrappers.getQueryWrapper(coreUser)
+                        // .select(CORE_USER.DEFAULT_COLUMNS)
                         .select(groupConcat(CORE_USER_ROLE.ROLE_ID).as(UserVO::getRoleIds))
                         .select(CORE_POST.NAME.as(UserVO::getPostName))
                         .leftJoin(CoreUserRole.class).on(CoreUserRole::getUserId, CoreUser::getId)

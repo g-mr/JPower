@@ -2,7 +2,6 @@ package top.jpower.system.service.org;
 
 import cn.hutool.core.lang.tree.Tree;
 import top.jpower.core.dbs.service.BaseService;
-import top.jpower.core.util.rsp.Pg;
 import top.jpower.system.dbs.entity.org.CoreOrg;
 import top.jpower.system.vo.OrgVO;
 
@@ -31,7 +30,7 @@ public interface CoreOrgService extends BaseService<CoreOrg> {
      * @param map 查询条件
      * @return 组织机构树形列表
      */
-	Pg<OrgVO> pageTop(Map<String, Object> map);
+	List<OrgVO> pageTop(Map<String, Object> map);
 
     /**
      * 新增组织机构

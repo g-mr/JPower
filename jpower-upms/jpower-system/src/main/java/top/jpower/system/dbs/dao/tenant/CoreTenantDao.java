@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static top.jpower.system.dbs.entity.tenant.table.CoreTenantTableDef.CORE_TENANT;
+
 /**
  * 租户数据访问对象
  * 
@@ -61,7 +63,8 @@ public class CoreTenantDao extends JpowerServiceImpl<CoreTenantMapper, CoreTenan
 	 **/
 	public List<SelectVO> select(String tenantName) {
 		return super.listAs(Wrappers.getQueryWrapper()
-				.select(CoreTenant::getTenantName, CoreTenant::getTenantCode)
+				.select(CORE_TENANT.TENANT_CODE.as(SelectVO::getCode))
+				.select(CORE_TENANT.TENANT_NAME.as(SelectVO::getName))
 				.like(CoreTenant::getTenantName, tenantName, Fc.isNoneBlank(tenantName))
 				.orderBy(CoreTenant::getCreateTime).desc(), SelectVO.class);
 	}

@@ -1,13 +1,12 @@
 package top.jpower.core.auth.config;
 
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.mvc.condition.PathPatternsRequestCondition;
 import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
@@ -46,10 +45,8 @@ public class FunctionGenerate implements ApplicationRunner {
         for (Map.Entry<RequestMappingInfo, HandlerMethod> item : handlerMethodsMap.entrySet()) {
             RequestMappingInfo info = item.getKey();
             HandlerMethod method = item.getValue();
-            PatternsRequestCondition p = info.getPatternsCondition();
-            if (Fc.notNull(p) && Fc.isNotEmpty(p.getPatterns())){
-                String url = p.getPatterns().stream().findFirst().get();
-
+			String url = getUrl(info.getPatternsCondition(), info.getPathPatternsCondition());
+            if (Fc.isNotBlank(url)){
                 Function function = method.getMethodAnnotation(Function.class);
 
                 if (Fc.notNull(function)){
@@ -76,6 +73,16 @@ public class FunctionGenerate implements ApplicationRunner {
         }
 
     }
+
+	private String getUrl(PatternsRequestCondition patternsCondition, PathPatternsRequestCondition pathPatternsCondition){
+		if (Fc.notNull(patternsCondition) && Fc.isNotEmpty(patternsCondition.getPatterns())) {
+			return patternsCondition.getPatterns().stream().findFirst().orElse(null);
+		}
+		if (Fc.notNull(pathPatternsCondition) && Fc.isNotEmpty(pathPatternsCondition.getPatterns())) {
+			return pathPatternsCondition.getFirstPattern().getPatternString();
+		}
+		return null;
+	}
 
     private boolean isExist(String code){
 

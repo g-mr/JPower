@@ -74,4 +74,9 @@ public class CorePostServiceImpl extends BaseServiceImpl<CorePostMapper, CorePos
         }
         return corePost.getId();
     }
+
+	@Override
+	public boolean enable(Long id, Boolean status) {
+		return postDao.updateById(UpdateEntity.ofNotNull(new CorePost()).setId(id).setStatus(status));
+	}
 }

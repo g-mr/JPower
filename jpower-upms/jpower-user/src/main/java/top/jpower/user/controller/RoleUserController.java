@@ -56,6 +56,22 @@ public class RoleUserController extends BaseController {
         return R.status(coreUserService.updateUsersRole(Fc.toLongList(userIds), Fc.toLongList(roleIds)));
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @Function(value = "角色新增用户",menus = {
         @Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_ROLE_USER",code = "SYSTEM_ROLE_ADDUSER",type = Menu.TYPE.BTN)
     })

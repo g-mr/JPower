@@ -145,6 +145,13 @@
                 <scope>import</scope>
             </dependency>
 
+            <!-- hutool - 显式声明版本以覆盖 BOM 中的旧版本 -->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 

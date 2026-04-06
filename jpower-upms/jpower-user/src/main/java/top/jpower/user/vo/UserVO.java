@@ -24,13 +24,6 @@ public class UserVO extends CoreUser {
     @Column(ignore = true)
     private String roleIds;
 
-    @Schema(description = "是否激活")
-    private String activationStatusStr;
-    @Schema(description = "用户类型")
-    private String userTypeStr;
-    @Schema(description = "证件类型")
-    private String idTypeStr;
-
     @Schema(description = "部门名称")
     @Excel(name = "部门名称",type = Excel.Type.EXPORT)
     private String orgName;

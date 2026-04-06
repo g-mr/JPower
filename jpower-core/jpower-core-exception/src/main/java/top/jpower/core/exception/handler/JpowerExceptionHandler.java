@@ -89,6 +89,18 @@ public class JpowerExceptionHandler {
         r.setMessage(e.getLocalizedMessage());
     }
 
+	@ExceptionHandler(JpowerException.class)
+	public ErrorReturnJson jpowerException(HttpServletResponse response, JpowerException e) {
+		ErrorReturnJson r = new ErrorReturnJson();
+		r.setMessage(ExceptionUtil.unwrap(e).getMessage());
+		r.setCode(e.getCode());
+		r.setStatus(false);
+		if (e.getCode() == HttpStatus.PROXY_AUTHENTICATION_REQUIRED.value() || e.getCode() == HttpStatus.UNAUTHORIZED.value()) {
+			response.setStatus(HttpStatus.UNAUTHORIZED.value());
+		}
+		return r;
+	}
+
     /**
      * 系统异常处理，比如：404,500
      * @param request
@@ -103,8 +115,6 @@ public class JpowerExceptionHandler {
         r.setMessage(ExceptionUtil.unwrap(e).getMessage());
         if (e instanceof BusinessException) {
             r.setCode(HttpStatus.NOT_IMPLEMENTED.value());
-        }else if (e instanceof JpowerException) {
-            r.setCode(((JpowerException) e).getCode());
         } else {
             r.setMessage(ExceptionUtil.getMessage(ExceptionUtil.unwrap(e)));
             r.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());

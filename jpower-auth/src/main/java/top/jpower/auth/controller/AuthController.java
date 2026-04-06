@@ -153,11 +153,9 @@ public class AuthController extends BaseController {
             if (Fc.isNotBlank(cookieToken)){
                 WebUtil.removeCookie(WebUtil.getResponse(), JpowerConstants.AUTH_HEADER);
             }
-            return R.ok();
-        }else{
-            return R.fail(NOT_LOGIN);
-        }
-    }
+		}
+		return R.ok();
+	}
 
     @Operation(summary = "获取验证码")
     @GetMapping("/captcha")

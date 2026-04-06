@@ -54,36 +54,37 @@ public class ClientController extends BaseController {
 		return R.data(coreClientService.select());
 	}
 
+	@Function(value = "列表",menus = {
+			@Menu(client = "admin",menuCode = "SYSTEM_CLIENT",code = "CLIENT_LIST",type = Menu.TYPE.INTERFACE)
+	})
+	@Operation(summary = "分页查询客户端列表")
+	@Parameters({
+			@Parameter(name = "pageNum", description = "第几页", example = "1", schema = @Schema(defaultValue = "1", type = "integer"), in = ParameterIn.QUERY, required = true),
+			@Parameter(name = "pageSize", description = "每页长度", example = "10", schema = @Schema(defaultValue = "10", type = "integer"), in = ParameterIn.QUERY, required = true),
+			@Parameter(name = "name", description = "客户端名称", in = ParameterIn.QUERY),
+			@Parameter(name = "clientCode", description = "客户端编码", in = ParameterIn.QUERY)
+	})
+	@GetMapping("list")
+	public R<Pg<CoreClient>> list(@Ignore @RequestParam Map<String,Object> map){
+		return R.data(coreClientService.page(map));
+	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /**
-     * 保存或者更新客户端信息
-     * 
-     * @author mr.g
-     * @param coreClient 客户端信息
-     * @return R 操作结果
-     */
-    @Function(value = "保存",menus = {
-		@Menu(name = "编辑",client = "admin",menuCode = "SYSTEM_CLIENT",code = "SYSTEM_CLIENT_SAVE",type = Menu.TYPE.BTN),
-		@Menu(name = "新增",client = "admin",menuCode = "SYSTEM_CLIENT",code = "SYSTEM_CLIENT_ADD",type = Menu.TYPE.BTN)
-    })
-    @Operation(summary = "保存或者更新客户端信息")
-    @PostMapping("save")
-    public R<Long> save(@Validated @RequestBody CoreClient coreClient){
-        return R.data(coreClientService.createOrUpdate(coreClient));
-    }
+	/**
+	 * 保存或者更新客户端信息
+	 *
+	 * @author mr.g
+	 * @param coreClient 客户端信息
+	 * @return R 操作结果
+	 */
+	@Function(value = "保存",menus = {
+			@Menu(name = "编辑",client = "admin",menuCode = "SYSTEM_CLIENT",code = "SYSTEM_CLIENT_SAVE",type = Menu.TYPE.BTN),
+			@Menu(name = "新增",client = "admin",menuCode = "SYSTEM_CLIENT",code = "SYSTEM_CLIENT_ADD",type = Menu.TYPE.BTN)
+	})
+	@Operation(summary = "保存或者更新客户端信息")
+	@RequestMapping(value = "save", method = {RequestMethod.POST, RequestMethod.PUT})
+	public R<Long> save(@Validated @RequestBody CoreClient coreClient){
+		return R.data(coreClientService.createOrUpdate(coreClient));
+	}
 
     @Function(value = "删除",menus = {
             @Menu(client = "admin",menuCode = "SYSTEM_CLIENT",code = "SYSTEM_CLIENT_DELETE",type = Menu.TYPE.BTN)
@@ -93,21 +94,6 @@ public class ClientController extends BaseController {
     public R<Boolean> delete(@Parameter(description = "主键，多个逗号分割",required = true) @NotBlank(message = "客户端主键不可为空") @RequestParam String ids){
         CacheUtil.clear(CacheNames.CLIENT_KEY);
         return R.status(coreClientService.removeByIds(Fc.toLongList(ids)));
-    }
-
-    @Function(value = "列表",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_CLIENT",code = "CLIENT_LIST",type = Menu.TYPE.INTERFACE)
-    })
-    @Operation(summary = "分页查询客户端列表")
-    @Parameters({
-		@Parameter(name = "pageNum", description = "第几页", example = "1", schema = @Schema(defaultValue = "1", type = "integer"), in = ParameterIn.QUERY, required = true),
-		@Parameter(name = "pageSize", description = "每页长度", example = "10", schema = @Schema(defaultValue = "10", type = "integer"), in = ParameterIn.QUERY, required = true),
-		@Parameter(name = "name", description = "客户端名称", in = ParameterIn.QUERY),
-		@Parameter(name = "clientCode", description = "客户端编码", in = ParameterIn.QUERY)
-    })
-    @GetMapping("list")
-    public R<Pg<CoreClient>> list(@Ignore @RequestParam Map<String,Object> map){
-        return R.data(coreClientService.page(map));
     }
 
 }
