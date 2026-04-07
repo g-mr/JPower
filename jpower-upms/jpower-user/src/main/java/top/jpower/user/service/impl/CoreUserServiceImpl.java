@@ -81,8 +81,8 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
     }
 
     @Override
-    public List<UserVO> list(CoreUser coreUser) {
-        return coreUserDao.listVO(coreUser);
+    public List<UserVO> list(Map<String, Object> map) {
+        return coreUserDao.listVO(map);
     }
 
     @Override
@@ -298,6 +298,9 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
 
         });
 
+		if (Fc.isEmpty(userList)) {
+			JpowerAssert.createException(JpowerError.Business, NO_USER_TO_IMPORT);
+		}
         return coreUserDao.saveOrUpdateBatch(userList);
     }
 

@@ -42,6 +42,8 @@ public interface ServiceCodeConstants {
 
 	String FILE_PATH_NOT_EXIST = "文件路径为空";
 
+	String NO_USER_TO_IMPORT = "没有可导入的用户";
+
 	String FILE_SAVE_PATH_NOT_CONFIG = "未配置文件保存路径";
 
 	String NOT_FOUND_FILE_INFO = "文件信息";

@@ -12,6 +12,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +36,6 @@ import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.rsp.Pg;
 import top.jpower.core.util.rsp.R;
 import top.jpower.core.util.support.excel.BeanExcelUtil;
-import top.jpower.core.util.utils.ExceptionUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.FileUtil;
 import top.jpower.core.util.utils.StringUtil;
@@ -186,8 +186,8 @@ public class UserController extends BaseController {
 			@Parameter(name = "telephone", description = "电话", in = QUERY)
 	})
 	@GetMapping(value = "/exportUser")
-	public void exportUser(@Ignore @RequestParam(required = false) CoreUser coreUser) throws IOException {
-		List<UserVO> list = coreUserService.list(coreUser);
+	public void exportUser(@Ignore @RequestParam(required = false) Map<String, Object> map) throws IOException {
+		List<UserVO> list = coreUserService.list(map);
 
 		BeanExcelUtil<UserVO> beanExcelUtil = new BeanExcelUtil<>(UserVO.class, ImportExportConstants.EXPORT_PATH);
 		String str = beanExcelUtil.exportExcel(list, "用户列表");
@@ -229,6 +229,30 @@ public class UserController extends BaseController {
 	public R<Boolean> enable(@Parameter(description = "主键", required = true) @PathVariable("id") Long id,
 							 @Parameter(description = "是否激活", required = true) @RequestSingleBody Boolean status) {
 		return R.status(coreUserService.enable(id, status));
+	}
+
+	@SneakyThrows
+	@Function(value = "导入用户", menus = {
+			@Menu(client = "admin", menuCode = "SYSTEM_USER", code = "SYSTEM_USER_IMPORTUSER", type = Menu.TYPE.BTN)
+	})
+	@Operation(summary = "批量导入用户")
+	@PostMapping(value = "/importUser", produces = "application/json")
+	public R<Boolean> importUser(@Parameter(description = "Excel文件", required = true) @NotNull(message = "文件不可为空") MultipartFile file,
+								 @Parameter(description = "是否覆盖数据") @RequestParam(required = false, defaultValue = "false") Boolean isCover) {
+
+		File saveFile = FileUtil.saveFile(file, "xls,xlsx", ImportExportConstants.IMPORT_PATH);
+
+		if (saveFile.exists()) {
+			BeanExcelUtil<CoreUser> beanExcelUtil = new BeanExcelUtil<>(CoreUser.class);
+			List<CoreUser> list = beanExcelUtil.importExcel(saveFile);
+			//获取完数据之后删除文件
+			FileUtil.deleteFile(saveFile);
+			CacheUtil.clear(CacheNames.USER_KEY);
+			return R.status(coreUserService.insertBatch(list, isCover));
+		}
+
+		log.error("文件上传出错，文件不存在,{}", saveFile.getAbsolutePath());
+		return R.fail();
 	}
 
 
@@ -273,35 +297,6 @@ public class UserController extends BaseController {
         // 防御性编程
         JpowerAssert.notNull(ShieldUtil.getUser(), JpowerError.Auth, NOT_LOGIN);
         return R.status(coreUserService.updateUserInfo(userVO));
-    }
-
-    @Function(value = "导入用户", menus = {
-            @Menu(client = "admin", menuCode = "SYSTEM_USER", code = "SYSTEM_USER_IMPORTUSER", type = Menu.TYPE.BTN)
-    })
-    @Operation(summary = "批量导入用户")
-    @PostMapping(value = "/importUser", produces = "application/json")
-    public R<Boolean> importUser(@Parameter(description = "Excel文件", required = true) @NotNull(message = "文件不可为空") MultipartFile file,
-                                 @Parameter(description = "是否覆盖数据") @RequestParam(required = false, defaultValue = "false") Boolean isCover) {
-
-        try {
-            File saveFile = FileUtil.saveFile(file, "xls,xlsx", ImportExportConstants.IMPORT_PATH);
-
-            if (saveFile.exists()) {
-                BeanExcelUtil<CoreUser> beanExcelUtil = new BeanExcelUtil<>(CoreUser.class);
-                List<CoreUser> list = beanExcelUtil.importExcel(saveFile);
-                //获取完数据之后删除文件
-                FileUtil.deleteFile(saveFile);
-                CacheUtil.clear(CacheNames.USER_KEY);
-                return R.status(coreUserService.insertBatch(list, isCover));
-            }
-
-            log.error("文件上传出错，文件不存在,{}", saveFile.getAbsolutePath());
-            return R.fail();
-        } catch (Exception e) {
-            log.error("文件上传出错，error={}", ExceptionUtil.getStackTraceAsString(e));
-            return R.fail();
-        }
-
     }
 
     @Operation(summary = "修改密码")

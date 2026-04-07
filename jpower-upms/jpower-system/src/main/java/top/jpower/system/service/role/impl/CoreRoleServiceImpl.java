@@ -1,5 +1,6 @@
 package top.jpower.system.service.role.impl;
 
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.lang.tree.Tree;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -129,6 +130,9 @@ public class CoreRoleServiceImpl extends BaseServiceImpl<CoreRoleMapper, CoreRol
 
 	@Override
 	public List<String> getRoleNameByIds(List<Long> roleIds) {
+		if (Fc.isEmpty(roleIds)) {
+			return ListUtil.empty();
+		}
 		return coreRoleDao.getRoleNameByIds(roleIds);
 	}
 }

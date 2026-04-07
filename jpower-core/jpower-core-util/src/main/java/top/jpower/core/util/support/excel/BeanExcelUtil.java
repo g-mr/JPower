@@ -682,7 +682,11 @@ public class BeanExcelUtil<T> {
                         {
                             val = Fc.toLong(val);
                         }
-                        else if ((Double.TYPE == fieldType) || (Double.class == fieldType))
+						else if (Boolean.TYPE == fieldType || (Boolean.class == fieldType))
+						{
+							val = Fc.toBool(val);
+						}
+						else if ((Double.TYPE == fieldType) || (Double.class == fieldType))
                         {
                             val = Fc.toDouble(val);
                         }
@@ -696,14 +700,13 @@ public class BeanExcelUtil<T> {
                         }
                         else if (Date.class == fieldType)
                         {
-                            if (val instanceof String)
-                            {
-                                val = top.jpower.core.util.utils.DateUtil.parse((String) val, top.jpower.core.util.utils.DateUtil.PARSE_PATTERNS);
-                            }
-                            else if (val instanceof Double)
-                            {
-                                val = DateUtil.getJavaDate((Double) val);
-                            }
+							if (Fc.isNotEmpty(val)) {
+								if (val instanceof String) {
+									val = top.jpower.core.util.utils.DateUtil.parse((String) val, top.jpower.core.util.utils.DateUtil.PARSE_PATTERNS);
+								} else if (val instanceof Double) {
+									val = DateUtil.getJavaDate((Double) val);
+								}
+							}
                         }
                         if (fieldType != null)
                         {

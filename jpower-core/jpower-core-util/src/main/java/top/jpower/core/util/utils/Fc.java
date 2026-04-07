@@ -1,10 +1,8 @@
 package top.jpower.core.util.utils;
 
 import cn.hutool.core.convert.Convert;
-import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.*;
 import cn.hutool.core.util.ClassUtil;
-import cn.hutool.core.util.EscapeUtil;
-import cn.hutool.core.util.NumberUtil;
 import org.springframework.cglib.beans.BeanMap;
 import org.springframework.lang.Nullable;
 import top.jpower.core.util.constants.StringPool;
@@ -608,7 +606,7 @@ public class Fc {
         if (isBlank(str)) {
             return new String[]{};
         }
-        return str.split(split);
+        return StrUtil.splitToArray(str, split);
     }
 
     /**

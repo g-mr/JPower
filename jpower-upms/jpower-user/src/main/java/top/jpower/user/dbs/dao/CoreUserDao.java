@@ -34,8 +34,12 @@ import static top.jpower.user.dbs.entity.table.CoreUserTableDef.CORE_USER;
 public class CoreUserDao extends JpowerServiceImpl<CoreUserMapper, CoreUser> implements BaseDaoWrapper<CoreUser> {
 
     public void build(UserVO userVo) {
-        userVo.setOrgName(SystemCache.getOrgName(userVo.getOrgId()));
-        userVo.setRoleName(Fc.join(SystemCache.getRoleNameByIds(Fc.toLongList(userVo.getRoleIds()))," | "));
+		if (Fc.notNull(userVo.getOrgId())) {
+        	userVo.setOrgName(SystemCache.getOrgName(userVo.getOrgId()));
+		}
+		if (Fc.isEmpty(userVo.getRoleIds())) {
+        	userVo.setRoleName(Fc.join(SystemCache.getRoleNameByIds(Fc.toLongList(userVo.getRoleIds()))," | "));
+		}
     }
 
     public Pg<UserVO> pageVO(Map<String, Object> map) {
@@ -51,14 +55,15 @@ public class CoreUserDao extends JpowerServiceImpl<CoreUserMapper, CoreUser> imp
         return pageConvert(pg, this::build);
     }
 
-    public List<UserVO> listVO(CoreUser coreUser) {
-        List<UserVO> list = getMapper().selectListByQueryAs(Wrappers.getQueryWrapper(coreUser)
-                .select(CORE_USER.DEFAULT_COLUMNS)
-                .select(groupConcat(CORE_USER_ROLE.ROLE_ID).as(UserVO::getRoleIds))
-                .select(CORE_POST.NAME.as(UserVO::getPostName))
-                .leftJoin(CoreUserRole.class).on(CoreUserRole::getUserId, CoreUser::getId)
-                .leftJoin(CorePost.class).on(CoreUser::getPostId, CorePost::getId)
-                .groupBy(CoreUser::getId), UserVO.class);
+    public List<UserVO> listVO(Map<String, Object> map) {
+        List<UserVO> list = super.listAs(Wrappers.getQueryWrapper(map, "t")
+						.from(CoreUser.class).as("t")
+						.select(CORE_USER.DEFAULT_COLUMNS)
+						.select(groupConcat(CORE_USER_ROLE.ROLE_ID).as(UserVO::getRoleIds))
+						.select(CORE_POST.NAME.as(UserVO::getPostName))
+						.leftJoin(CoreUserRole.class).on(CoreUserRole::getUserId, CoreUser::getId)
+						.leftJoin(CorePost.class).on(CoreUser::getPostId, CorePost::getId)
+						.groupBy(CoreUser::getId), UserVO.class);
         return listConvert(list, this::build);
     }
 

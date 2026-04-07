@@ -118,7 +118,7 @@ public interface CoreUserService extends BaseService<CoreUser> {
      * @Date 14:49 2020-08-20
      * @Param [coreUser, orgCode]
      **/
-    List<UserVO> list(CoreUser coreUser);
+    List<UserVO> list(Map<String, Object> map);
 
     /**
      * @author 郭丁志
