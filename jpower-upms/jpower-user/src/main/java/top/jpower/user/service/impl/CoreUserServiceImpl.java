@@ -2,6 +2,7 @@ package top.jpower.user.service.impl;
 
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.NumberUtil;
+import com.mybatisflex.core.util.UpdateEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -72,8 +73,8 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
     private final JpowerTenantProperties tenantProperties;
 
     @Override
-    public Pg<UserVO> listPage(CoreUser coreUser) {
-        Pg<UserVO> userVo = coreUserDao.pageVO(coreUser);
+    public Pg<UserVO> listPage(Map<String, Object> map) {
+        Pg<UserVO> userVo = coreUserDao.pageVO(map);
         //查询用户在线信息
         userVo.getList().forEach(user-> user.setOnLine(redisService.keys(TOKEN_USER_KEY+user.getId() + StringPool.COLON + StringPool.ASTERISK).size()));
         return userVo;
@@ -117,9 +118,9 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
 
         boolean is = coreUserDao.removeByIds(ids);
         if (is){
-            return coreUserRoleDao.deleteByUserIds(ids);
+            coreUserRoleDao.deleteByUserIds(ids);
         }
-        return false;
+        return is;
     }
 
     @Override
@@ -477,6 +478,18 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
 	@Override
 	public LoginUserVO userInfo(Long id) {
 		return coreUserDao.userInfo(id);
+	}
+
+	/**
+	 * 启用禁用用户
+	 *
+	 * @param id     用户id
+	 * @param status 是否启用
+	 * @return 是否成功
+	 */
+	@Override
+	public boolean enable(Long id, Boolean status) {
+		return coreUserDao.updateById(UpdateEntity.of(CoreUser.class).setActivationStatus(status).setId(id));
 	}
 
 }

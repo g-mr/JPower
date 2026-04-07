@@ -6,6 +6,7 @@ import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.util.LambdaGetter;
 import top.jpower.core.dbs.page.PaginationContext;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +34,16 @@ public class Wrappers {
     public static QueryWrapper getQueryWrapper(Map<String, Object> query) {
         return getQueryWrapper(query, EXCLUDE);
     }
+
+	public static QueryWrapper getQueryWrapper(Map<String, Object> query, String prefix) {
+		Map<String, Object> newMap = new HashMap<>();
+		query.forEach((key, value) -> {
+			if (!EXCLUDE.contains(key)) {
+				newMap.put(prefix+"."+key, value);
+			}
+		});
+		return getQueryWrapper(newMap, EXCLUDE);
+	}
 
     public static QueryWrapper getQueryWrapper(Map<String, Object> query, List<String> exclude) {
         exclude.forEach(query::remove);

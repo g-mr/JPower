@@ -18,7 +18,7 @@ public class PostSelectVO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Schema(description = "主键")
-    private Integer id;
+    private Long id;
     @Schema(description = "名称")
     private String name;
     @Schema(description = "编号")

@@ -20,10 +20,7 @@ import top.jpower.user.dbs.entity.CoreUserRole;
 import top.jpower.user.vo.LoginUserVO;
 import top.jpower.user.vo.UserVO;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.mybatisflex.core.query.QueryMethods.groupConcat;
 import static top.jpower.user.dbs.entity.table.CorePostTableDef.CORE_POST;
@@ -41,10 +38,11 @@ public class CoreUserDao extends JpowerServiceImpl<CoreUserMapper, CoreUser> imp
         userVo.setRoleName(Fc.join(SystemCache.getRoleNameByIds(Fc.toLongList(userVo.getRoleIds()))," | "));
     }
 
-    public Pg<UserVO> pageVO(CoreUser coreUser) {
+    public Pg<UserVO> pageVO(Map<String, Object> map) {
         Pg<UserVO> pg = getMapper().pageAs(PaginationContext.page(),
-				Wrappers.getQueryWrapper(coreUser)
-                        // .select(CORE_USER.DEFAULT_COLUMNS)
+				Wrappers.getQueryWrapper(map, "t")
+						.from(CoreUser.class).as("t")
+                         .select(CORE_USER.DEFAULT_COLUMNS)
                         .select(groupConcat(CORE_USER_ROLE.ROLE_ID).as(UserVO::getRoleIds))
                         .select(CORE_POST.NAME.as(UserVO::getPostName))
                         .leftJoin(CoreUserRole.class).on(CoreUserRole::getUserId, CoreUser::getId)

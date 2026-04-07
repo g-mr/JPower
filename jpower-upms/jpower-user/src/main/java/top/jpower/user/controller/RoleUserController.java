@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -51,9 +52,9 @@ public class RoleUserController extends BaseController {
     })
     @Operation(summary = "给用户设置角色")
     @PostMapping(value = "/addRole", produces = "application/json")
-    public R<Boolean> addRole(@Parameter(description = "用户主键 多个逗号分割", required = true) @NotBlankSpilt(message = "用户ID不能为空") @RequestSingleBody String userIds,
-                              @Parameter(description = "角色主键 多个逗号分割") @RequestSingleBody(required = false) String roleIds) {
-        return R.status(coreUserService.updateUsersRole(Fc.toLongList(userIds), Fc.toLongList(roleIds)));
+    public R<Boolean> addRole(@Parameter(description = "用户主键 多个逗号分割", required = true) @NotEmpty(message = "用户ID不能为空") @RequestSingleBody List<Long> userIds,
+                              @Parameter(description = "角色主键 多个逗号分割") @RequestSingleBody(required = false) List<Long> roleIds) {
+        return R.status(coreUserService.updateUsersRole(userIds, roleIds));
     }
 
 

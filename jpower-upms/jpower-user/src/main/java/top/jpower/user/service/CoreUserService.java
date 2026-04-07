@@ -19,7 +19,7 @@ public interface CoreUserService extends BaseService<CoreUser> {
      *
      * @author mr.g
      **/
-    Pg<UserVO> listPage(CoreUser coreUser);
+    Pg<UserVO> listPage(Map<String, Object> map);
 
     /**
      * @Author 郭丁志
@@ -209,4 +209,12 @@ public interface CoreUserService extends BaseService<CoreUser> {
 	 * @return 用户信息
 	 */
 	LoginUserVO userInfo(Long id);
+
+	/**
+	 * 启用禁用用户
+	 * @param id 用户id
+	 * @param status 是否启用
+	 * @return 是否成功
+	 */
+	boolean enable(Long id, Boolean status);
 }

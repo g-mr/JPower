@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -90,8 +91,8 @@ public class UserController extends BaseController {
 			@Parameter(name = "pageSize", description = "每页长度", example = "10", in = QUERY, schema = @Schema(type = "int"), required = true)
 	})
 	@GetMapping(value = "/list", produces = "application/json")
-	public R<Pg<UserVO>> list(CoreUser coreUser) {
-		return R.data(coreUserService.listPage(coreUser));
+	public R<Pg<UserVO>> list(@RequestParam(required = false) Map<String, Object> map) {
+		return R.data(coreUserService.listPage(map));
 	}
 
 	@Function(value = "新增用户", menus = {
@@ -129,13 +130,105 @@ public class UserController extends BaseController {
 	})
 	@Operation(summary = "重置用户登陆密码")
 	@PutMapping(value = "/resetPassword", produces = "application/json")
-	public R<Boolean> resetPassword(@Parameter(description = "主键 多个逗号分割", required = true) @NotBlank(message = "用户ID不可为空") @RequestSingleBody String ids) {
+	public R<Boolean> resetPassword(@Parameter(description = "主键 多个逗号分割", required = true) @NotEmpty(message = "用户ID不可为空") @RequestSingleBody List<Long> ids) {
 		CacheUtil.clear(CacheNames.USER_KEY);
-		if (coreUserService.resetPassword(Fc.toLongList(ids))) {
-			return R.ok(Fc.toLongArray(ids).length + "位用户密码重置成功", null);
+		if (coreUserService.resetPassword(ids)) {
+			return R.ok(ids.size() + "位用户密码重置成功", null);
 		} else {
 			return R.fail();
 		}
+	}
+
+	@Function(value = "用户在线信息", menus = {
+			@Menu(client = "admin", menuCode = "SYSTEM_USER", btnCode = "USER_OFFLINE", code = "USER_ONLINE", type = Menu.TYPE.BTN)
+	})
+	@Operation(summary = "查询用户在线信息")
+	@GetMapping(value = "/online", produces = "application/json")
+	public R<List<Map<String, Object>>> online(@Parameter(description = "用户ID") @NotNull(message = "用户ID不可为空") @RequestParam Long userId) {
+		Set<String> keys = redisService.keys(TOKEN_USER_KEY + userId + StringPool.COLON + StringPool.ASTERISK);
+		List<Map<String, Object>> list = new ArrayList<>();
+		keys.forEach(key -> {
+			Map<String, Object> map = redisService.valueOps(Map.class).get(key);
+			map.put("token", StringUtil.split(key, StringPool.COLON).get(4));
+			map.put("userId", userId);
+			list.add(map);
+		});
+
+		return R.data(list);
+	}
+
+	@Function(value = "踢下线", menus = {
+			@Menu(client = "admin", menuCode = "SYSTEM_USER", code = "USER_OFFLINE", type = Menu.TYPE.BTN)
+	})
+	@Operation(summary = "踢下线")
+	@PostMapping(value = "/offline", produces = "application/json")
+	public R<Boolean> offline(@Parameter(description = "用户ID") @NotNull(message = "用户ID不可为空") @RequestSingleBody Long userId,
+							  @Parameter(description = "TOKEN") @NotBlank(message = "TOKEN不可为空") @RequestSingleBody String token) {
+
+		redisService.delete(CacheNames.TOKEN_URL_KEY + token);
+		redisService.delete(CacheNames.TOKEN_DATA_SCOPE_KEY + token);
+		redisService.delete(TOKEN_USER_KEY + userId + StringPool.COLON + token);
+
+		return R.data(true);
+	}
+
+	@Function(value = "导出用户", menus = {
+			@Menu(client = "admin", menuCode = "SYSTEM_USER", code = "SYSTEM_USER_EXPORTUSER", type = Menu.TYPE.BTN)
+	})
+	@Operation(summary = "导出用户")
+	@Parameters({
+			@Parameter(name = "orgId", description = "部门ID", in = QUERY),
+			@Parameter(name = "loginId", description = "登录名", in = QUERY),
+			@Parameter(name = "nickName", description = "昵称", in = QUERY),
+			@Parameter(name = "userName", description = "姓名", in = QUERY),
+			@Parameter(name = "idNo", description = "证件号码", in = QUERY),
+			@Parameter(name = "userType", description = "用户类型 字典USER_TYPE", in = QUERY),
+			@Parameter(name = "telephone", description = "电话", in = QUERY)
+	})
+	@GetMapping(value = "/exportUser")
+	public void exportUser(@Ignore @RequestParam(required = false) CoreUser coreUser) throws IOException {
+		List<UserVO> list = coreUserService.list(coreUser);
+
+		BeanExcelUtil<UserVO> beanExcelUtil = new BeanExcelUtil<>(UserVO.class, ImportExportConstants.EXPORT_PATH);
+		String str = beanExcelUtil.exportExcel(list, "用户列表");
+		File file = new File(ImportExportConstants.EXPORT_PATH + str);
+		FileUtil.download(file, getResponse(), "用户数据.xlsx");
+	}
+
+	@Function(value = "模板下载", menus = {
+			@Menu(client = "admin", menuCode = "SYSTEM_USER", btnCode = "SYSTEM_USER_IMPORTUSER", code = "SYSTEM_USER_DOWNLOADTEMPLATE", type = Menu.TYPE.INTERFACE)
+	})
+	@Operation(summary = "用户上传模板下载")
+	@GetMapping(value = "/downloadTemplate")
+	public void downloadTemplate() {
+		BeanExcelUtil<CoreUser> beanExcelUtil = new BeanExcelUtil<>(CoreUser.class, ImportExportConstants.EXPORT_TEMPLATE_PATH);
+		String fileName = beanExcelUtil.template("用户模板");
+
+		JpowerAssert.notEmpty(fileName, JpowerError.Business, fileName + GENERATE_FILE_ERROR);
+
+		File file = new File(beanExcelUtil.getAbsoluteFile(fileName));
+		if (file.exists()) {
+			try {
+				FileUtil.download(file, getResponse(), "用户导入模板.xlsx");
+			} catch (IOException e) {
+				log.error("下载文件出错。file={},error={}", file.getAbsolutePath(), e.getMessage());
+				throw new BusinessException(DOWNLOAD_FILE_ERROR);
+			}
+
+			FileUtil.deleteFile(file);
+		} else {
+			throw new BusinessException(fileName + GENERATE_FILE_ERROR);
+		}
+	}
+
+	@Function(value = "是否激活", menus = {
+		@Menu(client = "admin", menuCode = "SYSTEM_USER", code = "SYSTEM_USER_ENABLE", type = Menu.TYPE.BTN)
+	})
+	@Operation(summary = "是否激活")
+	@PostMapping(value = "/enable/{id}")
+	public R<Boolean> enable(@Parameter(description = "主键", required = true) @PathVariable("id") Long id,
+							 @Parameter(description = "是否激活", required = true) @RequestSingleBody Boolean status) {
+		return R.status(coreUserService.enable(id, status));
 	}
 
 
@@ -160,61 +253,9 @@ public class UserController extends BaseController {
 
 
 
-    @Function(value = "用户在线信息", menus = {
-            @Menu(client = "admin", menuCode = "SYSTEM_USER", btnCode = "USER_OFFLINE", code = "USER_ONLINE", type = Menu.TYPE.BTN)
-    })
-    @Operation(summary = "查询用户在线信息")
-    @GetMapping(value = "/online", produces = "application/json")
-    public R<List<Map<String, Object>>> online(@Parameter(description = "用户ID") @NotNull(message = "用户ID不可为空") @RequestParam Long userId) {
-        Set<String> keys = redisService.keys(TOKEN_USER_KEY + userId + StringPool.COLON + StringPool.ASTERISK);
-        List<Map<String, Object>> list = new ArrayList<>();
-        keys.forEach(key -> {
-            Map<String, Object> map = redisService.valueOps(Map.class).get(key);
-            map.put("token", StringUtil.split(key, StringPool.COLON).get(4));
-            map.put("userId", userId);
-            list.add(map);
-        });
 
-        return R.data(list);
-    }
 
-    @Function(value = "踢下线", menus = {
-            @Menu(client = "admin", menuCode = "SYSTEM_USER", code = "USER_OFFLINE", type = Menu.TYPE.BTN)
-    })
-    @Operation(summary = "踢下线")
-    @PostMapping(value = "/offline", produces = "application/json")
-    public R<Boolean> offline(@Parameter(description = "用户ID") @NotNull(message = "用户ID不可为空") @RequestSingleBody Long userId,
-                     @Parameter(description = "TOKEN") @NotBlank(message = "TOKEN不可为空") @RequestSingleBody String token) {
 
-        redisService.delete(CacheNames.TOKEN_URL_KEY + token);
-        redisService.delete(CacheNames.TOKEN_DATA_SCOPE_KEY + token);
-        redisService.delete(TOKEN_USER_KEY + userId + StringPool.COLON + token);
-
-        return R.ok();
-    }
-
-    @Function(value = "导出用户", menus = {
-            @Menu(client = "admin", menuCode = "SYSTEM_USER", code = "SYSTEM_USER_EXPORTUSER", type = Menu.TYPE.BTN)
-    })
-    @Operation(summary = "导出用户")
-    @Parameters({
-            @Parameter(name = "orgId", description = "部门ID", in = QUERY),
-            @Parameter(name = "loginId", description = "登录名", in = QUERY),
-            @Parameter(name = "nickName", description = "昵称", in = QUERY),
-            @Parameter(name = "userName", description = "姓名", in = QUERY),
-            @Parameter(name = "idNo", description = "证件号码", in = QUERY),
-            @Parameter(name = "userType", description = "用户类型 字典USER_TYPE", in = QUERY),
-            @Parameter(name = "telephone", description = "电话", in = QUERY)
-    })
-    @GetMapping(value = "/exportUser")
-    public void exportUser(@Ignore @RequestParam(required = false) CoreUser coreUser) throws IOException {
-        List<UserVO> list = coreUserService.list(coreUser);
-
-        BeanExcelUtil<UserVO> beanExcelUtil = new BeanExcelUtil<>(UserVO.class, ImportExportConstants.EXPORT_PATH);
-        String str = beanExcelUtil.exportExcel(list, "用户列表");
-        File file = new File(ImportExportConstants.EXPORT_PATH + str);
-        FileUtil.download(file, getResponse(), "用户数据.xlsx");
-    }
 
     @Function(value = "用户详情", menus = {
             @Menu(client = "admin", menuCode = "SYSTEM_USER", code = "USER_DETAIL", type = Menu.TYPE.BTN)
@@ -261,32 +302,6 @@ public class UserController extends BaseController {
             return R.fail();
         }
 
-    }
-
-    @Function(value = "模板下载", menus = {
-            @Menu(client = "admin", menuCode = "SYSTEM_USER", btnCode = "SYSTEM_USER_IMPORTUSER", code = "SYSTEM_USER_DOWNLOADTEMPLATE", type = Menu.TYPE.INTERFACE)
-    })
-    @Operation(summary = "用户上传模板下载")
-    @GetMapping(value = "/downloadTemplate")
-    public void downloadTemplate() {
-        BeanExcelUtil<CoreUser> beanExcelUtil = new BeanExcelUtil<>(CoreUser.class, ImportExportConstants.EXPORT_TEMPLATE_PATH);
-        String fileName = beanExcelUtil.template("用户模板");
-
-		JpowerAssert.notEmpty(fileName, JpowerError.Business, fileName + GENERATE_FILE_ERROR);
-
-        File file = new File(beanExcelUtil.getAbsoluteFile(fileName));
-        if (file.exists()) {
-            try {
-                FileUtil.download(file, getResponse(), "用户导入模板.xlsx");
-            } catch (IOException e) {
-                log.error("下载文件出错。file={},error={}", file.getAbsolutePath(), e.getMessage());
-                throw new BusinessException(DOWNLOAD_FILE_ERROR);
-            }
-
-            FileUtil.deleteFile(file);
-        } else {
-            throw new BusinessException(fileName + GENERATE_FILE_ERROR);
-        }
     }
 
     @Operation(summary = "修改密码")
