@@ -23,6 +23,7 @@ import top.jpower.system.vo.RoleFunctionSaveVO;
 import top.jpower.system.vo.RoleFunctionVO;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -50,40 +51,17 @@ public class RoleController extends BaseController {
 		return R.data(coreRoleService.treeSelect());
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     @Function(value = "树形角色列表",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_LIST_TREE",type = Menu.TYPE.INTERFACE)
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_LIST_TREE",type = Menu.TYPE.INTERFACE)
     })
     @Operation(summary = "查询角色树结构列表")
     @GetMapping(value = "/listTree", produces = APPLICATION_JSON_VALUE)
-    public R<List<Tree<Long>>> listTree(){
-        return R.data(coreRoleService.listTree());
+    public R<List<Tree<Long>>> listTree(@RequestParam(required = false) Map<String, Object> params){
+        return R.data(coreRoleService.listTree(params));
     }
 
     @Function(value = "新增",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_ADD",type = Menu.TYPE.BTN)
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_ADD",type = Menu.TYPE.BTN)
     })
     @Operation(summary = "新增角色")
     @PostMapping(value = "/add", produces = APPLICATION_JSON_VALUE)
@@ -91,17 +69,8 @@ public class RoleController extends BaseController {
         return R.status(coreRoleService.add(coreRole), coreRole.getId());
     }
 
-    @Function(value = "删除",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_DELETE",type = Menu.TYPE.BTN)
-    })
-    @Operation(summary = "删除角色")
-    @DeleteMapping(value = "/deleteStatus", produces = APPLICATION_JSON_VALUE)
-    public R<Boolean> deleteStatus(@Parameter(description = "主键 多个逗号分割",required = true) @NotBlank(message = "ids不可为空") @RequestParam String ids){
-        return R.status(coreRoleService.removeByIds(Fc.toLongList(ids)));
-    }
-
     @Function(value = "修改",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_UPDATE",type = Menu.TYPE.BTN)
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_UPDATE",type = Menu.TYPE.BTN)
     })
     @Operation(summary = "修改角色信息")
     @PutMapping(value = "/update", produces = APPLICATION_JSON_VALUE)
@@ -109,29 +78,69 @@ public class RoleController extends BaseController {
         return R.status(coreRoleService.updateById(coreRole));
     }
 
-    @Operation(summary = "查询角色的权限")
-    @GetMapping(value = "/roleFunction/{roleId}", produces = APPLICATION_JSON_VALUE)
-    public R<List<RoleFunctionVO>> roleFunction(@Parameter(description = "角色主键",required = true) @PathVariable("roleId") Long roleId){
-        return R.data(coreRoleFunctionService.selectRoleFunctionByRoleId(roleId));
-    }
-
-    @Function(value = "设置权限",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_UPDATEFUNCTION",type = Menu.TYPE.BTN)
+    @Function(value = "删除",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_DELETE",type = Menu.TYPE.BTN)
     })
-    @Operation(summary = "重新给角色赋权")
-    @OperateLog(title = "重新给角色赋权")
-    @PostMapping(value = "/addFunction",produces= APPLICATION_JSON_VALUE)
-    public R<Boolean> addFunction(@Valid @RequestBody RoleFunctionSaveVO roleFunctionSaveVO){
-		return R.status(coreRoleFunctionService.addRoleFunctions(roleFunctionSaveVO));
+    @Operation(summary = "删除角色")
+    @DeleteMapping(value = "/deleteStatus", produces = APPLICATION_JSON_VALUE)
+    public R<Boolean> deleteStatus(@Parameter(description = "主键 多个逗号分割",required = true) @NotBlank(message = "ids不可为空") @RequestParam String ids){
+        return R.status(coreRoleService.removeByIds(Fc.toLongList(ids)));
     }
 
     @Function(value = "顶部菜单ID",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_ROLE_SELECT_URL",code = "ROLE_TOPMENU_ID",type = Menu.TYPE.INTERFACE)
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_ROLE_SELECT_URL",code = "ROLE_TOPMENU_ID",type = Menu.TYPE.INTERFACE)
     })
     @Operation(summary = "角色关联的顶部菜单ID")
     @GetMapping(value = "/topMenuId/{roleId}",produces= APPLICATION_JSON_VALUE)
     public R<List<Long>> topMenuId(@Parameter(description = "角色ID", required = true) @PathVariable("roleId") Long roleId){
         return R.data(coreRoleService.queryMenuIdByRoleId(roleId));
+    }
+
+    @Function(value = "设置权限",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_UPDATEFUNCTION",type = Menu.TYPE.BTN)
+    })
+    @Operation(summary = "重新给角色赋权")
+    @OperateLog(title = "重新给角色赋权")
+    @PostMapping(value = "/addFunction",produces= APPLICATION_JSON_VALUE)
+    public R<Boolean> addFunction(@Valid @RequestBody RoleFunctionSaveVO roleFunctionSaveVO){
+        return R.status(coreRoleFunctionService.addRoleFunctions(roleFunctionSaveVO));
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @Operation(summary = "查询角色的权限")
+    @GetMapping(value = "/roleFunction/{roleId}", produces = APPLICATION_JSON_VALUE)
+    public R<List<RoleFunctionVO>> roleFunction(@Parameter(description = "角色主键",required = true) @PathVariable("roleId") Long roleId){
+        return R.data(coreRoleFunctionService.selectRoleFunctionByRoleId(roleId));
     }
 
 }

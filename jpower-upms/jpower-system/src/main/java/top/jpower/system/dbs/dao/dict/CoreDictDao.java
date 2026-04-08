@@ -150,6 +150,7 @@ public class CoreDictDao extends JpowerServiceImpl<CoreDictMapper, CoreDict> {
 				.select(CORE_DICT.CODE.as("value"))
 				.select(CORE_DICT.NAME.as("label"))
 				.eq(CoreDict::getDictTypeCode, dictTypeCode)
+				.eq(CoreDict::getTenantCode, ShieldUtil.getTenantCode())
 				.orderBy(CoreDict::getSortNum).asc());
 	}
 }

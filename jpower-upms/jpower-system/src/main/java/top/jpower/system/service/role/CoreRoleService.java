@@ -5,6 +5,7 @@ import top.jpower.core.dbs.service.BaseService;
 import top.jpower.system.dbs.entity.role.CoreRole;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 角色服务接口
@@ -38,6 +39,7 @@ public interface CoreRoleService extends BaseService<CoreRole> {
 	 * @param coreRole 角色实体
 	 * @return 是否修改成功
 	 */
+	@Override
 	boolean updateById(CoreRole coreRole);
 
 	/**
@@ -56,7 +58,7 @@ public interface CoreRoleService extends BaseService<CoreRole> {
 	 * @author mr.g
 	 * @return 角色树形结构
 	 */
-	List<Tree<Long>> listTree();
+	List<Tree<Long>> listTree(Map<String, Object> params);
 
 	/**
 	 * 获取角色树形结构

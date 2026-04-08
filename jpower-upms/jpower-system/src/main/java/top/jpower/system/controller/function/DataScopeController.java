@@ -53,6 +53,54 @@ public class DataScopeController {
     private final CoreRoleDataService roleDataService;
     private final CoreFunctionService coreFunctionService;
 
+    @Function(value = "数据权限ID",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_DATASCOPE_LIST",code = "SYSTEM_DATASCOPE_LISTID",type = Menu.TYPE.INTERFACE)
+    })
+    @Operation(summary = "通过角色ID查询所有数据权限ID")
+    @GetMapping(value = "/listIdByRoleId", produces = APPLICATION_JSON_VALUE)
+    public R<List<Long>> listIdByRoleId(@Parameter(description = "角色ID 多个逗号分割", required = true) @NotBlank(message = "角色ID不可为空") @RequestParam String roleIds){
+        return R.data(roleDataService.listDataIdByRoleId(Fc.toLongList(roleIds)));
+    }
+
+    @Function(value = "数据权限",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_DATASCOPE_LIST",type = Menu.TYPE.BTN)
+    })
+    @Operation(summary = "通过菜单ID查询列表")
+    @GetMapping(value = "/listByMenuId/{menuId}", produces = APPLICATION_JSON_VALUE)
+    public R<List<CoreDataScope>> listByMenuId(@Parameter(description = "菜单ID",required = true) @PathVariable("menuId") Long menuId){
+        return R.data(dataScopeService.listByField(CoreDataScope::getMenuId, menuId));
+    }
+
+    @Function(value = "数据赋权",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_DATASCOPE_LIST",code = "SYSTEM_DATASCOPE_ROLE",type = Menu.TYPE.BTN)
+    })
+    @Operation(summary = "角色赋权")
+    @PostMapping(value = "/roleDataScope", produces = APPLICATION_JSON_VALUE)
+    public R<Boolean> roleDataScope(@Parameter(description = "角色主键",required = true) @NotNull(message = "角色主键不可为空") @RequestSingleBody Long roleId,
+                                    @Parameter(description = "数据权限主键,多个逗号分割") @RequestSingleBody(required = false) List<Long> dataIds){
+        return R.status(dataScopeService.roleDataScope(roleId, dataIds));
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @Function(value = "数据权限菜单列表",menus = {
 		@Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "SYSTEM_DATASCOPE_MENU",type = Menu.TYPE.INTERFACE)
     })
@@ -144,31 +192,4 @@ public class DataScopeController {
         return R.data(dataScopeService.pg(map));
     }
 
-    @Function(value = "数据权限",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_DATASCOPE_LIST",type = Menu.TYPE.BTN)
-    })
-    @Operation(summary = "通过菜单ID查询列表")
-    @GetMapping(value = "/listByMenuId/{menuId}", produces = APPLICATION_JSON_VALUE)
-    public R<List<CoreDataScope>> listByMenuId(@Parameter(description = "菜单ID",required = true) @PathVariable("menuId") Long menuId){
-        return R.data(dataScopeService.listByField(CoreDataScope::getMenuId, menuId));
-    }
-
-    @Function(value = "数据权限ID",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_DATASCOPE_LIST",code = "SYSTEM_DATASCOPE_LISTID",type = Menu.TYPE.INTERFACE)
-    })
-    @Operation(summary = "通过角色ID查询所有数据权限ID")
-    @GetMapping(value = "/listIdByRoleId", produces = APPLICATION_JSON_VALUE)
-    public R<List<Long>> listIdByRoleId(@Parameter(description = "角色ID 多个逗号分割", required = true) @NotBlank(message = "角色ID不可为空") @RequestParam String roleIds){
-        return R.data(roleDataService.listDataIdByRoleId(Fc.toLongList(roleIds)));
-    }
-
-    @Function(value = "数据赋权",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_DATASCOPE_LIST",code = "SYSTEM_DATASCOPE_ROLE",type = Menu.TYPE.BTN)
-    })
-    @Operation(summary = "角色赋权")
-    @PostMapping(value = "/roleDataScope", produces = APPLICATION_JSON_VALUE)
-    public R<Boolean> roleDataScope(@Parameter(description = "角色主键",required = true) @NotNull(message = "角色主键不可为空") @RequestSingleBody Long roleId,
-									@Parameter(description = "数据权限主键,多个逗号分割") @RequestSingleBody(required = false) List<Long> dataIds){
-        return R.status(dataScopeService.roleDataScope(roleId, dataIds));
-    }
 }

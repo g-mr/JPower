@@ -73,78 +73,116 @@ public class TenantController extends BaseController {
         return R.data(tenantService.pageByMap(map));
     }
 
-    @Operation(summary = "租户下拉项列表")
-    @GetMapping("/selectors")
-    public R<List<SelectVO>> selectors(@Parameter(description = "租户名称") @RequestParam(required = false) String tenantName){
-        return R.data(tenantService.select(tenantName));
-    }
-
-    @Function(value = "修改租户",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "SYSTEM_TENANT_UPDATE",type = Menu.TYPE.BTN)
-    })
-    @Operation(summary = "修改租户信息")
-    @PutMapping("/update")
-    public R<Boolean> update(@Validated(Validation.Update.class) @RequestBody CoreTenant tenant){
-        JpowerAssert.isTrue(ShieldUtil.isRoot(), JpowerError.Auth,NOT_SUPER_ADMIN_MODIFY_TENANT);
-        return R.status(tenantService.updateById(tenant));
-    }
-
-    @Function(value = "删除租户",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "SYSTEM_TENANT_DELETE",type = Menu.TYPE.BTN)
-    })
-    @Operation(summary = "删除租户信息")
-    @OperateLog(title = "删除租户",businessType = DELETE)
-    @DeleteMapping("/delete")
-    public R<Boolean> delete(@Parameter(description = "租户主键，多个逗号分隔") @NotBlank(message = "主键不可为空") @RequestParam String ids){
-        JpowerAssert.isTrue(ShieldUtil.isRoot(), JpowerError.Auth,NOT_SUPER_ADMIN_MODIFY_TENANT);
-
-        CacheUtil.clear(CacheNames.TENANT_KEY);
-        return R.status(tenantService.removeByIds(Fc.toLongList(ids)));
-    }
-
-    @Function(value = "新增租户",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "SYSTEM_TENANT_ADD",type = Menu.TYPE.BTN)
-    })
-    @Operation(summary = "新增租户信息")
-    @PostMapping(value = "/add",produces = APPLICATION_JSON_VALUE)
-    public R<Long> add(@Validated(Validation.Create.class) @RequestBody TenantCreateVO tenant){
-        JpowerAssert.isTrue(ShieldUtil.isRoot(), JpowerError.Auth, NOT_SUPER_ADMIN_MODIFY_TENANT);
-        tenant.setId(null);
+	@Function(value = "新增租户",menus = {
+			@Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "SYSTEM_TENANT_ADD",type = Menu.TYPE.BTN)
+	})
+	@Operation(summary = "新增租户信息")
+	@PostMapping(value = "/add",produces = APPLICATION_JSON_VALUE)
+	public R<Long> add(@Validated(Validation.Create.class) @RequestBody TenantCreateVO tenant){
+		JpowerAssert.isTrue(ShieldUtil.isRoot(), JpowerError.Auth, NOT_SUPER_ADMIN_MODIFY_TENANT);
+		tenant.setId(null);
 		tenant.setFunctionCode(CollUtil.removeBlank(tenant.getFunctionCode()));
 
-        return R.data(tenantService.save(tenant));
-    }
+		return R.data(tenantService.save(tenant));
+	}
 
-    @Function(value = "授权配置",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "SYSTEM_TENANT_SETTING",type = Menu.TYPE.BTN)
-    })
-    @Operation(summary = "租户授权配置")
-    @PutMapping(value = "/setting",produces = APPLICATION_JSON_VALUE)
-    public R<Boolean> setting(@Parameter(description = "租户ID 多个逗号分隔",required = true) @NotEmpty(message = "租户ID不可为空") @RequestSingleBody List<Long> ids,
+	@Function(value = "修改租户",menus = {
+			@Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "SYSTEM_TENANT_UPDATE",type = Menu.TYPE.BTN)
+	})
+	@Operation(summary = "修改租户信息")
+	@PutMapping("/update")
+	public R<Boolean> update(@Validated(Validation.Update.class) @RequestBody CoreTenant tenant){
+		JpowerAssert.isTrue(ShieldUtil.isRoot(), JpowerError.Auth,NOT_SUPER_ADMIN_MODIFY_TENANT);
+		return R.status(tenantService.updateById(tenant));
+	}
+
+	@Function(value = "删除租户",menus = {
+			@Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "SYSTEM_TENANT_DELETE",type = Menu.TYPE.BTN)
+	})
+	@Operation(summary = "删除租户信息")
+	@OperateLog(title = "删除租户",businessType = DELETE)
+	@DeleteMapping("/delete")
+	public R<Boolean> delete(@Parameter(description = "租户主键，多个逗号分隔") @NotBlank(message = "主键不可为空") @RequestParam String ids){
+		JpowerAssert.isTrue(ShieldUtil.isRoot(), JpowerError.Auth,NOT_SUPER_ADMIN_MODIFY_TENANT);
+
+		CacheUtil.clear(CacheNames.TENANT_KEY);
+		return R.status(tenantService.removeByIds(Fc.toLongList(ids)));
+	}
+
+	@Function(value = "授权配置",menus = {
+			@Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "SYSTEM_TENANT_SETTING",type = Menu.TYPE.BTN)
+	})
+	@Operation(summary = "租户授权配置")
+	@PutMapping(value = "/setting",produces = APPLICATION_JSON_VALUE)
+	public R<Boolean> setting(@Parameter(description = "租户ID 多个逗号分隔",required = true) @NotEmpty(message = "租户ID不可为空") @RequestSingleBody List<Long> ids,
 							  @Parameter(description = "租户额度") @RequestSingleBody(required = false) Integer accountNumber,
 							  @Parameter(description = "租户过期时间") @RequestSingleBody(required = false) Date expireTime){
-        JpowerAssert.isTrue(ShieldUtil.isRoot(), JpowerError.Auth,NOT_SUPER_ADMIN_MODIFY_TENANT);
-        return R.status(tenantService.setting(ids,accountNumber,expireTime));
-    }
+		JpowerAssert.isTrue(ShieldUtil.isRoot(), JpowerError.Auth,NOT_SUPER_ADMIN_MODIFY_TENANT);
+		return R.status(tenantService.setting(ids,accountNumber,expireTime));
+	}
 
-    @Function(value = "查询租户配置",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "TENANT_CONFIG",type = Menu.TYPE.INTERFACE, btnCode = "TENANT_UPDATE_CONFIG")
-    })
-    @Operation(summary = "查询租户配置")
-    @GetMapping(value = "/config/{id}",produces = APPLICATION_JSON_VALUE)
-    public R<Map<String, String>> config(@Parameter(description = "租户ID",required = true) @PathVariable("id") Long id){
-        return R.data(tenantService.config(id));
-    }
+	@Function(value = "查询租户配置",menus = {
+			@Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "TENANT_CONFIG",type = Menu.TYPE.INTERFACE, btnCode = "TENANT_UPDATE_CONFIG")
+	})
+	@Operation(summary = "查询租户配置")
+	@GetMapping(value = "/config/{id}",produces = APPLICATION_JSON_VALUE)
+	public R<Map<String, String>> config(@Parameter(description = "租户ID",required = true) @PathVariable("id") Long id){
+		return R.data(tenantService.config(id));
+	}
 
-    @Function(value = "修改租户配置",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "TENANT_UPDATE_CONFIG",type = Menu.TYPE.BTN)
-    })
-    @Operation(summary = "修改租户配置")
-    @PutMapping(value = "/updateConfig/{id}",produces = APPLICATION_JSON_VALUE)
-    public R<Boolean> updateConfig(@Parameter(description = "租户ID",required = true) @PathVariable("id") Long id,
+	@Function(value = "修改租户配置",menus = {
+			@Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "TENANT_UPDATE_CONFIG",type = Menu.TYPE.BTN)
+	})
+	@Operation(summary = "修改租户配置")
+	@PutMapping(value = "/updateConfig/{id}",produces = APPLICATION_JSON_VALUE)
+	public R<Boolean> updateConfig(@Parameter(description = "租户ID",required = true) @PathVariable("id") Long id,
 								   @Parameter(description = "设置内容",required = true) @RequestBody Map<String, String> config){
-        return R.status(tenantService.updateConfig(id, config));
-    }
+		return R.status(tenantService.updateConfig(id, config));
+	}
+
+	@Operation(summary = "租户下拉项列表")
+	@GetMapping("/selectors")
+	public R<List<SelectVO>> selectors(@Parameter(description = "租户名称") @RequestParam(required = false) String tenantName){
+		return R.data(tenantService.select(tenantName));
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Operation(summary = "通过域名查询租户")
     @GetMapping("/queryByDomain")

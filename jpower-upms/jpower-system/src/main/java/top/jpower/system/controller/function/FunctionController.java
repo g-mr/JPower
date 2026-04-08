@@ -177,6 +177,42 @@ public class FunctionController extends BaseController {
 		return R.status(coreFunctionService.saveHierarchy(parentId, ids));
 	}
 
+	@Function(value = "客户端功能树",menus = {
+			@Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "CLIENT_MENU_TREE",type = Menu.TYPE.INTERFACE)
+	})
+	@Operation(summary = "查询登录用户所有菜单树形结构并根据客户端区分")
+	@GetMapping(value = "/clientMenuTree", produces = APPLICATION_JSON_VALUE)
+	public R<List<Tree<Long>>> clientMenuTree(){
+		return R.data(coreFunctionService.treeClientMenu(ShieldUtil.getUserRole()));
+	}
+
+	@Function(value = "功能权限",menus = {
+			@Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_SELECT_URL",type = Menu.TYPE.BTN)
+	})
+	@Operation(summary = "根据角色ID查询所有的权限ID")
+	@GetMapping(value = "/queryUrlIdByRole", produces = APPLICATION_JSON_VALUE)
+	public R<Set<Long>> queryUrlIdByRole(@Parameter(description = "角色ID 多个逗号分割",required = true) @NotBlank(message = "roleIds不可为空") @RequestParam String roleIds){
+		return R.data(coreFunctionService.queryUrlIdByRole(Fc.toLongList(roleIds)));
+	}
+
+	@Function(value = "树形按钮",menus = {
+			@Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_ROLE_SELECT_URL",code = "SYSTEM_ROLE_BUT_TREE",type = Menu.TYPE.INTERFACE)
+	})
+	@Operation(summary = "登录用户树形按钮接口", description = "当不传菜单ID时，会查出顶级按钮接口；单独查一个菜单时，不会把顶级按钮接口返回")
+	@GetMapping(value = "/treeButByMenu", produces = APPLICATION_JSON_VALUE)
+	public R<List<Tree<Long>>> treeButByMenu(@Parameter(description = "菜单Id",required = true) @RequestParam(required = false, defaultValue = TOP_CODE) Long id,
+											 @Parameter(description = "客户端ID",required = true) @NotNull(message = "客户端ID不可为空") @RequestParam(required = false) Long clientId){
+		return R.data(coreFunctionService.treeButByMenu(ShieldUtil.getUserRole(), id, clientId));
+	}
+
+	@Function(value = "接口资源",menus = {
+			@Menu(client = "admin",menuCode = "SYSTEM_ROLE", btnCode = "SYSTEM_ROLE_SELECT_URL",code = "ROLE_INTERFACE_LIST",type = Menu.TYPE.INTERFACE)
+	})
+	@Operation(summary = "接口资源")
+	@GetMapping(value = "/listInterface", produces = APPLICATION_JSON_VALUE)
+	public R<List<FunctionSimpleVO>> listInterface(@Parameter(description = "客户端ID",required = true) @NotNull(message = "客户端ID不可为空") @RequestParam(required = false) Long clientId){
+		return R.data(coreFunctionService.listInterface(ShieldUtil.getUserRole(), clientId));
+	}
 
 
 
@@ -199,33 +235,17 @@ public class FunctionController extends BaseController {
 
 
 
-    @Function(value = "树形按钮",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_ROLE_SELECT_URL",code = "SYSTEM_ROLE_BUT_TREE",type = Menu.TYPE.INTERFACE)
-    })
-    @Operation(summary = "登录用户树形按钮接口", description = "当不传菜单ID时，会查出顶级按钮接口；单独查一个菜单时，不会把顶级按钮接口返回")
-    @GetMapping(value = "/treeButByMenu", produces = APPLICATION_JSON_VALUE)
-    public R<List<Tree<Long>>> treeButByMenu(@Parameter(description = "菜单Id",required = true) @RequestParam(required = false, defaultValue = TOP_CODE) Long id,
-											   @Parameter(description = "客户端ID",required = true) @NotNull(message = "客户端ID不可为空") @RequestParam(required = false) Long clientId){
-        return R.data(coreFunctionService.treeButByMenu(ShieldUtil.getUserRole(), id, clientId));
-    }
 
-    @Function(value = "接口资源",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_ROLE", btnCode = "SYSTEM_ROLE_SELECT_URL",code = "ROLE_INTERFACE_LIST",type = Menu.TYPE.INTERFACE)
-    })
-    @Operation(summary = "接口资源")
-    @GetMapping(value = "/listInterface", produces = APPLICATION_JSON_VALUE)
-    public R<List<FunctionSimpleVO>> listInterface(@Parameter(description = "客户端ID",required = true) @NotNull(message = "客户端ID不可为空") @RequestParam(required = false) Long clientId){
-        return R.data(coreFunctionService.listInterface(ShieldUtil.getUserRole(), clientId));
-    }
 
-    @Function(value = "功能权限",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_SELECT_URL",type = Menu.TYPE.BTN)
-    })
-    @Operation(summary = "根据角色ID查询所有的权限ID")
-    @GetMapping(value = "/queryUrlIdByRole", produces = APPLICATION_JSON_VALUE)
-    public R<Set<Long>> queryUrlIdByRole(@Parameter(description = "角色ID 多个逗号分割",required = true) @NotBlank(message = "roleIds不可为空") @RequestParam String roleIds){
-        return R.data(coreFunctionService.queryUrlIdByRole(Fc.toLongList(roleIds)));
-    }
+
+
+
+
+
+
+
+
+
 
     @Operation(summary = "懒加载登录用户所有功能树形结构")
     @GetMapping(value = "/lazyTree", produces = APPLICATION_JSON_VALUE)
@@ -237,15 +257,6 @@ public class FunctionController extends BaseController {
     @GetMapping(value = "/listTree", produces = APPLICATION_JSON_VALUE)
     public R<List<Tree<Long>>> listTree(){
         return R.data(coreFunctionService.listTreeByRoleId(ShieldUtil.getUserRole()));
-    }
-
-    @Function(value = "客户端功能树",menus = {
-            @Menu(client = "admin",menuCode = "SYSTEM_TENANT",code = "CLIENT_MENU_TREE",type = Menu.TYPE.INTERFACE)
-    })
-    @Operation(summary = "查询登录用户所有菜单树形结构并根据客户端区分")
-    @GetMapping(value = "/clientMenuTree", produces = APPLICATION_JSON_VALUE)
-    public R<List<Tree<Long>>> clientMenuTree(){
-        return R.data(coreFunctionService.treeClientMenu(ShieldUtil.getUserRole()));
     }
 
 }

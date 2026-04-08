@@ -1,8 +1,10 @@
 package top.jpower.system.dbs.dao.role;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.lang.tree.Tree;
 import com.mybatisflex.core.dialect.IDialect;
+import com.mybatisflex.core.query.QueryColumnBehavior;
 import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryMethods;
 import com.mybatisflex.core.util.LambdaUtil;
@@ -105,7 +107,8 @@ public class CoreFunctionDao extends JpowerServiceImpl<CoreFunctionMapper, CoreF
 	 **/
 	public List<Tree<Long>> treeMenu(List<Long> roleIds, Long clientId) {
 		return super.tree(Wrappers.getTreeWrapper(CoreFunction::getId, CoreFunction::getParentId)
-				.select(CoreFunction::getFunctionName,CoreFunction::getCode,CoreFunction::getUrl,CoreFunction::getSort, CoreFunction::getClientId)
+				.select(CORE_FUNCTION.FUNCTION_NAME.as("name"))
+				.select(CoreFunction::getCode,CoreFunction::getUrl, CoreFunction::getClientId)
 				.eq(CoreFunction::getFunctionType, FunctionTypeEnum.MENU.getValue())
 				.eq(CoreFunction::getClientId, clientId)
 				.leftJoin(CoreRoleFunction.class, !ShieldUtil.isRoot()).on(CoreRoleFunction::getFunctionId, CoreFunction::getId)
@@ -174,9 +177,11 @@ public class CoreFunctionDao extends JpowerServiceImpl<CoreFunctionMapper, CoreF
                 .eq(CoreFunction::getParentId, Fc.toLong(JpowerConstants.TOP_CODE))
                 .ne(CoreFunction::getFunctionType, FunctionTypeEnum.MENU.getValue()), Long.class);
 
+
+		QueryCondition condition = QueryColumnBehavior.castCondition(QueryCondition.create(LambdaUtil.getQueryColumn(CoreFunction::getAncestorId), "REGEXP", StringUtil.concat(StringPool.LEFT_BRACKET, StringUtil.join(functionIds, StringPool.SPILT), StringPool.RIGHT_BRACKET)));
         functionIds.addAll(super.objListAs(Wrappers.getQueryWrapper()
                 .select(CoreFunction::getId)
-                .where(LambdaUtil.getFieldName(CoreFunction::getAncestorId) + " REGEXP ?", StringUtil.concat(StringPool.LEFT_BRACKET, StringUtil.join(functionIds, StringPool.SPILT), StringPool.RIGHT_BRACKET)), Long.class));
+                .where(condition), Long.class));
         return functionIds;
     }
 
@@ -191,7 +196,7 @@ public class CoreFunctionDao extends JpowerServiceImpl<CoreFunctionMapper, CoreF
 		List<Long> ids = super.objListAs(Wrappers.getQueryWrapper().select(CoreFunction::getId).in(CoreFunction::getCode, functionCodes), Long.class);
 
 		if (Fc.isNotEmpty(ids)) {
-			ids.forEach(id->{
+			CollUtil.newCopyOnWriteArrayList(ids).forEach(id->{
 				List<Long> descendants = super.objListAs(Wrappers.getQueryWrapper()
 						.select(CoreFunction::getId)
 						.ne(CoreFunction::getFunctionType, FunctionTypeEnum.MENU.getValue())

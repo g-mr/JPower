@@ -1,6 +1,7 @@
 package top.jpower.system.dbs.dao.tenant;
 
-import com.alibaba.fastjson2.JSON;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.mybatisflex.core.query.QueryMethods;
 import com.mybatisflex.core.util.UpdateEntity;
 import org.springframework.stereotype.Repository;
@@ -34,9 +35,10 @@ public class CoreTenantDao extends JpowerServiceImpl<CoreTenantMapper, CoreTenan
 	 **/
 	public Map<String, String> config(Long id) {
 		String config = super.getObjAs(Wrappers.getQueryWrapper()
-				.select(CoreTenant::getConfig)
-				.eq(CoreTenant::getId, id), String.class);
-		return JSON.parseObject(Fc.toStr(config, "{}"), Map.class);
+						.from(CORE_TENANT)
+						.select(CoreTenant::getConfig)
+						.where(CORE_TENANT.ID.eq(id)), String.class);
+		return JSONUtil.toBean(StrUtil.blankToDefault(config, "{}"), Map.class);
 	}
 
 	/**

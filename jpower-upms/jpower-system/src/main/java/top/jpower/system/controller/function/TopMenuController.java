@@ -48,6 +48,46 @@ public class TopMenuController extends BaseController {
     private final CoreMenuService menuService;
     private final CoreFunctionService functionService;
 
+    @Function(value = "顶级菜单选项",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "FUNCTION_TOPMENU_SELECT",type = Menu.TYPE.INTERFACE),
+            @Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "DATASCOPE_TOPMENU_SELECT",type = Menu.TYPE.INTERFACE),
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_ROLE_SELECT_URL",code = "ROLE_TOPMENU",type = Menu.TYPE.INTERFACE)
+    })
+    @Operation(summary = "获取顶级菜单下拉框", description = "只获取当前用户的权限")
+    @GetMapping(value = "/select/{clientId}", produces = APPLICATION_JSON_VALUE)
+    public R<List<MenuClientVO>> select(@Parameter(description = "客户端ID",required = true) @PathVariable("clientId") Long clientId){
+        return R.data(menuService.selectList(clientId));
+    }
+
+    @Function(value = "客户端顶部菜单树",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_DATASCOPE_LIST",code = "ROLE_CLIENT_TOPMENU",type = Menu.TYPE.INTERFACE)
+    })
+    @Operation(summary = "客户端顶部菜单树")
+    @GetMapping(value = "/listName", produces = APPLICATION_JSON_VALUE)
+    public R<List<MenuSelectVO>> listName(){
+        return R.data(menuService.clientMenu());
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @Function(value = "新增菜单",menus = {
 		@Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_ADD",type = Menu.TYPE.BTN)
     })
@@ -101,15 +141,6 @@ public class TopMenuController extends BaseController {
         return R.data(menuService.pg(map));
     }
 
-    @Function(value = "客户端顶部菜单树",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_DATASCOPE_LIST",code = "ROLE_CLIENT_TOPMENU",type = Menu.TYPE.INTERFACE)
-    })
-    @Operation(summary = "客户端顶部菜单树")
-    @GetMapping(value = "/listName", produces = APPLICATION_JSON_VALUE)
-    public R<List<MenuSelectVO>> listName(){
-        return R.data(menuService.clientMenu());
-    }
-
     @Function(value = "关联一级菜单ID",menus = {
 		@Menu(client = "admin",menuCode = "SYSTEM_TOPMENU",code = "TOPMENU_FUNCTION_ID",type = Menu.TYPE.INTERFACE)
     })
@@ -144,14 +175,4 @@ public class TopMenuController extends BaseController {
         return R.data(menuService.roleMenu());
     }
 
-    @Function(value = "顶级菜单选项",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_FUNCTION",code = "FUNCTION_TOPMENU_SELECT",type = Menu.TYPE.INTERFACE),
-		@Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "DATASCOPE_TOPMENU_SELECT",type = Menu.TYPE.INTERFACE),
-		@Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_ROLE_SELECT_URL",code = "ROLE_TOPMENU",type = Menu.TYPE.INTERFACE)
-    })
-    @Operation(summary = "获取顶级菜单下拉框", description = "只获取当前用户的权限")
-    @GetMapping(value = "/select/{clientId}", produces = APPLICATION_JSON_VALUE)
-    public R<List<MenuClientVO>> select(@Parameter(description = "客户端ID",required = true) @PathVariable("clientId") Long clientId){
-        return R.data(menuService.selectList(clientId));
-    }
 }

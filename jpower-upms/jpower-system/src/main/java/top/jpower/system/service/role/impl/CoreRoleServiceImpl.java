@@ -24,6 +24,7 @@ import top.jpower.system.service.role.CoreRoleService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static top.jpower.common.constants.ServiceCodeConstants.DELETE_EXIST_CHILD;
@@ -114,8 +115,8 @@ public class CoreRoleServiceImpl extends BaseServiceImpl<CoreRoleMapper, CoreRol
     }
 
 	@Override
-	public List<Tree<Long>> listTree() {
-		return coreRoleDao.listTree();
+	public List<Tree<Long>> listTree(Map<String, Object> params) {
+		return coreRoleDao.listTree(params);
 	}
 
 	@Override

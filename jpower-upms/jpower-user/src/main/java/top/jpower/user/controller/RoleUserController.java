@@ -57,24 +57,31 @@ public class RoleUserController extends BaseController {
         return R.status(coreUserService.updateUsersRole(userIds, roleIds));
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    @Function(value = "角色成员",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_USER",type = Menu.TYPE.BTN)
+    })
+    @Operation(summary = "通过角色查询用户列表")
+    @Parameters({
+            @Parameter(name = "pageNum", description = "第几页", example = "1", schema = @Schema(defaultValue = "1", type = "integer"), in = ParameterIn.QUERY, required = true),
+            @Parameter(name = "pageSize", description = "每页长度", example = "10", schema = @Schema(defaultValue = "10", type = "integer"), in = ParameterIn.QUERY, required = true),
+            @Parameter(name = "roleId_eq", description = "查询角色ID", in = ParameterIn.QUERY),
+            @Parameter(name = "roleId_ne", description = "不查询角色ID", in = ParameterIn.QUERY),
+            @Parameter(name = "orgId_eq", description = "部门ID", in = ParameterIn.QUERY),
+            @Parameter(name = "loginId", description = "登录名", in = ParameterIn.QUERY),
+            @Parameter(name = "nickName", description = "昵称", in = ParameterIn.QUERY),
+            @Parameter(name = "userName", description = "姓名", in = ParameterIn.QUERY),
+            @Parameter(name = "idNo", description = "证件号码", in = ParameterIn.QUERY),
+            @Parameter(name = "userType_eq", description = "用户类型 字典USER_TYPE", in = ParameterIn.QUERY),
+            @Parameter(name = "telephone", description = "电话", in = ParameterIn.QUERY)
+    })
+    @GetMapping(value = "/listByRole", produces = "application/json")
+    public R<Pg<UserVO>> listByRole(@Ignore @RequestParam(required = false) Map<String,Object> map) {
+        JpowerAssert.isTrue(MapUtil.containsAnyKey(map, "roleId_eq", "roleId_ne"), JpowerError.Arg, ROLE_ID_NOT_NULL);
+        return R.data(coreUserService.pageByRoleId(map));
+    }
 
     @Function(value = "角色新增用户",menus = {
-        @Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_ROLE_USER",code = "SYSTEM_ROLE_ADDUSER",type = Menu.TYPE.BTN)
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_ROLE_USER",code = "SYSTEM_ROLE_ADDUSER",type = Menu.TYPE.BTN)
     })
     @Operation(summary = "给角色新增用户")
     @PostMapping(value = "/addRoleUser", produces = "application/json")
@@ -84,7 +91,7 @@ public class RoleUserController extends BaseController {
     }
 
     @Function(value = "角色去除用户",menus = {
-        @Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_ROLE_USER",code = "SYSTEM_ROLE_DELUSER",type = Menu.TYPE.BTN)
+            @Menu(client = "admin",menuCode = "SYSTEM_ROLE",btnCode = "SYSTEM_ROLE_USER",code = "SYSTEM_ROLE_DELUSER",type = Menu.TYPE.BTN)
     })
     @Operation(summary = "给角色去除用户")
     @PostMapping(value = "/deleteRoleUser", produces = "application/json")
@@ -93,32 +100,28 @@ public class RoleUserController extends BaseController {
         return R.status(coreUserService.deleteRoleUsers(roleId, Fc.toLongList(userIds)));
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @Operation(summary = "查询用户所有角色ID")
     @GetMapping(value = "/userRole", produces = "application/json")
     public R<List<Long>> userRole(@Parameter(description = "用户主键", required = true) @NotNull(message = "用户ID不可为空") @RequestParam Long userId) {
         return R.data(coreUserRoleService.queryRoleIds(userId));
     }
 
-    @Function(value = "角色成员",menus = {
-        @Menu(client = "admin",menuCode = "SYSTEM_ROLE",code = "SYSTEM_ROLE_USER",type = Menu.TYPE.BTN)
-    })
-    @Operation(summary = "通过角色查询用户列表")
-    @Parameters({
-        @Parameter(name = "pageNum", description = "第几页", example = "1", schema = @Schema(defaultValue = "1", type = "integer"), in = ParameterIn.QUERY, required = true),
-        @Parameter(name = "pageSize", description = "每页长度", example = "10", schema = @Schema(defaultValue = "10", type = "integer"), in = ParameterIn.QUERY, required = true),
-        @Parameter(name = "roleId_eq", description = "查询角色ID", in = ParameterIn.QUERY),
-        @Parameter(name = "roleId_ne", description = "不查询角色ID", in = ParameterIn.QUERY),
-        @Parameter(name = "orgId_eq", description = "部门ID", in = ParameterIn.QUERY),
-        @Parameter(name = "loginId", description = "登录名", in = ParameterIn.QUERY),
-        @Parameter(name = "nickName", description = "昵称", in = ParameterIn.QUERY),
-        @Parameter(name = "userName", description = "姓名", in = ParameterIn.QUERY),
-        @Parameter(name = "idNo", description = "证件号码", in = ParameterIn.QUERY),
-        @Parameter(name = "userType_eq", description = "用户类型 字典USER_TYPE", in = ParameterIn.QUERY),
-        @Parameter(name = "telephone", description = "电话", in = ParameterIn.QUERY)
-    })
-    @GetMapping(value = "/listByRole", produces = "application/json")
-    public R<Pg<UserVO>> listByRole(@Ignore @RequestParam(required = false) Map<String,Object> map) {
-        JpowerAssert.isTrue(MapUtil.containsAnyKey(map, "roleId_eq", "roleId_ne"), JpowerError.Arg, ROLE_ID_NOT_NULL);
-        return R.data(coreUserService.pageByRoleId(map));
-    }
 }

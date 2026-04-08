@@ -1,5 +1,7 @@
 package top.jpower.user.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.NumberUtil;
 import com.mybatisflex.core.util.UpdateEntity;
@@ -28,7 +30,6 @@ import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.rsp.Pg;
 import top.jpower.core.util.utils.DigestUtil;
 import top.jpower.core.util.utils.Fc;
-import top.jpower.core.util.utils.MD5;
 import top.jpower.core.util.utils.UuidUtil;
 import top.jpower.system.api.cache.SystemCache;
 import top.jpower.system.api.cache.param.ParamCache;
@@ -53,9 +54,7 @@ import java.util.stream.Collectors;
 
 import static top.jpower.common.constants.CacheNames.TOKEN_USER_KEY;
 import static top.jpower.common.constants.ServiceCodeConstants.*;
-import static top.jpower.core.dbs.tenant.TenantConstant.DEFAULT_TENANT_CODE;
-import static top.jpower.core.dbs.tenant.TenantConstant.TENANT_ACCOUNT_NUMBER;
-import static top.jpower.core.dbs.tenant.TenantConstant.getAccountNumber;
+import static top.jpower.core.dbs.tenant.TenantConstant.*;
 
 /**
  * 用户服务
@@ -89,7 +88,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
     public boolean save(CoreUser coreUser) {
         setActivationStatus(coreUser);
 		if (Fc.isBlank(coreUser.getPassword())) {
-			coreUser.setPassword(DigestUtil.pwdEncrypt(MD5.md5HexToUpperCase(ParamCache.getString(ParamsConstants.USER_DEFAULT_PASSWORD, DefaultValConstants.DEFAULT_USER_PASSWORD))));
+			coreUser.setPassword(DigestUtil.pwdEncrypt(ParamCache.getString(ParamsConstants.USER_DEFAULT_PASSWORD, DefaultValConstants.DEFAULT_USER_PASSWORD)));
 		}
         return coreUserDao.save(coreUser);
     }
@@ -111,7 +110,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
     public Boolean deleteByIds(List<Long> ids) {
         ids = new ArrayList<>(ids);
 
-        if(Fc.contains(ids, RoleConstant.ROOT_ID) || Fc.contains(ids, RoleConstant.ANONYMOUS_ID)){
+        if(CollUtil.containsAny(ids, ListUtil.of(RoleConstant.ROOT_ID, RoleConstant.ANONYMOUS_ID))){
             ids.removeIf(obj -> NumberUtil.equals(obj,RoleConstant.ROOT_ID) || NumberUtil.equals(obj,RoleConstant.ANONYMOUS_ID));
             JpowerAssert.notGeZero(ids.size(), JpowerError.Business, USER_NOT_DELETE);
         }
@@ -179,6 +178,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
 
     @Override
     public Long saveUser(CoreUser user, List<Long> roleIds) {
+		user.setPassword(DigestUtil.pwdEncrypt(ParamCache.getString(ParamsConstants.USER_DEFAULT_PASSWORD, DefaultValConstants.DEFAULT_USER_PASSWORD)));
         if (coreUserDao.save(user)){
             if (Fc.isNotEmpty(roleIds)) {
                 List<CoreUserRole> userRoleList = new ArrayList<>();
@@ -199,7 +199,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
 
     @Override
     public boolean resetPassword(List<Long> ids) {
-        String pass = DigestUtil.pwdEncrypt(MD5.md5HexToUpperCase(ParamCache.getString(ParamsConstants.USER_DEFAULT_PASSWORD, DefaultValConstants.DEFAULT_USER_PASSWORD)));
+        String pass = DigestUtil.pwdEncrypt(ParamCache.getString(ParamsConstants.USER_DEFAULT_PASSWORD, DefaultValConstants.DEFAULT_USER_PASSWORD));
         return coreUserDao.updatePassword(pass, ids);
     }
 
@@ -222,7 +222,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
 
         List<CoreUser> userList = new ArrayList<>();
 
-        String password = DigestUtil.pwdEncrypt(MD5.md5HexToUpperCase(ParamCache.getString(ParamsConstants.USER_DEFAULT_PASSWORD, DefaultValConstants.DEFAULT_USER_PASSWORD)));
+        String password = DigestUtil.pwdEncrypt(ParamCache.getString(ParamsConstants.USER_DEFAULT_PASSWORD, DefaultValConstants.DEFAULT_USER_PASSWORD));
 
         for (CoreUser coreUser : list) {
             if (Fc.isBlank(coreUser.getLoginId())){
@@ -436,7 +436,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
             }
             JpowerAssert.isNull(this.selectUserLoginId(coreUser.getLoginId(), tenantCode), JpowerError.Business, LOGIN_ID_EXISTS);
 
-            coreUser.setPassword(DigestUtil.pwdEncrypt(MD5.md5HexToUpperCase(ParamCache.getString(ParamsConstants.USER_DEFAULT_PASSWORD, DefaultValConstants.DEFAULT_USER_PASSWORD))));
+            coreUser.setPassword(DigestUtil.pwdEncrypt(ParamCache.getString(ParamsConstants.USER_DEFAULT_PASSWORD, DefaultValConstants.DEFAULT_USER_PASSWORD)));
             if (Fc.isNull(coreUser.getUserType())) {
                 coreUser.setUserType(UserTypeEnum.USER_TYPE_SYSTEM.getValue());
             }

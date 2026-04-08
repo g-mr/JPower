@@ -3,9 +3,11 @@ package top.jpower.system.dbs.entity.tenant;
 import cn.hutool.core.date.DatePattern;
 import com.alibaba.fastjson2.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.Table;
+import com.mybatisflex.core.handler.JacksonTypeHandler;
 import com.mybatisflex.core.keygen.KeyGenerators;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -58,6 +60,7 @@ public class CoreTenant extends BaseEntity {
     @Schema(description = "授权码",hidden = true)
     private String licenseKey;
     @Schema(description = "设置内容")
+    @Column(typeHandler = JacksonTypeHandler.class)
     private Map<String, String> config;
 
 }
