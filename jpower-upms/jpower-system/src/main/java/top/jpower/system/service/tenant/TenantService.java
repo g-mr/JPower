@@ -28,6 +28,15 @@ public interface TenantService extends BaseService<CoreTenant> {
     @Override
     boolean updateById(CoreTenant tenant);
 
+	/**
+     * 根据ID删除信息
+     *
+     * @author mr.g
+     * @param ids 租户ID
+     * @return boolean 是否删除成功
+     */
+    boolean removeByIds(List<Long> ids);
+
     /**
      * 新增信息
      * 

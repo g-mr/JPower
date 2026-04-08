@@ -2,6 +2,7 @@ package top.jpower.user.dbs.dao;
 
 
 import com.mybatisflex.core.query.QueryCondition;
+import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.update.UpdateWrapper;
 import com.mybatisflex.core.util.UpdateEntity;
 import org.springframework.stereotype.Repository;
@@ -17,12 +18,17 @@ import top.jpower.user.dbs.dao.mapper.CoreUserMapper;
 import top.jpower.user.dbs.entity.CorePost;
 import top.jpower.user.dbs.entity.CoreUser;
 import top.jpower.user.dbs.entity.CoreUserRole;
-import top.jpower.user.vo.LoginUserVO;
-import top.jpower.user.vo.UserVO;
+import top.jpower.user.pojo.LoginUserVO;
+import top.jpower.user.pojo.UserByRoleBO;
+import top.jpower.user.pojo.UserVO;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import static com.mybatisflex.core.query.QueryMethods.groupConcat;
+import static com.mybatisflex.core.query.QueryMethods.notExists;
 import static top.jpower.user.dbs.entity.table.CorePostTableDef.CORE_POST;
 import static top.jpower.user.dbs.entity.table.CoreUserRoleTableDef.CORE_USER_ROLE;
 import static top.jpower.user.dbs.entity.table.CoreUserTableDef.CORE_USER;
@@ -41,6 +47,12 @@ public class CoreUserDao extends JpowerServiceImpl<CoreUserMapper, CoreUser> imp
         	userVo.setRoleName(Fc.join(SystemCache.getRoleNameByIds(Fc.toLongList(userVo.getRoleIds()))," | "));
 		}
     }
+
+	public void buildOrg(UserVO userVo) {
+		if (Fc.notNull(userVo.getOrgId())) {
+			userVo.setOrgName(SystemCache.getOrgName(userVo.getOrgId()));
+		}
+	}
 
     public Pg<UserVO> pageVO(Map<String, Object> map) {
         Pg<UserVO> pg = getMapper().pageAs(PaginationContext.page(),
@@ -169,17 +181,41 @@ public class CoreUserDao extends JpowerServiceImpl<CoreUserMapper, CoreUser> imp
 
     /**
      * 根据角色ID分页查询用户
+     * <p>
+     * 查询逻辑说明：
+     * - roleIdEq：查询拥有指定角色的用户（使用 INNER JOIN，自动排除无角色用户和没有该角色的用户）
+     * - roleIdNe：查询不拥有指定角色的用户（使用 NOT EXISTS 子查询，正确处理无角色用户和多角色场景）
      *
      * @author mr.g
-     * @param map 查询参数
+     * @param query 查询参数
      * @return 用户列表
      **/
-    public Pg<UserVO> pageByRoleId(Map<String, Object> map) {
-        return getMapper().pageAs(PaginationContext.page(), Wrappers.getQueryWrapper(map)
-                        .from(CoreUser.class)
-                        .leftJoin(CoreUserRole.class).on(CoreUserRole::getUserId, CoreUser::getId)
-                        .orderBy(CoreUser::getCreateTime).desc()
-                , UserVO.class);
+    public Pg<UserVO> pageByRoleId(UserByRoleBO query) {
+        QueryWrapper queryWrapper = Wrappers.getQueryWrapper()
+                .from(CoreUser.class)
+				.select(CORE_USER.DEFAULT_COLUMNS)
+                .eq(CoreUser::getOrgId, query.getOrgId(), Fc.notNull(query.getOrgId()))
+                .eq(CoreUser::getUserType, query.getUserType(), Fc.notNull(query.getUserType()))
+                .like(CoreUser::getLoginId, query.getLoginId(), Fc.isNotBlank(query.getLoginId()))
+                .like(CoreUser::getNickName, query.getNickName(), Fc.isNotBlank(query.getNickName()))
+                .like(CoreUser::getUserName, query.getUserName(), Fc.isNotBlank(query.getUserName()))
+                .like(CoreUser::getIdNo, query.getIdNo(), Fc.isNotBlank(query.getIdNo()))
+                .orderBy(CoreUser::getCreateTime).desc();
+
+        if (Fc.notNull(query.getRoleIdEq())) {
+            queryWrapper.innerJoin(CoreUserRole.class).on(CoreUserRole::getUserId, CoreUser::getId)
+                    .eq(CoreUserRole::getRoleId, query.getRoleIdEq())
+                    .groupBy(CoreUser::getId);
+        }
+		if (Fc.notNull(query.getRoleIdNe())) {
+            queryWrapper.and(notExists(QueryWrapper.create()
+                    .from(CORE_USER_ROLE)
+                    .where(CORE_USER_ROLE.USER_ID.eq(CORE_USER.ID))
+                    .and(CORE_USER_ROLE.ROLE_ID.eq(query.getRoleIdNe()))));
+        }
+
+        Pg<UserVO> pg = getMapper().pageAs(PaginationContext.page(), queryWrapper, UserVO.class);
+        return pageConvert(pg, this::buildOrg);
     }
 
 	/**

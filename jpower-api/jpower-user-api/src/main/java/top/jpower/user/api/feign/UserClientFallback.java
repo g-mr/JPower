@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestParam;
+import top.jpower.core.exception.enums.JpowerError;
+import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.core.util.constants.ReturnConstants;
 import top.jpower.core.util.rsp.R;
 import top.jpower.user.api.dto.CoreUserDTO;
@@ -72,6 +74,12 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
                 log.error("调用validatePassword失败，参数：validatePasswordDto={}", validatePasswordDto, cause);
                 return R.fail("请求失败", false);
             }
-        };
+
+			@Override
+			public R<Boolean> removeTenantAll(List<String> tenantCodes) {
+				JpowerAssert.createException(JpowerError.Rpc, 500, cause.getMessage());
+				return R.fail("请求失败", false);
+			}
+		};
     }
 }

@@ -11,6 +11,7 @@ import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.system.dbs.dao.role.mapper.CoreRoleMapper;
 import top.jpower.system.dbs.entity.role.CoreRole;
+import top.jpower.system.dbs.entity.tenant.CoreTenant;
 
 import java.util.List;
 import java.util.Map;
@@ -31,8 +32,11 @@ public class CoreRoleDao extends JpowerServiceImpl<CoreRoleMapper, CoreRole> {
 	 */
 	public List<Tree<Long>> listTree(Map<String, Object> params) {
 		return super.tree(Wrappers.getTreeWrapper(CoreRole::getId, CoreRole::getParentId)
-						.map(params)
+						.map(params, "t")
+						.from(CoreRole.class).as("t")
 						.select(CoreRole::getAlias, CoreRole::getName, CoreRole::getIsSysRole, CoreRole::getRemark, CoreRole::getSort, CoreRole::getTenantCode)
+						.select(CoreTenant::getTenantName)
+						.leftJoin(CoreTenant.class).on(CoreRole::getTenantCode, CoreTenant::getTenantCode)
 						.orderBy(CoreRole::getCreateTime).desc());
 	}
 

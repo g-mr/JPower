@@ -12,7 +12,7 @@ import top.jpower.user.api.feign.UserClient;
 import top.jpower.user.dbs.entity.CoreUser;
 import top.jpower.user.service.CoreUserRoleService;
 import top.jpower.user.service.CoreUserService;
-import top.jpower.user.vo.UserVO;
+import top.jpower.user.pojo.UserVO;
 
 import java.util.List;
 
@@ -91,4 +91,10 @@ public class UserClientController implements UserClient {
     public R<Boolean> validatePassword(@RequestBody ValidatePasswordDTO validatePasswordDto) {
         return R.data(coreUserService.validatePassword(validatePasswordDto.getAccount(), validatePasswordDto.getPassword(), validatePasswordDto.getTenantCode()));
     }
+
+	@Override
+	@PostMapping("/removeTenantAll")
+	public R<Boolean> removeTenantAll(@RequestBody List<String> tenantCodes) {
+		return R.status(coreUserService.removeTenantAll(tenantCodes));
+	}
 }

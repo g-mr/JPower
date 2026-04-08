@@ -12,7 +12,6 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import top.jpower.common.constants.CacheNames;
 import top.jpower.common.validated.group.Validation;
 import top.jpower.core.auth.annotation.Function;
 import top.jpower.core.auth.annotation.Menu;
@@ -22,7 +21,6 @@ import top.jpower.core.boot.controller.BaseController;
 import top.jpower.core.exception.annotation.OperateLog;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
-import top.jpower.core.redis.cache.CacheUtil;
 import top.jpower.core.util.rsp.Pg;
 import top.jpower.core.util.rsp.R;
 import top.jpower.core.util.utils.Fc;
@@ -104,8 +102,6 @@ public class TenantController extends BaseController {
 	@DeleteMapping("/delete")
 	public R<Boolean> delete(@Parameter(description = "租户主键，多个逗号分隔") @NotBlank(message = "主键不可为空") @RequestParam String ids){
 		JpowerAssert.isTrue(ShieldUtil.isRoot(), JpowerError.Auth,NOT_SUPER_ADMIN_MODIFY_TENANT);
-
-		CacheUtil.clear(CacheNames.TENANT_KEY);
 		return R.status(tenantService.removeByIds(Fc.toLongList(ids)));
 	}
 

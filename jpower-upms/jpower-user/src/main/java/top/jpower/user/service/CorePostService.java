@@ -3,8 +3,8 @@ package top.jpower.user.service;
 import top.jpower.core.dbs.service.BaseService;
 import top.jpower.core.util.rsp.Pg;
 import top.jpower.user.dbs.entity.CorePost;
-import top.jpower.user.vo.PostSelectVO;
-import top.jpower.user.vo.PostVO;
+import top.jpower.user.pojo.PostSelectVO;
+import top.jpower.user.pojo.PostVO;
 
 import java.util.List;
 import java.util.Map;

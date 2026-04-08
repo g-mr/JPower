@@ -43,8 +43,8 @@ import top.jpower.resource.api.dto.ValidateDTO;
 import top.jpower.resource.api.feign.SmsClient;
 import top.jpower.user.dbs.entity.CoreUser;
 import top.jpower.user.service.CoreUserService;
-import top.jpower.user.vo.LoginUserVO;
-import top.jpower.user.vo.UserVO;
+import top.jpower.user.pojo.LoginUserVO;
+import top.jpower.user.pojo.UserVO;
 
 import java.io.File;
 import java.io.IOException;

@@ -34,14 +34,17 @@ import top.jpower.core.util.utils.UuidUtil;
 import top.jpower.system.api.cache.SystemCache;
 import top.jpower.system.api.cache.param.ParamCache;
 import top.jpower.system.api.dto.TenantDTO;
+import top.jpower.user.dbs.dao.CorePostDao;
 import top.jpower.user.dbs.dao.CoreUserDao;
 import top.jpower.user.dbs.dao.CoreUserRoleDao;
 import top.jpower.user.dbs.dao.mapper.CoreUserMapper;
+import top.jpower.user.dbs.entity.CorePost;
 import top.jpower.user.dbs.entity.CoreUser;
 import top.jpower.user.dbs.entity.CoreUserRole;
+import top.jpower.user.pojo.UserByRoleBO;
 import top.jpower.user.service.CoreUserService;
-import top.jpower.user.vo.LoginUserVO;
-import top.jpower.user.vo.UserVO;
+import top.jpower.user.pojo.LoginUserVO;
+import top.jpower.user.pojo.UserVO;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,7 +57,9 @@ import java.util.stream.Collectors;
 
 import static top.jpower.common.constants.CacheNames.TOKEN_USER_KEY;
 import static top.jpower.common.constants.ServiceCodeConstants.*;
-import static top.jpower.core.dbs.tenant.TenantConstant.*;
+import static top.jpower.core.dbs.tenant.TenantConstant.DEFAULT_TENANT_CODE;
+import static top.jpower.core.dbs.tenant.TenantConstant.TENANT_ACCOUNT_NUMBER;
+import static top.jpower.core.dbs.tenant.TenantConstant.getAccountNumber;
 
 /**
  * 用户服务
@@ -67,6 +72,7 @@ import static top.jpower.core.dbs.tenant.TenantConstant.*;
 public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUser> implements CoreUserService {
 
     private final CoreUserDao coreUserDao;
+	private final CorePostDao corePostDao;
     private final CoreUserRoleDao coreUserRoleDao;
     private final RedisService redisService;
     private final JpowerTenantProperties tenantProperties;
@@ -468,8 +474,8 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
     }
 
     @Override
-    public Pg<UserVO> pageByRoleId(Map<String, Object> map) {
-        return coreUserDao.pageByRoleId(map);
+    public Pg<UserVO> pageByRoleId(UserByRoleBO query) {
+        return coreUserDao.pageByRoleId(query);
     }
 
 	/**
@@ -493,6 +499,12 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
 	@Override
 	public boolean enable(Long id, Boolean status) {
 		return coreUserDao.updateById(UpdateEntity.of(CoreUser.class).setActivationStatus(status).setId(id));
+	}
+
+	@Override
+	public boolean removeTenantAll(List<String> tenantCodes) {
+		corePostDao.remove(Wrappers.getQueryWrapper().in(CorePost::getTenantCode, tenantCodes));
+		return coreUserDao.remove(Wrappers.getQueryWrapper().in(CoreUser::getTenantCode, tenantCodes));
 	}
 
 }

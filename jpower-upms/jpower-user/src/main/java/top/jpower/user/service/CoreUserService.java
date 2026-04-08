@@ -3,8 +3,9 @@ package top.jpower.user.service;
 import top.jpower.core.dbs.service.BaseService;
 import top.jpower.core.util.rsp.Pg;
 import top.jpower.user.dbs.entity.CoreUser;
-import top.jpower.user.vo.LoginUserVO;
-import top.jpower.user.vo.UserVO;
+import top.jpower.user.pojo.LoginUserVO;
+import top.jpower.user.pojo.UserByRoleBO;
+import top.jpower.user.pojo.UserVO;
 
 import java.util.List;
 import java.util.Map;
@@ -201,7 +202,7 @@ public interface CoreUserService extends BaseService<CoreUser> {
      * @param map 查询条件
      * @return 分页用户列表
      **/
-    Pg<UserVO> pageByRoleId(Map<String, Object> map);
+    Pg<UserVO> pageByRoleId(UserByRoleBO query);
 
 	/**
 	 *据用户id查询用户信息
@@ -217,4 +218,12 @@ public interface CoreUserService extends BaseService<CoreUser> {
 	 * @return 是否成功
 	 */
 	boolean enable(Long id, Boolean status);
+
+	/**
+	 * 根据租户代码删除用户
+	 * @param tenantCodes 租户代码
+	 * @return 是否成功
+	 */
+	boolean removeTenantAll(List<String> tenantCodes);
+
 }

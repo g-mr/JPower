@@ -82,6 +82,20 @@ public class TenantServiceImpl extends BaseServiceImpl<CoreTenantMapper, CoreTen
         return tenantDao.updateById(tenant);
     }
 
+	@Override
+	public boolean removeByIds(List<Long> ids) {
+		CacheUtil.clear(CacheNames.TENANT_KEY);
+
+		List<String> tenantCodes = tenantDao.listTenantCode();
+
+		orgDao.remove(Wrappers.getQueryWrapper().in(CoreOrg::getTenantCode, tenantCodes));
+		roleDao.remove(Wrappers.getQueryWrapper().in(CoreOrg::getTenantCode, tenantCodes));
+		roleFunctionDao.remove(Wrappers.getQueryWrapper().in(CoreOrg::getTenantCode, tenantCodes));
+		dictDao.remove(Wrappers.getQueryWrapper().in(CoreOrg::getTenantCode, tenantCodes));
+		userClient.removeTenantAll(tenantCodes);
+		return tenantDao.removeByIds(ids);
+	}
+
     @Override
     public Long save(TenantCreateVO tenant) {
 		if (Fc.isNotBlank(tenant.getTenantCode())) {

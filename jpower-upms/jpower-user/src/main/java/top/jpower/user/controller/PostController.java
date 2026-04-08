@@ -22,8 +22,8 @@ import top.jpower.core.util.rsp.R;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.user.dbs.entity.CorePost;
 import top.jpower.user.service.CorePostService;
-import top.jpower.user.vo.PostSelectVO;
-import top.jpower.user.vo.PostVO;
+import top.jpower.user.pojo.PostSelectVO;
+import top.jpower.user.pojo.PostVO;
 
 import java.util.List;
 import java.util.Map;

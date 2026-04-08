@@ -49,4 +49,11 @@ public interface UserClient {
     @PostMapping("/validatePassword")
     R<Boolean> validatePassword(@RequestBody ValidatePasswordDTO validatePasswordDto);
 
+	/**
+	 * 根据租户代码删除用户
+	 * @param tenantCodes
+	 * @return
+	 */
+	@PostMapping("/removeTenantAll")
+	R<Boolean> removeTenantAll(@RequestBody List<String> tenantCodes);
 }

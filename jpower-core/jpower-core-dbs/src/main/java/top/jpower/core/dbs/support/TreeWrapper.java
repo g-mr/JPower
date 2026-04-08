@@ -9,6 +9,7 @@ import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.LambdaUtil;
 import top.jpower.core.util.utils.Fc;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.mybatisflex.core.query.QueryMethods.case_;
@@ -99,6 +100,16 @@ public class TreeWrapper extends QueryWrapper {
 		EXCLUDE.forEach(query::remove);
 		where(w->{
 			SqlWrapper.buildCondition(w, query);
+		});
+		return this;
+	}
+
+	public TreeWrapper map(Map<String, Object> query, String prefix) {
+		EXCLUDE.forEach(query::remove);
+		Map<String, Object> params = new HashMap<>(query.size());
+		query.forEach((key, value) -> params.put(prefix + "." + key, value));
+		where(w->{
+			SqlWrapper.buildCondition(w, params);
 		});
 		return this;
 	}

@@ -76,6 +76,17 @@ public class CoreTenantDao extends JpowerServiceImpl<CoreTenantMapper, CoreTenan
 	}
 
 	/**
+	 * 根据ID列表查询租户Code
+	 *
+	 * @author mr.g
+	 * @param ids ID列表
+	 * @return java.util.List<java.lang.String> 租户Code列表
+	 **/
+	public List<String> listTenantCodeInIds(List<Long> ids) {
+		return super.objListAs(Wrappers.getQueryWrapper().select(CoreTenant::getTenantCode).in(CoreTenant::getId, ids), String.class);
+	}
+
+	/**
 	 * 根据域名查询租户
 	 *
 	 * @author mr.g

@@ -1,4 +1,4 @@
-package top.jpower.user.vo;
+package top.jpower.user.pojo;
 
 import com.mybatisflex.annotation.Column;
 import io.swagger.v3.oas.annotations.media.Schema;
