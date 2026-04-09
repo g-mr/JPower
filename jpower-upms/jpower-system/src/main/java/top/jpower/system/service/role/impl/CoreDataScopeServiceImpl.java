@@ -69,7 +69,7 @@ public class CoreDataScopeServiceImpl extends BaseServiceImpl<CoreDataScopeMappe
 
     @Override
     public boolean roleDataScope(Long roleId, List<Long> dataIds) {
-		JpowerAssert.notTrue(coreRoleDao.existsByField(CoreRole::getId, roleId), JpowerError.NotFind,NOT_FOUND_DATA);
+		JpowerAssert.isTrue(coreRoleDao.existsByField(CoreRole::getId, roleId), JpowerError.NotFind,NOT_FOUND_DATA);
 
 		CacheUtil.clear(CacheNames.DATASCOPE_KEY);
 		CacheUtil.clear(CacheNames.ROLE_KEY);

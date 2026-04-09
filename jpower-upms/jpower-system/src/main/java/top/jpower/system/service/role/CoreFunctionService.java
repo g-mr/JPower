@@ -88,10 +88,9 @@ public interface CoreFunctionService extends BaseService<CoreFunction> {
      * @param roleIds 角色ID列表
      * @param clientCode 客户端编码
      * @param topMenuId 顶部菜单ID
-     * @param isHide 是否去除隐藏的菜单
      * @return 菜单列表
      */
-	List<Tree<Long>> listMenuByRoleId(List<Long> roleIds, String clientCode, Long topMenuId, boolean isHide);
+	List<Tree<Long>> listMenuByRoleId(List<Long> roleIds, String clientCode, Long topMenuId);
 
     /**
      * 根据角色，查询一个角色下的所有可用按钮

@@ -61,7 +61,7 @@ public class FunctionController extends BaseController {
 	@Operation(summary = "页面菜单获取")
 	@GetMapping(value = "/listMenuTree", produces = APPLICATION_JSON_VALUE)
 	public R<List<Tree<Long>>> listMenuTree(@Parameter(description = "顶部菜单ID") Long topMenuId){
-		return R.data(coreFunctionService.listMenuByRoleId(ShieldUtil.getUserRole(), ShieldUtil.getClientCode(), topMenuId, Boolean.TRUE));
+		return R.data(coreFunctionService.listMenuByRoleId(ShieldUtil.getUserRole(), ShieldUtil.getClientCode(), topMenuId));
 	}
 
 	@Function(value = "菜单列表",menus = {

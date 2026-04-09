@@ -81,88 +81,102 @@ public class DataScopeController {
         return R.status(dataScopeService.roleDataScope(roleId, dataIds));
     }
 
+	@Function(value = "列表",menus = {
+			@Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "SYSTEM_DATASCOPE_LISTPAGE",type = Menu.TYPE.BTN)
+	})
+	@Operation(summary = "分页列表")
+	@Parameters({
+			@Parameter(name = "pageNum", description = "第几页", example = "1", schema = @Schema(defaultValue = "1", type = "integer"), in = ParameterIn.QUERY, required = true),
+			@Parameter(name = "pageSize", description = "每页长度", example = "10", schema = @Schema(defaultValue = "10", type = "integer"), in = ParameterIn.QUERY, required = true),
+			@Parameter(name = "scopeCode", description = "权限编号", in = ParameterIn.QUERY),
+			@Parameter(name = "scopeName", description = "权限名称", in = ParameterIn.QUERY),
+			@Parameter(name = "scopeType_eq", description = "权限类型 字典DATA_SCOPE_TYPE", in = ParameterIn.QUERY),
+			@Parameter(name = "allRole_eq", description = "是否所有角色都执行", in = ParameterIn.QUERY)
+	})
+	@GetMapping(value = "/listPage/{menuId}", produces = APPLICATION_JSON_VALUE)
+	public R<Pg<CoreDataScope>> listPage(@Parameter(description = "菜单ID", required = true) @PathVariable("menuId") Long menuId,
+										 @Ignore @RequestParam(required = false) Map<String,Object> map){
+		map.put("menuId_eq", menuId);
+		return R.data(dataScopeService.pg(map));
+	}
 
+	@Function(value = "新增",menus = {
+			@Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE", btnCode = "SYSTEM_DATASCOPE_LISTPAGE",code = "SYSTEM_DATASCOPE_ADD",type = Menu.TYPE.BTN)
+	})
+	@Operation(summary = "新增")
+	@PostMapping(value = "/add", produces = APPLICATION_JSON_VALUE)
+	public R<Long> add(@Validated(Validation.Create.class) @RequestBody CoreDataScope dataScope){
+		return R.data(dataScopeService.create(dataScope));
+	}
 
+	@Function(value = "修改",menus = {
+			@Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE", btnCode = "SYSTEM_DATASCOPE_LISTPAGE",code = "SYSTEM_DATASCOPE_UPDATE",type = Menu.TYPE.BTN)
+	})
+	@Operation(summary = "修改")
+	@PutMapping(value = "/update", produces = APPLICATION_JSON_VALUE)
+	public R<Boolean> update(@Validated(Validation.Update.class) @RequestBody CoreDataScope dataScope){
+		CacheUtil.clear(CacheNames.DATASCOPE_KEY);
+		return R.status(dataScopeService.updateById(dataScope));
+	}
 
+	@Function(value = "删除",menus = {
+			@Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE", btnCode = "SYSTEM_DATASCOPE_LISTPAGE",code = "SYSTEM_DATASCOPE_DELETE",type = Menu.TYPE.BTN)
+	})
+	@Operation(summary = "删除")
+	@DeleteMapping(value = "/delete/{id}", produces = APPLICATION_JSON_VALUE)
+	public R<Boolean> delete(@Parameter(description = "主键",required = true) @PathVariable("id") Long id){
+		CacheUtil.clear(CacheNames.DATASCOPE_KEY);
+		return R.status(dataScopeService.removeRealById(id));
+	}
 
+	@Function(value = "复制",menus = {
+			@Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE", btnCode = "SYSTEM_DATASCOPE_LISTPAGE",code = "SYSTEM_DATASCOPE_COPY",type = Menu.TYPE.BTN)
+	})
+	@Operation(summary = "复制")
+	@PostMapping(value = "/copy/{id}", produces = APPLICATION_JSON_VALUE)
+	public R<Long> copy(@Parameter(description = "主建", required = true) @PathVariable("id") Long id){
+		CoreDataScope dataScope = dataScopeService.getById(id);
+		JpowerAssert.notNull(dataScope, JpowerError.NotFind, NOT_FOUND_DATA);
 
+		dataScope.setId(null);
+		return R.data(dataScopeService.create(dataScope));
+	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    @Function(value = "数据权限菜单列表",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "SYSTEM_DATASCOPE_MENU",type = Menu.TYPE.INTERFACE)
-    })
-    @Operation(summary = "数据权限菜单列表")
-    @Parameters({
-		@Parameter(name = "parentId_eq", description = "父级节点",example = TOP_CODE,required = true, in = ParameterIn.QUERY),
-		@Parameter(name = "alias", description = "别名", in = ParameterIn.QUERY),
-		@Parameter(name = "code", description = "编码", in = ParameterIn.QUERY),
-		@Parameter(name = "functionType_eq", description = "是否菜单 字典YN01", in = ParameterIn.QUERY),
-		@Parameter(name = "functionName", description = "功能名称", in = ParameterIn.QUERY),
-		@Parameter(name = "url", description = "功能URL", in = ParameterIn.QUERY),
-		@Parameter(name = "menuId_eq", description = "顶级菜单ID", in = ParameterIn.QUERY)
-    })
-    @GetMapping(value = "/listDataByParent/{clientId}", produces = APPLICATION_JSON_VALUE)
-    public R<List<DataFunctionVO>> listDataByParent(@Parameter(description = "客户端ID") @PathVariable("clientId") Long clientId,
-                                                    @Ignore @RequestParam(required = false) Map<String,Object> map){
+	@Function(value = "数据权限菜单列表",menus = {
+			@Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "SYSTEM_DATASCOPE_MENU",type = Menu.TYPE.INTERFACE)
+	})
+	@Operation(summary = "数据权限菜单列表")
+	@Parameters({
+			@Parameter(name = "parentId_eq", description = "父级节点",example = TOP_CODE,required = true, in = ParameterIn.QUERY),
+			@Parameter(name = "alias", description = "别名", in = ParameterIn.QUERY),
+			@Parameter(name = "code", description = "编码", in = ParameterIn.QUERY),
+			@Parameter(name = "functionType_eq", description = "是否菜单 字典YN01", in = ParameterIn.QUERY),
+			@Parameter(name = "functionName", description = "功能名称", in = ParameterIn.QUERY),
+			@Parameter(name = "url", description = "功能URL", in = ParameterIn.QUERY),
+			@Parameter(name = "menuId_eq", description = "顶级菜单ID", in = ParameterIn.QUERY)
+	})
+	@GetMapping(value = "/listDataByParent/{clientId}", produces = APPLICATION_JSON_VALUE)
+	public R<List<DataFunctionVO>> listDataByParent(@Parameter(description = "客户端ID") @PathVariable("clientId") Long clientId,
+													@Ignore @RequestParam(required = false) Map<String,Object> map){
 		map.putIfAbsent("parentId_eq", TOP_CODE_LONG);
 		map.put("clientId_eq", clientId);
-        return R.data(coreFunctionService.listDataFunction(map));
-    }
+		return R.data(coreFunctionService.listDataFunction(map));
+	}
 
-    @Function(value = "复制",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE", btnCode = "SYSTEM_DATASCOPE_LISTPAGE",code = "SYSTEM_DATASCOPE_COPY",type = Menu.TYPE.BTN)
-    })
-    @Operation(summary = "复制")
-    @PostMapping(value = "/copy/{id}", produces = APPLICATION_JSON_VALUE)
-    public R<Long> copy(@Parameter(description = "主建", required = true) @PathVariable("id") Long id){
-        CoreDataScope dataScope = dataScopeService.getById(id);
-        JpowerAssert.notNull(dataScope, JpowerError.NotFind, NOT_FOUND_DATA);
 
-        dataScope.setId(null);
-        return R.data(dataScopeService.create(dataScope));
-    }
 
-    @Function(value = "新增",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE", btnCode = "SYSTEM_DATASCOPE_LISTPAGE",code = "SYSTEM_DATASCOPE_ADD",type = Menu.TYPE.BTN)
-    })
-    @Operation(summary = "新增")
-    @PostMapping(value = "/add", produces = APPLICATION_JSON_VALUE)
-    public R<Long> add(@Validated(Validation.Create.class) @RequestBody CoreDataScope dataScope){
-        return R.data(dataScopeService.create(dataScope));
-    }
 
-    @Function(value = "修改",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE", btnCode = "SYSTEM_DATASCOPE_LISTPAGE",code = "SYSTEM_DATASCOPE_UPDATE",type = Menu.TYPE.BTN)
-    })
-    @Operation(summary = "修改")
-    @PutMapping(value = "/update", produces = APPLICATION_JSON_VALUE)
-    public R<Boolean> update(@Validated(Validation.Update.class) @RequestBody CoreDataScope dataScope){
-        CacheUtil.clear(CacheNames.DATASCOPE_KEY);
-        return R.status(dataScopeService.updateById(dataScope));
-    }
 
-    @Function(value = "删除",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE", btnCode = "SYSTEM_DATASCOPE_LISTPAGE",code = "SYSTEM_DATASCOPE_DELETE",type = Menu.TYPE.BTN)
-    })
-    @Operation(summary = "删除")
-    @DeleteMapping(value = "/delete/{id}", produces = APPLICATION_JSON_VALUE)
-    public R<Boolean> delete(@Parameter(description = "主键",required = true) @PathVariable("id") Long id){
-        CacheUtil.clear(CacheNames.DATASCOPE_KEY);
-        return R.status(dataScopeService.removeRealById(id));
-    }
+
+
+
+
+
+
+
+
+
+
 
     @Function(value = "详情",menus = {
 		@Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE", btnCode = "SYSTEM_DATASCOPE_LISTPAGE",code = "SYSTEM_DATASCOPE_DETAIL",type = Menu.TYPE.BTN)
@@ -171,25 +185,6 @@ public class DataScopeController {
     @GetMapping(value = "/queryById/{id}", produces = APPLICATION_JSON_VALUE)
     public R<CoreDataScope> queryById(@Parameter(description = "主键",required = true) @PathVariable("id") Long id){
         return R.data(dataScopeService.getById(id));
-    }
-
-    @Function(value = "列表",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_DATASCOPE",code = "SYSTEM_DATASCOPE_LISTPAGE",type = Menu.TYPE.BTN)
-    })
-    @Operation(summary = "分页列表")
-    @Parameters({
-		@Parameter(name = "pageNum", description = "第几页", example = "1", schema = @Schema(defaultValue = "1", type = "integer"), in = ParameterIn.QUERY, required = true),
-		@Parameter(name = "pageSize", description = "每页长度", example = "10", schema = @Schema(defaultValue = "10", type = "integer"), in = ParameterIn.QUERY, required = true),
-		@Parameter(name = "scopeCode", description = "权限编号", in = ParameterIn.QUERY),
-		@Parameter(name = "scopeName", description = "权限名称", in = ParameterIn.QUERY),
-		@Parameter(name = "scopeType_eq", description = "权限类型 字典DATA_SCOPE_TYPE", in = ParameterIn.QUERY),
-		@Parameter(name = "allRole_eq", description = "是否所有角色都执行", in = ParameterIn.QUERY)
-    })
-    @GetMapping(value = "/listPage/{menuId}", produces = APPLICATION_JSON_VALUE)
-    public R<Pg<CoreDataScope>> listPage(@Parameter(description = "菜单ID", required = true) @PathVariable("menuId") Long menuId,
-										 @Ignore @RequestParam(required = false) Map<String,Object> map){
-		map.put("menuId_eq", menuId);
-        return R.data(dataScopeService.pg(map));
     }
 
 }

@@ -185,7 +185,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
     private Mono<Void> unAuth(ServerHttpResponse resp, String msg) {
         String result = "";
         try {
-            result = objectMapper.writeValueAsString(response(HttpStatus.UNAUTHORIZED.value(),msg));
+            result = objectMapper.writeValueAsString(response(HttpStatus.FORBIDDEN.value(),msg));
         } catch (JsonProcessingException e) {
             log.error(e.getMessage(), e);
         }

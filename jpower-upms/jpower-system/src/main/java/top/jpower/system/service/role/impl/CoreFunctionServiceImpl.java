@@ -213,12 +213,12 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<CoreFunctionMapper,
     }
 
     @Override
-    public List<Tree<Long>> listMenuByRoleId(List<Long> roleIds, String clientCode, Long topMenuId,boolean isHide) {
+    public List<Tree<Long>> listMenuByRoleId(List<Long> roleIds, String clientCode, Long topMenuId) {
         if (Fc.isEmpty(roleIds)){
             return ListUtil.empty();
         }
 
-        List<Tree<Long>> list = coreFunctionDao.treeInfo(roleIds, null, clientDao.queryIdByCode(clientCode).orElseThrow(()->new JpowerException(JpowerError.NotFind.getCode(), NOT_FOUND_CLIENT)), null, FunctionTypeEnum.MENU, isHide);
+        List<Tree<Long>> list = coreFunctionDao.treeInfo(roleIds, null, clientDao.queryIdByCode(clientCode).orElseThrow(()->new JpowerException(JpowerError.NotFind.getCode(), NOT_FOUND_CLIENT)), null, FunctionTypeEnum.MENU);
 
         //获取顶部菜单关联的左侧菜单
         if (Fc.notNull(topMenuId) && Fc.isNotEmpty(list)){
@@ -277,7 +277,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<CoreFunctionMapper,
         if (Fc.isEmpty(parentIds)){
             return ListUtil.empty();
         }
-        return coreFunctionDao.treeInfo(roleIds, parentId, clientId, parentIds, FunctionTypeEnum.BTN, false);
+        return coreFunctionDao.treeInfo(roleIds, parentId, clientId, parentIds, FunctionTypeEnum.BTN);
     }
 
     @Override

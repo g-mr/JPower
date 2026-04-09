@@ -7,6 +7,7 @@ import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.query.QueryColumnBehavior;
 import com.mybatisflex.core.query.QueryCondition;
 import com.mybatisflex.core.query.QueryMethods;
+import com.mybatisflex.core.query.RawQueryCondition;
 import com.mybatisflex.core.util.LambdaUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -31,9 +32,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.mybatisflex.core.constant.SqlConsts.EQUALS;
+import static com.mybatisflex.core.constant.SqlConsts.NOT_EQUALS;
+import static com.mybatisflex.core.constant.SqlConsts.NOT_LIKE;
 import static top.jpower.core.util.constants.JpowerConstants.TOP_CODE;
 import static top.jpower.system.dbs.entity.function.table.CoreFunctionTableDef.CORE_FUNCTION;
-import static top.jpower.system.dbs.entity.role.table.CoreRoleFunctionTableDef.CORE_ROLE_FUNCTION;
 
 /**
  * 功能数据访问对象
@@ -249,17 +252,24 @@ public class CoreFunctionDao extends JpowerServiceImpl<CoreFunctionMapper, CoreF
 	 **/
 	public List<DataFunctionVO> listDataFunction(Long menuId, Map<String, Object> map, List<Long> roleIds) {
 		return super.listAs(Wrappers.getQueryWrapper(map)
-						.as("t")
-						.select(CORE_ROLE_FUNCTION.DEFAULT_COLUMNS)
-						.select(QueryMethods.column(QueryMethods.exists(QueryMethods.selectOne()
-								.where(CORE_FUNCTION.PARENT_ID.eq(CORE_FUNCTION.as("t").ID).and(CORE_FUNCTION.FUNCTION_TYPE.eq(FunctionTypeEnum.MENU.getValue())))).toSql(Collections.singletonList(CORE_FUNCTION), dialect)).as(DataFunctionVO::getHasChildren))
-						.select(QueryMethods.column(QueryMethods.exists(QueryMethods.selectOne()
-								.where(CORE_FUNCTION.PARENT_ID.eq(CORE_FUNCTION.as("t").ID).and(CORE_FUNCTION.FUNCTION_TYPE.ne(FunctionTypeEnum.MENU.getValue())))).toSql(Collections.singletonList(CORE_FUNCTION), dialect)).as(DataFunctionVO::getIsData))
-						.leftJoin(CoreRoleFunction.class, Fc.isNotEmpty(roleIds)).on(CoreRoleFunction::getFunctionId, CoreFunction::getId)
-						.in(CoreRoleFunction::getRoleId, roleIds, Fc.isNotEmpty(roleIds))
-						.leftJoin(CoreFunctionMenu.class, Fc.notNull(menuId)).on(CoreFunctionMenu::getFunctionId, CoreFunction::getId)
-						.eq(CoreFunctionMenu::getMenuId, menuId, Fc.notNull(menuId))
-						.orderBy(CoreFunction::getSort).asc(), DataFunctionVO.class);
+				.from(CoreFunction.class).as("t")
+				.select(CORE_FUNCTION.DEFAULT_COLUMNS)
+				.select(QueryMethods.column(QueryMethods.exists(QueryMethods.selectOne()
+								.from(CoreFunction.class)
+						.where(CORE_FUNCTION.PARENT_ID.eq(CORE_FUNCTION.as("t").ID)
+								.and(new RawQueryCondition(CORE_FUNCTION.FUNCTION_TYPE.getName()+" "+EQUALS+" " + FunctionTypeEnum.MENU.getValue()))))
+						.toSql(Collections.singletonList(CORE_FUNCTION), dialect)).as(DataFunctionVO::getHasChildren))
+				.select(QueryMethods.column(QueryMethods.exists(QueryMethods.selectOne()
+						.from(CoreFunction.class)
+						.where(CORE_FUNCTION.PARENT_ID.eq(CORE_FUNCTION.as("t").ID)
+								.and(new RawQueryCondition(CORE_FUNCTION.URL.getName() + " "+NOT_LIKE+" 'http%'"))
+								.and(new RawQueryCondition(CORE_FUNCTION.FUNCTION_TYPE.getName()+" "+NOT_EQUALS+" " + FunctionTypeEnum.MENU.getValue()))))
+						.toSql(Collections.singletonList(CORE_FUNCTION), dialect)).as(DataFunctionVO::getIsData))
+				.leftJoin(CoreRoleFunction.class, Fc.isNotEmpty(roleIds)).on(CoreRoleFunction::getFunctionId, CoreFunction::getId)
+				.in(CoreRoleFunction::getRoleId, roleIds, Fc.isNotEmpty(roleIds))
+				.leftJoin(CoreFunctionMenu.class, Fc.notNull(menuId)).on(CoreFunctionMenu::getFunctionId, CoreFunction::getId)
+				.eq(CoreFunctionMenu::getMenuId, menuId, Fc.notNull(menuId))
+				.orderBy(CoreFunction::getSort).asc(), DataFunctionVO.class);
 	}
 
 	/**
@@ -292,7 +302,7 @@ public class CoreFunctionDao extends JpowerServiceImpl<CoreFunctionMapper, CoreF
 	 * @param topBtnIds 顶级按钮ID列表
 	 * @return 功能树
 	 **/
-	public List<Tree<Long>> treeInfo(List<Long> roleIds, Long parentId, Long clientId, List<Long> topBtnIds, FunctionTypeEnum functionType, boolean isHide) {
+	public List<Tree<Long>> treeInfo(List<Long> roleIds, Long parentId, Long clientId, List<Long> topBtnIds, FunctionTypeEnum functionType) {
 		return super.tree(Wrappers.getTreeWrapper(CoreFunction::getId, CoreFunction::getParentId)
 				.select(CoreFunction::getFunctionName,
 						CoreFunction::getCode,
@@ -301,6 +311,7 @@ public class CoreFunctionDao extends JpowerServiceImpl<CoreFunctionMapper, CoreF
 						CoreFunction::getIcon,
 						CoreFunction::getSort,
 						CoreFunction::getIsHide,
+						CoreFunction::getFunctionType,
 						CoreFunction::getTarget)
 				.eq(CoreFunction::getFunctionType, functionType.getValue())
 				.eq(CoreFunction::getClientId, clientId)
@@ -336,7 +347,9 @@ public class CoreFunctionDao extends JpowerServiceImpl<CoreFunctionMapper, CoreF
 					.select(CORE_FUNCTION.DEFAULT_COLUMNS)
 					.select(QueryMethods.column(QueryMethods.exists(QueryMethods.selectOne()
 							.from(CoreFunction.class)
-							.where(CORE_FUNCTION.PARENT_ID.eq(CORE_FUNCTION.as("t").ID).and(CORE_FUNCTION.FUNCTION_TYPE.eq(functionType)))).toSql(Collections.singletonList(CORE_FUNCTION), dialect))
+							.where(CORE_FUNCTION.PARENT_ID.eq(CORE_FUNCTION.as("t").ID)
+									.and(new RawQueryCondition(CORE_FUNCTION.FUNCTION_TYPE.getName()+" "+EQUALS+" " + functionType))))
+									.toSql(Collections.singletonList(CORE_FUNCTION), dialect))
 							.as(FunctionVO::getHasChildren))
 					.leftJoin(CoreFunctionMenu.class, Fc.notNull(menuId)).on(CoreFunctionMenu::getFunctionId, CoreFunction::getId)
 					.eq(CoreFunctionMenu::getMenuId, menuId)

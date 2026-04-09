@@ -65,7 +65,7 @@ public class SystemClientController extends BaseController implements SystemClie
     @Override
     @GetMapping("/function/getMenuListByRole")
     public R<List<FunctionDTO>> getMenuListByRole(@RequestParam List<Long> roleIds, @RequestParam String clientCode, @RequestParam(required = false) Long topMenuId) {
-        return R.data(BeanUtil.copyToList(coreFunctionService.listMenuByRoleId(roleIds, clientCode, topMenuId, Boolean.FALSE), FunctionDTO.class));
+        return R.data(BeanUtil.copyToList(coreFunctionService.listMenuByRoleId(roleIds, clientCode, topMenuId), FunctionDTO.class));
     }
 
     @Override
