@@ -100,7 +100,7 @@ public class JpowerServiceImpl<M extends JpowerBaseMapper<T>, T extends BaseEnti
      * @param entityList 实体列表
      */
     public boolean addBatchSomeColumn(List<T> entityList) {
-        return SqlUtil.toBool(getMapper().insertBatchSelective(entityList));
+        return SqlUtil.toBool(getMapper().insertBatch(entityList));
     }
 
     /**

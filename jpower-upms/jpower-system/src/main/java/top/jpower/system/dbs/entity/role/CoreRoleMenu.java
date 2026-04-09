@@ -15,7 +15,7 @@ import top.jpower.core.dbs.dbs.entity.base.BaseEntity;
  * @author mr.g
  */
 @Data
-@Table(value = "core_role_menu", comment = "角色顶级菜单权限信息")
+@Table(value = "tb_core_role_menu", comment = "角色顶级菜单权限信息")
 @EqualsAndHashCode(callSuper = true)
 public class CoreRoleMenu extends BaseEntity {
 

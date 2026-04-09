@@ -111,7 +111,7 @@ public class CoreRoleServiceImpl extends BaseServiceImpl<CoreRoleMapper, CoreRol
             roleMenuList.add(roleMenu);
         });
 
-        return coreRoleMenuDao.addBatchSomeColumn(roleMenuList);
+        return coreRoleMenuDao.saveBatch(roleMenuList);
     }
 
 	@Override
