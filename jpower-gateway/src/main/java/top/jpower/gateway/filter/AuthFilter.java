@@ -179,7 +179,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
         } catch (JsonProcessingException e) {
             log.error(e.getMessage(), e);
         }
-        return sendMesg(resp,result);
+        return sendMesg(HttpStatus.UNAUTHORIZED, resp,result);
     }
 
     private Mono<Void> unAuth(ServerHttpResponse resp, String msg) {
@@ -189,12 +189,12 @@ public class AuthFilter implements GlobalFilter, Ordered {
         } catch (JsonProcessingException e) {
             log.error(e.getMessage(), e);
         }
-        return sendMesg(resp,result);
+        return sendMesg(HttpStatus.FORBIDDEN, resp,result);
     }
 
-    private Mono<Void> sendMesg(ServerHttpResponse resp, String result) {
+    private Mono<Void> sendMesg(HttpStatus status, ServerHttpResponse resp, String result) {
         resp.getHeaders().setContentType(MediaType.APPLICATION_JSON);
-        resp.setStatusCode(HttpStatus.UNAUTHORIZED);
+        resp.setStatusCode(status);
         DataBuffer buffer = resp.bufferFactory().wrap(result.getBytes(StandardCharsets.UTF_8));
         return resp.writeWith(Flux.just(buffer));
     }
