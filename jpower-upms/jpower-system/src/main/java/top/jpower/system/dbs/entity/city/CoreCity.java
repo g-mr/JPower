@@ -25,7 +25,7 @@ public class CoreCity extends BaseEntity {
 
     @Schema(description = "主键")
     @Id(keyType = KeyType.Generator, value = KeyGenerators.flexId)
-	@NotBlank(message = "主键不可为空", groups = {Validation.Update.class})
+	@NotNull(message = "主键不可为空", groups = {Validation.Update.class})
     private Long id;
     @Schema(description = "编码")
 	@NotBlank(message = "编码不可为空", groups = {Validation.Create.class, Validation.Update.class})
@@ -50,7 +50,6 @@ public class CoreCity extends BaseEntity {
     private String countryCode;
     @Schema(description = "城市类型 字典CITY_TYPE")
     @Dict(name = "CITY_TYPE")
-	@NotBlank(message = "城市类型不可为空", groups = {Validation.Create.class, Validation.Update.class})
     private String cityType;
     @Schema(description = "备注")
     private String note;

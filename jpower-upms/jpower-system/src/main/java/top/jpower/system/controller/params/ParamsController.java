@@ -56,17 +56,17 @@ public class ParamsController extends BaseController {
         return R.data(paramService.pageByMap(map));
     }
 
-    @Function(value = "删除",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_PARAMS",code = "SYSTEM_PARAMS_DELETE",type = Menu.TYPE.BTN)
+    @Function(value = "新增",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_PARAMS",code = "SYSTEM_PARAMS_ADD",type = Menu.TYPE.BTN)
     })
-    @Operation(summary = "删除系统参数")
-    @DeleteMapping(value = "/delete", produces = APPLICATION_JSON_VALUE)
-    public R<Boolean> delete(@Parameter(description = "主键",required = true) @NotBlank(message = "主键不可为空") @RequestParam String ids){
-        return R.status(paramService.removeByIds(Fc.toLongList(ids)));
+    @Operation(summary = "新增系统参数")
+    @PostMapping(value = "/add", produces = APPLICATION_JSON_VALUE)
+    public R<Long> add(@Validated(Validation.Create.class) @RequestBody CoreParam coreParam){
+        return R.data(paramService.create(coreParam));
     }
 
     @Function(value = "编辑",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_PARAMS",code = "SYSTEM_PARAMS_UPDATE",type = Menu.TYPE.BTN)
+            @Menu(client = "admin",menuCode = "SYSTEM_PARAMS",code = "SYSTEM_PARAMS_UPDATE",type = Menu.TYPE.BTN)
     })
     @Operation(summary = "修改系统参数")
     @PutMapping(value = "/update", produces = APPLICATION_JSON_VALUE)
@@ -74,14 +74,30 @@ public class ParamsController extends BaseController {
         return R.status(paramService.updateById(coreParam));
     }
 
-    @Function(value = "新增",menus = {
-		@Menu(client = "admin",menuCode = "SYSTEM_PARAMS",code = "SYSTEM_PARAMS_ADD",type = Menu.TYPE.BTN)
+    @Function(value = "删除",menus = {
+            @Menu(client = "admin",menuCode = "SYSTEM_PARAMS",code = "SYSTEM_PARAMS_DELETE",type = Menu.TYPE.BTN)
     })
-    @Operation(summary = "新增系统参数")
-    @PostMapping(value = "/add", produces = APPLICATION_JSON_VALUE)
-    public R<Long> add(@Validated(Validation.Create.class) @RequestBody CoreParam coreParam){
-        return R.data(paramService.create(coreParam));
+    @Operation(summary = "删除系统参数")
+    @DeleteMapping(value = "/delete", produces = APPLICATION_JSON_VALUE)
+    public R<Boolean> delete(@Parameter(description = "主键",required = true) @NotBlank(message = "主键不可为空") @RequestParam String ids){
+        return R.status(paramService.removeByIds(Fc.toLongList(ids)));
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Function(value = "详情",menus = {
 		@Menu(client = "admin", menuCode = "SYSTEM_PARAMS",code = "SYSTEM_PARAMS_DETAIL",type = Menu.TYPE.BTN)

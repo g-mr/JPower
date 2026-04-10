@@ -1,19 +1,15 @@
 package top.jpower.core.dbs.support;
 
-import cn.hutool.core.util.StrUtil;
-import com.mybatisflex.core.exception.MybatisFlexException;
 import com.mybatisflex.core.query.QueryColumn;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.query.RawQueryColumn;
 import com.mybatisflex.core.util.LambdaGetter;
 import com.mybatisflex.core.util.LambdaUtil;
-import top.jpower.core.util.utils.Fc;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.mybatisflex.core.query.QueryMethods.case_;
-import static com.mybatisflex.core.query.QueryMethods.exists;
+import static com.mybatisflex.core.query.QueryMethods.*;
 import static top.jpower.core.dbs.support.Wrappers.EXCLUDE;
 import static top.jpower.core.util.constants.JpowerConstants.TOP_CODE;
 
@@ -68,18 +64,13 @@ public class TreeWrapper extends QueryWrapper {
      * @author mr.g
      **/
     public TreeWrapper lazy(Object parentIdValue){
-        if (Fc.isEmpty(queryTables)) {
-            throw new MybatisFlexException("请先from表");
-        }
-
-        String tableNameAlias = StrUtil.blankToDefault(queryTables.get(0).getAlias(), queryTables.get(0).getNameWithSchema());
+        QueryColumn parentIdClone = this.parentId.clone();
 
         super.select(
                 case_()
-                .when(exists(QueryWrapper.create()
-                        .select("1")
-                        .from(queryTables.get(0))
-                        .where(this.parentId.eq(tableNameAlias+"."+this.id.getName()))))
+                .when(exists(selectOne()
+                        .from(parentIdClone.getTable().as("child"))
+                        .where(parentIdClone.eq(this.id))))
                     .then(1)
                 .else_(0)
                 .end()

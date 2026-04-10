@@ -23,6 +23,7 @@ import top.jpower.core.redis.cache.CacheUtil;
 import top.jpower.core.util.rsp.Pg;
 import top.jpower.core.util.rsp.R;
 import top.jpower.core.util.utils.Fc;
+import top.jpower.core.util.utils.RandomUtil;
 import top.jpower.system.dbs.entity.function.CoreDataScope;
 import top.jpower.system.service.role.CoreDataScopeService;
 import top.jpower.system.service.role.CoreFunctionService;
@@ -139,6 +140,7 @@ public class DataScopeController {
 		JpowerAssert.notNull(dataScope, JpowerError.NotFind, NOT_FOUND_DATA);
 
 		dataScope.setId(null);
+		dataScope.setScopeCode(RandomUtil.randomStringUpper(6));
 		return R.data(dataScopeService.create(dataScope));
 	}
 
@@ -162,6 +164,7 @@ public class DataScopeController {
 		map.put("clientId_eq", clientId);
 		return R.data(coreFunctionService.listDataFunction(map));
 	}
+
 
 
 
