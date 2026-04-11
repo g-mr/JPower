@@ -9,6 +9,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import top.jpower.common.constants.CacheNames;
 import top.jpower.core.dbs.service.impl.BaseServiceImpl;
+import top.jpower.core.dbs.support.Wrappers;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.core.redis.cache.CacheUtil;
@@ -79,14 +80,20 @@ public class CoreCityServiceImpl extends BaseServiceImpl<CoreCityMapper, CoreCit
     @Override
     @CacheEvict(value = {CacheNames.CITY_PARENT_REDIS_KEY,CacheNames.CITY_PARENT_LIST_REDIS_KEY,CacheNames.CITY_PARENT_CODE_REDIS_KEY},allEntries = true)
     public Boolean deleteBatch(List<Long> ids) {
-        List<String> listCode = coreCityDao.listCodeByIds(ids);
-        if(listCode.size()>0){
-            long count = coreCityDao.countInField(CoreCity::getPcode, listCode);
-            JpowerAssert.geZero(count,JpowerError.Business,DELETE_CHILD);
-        }
+		if (ids.size() == 1) {
+			Long id = ids.get(0);
+			CoreCity city = coreCityDao.get(id);
+			return coreCityDao.removeReal(Wrappers.getQueryWrapper().likeLeft(CoreCity::getCode, StringUtil.removeAllSuffix(city.getCode(), "0")));
+		} else {
+			List<String> listCode = coreCityDao.listCodeByIds(ids);
+			if(listCode.size()>0){
+				long count = coreCityDao.countInField(CoreCity::getPcode, listCode);
+				JpowerAssert.geZero(count,JpowerError.Business,DELETE_CHILD);
+			}
 
-        CacheUtil.clear(CacheNames.CITY_KEY);
-        return coreCityDao.removeRealByIds(ids);
+			CacheUtil.clear(CacheNames.CITY_KEY);
+			return coreCityDao.removeRealByIds(ids);
+		}
     }
 
     @Override

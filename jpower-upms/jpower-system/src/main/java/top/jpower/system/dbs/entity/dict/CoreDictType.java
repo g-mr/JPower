@@ -6,6 +6,7 @@ import com.mybatisflex.annotation.Table;
 import com.mybatisflex.core.keygen.KeyGenerators;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import top.jpower.common.validated.group.Validation;
@@ -23,7 +24,7 @@ public class CoreDictType extends BaseEntity {
 
 	@Schema(description = "主键")
 	@Id(keyType = KeyType.Generator, value = KeyGenerators.flexId)
-	@NotBlank(message = "id不能为空", groups = Validation.Update.class)
+	@NotNull(message = "id不能为空", groups = Validation.Update.class)
 	private Long id;
     @Schema(description = "字典类型编码")
 	@NotBlank(message = "字典类型编码不能为空", groups = Validation.Create.class)

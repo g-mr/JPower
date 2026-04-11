@@ -20,6 +20,7 @@ import java.util.List;
 
 import static top.jpower.common.constants.ServiceCodeConstants.CODE_EXIST;
 import static top.jpower.common.constants.ServiceCodeConstants.DELETE_CHILD;
+import static top.jpower.common.constants.ServiceCodeConstants.NOT_FOUND_DICT_RYPE;
 
 /**
  * 字典类型服务实现
@@ -40,7 +41,7 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<CoreDictTypeMapper,
 
     @Override
     public Boolean deleteDictType(List<Long> ids) {
-        List<String> listCode = coreDictTypeDao.listCodeByIdsDel(ids);
+        List<String> listCode = coreDictTypeDao.listCodeByIds(ids);
         if (listCode.size() > 0){
             JpowerAssert.notTrue(coreDictTypeDao.existsByQuery(ids), JpowerError.Business, DELETE_CHILD);
         }
@@ -57,7 +58,6 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<CoreDictTypeMapper,
     @Override
     public Boolean addDictType(CoreDictType dictType) {
         dictType.setParentId(Fc.isNull(dictType.getParentId()) ? Fc.toLong(JpowerConstants.TOP_CODE) : dictType.getParentId());
-        dictType.setDelEnabled(dictType.getDelEnabled() ? Boolean.TRUE : dictType.getDelEnabled());
 
         JpowerAssert.notTrue(coreDictTypeDao.existsByField(CoreDictType::getDictTypeCode,dictType.getDictTypeCode()), JpowerError.Business, CODE_EXIST);
 		CacheUtil.clear(CacheNames.DICT_KEY);
@@ -66,7 +66,8 @@ public class CoreDictTypeServiceImpl extends BaseServiceImpl<CoreDictTypeMapper,
 
     @Override
     public Boolean updateDictType(CoreDictType dictType) {
-        String code = coreDictTypeDao.getCodeByIdsDel(dictType.getId());
+        String code = coreDictTypeDao.getCodeById(dictType.getId());
+		JpowerAssert.notEmpty(code, JpowerError.NotFind, NOT_FOUND_DICT_RYPE);
 
         if (coreDictTypeDao.updateById(dictType)){
             if (Fc.isNotBlank(dictType.getDictTypeCode())){

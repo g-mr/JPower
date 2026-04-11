@@ -6,6 +6,7 @@ import top.jpower.core.dbs.support.Wrappers;
 import top.jpower.system.dbs.dao.client.mapper.CoreClientMapper;
 import top.jpower.system.dbs.entity.client.CoreClient;
 import top.jpower.system.vo.SelectIdNameVO;
+import top.jpower.system.vo.SelectVO;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,5 +42,17 @@ public class CoreClientDao extends JpowerServiceImpl<CoreClientMapper, CoreClien
 		return super.listAs(Wrappers.getQueryWrapper()
 				.select(CORE_CLIENT.ID.as(SelectIdNameVO::getId), CORE_CLIENT.NAME)
 				.orderBy(CoreClient::getSortNum).asc(), SelectIdNameVO.class);
+	}
+
+	/**
+	 * 查询下拉列表
+	 *
+	 * @author mr.g
+	 * @return  数据
+	 **/
+	public List<SelectVO> selectCode() {
+		return super.listAs(Wrappers.getQueryWrapper()
+				.select(CORE_CLIENT.CLIENT_CODE.as(SelectVO::getCode), CORE_CLIENT.NAME)
+				.orderBy(CoreClient::getSortNum).asc(), SelectVO.class);
 	}
 }

@@ -77,7 +77,7 @@ public class SystemCache {
         if (Fc.isNull(city)){
             return StringPool.EMPTY;
         }
-        return city.getName();
+        return city.getFullname();
     }
 
     /**

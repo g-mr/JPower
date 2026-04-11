@@ -61,7 +61,7 @@ public interface CoreDictService extends BaseService<CoreDict> {
 	 * @param id 字典id
 	 * @return 是否停用成功
 	 */
-	boolean stopDict(Long id);
+	boolean stopDict(Long id, Boolean status);
 
 	/**
 	 * 批量删除字典

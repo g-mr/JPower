@@ -78,6 +78,11 @@ public class CoreClientServiceImpl extends BaseServiceImpl<CoreClientMapper, Cor
 	}
 
 	@Override
+	public List<SelectVO> selectCode() {
+		return coreClientDao.selectCode();
+	}
+
+	@Override
     public boolean saveOrUpdate(CoreClient coreClient){
         if (Fc.isNull(coreClient.getId())){
             coreClient.setClientSecret(RandomUtil.randomString(6));

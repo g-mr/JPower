@@ -2,11 +2,11 @@ package top.jpower.system.dbs.dao.dict;
 
 import cn.hutool.core.lang.tree.Tree;
 import org.springframework.stereotype.Repository;
-import top.jpower.common.enums.YNEnum;
+import top.jpower.common.enums.YN01Enum;
+import top.jpower.core.dbs.dbs.dao.JpowerServiceImpl;
 import top.jpower.core.dbs.support.Wrappers;
 import top.jpower.system.dbs.dao.dict.mapper.CoreDictTypeMapper;
 import top.jpower.system.dbs.entity.dict.CoreDictType;
-import top.jpower.core.dbs.dbs.dao.JpowerServiceImpl;
 
 import java.util.List;
 
@@ -23,7 +23,9 @@ public class CoreDictTypeDao extends JpowerServiceImpl<CoreDictTypeMapper, CoreD
 		return super.tree(Wrappers.getTreeWrapper(CoreDictType::getId, CoreDictType::getParentId)
 				.select(CoreDictType::getDictTypeName,
 						CoreDictType::getDictTypeCode,
-						CoreDictType::getIsTree).orderBy(CoreDictType::getSortNum).asc());
+						CoreDictType::getDelEnabled,
+						CoreDictType::getIsTree)
+				.orderBy(CoreDictType::getSortNum).asc());
 	}
 
 	/**
@@ -31,16 +33,16 @@ public class CoreDictTypeDao extends JpowerServiceImpl<CoreDictTypeMapper, CoreD
 	 * @param ids 主键
 	 * @return 字典类型编码
 	 */
-	public List<String> listCodeByIdsDel(List<Long> ids) {
+	public List<String> listCodeByIds(List<Long> ids) {
 		return super.objListAs(Wrappers.getQueryWrapper()
-				.in(CoreDictType::getId,ids)
-				.eq(CoreDictType::getDelEnabled, YNEnum.Y.getValue()), String.class);
+				.select(CoreDictType::getDictTypeCode)
+				.in(CoreDictType::getId,ids), String.class);
 	}
 
-	public String getCodeByIdsDel(Long id) {
+	public String getCodeById(Long id) {
 		return super.getObjAs(Wrappers.getQueryWrapper()
-				.eq(CoreDictType::getId,id)
-				.eq(CoreDictType::getDelEnabled, YNEnum.Y.getValue()), String.class);
+				.select(CoreDictType::getDictTypeCode)
+				.eq(CoreDictType::getId,id), String.class);
 	}
 
 	/**
@@ -60,6 +62,6 @@ public class CoreDictTypeDao extends JpowerServiceImpl<CoreDictTypeMapper, CoreD
 	public boolean removeByIdsDel(List<Long> ids) {
 		return super.removeReal(Wrappers.getQueryWrapper()
 				.in(CoreDictType::getId, ids)
-				.eq(CoreDictType::getDelEnabled, YNEnum.Y.getValue()));
+				.eq(CoreDictType::getDelEnabled, YN01Enum.Y.getValue()));
 	}
 }

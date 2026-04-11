@@ -1,7 +1,7 @@
 package top.jpower.system.service.dict.impl;
 
 import cn.hutool.core.lang.tree.Tree;
-import cn.hutool.core.util.NumberUtil;
+import top.jpower.core.util.utils.NumberUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.jpower.common.constants.CacheNames;
@@ -48,16 +48,16 @@ public class CoreDictServiceImpl extends BaseServiceImpl<CoreDictMapper, CoreDic
 
     @Override
     public Long saveDict(CoreDict dict) {
-		JpowerAssert.notTrue(dictTypeDao.existsByField(CoreDictType::getDictTypeCode, dict.getDictTypeCode()), JpowerError.NotFind, NOT_FOUND_DICT_RYPE);
+		JpowerAssert.isTrue(dictTypeDao.existsByField(CoreDictType::getDictTypeCode, dict.getDictTypeCode()), JpowerError.NotFind, NOT_FOUND_DICT_RYPE);
 
-        CoreDict coreDictType = dictDao.getByDictTypeCode(dict.getDictTypeCode(),dict.getCode());
+        CoreDict coreDict = dictDao.getByDictTypeCode(dict.getDictTypeCode(),dict.getCode());
         if(Fc.isNull(dict.getId())){
             dict.setLocale(Fc.isBlank(dict.getLocale()) ? CHINA.getValue() :dict.getLocale());
             dict.setIsStop(Fc.isNull(dict.getIsStop()) ? Boolean.FALSE : dict.getIsStop());
             dict.setParentId(Fc.notNull(dict.getParentId()) ? dict.getParentId() : Fc.toLong(TOP_CODE));
-            JpowerAssert.notTrue(coreDictType != null, JpowerError.Business,CODE_EXIST);
+            JpowerAssert.notTrue(coreDict != null, JpowerError.Business,CODE_EXIST);
         }else {
-            JpowerAssert.notTrue(coreDictType != null && !NumberUtil.equals(dict.getId(),coreDictType.getId()), JpowerError.Business,CODE_EXIST);
+            JpowerAssert.notTrue(coreDict != null && !NumberUtil.equals(dict.getId(),coreDict.getId()), JpowerError.Business,CODE_EXIST);
         }
 
 		CacheUtil.clear(CacheNames.DICT_KEY);
@@ -86,10 +86,10 @@ public class CoreDictServiceImpl extends BaseServiceImpl<CoreDictMapper, CoreDic
 
 
 	@Override
-	public boolean stopDict(Long id) {
+	public boolean stopDict(Long id, Boolean status) {
 		JpowerAssert.notTrue(dictDao.existsByParentIdNoStop(id), JpowerError.Business, DICT_EXIST_CHILD);
 		CacheUtil.clear(CacheNames.DICT_KEY);
-		return dictDao.stop(id);
+		return dictDao.stop(id, status);
 	}
 
 	@Override
@@ -113,7 +113,51 @@ public class CoreDictServiceImpl extends BaseServiceImpl<CoreDictMapper, CoreDic
 	 */
 	@Override
 	public List<Tree<Long>> dictSelect(String dictTypeCode) {
-		return dictDao.dictSelect(dictTypeCode);
+		List<Tree<Long>> treeList =  dictDao.dictSelect(dictTypeCode);
+		convertTreeValue(treeList);
+		return treeList;
+	}
+
+	/**
+	 * 递归转换树节点中value字段为真实数据类型
+	 *
+	 * @param treeList 树列表
+	 */
+	private void convertTreeValue(List<Tree<Long>> treeList) {
+		if (treeList == null) {
+			return;
+		}
+		for (Tree<Long> tree : treeList) {
+			Object value = tree.get("value");
+			if (value instanceof String) {
+				tree.put("value", convertValueType((String) value));
+			}
+			convertTreeValue(tree.getChildren());
+		}
+	}
+
+	/**
+	 * 智能识别字符串值并转换为真实类型
+	 * <p>
+	 * 转换优先级：Boolean > Integer > String
+	 * 布尔值仅识别 "true" 和 "false"（不区分大小写）
+	 * 整数识别标准Java数字格式（不含前导零，支持负号）
+	 * </p>
+	 *
+	 * @param value 字符串值
+	 * @return 转换后的值
+	 */
+	private Object convertValueType(String value) {
+		if ("true".equalsIgnoreCase(value)) {
+			return Boolean.TRUE;
+		}
+		if ("false".equalsIgnoreCase(value)) {
+			return Boolean.FALSE;
+		}
+		if (NumberUtil.isCompleteInteger(value)) {
+			return Integer.parseInt(value);
+		}
+		return value;
 	}
 
 }

@@ -348,7 +348,7 @@ public class CoreFunctionDao extends JpowerServiceImpl<CoreFunctionMapper, CoreF
 					.select(QueryMethods.column(QueryMethods.exists(QueryMethods.selectOne()
 							.from(CoreFunction.class)
 							.where(CORE_FUNCTION.PARENT_ID.eq(CORE_FUNCTION.as("t").ID)
-									.and(new RawQueryCondition(CORE_FUNCTION.FUNCTION_TYPE.getName()+" "+EQUALS+" " + functionType))))
+									.and(Fc.notNull(functionType) ? new RawQueryCondition(CORE_FUNCTION.FUNCTION_TYPE.getName()+" "+EQUALS+" " + functionType) : new RawQueryCondition("1=1"))))
 									.toSql(Collections.singletonList(CORE_FUNCTION), dialect))
 							.as(FunctionVO::getHasChildren))
 					.leftJoin(CoreFunctionMenu.class, Fc.notNull(menuId)).on(CoreFunctionMenu::getFunctionId, CoreFunction::getId)

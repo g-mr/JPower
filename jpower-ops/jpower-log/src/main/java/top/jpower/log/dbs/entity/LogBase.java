@@ -1,5 +1,8 @@
 package top.jpower.log.dbs.entity;
 
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.KeyType;
+import com.mybatisflex.core.keygen.KeyGenerators;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,6 +17,9 @@ import top.jpower.core.dbs.dbs.entity.base.BaseEntity;
 @EqualsAndHashCode(callSuper = true)
 public class LogBase extends BaseEntity {
 
+	@Id(keyType = KeyType.Generator, value = KeyGenerators.flexId)
+	@Schema(description = "主键")
+	private Long id;
     @Schema(description = "服务名称")
     private String serverName;
     @Schema(description = "服务器ip")

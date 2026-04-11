@@ -23,6 +23,7 @@ import top.jpower.core.util.utils.Fc;
 import top.jpower.system.dbs.entity.client.CoreClient;
 import top.jpower.system.service.client.CoreClientService;
 import top.jpower.system.vo.SelectIdNameVO;
+import top.jpower.system.vo.SelectVO;
 
 import java.util.List;
 import java.util.Map;
@@ -52,6 +53,16 @@ public class ClientController extends BaseController {
 	@GetMapping("selectList")
 	public R<List<SelectIdNameVO>> selectList() {
 		return R.data(coreClientService.select());
+	}
+
+	@Function(value = "客户端下拉(CODE)",menus = {
+			@Menu(client = "admin",menuCode = "ERROR_LOG",code = "ERROR_LOG_CLIENT_SELECT",type = Menu.TYPE.INTERFACE),
+			@Menu(client = "admin",menuCode = "OPERATE_LOG",code = "OPERATE_LOG_CLIENT_SELECT",type = Menu.TYPE.INTERFACE)
+	})
+	@Operation(summary = "下拉客户端列表")
+	@GetMapping("select")
+	public R<List<SelectVO>> select() {
+		return R.data(coreClientService.selectCode());
 	}
 
 	@Function(value = "列表",menus = {
