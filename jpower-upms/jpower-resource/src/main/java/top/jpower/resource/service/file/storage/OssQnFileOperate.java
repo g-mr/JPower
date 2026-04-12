@@ -73,7 +73,7 @@ public class OssQnFileOperate implements FileOperate {
      */
     @Override
     @SneakyThrows(QiniuException.class)
-    public ResourceFile upload(byte[] bytes, String name, Long size) {
+    public ResourceFile upload(byte[] bytes, String name, Long size, Long groupId) {
         String type = FileTypeUtil.getType(IoUtil.toStream(bytes), name);
 
         String key = DateUtil.format(DateUtil.date(), DatePattern.PURE_DATE_PATTERN) + File.separator + IdUtil.objectId() + StringPool.DOT + type;
@@ -94,6 +94,7 @@ public class OssQnFileOperate implements FileOperate {
         coreFile.setStorageType(resourceOss.getCode());
         coreFile.setPath(resourceOss.getBucketName() + File.separator + putRet.key);
         coreFile.setName(name);
+		coreFile.setGroupId(groupId);
 
         if (!fileDao.save(coreFile)){
             BucketManager bucketManager = new BucketManager(auth, cfg);

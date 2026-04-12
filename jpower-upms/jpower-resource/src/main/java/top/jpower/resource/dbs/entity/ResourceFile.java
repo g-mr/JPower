@@ -26,6 +26,8 @@ public class ResourceFile extends BaseEntity {
 	@Id(keyType = KeyType.Generator, value = KeyGenerators.flexId)
 	@NotNull(message = "主键不能为空")
 	private Long id;
+	@Schema(description = "文件分组ID")
+	private Long groupId;
 	@Schema(description = "文件名称")
     private String name;
     @Schema(description = "文件大小")

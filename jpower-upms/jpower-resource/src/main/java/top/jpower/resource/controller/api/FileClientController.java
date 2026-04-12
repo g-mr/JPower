@@ -40,7 +40,7 @@ public class FileClientController implements FileClient {
     public R<Long> uploadFile(@RequestParam("file") File file,@RequestParam("storageType") String storageType){
         ResourceFile coreFile = operateBuilder
                 .getBuilder(storageType)
-                .upload(FileUtil.readBytes(file), file.getName(), file.length());
+                .upload(FileUtil.readBytes(file), file.getName(), file.length(), null);
         return R.data(coreFile.getId());
     }
 

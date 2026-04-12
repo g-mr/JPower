@@ -1,5 +1,6 @@
 package top.jpower.resource.dbs.dao;
 
+import com.mybatisflex.core.util.UpdateEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import top.jpower.core.dbs.dbs.dao.JpowerServiceImpl;
@@ -12,6 +13,7 @@ import top.jpower.core.util.utils.MapUtil;
 import top.jpower.resource.dbs.dao.mapper.ResourceFileMapper;
 import top.jpower.resource.dbs.entity.ResourceFile;
 import top.jpower.resource.dbs.entity.ResourceOss;
+import top.jpower.resource.pojo.MoveBO;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,5 +61,24 @@ public class ResourceFileDao extends JpowerServiceImpl<ResourceFileMapper, Resou
 		return super.getOne(Wrappers.getQueryWrapper()
 				.select(ResourceFile::getPath,ResourceFile::getContent,ResourceFile::getName,ResourceFile::getStorageType)
 				.eq(ResourceFile::getId,id));
+	}
+
+	/**
+	 * 移动文件
+	 *
+	 * @param moveBO 移动参数
+	 * @return 是否成功
+	 */
+	public boolean move(MoveBO moveBO) {
+		return super.update(UpdateEntity.of(ResourceFile.class).setGroupId(moveBO.getGroupId()), Wrappers.getQueryWrapper().in(ResourceFile::getId, moveBO.getIds()));
+	}
+
+	/**
+	 * 移除分组
+	 *
+	 * @param groupId 分组ID
+	 */
+	public void moveUnGroup(Long groupId) {
+		super.update(UpdateEntity.of(ResourceFile.class).setGroupId(null), Wrappers.getQueryWrapper().eq(ResourceFile::getGroupId, groupId));
 	}
 }

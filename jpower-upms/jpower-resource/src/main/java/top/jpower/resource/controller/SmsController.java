@@ -26,7 +26,7 @@ import top.jpower.core.util.utils.Fc;
 import top.jpower.resource.dbs.entity.ResourceSms;
 import top.jpower.resource.service.ResourceSmsService;
 import top.jpower.resource.service.sms.SmsBuilder;
-import top.jpower.resource.vo.SmsSendVO;
+import top.jpower.resource.pojo.SmsSendVO;
 
 import java.util.Map;
 

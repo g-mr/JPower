@@ -40,7 +40,7 @@ public class FastDfsFileOperate implements FileOperate {
 
 
 	@Override
-	public ResourceFile upload(byte[] bytes, String name, Long size) {
+	public ResourceFile upload(byte[] bytes, String name, Long size, Long groupId) {
 
 		String type = FileTypeUtil.getType(IoUtil.toStream(bytes), name);
 
@@ -53,6 +53,7 @@ public class FastDfsFileOperate implements FileOperate {
 		file.setStorageType(FileStorageTypeEnum.FASTDFS.getValue());
 		file.setPath(dfsPath);
 		file.setName(name);
+		file.setGroupId(groupId);
 
 		try {
 			if (!coreFileService.add(file)){

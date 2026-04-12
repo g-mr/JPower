@@ -57,7 +57,7 @@ public class OssAliFileOperate implements FileOperate {
      * @return TbCoreFile
      */
     @Override
-    public ResourceFile upload(byte[] bytes, String name, Long size) {
+    public ResourceFile upload(byte[] bytes, String name, Long size, Long groupId) {
 
         String type = FileTypeUtil.getType(IoUtil.toStream(bytes), name);
 
@@ -79,6 +79,7 @@ public class OssAliFileOperate implements FileOperate {
         coreFile.setStorageType(resourceOss.getCode());
         coreFile.setPath(resourceOss.getBucketName() + File.separator + objectName);
         coreFile.setName(name);
+		coreFile.setGroupId(groupId);
 
         if (!fileDao.save(coreFile)){
             ossClient.deleteObject(resourceOss.getBucketName(), objectName);

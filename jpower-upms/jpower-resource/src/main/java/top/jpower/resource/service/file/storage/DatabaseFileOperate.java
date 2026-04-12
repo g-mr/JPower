@@ -32,7 +32,7 @@ public class DatabaseFileOperate implements FileOperate {
 	private final ResourceFileService coreFileService;
 
 	@Override
-	public ResourceFile upload(byte[] bytes, String name, Long size) {
+	public ResourceFile upload(byte[] bytes, String name, Long size, Long groupId) {
 
 		ResourceFile coreFile = new ResourceFile();
 		coreFile.setFileType(FileTypeUtil.getType(IoUtil.toStream(bytes),name));
@@ -42,6 +42,7 @@ public class DatabaseFileOperate implements FileOperate {
 		coreFile.setStorageType(FileStorageTypeEnum.DATABASE.getValue());
 		coreFile.setContent(bytes);
 		coreFile.setName(name);
+		coreFile.setGroupId(groupId);
 
 		coreFileService.add(coreFile);
 

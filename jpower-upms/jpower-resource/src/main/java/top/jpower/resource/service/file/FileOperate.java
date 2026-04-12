@@ -22,7 +22,7 @@ public interface FileOperate {
 	 * @param size  文件大小
 	 * @return 文件信息
 	 */
-	ResourceFile upload(byte[] bytes, String name, Long size);
+	ResourceFile upload(byte[] bytes, String name, Long size, Long groupId);
 
 	/**
 	 * 下载文件

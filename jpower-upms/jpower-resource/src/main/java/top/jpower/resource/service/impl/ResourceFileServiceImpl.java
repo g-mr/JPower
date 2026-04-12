@@ -8,10 +8,14 @@ import top.jpower.core.redis.cache.CacheUtil;
 import top.jpower.core.util.rsp.Pg;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.resource.dbs.dao.ResourceFileDao;
+import top.jpower.resource.dbs.dao.ResourceFileGroupDao;
 import top.jpower.resource.dbs.dao.mapper.ResourceFileMapper;
 import top.jpower.resource.dbs.entity.ResourceFile;
+import top.jpower.resource.dbs.entity.ResourceFileGroupDO;
+import top.jpower.resource.pojo.MoveBO;
 import top.jpower.resource.service.ResourceFileService;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,6 +31,7 @@ import java.util.Map;
 public class ResourceFileServiceImpl extends BaseServiceImpl<ResourceFileMapper, ResourceFile> implements ResourceFileService {
 
     private final ResourceFileDao coreFileDao;
+    private final ResourceFileGroupDao fileGroupDao;
 
 
     @Override
@@ -63,5 +68,31 @@ public class ResourceFileServiceImpl extends BaseServiceImpl<ResourceFileMapper,
 
 		CacheUtil.clear(CacheNames.FILE_KEY);
 		return coreFileDao.updateById(file);
+	}
+
+	@Override
+	public boolean move(MoveBO moveBO) {
+		return coreFileDao.move(moveBO);
+	}
+
+	@Override
+	public Boolean addGroup(ResourceFileGroupDO group) {
+		return fileGroupDao.save(group);
+	}
+
+	@Override
+	public Boolean deleteGroup(Long id) {
+		coreFileDao.moveUnGroup(id);
+		return fileGroupDao.removeById(id);
+	}
+
+	@Override
+	public boolean updateGroup(ResourceFileGroupDO group) {
+		return fileGroupDao.updateById(group);
+	}
+
+	@Override
+	public List<ResourceFileGroupDO> listGroup(Map<String, Object> map) {
+		return fileGroupDao.list(map);
 	}
 }

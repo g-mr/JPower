@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import top.jpower.common.constants.CacheNames;
 import top.jpower.common.constants.DefaultValConstants;
+import top.jpower.common.validated.group.Validation;
 import top.jpower.core.auth.annotation.Function;
 import top.jpower.core.auth.annotation.Menu;
 import top.jpower.core.boot.controller.BaseController;
@@ -28,6 +29,8 @@ import top.jpower.core.util.rsp.R;
 import top.jpower.core.util.utils.DesUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.resource.dbs.entity.ResourceFile;
+import top.jpower.resource.dbs.entity.ResourceFileGroupDO;
+import top.jpower.resource.pojo.MoveBO;
 import top.jpower.resource.service.ResourceFileService;
 import top.jpower.resource.service.ResourceOssService;
 import top.jpower.resource.service.file.FileOperateBuilder;
@@ -65,8 +68,9 @@ public class FileController extends BaseController {
     @Operation(summary = "上传文件")
     @PostMapping(value = "/upload", produces = APPLICATION_JSON_VALUE)
     public R<Long> upload(@Parameter(description = "文件", required = true) @NotNull(message = "文件不可为空") @RequestParam MultipartFile file,
-						  @Parameter(description = "存储类型 字典:FILE_STORAGE_TYPE", example = "SERVER") @RequestParam(required = false, defaultValue = "SERVER") String storageType) throws IOException {
-		ResourceFile coreFile = operateBuilder.getBuilder(storageType).upload(file.getBytes(), file.getOriginalFilename(), file.getSize());
+						  @Parameter(description = "存储类型 字典:FILE_STORAGE_TYPE", example = "SERVER") @RequestParam(required = false, defaultValue = "SERVER") String storageType,
+						  @Parameter(description = "文件分组ID") @RequestParam(required = false) Long groupId) throws IOException {
+		ResourceFile coreFile = operateBuilder.getBuilder(storageType).upload(file.getBytes(), file.getOriginalFilename(), file.getSize(), groupId);
 		CacheUtil.clear(CacheNames.FILE_KEY);
 		return R.data(coreFile.getId());
     }
@@ -84,7 +88,12 @@ public class FileController extends BaseController {
     @Operation(summary = "下载文件")
     @GetMapping(value = "/download/{base}", produces=APPLICATION_JSON_VALUE)
     public void download(@Parameter(description = "文件标识",required = true) @NotBlank(message = "文件标识不可为空") @PathVariable("base") String base) throws IOException {
-        String id = DesUtil.decrypt(base, DefaultValConstants.FILE_DES_KEY);
+		String id;
+        try {
+			id = DesUtil.decrypt(base, DefaultValConstants.FILE_DES_KEY);
+		} catch (Exception e) {
+			id = base;
+		}
         JpowerAssert.notEmpty(id,JpowerError.Arg,FILE_ID_NOT_LEGAL);
 
         ResourceFile coreFile = coreFileService.detailFile(id);
@@ -96,7 +105,12 @@ public class FileController extends BaseController {
     @Operation(summary = "获取文件外链")
     @GetMapping(value = "/url/{base}",produces=APPLICATION_JSON_VALUE)
     public R<String> url(@Parameter(description = "文件标识",required = true) @NotBlank(message = "文件标识不可为空") @PathVariable("base") String base){
-        String id = DesUtil.decrypt(base, DefaultValConstants.FILE_DES_KEY);
+		String id;
+		try {
+			id = DesUtil.decrypt(base, DefaultValConstants.FILE_DES_KEY);
+		} catch (Exception e) {
+			id = base;
+		}
         JpowerAssert.notEmpty(id,JpowerError.Arg,FILE_ID_NOT_LEGAL);
 
 		ResourceFile coreFile = coreFileService.detailFile(id);
@@ -113,6 +127,8 @@ public class FileController extends BaseController {
 		@Parameter(name = "pageNum", description = "第几页", example = "1", schema = @Schema(defaultValue = "1", type = "integer"), in = ParameterIn.QUERY, required = true),
 		@Parameter(name = "pageSize", description = "每页长度", example = "10", schema = @Schema(defaultValue = "10", type = "integer"), in = ParameterIn.QUERY, required = true),
 		@Parameter(name = "name", description = "文件名称", in = ParameterIn.QUERY),
+		@Parameter(name = "groupId_eq", description = "分组ID", in = ParameterIn.QUERY),
+		@Parameter(name = "groupId_null", description = "查询未分组文件，只要有这个参数不管有没有值都会生效", in = ParameterIn.QUERY),
 		@Parameter(name = "storageType_eq", description = "存储位置 字典FILE_STORAGE_TYPE", in = ParameterIn.QUERY),
 		@Parameter(name = "fileType_eq", description = "文件类型", in = ParameterIn.QUERY),
 		@Parameter(name = "fileSize_gt", description = "文件大小最大值", in = ParameterIn.QUERY),
@@ -166,5 +182,50 @@ public class FileController extends BaseController {
         list.addAll(ossService.listCodeName());
         return R.data(list);
     }
+
+	@Function(value = "移动文件",menus = {
+		@Menu(client = "admin",menuCode = "SYSTEM_FILE",code = "FILE_MOVE",type = Menu.TYPE.BTN)
+	})
+	@Operation(summary = "移动文件")
+	@PostMapping(value = "/move", produces = APPLICATION_JSON_VALUE)
+	public R<Boolean> move(@Valid @RequestBody MoveBO moveBO) {
+		return R.status(coreFileService.move(moveBO));
+	}
+
+	@Function(value = "文件分组列表",menus = {
+		@Menu(client = "admin",menuCode = "SYSTEM_FILE",code = "FILE_GROUP_LIST",type = Menu.TYPE.INTERFACE)
+	})
+	@Operation(summary = "文件分组列表")
+	@GetMapping(value = "/group/list", produces = APPLICATION_JSON_VALUE)
+	public R<List<ResourceFileGroupDO>> groupListPage(@Ignore @RequestParam(required = false) Map<String, Object> map) {
+		return R.data(coreFileService.listGroup(map));
+	}
+
+	@Function(value = "新增文件分组",menus = {
+		@Menu(client = "admin",menuCode = "SYSTEM_FILE",code = "FILE_GROUP_ADD",type = Menu.TYPE.BTN)
+	})
+	@Operation(summary = "新增文件分组")
+	@PostMapping(value = "/group/add", produces = APPLICATION_JSON_VALUE)
+	public R<Boolean> groupAdd(@Validated(Validation.Create.class) @RequestBody ResourceFileGroupDO group) {
+		return R.status(coreFileService.addGroup(group));
+	}
+
+	@Function(value = "修改文件分组",menus = {
+			@Menu(client = "admin",menuCode = "SYSTEM_FILE",code = "FILE_GROUP_UPDATE",type = Menu.TYPE.BTN)
+	})
+	@Operation(summary = "修改文件分组")
+	@PutMapping(value = "/group/update", produces = APPLICATION_JSON_VALUE)
+	public R<Boolean> groupUpdate(@Validated(Validation.Update.class) @RequestBody ResourceFileGroupDO group) {
+		return R.status(coreFileService.updateGroup(group));
+	}
+
+	@Function(value = "删除文件分组",menus = {
+		@Menu(client = "admin",menuCode = "SYSTEM_FILE",code = "FILE_GROUP_DELETE",type = Menu.TYPE.BTN)
+	})
+	@Operation(summary = "删除文件分组")
+	@DeleteMapping(value = "/group/delete/{id}", produces = APPLICATION_JSON_VALUE)
+	public R<Boolean> groupDelete(@NotNull(message = "主键不可为空") @PathVariable("id") Long id) {
+		return R.status(coreFileService.deleteGroup(id));
+	}
 
 }

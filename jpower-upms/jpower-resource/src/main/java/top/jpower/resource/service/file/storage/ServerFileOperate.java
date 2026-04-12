@@ -42,7 +42,7 @@ public class ServerFileOperate implements FileOperate {
 	private final ResourceFileService coreFileService;
 
 	@Override
-	public ResourceFile upload(byte[] bytes, String name, Long size) {
+	public ResourceFile upload(byte[] bytes, String name, Long size, Long groupId) {
 		JpowerAssert.notEmpty(fileProperties.getServer().getPath(), JpowerError.Unknown,FILE_SAVE_PATH_NOT_CONFIG);
 
 		File saveFile = FileUtil.saveFile(bytes, IdUtil.objectId(), fileProperties.getServer().getPath());
@@ -55,6 +55,7 @@ public class ServerFileOperate implements FileOperate {
 		coreFile.setFileSize(size);
 		coreFile.setId(Fc.randomSnowFlakeId());
 		coreFile.setMark(DesUtil.encrypt(Fc.toStr(coreFile.getId()), DefaultValConstants.FILE_DES_KEY));
+		coreFile.setGroupId(groupId);
 
 		try {
 			if (!coreFileService.add(coreFile)){

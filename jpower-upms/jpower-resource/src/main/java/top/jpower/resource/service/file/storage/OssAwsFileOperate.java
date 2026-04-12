@@ -65,7 +65,7 @@ public class OssAwsFileOperate implements FileOperate {
     }
 
     @Override
-    public ResourceFile upload(byte[] bytes, String name, Long size) {
+    public ResourceFile upload(byte[] bytes, String name, Long size, Long groupId) {
 
         String type = FileTypeUtil.getType(IoUtil.toStream(bytes), name);
         String key = DateUtil.format(DateUtil.date(), DatePattern.PURE_DATE_PATTERN) + File.separator + IdUtil.objectId() + StringPool.DOT + type;
@@ -84,6 +84,7 @@ public class OssAwsFileOperate implements FileOperate {
         coreFile.setStorageType(resourceOss.getCode());
         coreFile.setPath(key);
         coreFile.setName(name);
+		coreFile.setGroupId(groupId);
 
         if (!fileDao.save(coreFile)){
             s3Client.deleteObject(builder -> builder.key(key).bucket(resourceOss.getBucketName()));

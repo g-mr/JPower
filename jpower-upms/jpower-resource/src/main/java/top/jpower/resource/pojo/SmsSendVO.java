@@ -1,4 +1,4 @@
-package top.jpower.resource.vo;
+package top.jpower.resource.pojo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;

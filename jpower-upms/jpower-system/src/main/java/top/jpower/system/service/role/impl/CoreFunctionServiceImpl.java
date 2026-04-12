@@ -346,13 +346,13 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<CoreFunctionMapper,
                 if (Fc.isNotEmpty(functionList)){
                     List<CoreFunction> notNullFunctions = functionList.stream().filter(f->Fc.notNull(f.getParentId())).collect(Collectors.toList());
                     if (Fc.isNotEmpty(notNullFunctions)){
-                        coreFunctionDao.addBatchSomeColumn(notNullFunctions);
+                        coreFunctionDao.saveBatch(notNullFunctions);
                     }
 
                     List<CoreFunction> funcs = functionList.stream().filter(f->Fc.isNull(f.getParentId())).collect(Collectors.toList());
                     if (Fc.isNotEmpty(funcs)){
                         Map<String,CoreFunction> idCode = coreFunctionDao.selectIdByCode(new HashSet<>(codeMap.values()));
-                        coreFunctionDao.addBatchSomeColumn(funcs.stream().peek(f-> {
+                        coreFunctionDao.saveBatch(funcs.stream().peek(f-> {
                             CoreFunction parent = idCode.get(codeMap.get(f.getCode()));
                             f.setParentId(parent.getId());
                             f.setAncestorId(Fc.toStr(parent.getAncestorId(), TOP_CODE).concat(StringPool.COMMA).concat(Fc.toStr(parent.getId())));
