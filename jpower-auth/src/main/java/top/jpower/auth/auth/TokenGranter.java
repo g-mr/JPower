@@ -4,9 +4,9 @@ import top.jpower.auth.dto.TokenParameter;
 import top.jpower.user.api.dto.CoreUserDTO;
 
 /**
- * @Author 郭丁志
- * @Description //TODO 授权认证统一接口
- * @Date 00:34 2020-07-28
+ * 授权认证统一接口
+ *
+ * @author mr.g
  **/
 public interface TokenGranter {
 
