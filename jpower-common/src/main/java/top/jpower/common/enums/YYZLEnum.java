@@ -15,11 +15,11 @@ public enum YYZLEnum {
     /**
      * 中文
      **/
-    CHINA("zh", "中文"),
+    CHINA("zh-CN", "中文"),
     /**
      * 英文
      **/
-    ENG("en", "英文");
+    ENG("en-US", "英文");
 
     private final String value;
     private final String name;

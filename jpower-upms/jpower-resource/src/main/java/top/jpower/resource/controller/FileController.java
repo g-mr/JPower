@@ -57,7 +57,7 @@ import static top.jpower.common.constants.ServiceCodeConstants.NOT_FOUND_FILE_IN
 @Tag(name = "文件管理")
 @Validated
 @RestController
-@RequestMapping("/resource/file")
+@RequestMapping("/file")
 @RequiredArgsConstructor
 public class FileController extends BaseController {
 

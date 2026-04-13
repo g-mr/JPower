@@ -56,8 +56,8 @@ public class SmsController extends BaseController {
     })
     @Operation(summary = "分页查询")
 	@Parameters({
-			@Parameter(name = "pageNum", description = "第几页", example = "1", schema = @Schema(defaultValue = "1", type = "integer"), in = ParameterIn.QUERY, required = true),
-			@Parameter(name = "pageSize", description = "每页长度", example = "10", schema = @Schema(defaultValue = "10", type = "integer"), in = ParameterIn.QUERY, required = true)
+        @Parameter(name = "pageNum", description = "第几页", example = "1", schema = @Schema(defaultValue = "1", type = "integer"), in = ParameterIn.QUERY, required = true),
+        @Parameter(name = "pageSize", description = "每页长度", example = "10", schema = @Schema(defaultValue = "10", type = "integer"), in = ParameterIn.QUERY, required = true)
 	})
     @GetMapping(value = "list", produces = APPLICATION_JSON_VALUE)
     public R<Pg<ResourceSms>> list(@Ignore @RequestParam(required = false) Map<String, Object> map){
