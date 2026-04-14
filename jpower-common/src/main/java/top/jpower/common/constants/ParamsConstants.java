@@ -13,6 +13,8 @@ public class ParamsConstants {
     public static final String IS_ACTIVATION = "JPOWER_IS_ACTIVATION";
     /** 是否开启注册 **/
     public static final String IS_REGISTER = "JPOWER_IS_REGISTER";
+    /** 是否开启注册 **/
+    public static final String IS_FORGET_PASSWORD = "JPOWER_IS_FORGET_PASSWORD";
     /** 注册用户默认角色 **/
     public static final String REGISTER_ROLE_ID = "REGISTER_ROLE";
 
