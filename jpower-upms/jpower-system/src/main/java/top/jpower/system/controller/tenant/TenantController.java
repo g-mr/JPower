@@ -142,46 +142,8 @@ public class TenantController extends BaseController {
 		return R.data(tenantService.select(tenantName));
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     @Operation(summary = "通过域名查询租户")
-    @GetMapping("/queryByDomain")
+    @GetMapping("/configure")
     public R<TenantInfoVO> queryByDomain(@Parameter(description = "域名") @RequestParam(required = false) String domain){
         return R.data(tenantService.queryByDomain(domain));
     }

@@ -92,7 +92,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
             Object dataAuth = redisService.valueOps().get(CacheNames.TOKEN_DATA_SCOPE_KEY + token);
             Map<String,List> map = Fc.isNull(dataAuth) ? ChainMap.<String,List>create().build() : (Map<String, List>) dataAuth;
             return chain.filter(addHeader(exchange, StringPool.EMPTY, JSON.toJSONString(map.getOrDefault(exchange.getRequest().getHeaders().getFirst(HEADER_MENU),ListUtil.empty()))));
-        }else {
+        } else {
             //白名单
             String ip = IpUtil.getIP(exchange.getRequest());
             if (Fc.contains(authProperties.getWhileIp(),ip)){

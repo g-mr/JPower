@@ -75,7 +75,9 @@ public class UserClientController implements UserClient {
     @GetMapping("/queryUserByPhone")
     public R<CoreUserDTO> queryUserByPhone(@RequestParam String phone, @RequestParam String tenantCode){
         CoreUser user = coreUserService.selectByPhone(phone,tenantCode);
-        return R.data(BeanUtil.copyProperties(user, CoreUserDTO.class));
+		CoreUserDTO userDTO = BeanUtil.copyProperties(user, CoreUserDTO.class);
+		userDTO.setRoleIds(coreUserRoleService.queryRoleIds(user.getId()));
+        return R.data(userDTO);
     }
 
     @Override

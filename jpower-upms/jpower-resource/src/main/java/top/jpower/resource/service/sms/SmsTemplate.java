@@ -115,24 +115,20 @@ public interface SmsTemplate {
     SmsResponse sendMessage(Map<String, String> param, List<String> phones, boolean isThrow);
 
     /**
-     * 发送短信验证码
-     *
-     * @author mr.g
-     * @param phone 手机号码
-     * @return boolean 是否发送成功
-     */
-    default boolean sendValidate(String phone){
+	 * 发送短信验证码
+	 *
+	 * @param phone 手机号码
+	 * @author mr.g
+	 */
+    default void sendValidate(String phone){
         JpowerAssert.isTrue(PhoneUtil.isMobile(phone), JpowerError.Unknown, MOBILE_NOT_LEGAL);
         if (RedisService.getInstance().getExpire(CacheNames.PHONE_KEY+phone, TimeUnit.MINUTES) >= 4){
             JpowerAssert.createException(JpowerError.Business, SMS_CODE_SENT);
         }
 
         String code = RandomUtil.random6Num();
-        boolean is = sendSingle(ChainMap.<String, String>create().put(getParameters().get(0), code).build(), phone);
-        if (is){
-            RedisService.getInstance().valueOps(String.class).set(CacheNames.PHONE_KEY+phone, code ,5L, TimeUnit.MINUTES);
-        }
-        return is;
+        sendSingleThrow(ChainMap.<String, String>create().put(getParameters().get(0), code).build(), phone);
+		RedisService.getInstance().valueOps(String.class).set(CacheNames.PHONE_KEY+phone, code ,5L, TimeUnit.MINUTES);
     }
 
     /**

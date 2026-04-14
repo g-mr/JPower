@@ -90,7 +90,7 @@ public class AliSmsTemplate implements SmsTemplate {
         } catch (Exception error){
             log.error("短信发送失败==>>{}", error.getMessage());
             if (isThrow){
-                throw new JpowerException(error.getMessage());
+                throw new JpowerException("运营商错误[" + error.getMessage()+"]");
             }
             return new SmsResponse(Boolean.FALSE, ReturnConstants.RECODE_SYSTEM, error.getMessage());
         }

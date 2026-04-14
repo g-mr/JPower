@@ -170,13 +170,13 @@ public class AuthController extends BaseController {
     }
 
     @Operation(summary = "发送手机验证码")
-    @PostMapping(value = "/captcha/{phone}",produces="application/json")
+    @GetMapping(value = "/captcha/{phone}",produces="application/json")
     public R<Boolean> phoneCaptcha(@Parameter(description = "手机号", required = true) @Mobile @PathVariable("phone") String phone) {
-        return R.status(smsClient.sendValidate(new SmsValidateDTO().setCode(VALIDATE_SMS_CODE).setPhone(phone)).isStatus());
+		return smsClient.sendValidate(new SmsValidateDTO().setCode(VALIDATE_SMS_CODE).setPhone(phone));
     }
 
     @Operation(summary = "发送邮箱验证码")
-    @PostMapping(value = "/sendEmailCode/{email}",produces="application/json")
+    @GetMapping(value = "/sendEmailCode/{email}",produces="application/json")
     public R<String> sendEmailCode(@Parameter(description = "手机号", required = true) @PathVariable("email") String email) {
 
         JpowerAssert.isTrue(Validator.isEmail(email), JpowerError.Business, "邮箱 不合法");
