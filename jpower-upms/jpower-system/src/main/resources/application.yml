@@ -7,6 +7,7 @@ spring:
       - nacos:jpower.yml
       - nacos:jpower-dev.yml
       - nacos:jpower-system.yml
+      - nacos:jpower-system-dev.yml
   cloud:
     nacos:
       server-addr: 8.130.172.218:8848

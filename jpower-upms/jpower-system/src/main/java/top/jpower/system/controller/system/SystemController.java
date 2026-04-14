@@ -47,4 +47,5 @@ public class SystemController extends BaseController {
                 .put("enableForgetPassword", ParamCache.getBoolean(ParamsConstants.IS_FORGET_PASSWORD,Boolean.FALSE))
 				.build());
     }
+
 }
