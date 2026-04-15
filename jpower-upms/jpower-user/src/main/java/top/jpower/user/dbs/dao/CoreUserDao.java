@@ -48,6 +48,12 @@ public class CoreUserDao extends JpowerServiceImpl<CoreUserMapper, CoreUser> imp
 		}
     }
 
+    public void build(LoginUserVO userVo) {
+        if (Fc.notNull(userVo.getOrgId())) {
+            userVo.setOrgName(SystemCache.getOrgName(userVo.getOrgId()));
+        }
+    }
+
 	public void buildOrg(UserVO userVo) {
 		if (Fc.notNull(userVo.getOrgId())) {
 			userVo.setOrgName(SystemCache.getOrgName(userVo.getOrgId()));
@@ -218,6 +224,7 @@ public class CoreUserDao extends JpowerServiceImpl<CoreUserMapper, CoreUser> imp
         return pageConvert(pg, this::buildOrg);
     }
 
+
 	/**
 	 * 根据用户ID获取用户信息
 	 *
@@ -226,7 +233,7 @@ public class CoreUserDao extends JpowerServiceImpl<CoreUserMapper, CoreUser> imp
 	 * @return 用户信息
 	 **/
 	public LoginUserVO userInfo(Long id) {
-		return super.getOneAs(Wrappers.getQueryWrapper()
+        LoginUserVO userVO = super.getOneAs(Wrappers.getQueryWrapper()
 				.select(CORE_USER.ID.as(LoginUserVO::getUserId))
 				.select(CORE_USER.AVATAR.as(LoginUserVO::getAvatar))
 				.select(CORE_USER.NICK_NAME.as(LoginUserVO::getRealName))
@@ -236,6 +243,17 @@ public class CoreUserDao extends JpowerServiceImpl<CoreUserMapper, CoreUser> imp
 				.select(CORE_USER.ADDRESS.as(LoginUserVO::getAddress))
 				.select(CORE_USER.ID_TYPE.as(LoginUserVO::getIdType))
 				.select(CORE_USER.BIRTHDAY.as(LoginUserVO::getBirthday))
+                .select(CORE_USER.USER_TYPE.as(LoginUserVO::getUserType))
+                .select(CORE_USER.EMAIL.as(LoginUserVO::getEmail))
+                .select(CORE_USER.TELEPHONE.as(LoginUserVO::getPhone))
+                .select(CORE_USER.LAST_LOGIN_TIME.as(LoginUserVO::getLastLoginTime))
+                .select(CORE_USER.EMAIL.as(LoginUserVO::getEmail))
+                .select(CORE_USER.SEX.as(LoginUserVO::getSex))
+                .select(CORE_USER.ORG_ID.as(LoginUserVO::getOrgId))
+                .select(CORE_USER.POST_ID.as(LoginUserVO::getPostId))
+                .select(CORE_POST.NAME.as(LoginUserVO::getPostName))
+                .leftJoin(CorePost.class).on(CoreUser::getPostId, CorePost::getId)
 				.eq(CoreUser::getId, id), LoginUserVO.class);
+        return convert(userVO, this::build);
 	}
 }

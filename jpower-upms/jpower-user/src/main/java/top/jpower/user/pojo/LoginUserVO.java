@@ -3,6 +3,7 @@ package top.jpower.user.pojo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import top.jpower.core.dbs.dictbind.annotation.Dict;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -46,4 +47,24 @@ public class LoginUserVO implements Serializable {
     private Integer idType;
     @Schema(description = "出生日期")
     private Date birthday;
+    @Schema(description = "性别")
+    @Dict(name = "SEX")
+    private String sex;
+    @Schema(description = "手机号")
+    private String phone;
+    @Schema(description = "邮箱")
+    private String email;
+    @Schema(description = "用户类型")
+    @Dict(name = "USER_TYPE")
+    private String userType;
+    @Schema(description = "最后登录时间")
+    private Date lastLoginTime;
+    @Schema(description = "部门ID")
+    private Long orgId;
+    @Schema(description = "部门名称")
+    private String orgName;
+    @Schema(description = "岗位ID")
+    private Long postId;
+    @Schema(description = "岗位名称")
+    private String postName;
 }

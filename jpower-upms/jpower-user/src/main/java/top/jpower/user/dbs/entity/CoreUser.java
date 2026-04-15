@@ -59,6 +59,10 @@ public class CoreUser extends TenantEntity implements Serializable {
     @Schema(description = "用户姓名")
     @Excel(name = "用户姓名")
     private String userName;
+    @Schema(description = "性别 字典SEX")
+    @Excel(name = "性别",readConverterExp = "MAN=男,FEMALE=女",combo={"男","女"})
+    @Dict(name = "SEX")
+    private String sex;
     @Schema(description = "证件类型 字典ID_TYPE")
     @Excel(name = "证件类型",readConverterExp = "1=身份证,2=中国护照,3=台胞证,4=外国护照,5=外国人永居证",combo={"身份证","中国护照","台胞证","外国护照","外国人永居证"})
     @Dict(name = "ID_TYPE")
