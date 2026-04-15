@@ -155,11 +155,12 @@ public class CoreUserDao extends JpowerServiceImpl<CoreUserMapper, CoreUser> imp
     public boolean updateUserInfo(LoginUserVO userVO) {
         return super.update(UpdateWrapper.of(CoreUser.class)
                         .set(CoreUser::getAvatar,userVO.getAvatar())
-                        .set(CoreUser::getNickName,userVO.getRealName())
+                        .set(CoreUser::getNickName,userVO.getNickName())
                         .set(CoreUser::getUserName,userVO.getUsername())
+                        .set(CoreUser::getBirthday,userVO.getBirthday())
+                        .set(CoreUser::getSex,userVO.getSex())
                         .set(CoreUser::getIdType,userVO.getIdType())
                         .set(CoreUser::getIdNo,userVO.getIdNo())
-                        .set(CoreUser::getBirthday,userVO.getBirthday())
                         .set(CoreUser::getPostCode,userVO.getPostCode())
                         .set(CoreUser::getAddress,userVO.getAddress()).toEntity(),
                 Wrappers.getQueryWrapper().eq(CoreUser::getId, ShieldUtil.getUserId()));
@@ -236,7 +237,7 @@ public class CoreUserDao extends JpowerServiceImpl<CoreUserMapper, CoreUser> imp
         LoginUserVO userVO = super.getOneAs(Wrappers.getQueryWrapper()
 				.select(CORE_USER.ID.as(LoginUserVO::getUserId))
 				.select(CORE_USER.AVATAR.as(LoginUserVO::getAvatar))
-				.select(CORE_USER.NICK_NAME.as(LoginUserVO::getRealName))
+				.select(CORE_USER.NICK_NAME.as(LoginUserVO::getNickName))
 				.select(CORE_USER.USER_NAME.as(LoginUserVO::getUsername))
 				.select(CORE_USER.ID_NO.as(LoginUserVO::getIdNo))
 				.select(CORE_USER.POST_CODE.as(LoginUserVO::getPostCode))

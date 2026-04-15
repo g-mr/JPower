@@ -395,7 +395,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
      **/
     @Override
     public boolean updatePhone(String phone, Long userId) {
-        boolean is = coreUserDao.exists(Wrappers.getQueryWrapper().eq(CoreUser::getTelephone, phone));
+        boolean is = coreUserDao.exists(Wrappers.getQueryWrapper().eq(CoreUser::getTelephone, phone).ne(CoreUser::getId, userId));
         JpowerAssert.notTrue(is, JpowerError.Business, MOBILE_BINGING);
 
         CacheUtil.clear(CacheNames.USER_KEY);
@@ -404,7 +404,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
 
     @Override
     public boolean updateEmail(String email, Long userId) {
-        boolean is = coreUserDao.exists(Wrappers.getQueryWrapper().eq(CoreUser::getEmail, email));
+        boolean is = coreUserDao.exists(Wrappers.getQueryWrapper().eq(CoreUser::getEmail, email).ne(CoreUser::getId, userId));
         JpowerAssert.notTrue(is, JpowerError.Business, EMAIL_BINGING);
 
         CacheUtil.clear(CacheNames.USER_KEY);

@@ -3,6 +3,7 @@ package top.jpower.user.pojo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import top.jpower.common.validated.Mobile;
 import top.jpower.core.dbs.dictbind.annotation.Dict;
 
 import java.io.Serial;
@@ -28,7 +29,7 @@ public class LoginUserVO implements Serializable {
     private String avatar;
     @Schema(description = "昵称")
     @NotBlank(message = "昵称不能为空")
-    private String realName;
+    private String nickName;
     @Schema(description = "用户姓名")
     private String username;
 	@Schema(description = "角色")
@@ -51,6 +52,7 @@ public class LoginUserVO implements Serializable {
     @Dict(name = "SEX")
     private String sex;
     @Schema(description = "手机号")
+    @Mobile
     private String phone;
     @Schema(description = "邮箱")
     private String email;

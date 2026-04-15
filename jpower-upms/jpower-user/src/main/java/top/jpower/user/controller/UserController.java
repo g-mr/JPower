@@ -255,6 +255,41 @@ public class UserController extends BaseController {
 		return R.fail();
 	}
 
+	@Operation(summary = "修改个人信息")
+	@OperateLog(title = "修改个人信息", businessType = UPDATE)
+	@PutMapping(value = "/updateLogin", produces = "application/json")
+	public R<Boolean> updateLogin(@Valid @RequestBody LoginUserVO userVO) {
+		// 防御性编程
+		JpowerAssert.notNull(ShieldUtil.getUser(), JpowerError.Auth, NOT_LOGIN);
+		return R.status(coreUserService.updateUserInfo(userVO));
+	}
+
+	@Operation(summary = "修改密码")
+	@PutMapping(value = "/updatePassword")
+	public R<Boolean> updatePassword(@Parameter(description = "旧密码", required = true) @NotBlank(message = "旧密码不可为空") @RequestSingleBody String oldPw,
+									 @Parameter(description = "新密码", required = true) @NotBlank(message = "新密码不可为空") @RequestSingleBody String newPw) {
+		return R.status(coreUserService.updatePassword(oldPw, newPw));
+	}
+
+	@Operation(summary = "修改手机号")
+	@PutMapping(value = "/updatePhone")
+	public R<Boolean> updatePhone(@Parameter(description = "手机号", required = true) @Mobile @RequestSingleBody String phone,
+								  @Parameter(description = "验证码", required = true) @NotBlank(message = "验证码不可为空") @RequestSingleBody String phoneCode) {
+		JpowerAssert.isTrue(smsClient.validate(new ValidateDTO().setCode(VALIDATE_SMS_CODE).setPhone(phone).setPhoneCode(phoneCode)).isStatus(), JpowerError.Business, SMS_CODE_ERROR);
+		return R.status(coreUserService.updatePhone(phone, ShieldUtil.getUserIdThrow()));
+	}
+
+	@Operation(summary = "修改邮箱")
+	@PutMapping(value = "/updateEmail")
+	public R<Boolean> updateEmail(@Parameter(description = "邮箱", required = true) @Email(message = EMAIL_NOT_LEGAL) @RequestSingleBody String email,
+								  @Parameter(description = "邮箱消息ID", required = true) @NotBlank(message = "验证ID不可为空") @RequestSingleBody String msgId,
+								  @Parameter(description = "验证码", required = true) @NotBlank(message = "验证码不可为空") @RequestSingleBody String emailCode) {
+		String code = redisService.valueOps(String.class).get("email:" + email + ":" + msgId);
+		JpowerAssert.notTrue(Fc.notEqualsValue(code, emailCode), JpowerError.Business, SMS_CODE_ERROR);
+
+		return R.status(coreUserService.updateEmail(email, ShieldUtil.getUserIdThrow()));
+	}
+
 
 
 
@@ -288,41 +323,6 @@ public class UserController extends BaseController {
     @GetMapping(value = "/getById", produces = "application/json")
     public R<UserVO> getById(@Parameter(description = "主键", required = true) @RequestParam @NotNull(message = "主键不可为空") Long id) {
         return R.data(coreUserService.selectUserById(id));
-    }
-
-    @Operation(summary = "修改个人信息")
-    @OperateLog(title = "修改个人信息", businessType = UPDATE)
-    @PutMapping(value = "/updateLogin", produces = "application/json")
-    public R<Boolean> updateLogin(@Valid @RequestBody LoginUserVO userVO) {
-        // 防御性编程
-        JpowerAssert.notNull(ShieldUtil.getUser(), JpowerError.Auth, NOT_LOGIN);
-        return R.status(coreUserService.updateUserInfo(userVO));
-    }
-
-    @Operation(summary = "修改密码")
-    @PutMapping(value = "/updatePassword")
-    public R<Boolean> updatePassword(@Parameter(description = "旧密码", required = true) @NotBlank(message = "旧密码不可为空") @RequestSingleBody String oldPw,
-                                     @Parameter(description = "新密码", required = true) @NotBlank(message = "新密码不可为空") @RequestSingleBody String newPw) {
-        return R.status(coreUserService.updatePassword(oldPw, newPw));
-    }
-
-    @Operation(summary = "修改手机号")
-    @PutMapping(value = "/updatePhone")
-    public R<Boolean> updatePhone(@Parameter(description = "手机号", required = true) @Mobile @RequestSingleBody String phone,
-                                  @Parameter(description = "验证码", required = true) @NotBlank(message = "验证码不可为空") @RequestSingleBody String phoneCode) {
-        JpowerAssert.isTrue(smsClient.validate(new ValidateDTO().setCode(VALIDATE_SMS_CODE).setPhone(phone).setPhoneCode(phoneCode)).isStatus(), JpowerError.Business, SMS_CODE_ERROR);
-        return R.status(coreUserService.updatePhone(phone, ShieldUtil.getUserIdThrow()));
-    }
-
-    @Operation(summary = "修改邮箱")
-    @PutMapping(value = "/updateEmail")
-    public R<Boolean> updateEmail(@Parameter(description = "邮箱", required = true) @Email(message = EMAIL_NOT_LEGAL) @RequestSingleBody String email,
-                                  @Parameter(description = "邮箱消息ID", required = true) @NotBlank(message = "验证ID不可为空") @RequestSingleBody String msgId,
-                                  @Parameter(description = "验证码", required = true) @NotBlank(message = "验证码不可为空") @RequestSingleBody String emailCode) {
-        String code = redisService.valueOps(String.class).get("email:" + email + ":" + msgId);
-        JpowerAssert.notTrue(Fc.notEqualsValue(code, emailCode), JpowerError.Business, SMS_CODE_ERROR);
-
-        return R.status(coreUserService.updateEmail(email, ShieldUtil.getUserIdThrow()));
     }
 
 }
