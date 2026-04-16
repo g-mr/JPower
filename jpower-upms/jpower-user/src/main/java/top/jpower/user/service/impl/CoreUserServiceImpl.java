@@ -163,12 +163,12 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
 
     @Override
     public CoreUser selectUserLoginId(String loginId,String tenantCode) {
-        return coreUserDao.getOneByField(CoreUser::getLoginId,loginId);
+        return coreUserDao.getByField(loginId, tenantCode);
     }
 
     @Override
     public boolean validatePassword(String account, String password, String tenantCode) {
-        String userPassword = coreUserDao.getPassword(account);
+        String userPassword = coreUserDao.getPassword(account, tenantCode);
         return DigestUtil.checkPwd(password, userPassword);
     }
 

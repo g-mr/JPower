@@ -57,7 +57,6 @@ import static top.jpower.common.constants.CacheNames.TOKEN_USER_KEY;
 import static top.jpower.common.constants.ServiceCodeConstants.*;
 import static top.jpower.core.dbs.tenant.TenantConstant.DEFAULT_TENANT_CODE;
 import static top.jpower.core.dbs.tenant.TenantConstant.getExpireTime;
-import static top.jpower.core.util.constants.JpowerConstants.HEADER_TENANT;
 
 /**
  * 登录相关
@@ -189,18 +188,18 @@ public class AuthController extends BaseController {
 
     @Operation(summary = "用户注册")
     @PostMapping(value = "/register")
-    public R<Long> register(@Validated @RequestBody CoreUserDTO coreUser, @RequestHeader(HEADER_TENANT) String tenantCode) {
+    public R<Long> register(@Validated @RequestBody CoreUserDTO coreUser) {
 
         if (!ParamCache.getBoolean(ParamsConstants.IS_REGISTER,Boolean.FALSE)){
             return R.fail(NOT_OPEN_REGISTER);
         }
 
         if (tenantProperties.getEnable()){
-            JpowerAssert.notEmpty(tenantCode,JpowerError.Arg,TENANT_CODE_NOT_NULL);
+            JpowerAssert.notEmpty(coreUser.getTenantCode(),JpowerError.Arg,TENANT_CODE_NOT_NULL);
         }
         coreUser.setUserType(UserTypeEnum.USER_TYPE_GENERAL.getValue());
 
-		CoreUserDTO user = UserCache.getUserByLoginId(coreUser.getLoginId(),tenantCode);
+		CoreUserDTO user = UserCache.getUserByLoginId(coreUser.getLoginId(), coreUser.getTenantCode());
         if (Fc.notNull(user)){
             return R.fail(USER_EXIST);
         }

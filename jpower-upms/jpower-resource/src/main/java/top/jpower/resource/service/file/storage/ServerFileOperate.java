@@ -18,6 +18,7 @@ import top.jpower.resource.service.file.properties.FileProperties;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
 import static top.jpower.common.constants.ServiceCodeConstants.FILE_NOT_EXIST;
 import static top.jpower.common.constants.ServiceCodeConstants.FILE_PATH_NOT_EXIST;
@@ -117,6 +118,6 @@ public class ServerFileOperate implements FileOperate {
 	public String getUrl(ResourceFile coreFile) {
 		String domain = StringUtil.removeAllSuffix(fileProperties.getServer().getDomain(), StringPool.SLASH);
 		File file = new File(coreFile.getPath());
-		return StringUtil.concat(domain, StringPool.SLASH, file.getParentFile().getName(), StringPool.SLASH, file.getName());
+		return StringUtil.concat(domain, StringPool.SLASH, Optional.ofNullable(file.getParentFile()).map(File::getName).orElse(StringPool.EMPTY), StringPool.SLASH, file.getName());
 	}
 }

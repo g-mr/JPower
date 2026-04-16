@@ -113,8 +113,20 @@ public class CoreUserDao extends JpowerServiceImpl<CoreUserMapper, CoreUser> imp
      * @return 密码
      **/
     public String getPassword(String account) {
-        return super.getObjAs(Wrappers.getQueryWrapper().select(CoreUser::getPassword).eq(CoreUser::getLoginId, account), String.class);
+        return getPassword(account, null);
     }
+
+	/**
+	 * 获取用户密码
+	 * @author mr.g
+	 * @param account 账号
+	 * @return 密码
+	 **/
+	public String getPassword(String account, String tenantCode) {
+		return super.getObjAs(Wrappers.getQueryWrapper().select(CoreUser::getPassword)
+				.eq(CoreUser::getTenantCode, tenantCode, Fc.isNotBlank(tenantCode))
+				.eq(CoreUser::getLoginId, account), String.class);
+	}
 
     /**
      * 修改用户手机号
@@ -256,5 +268,11 @@ public class CoreUserDao extends JpowerServiceImpl<CoreUserMapper, CoreUser> imp
                 .leftJoin(CorePost.class).on(CoreUser::getPostId, CorePost::getId)
 				.eq(CoreUser::getId, id), LoginUserVO.class);
         return convert(userVO, this::build);
+	}
+
+	public CoreUser getByField(String loginId, String tenantCode) {
+		return super.getOne(Wrappers.getQueryWrapper()
+				.eq(CoreUser::getLoginId, loginId)
+				.eq(CoreUser::getTenantCode, tenantCode, Fc.isNotBlank(tenantCode)));
 	}
 }

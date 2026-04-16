@@ -45,12 +45,12 @@ public class UserCache {
      * @param tenantCode 租户CODE
      * @return 用户信息
      **/
-    public static CoreUserDTO getUserByLoginId(String loginId, String tenantCode) {
-        return CacheUtil.get(CacheNames.USER_KEY,CacheNames.USER_LOGINID_KEY,loginId,() -> {
-            R<CoreUserDTO> r = USER_CLIENT.queryUserByLoginId(loginId,tenantCode);
-            return r.getData();
-        });
-    }
+	public static CoreUserDTO getUserByLoginId(String loginId, String tenantCode) {
+		return CacheUtil.get(CacheNames.USER_KEY,CacheNames.USER_LOGINID_KEY,loginId,() -> {
+			R<CoreUserDTO> r = USER_CLIENT.queryUserByLoginId(loginId,tenantCode);
+			return r.getData();
+		});
+	}
 
     /**
      * 获取用户的所有角色ID
