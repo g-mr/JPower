@@ -2,13 +2,14 @@ package top.jpower.auth.controller;
 
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.NumberUtil;
-import cn.hutool.extra.mail.MailUtil;
+import top.jpower.core.util.support.mail.MailHelper;
 import com.wf.captcha.SpecCaptcha;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -19,6 +20,7 @@ import top.jpower.auth.dto.AuthInfo;
 import top.jpower.auth.dto.TokenParameter;
 import top.jpower.auth.utils.TokenUtil;
 import top.jpower.auth.vo.CaptchaVO;
+import top.jpower.auth.vo.ResetUserVO;
 import top.jpower.common.constants.CacheNames;
 import top.jpower.common.constants.ParamsConstants;
 import top.jpower.common.enums.LoginLimitEnum;
@@ -27,6 +29,7 @@ import top.jpower.common.validated.Mobile;
 import top.jpower.core.auth.dto.UserInfo;
 import top.jpower.core.auth.utils.JwtUtil;
 import top.jpower.core.auth.utils.ShieldUtil;
+import top.jpower.core.boot.argument.RequestSingleBody;
 import top.jpower.core.boot.controller.BaseController;
 import top.jpower.core.dbs.tenant.JpowerTenantProperties;
 import top.jpower.core.exception.enums.JpowerError;
@@ -76,6 +79,7 @@ public class AuthController extends BaseController {
     private final TokenGranterBuilder granterBuilder;
     private final UserClient userClient;
     private final SmsClient smsClient;
+    private final MailHelper mailHelper;
 
     private static final String VALIDATE_SMS_CODE = "validate";
 
@@ -176,15 +180,50 @@ public class AuthController extends BaseController {
 
     @Operation(summary = "发送邮箱验证码")
     @GetMapping(value = "/sendEmailCode/{email}",produces="application/json")
-    public R<String> sendEmailCode(@Parameter(description = "手机号", required = true) @PathVariable("email") String email) {
+    public R<String> sendEmailCode(@Parameter(description = "邮箱", required = true) @PathVariable("email") String email) {
 
         JpowerAssert.isTrue(Validator.isEmail(email), JpowerError.Business, "邮箱 不合法");
 
         String code = RandomUtil.random6Num();
-        String msgId = MailUtil.sendText(email,"Jpower邮件","您得验证码："+code);
+        String msgId = mailHelper.sendText(email, "Jpower邮件", "您得验证码："+code+",五分钟内有效");
         redisService.valueOps().set("email:"+email+":"+msgId, code ,5L, TimeUnit.MINUTES);
         return R.data(msgId);
     }
+
+	@Operation(summary = "发送忘记密码链接")
+	@PostMapping(value = "/sendForgetPasswordLink",produces="application/json")
+	public R<ResetUserVO> sendForgetPasswordLink(@Parameter(description = "邮箱", required = true) @RequestSingleBody("email") String email,
+												 @Parameter(description = "域名", required = true) @RequestSingleBody("domain") String domain,
+												 @Parameter(description = "租户编码", required = true) @RequestSingleBody("tenantCode") String tenantCode) {
+		JpowerAssert.isTrue(Validator.isEmail(email), JpowerError.Business, "邮箱 不合法");
+		if (!ParamCache.getBoolean(ParamsConstants.IS_FORGET_PASSWORD,Boolean.FALSE)){
+			return R.fail(NOT_OPEN_FORGET_PASSWORD);
+		}
+
+		R<CoreUserDTO> r = userClient.queryUserByEmail(email, tenantCode);
+		if (r.isStatus() && r.getData() != null) {
+			String msgId = mailHelper.sendHtml(email, "Jpower邮件", "点击<a href='"+domain+"/auth/reset-password'>这里</a>重置密码，五分钟内有效");
+			redisService.valueOps().set("email:"+r.getData().getId(), msgId ,5L, TimeUnit.MINUTES);
+			return R.data(new ResetUserVO().setUserId(r.getData().getId()).setNickName(r.getData().getNickName()).setMsgId(msgId));
+		}
+		return r.isStatus() ? R.fail(EMAIL_NOT_FOUND_USER) : R.fail(r.getMessage());
+	}
+
+	@Operation(summary = "忘记密码")
+	@PutMapping(value = "/forgetPassword")
+	public R<Boolean> forgetPassword(@Parameter(description = "用户ID", required = true) @NotNull(message = "用户ID不可为空") @RequestSingleBody("userId") Long userId,
+									 @Parameter(description = "新密码", required = true) @NotBlank(message = "新密码不可为空") @RequestSingleBody("password") String password,
+									 @Parameter(description = "发送ID", required = true) @NotBlank(message = "发送ID不可为空") @RequestSingleBody("msgId") String msgLocalId) {
+		if (!ParamCache.getBoolean(ParamsConstants.IS_FORGET_PASSWORD,Boolean.FALSE)){
+			return R.fail(NOT_OPEN_FORGET_PASSWORD);
+		}
+
+		String msgId = redisService.valueOps(String.class).get("email:"+userId);
+		JpowerAssert.isTrue(Fc.isNotBlank(msgId), JpowerError.Business, LINK_EXPIRE);
+		JpowerAssert.isTrue(Fc.equalsValue(msgId, msgLocalId), JpowerError.Business, PASSWORD_RESET_DEVICE);
+
+		return userClient.updatePasswordById(userId, password);
+	}
 
     @Operation(summary = "用户注册")
     @PostMapping(value = "/register")

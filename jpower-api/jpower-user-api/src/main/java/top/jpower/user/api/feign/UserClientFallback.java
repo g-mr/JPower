@@ -56,7 +56,12 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
                 return R.fail("查询失败");
             }
 
-            @Override
+			@Override
+			public R<CoreUserDTO> queryUserByEmail(String email, String tenantCode) {
+				return R.fail("查询失败");
+			}
+
+			@Override
             public R<Long> saveUser(CoreUserDTO user) {
                 log.error("调用saveUser失败，参数：user={} ，e={}", user, cause);
                 return R.print(ReturnConstants.RECODE_API, cause.getMessage(), false);
@@ -78,6 +83,11 @@ public class UserClientFallback implements FallbackFactory<UserClient> {
 			@Override
 			public R<Boolean> removeTenantAll(List<String> tenantCodes) {
 				JpowerAssert.createException(JpowerError.Rpc, 500, cause.getMessage());
+				return R.fail("请求失败", false);
+			}
+
+			@Override
+			public R<Boolean> updatePasswordById(Long userId, String password) {
 				return R.fail("请求失败", false);
 			}
 		};

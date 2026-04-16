@@ -77,6 +77,14 @@
             <version>${hutool.version}</version>
         </dependency>
 
+        <!-- Hutool MailUtil 依赖 javax.mail，标记为 optional 由使用方按需引入 -->
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>${javax.mail.version}</version>
+            <optional>true</optional>
+        </dependency>
+
         <dependency>
             <groupId>com.google.auto.service</groupId>
             <artifactId>auto-service</artifactId>

@@ -105,6 +105,14 @@ public interface CoreUserService extends BaseService<CoreUser> {
      **/
     CoreUser selectByPhone(String phone,String tenantCode);
 
+	/**
+	 * 通过邮箱查找用户
+	 *
+	 * @author mr.g
+	 * @return top.jpower.jpower.module.dbs.entity.core.user.TbCoreUser
+	 **/
+	CoreUser selectByEmail(String email, String tenantCode);
+
     /**
      * @author 郭丁志
      * @Description //TODO 更新用户登陆信息
@@ -225,5 +233,13 @@ public interface CoreUserService extends BaseService<CoreUser> {
 	 * @return 是否成功
 	 */
 	boolean removeTenantAll(List<String> tenantCodes);
+
+	/**
+	 * 根据用户id修改密码
+	 * @param userId 用户id
+	 * @param password 密码
+	 * @return 是否成功
+	 */
+	boolean updatePasswordById(Long userId, String password);
 
 }

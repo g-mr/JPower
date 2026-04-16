@@ -377,10 +377,15 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
 
     @Override
     public CoreUser selectByPhone(String phone,String tenantCode) {
-        return coreUserDao.getOneByField(CoreUser::getTelephone, phone);
+        return coreUserDao.selectByPhone(phone, tenantCode);
     }
 
-    @Override
+	@Override
+	public CoreUser selectByEmail(String email, String tenantCode) {
+		return coreUserDao.selectByEmail(email, tenantCode);
+	}
+
+	@Override
     public Boolean updateLoginCount(Long id) {
         return coreUserDao.updateLoginCount(id);
     }
@@ -505,6 +510,12 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
 	public boolean removeTenantAll(List<String> tenantCodes) {
 		corePostDao.remove(Wrappers.getQueryWrapper().in(CorePost::getTenantCode, tenantCodes));
 		return coreUserDao.remove(Wrappers.getQueryWrapper().in(CoreUser::getTenantCode, tenantCodes));
+	}
+
+	@Override
+	public boolean updatePasswordById(Long userId, String password) {
+		JpowerAssert.isTrue(coreUserDao.existsByField(CoreUser::getId, userId), JpowerError.NotFind, NOT_FOUND_USER);
+		return coreUserDao.updatePassword(DigestUtil.pwdEncrypt(password), Collections.singletonList(userId));
 	}
 
 }

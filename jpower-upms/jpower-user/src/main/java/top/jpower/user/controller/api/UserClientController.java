@@ -80,7 +80,14 @@ public class UserClientController implements UserClient {
         return R.data(userDTO);
     }
 
-    @Override
+	@Override
+	@GetMapping("/queryUserByEmail")
+	public R<CoreUserDTO> queryUserByEmail(@RequestParam String email, @RequestParam String tenantCode) {
+		CoreUser user = coreUserService.selectByEmail(email, tenantCode);
+		return R.data(BeanUtil.copyProperties(user, CoreUserDTO.class));
+	}
+
+	@Override
     @Operation(summary = "保存用户")
     @PostMapping("/saveUser")
     public R<Long> saveUser(@RequestBody CoreUserDTO user) {
@@ -98,5 +105,11 @@ public class UserClientController implements UserClient {
 	@PostMapping("/removeTenantAll")
 	public R<Boolean> removeTenantAll(@RequestBody List<String> tenantCodes) {
 		return R.status(coreUserService.removeTenantAll(tenantCodes));
+	}
+
+	@Override
+	@PostMapping("/updatePasswordById")
+	public R<Boolean> updatePasswordById(@RequestParam("userId") Long userId, @RequestParam("password") String password) {
+		return R.status(coreUserService.updatePasswordById(userId, password));
 	}
 }

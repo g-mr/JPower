@@ -94,6 +94,14 @@ public interface ServiceCodeConstants {
 
 	String NOT_OPEN_REGISTER = "未开启注册功能";
 
+	String NOT_OPEN_FORGET_PASSWORD = "未开启忘记功能";
+
 	String USER_EXIST = "该用户已注册";
+
+	String LINK_EXPIRE = "链接已过期";
+
+	String PASSWORD_RESET_DEVICE = "请在请求重置设备中重置密码";
+
+	String EMAIL_NOT_FOUND_USER = "请输入的邮箱未找到用户";
 
 }

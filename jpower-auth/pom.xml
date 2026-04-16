@@ -85,6 +85,13 @@
             <artifactId>easy-captcha</artifactId>
             <version>${easy-captcha.version}</version>
         </dependency>
+
+        <!-- Hutool MailUtil 依赖 javax.mail (optional)，需显式引入 -->
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>${javax.mail.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

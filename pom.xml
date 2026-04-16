@@ -57,7 +57,8 @@
         <skywalking.version>9.5.0</skywalking.version>
         <easy-captcha.version>1.6.2</easy-captcha.version>
         <fastdfs.version>1.27.2</fastdfs.version>
-        <aliyun.sms.version>4.3.1</aliyun.sms.version>
+        <javax.mail.version>1.6.2</javax.mail.version>
+		<aliyun.sms.version>4.3.1</aliyun.sms.version>
         <aliyun.oss.version>3.18.3</aliyun.oss.version>
         <qiniu.oss.version>7.19.0</qiniu.oss.version>
 		<amazon.s3.version>2.29.32</amazon.s3.version>

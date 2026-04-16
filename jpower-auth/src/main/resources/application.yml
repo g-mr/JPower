@@ -113,6 +113,13 @@ jpower:
       name: mr.g
       email: ding931226@yeah.net
       url: https://gitee.com/gdzWork
+  mail:
+    host: smtp.yeah.net
+    port: 465
+    from: ding931226@yeah.net
+    user: ding931226@yeah.net
+    pass: XP2M6aT7XL3EfuCV
+    ssl-enable: true
   log:
     mode: file
 #    elk:

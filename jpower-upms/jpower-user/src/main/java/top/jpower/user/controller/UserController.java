@@ -42,9 +42,9 @@ import top.jpower.core.util.utils.StringUtil;
 import top.jpower.resource.api.dto.ValidateDTO;
 import top.jpower.resource.api.feign.SmsClient;
 import top.jpower.user.dbs.entity.CoreUser;
-import top.jpower.user.service.CoreUserService;
 import top.jpower.user.pojo.LoginUserVO;
 import top.jpower.user.pojo.UserVO;
+import top.jpower.user.service.CoreUserService;
 
 import java.io.File;
 import java.io.IOException;
@@ -289,40 +289,5 @@ public class UserController extends BaseController {
 
 		return R.status(coreUserService.updateEmail(email, ShieldUtil.getUserIdThrow()));
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    @Function(value = "用户详情", menus = {
-            @Menu(client = "admin", menuCode = "SYSTEM_USER", code = "USER_DETAIL", type = Menu.TYPE.BTN)
-    })
-    @Operation(summary = "查询用户详情")
-    @GetMapping(value = "/getById", produces = "application/json")
-    public R<UserVO> getById(@Parameter(description = "主键", required = true) @RequestParam @NotNull(message = "主键不可为空") Long id) {
-        return R.data(coreUserService.selectUserById(id));
-    }
 
 }

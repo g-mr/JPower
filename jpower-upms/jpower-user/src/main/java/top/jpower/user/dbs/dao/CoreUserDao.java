@@ -275,4 +275,16 @@ public class CoreUserDao extends JpowerServiceImpl<CoreUserMapper, CoreUser> imp
 				.eq(CoreUser::getLoginId, loginId)
 				.eq(CoreUser::getTenantCode, tenantCode, Fc.isNotBlank(tenantCode)));
 	}
+
+	public CoreUser selectByPhone(String phone, String tenantCode) {
+		return super.getOne(Wrappers.getQueryWrapper()
+				.eq(CoreUser::getTelephone, phone)
+				.eq(CoreUser::getTenantCode, tenantCode, Fc.isNotBlank(tenantCode)));
+	}
+
+	public CoreUser selectByEmail(String email, String tenantCode) {
+		return super.getOne(Wrappers.getQueryWrapper()
+				.eq(CoreUser::getEmail, email)
+				.eq(CoreUser::getTenantCode, tenantCode, Fc.isNotBlank(tenantCode)));
+	}
 }

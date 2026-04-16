@@ -37,6 +37,9 @@ public interface UserClient {
     @GetMapping("/queryUserByPhone")
     R<CoreUserDTO> queryUserByPhone(@RequestParam("phone") String phone, @RequestParam("tenantCode") String tenantCode);
 
+	@GetMapping("/queryUserByEmail")
+	R<CoreUserDTO> queryUserByEmail(@RequestParam("email") String email, @RequestParam("tenantCode") String tenantCode);
+
     @PostMapping("/saveUser")
     R<Long> saveUser(@RequestBody CoreUserDTO user);
 
@@ -56,4 +59,8 @@ public interface UserClient {
 	 */
 	@PostMapping("/removeTenantAll")
 	R<Boolean> removeTenantAll(@RequestBody List<String> tenantCodes);
+
+	@PostMapping("/updatePasswordById")
+    R<Boolean> updatePasswordById(@RequestParam("userId") Long userId, @RequestParam("password") String password);
+
 }
