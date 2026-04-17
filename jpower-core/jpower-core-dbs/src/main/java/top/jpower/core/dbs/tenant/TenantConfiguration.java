@@ -22,12 +22,12 @@ import top.jpower.core.util.user.UserConfig;
 @AutoConfigureBefore({MybatisFlexConfig.class})
 @AutoConfigureAfter(UserConfig.class)
 @EnableConfigurationProperties({JpowerTenantProperties.class})
-@ConditionalOnProperty(value = {"jpower.tenant.enable"}, matchIfMissing = true)
 public class TenantConfiguration {
 
     @Bean
     @ConditionalOnMissingBean({TenantFactory.class})
     @ConditionalOnBean(UserConfig.class)
+	@ConditionalOnProperty(value = {"jpower.tenant.enable"}, matchIfMissing = true)
     public TenantFactory tenantHandler(JpowerTenantProperties properties, UserConfig userConfig) {
         return new JpowerTenantHandler(properties, userConfig);
     }
