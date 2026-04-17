@@ -10,20 +10,15 @@ spring:
       - nacos:jpower.yml
       - nacos:jpower-dev.yml
       - nacos:jpower-auth.yml
-  redis:
-    ##redis 单机环境配置
-    host: 127.0.0.1
-    #    password:
-    port: 6379
-    database: 10
-    ssl: false
-    ##redis 集群环境配置
-  #    cluster:
-  #      nodes:
-  #        - 127.0.0.1:6379
-  #        - 127.0.0.1:6378
-  #        - 127.0.0.1:6377
-  #      commandTimeout: 5000
+  data:
+    redis:
+      ##redis 单机环境配置
+      host: 127.0.0.1
+      #password:
+      port: 6379
+      database: 10
+      ssl:
+        enabled: false
   cloud:
     nacos:
       server-addr: 8.130.172.218:8848

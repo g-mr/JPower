@@ -3,9 +3,9 @@ package top.jpower.core.util.support.mail;
 import cn.hutool.extra.mail.MailAccount;
 import cn.hutool.extra.mail.MailUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
+import top.jpower.core.util.utils.Fc;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -22,7 +22,6 @@ import java.util.Collections;
  */
 @Component
 @RequiredArgsConstructor
-@ConditionalOnProperty(prefix = "jpower.mail", name = "host")
 @EnableConfigurationProperties(MailProperties.class)
 public class MailHelper {
 
@@ -66,6 +65,9 @@ public class MailHelper {
     }
 
     private MailAccount buildAccount() {
+        if (Fc.isAnyBlank(properties.getHost(), properties.getFrom(), properties.getUser(), properties.getPass())) {
+            throw new IllegalStateException("邮件配置不完整");
+        }
         MailAccount account = new MailAccount();
         account.setHost(properties.getHost());
         account.setPort(properties.getPort());

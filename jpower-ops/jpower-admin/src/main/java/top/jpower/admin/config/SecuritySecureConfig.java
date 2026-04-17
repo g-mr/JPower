@@ -11,11 +11,9 @@ import org.springframework.security.web.authentication.SavedRequestAwareAuthenti
 import org.springframework.stereotype.Component;
 
 /**
- * @ClassName SecuritySecureConfig
- * @Description TODO 安全验证
- * @Author 郭丁志
- * @Date 2020/11/13 0013 0:21
- * @Version 1.0
+ * 安全验证
+ *
+ * @author mr.g
  */
 @Component
 @EnableWebSecurity
@@ -38,6 +36,7 @@ public class SecuritySecureConfig {
                 .requestMatchers(adminContextPath + "/login").permitAll()
                 .requestMatchers("/assets/**").permitAll()
                 .requestMatchers("/instances/**").permitAll()
+                .requestMatchers("/applications/**").permitAll()
                 //必须对每个其他请求进行身份验证
                 .anyRequest().authenticated())
                 .formLogin(formLogin ->formLogin.loginPage(adminContextPath + "/login").successHandler(successHandler))

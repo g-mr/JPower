@@ -11,11 +11,9 @@ import top.jpower.core.boot.config.JpowerJacksonConfig;
 import top.jpower.core.deploy.JpowerApplication;
 
 /**
- * @ClassName AdminStartApplication
- * @Description TODO spring boot admin启动入口
- * @Author 郭丁志
- * @Date 2020-02-24 18:41
- * @Version 1.0
+ * spring boot admin启动入口
+ *
+ * @author mr.g
  */
 @SpringBootApplication
 @ComponentScan(
