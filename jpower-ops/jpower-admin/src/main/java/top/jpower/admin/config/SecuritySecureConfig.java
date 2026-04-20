@@ -1,6 +1,7 @@
 package top.jpower.admin.config;
 
 import de.codecentric.boot.admin.server.config.AdminServerProperties;
+import jakarta.servlet.DispatcherType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -32,11 +33,16 @@ public class SecuritySecureConfig {
         successHandler.setDefaultTargetUrl(adminContextPath + "/");
 
         http.authorizeHttpRequests(auth ->
-                auth.requestMatchers(adminContextPath + "/actuator/**").permitAll()
+                auth.dispatcherTypeMatchers(DispatcherType.ASYNC, DispatcherType.FORWARD).permitAll()
+                .requestMatchers(adminContextPath + "/actuator/**").permitAll()
                 .requestMatchers(adminContextPath + "/login").permitAll()
-                .requestMatchers("/assets/**").permitAll()
-                .requestMatchers("/instances/**").permitAll()
-                .requestMatchers("/applications/**").permitAll()
+                .requestMatchers(adminContextPath + "/assets/**").permitAll()
+                .requestMatchers(adminContextPath + "/instances/**").permitAll()
+                .requestMatchers(adminContextPath + "/applications/**").permitAll()
+                .requestMatchers(adminContextPath + "/notifications/**").permitAll()
+                .requestMatchers(adminContextPath + "/journal/**").permitAll()
+                .requestMatchers(adminContextPath + "/extensions/**").permitAll()
+                .requestMatchers(adminContextPath + "/events/**").permitAll()
                 //必须对每个其他请求进行身份验证
                 .anyRequest().authenticated())
                 .formLogin(formLogin ->formLogin.loginPage(adminContextPath + "/login").successHandler(successHandler))

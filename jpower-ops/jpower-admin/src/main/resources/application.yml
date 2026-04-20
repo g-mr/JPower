@@ -18,11 +18,6 @@ spring:
       - nacos:jpower-dev.yml
       - nacos:jpower-admin.yml
   # 覆盖 jpower.yml 中的配置，Admin UI 需要静态资源映射
-  mvc:
-    throw-exception-if-no-handler-found: false
-  web:
-    resources:
-      add-mappings: true
   security:
     user:
       name: "admin"
@@ -33,20 +28,11 @@ spring:
       config:
         import-check:
           enabled: false   # 默认为 false，设为 true 后，缺失的配置会导致启动失败
-      discovery:
-        # 将本服务实例注册到服务中心时，在元信息中携带访问本服务使用的用户名和密码
-        metadata:
-          user.name: ${spring.security.user.name}
-          user.password: ${spring.security.user.password}
   boot:
     admin:
       discovery:
         # 启用服务发现，从 Nacos 自动发现客户端
         enabled: true
-        converter:
-          # 使用 Nacos 元数据中的 management-port 作为管理端口
-          management-context-path: /actuator
-      # 使用 Nacos 元数据中的用户名密码访问客户端 Actuator 端点
-      instance-auth:
-        default-user-name: ${spring.security.user.name}
-        default-password: ${spring.security.user.password}
+        # 忽略 Admin 自身服务，避免自我监控干扰
+        ignored-services:
+          - jpower-admin
