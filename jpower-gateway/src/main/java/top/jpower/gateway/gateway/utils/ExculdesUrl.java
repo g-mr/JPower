@@ -16,8 +16,8 @@ public class ExculdesUrl {
 
     static {
         exculudesUrl.add("/auth/**");
-        exculudesUrl.add("/v2/api-docs-ext/**");
-        exculudesUrl.add("/v2/api-docs/**");
+        exculudesUrl.add("/v3/api-docs-ext/**");
+        exculudesUrl.add("/v3/api-docs/**");
         exculudesUrl.add("/all/restful");
         exculudesUrl.add("/core/system/configure");
 		exculudesUrl.add("/core/tenant/configure");

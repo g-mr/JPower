@@ -28,8 +28,8 @@ public class XssProperties {
     private static List<String> defaultExcludes = new ArrayList<>();
 
     static {
-        defaultExcludes.add("/v2/api-docs-ext/**");
-        defaultExcludes.add("/v2/api-docs/**");
+        defaultExcludes.add("/v3/api-docs-ext/**");
+        defaultExcludes.add("/v3/api-docs/**");
         defaultExcludes.add("/swagger-resources/**");
         defaultExcludes.add("/doc.html");
         defaultExcludes.add("/webjars/**");
