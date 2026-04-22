@@ -63,6 +63,8 @@
         <qiniu.oss.version>7.19.0</qiniu.oss.version>
 		<amazon.s3.version>2.29.32</amazon.s3.version>
         <knife4j.version>4.5.0</knife4j.version>
+		<springdoc.version>2.8.9</springdoc.version>
+        <swagger.version>2.2.28</swagger.version>
         <mybatis-flex.version>1.11.5</mybatis-flex.version>
         <auto.service.version>1.1.1</auto.service.version>
         <spring-boot-admin.version>3.5.6</spring-boot-admin.version>
@@ -135,6 +137,13 @@
                 <version>${knife4j.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <!-- 统一 swagger 版本，防止 knife4j 传递的旧版本与 springdoc 冲突 -->
+            <dependency>
+                <groupId>io.swagger.core.v3</groupId>
+                <artifactId>swagger-annotations</artifactId>
+                <version>${swagger.version}</version>
             </dependency>
 
             <!-- mybatis-flex -->

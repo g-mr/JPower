@@ -16,16 +16,28 @@
         Jpower 接口文档服务
     </description>
 
-    <properties>
-        <!-- 覆盖 springdoc 版本以兼容 Spring Boot 3.5.x / Spring Framework 6.2+ -->
-        <springdoc.version>2.8.9</springdoc.version>
-    </properties>
-
     <dependencies>
 
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+        </dependency>
+
+        <!-- 显式声明 swagger 版本，解决 Schema$SchemaResolution NoClassDefFoundError -->
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations-jakarta</artifactId>
+            <version>${swagger.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-core-jakarta</artifactId>
+            <version>${swagger.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-models-jakarta</artifactId>
+            <version>${swagger.version}</version>
         </dependency>
 
         <!-- 显式声明 springdoc-openapi 版本，解决 ControllerAdviceBean NoSuchMethodError -->

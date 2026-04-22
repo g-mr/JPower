@@ -1,6 +1,9 @@
 package top.jpower.core.swagger.config;
 
 import cn.hutool.core.util.ArrayUtil;
+import com.github.xiaoymin.knife4j.spring.configuration.Knife4jAutoConfiguration;
+import com.github.xiaoymin.knife4j.spring.configuration.Knife4jProperties;
+import com.github.xiaoymin.knife4j.spring.extension.Knife4jOpenApiCustomizer;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -15,6 +18,7 @@ import org.springdoc.core.providers.JavadocProvider;
 import org.springdoc.core.service.OpenAPIService;
 import org.springdoc.core.service.SecurityService;
 import org.springdoc.core.utils.PropertyResolverUtils;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -36,9 +40,24 @@ import java.util.function.Consumer;
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties({SwaggerProperties.class})
+@AutoConfigureBefore(Knife4jAutoConfiguration.class)
 @ConditionalOnProperty(prefix = "knife4j", name = "enable", havingValue = "true", matchIfMissing = false)
 @RequiredArgsConstructor
 public class SwaggerConfig {
+
+    /**
+     * 替换 knife4j 原始的 {@code Knife4jOpenApiCustomizer}，
+     * 修复 springdoc 2.7+ 中 {@code getGroupConfigs()} 返回 {@code Set} 导致的 NoSuchMethodError。
+     * <p>
+     * 返回类型为 {@code Knife4jOpenApiCustomizer}，确保 {@code Knife4jAutoConfiguration}
+     * 中 {@code @ConditionalOnMissingBean} 能检测到本 Bean 而跳过创建原始有问题的 Bean。
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public Knife4jOpenApiCustomizer knife4jOpenApiCustomizer(Knife4jProperties knife4jProperties,
+                                                              SpringDocConfigProperties springDocConfigProperties) {
+        return new Knife4jOpenApiFixCustomizer(knife4jProperties, springDocConfigProperties);
+    }
 
     /**
      * 接口文档信息
