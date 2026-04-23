@@ -41,19 +41,51 @@ class SqlWrapper {
             }
 
             switch (keyword) {
-                case EQ, DATE_EQ -> wrapper.eq(column, v);
-                case NOT_EQ -> wrapper.ne(column, v);
-                case LIKE -> wrapper.like(column, v);
-                case LEFT_LIKE -> wrapper.likeLeft(column, v);
-                case RIGHT_LIKE -> wrapper.likeRight(column, v);
-                case NOT_LIKE -> wrapper.notLike(column, v);
-                case GT, DATE_GT -> wrapper.gt(column, v);
-                case LT, DATE_LT -> wrapper.lt(column, v);
-                case GE, DATE_GE -> wrapper.ge(column, v);
-                case LE, DATE_LE -> wrapper.le(column, v);
-                case IS_NULL -> wrapper.isNull(column);
-                case NOT_NULL -> wrapper.isNotNull(column);
-                case IGNORE, default -> wrapper.eq(column, v, false);
+                case EQ:
+                case DATE_EQ:
+                    wrapper.eq(column, v);
+                    break;
+                case NOT_EQ:
+                    wrapper.ne(column, v);
+                    break;
+                case LIKE:
+                    wrapper.like(column, v);
+                    break;
+                case LEFT_LIKE:
+                    wrapper.likeLeft(column, v);
+                    break;
+                case RIGHT_LIKE:
+                    wrapper.likeRight(column, v);
+                    break;
+                case NOT_LIKE:
+                    wrapper.notLike(column, v);
+                    break;
+                case GT:
+                case DATE_GT:
+                    wrapper.gt(column, v);
+                    break;
+                case LT:
+                case DATE_LT:
+                    wrapper.lt(column, v);
+                    break;
+                case GE:
+                case DATE_GE:
+                    wrapper.ge(column, v);
+                    break;
+                case LE:
+                case DATE_LE:
+                    wrapper.le(column, v);
+                    break;
+                case IS_NULL:
+                    wrapper.isNull(column);
+                    break;
+                case NOT_NULL:
+                    wrapper.isNotNull(column);
+                    break;
+                case IGNORE:
+                default:
+                    wrapper.eq(column, v, false);
+                    break;
             }
         });
     }
