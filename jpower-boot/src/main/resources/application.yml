@@ -125,6 +125,22 @@ jpower:
       name: mr.g
       email: ding931226@yeah.net
       url: https://gitee.com/gdzWork
+    groups:
+      system:
+        packages-to-scan:
+          - top.jpower.system
+      user:
+        packages-to-scan:
+          - top.jpower.user
+      resource:
+        packages-to-scan:
+          - top.jpower.resource
+      log:
+        packages-to-scan:
+          - top.jpower.log
+      auth:
+        packages-to-scan:
+          - top.jpower.auth
   log:
     mode: file
   test:

@@ -3,8 +3,8 @@ package top.jpower.core.util.support.mail;
 import cn.hutool.extra.mail.MailAccount;
 import cn.hutool.extra.mail.MailUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.stereotype.Component;
 import top.jpower.core.util.utils.Fc;
 
 import java.util.Collection;
@@ -15,12 +15,10 @@ import java.util.Collections;
  * <p>
  * 使用方式与 {@link MailUtil} 一致，但无需手动传入 {@link MailAccount}，
  * 配置统一从 application.yml 中的 jpower.mail 前缀读取。
- * <p>
- * 通过 spring.factories 自动注册，仅在配置了 jpower.mail.host 时才会创建该 Bean。
  *
  * @author mr.g
  */
-@Component
+@AutoConfiguration
 @RequiredArgsConstructor
 @EnableConfigurationProperties(MailProperties.class)
 public class MailHelper {

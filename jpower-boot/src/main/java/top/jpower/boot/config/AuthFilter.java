@@ -13,6 +13,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
+import top.jpower.common.constants.AppConstant;
 import top.jpower.common.constants.CacheNames;
 import top.jpower.core.auth.dto.UserInfo;
 import top.jpower.core.auth.properties.AuthDefExculdesUrl;
@@ -162,12 +163,16 @@ public class AuthFilter implements Filter {
         if (CollUtil.safeContains(ShieldUtil.getUserRole(), ROOT_ID)){
             return Boolean.TRUE;
         }
-        return listUrl.stream().anyMatch(pattern -> antPathMatcher.match(pattern, currentPath));
+        // BOOT模式下，去除请求路径中的服务前缀，以便与数据库中存储的权限URL匹配
+        String normalizedPath = AppConstant.stripServicePrefix(currentPath);
+        return listUrl.stream().anyMatch(pattern -> antPathMatcher.match(pattern, normalizedPath));
     }
 
     private boolean isSkip(String path) {
-        return AuthDefExculdesUrl.getExculudesUrl().stream().anyMatch(pattern -> antPathMatcher.match(pattern, path))
-                || authProperties.getSkipUrl().stream().anyMatch(pattern -> antPathMatcher.match(pattern, path));
+        // BOOT模式下去除服务前缀，统一使用无前缀路径匹配跳过规则
+        String normalizedPath = AppConstant.stripServicePrefix(path);
+        return AuthDefExculdesUrl.getExculudesUrl().stream().anyMatch(pattern -> antPathMatcher.match(pattern, normalizedPath))
+                || authProperties.getSkipUrl().stream().anyMatch(pattern -> antPathMatcher.match(pattern, normalizedPath));
     }
 
     private ServletRequest addHeader(HttpServletRequest request,String value, String dataScope) {
