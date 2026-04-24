@@ -100,7 +100,7 @@ public class AuthFilter implements Filter {
 
             UserInfo user = ShieldUtil.getUser(httpRequest);
             if (Fc.isNull(user) || !isAuthByToken(token, currentPath)) {
-                R<String> responseData = R.print(HttpStatus.UNAUTHORIZED.value(),"请求未授权",false);
+                R<String> responseData = R.print(HttpStatus.FORBIDDEN.value(),"请求未授权",false);
                 WebUtil.renderJson((HttpServletResponse) response,responseData);
                 return;
             }

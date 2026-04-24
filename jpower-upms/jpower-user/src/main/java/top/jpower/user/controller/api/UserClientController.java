@@ -1,6 +1,6 @@
 package top.jpower.user.controller.api;
 
-import com.github.xiaoymin.knife4j.annotations.Ignore;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -10,9 +10,9 @@ import top.jpower.user.api.dto.CoreUserDTO;
 import top.jpower.user.api.dto.ValidatePasswordDTO;
 import top.jpower.user.api.feign.UserClient;
 import top.jpower.user.dbs.entity.CoreUser;
+import top.jpower.user.pojo.UserVO;
 import top.jpower.user.service.CoreUserRoleService;
 import top.jpower.user.service.CoreUserService;
-import top.jpower.user.pojo.UserVO;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ import java.util.List;
  *
  * @author mr.g
  **/
-@Ignore
+@Hidden
 @RestController
 @RequestMapping("/feign/core/user")
 @AllArgsConstructor
