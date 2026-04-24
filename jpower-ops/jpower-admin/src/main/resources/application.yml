@@ -1,15 +1,5 @@
 server:
   port: 8868
-  undertow:
-    threads:
-      # 设置IO线程数, 它主要执行非阻塞的任务,它们会负责多个连接, 默认设置每个CPU核心一个线程
-      io: 4
-      # 阻塞任务线程池, 当执行类似servlet请求阻塞操作, undertow会从这个线程池中取得线程,它的值设置取决于系统的负载
-      worker: 20
-    # 以下的配置会影响buffer,这些buffer会用于服务器连接的IO操作,有点类似netty的池化内存管理
-    buffer-size: 1024
-    # 是否分配的直接内存
-    direct-buffers: true
 
 spring:
   config:
@@ -17,14 +7,11 @@ spring:
       - nacos:jpower.yml
       - nacos:jpower-dev.yml
       - nacos:jpower-admin.yml
+      - nacos:jpower-admin-dev.yml
   # 覆盖 jpower.yml 中的配置，Admin UI 需要静态资源映射
-  security:
-    user:
-      name: "admin"
-      password: "admin"
   cloud:
     nacos:
-      server-addr: 8.130.172.218:8848
+      server-addr: 127.0.0.1:8848
       config:
         import-check:
           enabled: false   # 默认为 false，设为 true 后，缺失的配置会导致启动失败

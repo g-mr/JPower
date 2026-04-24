@@ -4,17 +4,17 @@ knife4j:
     enable: true
     routes:
       - name: 授权模块
-        uri: 127.0.0.1
+        uri: 127.0.0.1:9000
         location: /jpower-auth/v3/api-docs
       - name: 系统管理
-        uri: 127.0.0.1
+        uri: 127.0.0.1:9000
         location: /jpower-system/v3/api-docs
       - name: 用户模块
-        uri: 127.0.0.1
+        uri: 127.0.0.1:9000
         location: /jpower-user/v3/api-docs
       - name: 文件模块
-        uri: 127.0.0.1
+        uri: 127.0.0.1:9000
         location: /jpower-file/v3/api-docs
       - name: 日志模块
-        uri: 127.0.0.1
+        uri: 127.0.0.1:9000
         location: /jpower-log/v3/api-docs

@@ -37,6 +37,9 @@ spring:
       #总数据的大小
       max-request-size: 20MB
   cloud:
+    openfeign:
+      okhttp:
+        enabled: true
     sentinel:
       enabled: false
       eager: true
@@ -57,16 +60,12 @@ spring:
 feign:
   sentinel:
     enabled: false
-  okhttp:
-    enabled: true
-  httpclient:
-    enabled: false
 
 management:
   endpoint:
     shutdown:
       #开启端点
-      enabled: true
+      access: unrestricted
     health:
       show-details: always
   endpoints:
@@ -78,13 +77,6 @@ management:
 springdoc:
   api-docs:
     resolve-extensions-properties: true
-  servers:
-    - url: https://api.example.com
-      description: 生产服务器
-    - url: https://sandbox.example.com
-      description: 测试服务器
-    - url: /  # 相对路径，指向应用当前部署的根地址
-      description: 本地或默认上下文
 
 #knife4j配置
 knife4j:
@@ -153,9 +145,9 @@ mybatis-flex:
     master:
       type: com.alibaba.druid.pool.DruidDataSource
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://8.130.172.218:2002/jpower?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true&rewriteBatchedStatements=true
+      url: jdbc:mysql://127.0.0.1:3306/jpower?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true&rewriteBatchedStatements=true
       username: root
-      password: P@ssw0rd@Mysql
+      password: 12345678
       # 下面为连接池的补充设置
       druid:
         initialSize: 10   #初始化连接个数
@@ -176,8 +168,8 @@ mybatis-flex:
     slave:
       type: com.alibaba.druid.pool.DruidDataSource
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://8.130.172.218:2002/jpower?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true&rewriteBatchedStatements=true
+      url: jdbc:mysql://127.0.0.1:3306/jpower?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true&rewriteBatchedStatements=true
       username: root
-      password: P@ssw0rd@Mysql
+      password: 12345678
   type-aliases-super-type: top.jpower.core.dbs.dbs.entity.base.BaseEntity
   mapper-locations: classpath*:top/jpower/**/dbs/dao/mapper/**/*Mapper.xml

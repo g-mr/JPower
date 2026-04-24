@@ -7,20 +7,10 @@ spring:
       - nacos:jpower.yml
       - nacos:jpower-dev.yml
       - nacos:jpower-gateway.yml
+      - nacos:jpower-gateway-dev.yml
   cloud:
     nacos:
-      server-addr: 8.130.172.218:8848
+      server-addr: 127.0.0.1:8848
       config:
         import-check:
           enabled: false   # 默认为 false，设为 true 后，缺失的配置会导致启动失败
-    loadbalancer:
-      #开启重试机制
-      retry:
-        enabled: true
-    gateway:
-      server:
-        webflux:
-          discovery:
-            locator:
-              #启用自动根据服务ID建立路由
-              enabled: true
