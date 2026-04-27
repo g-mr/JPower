@@ -13,12 +13,11 @@
 # 接各种前后台开发、小程序，可联系微信：953944877
 
 -------
-#### JPower只是刚起步，很多功能还在开发中敬请期待......
 
 ## JPower 简介
 `JPower`是由一款政府商业项目升级优化而来。
 
-采用前后端分离的模式，前端开源项目：[jpower-ui](https://gitee.com/gdzWork/jpower-ui) (基于 AVue、Vue、Element-UI)、[JPowerWeb](https://gitee.com/deep_letters/jpower)(基于 Vue、Element-UI)
+采用前后端分离的模式，前端开源项目：[jpower-ui](https://gitee.com/gdzWork/jpower-ui) (基于 VBen、Vue3、Element-PLUS)
 
 
 Boot版本已经改为[jpower-boot](jpower-boot)模块
@@ -39,8 +38,6 @@ Boot版本已经改为[jpower-boot](jpower-boot)模块
 注册中心、配置中心选型Nacos，为工程瘦身的同时加强各模块之间的联动。
 
 集成Sentinel从流量控制、熔断降级等多个维度保护服务的稳定性。
-
-基于MybatisPlus-generator实现了代码生成器。
 
 ## 分支介绍
 1. master 分支为最新的稳定版本，每次提交都会升级一个版本号
@@ -119,41 +116,42 @@ Boot版本已经改为[jpower-boot](jpower-boot)模块
 ## 工程结构：
 ~~~
 JPower
-├── config -- 配置文件目录
-├── jpower-core-login -- 授权登录模块
-├── jpower-core-server -- 核心业务模块
-├    ├── jpower-file -- 文件模块
-├    ├── jpower-user -- 用户模块
-├    ├── jpower-system -- 系统模块
-├── jpower-feign-api -- feign api模块
-├    ├── jpower-file-api -- 文件API模块
-├    ├── jpower-system-api -- 系统管理API模块
-├    ├── jpower-user-api -- 用户API模块
-├── jpower-module-common -- 工具包模块
-├    ├── common-auth -- 授权工具包 
-├    ├── common-dbs -- 数据库工具包 
-├    ├── common-deploy -- 基础启动工具包 
-├    ├── common-exception -- 异常工具包
-├    ├── common-log -- 日志工具包 
-├    ├── common-nacos -- nacos工具包 
-├    ├── jpower-core-redis -- 缓存工具包 
-├    ├── common-feign -- feign工具包同时集成sentinel
-├    ├── jpower-core-swagger -- swagger工具包 
-├    ├── common-tool -- 基础配置工具包 
-├    ├── common-transaction -- 分布式事务工具包 
-├    └── common-utils -- 工具类 
-├── jpower-module-gateway -- 网关模块
-├── jpower-op-server -- 运维模块
-├    ├── jpower-doc -- swagger聚合文档
-├    ├── jpower-log -- 日志服务
-└──  └── jpower-admin -- SpringBootAdmin 
+├── jpower-api -- Feign API模块
+│    ├── jpower-resource-api -- 资源API模块
+│    ├── jpower-system-api -- 系统管理API模块
+│    └── jpower-user-api -- 用户API模块
+├── jpower-auth -- 授权登录模块
+├── jpower-boot -- 单体启动模块
+├── jpower-common -- 公共模块（常量、枚举、校验）
+├── jpower-core -- 核心工具包模块
+│    ├── jpower-core-auth -- 授权工具包
+│    ├── jpower-core-boot -- 基础Boot工具包
+│    ├── jpower-core-dbs -- 数据库工具包
+│    ├── jpower-core-deploy -- 基础启动工具包
+│    ├── jpower-core-exception -- 异常工具包
+│    ├── jpower-core-feign -- Feign工具包（集成Sentinel）
+│    ├── jpower-core-log -- 日志工具包
+│    ├── jpower-core-nacos -- Nacos工具包
+│    ├── jpower-core-redis -- 缓存工具包
+│    ├── jpower-core-seata -- 分布式事务工具包
+│    ├── jpower-core-swagger -- Swagger工具包
+│    └── jpower-core-util -- 工具类
+├── jpower-gateway -- 网关模块
+├── jpower-ops -- 运维模块
+│    ├── jpower-admin -- SpringBootAdmin
+│    ├── jpower-doc -- Swagger聚合文档
+│    └── jpower-log -- 日志服务
+└── jpower-upms -- 核心业务模块
+     ├── jpower-resource -- 资源模块
+     ├── jpower-system -- 系统模块
+     └── jpower-user -- 用户模块
 ~~~
 
 ## 技术栈：
 * 所涉及的相关的技术有
     *  缓存：Redis
     *  数据库： MySQL 5.7
-    *  持久层框架： Mybatis-plus
+    *  持久层框架： Mybatis-Flex
     *  API网关：Gateway
     *  服务注册与发现: Nacos
     *  服务消费：OpenFeign
@@ -168,7 +166,7 @@ JPower
     *  Nginx
 * 部署方面
     *  服务器：CentOS
-    *  Docker 18
+    *  Docker
     *  Nginx
 
 ## 项目截图：
