@@ -33,13 +33,11 @@ public class SeataDeployServiceImpl implements DeployService {
 
         //seata注册nacos模式配置
 //        map.put("seata.registry.type", "nacos");
-//        map.put("seata.registry.nacos.server-addr", "${jpower.".concat(profile).concat(".nacos.server-addr:}"));
-//        map.put("seata.registry.nacos.namespace", "${jpower.".concat(profile).concat(".nacos.namespace:}"));
-//        map.put("seata.registry.nacos.group", NacosConstants.CONFIG_GROUP);
+//        map.put("seata.registry.nacos.server-addr", "${spring.cloud.nacos.server-addr:}");
+//        map.put("seata.registry.nacos.namespace", "${spring.cloud.nacos.namespace:}");
 //        map.put("seata.config.type", "nacos");
-//        map.put("seata.config.nacos.server-addr", "${jpower.".concat(profile).concat(".nacos.server-addr:}"));
-//        map.put("seata.config.nacos.namespace", "${jpower.".concat(profile).concat(".nacos.namespace:}"));
-//        map.put("seata.config.nacos.group", NacosConstants.CONFIG_GROUP);
+//        map.put("seata.config.nacos.server-addr", "${spring.cloud.nacos.server-addr:}");
+//        map.put("seata.config.nacos.namespace", "${spring.cloud.nacos.namespace:}");
 
 		properties.getPropertySources().addLast(new MapPropertySource("seataDeployService", map));
     }

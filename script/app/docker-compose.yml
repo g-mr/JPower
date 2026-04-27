@@ -15,9 +15,12 @@ services:
         ipv4_address: 172.16.238.90
 
   skywalking-oap:
-    image: apache/skywalking-oap-server:9.7.0
+    image: apache/skywalking-oap-server:10.4.0
     privileged: true
     restart: always
+    ports:
+      - 11800:11800
+      - 12800:12800
     volumes:
       - ../docker/skywalking/mysql-connector-java-5.1.47.jar:/skywalking/oap-libs/mysql-connector-java-5.1.47.jar
     healthcheck:
@@ -28,7 +31,7 @@ services:
       start_period: 40s
     environment:
       SW_STORAGE: mysql
-      SW_JDBC_URL: jdbc:mysql://192.169.0.8:3306/sky_walking?rewriteBatchedStatements=true&characterEncoding=utf-8&useSSL=false
+      SW_JDBC_URL: jdbc:mysql://host.docker.internal:3306/sky_walking?rewriteBatchedStatements=true&characterEncoding=utf-8&useSSL=false
       SW_DATA_SOURCE_USER: root
       SW_DATA_SOURCE_PASSWORD: 12345678
       TZ: Asia/Shanghai
@@ -36,7 +39,7 @@ services:
       - jpower_net
 
   skywalking-ui:
-    image: apache/skywalking-ui:9.7.0
+    image: apache/skywalking-ui:10.4.0
     privileged: true
     depends_on:
       - skywalking-oap
@@ -94,11 +97,12 @@ services:
         ipv4_address: 172.16.238.51
 
   seata:
-    image: seataio/seata-server:1.6.1
+    image: apache/seata-server:2.5.0.jdk17
     privileged: true
     hostname: seata-server
     ports:
-      - 85:8091
+      - 8091:8091
+      - 7091:7091
     volumes:
       - ../docker/seata/logs/:/root/logs/seata/
 # 使用自定义配置文件放开
@@ -109,6 +113,7 @@ services:
 #      - SEATA_CONFIG_NAME=file:/jpower/seata-config/registry
     expose:
       - 8091
+      - 7091
     restart: always
     networks:
       jpower_net:
