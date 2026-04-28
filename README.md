@@ -24,7 +24,7 @@ Boot版本已经改为[jpower-boot](jpower-boot)模块
 
 [//]: # (Boot版本：[JPowerBoot]&#40;https://gitee.com/gdzWork/JPowerBoot&#41;)
 
-`JPower` 基于`SpringCloud(2020.0.1)`  + `SpringBoot(2.4.2)` 的微服务快速开发平台.
+`JPower` 基于`SpringCloud(2025.0.0)`  + `SpringBoot(3.5.8)` 的微服务快速开发平台.
 具备网关统一鉴权、Xss防跨站攻击、分布式事务等多个模块，支持多业务系统并行开发，
 支持多服务并行开发，可以作为后端服务的开发脚手架。代码简洁，注释齐全，架构清晰，非常适合学习和作为基础框架使用。
 `JPower` 的目标蓝图是能够打造一款集成各种比较好用的工具于一体的开发框架，例如可在页面配置各种报表，集成echarts可实现快速生成页面，各种场景下的数据传输等等各类工具。
@@ -150,7 +150,7 @@ JPower
 ## 技术栈：
 * 所涉及的相关的技术有
     *  缓存：Redis
-    *  数据库： MySQL 5.7
+    *  数据库： MySQL 8
     *  持久层框架： Mybatis-Flex
     *  API网关：Gateway
     *  服务注册与发现: Nacos
@@ -158,7 +158,7 @@ JPower
     *  负载均衡：spring load balancing
     *  配置中心：Nacos
     *  服务熔断：Sentinel
-    *  项目构建：Maven 3.3
+    *  项目构建：Maven 3.8
     *  分布式事务：seata
     *  分布式系统的流量防卫兵：Sentinel
     *  监控：spring-boot-admin

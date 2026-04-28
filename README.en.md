@@ -24,7 +24,7 @@ The Boot version has been changed to the [jpower-boot](jpower-boot) module
 
 [//]: # (Boot version：[JPowerBoot]&#40;https://gitee.com/gdzWork/JPowerBoot&#41;)
 
-`JPower` is a rapid development platform for microservices based on `SpringCloud(2020.0.1)` + `SpringBoot(2.4.2)`.
+`JPower` is a rapid development platform for microservices based on `SpringCloud(2025.0.0)` + `SpringBoot(3.5.8)`.
 It has multiple modules such as unified gateway authentication, XSS anti-cross-site attack, and distributed transactions, supporting parallel development of multiple business systems
 and multiple services. It can be used as a development scaffolding for back-end services. The code is concise, well-commented, and clearly structured, making it very suitable for learning and use as a foundational framework.
 The blueprint of `JPower` is to create a development framework that integrates a variety of useful tools, such as configuring various reports on the page, integrating ECharts for rapid page generation, data transmission in various scenarios, and other types of tools.
@@ -150,7 +150,7 @@ JPower
 ## Technology Stack:
 * Related technologies involved:
     *  Cache: Redis
-    *  Database: MySQL 5.7
+    *  Database: MySQL 8
     *  Persistence Framework: Mybatis-Flex
     *  API Gateway: Gateway
     *  Service Registration & Discovery: Nacos
@@ -158,7 +158,7 @@ JPower
     *  Load Balancing: Spring Load Balancing
     *  Configuration Center: Nacos
     *  Circuit Breaker: Sentinel
-    *  Project Build: Maven 3.3
+    *  Project Build: Maven 3.8
     *  Distributed Transaction: Seata
     *  Traffic Guard for Distributed Systems: Sentinel
     *  Monitoring: Spring Boot Admin
