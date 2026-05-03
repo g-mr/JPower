@@ -3,4 +3,5 @@ top.jpower.core.dbs.config.MybatisFlexConfig
 top.jpower.core.dbs.datascope.DataScopeConfig
 top.jpower.core.dbs.dictbind.DictBindConfig
 top.jpower.core.dbs.page.PageConfig
+top.jpower.core.dbs.tenant.TenantContextHolderFilter
 top.jpower.core.dbs.tenant.TenantConfiguration

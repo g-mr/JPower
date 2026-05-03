@@ -28,8 +28,8 @@ public class TenantConfiguration {
     @ConditionalOnMissingBean({TenantFactory.class})
     @ConditionalOnBean(UserConfig.class)
 	@ConditionalOnProperty(value = {"jpower.tenant.enable"}, matchIfMissing = true)
-    public TenantFactory tenantHandler(JpowerTenantProperties properties, UserConfig userConfig) {
-        return new JpowerTenantHandler(properties, userConfig);
+    public TenantFactory tenantHandler(JpowerTenantProperties properties) {
+        return new JpowerTenantHandler(properties);
     }
 
 }
