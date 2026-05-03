@@ -13,7 +13,7 @@
     <name>JPower Core Swagger</name>
     <packaging>jar</packaging>
     <description>
-        Jpower 接口文档服务
+        JPower 接口文档服务
     </description>
 
     <dependencies>
