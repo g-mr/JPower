@@ -2,6 +2,7 @@ HELP.md
 target/
 logs/
 .mvn/
+.qoder/
 mvnw
 mvnw.cmd
 file/
