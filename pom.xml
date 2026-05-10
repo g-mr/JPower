@@ -91,7 +91,6 @@
         <module>jpower-ops</module>
         <module>jpower-common</module>
         <module>jpower-boot</module>
-        <module>jpower-core/jpower-core-ai</module>
     </modules>
 
     <dependencies>
