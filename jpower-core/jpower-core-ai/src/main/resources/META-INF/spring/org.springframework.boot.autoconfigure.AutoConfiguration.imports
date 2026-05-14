@@ -1,1 +1,2 @@
 top.jpower.core.ai.config.ChatClientAutoConfiguration
+top.jpower.core.ai.config.PromptAutoConfiguration
