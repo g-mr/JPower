@@ -1413,6 +1413,23 @@ INSERT INTO `tb_resource_sms` VALUES (1765182328482582529, '测试', 'ali', 'val
 COMMIT;
 
 -- ----------------------------
+-- Table structure for tb_ai_prompt
+-- ----------------------------
+CREATE TABLE `tb_ai_prompt` (
+    `id` bigint NOT NULL COMMENT '主键',
+    `context_key` varchar(100) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'KEY',
+    `content` text COLLATE utf8mb4_general_ci NOT NULL COMMENT '提示词内容',
+    `create_user` bigint NOT NULL DEFAULT '1' COMMENT '创建人',
+    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_user` bigint NOT NULL DEFAULT '1' COMMENT '更新人',
+    `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `delete_time` bigint NOT NULL DEFAULT '0' COMMENT '删除时间',
+    `create_org` bigint DEFAULT NULL COMMENT '创建部门',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `tb_ai_prompt_key_uindex` (`context_key`,`delete_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='提示词表';
+
+-- ----------------------------
 -- Table structure for undo_log
 -- ----------------------------
 DROP TABLE IF EXISTS `undo_log`;
