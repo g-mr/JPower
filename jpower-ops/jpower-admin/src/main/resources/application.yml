@@ -4,14 +4,16 @@ server:
 spring:
   config:
     import:
-      - nacos:jpower.yml
-      - nacos:jpower-dev.yml
-      - nacos:jpower-admin.yml
-      - nacos:jpower-admin-dev.yml
+      - optional:nacos:jpower.yml
+      - optional:nacos:jpower-dev.yml
+      - optional:nacos:jpower-admin.yml
+      - optional:nacos:jpower-admin-dev.yml
   # 覆盖 jpower.yml 中的配置，Admin UI 需要静态资源映射
   cloud:
     nacos:
       server-addr: 127.0.0.1:8848
+      username: nacos
+      password: nacos
       config:
         import-check:
           enabled: false   # 默认为 false，设为 true 后，缺失的配置会导致启动失败

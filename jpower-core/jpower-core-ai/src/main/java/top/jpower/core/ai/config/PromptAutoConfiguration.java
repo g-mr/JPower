@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import top.jpower.core.ai.prompt.DefaultPromptProcessed;
@@ -35,6 +36,7 @@ import top.jpower.core.ai.properties.AiProperties;
         "com.alibaba.cloud.nacos.NacosConfigAutoConfiguration",
         "com.mybatisflex.spring.boot.MybatisFlexAutoConfiguration"
 })
+@EnableConfigurationProperties(AiProperties.class)
 public class PromptAutoConfiguration {
 
 

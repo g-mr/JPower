@@ -4,13 +4,15 @@ server:
 spring:
   config:
     import:
-      - nacos:jpower.yml
-      - nacos:jpower-dev.yml
-      - nacos:jpower-auth.yml
-      - nacos:jpower-auth-dev.yml
+      - optional:nacos:jpower.yml
+      - optional:nacos:jpower-dev.yml
+      - optional:nacos:jpower-auth.yml
+      - optional:nacos:jpower-auth-dev.yml
   cloud:
     nacos:
       server-addr: 127.0.0.1:8848
+      username: nacos
+      password: nacos
       config:
         import-check:
           enabled: false   # 默认为 false，设为 true 后，缺失的配置会导致启动失败

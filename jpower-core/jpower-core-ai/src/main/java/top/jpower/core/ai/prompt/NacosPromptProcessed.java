@@ -108,6 +108,12 @@ public class NacosPromptProcessed implements PromptProcessed {
                         if (Fc.isNotBlank(nacosConfigProperties.getNamespace())) {
                             properties.setProperty(PropertyKeyConst.NAMESPACE, nacosConfigProperties.getNamespace());
                         }
+                        if (Fc.isNotBlank(nacosConfigProperties.getUsername())) {
+                            properties.setProperty(PropertyKeyConst.USERNAME, nacosConfigProperties.getUsername());
+                        }
+                        if (Fc.isNotBlank(nacosConfigProperties.getPassword())) {
+                            properties.setProperty(PropertyKeyConst.PASSWORD, nacosConfigProperties.getPassword());
+                        }
                         configService = NacosFactory.createConfigService(properties);
                     } catch (NacosException e) {
                         log.error("初始化Nacos ConfigService失败", e);

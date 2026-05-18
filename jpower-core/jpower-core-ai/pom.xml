@@ -47,6 +47,13 @@
             <optional>true</optional>
         </dependency>
 
+        <dependency>
+            <groupId>top.jpower</groupId>
+            <artifactId>jpower-core-nacos</artifactId>
+            <version>${top.jpower.version}</version>
+            <optional>true</optional>
+        </dependency>
+
     </dependencies>
 
 </project>
