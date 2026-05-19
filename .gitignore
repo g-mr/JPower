@@ -6,6 +6,7 @@ logs/
 mvnw
 mvnw.cmd
 file/
+.flattened-pom.xml
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**
 !**/src/test/**

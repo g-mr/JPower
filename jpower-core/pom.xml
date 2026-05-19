@@ -8,6 +8,7 @@
     </parent>
 
     <modules>
+        <module>jpower-core-dependencies</module>
         <module>jpower-core-auth</module>
         <module>jpower-core-deploy</module>
         <module>jpower-core-nacos</module>

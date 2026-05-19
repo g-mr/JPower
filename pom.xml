@@ -77,6 +77,7 @@
         <maven-resources.version>3.4.0</maven-resources.version>
         <maven-gpg.version>3.2.8</maven-gpg.version>
         <dockerfile-maven-plugin.version>1.4.13</dockerfile-maven-plugin.version>
+        <flatten-maven-plugin.version>1.6.0</flatten-maven-plugin.version>
 
         <docker.image.prefix>jpower</docker.image.prefix>
         <docker.registry>8.130.172.218:8180</docker.registry>
@@ -299,6 +300,12 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>${maven-resources.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>flatten-maven-plugin</artifactId>
+                    <version>${flatten-maven-plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>

@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!--
+        开发期间保持 parent 继承，便于复用根 pom 的 properties 和 release profile。
+        发布时由 flatten-maven-plugin 自动去除 parent 元素，生成独立的 BOM 文件。
+    -->
+    <parent>
+        <groupId>top.jpower</groupId>
+        <artifactId>jpower-core</artifactId>
+        <version>3.0.1</version>
+    </parent>
+
+    <artifactId>jpower-core-dependencies</artifactId>
+    <packaging>pom</packaging>
+    <name>JPower Core Dependencies</name>
+    <description>JPower 框架统一依赖版本管理 BOM（Bill of Materials）</description>
+    <url>https://gitee.com/gdzWork/JPower</url>
+
+    <developers>
+        <developer>
+            <id>mr.g</id>
+            <name>Tzu-Ding Goo</name>
+            <email>ding931226@yeah.net</email>
+            <organization>JPower</organization>
+            <organizationUrl>https://gitee.com/gdzWork</organizationUrl>
+            <timezone>+8</timezone>
+        </developer>
+    </developers>
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+    <scm>
+        <connection>https://gitee.com/gdzWork/JPower.git</connection>
+        <developerConnection>https://gitee.com/gdzWork</developerConnection>
+        <url>https://gitee.com/gdzWork/JPower.git</url>
+    </scm>
+
+    <properties>
+        <!--
+            以下属性在开发期间由 parent 继承获取，此处显式声明是为了：
+            1. 发布时 flatten 去除 parent 后，属性仍然可用
+            2. 为消费方提供清晰的版本信息
+        -->
+        <jpower.version>3.0.1</jpower.version>
+        <spring-boot.version>3.5.8</spring-boot.version>
+        <spring-cloud.version>2025.0.0</spring-cloud.version>
+        <spring-alibaba.version>2025.0.0.0</spring-alibaba.version>
+        <spring-ai.version>1.1.2</spring-ai.version>
+        <spring-ai-alibaba.version>1.1.2.2</spring-ai-alibaba.version>
+        <mybatis-flex.version>1.11.5</mybatis-flex.version>
+        <knife4j.version>4.5.0</knife4j.version>
+        <springdoc.version>2.8.9</springdoc.version>
+        <swagger.version>2.2.28</swagger.version>
+        <hutool.version>5.8.42</hutool.version>
+        <redisson.version>3.52.0</redisson.version>
+        <druid-spring.version>1.2.27</druid-spring.version>
+        <fastjson.version>2.0.58</fastjson.version>
+        <jwt.version>0.13.0</jwt.version>
+        <ttl.version>2.14.5</ttl.version>
+        <logstash.version>9.0</logstash.version>
+        <skywalking.version>9.5.0</skywalking.version>
+        <jsqlparser.version>5.3</jsqlparser.version>
+        <auto.service.version>1.1.1</auto.service.version>
+        <spring-boot-admin.version>3.5.6</spring-boot-admin.version>
+        <flatten-maven-plugin.version>1.6.0</flatten-maven-plugin.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <!-- ==================== 基础框架 BOM ==================== -->
+
+            <!-- Spring Boot -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Spring Cloud -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Spring Cloud Alibaba -->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring-alibaba.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Spring AI -->
+            <dependency>
+                <groupId>org.springframework.ai</groupId>
+                <artifactId>spring-ai-bom</artifactId>
+                <version>${spring-ai.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Spring AI Alibaba -->
+            <dependency>
+                <groupId>com.alibaba.cloud.ai</groupId>
+                <artifactId>spring-ai-alibaba-bom</artifactId>
+                <version>${spring-ai-alibaba.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Spring AI Alibaba Extensions -->
+            <dependency>
+                <groupId>com.alibaba.cloud.ai</groupId>
+                <artifactId>spring-ai-alibaba-extensions-bom</artifactId>
+                <version>${spring-ai-alibaba.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Knife4j -->
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-dependencies</artifactId>
+                <version>${knife4j.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- MyBatis-Flex -->
+            <dependency>
+                <groupId>com.mybatis-flex</groupId>
+                <artifactId>mybatis-flex-dependencies</artifactId>
+                <version>${mybatis-flex.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- ==================== 版本锁定（解决 BOM 间冲突） ==================== -->
+
+            <!-- 统一 swagger 版本，防止 knife4j 传递的旧版本与 springdoc 冲突 -->
+            <dependency>
+                <groupId>io.swagger.core.v3</groupId>
+                <artifactId>swagger-annotations</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+
+            <!-- hutool - 显式声明版本以覆盖 BOM 中的旧版本 -->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+
+            <!-- Redisson -->
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson-spring-boot-starter</artifactId>
+                <version>${redisson.version}</version>
+            </dependency>
+
+            <!-- Druid -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-3-starter</artifactId>
+                <version>${druid-spring.version}</version>
+            </dependency>
+
+            <!-- FastJSON2 -->
+            <dependency>
+                <groupId>com.alibaba.fastjson2</groupId>
+                <artifactId>fastjson2-extension</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
+
+            <!-- JWT -->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-api</artifactId>
+                <version>${jwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-impl</artifactId>
+                <version>${jwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-jackson</artifactId>
+                <version>${jwt.version}</version>
+            </dependency>
+
+            <!-- TTL -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>transmittable-thread-local</artifactId>
+                <version>${ttl.version}</version>
+            </dependency>
+
+            <!-- Logstash -->
+            <dependency>
+                <groupId>net.logstash.logback</groupId>
+                <artifactId>logstash-logback-encoder</artifactId>
+                <version>${logstash.version}</version>
+            </dependency>
+
+            <!-- SkyWalking -->
+            <dependency>
+                <groupId>org.apache.skywalking</groupId>
+                <artifactId>apm-toolkit-logback-1.x</artifactId>
+                <version>${skywalking.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.skywalking</groupId>
+                <artifactId>apm-toolkit-trace</artifactId>
+                <version>${skywalking.version}</version>
+            </dependency>
+
+            <!-- JSqlParser -->
+            <dependency>
+                <groupId>com.github.jsqlparser</groupId>
+                <artifactId>jsqlparser</artifactId>
+                <version>${jsqlparser.version}</version>
+            </dependency>
+
+            <!-- Google Auto Service -->
+            <dependency>
+                <groupId>com.google.auto.service</groupId>
+                <artifactId>auto-service</artifactId>
+                <version>${auto.service.version}</version>
+            </dependency>
+
+            <!-- Spring Boot Admin -->
+            <dependency>
+                <groupId>de.codecentric</groupId>
+                <artifactId>spring-boot-admin-starter-server</artifactId>
+                <version>${spring-boot-admin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.codecentric</groupId>
+                <artifactId>spring-boot-admin-starter-client</artifactId>
+                <version>${spring-boot-admin.version}</version>
+            </dependency>
+
+            <!-- ==================== JPower Core 模块 ==================== -->
+
+            <dependency>
+                <groupId>top.jpower</groupId>
+                <artifactId>jpower-core-util</artifactId>
+                <version>${jpower.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>top.jpower</groupId>
+                <artifactId>jpower-core-deploy</artifactId>
+                <version>${jpower.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>top.jpower</groupId>
+                <artifactId>jpower-core-boot</artifactId>
+                <version>${jpower.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>top.jpower</groupId>
+                <artifactId>jpower-core-dbs</artifactId>
+                <version>${jpower.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>top.jpower</groupId>
+                <artifactId>jpower-core-redis</artifactId>
+                <version>${jpower.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>top.jpower</groupId>
+                <artifactId>jpower-core-auth</artifactId>
+                <version>${jpower.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>top.jpower</groupId>
+                <artifactId>jpower-core-feign</artifactId>
+                <version>${jpower.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>top.jpower</groupId>
+                <artifactId>jpower-core-nacos</artifactId>
+                <version>${jpower.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>top.jpower</groupId>
+                <artifactId>jpower-core-swagger</artifactId>
+                <version>${jpower.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>top.jpower</groupId>
+                <artifactId>jpower-core-log</artifactId>
+                <version>${jpower.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>top.jpower</groupId>
+                <artifactId>jpower-core-exception</artifactId>
+                <version>${jpower.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>top.jpower</groupId>
+                <artifactId>jpower-core-seata</artifactId>
+                <version>${jpower.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>top.jpower</groupId>
+                <artifactId>jpower-core-ai</artifactId>
+                <version>${jpower.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>top.jpower</groupId>
+                <artifactId>jpower-core-asterisk</artifactId>
+                <version>${jpower.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <!--
+                flatten-maven-plugin: 发布时将 pom 扁平化
+                - 去除 <parent> 元素，使发布后的 BOM 完全独立
+                - 解析所有 ${...} 属性为实际值
+                - 保留 dependencyManagement 完整结构
+            -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>${flatten-maven-plugin.version}</version>
+                <configuration>
+                    <flattenMode>bom</flattenMode>
+                    <pomElements>
+                        <dependencyManagement>expand</dependencyManagement>
+                        <properties>remove</properties>
+                        <pluginManagement>remove</pluginManagement>
+                        <repositories>remove</repositories>
+                    </pomElements>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten-clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- BOM 模块无 Java 源码，跳过 source 和 javadoc 生成 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <configuration>
+                    <skipSource>true</skipSource>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <!-- BOM 模块无 Java 源码，跳过 javadoc 生成 -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>
