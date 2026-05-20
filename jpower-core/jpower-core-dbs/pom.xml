@@ -26,7 +26,6 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-3-starter</artifactId>
-            <version>${druid-spring.version}</version>
         </dependency>
 
         <dependency>
@@ -53,7 +52,6 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>transmittable-thread-local</artifactId>
-            <version>${ttl.version}</version>
         </dependency>
 
         <dependency>

@@ -44,40 +44,21 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <top.jpower.version>3.0.1</top.jpower.version>
 
-        <spring-boot.version>3.5.8</spring-boot.version>
-        <spring-cloud.version>2025.0.0</spring-cloud.version>
-        <spring-alibaba.version>2025.0.0.0</spring-alibaba.version>
-        <fastjson.version>2.0.58</fastjson.version>
-        <poi.version>3.17</poi.version>
-        <jsqlparser.version>5.3</jsqlparser.version>
-        <hutool.version>5.8.42</hutool.version>
-        <redisson.version>3.52.0</redisson.version>
-        <druid-spring.version>1.2.27</druid-spring.version>
-        <logstash.version>9.0</logstash.version>
-        <skywalking.version>9.5.0</skywalking.version>
-        <easy-captcha.version>1.6.2</easy-captcha.version>
-        <fastdfs.version>1.27.2</fastdfs.version>
-        <javax.mail.version>1.6.2</javax.mail.version>
-		<aliyun.sms.version>4.3.1</aliyun.sms.version>
-        <aliyun.oss.version>3.18.3</aliyun.oss.version>
-        <qiniu.oss.version>7.19.0</qiniu.oss.version>
-		<amazon.s3.version>2.29.32</amazon.s3.version>
-        <knife4j.version>4.5.0</knife4j.version>
-		<springdoc.version>2.8.9</springdoc.version>
-        <swagger.version>2.2.28</swagger.version>
-        <mybatis-flex.version>1.11.5</mybatis-flex.version>
-        <auto.service.version>1.1.1</auto.service.version>
-        <spring-boot-admin.version>3.5.6</spring-boot-admin.version>
-        <jwt.version>0.13.0</jwt.version>
-        <ttl.version>2.14.5</ttl.version>
-        <spring-ai.version>1.1.2</spring-ai.version>
-        <spring-ai-alibaba.version>1.1.2.2</spring-ai-alibaba.version>
-
         <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
         <maven-resources.version>3.4.0</maven-resources.version>
-        <maven-gpg.version>3.2.8</maven-gpg.version>
         <dockerfile-maven-plugin.version>1.4.13</dockerfile-maven-plugin.version>
         <flatten-maven-plugin.version>1.6.0</flatten-maven-plugin.version>
+        <spring-boot.version>3.5.8</spring-boot.version>
+        <mybatis-flex.version>1.11.5</mybatis-flex.version>
+        <auto.service.version>1.1.1</auto.service.version>
+
+        <easy-captcha.version>1.6.2</easy-captcha.version>
+        <spring-boot-admin.version>3.5.6</spring-boot-admin.version>
+        <fastdfs.version>1.27.2</fastdfs.version>
+        <aliyun.sms.version>4.3.1</aliyun.sms.version>
+        <aliyun.oss.version>3.18.3</aliyun.oss.version>
+        <qiniu.oss.version>7.19.0</qiniu.oss.version>
+        <amazon.s3.version>2.29.32</amazon.s3.version>
 
         <docker.image.prefix>jpower</docker.image.prefix>
         <docker.registry>8.130.172.218:8180</docker.registry>
@@ -106,159 +87,16 @@
 
     <dependencyManagement>
         <dependencies>
-
-            <!-- spring boot 依赖 -->
             <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot.version}</version>
+                <groupId>top.jpower</groupId>
+                <artifactId>jpower-core-dependencies</artifactId>
+                <version>${top.jpower.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-
-            <!-- spring cloud 依赖 -->
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring-cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <!-- spring cloud alibaba 依赖 -->
-            <dependency>
-                <groupId>com.alibaba.cloud</groupId>
-                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
-                <version>${spring-alibaba.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.ai</groupId>
-                <artifactId>spring-ai-bom</artifactId>
-                <version>${spring-ai.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>com.alibaba.cloud.ai</groupId>
-                <artifactId>spring-ai-alibaba-bom</artifactId>
-                <version>${spring-ai-alibaba.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>com.alibaba.cloud.ai</groupId>
-                <artifactId>spring-ai-alibaba-extensions-bom</artifactId>
-                <version>${spring-ai-alibaba.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <!-- knife4j -->
-            <dependency>
-                <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-dependencies</artifactId>
-                <version>${knife4j.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <!-- 统一 swagger 版本，防止 knife4j 传递的旧版本与 springdoc 冲突 -->
-            <dependency>
-                <groupId>io.swagger.core.v3</groupId>
-                <artifactId>swagger-annotations</artifactId>
-                <version>${swagger.version}</version>
-            </dependency>
-
-            <!-- mybatis-flex -->
-            <dependency>
-                <groupId>com.mybatis-flex</groupId>
-                <artifactId>mybatis-flex-dependencies</artifactId>
-                <version>${mybatis-flex.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <!-- hutool - 显式声明版本以覆盖 BOM 中的旧版本 -->
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-all</artifactId>
-                <version>${hutool.version}</version>
             </dependency>
 
         </dependencies>
     </dependencyManagement>
-
-    <profiles>
-        <profile>
-            <id>release</id>
-
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-deploy-plugin</artifactId>
-                    </plugin>
-                    <!-- GPG -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>${maven-gpg.version}</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <gpgArguments>
-                                <arg>--pinentry-mode</arg>
-                                <arg>loopback</arg>
-                            </gpgArguments>
-                        </configuration>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.sonatype.central</groupId>
-                        <artifactId>central-publishing-maven-plugin</artifactId>
-                        <version>0.9.0</version>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <publishingServerId>jpower-central</publishingServerId>
-                            <autoPublish>true</autoPublish>
-                            <waitUntil>published</waitUntil>
-                            <excludeArtifacts>
-                                <excludeArtifact>jpower-api</excludeArtifact>
-                                <excludeArtifact>jpower-auth</excludeArtifact>
-                                <excludeArtifact>jpower-boot</excludeArtifact>
-                                <excludeArtifact>jpower-common</excludeArtifact>
-                                <excludeArtifact>jpower-gateway</excludeArtifact>
-                                <excludeArtifact>jpower-ops</excludeArtifact>
-                                <excludeArtifact>jpower-upms</excludeArtifact>
-                                <excludeArtifact>jpower-admin</excludeArtifact>
-                                <excludeArtifact>jpower-doc</excludeArtifact>
-                                <excludeArtifact>jpower-log</excludeArtifact>
-                                <excludeArtifact>jpower-resource-api</excludeArtifact>
-                                <excludeArtifact>jpower-system-api</excludeArtifact>
-                                <excludeArtifact>jpower-user-api</excludeArtifact>
-                                <excludeArtifact>jpower-resource</excludeArtifact>
-                                <excludeArtifact>jpower-system</excludeArtifact>
-                                <excludeArtifact>jpower-user</excludeArtifact>
-                            </excludeArtifacts>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-
-        </profile>
-    </profiles>
 
     <build>
 

@@ -67,6 +67,37 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!--
+                flatten-maven-plugin: 供 jpower-core 及其 jar 子模块继承
+                - jar 模块：flattenMode=ossrh 去除 parent、解析所有版本变量
+                - BOM 模块（jpower-core-dependencies）已去 parent，不再继承本插件，
+                  由其自身 build/plugins 独立声明 flattenMode=bom
+                - 效果：发布到 Central 的 pom 不再包含对根 pom 的 parent 引用
+            -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <configuration>
+                    <flattenMode>ossrh</flattenMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten-clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -79,6 +110,7 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-deploy-plugin</artifactId>
                     </plugin>
+
                     <!-- Javadoc -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -97,6 +129,44 @@
                         </configuration>
                     </plugin>
 
+                    <!-- GPG 签名（从根 pom 迁移过来） -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>${maven-gpg.version}</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <gpgArguments>
+                                <arg>--pinentry-mode</arg>
+                                <arg>loopback</arg>
+                            </gpgArguments>
+                        </configuration>
+                    </plugin>
+
+                    <!--
+                        中央仓库发布插件（从根 pom 迁移过来）
+                        作用域：仅本 pom 及其子模块 (jpower-core 及所有 jpower-core-*)
+                        不再需要 excludeArtifacts：同级模块本就不在该插件作用域内
+                    -->
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.9.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>jpower-central</publishingServerId>
+                            <autoPublish>true</autoPublish>
+                            <waitUntil>published</waitUntil>
+                        </configuration>
+                    </plugin>
                 </plugins>
             </build>
         </profile>

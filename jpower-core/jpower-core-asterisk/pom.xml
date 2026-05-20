@@ -17,8 +17,7 @@
     </description>
 
     <properties>
-        <asterisk.version>4.10.2</asterisk.version>
-        <websocket.version>1.5.4</websocket.version>
+        <!-- 依赖版本由 jpower-core-dependencies BOM 统一提供 -->
     </properties>
 
     <dependencies>
@@ -30,13 +29,11 @@
         <dependency>
             <groupId>org.apache.camel.springboot</groupId>
             <artifactId>camel-asterisk-starter</artifactId>
-            <version>${asterisk.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.java-websocket</groupId>
             <artifactId>Java-WebSocket</artifactId>
-            <version>${websocket.version}</version>
         </dependency>
 
         <dependency>

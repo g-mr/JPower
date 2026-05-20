@@ -26,14 +26,12 @@
         <dependency>
             <groupId>org.apache.skywalking</groupId>
             <artifactId>apm-toolkit-logback-1.x</artifactId>
-            <version>${skywalking.version}</version>
         </dependency>
 
         <!--skywalking打印请求信息-->
         <dependency>
             <groupId>org.apache.skywalking</groupId>
             <artifactId>apm-toolkit-trace</artifactId>
-            <version>${skywalking.version}</version>
         </dependency>
 
         <!--嵌入式 Java 编译器,用于logback.xml中可以编写判断逻辑-->
@@ -58,7 +56,6 @@
         <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
-            <version>${logstash.version}</version>
         </dependency>
 
         <!--micrometer的日志追踪，在没有skywalking的情况下用的是这个-->

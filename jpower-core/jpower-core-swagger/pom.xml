@@ -23,18 +23,16 @@
             <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
         </dependency>
 
-        <!-- 显式声明 swagger 版本，解决 Schema$SchemaResolution NoClassDefFoundError -->
+        <!-- 显式声明 swagger，解决 Schema$SchemaResolution NoClassDefFoundError（版本由 BOM 提供） -->
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-core-jakarta</artifactId>
-            <version>${swagger.version}</version>
         </dependency>
 
-        <!-- 显式声明 springdoc-openapi 版本，解决 ControllerAdviceBean NoSuchMethodError -->
+        <!-- 显式声明 springdoc-openapi，解决 ControllerAdviceBean NoSuchMethodError（版本由 BOM 提供） -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>${springdoc.version}</version>
         </dependency>
 
         <dependency>

@@ -4,17 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <!--
-        开发期间保持 parent 继承，便于复用根 pom 的 properties 和 release profile。
-        发布时由 flatten-maven-plugin 自动去除 parent 元素，生成独立的 BOM 文件。
-    -->
-    <parent>
-        <groupId>top.jpower</groupId>
-        <artifactId>jpower-core</artifactId>
-        <version>3.0.1</version>
-    </parent>
-
+    <groupId>top.jpower</groupId>
     <artifactId>jpower-core-dependencies</artifactId>
+    <version>3.0.1</version>
     <packaging>pom</packaging>
     <name>JPower Core Dependencies</name>
     <description>JPower 框架统一依赖版本管理 BOM（Bill of Materials）</description>
@@ -43,12 +35,13 @@
     </scm>
 
     <properties>
-        <!--
-            以下属性在开发期间由 parent 继承获取，此处显式声明是为了：
-            1. 发布时 flatten 去除 parent 后，属性仍然可用
-            2. 为消费方提供清晰的版本信息
-        -->
-        <jpower.version>3.0.1</jpower.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven-gpg.version>3.2.8</maven-gpg.version>
+
+        <!-- jpower-core 各子模块版本（与根 pom 保持同名） -->
+        <top.jpower.version>3.0.1</top.jpower.version>
+
+        <!-- 基础框架 BOM -->
         <spring-boot.version>3.5.8</spring-boot.version>
         <spring-cloud.version>2025.0.0</spring-cloud.version>
         <spring-alibaba.version>2025.0.0.0</spring-alibaba.version>
@@ -56,8 +49,12 @@
         <spring-ai-alibaba.version>1.1.2.2</spring-ai-alibaba.version>
         <mybatis-flex.version>1.11.5</mybatis-flex.version>
         <knife4j.version>4.5.0</knife4j.version>
+
+        <!-- API 文档（jpower-core-swagger） -->
         <springdoc.version>2.8.9</springdoc.version>
         <swagger.version>2.2.28</swagger.version>
+
+        <!-- core 模块中间件与工具 -->
         <hutool.version>5.8.42</hutool.version>
         <redisson.version>3.52.0</redisson.version>
         <druid-spring.version>1.2.27</druid-spring.version>
@@ -68,7 +65,16 @@
         <skywalking.version>9.5.0</skywalking.version>
         <jsqlparser.version>5.3</jsqlparser.version>
         <auto.service.version>1.1.1</auto.service.version>
-        <spring-boot-admin.version>3.5.6</spring-boot-admin.version>
+        <poi.version>3.17</poi.version>
+
+        <!-- core 与业务共享依赖 -->
+        <javax.mail.version>1.6.2</javax.mail.version>
+
+        <!-- 通信集成（jpower-core-asterisk） -->
+        <asterisk.version>4.10.2</asterisk.version>
+        <websocket.version>1.5.4</websocket.version>
+
+        <!-- BOM 自身构建插件 -->
         <flatten-maven-plugin.version>1.6.0</flatten-maven-plugin.version>
     </properties>
 
@@ -243,16 +249,53 @@
                 <version>${auto.service.version}</version>
             </dependency>
 
-            <!-- Spring Boot Admin -->
+            <!-- Spring Boot Admin / 对象存储 / 短信 / 验证码：仅业务模块使用，由根 pom 管理 -->
+
+            <!-- Apache POI -->
             <dependency>
-                <groupId>de.codecentric</groupId>
-                <artifactId>spring-boot-admin-starter-server</artifactId>
-                <version>${spring-boot-admin.version}</version>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>${poi.version}</version>
             </dependency>
             <dependency>
-                <groupId>de.codecentric</groupId>
-                <artifactId>spring-boot-admin-starter-client</artifactId>
-                <version>${spring-boot-admin.version}</version>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>${poi.version}</version>
+            </dependency>
+
+            <!-- JavaMail（core 与业务共享） -->
+            <dependency>
+                <groupId>com.sun.mail</groupId>
+                <artifactId>javax.mail</artifactId>
+                <version>${javax.mail.version}</version>
+            </dependency>
+
+            <!-- Springdoc OpenAPI -->
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${springdoc.version}</version>
+            </dependency>
+
+            <!-- Swagger Core -->
+            <dependency>
+                <groupId>io.swagger.core.v3</groupId>
+                <artifactId>swagger-core-jakarta</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+
+            <!-- Asterisk PBX -->
+            <dependency>
+                <groupId>org.apache.camel.springboot</groupId>
+                <artifactId>camel-asterisk-starter</artifactId>
+                <version>${asterisk.version}</version>
+            </dependency>
+
+            <!-- Java-WebSocket -->
+            <dependency>
+                <groupId>org.java-websocket</groupId>
+                <artifactId>Java-WebSocket</artifactId>
+                <version>${websocket.version}</version>
             </dependency>
 
             <!-- ==================== JPower Core 模块 ==================== -->
@@ -260,72 +303,72 @@
             <dependency>
                 <groupId>top.jpower</groupId>
                 <artifactId>jpower-core-util</artifactId>
-                <version>${jpower.version}</version>
+                <version>${top.jpower.version}</version>
             </dependency>
             <dependency>
                 <groupId>top.jpower</groupId>
                 <artifactId>jpower-core-deploy</artifactId>
-                <version>${jpower.version}</version>
+                <version>${top.jpower.version}</version>
             </dependency>
             <dependency>
                 <groupId>top.jpower</groupId>
                 <artifactId>jpower-core-boot</artifactId>
-                <version>${jpower.version}</version>
+                <version>${top.jpower.version}</version>
             </dependency>
             <dependency>
                 <groupId>top.jpower</groupId>
                 <artifactId>jpower-core-dbs</artifactId>
-                <version>${jpower.version}</version>
+                <version>${top.jpower.version}</version>
             </dependency>
             <dependency>
                 <groupId>top.jpower</groupId>
                 <artifactId>jpower-core-redis</artifactId>
-                <version>${jpower.version}</version>
+                <version>${top.jpower.version}</version>
             </dependency>
             <dependency>
                 <groupId>top.jpower</groupId>
                 <artifactId>jpower-core-auth</artifactId>
-                <version>${jpower.version}</version>
+                <version>${top.jpower.version}</version>
             </dependency>
             <dependency>
                 <groupId>top.jpower</groupId>
                 <artifactId>jpower-core-feign</artifactId>
-                <version>${jpower.version}</version>
+                <version>${top.jpower.version}</version>
             </dependency>
             <dependency>
                 <groupId>top.jpower</groupId>
                 <artifactId>jpower-core-nacos</artifactId>
-                <version>${jpower.version}</version>
+                <version>${top.jpower.version}</version>
             </dependency>
             <dependency>
                 <groupId>top.jpower</groupId>
                 <artifactId>jpower-core-swagger</artifactId>
-                <version>${jpower.version}</version>
+                <version>${top.jpower.version}</version>
             </dependency>
             <dependency>
                 <groupId>top.jpower</groupId>
                 <artifactId>jpower-core-log</artifactId>
-                <version>${jpower.version}</version>
+                <version>${top.jpower.version}</version>
             </dependency>
             <dependency>
                 <groupId>top.jpower</groupId>
                 <artifactId>jpower-core-exception</artifactId>
-                <version>${jpower.version}</version>
+                <version>${top.jpower.version}</version>
             </dependency>
             <dependency>
                 <groupId>top.jpower</groupId>
                 <artifactId>jpower-core-seata</artifactId>
-                <version>${jpower.version}</version>
+                <version>${top.jpower.version}</version>
             </dependency>
             <dependency>
                 <groupId>top.jpower</groupId>
                 <artifactId>jpower-core-ai</artifactId>
-                <version>${jpower.version}</version>
+                <version>${top.jpower.version}</version>
             </dependency>
             <dependency>
                 <groupId>top.jpower</groupId>
                 <artifactId>jpower-core-asterisk</artifactId>
-                <version>${jpower.version}</version>
+                <version>${top.jpower.version}</version>
             </dependency>
 
         </dependencies>
@@ -333,12 +376,6 @@
 
     <build>
         <plugins>
-            <!--
-                flatten-maven-plugin: 发布时将 pom 扁平化
-                - 去除 <parent> 元素，使发布后的 BOM 完全独立
-                - 解析所有 ${...} 属性为实际值
-                - 保留 dependencyManagement 完整结构
-            -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
@@ -386,12 +423,40 @@
             <id>release</id>
             <build>
                 <plugins>
+                    <!-- 启用部署 -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                    </plugin>
+
                     <!-- BOM 模块无 Java 源码，跳过 javadoc 生成 -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <configuration>
                             <skip>true</skip>
+                        </configuration>
+                    </plugin>
+
+                    <!-- GPG 签名（独立声明，因为 BOM 已无 parent 链可继承） -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>${maven-gpg.version}</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <gpgArguments>
+                                <arg>--pinentry-mode</arg>
+                                <arg>loopback</arg>
+                            </gpgArguments>
                         </configuration>
                     </plugin>
                 </plugins>
