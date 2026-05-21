@@ -16,7 +16,6 @@
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-dbs</artifactId>
-            <version>${top.jpower.version}</version>
             <optional>true</optional>
         </dependency>
     </dependencies>

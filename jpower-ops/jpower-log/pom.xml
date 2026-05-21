@@ -16,23 +16,20 @@
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-redis</artifactId>
-            <version>${top.jpower.version}</version>
         </dependency>
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-swagger</artifactId>
-            <version>${top.jpower.version}</version>
         </dependency>
 		<dependency>
 			<groupId>top.jpower</groupId>
 			<artifactId>jpower-core-seata</artifactId>
-			<version>${top.jpower.version}</version>
 		</dependency>
 
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-system-api</artifactId>
-            <version>${top.jpower.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
     </dependencies>

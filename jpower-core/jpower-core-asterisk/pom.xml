@@ -44,7 +44,6 @@
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-exception</artifactId>
-            <version>${top.jpower.version}</version>
         </dependency>
     </dependencies>
 </project>

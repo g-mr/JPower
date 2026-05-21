@@ -15,69 +15,62 @@
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-user-api</artifactId>
-            <version>${top.jpower.version}</version>
+            <version>${project.version}</version>
             <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-system-api</artifactId>
-            <version>${top.jpower.version}</version>
+            <version>${project.version}</version>
             <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-resource-api</artifactId>
-            <version>${top.jpower.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-boot</artifactId>
-            <version>${top.jpower.version}</version>
         </dependency>
 
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-swagger</artifactId>
-            <version>${top.jpower.version}</version>
         </dependency>
 
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-redis</artifactId>
-            <version>${top.jpower.version}</version>
         </dependency>
 
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-deploy</artifactId>
-            <version>${top.jpower.version}</version>
         </dependency>
 
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-log</artifactId>
-            <version>${top.jpower.version}</version>
         </dependency>
 
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-feign</artifactId>
-            <version>${top.jpower.version}</version>
         </dependency>
 
 		<dependency>
 			<groupId>top.jpower</groupId>
 			<artifactId>jpower-core-dbs</artifactId>
-			<version>${top.jpower.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>top.jpower</groupId>
 			<artifactId>jpower-common</artifactId>
-			<version>${top.jpower.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 
         <dependency>
@@ -96,14 +89,6 @@
     <build>
         <finalName>jpower-auth</finalName>
         <plugins>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

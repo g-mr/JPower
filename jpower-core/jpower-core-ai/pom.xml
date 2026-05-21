@@ -25,7 +25,6 @@
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-util</artifactId>
-            <version>${top.jpower.version}</version>
         </dependency>
 
         <dependency>
@@ -36,21 +35,12 @@
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-dbs</artifactId>
-            <version>${top.jpower.version}</version>
             <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-nacos</artifactId>
-            <version>${top.jpower.version}</version>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>top.jpower</groupId>
-            <artifactId>jpower-core-nacos</artifactId>
-            <version>${top.jpower.version}</version>
             <optional>true</optional>
         </dependency>
 

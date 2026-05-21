@@ -22,7 +22,7 @@
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-auth</artifactId>
-            <version>${top.jpower.version}</version>
+            <version>${project.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>top.jpower</groupId>
@@ -34,7 +34,7 @@
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-resource</artifactId>
-            <version>${top.jpower.version}</version>
+            <version>${project.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>top.jpower</groupId>
@@ -46,7 +46,7 @@
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-system</artifactId>
-            <version>${top.jpower.version}</version>
+            <version>${project.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>top.jpower</groupId>
@@ -58,7 +58,7 @@
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-user</artifactId>
-            <version>${top.jpower.version}</version>
+            <version>${project.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>top.jpower</groupId>
@@ -70,7 +70,7 @@
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-log</artifactId>
-            <version>${top.jpower.version}</version>
+            <version>${project.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>top.jpower</groupId>
@@ -100,20 +100,11 @@
         </resources>
 
         <plugins>
-
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <mainClass>top.jpower.boot.BootStartApplication</mainClass>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
                 </configuration>
             </plugin>
             <plugin>

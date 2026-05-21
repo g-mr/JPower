@@ -13,29 +13,6 @@
     <description>
         JPower微服务快速开发平台
     </description>
-    <url>https://gitee.com/gdzWork/JPower</url>
-
-    <developers>
-        <developer>
-            <id>mr.g</id>
-            <name>Tzu-Ding Goo</name>
-            <email>ding931226@yeah.net</email>
-            <organization>JPower</organization>
-            <organizationUrl>https://gitee.com/gdzWork</organizationUrl>
-            <timezone>+8</timezone>
-        </developer>
-    </developers>
-    <licenses>
-        <license>
-            <name>The Apache License, Version 2.0</name>
-            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        </license>
-    </licenses>
-    <scm>
-        <connection>https://gitee.com/gdzWork/JPower.git</connection>
-        <developerConnection>https://gitee.com/gdzWork</developerConnection>
-        <url>https://gitee.com/gdzWork/JPower.git</url>
-    </scm>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -47,7 +24,6 @@
         <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
         <maven-resources.version>3.4.0</maven-resources.version>
         <dockerfile-maven-plugin.version>1.4.13</dockerfile-maven-plugin.version>
-        <flatten-maven-plugin.version>1.6.0</flatten-maven-plugin.version>
         <spring-boot.version>3.5.8</spring-boot.version>
         <mybatis-flex.version>1.11.5</mybatis-flex.version>
         <auto.service.version>1.1.1</auto.service.version>
@@ -140,11 +116,6 @@
                     <version>${maven-resources.version}</version>
                 </plugin>
 
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>flatten-maven-plugin</artifactId>
-                    <version>${flatten-maven-plugin.version}</version>
-                </plugin>
             </plugins>
         </pluginManagement>
 
@@ -161,6 +132,14 @@
             <plugin>
                 <groupId>com.spotify</groupId>
                 <artifactId>dockerfile-maven-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
                 <configuration>
                     <skip>true</skip>
                 </configuration>

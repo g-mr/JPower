@@ -15,7 +15,6 @@
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-deploy</artifactId>
-            <version>${top.jpower.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>
@@ -27,19 +26,17 @@
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-redis</artifactId>
-            <version>${top.jpower.version}</version>
         </dependency>
 
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-log</artifactId>
-            <version>${top.jpower.version}</version>
         </dependency>
 
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-common</artifactId>
-            <version>${top.jpower.version}</version>
+            <version>${project.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>top.jpower</groupId>
@@ -75,14 +72,6 @@
     <build>
         <finalName>jpower-gateway</finalName>
         <plugins>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
 
             <plugin>
                 <groupId>org.springframework.boot</groupId>

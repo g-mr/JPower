@@ -23,45 +23,31 @@
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-deploy</artifactId>
-            <version>${top.jpower.version}</version>
         </dependency>
         
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-log</artifactId>
-            <version>${top.jpower.version}</version>
         </dependency>
 
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-common</artifactId>
-            <version>${top.jpower.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-boot</artifactId>
-            <version>${top.jpower.version}</version>
         </dependency>
 
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-dbs</artifactId>
-            <version>${top.jpower.version}</version>
         </dependency>
     </dependencies>
 
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-        </plugins>
-
         <resources>
             <!-- 编译 src/main/java 目录下的 mapper 文件 -->
             <resource>

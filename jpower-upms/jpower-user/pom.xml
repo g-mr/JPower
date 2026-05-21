@@ -17,19 +17,19 @@
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-user-api</artifactId>
-            <version>${top.jpower.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-resource-api</artifactId>
-            <version>${top.jpower.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-system-api</artifactId>
-            <version>${top.jpower.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
     </dependencies>

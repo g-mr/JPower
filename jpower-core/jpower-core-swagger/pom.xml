@@ -50,7 +50,6 @@
         <dependency>
             <groupId>top.jpower</groupId>
             <artifactId>jpower-core-deploy</artifactId>
-            <version>${top.jpower.version}</version>
         </dependency>
 
     </dependencies>
