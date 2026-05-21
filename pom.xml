@@ -173,6 +173,12 @@
                             <artifactId>auto-service</artifactId>
                             <version>${auto.service.version}</version>
                         </path>
+                        <!-- 生成 META-INF/spring-configuration-metadata.json，供 IDE 进行配置属性提示与校验 -->
+                        <path>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-configuration-processor</artifactId>
+                            <version>${spring-boot.version}</version>
+                        </path>
                     </annotationProcessorPaths>
                     <debug>false</debug>
                 </configuration>

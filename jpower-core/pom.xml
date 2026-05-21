@@ -63,7 +63,6 @@
 
     <dependencies>
 
-        <!--生成自定义配置属性生成元数据文件-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
