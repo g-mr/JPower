@@ -38,7 +38,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven-gpg.version>3.2.8</maven-gpg.version>
 
-        <!-- jpower-core 各子模块版本（与根 pom 保持同名） -->
+        <!-- jpower-core 各子模块版本 -->
         <top.jpower.version>3.0.1</top.jpower.version>
 
         <!-- 基础框架 BOM -->
@@ -248,8 +248,6 @@
                 <artifactId>auto-service</artifactId>
                 <version>${auto.service.version}</version>
             </dependency>
-
-            <!-- Spring Boot Admin / 对象存储 / 短信 / 验证码：仅业务模块使用，由根 pom 管理 -->
 
             <!-- Apache POI -->
             <dependency>
