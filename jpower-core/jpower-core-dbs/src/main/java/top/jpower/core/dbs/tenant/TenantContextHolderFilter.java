@@ -41,7 +41,11 @@ public class TenantContextHolderFilter extends GenericFilterBean {
         log.debug("获取的租户ID为:{}", tenantCode);
 
         // 超级用户不需要租户过滤
-        if (StrUtil.isNotBlank(tenantCode) && !userDto.isRoot() ) {
+        if (userDto.isRoot()) {
+            TenantContextHolder.setTenantSkip();
+        }
+
+        if (StrUtil.isNotBlank(tenantCode)) {
             TenantContextHolder.setTenantCode(tenantCode);
         } else {
             TenantContextHolder.setTenantCode(null);
