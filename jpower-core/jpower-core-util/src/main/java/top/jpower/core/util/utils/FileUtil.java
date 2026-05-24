@@ -5,21 +5,19 @@ import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.io.IORuntimeException;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.file.FileNameUtil;
-import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.*;
 import cn.hutool.core.util.NumberUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.core.util.ZipUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.extra.servlet.JakartaServletUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Cleanup;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
-import top.jpower.core.util.constants.CharsetKit;
 import top.jpower.core.util.constants.StringPool;
 
 import java.io.*;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,116 +78,6 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
         }catch(IORuntimeException e){
             log.error( "{}文件删除失败！失败原因{}", file.getAbsolutePath(),e);
         }
-    }
-
-    private static void downloadHeader(HttpServletResponse response,String fileName) throws UnsupportedEncodingException {
-        response.setHeader("content-type", "application/octet-stream");
-        response.setContentType("application/octet-stream");
-        // 下载文件能正常显示中文
-        fileName = new String(URLEncoder.encode(fileName, CharsetKit.UTF_8).getBytes(CharsetKit.CHARSET_UTF_8), CharsetKit.CHARSET_ISO_8859_1);
-        response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
-        response.setHeader("filename", fileName);
-    }
-
-    /**
-     * 文件下载
-     *
-     * @author mr.g
-     * @param bytes byte内容
-     * @param response HttpServletResponse
-     * @param fileName 下载后的文件名
-     * @return 是否下载成功
-     **/
-    public static Boolean download(byte[] bytes, HttpServletResponse response, String fileName) throws UnsupportedEncodingException {
-
-        if (Fc.isNotEmpty(bytes)){
-            downloadHeader(response, fileName);
-            OutputStream os = null;
-            try {
-                os = response.getOutputStream();
-                os.write(bytes);
-                return true;
-            } catch (IOException e) {
-                log.error("下载byte文件错误，{}error={}", StringPool.NEWLINE,ExceptionUtil.getStackTraceAsString(e));
-            } finally {
-                Fc.closeQuietly(os);
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 文件下载
-     *
-     * @author mr.g
-     * @param file 文件
-     * @param response HttpServletResponse
-     * @param fileName 下载后的文件名
-     * @return 是否下载成功
-     **/
-    public static boolean download(File file, HttpServletResponse response,String fileName) throws IOException {
-        if (fileName != null) {
-            // 如果文件存在，则进行下载
-            if (file.exists()) {
-                // 配置文件下载
-                downloadHeader(response, fileName);
-                // 实现文件下载
-                FileInputStream fis = null;
-                BufferedInputStream bis = null;
-                try {
-                    fis = new FileInputStream(file);
-                    bis = new BufferedInputStream(fis);
-                    return writeResponse(bis, response);
-                } catch (Exception e) {
-                    log.error("下载文件错误，{}error={}",StringPool.NEWLINE,ExceptionUtil.getStackTraceAsString(e));
-                } finally {
-                    Fc.closeQuietly(bis);
-                    Fc.closeQuietly(fis);
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 文件下载
-     *
-     * @author mr.g
-     * @param inputStream 流
-     * @param response HttpServletResponse
-     * @param fileName 下载后的文件名
-     * @return 是否下载成功
-     **/
-    public static boolean download(InputStream inputStream, HttpServletResponse response,String fileName) throws IOException {
-        if (fileName != null) {
-            // 如果文件存在，则进行下载
-            if (Fc.isNotEmpty(inputStream)) {
-                // 配置文件下载
-                downloadHeader(response, fileName);
-                // 实现文件下载
-                BufferedInputStream bis = null;
-                try {
-                    bis = new BufferedInputStream(inputStream);
-                    return writeResponse(bis, response);
-                } catch (Exception e) {
-                    log.error("下载文件错误，{}error={}",StringPool.NEWLINE,ExceptionUtil.getStackTraceAsString(e));
-                } finally {
-                    Fc.closeQuietly(bis);
-                }
-            }
-        }
-        return false;
-    }
-
-    private static boolean writeResponse(BufferedInputStream bis, HttpServletResponse response) throws Exception {
-        byte[] buffer = new byte[1024];
-        OutputStream os = response.getOutputStream();
-        int i = bis.read(buffer);
-        while (i != -1) {
-            os.write(buffer, 0, i);
-            i = bis.read(buffer);
-        }
-        return true;
     }
 
     /**
@@ -396,6 +284,88 @@ public class FileUtil extends cn.hutool.core.io.FileUtil {
         }
 
         return list;
+    }
+
+    /**
+     * 文件下载
+     *
+     * @author mr.g
+     * @param bytes byte内容
+     * @param response HttpServletResponse
+     * @param fileName 下载后的文件名
+     * @return 是否下载成功
+     **/
+    public static Boolean download(byte[] bytes, HttpServletResponse response, String fileName) throws UnsupportedEncodingException {
+        if (Fc.isNotEmpty(bytes)){
+            // 设置 header 和 contentType
+            final String contentType = ObjectUtil.defaultIfNull(cn.hutool.core.io.FileUtil.getMimeType(fileName), "application/octet-stream");
+            // 针对 video 的特殊处理，解决视频地址在移动端播放的兼容性问题
+            if (StrUtil.containsAnyIgnoreCase(contentType, "video", "audio")) {
+                response.setHeader("Content-Length", String.valueOf(bytes.length - 1));
+                response.setHeader("Content-Range", String.valueOf(bytes.length - 1));
+                response.setHeader("Accept-Ranges", "bytes");
+            }
+            // 输出附件
+            JakartaServletUtil.write(response,  new ByteArrayInputStream(bytes), contentType, fileName);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 文件下载
+     *
+     * @author mr.g
+     * @param file 文件
+     * @param response HttpServletResponse
+     * @param fileName 下载后的文件名
+     * @return 是否下载成功
+     **/
+    public static boolean download(File file, HttpServletResponse response,String fileName) throws IOException {
+        if (fileName != null) {
+            // 如果文件存在，则进行下载
+            if (file.exists()) {
+                final String contentType = ObjectUtil.defaultIfNull(cn.hutool.core.io.FileUtil.getMimeType(fileName), "application/octet-stream");
+                // 针对 video 的特殊处理，解决视频地址在移动端播放的兼容性问题
+                if (StrUtil.containsAnyIgnoreCase(contentType, "video", "audio")) {
+                    response.setHeader("Content-Length", String.valueOf(file.length() - 1));
+                    response.setHeader("Content-Range", String.valueOf(file.length() - 1));
+                    response.setHeader("Accept-Ranges", "bytes");
+                }
+                JakartaServletUtil.write(response, getInputStream(file), contentType, fileName);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 文件下载
+     *
+     * @author mr.g
+     * @param inputStream 流
+     * @param response HttpServletResponse
+     * @param fileName 下载后的文件名
+     * @return 是否下载成功
+     **/
+    public static boolean download(InputStream inputStream, HttpServletResponse response,String fileName) throws IOException {
+        if (fileName != null) {
+            // 如果文件存在，则进行下载
+            if (Fc.isNotEmpty(inputStream)) {
+                final String contentType = ObjectUtil.defaultIfNull(cn.hutool.core.io.FileUtil.getMimeType(fileName), "application/octet-stream");
+
+                // 针对 video 的特殊处理，解决视频地址在移动端播放的兼容性问题
+                if (StrUtil.containsAnyIgnoreCase(contentType, "video", "audio")) {
+                    response.setHeader("Content-Length", String.valueOf(inputStream.available() - 1));
+                    response.setHeader("Content-Range", String.valueOf(inputStream.available() - 1));
+                    response.setHeader("Accept-Ranges", "bytes");
+                }
+
+                JakartaServletUtil.write(response, inputStream, contentType, fileName);
+                return true;
+            }
+        }
+        return false;
     }
 
 }
