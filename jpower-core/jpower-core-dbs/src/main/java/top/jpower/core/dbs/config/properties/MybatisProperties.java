@@ -19,17 +19,13 @@ public class MybatisProperties {
      */
     private FieldStrategy whereStrategy = FieldStrategy.IGNORE_EMPTY;
     /**
-     * 是否开启动乐观锁
-     */
-    private boolean optimisticLocker = false;
-    /**
      * 乐观锁字段
      */
-    private String optimisticLockerColumn = "version";
+    private String optimisticLockerColumn;
     /**
      * 逻辑删除字段
      */
-    private String logicDeleteColumn = "delete_time";
+    private String logicDeleteColumn;
 
     /**
      * mp分页配置
