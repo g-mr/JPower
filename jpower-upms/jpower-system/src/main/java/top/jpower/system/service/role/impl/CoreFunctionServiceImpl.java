@@ -12,10 +12,12 @@ import top.jpower.common.constants.CacheNames;
 import top.jpower.common.enums.FunctionTargetEnum;
 import top.jpower.common.enums.FunctionTypeEnum;
 import top.jpower.core.auth.annotation.Menu;
+import top.jpower.core.auth.config.FunctionGenerate;
 import top.jpower.core.auth.utils.ShieldUtil;
 import top.jpower.core.dbs.service.impl.BaseServiceImpl;
 import top.jpower.core.dbs.support.ForestNodeMerger;
 import top.jpower.core.dbs.support.Wrappers;
+import top.jpower.core.deploy.property.JpowerProperties;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.core.exception.throwable.JpowerException;
@@ -56,6 +58,7 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<CoreFunctionMapper,
     private final CoreRoleFunctionDao coreRoleFunctionDao;
     private final CoreFunctionMenuDao functionMenuDao;
     private final CoreClientDao clientDao;
+    private final JpowerProperties jpowerProperties;
 
     @Override
     public List<Tree<Long>> treeMenuTypeByClientId(List<Long> roleIds, Long clientId) {
@@ -286,83 +289,93 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<CoreFunctionMapper,
         return coreFunctionDao.treeFunction(roleIds, clientId);
     }
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public boolean generateFunction() {
+    private List<Map> getFunctionList() {
+
+        if (JpowerProperties.SERVER.BOOT.equals(jpowerProperties.getServer())) {
+            return ListUtil.of(FunctionGenerate.functions);
+        }
+
         List<String> servers = NacosUtil.getAllServers();
         if (Fc.isNotEmpty(servers)){
-            //去请求拿到所有的功能点
             List<Map> list = servers.stream().map(name-> {
                 try {
                     return restTemplate.getForObject("http://"+name+PATH, Map.class);
                 }catch (Exception e){
                     return new HashMap();
                 }
-            }).collect(Collectors.toList());
+            }).toList();
+            return list;
+        }
+        return ListUtil.empty();
+    }
 
-            //拿到所有的菜单
-            List<CoreFunction> menus = coreFunctionDao.listMenu(FunctionTypeEnum.MENU);
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean generateFunction() {
+        List<Map> list = getFunctionList();
 
-            if (Fc.isNotEmpty(menus)){
-                //拿到所有的code
-                List<String> allCode = coreFunctionDao.objListAs(Wrappers.getQueryWrapper().select(CoreFunction::getCode), String.class);
+        //拿到所有的菜单
+        List<CoreFunction> menus = coreFunctionDao.listMenu(FunctionTypeEnum.MENU);
 
-                //存储每个code的父级BTN的CODE
-                Map<String,String> codeMap = new HashMap<>();
+        if (Fc.isNotEmpty(menus)){
+            //拿到所有的code
+            List<String> allCode = coreFunctionDao.objListAs(Wrappers.getQueryWrapper().select(CoreFunction::getCode), String.class);
 
-                //存储要保存的功能
-                List<CoreFunction> functionList = new ArrayList<>();
-                list.forEach(map->{
-                    if (Fc.isNotEmpty(map)){
-                        map.forEach((menuCode,functions)->{
-                            Optional<CoreFunction> menu = menus.stream().filter(f->Fc.equalsValue(f.getCode(),menuCode)).findAny();
-                            menu.ifPresent(tbCoreFunction -> ((List<Map<String,Object>>)functions).forEach(fun -> {
-                                String code = MapUtil.getStr(fun, "code");
-                                //只要不重复的code才去存储
-                                if (functionList.stream().noneMatch(f -> Fc.equalsValue(f.getCode(), code)) && !allCode.contains(code)) {
-                                    CoreFunction function = new CoreFunction();
-                                    function.setCode(code);
-                                    function.setFunctionName(MapUtil.getStr(fun, "name"));
-                                    function.setAlias(MapUtil.getStr(fun, "alias"));
-                                    function.setUrl(MapUtil.getStr(fun, "url"));
-                                    function.setClientId(tbCoreFunction.getClientId());
-                                    if (Fc.isEmpty(fun.get("btnCode"))){
-                                        function.setParentId(tbCoreFunction.getId());
-                                        function.setAncestorId(Fc.toStr(tbCoreFunction.getAncestorId(), TOP_CODE).concat(StringPool.COMMA).concat(Fc.toStr(tbCoreFunction.getId())));
-                                    }else {
-                                        codeMap.put(code, MapUtil.getStr(fun, "btnCode"));
-                                    }
-                                    function.setFunctionType(Objects.requireNonNull(FunctionTypeEnum.getEnumByType(MapUtil.get(fun, "type", Menu.TYPE.class)), "未找到枚举[FunctionTypeEnum]").getValue());
-                                    function.setTarget(FunctionTargetEnum.SELF.getValue());
-                                    function.setIsHide(Boolean.FALSE);
-                                    functionList.add(function);
+            //存储每个code的父级BTN的CODE
+            Map<String,String> codeMap = new HashMap<>();
+
+            //存储要保存的功能
+            List<CoreFunction> functionList = new ArrayList<>();
+            list.forEach(map->{
+                if (Fc.isNotEmpty(map)){
+                    map.forEach((menuCode,functions)->{
+                        Optional<CoreFunction> menu = menus.stream().filter(f->Fc.equalsValue(f.getCode(),menuCode)).findAny();
+                        menu.ifPresent(tbCoreFunction -> ((List<Map<String,Object>>)functions).forEach(fun -> {
+                            String code = MapUtil.getStr(fun, "code");
+                            //只要不重复的code才去存储
+                            if (functionList.stream().noneMatch(f -> Fc.equalsValue(f.getCode(), code)) && !allCode.contains(code)) {
+                                CoreFunction function = new CoreFunction();
+                                function.setCode(code);
+                                function.setFunctionName(MapUtil.getStr(fun, "name"));
+                                function.setAlias(MapUtil.getStr(fun, "alias"));
+                                function.setUrl(MapUtil.getStr(fun, "url"));
+                                function.setClientId(tbCoreFunction.getClientId());
+                                if (Fc.isEmpty(fun.get("btnCode"))){
+                                    function.setParentId(tbCoreFunction.getId());
+                                    function.setAncestorId(Fc.toStr(tbCoreFunction.getAncestorId(), TOP_CODE).concat(StringPool.COMMA).concat(Fc.toStr(tbCoreFunction.getId())));
+                                }else {
+                                    codeMap.put(code, MapUtil.getStr(fun, "btnCode"));
                                 }
-                            }));
-                        });
-                    }
-                });
+                                function.setFunctionType(Objects.requireNonNull(FunctionTypeEnum.getEnumByType(MapUtil.get(fun, "type", Menu.TYPE.class)), "未找到枚举[FunctionTypeEnum]").getValue());
+                                function.setTarget(FunctionTargetEnum.SELF.getValue());
+                                function.setIsHide(Boolean.FALSE);
+                                functionList.add(function);
+                            }
+                        }));
+                    });
+                }
+            });
 
-                //去保存功能点
-                if (Fc.isNotEmpty(functionList)){
-                    List<CoreFunction> notNullFunctions = functionList.stream().filter(f->Fc.notNull(f.getParentId())).collect(Collectors.toList());
-                    if (Fc.isNotEmpty(notNullFunctions)){
-                        coreFunctionDao.saveBatch(notNullFunctions);
-                    }
+            //去保存功能点
+            if (Fc.isNotEmpty(functionList)){
+                List<CoreFunction> notNullFunctions = functionList.stream().filter(f->Fc.notNull(f.getParentId())).collect(Collectors.toList());
+                if (Fc.isNotEmpty(notNullFunctions)){
+                    coreFunctionDao.saveBatch(notNullFunctions);
+                }
 
-                    List<CoreFunction> funcs = functionList.stream().filter(f->Fc.isNull(f.getParentId())).collect(Collectors.toList());
-                    if (Fc.isNotEmpty(funcs)){
-                        Map<String,CoreFunction> idCode = coreFunctionDao.selectIdByCode(new HashSet<>(codeMap.values()));
-                        coreFunctionDao.saveBatch(funcs.stream().peek(f-> {
-                            CoreFunction parent = idCode.get(codeMap.get(f.getCode()));
-                            f.setParentId(parent.getId());
-                            f.setAncestorId(Fc.toStr(parent.getAncestorId(), TOP_CODE).concat(StringPool.COMMA).concat(Fc.toStr(parent.getId())));
-                        }).collect(Collectors.toList()));
-                    }
+                List<CoreFunction> funcs = functionList.stream().filter(f->Fc.isNull(f.getParentId())).collect(Collectors.toList());
+                if (Fc.isNotEmpty(funcs)){
+                    Map<String,CoreFunction> idCode = coreFunctionDao.selectIdByCode(new HashSet<>(codeMap.values()));
+                    coreFunctionDao.saveBatch(funcs.stream().peek(f-> {
+                        CoreFunction parent = idCode.get(codeMap.get(f.getCode()));
+                        f.setParentId(parent.getId());
+                        f.setAncestorId(Fc.toStr(parent.getAncestorId(), TOP_CODE).concat(StringPool.COMMA).concat(Fc.toStr(parent.getId())));
+                    }).collect(Collectors.toList()));
                 }
             }
         }
 
-		CacheUtil.clear(CacheNames.FUNCTION_KEY);
+        CacheUtil.clear(CacheNames.FUNCTION_KEY);
         return true;
     }
 
