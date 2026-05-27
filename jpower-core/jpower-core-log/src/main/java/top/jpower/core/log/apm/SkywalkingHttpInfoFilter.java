@@ -72,6 +72,13 @@ public class SkywalkingHttpInfoFilter extends HttpFilter {
             return;
         }
 
+        // SSE流式响应不能被ContentCachingResponseWrapper包装，否则数据会被缓冲无法实时推送
+        String acceptHeader = request.getHeader("Accept");
+        if (Fc.isNotBlank(acceptHeader) && acceptHeader.contains("text/event-stream")){
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
         ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);
 
