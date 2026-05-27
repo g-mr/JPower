@@ -5,3 +5,4 @@ top.jpower.core.dbs.dictbind.DictBindConfig
 top.jpower.core.dbs.page.PageConfig
 top.jpower.core.dbs.tenant.TenantContextHolderFilter
 top.jpower.core.dbs.tenant.TenantConfiguration
+top.jpower.core.dbs.tenant.ReactorTtlConfiguration

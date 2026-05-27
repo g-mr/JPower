@@ -13,6 +13,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.AnnotationUtils;
 import top.jpower.core.auth.annotation.Function;
+import top.jpower.core.auth.properties.AuthProperties;
 import top.jpower.core.auth.utils.ShieldUtil;
 import top.jpower.core.deploy.property.JpowerProperties;
 import top.jpower.core.util.constants.JpowerConstants;
@@ -36,6 +37,7 @@ import java.util.Arrays;
 public class FunctionAuthAspect {
 
     private final JpowerProperties jpowerProperties;
+    private final AuthProperties authProperties;
 
     /**
      * 配置织入点
@@ -54,6 +56,11 @@ public class FunctionAuthAspect {
 
         // 开发环境不检测
         if (Fc.equalsValue(jpowerProperties.getEnv(), JpowerConstants.DEV_CODE)){
+            return;
+        }
+
+        // 是否启用@function注解拦截
+        if (!authProperties.getEnableFunction()){
             return;
         }
 
