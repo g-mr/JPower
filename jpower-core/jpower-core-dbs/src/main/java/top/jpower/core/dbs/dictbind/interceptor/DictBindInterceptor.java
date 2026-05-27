@@ -1,6 +1,7 @@
 package top.jpower.core.dbs.dictbind.interceptor;
 
 
+import com.mybatisflex.core.util.EnumWrapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -50,11 +51,14 @@ public class DictBindInterceptor implements MybatisInterceptor {
                         BeanUtil.getFiledByAnnotation(bean.getClass(), Dict.class).forEach(field -> {
                             Dict dict = field.getAnnotation(Dict.class);
                             if (Fc.isNotBlank(dict.name())){
-                                //判断需要赋值的字段是否存在于bean
-                                if (Fc.isNotBlank(dict.attributes()) && ReflectUtil.hasField(bean.getClass(), dict.attributes())) {
-                                    dictBindHandler.setMetaObject(dict, field.getName() ,metaObject.getValue(field.getName()), metaObject);
-                                } else if (Fc.isBlank(dict.attributes())) {
-                                    dictBindHandler.setMetaObject(dict, field.getName() ,metaObject.getValue(field.getName()), metaObject);
+                                Object val = metaObject.getValue(field.getName());
+                                if (ClassUtil.isEnum(field.getType())) {
+                                    val = EnumWrapper.of(field.getType()).getEnumValue(val);
+                                }
+                                //判断需要赋值的字段是否存在于bean todo 回头这里需要优化，简化IDictBindHandler的实现
+                                if ((Fc.isNotBlank(dict.attributes()) && ReflectUtil.hasField(bean.getClass(), dict.attributes()))
+                                        || Fc.isBlank(dict.attributes())) {
+                                    dictBindHandler.setMetaObject(dict, field.getName() , val, metaObject);
                                 }
                             }
 
