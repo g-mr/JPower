@@ -1,6 +1,7 @@
 package top.jpower.system.dbs.dao.dict;
 
 import cn.hutool.core.lang.tree.Tree;
+import com.mybatisflex.annotation.UseDataSource;
 import com.mybatisflex.core.dialect.IDialect;
 import com.mybatisflex.core.query.QueryMethods;
 import com.mybatisflex.core.query.QueryWrapper;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import top.jpower.common.enums.YN01Enum;
 import top.jpower.core.auth.utils.ShieldUtil;
+import top.jpower.core.dbs.config.datasource.DefaultDataSourceProcessor;
 import top.jpower.core.dbs.dbs.dao.JpowerServiceImpl;
 import top.jpower.core.dbs.support.Wrappers;
 import top.jpower.core.util.rsp.Pg;
@@ -126,20 +128,23 @@ public class CoreDictDao extends JpowerServiceImpl<CoreDictMapper, CoreDict> {
 		return super.tree(Wrappers.getTreeWrapper(CoreDict::getId, CoreDict::getParentId).eq(CoreDict::getDictTypeCode, dictTypeCode));
 	}
 
-	/**
-	 * 获取字典下拉列表
-	 *
-	 * @param dictTypeCode 字典类型编码
-	 * @param requestLocale 请求语言
-	 * @return 字典下拉列表
-	 */
-	public List<SelectDTO> listSelect(String dictTypeCode, String requestLocale) {
-		return super.listAs(Wrappers.getQueryWrapper()
-				.select(CoreDict::getCode, CoreDict::getName)
-				.eq(CoreDict::getDictTypeCode, dictTypeCode)
-				.eq(CoreDict::getLocale, requestLocale)
-				.eq(CoreDict::getTenantCode, DEFAULT_TENANT_CODE, ShieldUtil.isRoot()), SelectDTO.class);
-	}
+    /**
+     * 获取字典下拉列表
+     * <br />
+     *
+     * @param dictTypeCode 字典类型编码
+     * @param requestLocale 请求语言
+     * @see DefaultDataSourceProcessor
+     * @return 字典下拉列表
+     */
+    @UseDataSource("@master@")
+    public List<SelectDTO> listSelect(String dictTypeCode, String requestLocale) {
+        return super.listAs(Wrappers.getQueryWrapper()
+                .select(CoreDict::getCode, CoreDict::getName)
+                .eq(CoreDict::getDictTypeCode, dictTypeCode)
+                .eq(CoreDict::getLocale, requestLocale)
+                .eq(CoreDict::getTenantCode, DEFAULT_TENANT_CODE, ShieldUtil.isRoot()), SelectDTO.class);
+    }
 
 	/**
 	 * 获取字典下拉列表
