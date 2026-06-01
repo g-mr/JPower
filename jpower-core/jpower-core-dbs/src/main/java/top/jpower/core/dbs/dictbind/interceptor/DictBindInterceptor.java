@@ -11,8 +11,8 @@ import org.apache.ibatis.reflection.DefaultReflectorFactory;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
 import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
-import top.jpower.core.dbs.dictbind.annotation.Dict;
 import top.jpower.core.dbs.config.interceptor.chain.MybatisInterceptor;
+import top.jpower.core.dbs.dictbind.annotation.Dict;
 import top.jpower.core.dbs.dictbind.handler.IDictBindHandler;
 import top.jpower.core.util.utils.BeanUtil;
 import top.jpower.core.util.utils.ClassUtil;
@@ -35,6 +35,7 @@ import java.util.List;
 @AllArgsConstructor
 public class DictBindInterceptor implements MybatisInterceptor {
 
+    private final static String DICT_PARAMS = "params";
     private IDictBindHandler dictBindHandler;
 
     @Override
@@ -52,13 +53,15 @@ public class DictBindInterceptor implements MybatisInterceptor {
                             Dict dict = field.getAnnotation(Dict.class);
                             if (Fc.isNotBlank(dict.name())){
                                 Object val = metaObject.getValue(field.getName());
-                                if (ClassUtil.isEnum(field.getType())) {
-                                    val = EnumWrapper.of(field.getType()).getEnumValue(val);
-                                }
-                                //判断需要赋值的字段是否存在于bean todo 回头这里需要优化，简化IDictBindHandler的实现
-                                if ((Fc.isNotBlank(dict.attributes()) && ReflectUtil.hasField(bean.getClass(), dict.attributes()))
-                                        || Fc.isBlank(dict.attributes())) {
-                                    dictBindHandler.setMetaObject(dict, field.getName() , val, metaObject);
+                                if (Fc.notNull(val)) {
+                                    if (ClassUtil.isEnum(field.getType())) {
+                                        val = EnumWrapper.of(field.getType()).getEnumValue(val);
+                                    }
+                                    //判断需要赋值的字段是否存在于bean todo 回头这里需要优化，简化IDictBindHandler的实现
+                                    if ((Fc.isNotBlank(dict.attributes()) && ReflectUtil.hasField(bean.getClass(), dict.attributes()))
+                                            || (Fc.isBlank(dict.attributes()) && ReflectUtil.hasField(bean.getClass(), dict.attributes()))) {
+                                        dictBindHandler.setMetaObject(dict, field.getName() , val, metaObject);
+                                    }
                                 }
                             }
 
