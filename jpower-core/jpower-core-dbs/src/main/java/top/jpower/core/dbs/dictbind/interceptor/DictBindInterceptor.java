@@ -59,7 +59,7 @@ public class DictBindInterceptor implements MybatisInterceptor {
                                     }
                                     //判断需要赋值的字段是否存在于bean todo 回头这里需要优化，简化IDictBindHandler的实现
                                     if ((Fc.isNotBlank(dict.attributes()) && ReflectUtil.hasField(bean.getClass(), dict.attributes()))
-                                            || (Fc.isBlank(dict.attributes()) && ReflectUtil.hasField(bean.getClass(), dict.attributes()))) {
+                                            || (Fc.isBlank(dict.attributes()) && ReflectUtil.hasField(bean.getClass(), DICT_PARAMS))) {
                                         dictBindHandler.setMetaObject(dict, field.getName() , val, metaObject);
                                     }
                                 }
