@@ -14,7 +14,7 @@ import java.util.function.Predicate;
 public class AmiEventEmitter {
 
     // onBackpressureBuffer(): 当订阅者处理慢时，在内存中缓冲事件。
-    private final Sinks.Many<ManagerEvent> eventSink = Sinks.many().multicast().onBackpressureBuffer();
+    private final Sinks.Many<ManagerEvent> eventSink = Sinks.many().multicast().onBackpressureBuffer(4096, false);
 
     // 暴露给外部的Flux，用于订阅事件流
     private final Flux<ManagerEvent> eventFlux = eventSink.asFlux().share();
@@ -55,9 +55,10 @@ public class AmiEventEmitter {
         return eventFlux
                 .filter(eventType::isInstance)
                 .cast(eventType)
-                .filter(filter)
-                .publish()
-                .autoConnect();
+                .filter(filter);
+        // TODO 说是这样会导致连接不释放，需要进一步测试是否影响功能
+//                .publish()
+//                .autoConnect();
     }
 
     /**
