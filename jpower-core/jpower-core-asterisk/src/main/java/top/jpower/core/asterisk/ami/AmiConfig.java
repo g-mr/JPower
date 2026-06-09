@@ -58,7 +58,7 @@ public class AmiConfig {
         try {
             managerConnection.login();
         } catch (Exception e){
-            log.error(ExceptionUtil.stacktraceToString(e));
+            log.error("AMI 登录异常===>>{}:{} {} {} \n {}", amiProperties.getHost(), amiProperties.getPort(), amiProperties.getUsername(), amiProperties.getPassword(), ExceptionUtil.stacktraceToString(e));
         }
 
         return managerConnection;
