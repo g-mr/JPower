@@ -18,6 +18,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import top.jpower.core.ai.prompt.PromptProcessed;
+import top.jpower.core.util.utils.Fc;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -46,7 +47,10 @@ public class ChatClientRequestBuilder {
         String processedSystemText = inputRequest.getSystemText();
         if (StringUtils.hasText(processedSystemText)) {
             if (promptProcessed != null){
-                processedSystemText = promptProcessed.process(processedSystemText);
+                String systemText = promptProcessed.process(processedSystemText);
+                if (Fc.isNotBlank(systemText)) {
+                    processedSystemText = systemText;
+                }
             } else {
                 log.warn("promptProcessed is null, please check the promptProcessed configuration");
             }
@@ -73,7 +77,10 @@ public class ChatClientRequestBuilder {
         String processedUserText = inputRequest.getUserText();
         if (StringUtils.hasText(processedUserText)) {
             if (promptProcessed != null){
-                processedUserText = promptProcessed.process(processedUserText);
+                String userText = promptProcessed.process(processedUserText);
+                if (Fc.isNotBlank(userText)) {
+                    processedUserText = userText;
+                }
             } else {
                 log.warn("promptProcessed is null, please check the promptProcessed configuration");
             }
