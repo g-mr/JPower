@@ -24,6 +24,7 @@ public class ChatModelRegistry {
     private final Map<ChatModelType, ChatModel> models = new ConcurrentHashMap<>();
     private final Map<String, ChatModel> modelsByName = new ConcurrentHashMap<>();
     private volatile ChatModel primaryModel;
+    private volatile ChatModelType primaryType;
 
     /**
      * 注册一个 ChatModel
@@ -42,6 +43,7 @@ public class ChatModelRegistry {
      */
     public void setPrimary(ChatModel model) {
         this.primaryModel = model;
+        this.primaryType = inferType(model);
     }
 
     /**
@@ -49,6 +51,16 @@ public class ChatModelRegistry {
      */
     public ChatModel getPrimary() {
         return primaryModel;
+    }
+
+    /**
+     * 获取主模型的类型
+     *
+     * @return 主模型类型，如果未设置主模型则返回 null
+     */
+    @Nullable
+    public ChatModelType getPrimaryType() {
+        return primaryType;
     }
 
     /**

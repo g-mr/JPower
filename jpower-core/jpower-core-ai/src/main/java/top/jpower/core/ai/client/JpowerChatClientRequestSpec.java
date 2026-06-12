@@ -45,6 +45,13 @@ public class JpowerChatClientRequestSpec extends DefaultChatClient.DefaultChatCl
 
     private final List<Advisor> advisors = new ArrayList<>();
 
+    /**
+     * 获取当前请求关联的 ChatModel
+     */
+    public ChatModel getChatModel() {
+        return chatModel;
+    }
+
     public JpowerChatClientRequestSpec(ChatModel chatModel, @org.jspecify.annotations.Nullable String userText, Map<String, Object> userParams, Map<String, Object> userMetadata, @org.jspecify.annotations.Nullable String systemText, Map<String, Object> systemParams, Map<String, Object> systemMetadata, List<ToolCallback> toolCallbacks, List<ToolCallbackProvider> toolCallbackProviders, List<Message> messages, List<String> toolNames, List<Media> media, @org.jspecify.annotations.Nullable ChatOptions chatOptions, List<Advisor> advisors, Map<String, Object> advisorParams, ObservationRegistry observationRegistry, @org.jspecify.annotations.Nullable ChatClientObservationConvention chatClientObservationConvention, Map<String, Object> toolContext, @org.jspecify.annotations.Nullable TemplateRenderer templateRenderer, @org.jspecify.annotations.Nullable AdvisorObservationConvention advisorObservationConvention, ChatClientRequestBuilder chatClientRequestBuilder) {
         super(chatModel, userText, userParams, userMetadata, systemText, systemParams, systemMetadata, toolCallbacks, toolCallbackProviders, messages, toolNames, media, chatOptions, advisors, advisorParams, observationRegistry, chatClientObservationConvention, toolContext, templateRenderer, advisorObservationConvention);
         this.observationRegistry = observationRegistry;

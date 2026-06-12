@@ -133,6 +133,42 @@ public class ChatClients {
     }
 
     /**
+     * 获取默认主模型的类型
+     * <p>
+     * 用于在运行时判断当前使用的模型类型，以便动态选择匹配的 ChatOptions。
+     *
+     * @return 主模型的 ChatModelType，如果无法推断则返回 null
+     */
+    public ChatModelType primaryType() {
+        return registry.getPrimaryType();
+    }
+
+    /**
+     * 获取可移植的 ChatOptions 构建器
+     * <p>
+     * 返回的 Builder 构建出的 {@link JpowerChatOptions} 会在请求管道中
+     * 自动转换为与当前 ChatModel 匹配的特定 ChatOptions 类型。
+     * <p>
+     * 使用示例:
+     * <pre>
+     * chatClients.client()
+     *     .prompt()
+     *     .options(chatClients.optionsBuilder()
+     *         .temperature(0.1)
+     *         .maxTokens(600)
+     *         .jsonMode()
+     *         .build())
+     *     .user("分析这段文本")
+     *     .call().content();
+     * </pre>
+     *
+     * @return JpowerChatOptions.Builder
+     */
+    public JpowerChatOptions.Builder optionsBuilder() {
+        return JpowerChatOptions.builder();
+    }
+
+    /**
      * 判断指定模型类型是否可用
      */
     public boolean isAvailable(ChatModelType type) {
