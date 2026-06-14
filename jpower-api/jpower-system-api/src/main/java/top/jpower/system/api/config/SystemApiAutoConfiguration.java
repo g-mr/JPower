@@ -12,6 +12,6 @@ import org.springframework.context.annotation.ComponentScan;
  * @author mr.g
  */
 @AutoConfiguration
-@ComponentScan("top.jpower.system.api.feign")
+@ComponentScan({"top.jpower.system.api.feign", "top.jpower.system.api.wrapper"})
 public class SystemApiAutoConfiguration {
 }
