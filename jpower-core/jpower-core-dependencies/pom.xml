@@ -76,6 +76,7 @@
 
         <!-- BOM 自身构建插件 -->
         <flatten-maven-plugin.version>1.6.0</flatten-maven-plugin.version>
+        <maven-central-publishing.version>0.10.0</maven-central-publishing.version>
     </properties>
 
     <dependencyManagement>
@@ -455,6 +456,18 @@
                                 <arg>--pinentry-mode</arg>
                                 <arg>loopback</arg>
                             </gpgArguments>
+                        </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>${maven-central-publishing.version}</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>jpower-central</publishingServerId>
+                            <autoPublish>true</autoPublish>
+                            <waitUntil>published</waitUntil>
                         </configuration>
                     </plugin>
                 </plugins>
