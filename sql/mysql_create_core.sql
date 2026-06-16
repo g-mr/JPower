@@ -1,10 +1,10 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : 百翔@8.130.172.218
+ Source Server         : xxxxxx
  Source Server Type    : MySQL
  Source Server Version : 80045
- Source Host           : 8.130.172.218:2002
+ Source Host           : xxxxxxxxxx
  Source Schema         : jpower
 
  Target Server Type    : MySQL
