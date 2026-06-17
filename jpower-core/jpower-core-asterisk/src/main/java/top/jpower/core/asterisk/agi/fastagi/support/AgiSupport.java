@@ -48,6 +48,7 @@ public abstract class AgiSupport {
     private final AsrClient asrClient;
     @Getter
     private final TtsClient ttsClient;
+
     /**
      * 是否机器人主动挂断
      * 没有挂断值是null
@@ -58,12 +59,15 @@ public abstract class AgiSupport {
     private final AgiHangupEventManager agiHangupEventManager = SpringUtil.getBean(AgiHangupEventManager.class);
     private final String rootDir = SpringUtil.getBean(AsteriskProperties.class).getVoiceRootDir();
 
-    public AgiSupport(AgiChannel channel, AgiRequest request, AsrClient asrClient, TtsClient ttsClient, Thread thread) {
+    public AgiSupport(AgiChannel channel, AgiRequest request, Thread thread) {
         this.channel = channel;
         this.request = request;
-        this.asrClient = asrClient;
-        this.ttsClient = ttsClient;
         this.thread = thread;
+
+        // 补全Bean
+        this.asrClient = initAsr();
+        this.ttsClient = initTts();
+
 
         // 添加监听
         agiHangupEventManager.addAgi(channel.getUniqueId());
@@ -78,6 +82,20 @@ public abstract class AgiSupport {
     protected abstract void realtimeData(Boolean isBot, String filePath, String content);
 
     /**
+     * 初始化asr
+     *
+     * @return asrClient
+     */
+    protected abstract AsrClient initAsr();
+
+    /**
+     * 初始化tts
+     *
+     * @return ttsClient
+     */
+    protected abstract TtsClient initTts();
+
+    /**
      * 1=呼入 2=呼出
      */
     public String getCallType() {
@@ -85,12 +103,7 @@ public abstract class AgiSupport {
     }
 
     public String getPhone() {
-        // TODO 需要改成通过线路的配置决定外地号前面是否去除0和是否需要去除前缀
-        String phone = Fc.equalsValue(getCallType(), 2)?request.getCallerIdNumber():request.getRequest().get("callerid");
-        if (PhoneUtil.isTel(phone)){
-            return phone;
-        }
-        return StrUtil.removePrefix(phone, "0");
+        return Fc.equalsValue(getCallType(), 2)?request.getCallerIdNumber():request.getRequest().get("callerid");
     }
 
     public String getUniqueId() {

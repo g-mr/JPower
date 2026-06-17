@@ -9,8 +9,6 @@ import org.asteriskjava.fastagi.AgiRequest;
 import org.asteriskjava.fastagi.AgiScript;
 import top.jpower.core.asterisk.agi.annotation.Agi;
 import top.jpower.core.asterisk.agi.fastagi.support.AgiSupport;
-import top.jpower.core.asterisk.audio.AsrClient;
-import top.jpower.core.asterisk.audio.TtsClient;
 
 /**
  * AGI抽象脚本
@@ -24,7 +22,7 @@ public abstract class AgiAbstractScript implements AgiScript {
         // 实例化AgiSupport
         Agi agi = AnnotationUtil.getAnnotation(this.getClass(), Agi.class);
         AgiSupport agiSupport = ReflectUtil.newInstance(agi.support(),
-                channel, request, AsrClient.createInstance(), TtsClient.createInstance(), Thread.currentThread());
+                channel, request, Thread.currentThread());
 
         ThreadUtil.execAsync(()->{
             while (true){
@@ -35,6 +33,8 @@ public abstract class AgiAbstractScript implements AgiScript {
                     agiSupport.clear();
                     break;
                 }
+                // 每秒检查一次
+                ThreadUtil.safeSleep(1000);
             }
         }, false);
 

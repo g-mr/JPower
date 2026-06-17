@@ -6,7 +6,7 @@
 
     <groupId>top.jpower</groupId>
     <artifactId>jpower</artifactId>
-    <version>3.0.1</version>
+    <version>3.0.2</version>
     <packaging>pom</packaging>
 
     <name>JPower</name>
@@ -19,7 +19,7 @@
         <java.version>17</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <top.jpower.version>3.0.1</top.jpower.version>
+        <top.jpower.version>3.0.2</top.jpower.version>
 
         <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
         <maven-resources.version>3.4.0</maven-resources.version>
@@ -35,6 +35,7 @@
         <aliyun.oss.version>3.18.3</aliyun.oss.version>
         <qiniu.oss.version>7.19.0</qiniu.oss.version>
         <amazon.s3.version>2.29.32</amazon.s3.version>
+        <deploy.version>3.1.2</deploy.version>
 
         <docker.image.prefix>jpower</docker.image.prefix>
         <docker.registry>8.130.172.218:8180</docker.registry>
@@ -140,6 +141,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
+                <version>${deploy.version}</version>
                 <configuration>
                     <skip>true</skip>
                 </configuration>

@@ -1,12 +1,11 @@
 package top.jpower.core.asterisk.agi.fastagi.support;
 
+import cn.hutool.cache.CacheUtil;
+import cn.hutool.cache.impl.LRUCache;
 import org.asteriskjava.manager.event.*;
 import top.jpower.core.asterisk.ami.annotation.AmiListener;
 import top.jpower.core.asterisk.ami.listener.EventAbstractListener;
 import top.jpower.core.util.utils.Fc;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 监控AGI程序的通道是否挂断了
@@ -17,7 +16,14 @@ import java.util.concurrent.ConcurrentHashMap;
 @AmiListener({HangupEvent.class, HangupRequestEvent.class, SoftHangupRequestEvent.class})
 public class AgiHangupEventManager extends EventAbstractListener {
 
-    private static final Map<String, Boolean> AGI_HANGUP_CACHE = new ConcurrentHashMap<>(30);
+    /**
+     * 存储agi是否挂断标识，缓存一个小时，一个小时以后自动清除
+     *
+     * key: uniqueId
+     * value: 是否挂断
+     */
+    private static final LRUCache<String, Boolean> AGI_HANGUP_CACHE = CacheUtil.newLRUCache(1000, 1000 * 60 * 60L);
+
 
     /**
      * 是否挂断
