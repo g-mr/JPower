@@ -358,14 +358,19 @@ public class ChatClientRequestBuilder {
 
     /**
      * 根据模型类型动态创建对应的 ResponseFormat 对象
+     * <p>
+     * DashScope 模型支持两种 JAR 包实现：
+     * <ul>
+     *   <li>spring-ai-alibaba-dashscope（原版）：ResponseFormat 类位于 {@code com.alibaba.cloud.ai.dashscope.api} 包</li>
+     *   <li>spring-ai-alibaba-dashscope-sdk（SDK 版）：无独立 ResponseFormat 类，JSON 模式不可用</li>
+     * </ul>
+     * 此方法会依次尝试多个类路径，以兼容不同版本的 JAR 包。
      */
     @Nullable
     private Object createResponseFormat(ChatModelType type, ClassLoader cl) {
         try {
             return switch (type) {
-                case DASHSCOPE -> createViaBuilder(cl,
-                        "com.alibaba.cloud.ai.dashscope.chat.DashScopeResponseFormat",
-                        "type", "json_object");
+                case DASHSCOPE -> createDashScopeResponseFormat(cl);
                 case DEEPSEEK -> createViaBuilder(cl,
                         "org.springframework.ai.deepseek.api.DeepSeekApi$ChatCompletionRequest$ResponseFormat",
                         "type", findEnumValue(cl,
@@ -382,6 +387,42 @@ public class ChatClientRequestBuilder {
             log.debug("创建 responseFormat 对象失败 [{}]: {}", type.getKey(), e.getMessage());
             return null;
         }
+    }
+
+    /**
+     * 创建 DashScope 的 ResponseFormat 对象，兼容原版和 SDK 版 JAR 包
+     * <p>
+     * 尝试以下类路径（按优先级）：
+     * <ol>
+     *   <li>{@code com.alibaba.cloud.ai.dashscope.api.DashScopeResponseFormat}（原版 1.1.x）</li>
+     *   <li>{@code com.alibaba.cloud.ai.dashscope.chat.DashScopeResponseFormat}（旧版本兼容）</li>
+     * </ol>
+     * SDK 版（spring-ai-alibaba-dashscope-sdk）没有独立的 ResponseFormat 类，
+     * 此方法将返回 null，JSON 模式将不可用。
+     *
+     * @param cl 类加载器
+     * @return ResponseFormat 对象，无法创建时返回 null
+     */
+    @Nullable
+    private Object createDashScopeResponseFormat(ClassLoader cl) {
+        // 原版 JAR 中的类路径（api 包）
+        Object result = createViaBuilder(cl,
+                "com.alibaba.cloud.ai.dashscope.api.DashScopeResponseFormat",
+                "type", "json_object");
+        if (result != null) {
+            return result;
+        }
+
+        // 旧版本兼容（chat 包）
+        result = createViaBuilder(cl,
+                "com.alibaba.cloud.ai.dashscope.chat.DashScopeResponseFormat",
+                "type", "json_object");
+        if (result != null) {
+            return result;
+        }
+
+        log.debug("DashScope ResponseFormat 类未找到，可能使用的是 SDK 版 JAR（spring-ai-alibaba-dashscope-sdk），JSON 模式不可用");
+        return null;
     }
 
     /**

@@ -13,12 +13,12 @@ import lombok.Getter;
 public enum PromptLocationType {
 
     /**
-     * DeepSeek 模型
+     * MybatisFlex
      */
     MYBATIS_FLEX("MybatisFlex"),
 
     /**
-     * 通义千问（DashScope）
+     * Nacos
      */
     NACOS("Nacos"),
     ;
