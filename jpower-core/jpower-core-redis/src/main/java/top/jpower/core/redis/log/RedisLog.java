@@ -232,7 +232,7 @@ public class RedisLog {
         }
 
         // 情况2：缓冲区已释放
-        log.warn("尝试使用已发布的 ByteBuf，使用安全恢复");
+        log.debug("尝试使用已发布的 ByteBuf，使用安全恢复");
         // 从原始字节恢复（即使缓冲区已释放）
         byte[] bytes = ByteBufUtil.getBytes(
                 buf,
