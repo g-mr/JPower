@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import top.jpower.core.dbs.config.datasource.DefaultDataSourceProcessor;
 import top.jpower.core.dbs.config.filling.InsertFieldsListener;
 import top.jpower.core.dbs.config.filling.UpdateFieldsListener;
+import top.jpower.core.dbs.config.interceptor.DemoInterceptor;
 import top.jpower.core.dbs.config.interceptor.JpowerMybatisInterceptor;
 import top.jpower.core.dbs.config.interceptor.MybatisSqlPrintInterceptor;
 import top.jpower.core.dbs.config.interceptor.chain.MybatisInterceptor;
@@ -179,11 +180,21 @@ public class MybatisFlexConfig {
     /**
      * sql打印
      **/
-    @Order(Ordered.HIGHEST_PRECEDENCE+10)
     @Bean
+    @Order(Ordered.HIGHEST_PRECEDENCE+10)
     @ConditionalOnProperty(value = {"jpower.mybatis.sql.print"}, matchIfMissing = true)
     public MybatisSqlPrintInterceptor mybatisSqlPrintIntercepter(MybatisProperties mybatisProperties) {
         return new MybatisSqlPrintInterceptor(mybatisProperties.getSql());
+    }
+
+    /**
+     * 演示环境
+     **/
+    @Bean
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    @ConditionalOnProperty(prefix = "jpower.demo", name = "enable", havingValue = "true")
+    public DemoInterceptor demoInterceptor(DemoProperties properties) {
+        return new DemoInterceptor(properties);
     }
 
 }
