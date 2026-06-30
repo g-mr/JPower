@@ -1,0 +1,115 @@
+package com.qidiangk.smart.user.controller.api;
+
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+import top.jpower.core.util.rsp.R;
+import top.jpower.core.util.utils.BeanUtil;
+import com.qidiangk.smart.user.api.dto.CoreUserDTO;
+import com.qidiangk.smart.user.api.dto.ValidatePasswordDTO;
+import com.qidiangk.smart.user.api.feign.UserClient;
+import com.qidiangk.smart.user.dbs.entity.CoreUser;
+import com.qidiangk.smart.user.pojo.UserVO;
+import com.qidiangk.smart.user.service.CoreUserRoleService;
+import com.qidiangk.smart.user.service.CoreUserService;
+
+import java.util.List;
+
+/**
+ * 用户feign接口实现
+ *
+ * @author mr.g
+ **/
+@Hidden
+@RestController
+@RequestMapping("/feign/core/user")
+@AllArgsConstructor
+public class UserClientController implements UserClient {
+
+    private CoreUserService coreUserService;
+    private CoreUserRoleService coreUserRoleService;
+
+    @Override
+    @Operation(summary = "通过账号查询用户")
+    @GetMapping("/queryUserByLoginId")
+    public R<CoreUserDTO> queryUserByLoginId(@RequestParam String loginId, @RequestParam String tenantCode) {
+        CoreUser user = coreUserService.selectUserLoginId(loginId,tenantCode);
+		CoreUserDTO userDTO = BeanUtil.copyProperties(user, CoreUserDTO.class);
+		userDTO.setRoleIds(coreUserRoleService.queryRoleIds(user.getId()));
+        return R.data(userDTO);
+    }
+
+    @Override
+    @Operation(summary = "通过用户ID查询所有角色ID")
+    @GetMapping("/getRoleIdsByUserId")
+    public R<List<Long>> getRoleIds(@RequestParam Long userId){
+        return R.data(coreUserRoleService.queryRoleIds(userId));
+    }
+
+    @Override
+    @Operation(summary = "更新用户登陆信息")
+    @PutMapping("/updateUserLoginInfo/{userId}")
+    public R<Boolean> updateLoginCount(@PathVariable("userId") Long userId){
+        return R.status(coreUserService.updateLoginCount(userId));
+    }
+
+    @Override
+    @Operation(summary = "通过第三方CODE查询")
+    @GetMapping("/queryUserByCode")
+    public R<CoreUserDTO> queryUserByCode(@RequestParam String otherCode, @RequestParam String tenantCode){
+        CoreUser coreUser = coreUserService.selectUserByOtherCode(otherCode,tenantCode);
+        return R.data(BeanUtil.copyProperties(coreUser, CoreUserDTO.class));
+    }
+
+    @Override
+    @Operation(summary = "查询用户详情")
+    @GetMapping(value = "/get")
+    public R<CoreUserDTO> get(@RequestParam Long id){
+        UserVO user = coreUserService.selectUserById(id);
+        return R.data(BeanUtil.copyProperties(user, CoreUserDTO.class));
+    }
+
+    @Override
+    @Operation(summary = "通过手机号查询用户")
+    @GetMapping("/queryUserByPhone")
+    public R<CoreUserDTO> queryUserByPhone(@RequestParam String phone, @RequestParam String tenantCode){
+        CoreUser user = coreUserService.selectByPhone(phone,tenantCode);
+		CoreUserDTO userDTO = BeanUtil.copyProperties(user, CoreUserDTO.class);
+		userDTO.setRoleIds(coreUserRoleService.queryRoleIds(user.getId()));
+        return R.data(userDTO);
+    }
+
+	@Override
+	@GetMapping("/queryUserByEmail")
+	public R<CoreUserDTO> queryUserByEmail(@RequestParam String email, @RequestParam String tenantCode) {
+		CoreUser user = coreUserService.selectByEmail(email, tenantCode);
+		return R.data(BeanUtil.copyProperties(user, CoreUserDTO.class));
+	}
+
+	@Override
+    @Operation(summary = "保存用户")
+    @PostMapping("/saveUser")
+    public R<Long> saveUser(@RequestBody CoreUserDTO user) {
+        return R.data(coreUserService.saveUser(BeanUtil.copyProperties(user, CoreUser.class), user.getRoleIds()));
+    }
+
+    @Override
+    @Operation(summary = "校验密码")
+    @PostMapping("/validatePassword")
+    public R<Boolean> validatePassword(@RequestBody ValidatePasswordDTO validatePasswordDto) {
+        return R.data(coreUserService.validatePassword(validatePasswordDto.getAccount(), validatePasswordDto.getPassword(), validatePasswordDto.getTenantCode()));
+    }
+
+	@Override
+	@PostMapping("/removeTenantAll")
+	public R<Boolean> removeTenantAll(@RequestBody List<String> tenantCodes) {
+		return R.status(coreUserService.removeTenantAll(tenantCodes));
+	}
+
+	@Override
+	@PostMapping("/updatePasswordById")
+	public R<Boolean> updatePasswordById(@RequestParam("userId") Long userId, @RequestParam("password") String password) {
+		return R.status(coreUserService.updatePasswordById(userId, password));
+	}
+}

@@ -1,0 +1,345 @@
+#通用配置
+server:
+  port: 9999
+  undertow:
+    # 设置IO线程数, 它主要执行非阻塞的任务,它们会负责多个连接, 默认设置每个CPU核心一个线程
+    threads:
+      io: 4
+      # 阻塞任务线程池, 当执行类似servlet请求阻塞操作, undertow会从这个线程池中取得线程,它的值设置取决于系统的负载
+      worker: 20
+    # 以下的配置会影响buffer,这些buffer会用于服务器连接的IO操作
+    buffer-size: 1024
+    # 是否分配的直接内存
+    direct-buffers: true
+
+spring:
+  data:
+    redis:
+      ##redis 单机环境配置
+      host: 127.0.0.1
+      password: 123467
+      port: 2001
+      database: 4
+      ##redis 集群环境配置
+    #    cluster:
+    #      nodes:
+    #        - 127.0.0.1:6379
+    #        - 127.0.0.1:6378
+    #        - 127.0.0.1:6377
+    #      commandTimeout: 5000
+  #通用配置
+  mvc:
+    async:
+      # SSE流式响应需要无限超时
+      request-timeout: -1
+  servlet:
+    multipart:
+      enabled: true
+      #单个数据的大小
+      max-file-size: 10MB
+      #总数据的大小
+      max-request-size: 20MB
+  cloud:
+    openfeign:
+      okhttp:
+        enabled: true
+    sentinel:
+      enabled: false
+      eager: true
+      log:
+        dir: ./logs/sentinel
+    nacos: # 单机版本关闭nacos 服务发现和配置管理的能力
+      config:
+        enabled: false
+      discovery:
+        enabled: false
+  security:
+    user:
+      name: "admin"
+      password: "admin"
+  ai:
+    dashscope: # 通义千问
+      api-key: xxxxxxxxxxxxxxxxxxxxxx
+#      base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      chat:
+        options:
+          model: qwen3.5-plus
+          multiModel: true
+    deepseek:
+      api-key: xxxxxxxxxxxxxxxxxxxxxx
+      base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      chat:
+        options:
+          model: deepseek-r1-distill-qwen-32b
+
+
+#feign配置
+feign:
+  sentinel:
+    enabled: false
+
+management:
+  endpoint:
+    shutdown:
+      #开启端点
+      access: unrestricted
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        #开启所有接口
+        include: "*"
+
+springdoc:
+  api-docs:
+    resolve-extensions-properties: true
+
+#knife4j配置
+knife4j:
+  #启用
+  enable: true
+  #基础认证
+  basic:
+    enable: false
+    username: jpower
+    password: jpower
+  #增强配置
+  setting:
+    enableSwaggerModels: true
+    enableDocumentManage: true
+    enable-host: true
+    enable-host-text: http://localhost
+    enableRequestCache: true
+    enableFilterMultipartApis: false
+    enableFilterMultipartApiMethodType: POST
+    language: zh-CN
+    enableVersion: true
+    enableFooter: false
+    enableFooterCustom: true
+    footerCustomContent: Copyright © 2021 JPower All Rights Reserved
+
+jpower:
+  server: BOOT
+  #swagger公共信息
+  swagger:
+    title: JPower 接口文档系统
+    description: JPower 接口文档系统
+    version: 3.0.1
+    license: Powered By JPower
+    license-url: https://gitee.com/gdzWork/JPower
+    terms-of-service-url: http://jpower.top
+    contact:
+      name: mr.g
+      email: ding931226@yeah.net
+      url: https://gitee.com/gdzWork
+    groups:
+      system:
+        packages-to-scan:
+          - com.qidiangk.smart.system
+      user:
+        packages-to-scan:
+          - com.qidiangk.smart.user
+      resource:
+        packages-to-scan:
+          - com.qidiangk.smart.resource
+      log:
+        packages-to-scan:
+          - com.qidiangk.smart.log
+      auth:
+        packages-to-scan:
+          - com.qidiangk.smart.auth
+      smartaster:
+        packages-to-scan:
+          - com.qidiangk.smart.aster
+      maxkb:
+        packages-to-scan:
+          - com.qidiangk.smart.maxkb
+  log:
+    mode: file
+#    elk:
+#      destination: localhost:9000
+  test:
+    # 是否需要权限认证
+    is-login: false
+  tenant:
+    # 是否启用多租户
+    enable: true
+##   不进行多租户过滤的表
+#    excludeTables:
+#      - tb_core_table
+  mail:
+    host: smtp.yeah.net
+    port: 465
+    from: ding931226@yeah.net
+    user: ding931226@yeah.net
+    pass: xxxxxxxxxxxxxxx
+    ssl-enable: true
+  ai:
+    primary: dashscope
+##  是否开启数据权限
+#  datascope:
+#    enable: true
+#  xss:
+#    #是否开启富文本过滤(如果开启，参数名包含html的将不进行XSS过滤，默认关闭)
+#    isIncludeRichText: false
+#    #XSS不过滤得接口路径，支持通配符模式
+#    excludes:
+#      - /html/**
+#  auth:
+#    skipUrl:
+#      - /auth/**
+#      - /core/user/downloadTemplate
+#    client:
+##开启需要校验的客户端，值写数据库的clientCode即可
+#      - code: admin
+##需要客户端校验的URL
+#        path:
+#          - /core/user/**
+##鉴权需要过滤的白名单地址
+#    whileIp:
+#      - 192.168.1.2
+#      - 0:0:0:0:0:0:0:1
+
+
+logging:
+  level:
+    org.asteriskjava.manager: info
+    org.asteriskjava: info
+
+
+mybatis-flex:
+  datasource:
+    master:
+      type: com.alibaba.druid.pool.DruidDataSource
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://127.0.0.1:3306/smartaster?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true&rewriteBatchedStatements=true
+      username: root
+      password: 12345678
+      # 下面为连接池的补充设置
+      druid:
+        initialSize: 10   #初始化连接个数
+        minIdle: 10       #最小空闲连接个数
+        maxActive: 100    #最大连接个数
+        maxWait: 60000    #获取连接时最大等待时间，单位毫秒。
+        timeBetweenEvictionRunsMillis: 60000  #配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+        minEvictableIdleTimeMillis: 30000     #配置一个连接在池中最小生存的时间，单位是毫秒
+        validationQuery: select 'x' #用来检测连接是否有效的sql，要求是一个查询语句。
+        testWhileIdle: true       #建议配置为true，不影响性能，并且保证安全性。如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。
+        testOnBorrow: true        #申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能
+        testOnReturn: false       #归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能
+        poolPreparedStatements: false #是否缓存preparedStatement，也就是PSCache。PSCache对支持游标的数据库性能提升巨大，比如说oracle。在mysql下建议关闭。
+        maxPoolPreparedStatementPerConnectionSize: -1 #要启用PSCache，必须配置大于0，当大于0时，poolPreparedStatements自动触发修改为true。在Druid中，不会存在Oracle下PSCache占用内存过多的问题，可以把这个数值配置大一些，比如说100
+        filters: stat,wall,slf4j #通过别名的方式配置扩展插件，常用的插件有：监控统计用的filter:stat，日志用的filter:log4j，防御sql注入的filter:wall
+        connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000 # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+        useGlobalDataSourceStat: true # 合并多个DruidDataSource的监控数据
+    asterisk:
+      type: com.alibaba.druid.pool.DruidDataSource
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://127.0.0.1:3306/smartaster_asterisk?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true&rewriteBatchedStatements=true
+      username: root
+      password: 12345678
+  type-aliases-super-type: top.jpower.core.dbs.dbs.entity.base.BaseEntity
+  mapper-locations: classpath*:com/qidiangk/smart/**/dbs/dao/mapper/**/*Mapper.xml
+
+
+asterisk:
+  transport: transport-udp
+  ami:
+    host: 127.0.0.1
+    port: 5038
+    username: admin
+    password: a1b2c3
+    event: true
+  agi:
+    port: 4573
+    asr-impl: com.qidiangk.smart.aster.tripartite.ali.AliAsrClient
+    tts-impl: com.qidiangk.smart.aster.tripartite.ali.AliTtsClient
+  voice-root-dir: /data/
+  context:
+    out: outbound-dialer # 呼出上下文名称
+    in: inbound-dialer # 呼入上下文名称
+    exten: robot
+
+ivr:
+  ali:
+    accessKeyId: xxxxxxxxxxxx
+    accessKeySecret: xxxxxxxxxxx
+    app-key: xxxxxxxxxxxxx
+    tts-option:
+      voice: siyue
+      format: wav
+      sample-rate: sample_rate_8k
+      volume: 50
+      pitch-rate: 0
+      speech-rate: 0
+      min-send-interval-ms: 100
+    asr-option:
+      format: wav
+      sample-rate: sample_rate_8k
+      max-sentence-silence: 800
+      enable-intermediate-result: true
+    asr-file-role:
+      region-id: cn-beijing
+      version: 2018-08-17
+      auto-split: true
+      supervise-type: 1
+      speaker-num: 2
+      enable-inverse-text-normalization: true
+      enable-disfluency: true
+      enable-semantic-sentence-detection: true
+      file-dir: /data/download/
+      file-domain: https://kefu.wdrlyxgs.com:4104/ivr-api/maxkb/dataset/transferFile/
+  dianxin:
+    asr-url: wss://openapi.teleagi.cn:443/aipaas/voice/v1/asr/fy
+    tts-url: wss://openapi.teleagi.cn:443/aipaas/voice/v1/tts/supernaturalrt
+    appId: xxxxxxxxxxx
+    appKey: xxxxxxxxxxxx
+    tts-option:
+      voice: kefunv2
+      sample-rate: 8000
+    asr-option:
+      sample-rate: 8000
+      enable-punctuation: true
+      enable-inverse-text-normalization: true
+      enable-emendation: true
+      max-end-silence: 600
+
+retrofit:
+  global-converter-factories:
+    - com.qidiangk.smart.maxkb.config.retrofit.BodyCodeConverterFactory
+    - com.github.lianjiatech.retrofit.spring.boot.core.BasicTypeConverterFactory
+    - retrofit2.converter.jackson.JacksonConverterFactory
+  # 自动设置PathMathInterceptor的scope为prototype
+  auto-set-prototype-scope-for-path-math-interceptor: true
+  global-retry:
+    # 是否启用全局重试
+    enable: true
+    # 全局重试间隔时间
+    interval-ms: 100
+    # 全局最大重试次数
+    max-retries: 2
+    # 全局重试规则
+    retry-rules:
+      - response_status_not_2xx
+      - occur_io_exception
+  # 全局日志打印配置
+#  global-log:
+#    # 启用日志打印
+#    enable: true
+#    # 全局日志打印级别
+#    log-level: info
+#    # 全局日志打印策略
+#    log-strategy: BODY
+#    # 是否聚合打印请求日志
+#    aggregate: true
+
+maxkb:
+  # 登录账号
+  username: admin
+  # 登录密码
+  password: MaxKB@123...
+  # 内网访问地址
+  baseUrl: http://127.0.0.1:8081/
+  # 外网访问地址
+  externalBaseUrl: http://127.0.0.1:8081/

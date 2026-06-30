@@ -1,0 +1,35 @@
+services:
+  asterisk:
+    # 如果是自己构建镜像，请修改为asterisk:22
+    image: 8.130.172.218:8180/smart/asterisk:22
+    hostname: "smart-asterisk"
+    container_name: "asterisk"
+    network_mode: "host"
+#    extra_hosts:
+#      - "host.docker.internal:host-gateway"
+    environment:
+      - TZ=Asia/Shanghai
+      # 数据库地址
+      - DB_HOST=127.0.0.1
+      # 数据库端口
+      - DB_PORT=3306
+      # 数据库用户名
+      - DB_USERNAME=root
+      # 数据库密码
+      - DB_PASSWORD=123456
+      # 数据库名称
+      - DB_DATABASE=asterisk
+      # 外网地址，如果和pbx、vos等下游服务部署在同一局域网可去掉这个配置，如果需要互联网访问需要配置成本服务部署机器的外网地址
+      - EXTERNAL_ADDRESS=192.168.1.100
+      # AGI地址，填入呼叫中心服务访问地址
+      - AGI_HOST=192.168.1.100
+    ports:
+      - "5060:5060/udp"
+      - "10000-20000:10000-20000/udp"
+      - "5060:5060/tcp"
+      - "5038:5038/tcp"
+    volumes:
+      - ./conf/:/etc/asterisk
+      - ./log:/var/log/asterisk
+      - /data/:/data
+    restart: always

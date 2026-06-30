@@ -1,0 +1,86 @@
+spring:
+  ai:
+    dashscope: # 通义千问
+      api-key: xxxxxxxxxxxxxxxxxxxxxxxx
+      #      base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      chat:
+        options:
+          model: qwen3.5-plus
+          multiModel: true
+    deepseek:
+      api-key: xxxxxxxxxxxxxxxxxxx
+      base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      chat:
+        options:
+          model: deepseek-r1-distill-qwen-32b
+
+jpower:
+  ai:
+    primary: dashscope
+
+logging:
+  level:
+    org.asteriskjava.manager: info
+    org.asteriskjava: info
+
+asterisk:
+  transport: transport-udp
+  ami:
+    host: 127.0.0.1
+    port: 5038
+    username: admin
+    password: a1b2c3
+    event: true
+  agi:
+    port: 4573
+    asr-impl: com.qidiangk.smart.aster.tripartite.ali.AliAsrClient
+    tts-impl: com.qidiangk.smart.aster.tripartite.ali.AliTtsClient
+  voice-root-dir: /data/
+  context:
+    out: outbound-dialer # 呼出上下文名称
+    in: inbound-dialer # 呼入上下文名称
+    exten: robot
+
+ivr:
+  ali:
+    accessKeyId: xxxxxxxxxxxxxxxxxxxxxxxx
+    accessKeySecret: xxxxxxxxxxxxxxxxxxxxxxxx
+    app-key: xxxxxxxxxxxxxxxxxxxxxxxx
+    tts-option:
+      voice: siyue
+      format: wav
+      sample-rate: sample_rate_8k
+      volume: 50
+      pitch-rate: 0
+      speech-rate: 0
+      min-send-interval-ms: 100
+    asr-option:
+      format: wav
+      sample-rate: sample_rate_8k
+      max-sentence-silence: 800
+      enable-intermediate-result: true
+    asr-file-role:
+      region-id: cn-beijing
+      version: 2018-08-17
+      auto-split: true
+      supervise-type: 1
+      speaker-num: 2
+      enable-inverse-text-normalization: true
+      enable-disfluency: true
+      enable-semantic-sentence-detection: true
+      file-dir: /data/download/
+      file-domain: https://kefu.wdrlyxgs.com:4104/ivr-api/maxkb/dataset/transferFile/
+  dianxin:
+    asr-url: wss://openapi.teleagi.cn:443/aipaas/voice/v1/asr/fy
+    tts-url: wss://openapi.teleagi.cn:443/aipaas/voice/v1/tts/supernaturalrt
+    appId: xxxxxxxxxxxxxxxxxxxxxxxx
+    appKey: xxxxxxxxxxxxxxxxxxxxxxxx
+    tts-option:
+      voice: kefunv2
+      sample-rate: 8000
+    asr-option:
+      sample-rate: 8000
+      enable-punctuation: true
+      enable-inverse-text-normalization: true
+      enable-emendation: true
+      max-end-silence: 600

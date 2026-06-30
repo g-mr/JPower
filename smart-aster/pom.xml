@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>smart-call</artifactId>
+        <groupId>com.qidiangk.smart</groupId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>smart-aster</artifactId>
+    <packaging>jar</packaging>
+
+    <properties>
+        <alibaba.nls.sdk.common>2.2.14</alibaba.nls.sdk.common>
+        <alibaba.nls.sdk.transcriber>2.2.1</alibaba.nls.sdk.transcriber>
+        <aliyun.sdk.core>4.5.13</aliyun.sdk.core>
+        <aliyun.sdk.alinlp>1.8.14</aliyun.sdk.alinlp>
+        <aliyun.sdk.tts>2.2.14</aliyun.sdk.tts>
+        <groovy.version>3.0.25</groovy.version>
+        <nashorn.version>15.6</nashorn.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.qidiangk.smart</groupId>
+            <artifactId>smart-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>top.jpower</groupId>
+            <artifactId>jpower-core-boot</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>top.jpower</groupId>
+            <artifactId>jpower-core-swagger</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>top.jpower</groupId>
+            <artifactId>jpower-core-redis</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>top.jpower</groupId>
+            <artifactId>jpower-core-log</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>top.jpower</groupId>
+            <artifactId>jpower-core-deploy</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>top.jpower</groupId>
+            <artifactId>jpower-core-dbs</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>top.jpower</groupId>
+            <artifactId>jpower-core-ai</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>top.jpower</groupId>
+            <artifactId>jpower-core-asterisk</artifactId>
+        </dependency>
+
+
+        <!-- 通义千问 -->
+        <dependency>
+            <groupId>com.alibaba.cloud.ai</groupId>
+            <artifactId>spring-ai-alibaba-starter-dashscope</artifactId>
+        </dependency>
+
+        <!-- deepseek -->
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-starter-model-deepseek</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.nls</groupId>
+            <artifactId>nls-sdk-common</artifactId>
+            <version>${alibaba.nls.sdk.common}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.squareup.okhttp3</groupId>
+                    <artifactId>okhttp</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.nls</groupId>
+            <artifactId>nls-sdk-transcriber</artifactId>
+            <version>${alibaba.nls.sdk.transcriber}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-core</artifactId>
+            <version>${aliyun.sdk.core}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-alinlp</artifactId>
+            <version>${aliyun.sdk.alinlp}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.nls</groupId>
+            <artifactId>nls-sdk-tts</artifactId>
+            <version>${aliyun.sdk.tts}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.squareup.okhttp3</groupId>
+                    <artifactId>okhttp</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp-sse</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.qidiangk.smart</groupId>
+            <artifactId>smart-user-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.qidiangk.smart</groupId>
+            <artifactId>smart-system-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.qidiangk.smart</groupId>
+            <artifactId>smart-maxkb-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>${groovy.version}</version>
+            <type>pom</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjdk.nashorn</groupId>
+            <artifactId>nashorn-core</artifactId>
+            <version>${nashorn.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>smart-aster</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+
+        <resources>
+            <!-- 编译 src/main/java 目录下的 mapper 文件 -->
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+                <!-- ......用于扫描 dao 文件下的mapper 文件................. end -->
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+    </build>
+
+</project>

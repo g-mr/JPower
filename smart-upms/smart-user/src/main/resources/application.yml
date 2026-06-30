@@ -1,0 +1,21 @@
+server:
+  port: 9003
+
+spring:
+  config:
+    import:
+      - optional:nacos:smart.yml
+      - optional:nacos:smart-dev.yml
+      - optional:nacos:smart-user.yml
+      - optional:nacos:smart-user-dev.yml
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+      username: nacos
+      password: nacos
+      config:
+        import-check:
+          enabled: false
+        namespace: ab6f9a98-fcdf-400c-b3d6-3f1d3e110a1a
+      discovery:
+        namespace: ab6f9a98-fcdf-400c-b3d6-3f1d3e110a1a

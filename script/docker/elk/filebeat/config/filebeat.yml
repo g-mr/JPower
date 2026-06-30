@@ -1,0 +1,24 @@
+filebeat.inputs:
+  - type: tcp
+    enabled: true
+    max_message_size: 10MiB
+    host: "0.0.0.0:9000"
+
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+
+setup.template.settings:
+  index.number_of_shards: 1
+
+setup.dashboards.enabled: false
+
+setup.kibana:
+  host: "http://kibana:5601"
+
+output.logstash:
+  hosts: ["logstash:5044"]
+
+processors:
+  - add_host_metadata: ~
+  - add_cloud_metadata: ~

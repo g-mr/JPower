@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>smart-call</artifactId>
+        <groupId>com.qidiangk.smart</groupId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>smart-auth</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.qidiangk.smart</groupId>
+            <artifactId>smart-user-api</artifactId>
+            <version>${project.version}</version>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.qidiangk.smart</groupId>
+            <artifactId>smart-system-api</artifactId>
+            <version>${project.version}</version>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.qidiangk.smart</groupId>
+            <artifactId>smart-resource-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>top.jpower</groupId>
+            <artifactId>jpower-core-boot</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>top.jpower</groupId>
+            <artifactId>jpower-core-swagger</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>top.jpower</groupId>
+            <artifactId>jpower-core-redis</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>top.jpower</groupId>
+            <artifactId>jpower-core-deploy</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>top.jpower</groupId>
+            <artifactId>jpower-core-log</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>top.jpower</groupId>
+            <artifactId>jpower-core-feign</artifactId>
+        </dependency>
+
+		<dependency>
+			<groupId>top.jpower</groupId>
+			<artifactId>jpower-core-dbs</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.qidiangk.smart</groupId>
+			<artifactId>smart-common</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+        <dependency>
+            <groupId>com.github.whvcse</groupId>
+            <artifactId>easy-captcha</artifactId>
+            <version>${easy-captcha.version}</version>
+        </dependency>
+
+        <!-- Hutool MailUtil 依赖 javax.mail (optional)，需显式引入 -->
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>smart-auth</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+
+        <resources>
+            <!-- 编译 src/main/java 目录下的 mapper 文件 -->
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+                <!-- ......用于扫描 dao 文件下的mapper 文件................. end -->
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+    </build>
+</project>

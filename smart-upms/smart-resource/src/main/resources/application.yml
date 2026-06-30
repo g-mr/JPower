@@ -1,0 +1,44 @@
+server:
+  port: 9004
+
+spring:
+  config:
+    import:
+      - optional:nacos:smart.yml
+      - optional:nacos:smart-dev.yml
+      - optional:nacos:smart-resource.yml
+      - optional:nacos:smart-resource-dev.yml
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+      username: nacos
+      password: nacos
+      config:
+        import-check:
+          enabled: false   # 默认为 false，设为 true 后，缺失的配置会导致启动失败
+        namespace: ab6f9a98-fcdf-400c-b3d6-3f1d3e110a1a
+      discovery:
+        namespace: ab6f9a98-fcdf-400c-b3d6-3f1d3e110a1a
+
+fdfs:
+  # 链接超时
+  connect-timeout: 1800
+  # 读取时间
+  so-timeout: 1800
+  # 生成缩略图参数
+  thumb-image:
+    width: 150
+    height: 150
+  tracker-list:
+    - 127.0.0.1:22122
+
+jpower:
+  file:
+    server:
+      # 服务器文件外链访问地址
+      domain: http://127.0.0.1/file
+      # 服务器文件保存路径
+      path: ./file
+    fastDfs:
+      # FastDfs文件外链访问地址
+      domain: http://xxx.xxx.xxx

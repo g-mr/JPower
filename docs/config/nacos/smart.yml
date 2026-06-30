@@ -1,0 +1,185 @@
+## 这些配置可以放到NACOS里面，也可以放到这里会被所有模块引用
+server:
+  undertow:
+    threads:
+      # 设置IO线程数, 它主要执行非阻塞的任务,它们会负责多个连接, 默认设置每个CPU核心一个线程
+      io: 4
+      # 阻塞任务线程池, 当执行类似servlet请求阻塞操作, undertow会从这个线程池中取得线程,它的值设置取决于系统的负载
+      worker: 20
+    # 以下的配置会影响buffer,这些buffer会用于服务器连接的IO操作,有点类似netty的池化内存管理
+    buffer-size: 1024
+    # 是否分配的直接内存
+    direct-buffers: true
+
+## 这些配置可以放到NACOS里面，也可以放到这里会被所有模块引用
+spring:
+  data:
+    redis:
+      ##redis 单机环境配置
+      host: 127.0.0.1
+      password: 12345678
+      port: 6379
+      database: 1
+      #  ssl:
+      #    enabled: false
+      ##redis 集群环境配置
+    #    cluster:
+    #      nodes:
+    #        - 127.0.0.1:6379
+    #        - 127.0.0.1:6378
+    #        - 127.0.0.1:6377
+    #      commandTimeout: 5000
+  cloud:
+    openfeign:
+      okhttp:
+        enabled: true
+    sentinel:
+      enabled: true
+      eager: true
+      log:
+        dir: ./logs/sentinel
+      transport:
+        dashboard: localhost:84
+    loadbalancer:
+      #开启重试机制
+      retry:
+        enabled: true
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              #启用自动根据服务ID建立路由
+              enabled: true
+  security:
+    user:
+      name: "admin"
+      password: "admin"
+
+#feign配置
+feign:
+  sentinel:
+    enabled: true
+
+management:
+  endpoint:
+    health:
+      show-details: always
+    shutdown:
+      access: unrestricted
+  endpoints:
+    web:
+      exposure:
+        #开启所有接口
+        include: "*"
+
+springdoc:
+  api-docs:
+    resolve-extensions-properties: true
+
+#knife4j配置
+knife4j:
+  #启用
+  enable: true
+  #基础认证
+  basic:
+    enable: false
+    username: jpower
+    password: jpower
+  #增强配置
+  setting:
+    enableSwaggerModels: true
+    enableDocumentManage: true
+    enable-host: true
+    enable-host-text: http://localhost
+    enableRequestCache: true
+    enableFilterMultipartApis: false
+    enableFilterMultipartApiMethodType: POST
+    language: zh-CN
+    enableVersion: true
+    enableFooter: false
+    enableFooterCustom: true
+    footerCustomContent: Copyright © 2021 JPower All Rights Reserved
+
+jpower:
+  server: CLOUD
+  #swagger公共信息
+  swagger:
+    title: JPower 接口文档系统
+    description: JPower 接口文档系统
+    version: 3.0.1
+    license: Powered By JPower
+    license-url: https://gitee.com/gdzWork/JPower
+    terms-of-service-url: http://jpower.top
+    contact:
+      name: mr.g
+      email: ding931226@yeah.net
+      url: https://gitee.com/gdzWork
+    groups:
+      system:
+        packages-to-scan:
+          - com.qidiangk.smart.system
+      user:
+        packages-to-scan:
+          - com.qidiangk.smart.user
+      resource:
+        packages-to-scan:
+          - com.qidiangk.smart.resource
+      log:
+        packages-to-scan:
+          - com.qidiangk.smart.log
+      auth:
+        packages-to-scan:
+          - com.qidiangk.smart.auth
+      smartaster:
+        packages-to-scan:
+          - com.qidiangk.smart.aster
+      maxkb:
+        packages-to-scan:
+          - com.qidiangk.smart.maxkb
+  mail:
+    host: smtp.yeah.net
+    port: 465
+    from: xxxx@yeah.net
+    user: xxxx@yeah.net
+    pass: xxxxxxxxxxxxx
+    ssl-enable: true
+  log:
+    mode: file
+#    elk:
+#      destination: localhost:9000
+
+############# 数据源 #####################
+mybatis-flex:
+  datasource:
+    master:
+      type: com.alibaba.druid.pool.DruidDataSource
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://127.0.0.1:3306/smartaster?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true&rewriteBatchedStatements=true
+      username: root
+      password: 12345678
+      # 下面为连接池的补充设置
+      druid:
+        initialSize: 10   #初始化连接个数
+        minIdle: 10       #最小空闲连接个数
+        maxActive: 100    #最大连接个数
+        maxWait: 60000    #获取连接时最大等待时间，单位毫秒。
+        timeBetweenEvictionRunsMillis: 60000  #配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+        minEvictableIdleTimeMillis: 30000     #配置一个连接在池中最小生存的时间，单位是毫秒
+        validationQuery: select 'x' #用来检测连接是否有效的sql，要求是一个查询语句。
+        testWhileIdle: true       #建议配置为true，不影响性能，并且保证安全性。如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。
+        testOnBorrow: true        #申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能
+        testOnReturn: false       #归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能
+        poolPreparedStatements: false #是否缓存preparedStatement，也就是PSCache。PSCache对支持游标的数据库性能提升巨大，比如说oracle。在mysql下建议关闭。
+        maxPoolPreparedStatementPerConnectionSize: -1 #要启用PSCache，必须配置大于0，当大于0时，poolPreparedStatements自动触发修改为true。在Druid中，不会存在Oracle下PSCache占用内存过多的问题，可以把这个数值配置大一些，比如说100
+        filters: stat,wall,slf4j #通过别名的方式配置扩展插件，常用的插件有：监控统计用的filter:stat，日志用的filter:log4j，防御sql注入的filter:wall
+        connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000 # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+        useGlobalDataSourceStat: true # 合并多个DruidDataSource的监控数据
+    asterisk:
+      type: com.alibaba.druid.pool.DruidDataSource
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://127.0.0.1:3306/smartaster_asterisk?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true&rewriteBatchedStatements=true
+      username: root
+      password: 12345678
+  type-aliases-super-type: top.jpower.core.dbs.dbs.entity.base.BaseEntity
+  mapper-locations: classpath*:com/qidiangk/smart/**/dbs/dao/mapper/**/*Mapper.xml

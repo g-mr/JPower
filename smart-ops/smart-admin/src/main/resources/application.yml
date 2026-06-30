@@ -1,0 +1,30 @@
+server:
+  port: 8868
+
+spring:
+  config:
+    import:
+      - optional:nacos:smart.yml
+      - optional:nacos:smart-dev.yml
+      - optional:nacos:smart-admin.yml
+      - optional:nacos:smart-admin-dev.yml
+  # 覆盖 smart.yml 中的配置，Admin UI 需要静态资源映射
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+      username: nacos
+      password: nacos
+      config:
+        import-check:
+          enabled: false   # 默认为 false，设为 true 后，缺失的配置会导致启动失败
+        namespace: ab6f9a98-fcdf-400c-b3d6-3f1d3e110a1a
+      discovery:
+        namespace: ab6f9a98-fcdf-400c-b3d6-3f1d3e110a1a
+  boot:
+    admin:
+      discovery:
+        # 启用服务发现，从 Nacos 自动发现客户端
+        enabled: true
+        # 忽略 Admin 自身服务，避免自我监控干扰
+        ignored-services:
+          - smart-admin

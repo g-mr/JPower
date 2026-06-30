@@ -1,0 +1,228 @@
+services:
+  nginx:
+    image: nginx:stable-alpine-perl
+    hostname: "smart-nginx"
+    environment:
+      - TZ=Asia/Shanghai
+    ports:
+      - 81:81
+    volumes:
+      - ../docker/nginx/smart/nginx.conf:/etc/nginx/nginx.conf
+    privileged: true
+    restart: always
+    networks:
+      smart_net:
+        ipv4_address: 172.16.238.90
+
+  skywalking-oap:
+    image: apache/skywalking-oap-server:10.4.0
+    privileged: true
+    restart: always
+    ports:
+      - 11800:11800
+      - 12800:12800
+    volumes:
+      - ../docker/skywalking/mysql-connector-java-5.1.47.jar:/skywalking/oap-libs/mysql-connector-java-5.1.47.jar
+    healthcheck:
+      test: ["CMD-SHELL", "/skywalking/bin/swctl"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      SW_STORAGE: mysql
+      SW_JDBC_URL: jdbc:mysql://host.docker.internal:3306/sky_walking?rewriteBatchedStatements=true&characterEncoding=utf-8&useSSL=false
+      SW_DATA_SOURCE_USER: root
+      SW_DATA_SOURCE_PASSWORD: 12345678
+      TZ: Asia/Shanghai
+    networks:
+      - smart_net
+
+  skywalking-ui:
+    image: apache/skywalking-ui:10.4.0
+    privileged: true
+    depends_on:
+      - skywalking-oap
+    links:
+      - skywalking-oap
+    restart: always
+    ports:
+      - 83:8080
+    environment:
+      SW_OAP_ADDRESS: http://skywalking-oap:12800
+      TZ: Asia/Shanghai
+    networks:
+      - smart_net
+
+  nacos:
+    image: "nacos/nacos-server:v3.0.3"
+    hostname: "nacos-standalone"
+    privileged: true
+    environment:
+      - MODE=standalone
+      - TZ=Asia/Shanghai
+      #      如不需要数据库做数据持久化配置删掉下面得环境变量即可
+      - SPRING_DATASOURCE_PLATFORM=mysql
+      - MYSQL_SERVICE_HOST=host.docker.internal
+      - MYSQL_SERVICE_PORT=3306
+      - MYSQL_SERVICE_DB_NAME=nacos
+      - MYSQL_SERVICE_USER=root
+      - MYSQL_SERVICE_PASSWORD=12345678
+      - NACOS_AUTH_TOKEN=M2Q1YzM3NjYtNTE2OS00ODBlLTg2MWItMWNlNGE2ZWQyMTQ4
+      - NACOS_AUTH_IDENTITY_KEY=nacos
+      - NACOS_AUTH_IDENTITY_VALUE=nacos
+    volumes:
+      - ../docker/config/nacos/standalone-logs/:/home/nacos/logs
+      - ../docker/config/nacos/init.d/custom.properties:/home/nacos/init.d/custom.properties
+    ports:
+      - 8080:8080
+      - 8848:8848
+      - 9848:9848
+    restart: always
+    networks:
+      smart_net:
+        ipv4_address: 172.16.238.50
+
+  sentinel:
+    image: "jpowerplus/sentinel-dashboard:1.8.9"
+    hostname: "sentinel-standalone"
+    privileged: true
+    volumes:
+      - ../docker/sentinel/logs/:/root/logs/csp/
+    ports:
+      - 84:8858
+    restart: always
+    networks:
+      smart_net:
+        ipv4_address: 172.16.238.51
+
+  seata:
+    image: apache/seata-server:2.5.0.jdk17
+    privileged: true
+    hostname: seata-server
+    ports:
+      - 8091:8091
+      - 7091:7091
+    volumes:
+      - ../docker/seata/logs/:/root/logs/seata/
+# 使用自定义配置文件放开
+#      - /docker/seata/config/:/smart/seata-config
+    environment:
+      - SEATA_PORT=8091
+# 使用自定义配置文件放开，并编写好配置放到下面的目录中
+#      - SEATA_CONFIG_NAME=file:/smart/seata-config/registry
+    expose:
+      - 8091
+      - 7091
+    restart: always
+    networks:
+      smart_net:
+        ipv4_address: 172.16.238.54
+
+  smart-admin:
+    image: "219.148.186.235:99/smart/smart-admin:3.0.1"
+    privileged: true
+    restart: always
+    ports:
+      - 86:8868
+    networks:
+      - smart_net
+
+  smart-gateway:
+    image: "219.148.186.235:99/smart/smart-gateway:3.0.1"
+    privileged: true
+    volumes:
+#      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
+      - ../docker/skywalking/agent/:/smart/skywalking/agent/
+    environment:
+      - JAVA_TOOL_OPTIONS=-javaagent:/smart/skywalking/agent/skywalking-agent.jar
+      - SW_AGENT_COLLECTOR_BACKEND_SERVICES=skywalking-oap:11800
+    restart: always
+    networks:
+      smart_net:
+        ipv4_address: 172.16.238.25
+
+  smart-auth:
+    image: "219.148.186.235:99/smart/smart-auth:3.0.1"
+    privileged: true
+    volumes:
+      #      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
+      - ../docker/skywalking/agent/:/smart/skywalking/agent/
+    environment:
+      - JAVA_TOOL_OPTIONS=-javaagent:/smart/skywalking/agent/skywalking-agent.jar
+      - SW_AGENT_COLLECTOR_BACKEND_SERVICES=skywalking-oap:11800
+    restart: always
+    networks:
+      - smart_net
+
+  smart-user:
+    image: "219.148.186.235:99/smart/smart-user:3.0.1"
+    privileged: true
+    volumes:
+      #      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
+      - ../docker/skywalking/agent/:/smart/skywalking/agent/
+    environment:
+      - JAVA_TOOL_OPTIONS=-javaagent:/smart/skywalking/agent/skywalking-agent.jar
+      - SW_AGENT_COLLECTOR_BACKEND_SERVICES=skywalking-oap:11800
+    restart: always
+    networks:
+      - smart_net
+
+  smart-system:
+    image: "219.148.186.235:99/smart/smart-system:3.0.1"
+    privileged: true
+    volumes:
+      #      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
+      - ../docker/skywalking/agent/:/smart/skywalking/agent/
+    environment:
+      - JAVA_TOOL_OPTIONS=-javaagent:/smart/skywalking/agent/skywalking-agent.jar
+      - SW_AGENT_COLLECTOR_BACKEND_SERVICES=skywalking-oap:11800
+    restart: always
+    networks:
+      - smart_net
+
+  smart-resource:
+    image: "219.148.186.235:99/smart/smart-resource:3.0.1"
+    volumes:
+      #      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
+      - ../docker/skywalking/agent/:/smart/skywalking/agent/
+#      系统文件映射路径
+      - /docker/file/:/root/file
+    environment:
+      - JAVA_TOOL_OPTIONS=-javaagent:/smart/skywalking/agent/skywalking-agent.jar
+      - SW_AGENT_COLLECTOR_BACKEND_SERVICES=skywalking-oap:11800
+    privileged: true
+    restart: always
+    networks:
+      - smart_net
+
+  smart-doc:
+    image: "219.148.186.235:99/smart/smart-doc:3.0.1"
+    ports:
+      - 18000:18000
+    privileged: true
+    restart: always
+    networks:
+      - smart_net
+
+  smart-log:
+    image: "219.148.186.235:99/smart/smart-log:3.0.1"
+    volumes:
+      #      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
+      - ../docker/skywalking/agent/:/smart/skywalking/agent/
+      #      系统文件映射路径
+      - ../docker/log/:/root/file
+    environment:
+      - JAVA_TOOL_OPTIONS=-javaagent:/smart/skywalking/agent/skywalking-agent.jar
+      - SW_AGENT_COLLECTOR_BACKEND_SERVICES=skywalking-oap:11800
+    privileged: true
+    restart: always
+    networks:
+      - smart_net
+
+networks:
+  smart_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.238.0/24

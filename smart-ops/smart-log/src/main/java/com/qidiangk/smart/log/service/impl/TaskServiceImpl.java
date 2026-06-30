@@ -1,0 +1,358 @@
+package com.qidiangk.smart.log.service.impl;
+
+import cn.hutool.core.thread.ThreadUtil;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import com.qidiangk.smart.common.enums.YN01Enum;
+import top.jpower.core.exception.throwable.BusinessException;
+import top.jpower.core.util.constants.StringPool;
+import top.jpower.core.util.utils.*;
+import com.qidiangk.smart.log.dbs.dao.LogMonitorResultDao;
+import com.qidiangk.smart.log.dbs.entity.LogMonitorParam;
+import com.qidiangk.smart.log.dbs.entity.LogMonitorResult;
+import com.qidiangk.smart.log.dbs.entity.LogMonitorSetting;
+import com.qidiangk.smart.log.handler.AuthBuilder;
+import com.qidiangk.smart.log.handler.HttpInfoBuilder;
+import com.qidiangk.smart.log.handler.HttpInfoHandler;
+import com.qidiangk.smart.log.interceptor.AuthInterceptor;
+import com.qidiangk.smart.log.interceptor.LogInterceptor;
+import com.qidiangk.smart.log.interceptor.RollbackInterceptor;
+import com.qidiangk.smart.log.properties.MonitorRestfulProperties;
+import com.qidiangk.smart.log.service.MonitorSettingService;
+import com.qidiangk.smart.log.service.TaskService;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+/**
+ * @author mr.g
+ * @date 2021-04-02 11:27
+ */
+@Slf4j
+@Service
+@AllArgsConstructor
+public class TaskServiceImpl implements TaskService {
+
+    private static final String PATHS = "paths";
+    private static final String TAGS = "tags";
+    private static final String DEFINITIONS = "definitions";
+    private static final String BASEPATH = "basePath";
+
+    private final LogMonitorResultDao logMonitorResultDao;
+    private final MonitorSettingService monitorSettingService;
+    private final RollbackInterceptor rollbackInterceptor;
+    private AuthInterceptor authInterceptor;
+    private final LogInterceptor logInterceptor;
+
+    private AuthInterceptor getAuthInterceptor(MonitorRestfulProperties.Route route){
+        return Fc.isNull(route.getAuth())?authInterceptor:AuthBuilder.getInterceptor(route);
+    }
+
+    private static class RestCache{
+        private static final Cache<String, JSONObject> cache = CacheBuilder.newBuilder()
+                .initialCapacity(1)
+                .maximumSize(100) // 设置缓存的最大容量
+                .expireAfterWrite(1, TimeUnit.DAYS) // 设置缓存在写入一天后失效
+                .concurrencyLevel(Runtime.getRuntime().availableProcessors()) // 设置并发级别为cpu核心数，默认为4
+                .recordStats() // 开启缓存统计
+                .build();
+
+        public static void set(String key, JSONObject value){
+            cache.put(key,value);
+        }
+
+        public static JSONObject get(String key){
+            return cache.getIfPresent(key);
+        }
+
+
+        public static JSONObject getOrDefault(MonitorRestfulProperties.Route route) {
+            try {
+                return cache.get(route.getName(), () -> {
+                    String content = OkHttp.get(route.getLocation()+route.getUrl())
+                            .execute(Fc.isNull(route.getAuth())? SpringUtil.getBean(AuthInterceptor.class):AuthBuilder.getInterceptor(route))
+                            .getBody();
+                    log.debug("{}获取到接口信息完成:{}",route.getName(),content);
+                    return JSON.parseObject(Fc.isNotBlank(content)&& JsonUtil.isJsonObject(content)?content:"{}");
+                });
+            } catch (Exception e) {
+                if (Fc.isNull(route)){
+                    log.error("获取全部接口出错，route is null");
+                }else {
+                    e.printStackTrace();
+                    log.error("获取全部接口出错，name={},host={},error={}",route.getName(),route.getLocation(),e.getMessage());
+                }
+                return new JSONObject();
+            }
+        }
+    }
+
+    @Override
+    public void process(MonitorRestfulProperties.Route route) {
+
+        log.debug("---> START TEST SERVER {} {}",route.getName(),route.getLocation()+route.getUrl());
+
+        authInterceptor = getAuthInterceptor(route);
+        LogMonitorResult result = saveResult(route.getName(), route.getUrl(), OkHttp.get(route.getLocation()+route.getUrl()).execute(authInterceptor),new LogMonitorSetting());
+
+        if (Fc.equals(HttpStatus.SC_OK,result.getResposeCode())){
+            JSONObject restFulInfo = JSON.parseObject(result.getRestfulResponse());
+
+            if (restFulInfo.containsKey(PATHS)){
+                JSONObject paths = restFulInfo.getJSONObject(PATHS);
+
+                //这里异步执行去和数据库比对，把已经不存在配置删除掉
+                ThreadUtil.execAsync(() -> monitorSettingService.deleteSetting(route.getName(),paths,restFulInfo.getJSONArray(TAGS)));
+
+                RestCache.set(route.getName(),restFulInfo);
+                log.info("---> [{}] SERVER RESTFUL SUM={}",  route.getName(), paths.size());
+                paths.forEach((url,methods)->{
+
+                    String httpUrl = route.getLocation().concat(Fc.equals(StringPool.SLASH,restFulInfo.getString(BASEPATH))?StringPool.EMPTY:restFulInfo.getString(BASEPATH)).concat(url);
+
+                    List<LogMonitorParam> paramList = monitorSettingService.queryParamByPath(route.getName(),url);
+                    HttpInfoHandler handler = HttpInfoBuilder.newHandler(httpUrl,paramList,JSON.parseObject(Fc.toStr(methods)),restFulInfo.getJSONObject(DEFINITIONS));
+                    handler.getMethodTypes().forEach(method -> {
+
+                        LogMonitorSetting setting = monitorSettingService.getSetting(route.getName(),handler.getTags(method),url,method);
+
+                        if (Fc.equals(setting.getIsMonitor(), YN01Enum.Y.getValue())){
+                            OkHttp okHttp = null;
+                            try{
+                                log.info("--> START TEST REST {} {}",method,url);
+
+                                okHttp = requestRestFul(method,httpUrl);
+                                saveResult(route.getName(),url,okHttp,setting);
+                            }catch (Exception e){
+                                log.error("  接口测试异常，error={}",e.getMessage());
+                                if (e instanceof BusinessException){
+                                    throw e;
+                                }
+                            }finally {
+                                if (Fc.notNull(okHttp)){
+                                    okHttp.close();
+                                }
+                                log.info("<-- END TEST REST {} {}",method,url);
+                            }
+                        }
+                    });
+                });
+            }else {
+                log.warn("  {}服务未发现接口",route.getName());
+            }
+        }else {
+            log.warn("  获取服务接口数据异常resposeCode=>{}",result.getResposeCode());
+        }
+        log.debug("<--- END TEST SERVER {} {}; Response={}",route.getName(),route.getLocation()+route.getUrl(),result.getResposeCode());
+    }
+
+    /**
+     * 保存接口请求结果
+     * @Author mr.g
+     * @param name 服务名称
+     * @param path 监控地址
+     * @param okHttp 请求体
+     * @param setting
+     * @return void
+     **/
+    public LogMonitorResult saveResult(String name, String path, OkHttp okHttp, LogMonitorSetting setting) {
+        LogMonitorResult result = new LogMonitorResult();
+        try {
+            result.setName(name);
+            result.setPath(path);
+            result.setUrl(okHttp.getRequest().url().toString());
+            result.setMethod(okHttp.getRequest().method());
+            result.setHeader(okHttp.getRequest().headers().toString());
+
+            result.setBody(okHttp.getRequestBody());
+
+            if (Fc.isNull(okHttp.getResponse())){
+                result.setError(okHttp.getError());
+                result.setIsSuccess(false);
+            }else {
+                result.setResponseTime(okHttp.getResponseTime());
+                result.setRespose(okHttp.getResponse().toString());
+                result.setResposeCode(okHttp.getResponse().code());
+                result.setRestfulResponse(okHttp.getBody());
+
+                Boolean isSuccess = false;
+
+                if (Fc.notNull(setting.getCode())){
+                    isSuccess = setting.getCode().contains(Fc.toStr(okHttp.getResponse().code()));
+                }
+
+                if (isSuccess && Fc.notNull(setting.getExecJs())){
+                    try{
+						isSuccess = JsUtil.execJsFunction("function exc(result){"+setting.getExecJs()+"}","exc",result.getRestfulResponse());
+                    }catch (Exception e){
+                        isSuccess = false;
+                    }
+                }
+
+                if (Fc.isNull(setting.getCode()) && Fc.isNull(setting.getExecJs())){
+                    isSuccess = okHttp.getResponse().isSuccessful();
+                }
+                result.setIsSuccess(isSuccess);
+            }
+
+            logMonitorResultDao.save(result);
+        }catch (Exception e){
+            log.error("===>  保存请求结果出错 ==> {}",e.getMessage());
+            e.printStackTrace();
+        }finally {
+            okHttp.close();
+        }
+        return result;
+    }
+
+    /**
+     * 请求接口
+     * @author mr.g
+     * @param method 请求类型
+     * @param url
+     * @return void
+     */
+    private OkHttp requestRestFul(String method, String url) {
+        Map<String,String> paths = HttpInfoBuilder.getHandler(url).getPathParam(method);
+        Map<String,String> headers = HttpInfoBuilder.getHandler(url).getHeaderParam(method, true);
+        Map<String,String> forms = HttpInfoBuilder.getHandler(url).getFormParam(method,true);
+        Map<String,String> bodys = HttpInfoBuilder.getHandler(url).getBodyParam(method);
+
+        String httpUrl = StringUtil.format(url,paths);
+
+        OkHttp okHttp;
+        switch (method.toUpperCase()) {
+            case "HEAD" :
+                okHttp = OkHttp.head(httpUrl,headers,forms);
+                break;
+            case "GET" :
+                okHttp = OkHttp.get(httpUrl,headers,forms);
+                break;
+            case "DELETE" :
+            case "PATCH" :
+            case "OPTIONS" :
+            case "TRACE" :
+            case "PUT" :
+            case "POST" :
+                if (bodys.size() == 1) {
+                    StringBuffer sb = new StringBuffer();
+                    if (forms != null && forms.keySet().size() > 0) {
+                        forms.forEach((k, v) -> sb.append("&").append(k).append("=").append(v));
+                    }
+                    if (sb.length()>0){
+                        httpUrl = httpUrl+"?"+StringUtil.removeAllPrefix(sb,"&");
+                    }
+                }
+            default:
+                if (bodys.size() == 1) {
+                    Map.Entry<String, String> body = bodys.entrySet().iterator().next();
+                    //获取Body请求数据类型
+                    String dataType = HttpInfoBuilder.getHandler(url).getBodyDataType(method);
+                    if(StringUtil.startWithIgnoreCase(dataType, ContentType.APPLICATION_XML.getMimeType())){
+                        String clz = HttpInfoBuilder.getHandler(url).getBodyClass(method,body.getKey());
+                        okHttp = OkHttp.content(httpUrl,method,headers, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<" + clz + ">" + JsonUtil.json2xml(body.getValue()) + "</" + clz + ">",OkHttp.XML);
+                    }else {
+                        okHttp = OkHttp.content(httpUrl,method,headers,body.getValue(),OkHttp.JSON);
+                    }
+                }else {
+                    forms.putAll(bodys);
+                    okHttp = OkHttp.method(httpUrl,method,headers,forms);
+                }
+                break;
+        }
+
+
+        okHttp = okHttp.execute(authInterceptor,rollbackInterceptor,logInterceptor);
+        return okHttp;
+    }
+
+    @Override
+    public JSONArray tagList(MonitorRestfulProperties.Route route) {
+        JSONObject json = RestCache.getOrDefault(route);
+        if (json.containsKey(TAGS)){
+            return json.getJSONArray(TAGS);
+        }
+        return new JSONArray();
+    }
+
+    @Override
+    public JSONArray tree(MonitorRestfulProperties.Route route) {
+        JSONArray array = new JSONArray();
+
+        JSONObject json = RestCache.getOrDefault(route);
+        if (json.containsKey(TAGS)){
+            json.getJSONArray(TAGS).forEach(tag -> {
+                JSONObject tagJson = new JSONObject();
+                tagJson.put("name",((JSONObject)tag).getString("name"));
+                if (json.containsKey(PATHS)){
+                    JSONArray jsonArray = getTagChildren(json.getJSONObject(PATHS),tagJson.getString("name"));
+                    if (jsonArray.size() > 0){
+                        tagJson.put("children",jsonArray);
+                    }
+                }
+                array.add(tagJson);
+            });
+        }
+        return array;
+    }
+
+    /**
+     * 获取一个paths下的子级
+     * @Author mr.g
+     * @param paths
+     * @param tag
+     * @return com.alibaba.fastjson2.JSONArray
+     **/
+    private JSONArray getTagChildren(Map<String, Object> paths, String tag) {
+        JSONArray array = new JSONArray();
+        for (Map.Entry<String, Object> entry : paths.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            List<JSONObject> list = ((Map<String, Object>) value).entrySet().stream().filter(e -> {
+                JSONObject json = (JSONObject) e.getValue();
+                return json.getJSONArray(TAGS).contains(tag);
+            }).map(e -> {
+                JSONObject json = new JSONObject();
+                json.put("name", e.getKey());
+                return json;
+            }).collect(Collectors.toList());
+
+            if (list.size() > 0) {
+                JSONObject js = new JSONObject();
+                js.put("name", key);
+                js.put("children", list);
+                array.add(js);
+            }
+        }
+        return array;
+    }
+
+    @Override
+    public List<Map<String, Object>> getParams(MonitorRestfulProperties.Route route, String path, String method) {
+        List<Map<String, Object>> list = new ArrayList<>();
+
+        JSONObject json = RestCache.getOrDefault(route);
+        if (json.containsKey(PATHS)){
+            JSONObject paths = json.getJSONObject(PATHS);
+            JSONObject methodsInfo = paths.getJSONObject(path);
+            HttpInfoHandler handler = new HttpInfoHandler(monitorSettingService.queryParamByPath(route.getName(),path),methodsInfo,json.getJSONObject(DEFINITIONS));
+
+            handler.getPathParam(method).forEach((key,val) -> list.add(ChainMap.<String, Object>create().put("name",key).put("value",val).put("type","path").build()));
+            handler.getHeaderParam(method, false).forEach((key,val) -> list.add(ChainMap.<String, Object>create().put("name",key).put("value",val).put("type","header").build()));
+            handler.getFormParam(method,false).forEach((key,val) -> list.add(ChainMap.<String, Object>create().put("name",key).put("value",val).put("type","query").build()));
+            handler.getBodyParam(method).forEach((key,val) -> list.add(ChainMap.<String, Object>create().put("name",key).put("value",val).put("type","body").build()));
+        }
+        return list;
+    }
+}

@@ -1,0 +1,25 @@
+server:
+  port: 9010
+
+spring:
+  mvc:
+    async:
+      # SSE流式响应需要无限超时
+      request-timeout: -1
+  config:
+    import:
+      - optional:nacos:smart.yml
+      - optional:nacos:smart-dev.yml
+      - optional:nacos:smart-aster.yml
+      - optional:nacos:smart-aster-dev.yml
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+      username: nacos
+      password: nacos
+      config:
+        import-check:
+          enabled: false   # 默认为 false，设为 true 后，缺失的配置会导致启动失败
+        namespace: ab6f9a98-fcdf-400c-b3d6-3f1d3e110a1a
+      discovery:
+        namespace: ab6f9a98-fcdf-400c-b3d6-3f1d3e110a1a

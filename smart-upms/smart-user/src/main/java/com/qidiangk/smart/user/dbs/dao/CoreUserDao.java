@@ -1,0 +1,290 @@
+package com.qidiangk.smart.user.dbs.dao;
+
+
+import com.mybatisflex.core.query.QueryCondition;
+import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.update.UpdateWrapper;
+import com.mybatisflex.core.util.UpdateEntity;
+import org.springframework.stereotype.Repository;
+import top.jpower.core.auth.utils.ShieldUtil;
+import top.jpower.core.dbs.dbs.dao.BaseDaoWrapper;
+import top.jpower.core.dbs.dbs.dao.JpowerServiceImpl;
+import top.jpower.core.dbs.page.PaginationContext;
+import top.jpower.core.dbs.support.Wrappers;
+import top.jpower.core.util.rsp.Pg;
+import top.jpower.core.util.utils.Fc;
+import com.qidiangk.smart.system.api.cache.SystemCache;
+import com.qidiangk.smart.user.dbs.dao.mapper.CoreUserMapper;
+import com.qidiangk.smart.user.dbs.entity.CorePost;
+import com.qidiangk.smart.user.dbs.entity.CoreUser;
+import com.qidiangk.smart.user.dbs.entity.CoreUserRole;
+import com.qidiangk.smart.user.pojo.LoginUserVO;
+import com.qidiangk.smart.user.pojo.UserByRoleBO;
+import com.qidiangk.smart.user.pojo.UserVO;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import static com.mybatisflex.core.query.QueryMethods.groupConcat;
+import static com.mybatisflex.core.query.QueryMethods.notExists;
+import static com.qidiangk.smart.user.dbs.entity.table.CorePostTableDef.CORE_POST;
+import static com.qidiangk.smart.user.dbs.entity.table.CoreUserRoleTableDef.CORE_USER_ROLE;
+import static com.qidiangk.smart.user.dbs.entity.table.CoreUserTableDef.CORE_USER;
+
+/**
+ * @author mr.g
+ */
+@Repository
+public class CoreUserDao extends JpowerServiceImpl<CoreUserMapper, CoreUser> implements BaseDaoWrapper<CoreUser> {
+
+    public void build(UserVO userVo) {
+		if (Fc.notNull(userVo.getOrgId())) {
+        	userVo.setOrgName(SystemCache.getOrgName(userVo.getOrgId()));
+		}
+		if (Fc.isEmpty(userVo.getRoleIds())) {
+        	userVo.setRoleName(Fc.join(SystemCache.getRoleNameByIds(Fc.toLongList(userVo.getRoleIds()))," | "));
+		}
+    }
+
+    public void build(LoginUserVO userVo) {
+        if (Fc.notNull(userVo.getOrgId())) {
+            userVo.setOrgName(SystemCache.getOrgName(userVo.getOrgId()));
+        }
+    }
+
+	public void buildOrg(UserVO userVo) {
+		if (Fc.notNull(userVo.getOrgId())) {
+			userVo.setOrgName(SystemCache.getOrgName(userVo.getOrgId()));
+		}
+	}
+
+    public Pg<UserVO> pageVO(Map<String, Object> map) {
+        Pg<UserVO> pg = getMapper().pageAs(PaginationContext.page(),
+				Wrappers.getQueryWrapper(map, "t")
+						.from(CoreUser.class).as("t")
+                         .select(CORE_USER.DEFAULT_COLUMNS)
+                        .select(groupConcat(CORE_USER_ROLE.ROLE_ID).as(UserVO::getRoleIds))
+                        .select(CORE_POST.NAME.as(UserVO::getPostName))
+                        .leftJoin(CoreUserRole.class).on(CoreUserRole::getUserId, CoreUser::getId)
+                        .leftJoin(CorePost.class).on(CoreUser::getPostId, CorePost::getId)
+                        .groupBy(CoreUser::getId), UserVO.class);
+        return pageConvert(pg, this::build);
+    }
+
+    public List<UserVO> listVO(Map<String, Object> map) {
+        List<UserVO> list = super.listAs(Wrappers.getQueryWrapper(map, "t")
+						.from(CoreUser.class).as("t")
+						.select(CORE_USER.DEFAULT_COLUMNS)
+						.select(groupConcat(CORE_USER_ROLE.ROLE_ID).as(UserVO::getRoleIds))
+						.select(CORE_POST.NAME.as(UserVO::getPostName))
+						.leftJoin(CoreUserRole.class).on(CoreUserRole::getUserId, CoreUser::getId)
+						.leftJoin(CorePost.class).on(CoreUser::getPostId, CorePost::getId)
+						.groupBy(CoreUser::getId), UserVO.class);
+        return listConvert(list, this::build);
+    }
+
+    public UserVO selectAllById(Long id) {
+        UserVO userVO = super.getOneAs(Wrappers.getQueryWrapper()
+                .select(CORE_USER.DEFAULT_COLUMNS)
+                .select(groupConcat(CORE_USER_ROLE.ROLE_ID).as(UserVO::getRoleIds))
+                .select(CORE_POST.NAME.as(UserVO::getPostName))
+                .leftJoin(CoreUserRole.class).on(CoreUserRole::getUserId, CoreUser::getId)
+                .leftJoin(CorePost.class).on(CoreUser::getPostId, CorePost::getId)
+                .eq(CoreUser::getId, id)
+                .groupBy(CoreUser::getId), UserVO.class);
+        return convert(userVO, this::build);
+    }
+
+    private List<Long> getChildOrg(Long orgId){
+        List<Long> listOrgId = Fc.notNull(orgId)?SystemCache.getChildIdOrgById(orgId):null;
+        listOrgId = Fc.isNull(listOrgId)?new ArrayList<>():listOrgId;
+        if(Fc.notNull(orgId)){
+            listOrgId.add(orgId);
+        }
+        return listOrgId;
+    }
+
+    /**
+     * 获取用户密码
+     * @author mr.g
+     * @param account 账号
+     * @return 密码
+     **/
+    public String getPassword(String account) {
+        return getPassword(account, null);
+    }
+
+	/**
+	 * 获取用户密码
+	 * @author mr.g
+	 * @param account 账号
+	 * @return 密码
+	 **/
+	public String getPassword(String account, String tenantCode) {
+		return super.getObjAs(Wrappers.getQueryWrapper().select(CoreUser::getPassword)
+				.eq(CoreUser::getTenantCode, tenantCode, Fc.isNotBlank(tenantCode))
+				.eq(CoreUser::getLoginId, account), String.class);
+	}
+
+    /**
+     * 修改用户手机号
+     *
+     * @author mr.g
+     * @param userId 用户ID
+     * @param phone 新手机号
+     * @return 是否成功
+     **/
+    public boolean updatePhone(Long userId, String phone) {
+        return super.update(UpdateEntity.of(CoreUser.class).setTelephone(phone),
+                Wrappers.getQueryWrapper().eq(CoreUser::getId, userId));
+    }
+
+    /**
+     * 修改用户邮箱
+     *
+     * @author mr.g
+     * @param email 邮箱
+     * @param userId 用户ID
+     * @return 是否成功
+     **/
+    public boolean updateEmail(Long userId, String email) {
+        return super.updateChain().set(CoreUser::getEmail, email).eq(CoreUser::getId, userId).update();
+    }
+
+    public long countByTenant(String tenantCode) {
+        return super.count(QueryCondition.create(CORE_USER.TENANT_CODE, tenantCode));
+    }
+
+    /**
+     * 修改当前用户信息
+     *
+     * @author mr.g
+     * @param userVO 用户信息
+     * @return 是否成功
+     **/
+    public boolean updateUserInfo(LoginUserVO userVO) {
+        return super.update(UpdateWrapper.of(CoreUser.class)
+                        .set(CoreUser::getAvatar,userVO.getAvatar())
+                        .set(CoreUser::getNickName,userVO.getNickName())
+                        .set(CoreUser::getUserName,userVO.getUsername())
+                        .set(CoreUser::getBirthday,userVO.getBirthday())
+                        .set(CoreUser::getSex,userVO.getSex())
+                        .set(CoreUser::getIdType,userVO.getIdType())
+                        .set(CoreUser::getIdNo,userVO.getIdNo())
+                        .set(CoreUser::getPostCode,userVO.getPostCode())
+                        .set(CoreUser::getAddress,userVO.getAddress()).toEntity(),
+                Wrappers.getQueryWrapper().eq(CoreUser::getId, ShieldUtil.getUserId()));
+    }
+
+    /**
+     * 修改用户密码
+     *
+     * @author mr.g
+     * @param pass 新密码
+     * @param ids 用户ID
+     * @return 是否成功
+     **/
+    public boolean updatePassword(String pass, List<Long> ids) {
+        return super.update(UpdateEntity.of(CoreUser.class).setPassword(pass),
+                Wrappers.getQueryWrapper().in(CoreUser::getId, ids));
+    }
+
+    public boolean updateLoginCount(Long id) {
+        return super.update(UpdateWrapper.of(CoreUser.class)
+                        .set(CoreUser::getLoginCount, CORE_USER.LOGIN_COUNT.add(1))
+                        .set(CoreUser::getLastLoginTime, new Date()).toEntity(),
+                Wrappers.getQueryWrapper().eq(CoreUser::getId,id));
+    }
+
+    /**
+     * 根据角色ID分页查询用户
+     * <p>
+     * 查询逻辑说明：
+     * - roleIdEq：查询拥有指定角色的用户（使用 INNER JOIN，自动排除无角色用户和没有该角色的用户）
+     * - roleIdNe：查询不拥有指定角色的用户（使用 NOT EXISTS 子查询，正确处理无角色用户和多角色场景）
+     *
+     * @author mr.g
+     * @param query 查询参数
+     * @return 用户列表
+     **/
+    public Pg<UserVO> pageByRoleId(UserByRoleBO query) {
+        QueryWrapper queryWrapper = Wrappers.getQueryWrapper()
+                .from(CoreUser.class)
+				.select(CORE_USER.DEFAULT_COLUMNS)
+                .eq(CoreUser::getOrgId, query.getOrgId(), Fc.notNull(query.getOrgId()))
+                .eq(CoreUser::getUserType, query.getUserType(), Fc.notNull(query.getUserType()))
+                .like(CoreUser::getLoginId, query.getLoginId(), Fc.isNotBlank(query.getLoginId()))
+                .like(CoreUser::getNickName, query.getNickName(), Fc.isNotBlank(query.getNickName()))
+                .like(CoreUser::getUserName, query.getUserName(), Fc.isNotBlank(query.getUserName()))
+                .like(CoreUser::getIdNo, query.getIdNo(), Fc.isNotBlank(query.getIdNo()))
+                .orderBy(CoreUser::getCreateTime).desc();
+
+        if (Fc.notNull(query.getRoleIdEq())) {
+            queryWrapper.innerJoin(CoreUserRole.class).on(CoreUserRole::getUserId, CoreUser::getId)
+                    .eq(CoreUserRole::getRoleId, query.getRoleIdEq())
+                    .groupBy(CoreUser::getId);
+        }
+		if (Fc.notNull(query.getRoleIdNe())) {
+            queryWrapper.and(notExists(QueryWrapper.create()
+                    .from(CORE_USER_ROLE)
+                    .where(CORE_USER_ROLE.USER_ID.eq(CORE_USER.ID))
+                    .and(CORE_USER_ROLE.ROLE_ID.eq(query.getRoleIdNe()))));
+        }
+
+        Pg<UserVO> pg = getMapper().pageAs(PaginationContext.page(), queryWrapper, UserVO.class);
+        return pageConvert(pg, this::buildOrg);
+    }
+
+
+	/**
+	 * 根据用户ID获取用户信息
+	 *
+	 * @author mr.g
+	 * @param id 用户ID
+	 * @return 用户信息
+	 **/
+	public LoginUserVO userInfo(Long id) {
+        LoginUserVO userVO = super.getOneAs(Wrappers.getQueryWrapper()
+				.select(CORE_USER.ID.as(LoginUserVO::getUserId))
+				.select(CORE_USER.AVATAR.as(LoginUserVO::getAvatar))
+				.select(CORE_USER.NICK_NAME.as(LoginUserVO::getNickName))
+				.select(CORE_USER.USER_NAME.as(LoginUserVO::getUsername))
+				.select(CORE_USER.ID_NO.as(LoginUserVO::getIdNo))
+				.select(CORE_USER.POST_CODE.as(LoginUserVO::getPostCode))
+				.select(CORE_USER.ADDRESS.as(LoginUserVO::getAddress))
+				.select(CORE_USER.ID_TYPE.as(LoginUserVO::getIdType))
+				.select(CORE_USER.BIRTHDAY.as(LoginUserVO::getBirthday))
+                .select(CORE_USER.USER_TYPE.as(LoginUserVO::getUserType))
+                .select(CORE_USER.EMAIL.as(LoginUserVO::getEmail))
+                .select(CORE_USER.TELEPHONE.as(LoginUserVO::getPhone))
+                .select(CORE_USER.LAST_LOGIN_TIME.as(LoginUserVO::getLastLoginTime))
+                .select(CORE_USER.EMAIL.as(LoginUserVO::getEmail))
+                .select(CORE_USER.SEX.as(LoginUserVO::getSex))
+                .select(CORE_USER.ORG_ID.as(LoginUserVO::getOrgId))
+                .select(CORE_USER.POST_ID.as(LoginUserVO::getPostId))
+                .select(CORE_POST.NAME.as(LoginUserVO::getPostName))
+                .leftJoin(CorePost.class).on(CoreUser::getPostId, CorePost::getId)
+				.eq(CoreUser::getId, id), LoginUserVO.class);
+        return convert(userVO, this::build);
+	}
+
+	public CoreUser getByField(String loginId, String tenantCode) {
+		return super.getOne(Wrappers.getQueryWrapper()
+				.eq(CoreUser::getLoginId, loginId)
+				.eq(CoreUser::getTenantCode, tenantCode, Fc.isNotBlank(tenantCode)));
+	}
+
+	public CoreUser selectByPhone(String phone, String tenantCode) {
+		return super.getOne(Wrappers.getQueryWrapper()
+				.eq(CoreUser::getTelephone, phone)
+				.eq(CoreUser::getTenantCode, tenantCode, Fc.isNotBlank(tenantCode)));
+	}
+
+	public CoreUser selectByEmail(String email, String tenantCode) {
+		return super.getOne(Wrappers.getQueryWrapper()
+				.eq(CoreUser::getEmail, email)
+				.eq(CoreUser::getTenantCode, tenantCode, Fc.isNotBlank(tenantCode)));
+	}
+}

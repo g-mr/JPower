@@ -1,0 +1,82 @@
+package com.qidiangk.smart.user.service.impl;
+
+import com.mybatisflex.core.util.UpdateEntity;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import com.qidiangk.smart.common.constants.CacheNames;
+import top.jpower.core.dbs.service.impl.BaseServiceImpl;
+import top.jpower.core.dbs.support.Wrappers;
+import top.jpower.core.exception.enums.JpowerError;
+import top.jpower.core.exception.throwable.JpowerAssert;
+import top.jpower.core.redis.cache.CacheUtil;
+import top.jpower.core.util.rsp.Pg;
+import top.jpower.core.util.utils.Fc;
+import com.qidiangk.smart.user.dbs.dao.CorePostDao;
+import com.qidiangk.smart.user.dbs.dao.CoreUserDao;
+import com.qidiangk.smart.user.dbs.dao.mapper.CorePostMapper;
+import com.qidiangk.smart.user.dbs.entity.CorePost;
+import com.qidiangk.smart.user.dbs.entity.CoreUser;
+import com.qidiangk.smart.user.service.CorePostService;
+import com.qidiangk.smart.user.pojo.PostSelectVO;
+import com.qidiangk.smart.user.pojo.PostVO;
+
+import java.util.List;
+import java.util.Map;
+
+import static com.qidiangk.smart.common.constants.ServiceCodeConstants.CODE_EXIST;
+
+/**
+ * @author mr.g
+ */
+@Service
+@RequiredArgsConstructor
+public class CorePostServiceImpl extends BaseServiceImpl<CorePostMapper, CorePost> implements CorePostService {
+
+    private final CorePostDao postDao;
+    private final CoreUserDao userDao;
+
+    @Override
+    public Pg<PostVO> pageVo(Map<String, Object> map) {
+        return postDao.pageVO(map);
+    }
+
+    @Override
+    public boolean deleteInIds(List<Long> ids) {
+        if (postDao.removeRealByIds(ids)){
+            userDao.update(UpdateEntity.of(CoreUser.class).setPostId(null), Wrappers.getQueryWrapper().in(CoreUser::getPostId, ids));
+            CacheUtil.clear(CacheNames.POST_KEY);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public List<PostSelectVO> listSelect(String name) {
+        return postDao.listSelect(name);
+    }
+
+    @Override
+    public Long createPost(CorePost corePost) {
+        JpowerAssert.geZero(postDao.count(Wrappers.getQueryWrapper().eq(CorePost::getCode, corePost.getCode())), JpowerError.Arg, CODE_EXIST);
+        postDao.save(corePost);
+        return corePost.getId();
+    }
+
+    @Override
+    public Long editById(CorePost corePost) {
+        CorePost post = postDao.getOneByField(CorePost::getCode, corePost.getCode());
+        JpowerAssert.notTrue(Fc.notNull(post) && Fc.notEqualsValue(post.getId(),corePost.getId()),JpowerError.Arg,CODE_EXIST);
+
+        if (postDao.updateById(UpdateEntity.ofNotNull(corePost)
+                .setDescribe(corePost.getDescribe())
+                .setCondition(corePost.getCondition()))) {
+            CacheUtil.clear(CacheNames.POST_KEY);
+        }
+        return corePost.getId();
+    }
+
+	@Override
+	public boolean enable(Long id, Boolean status) {
+		return postDao.updateById(UpdateEntity.ofNotNull(new CorePost()).setId(id).setStatus(status));
+	}
+}
