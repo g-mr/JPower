@@ -15,13 +15,20 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class AliToken  {
 
-    protected static final AliProperty aliProperty = SpringUtil.getBean(AliProperty.class);
-    private static final RedisService REDIS_SERVICE = SpringUtil.getBean(RedisService.class);;
+    private static final RedisService REDIS_SERVICE = SpringUtil.getBean(RedisService.class);
+    private static final String TOKEN_KEY = "ivr_token:";
+
+    protected AliProperty aliProperty;
+
+    protected AliToken(AliProperty aliProperty) {
+        this.aliProperty = aliProperty;
+    }
 
     protected String getToken(){
+        log.info("初始化阿里语音合成===>> {} , {}", aliProperty.getAccessKeyId(), aliProperty.getAccessKeySecret());
+        String key = TOKEN_KEY + aliProperty.getAccessKeyId();
 
-        log.info("初始化阿里语音合成===>> {} , {} , {}", aliProperty.getAccessKeyId(), aliProperty.getAccessKeySecret(), aliProperty.getAppKey());
-        String token = REDIS_SERVICE.valueOps(String.class).get("token");
+        String token = REDIS_SERVICE.valueOps(String.class).get(key);
         if (StrUtil.isNotBlank(token)){
             return token;
         }
@@ -32,7 +39,7 @@ public class AliToken  {
             log.info("get token: {}, expire time: {}", accessToken.getToken(), accessToken.getExpireTime());
 
             long timeout = DateUtil.between(DateUtil.date(), DateUtil.date(accessToken.getExpireTime()*1000), DateUnit.SECOND);
-            REDIS_SERVICE.valueOps().set("token", accessToken.getToken(), timeout-3, TimeUnit.SECONDS);
+            REDIS_SERVICE.valueOps().set(key, accessToken.getToken(), timeout-3, TimeUnit.SECONDS);
 
         } catch (IOException e) {
             log.error("阿里云报错", e);

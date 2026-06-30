@@ -47,7 +47,9 @@ public class AliFileRoleAsrClient extends AliToken implements AsrClient {
     private final String fileDir;
     private final String fileLink;
 
-    public AliFileRoleAsrClient() {
+    public AliFileRoleAsrClient(AliProperty property) {
+        super(property);
+
         AliProperty.AsrFileRole asrFileRole = aliProperty.getAsrFileRole();
         if (Fc.isBlank(asrFileRole.getFileDir())) {
             throw new RuntimeException("请配置人工录音文件存储目录");

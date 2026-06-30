@@ -1,5 +1,7 @@
 package com.qidiangk.smart.aster.handler.nodes.granter;
 
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.date.TimeInterval;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
@@ -16,6 +18,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.stereotype.Component;
+import top.jpower.core.ai.client.ChatClients;
+import top.jpower.core.ai.client.JpowerChatOptions;
+import top.jpower.core.ai.enums.ChatModelType;
 import top.jpower.core.util.support.JpowerSpelExpressionParser;
 import top.jpower.core.util.utils.Fc;
 import com.qidiangk.smart.aster.handler.nodes.NodeContext;
@@ -35,11 +40,86 @@ import com.qidiangk.smart.aster.tripartite.property.AliProperty;
 public class SentimentGranter implements NodeGranter<UserIntent.Node.SentimentNode> {
     public static final String GRANT_TYPE = "sentiment";
 
+
+    /**
+     * 系统提示词模板
+     */
+    private static final String SYSTEM_PROMPT = "SENTIMENT_SYSTEM_PROMPT";
+
+    /**
+     * 提示词模板
+     */
+    private static final String PROMPT_TEMPLATE = "SENTIMENT_USER_PROMPT";
+
     private final SpelExpressionParser parser = new JpowerSpelExpressionParser();
     private final AliProperty aliProperty;
+    private final ChatClients chatClients;
+
+    /**
+     * 情绪结果
+     *
+     * @param emotion 情绪名称
+     * @param confidence 置信度
+     */
+    public record Sentiment(String emotion, Double confidence) {}
 
     @Override
     public @NotNull NodeResult grant(NodeContext nodeContext, Object lastResult, UserIntent.Node.SentimentNode node) {
+
+        Expression expression = parser.parseExpression(node.getMessage());
+        String message = expression.getValue(nodeContext.getContext(), String.class);
+
+        Sentiment sentiment;
+        if (Fc.equalsValue(node.getModel(), "ali")) {
+            sentiment =  grantAli(message);
+        } else {
+            sentiment = grantModel(message, node);
+        }
+
+        if (Fc.equalsValue(sentiment.emotion(), "front")){
+            UserIntent.Node.SentimentNode.Front front = node.getFront();
+            return NodeResult.builder()
+                    .nextId(front.getNextNode())
+                    .result(ObjectUtil.defaultIfNull(parser.parseExpression(front.getResult()).getValue(nodeContext.getContext()), StringPool.EMPTY))
+                    .build();
+        } else if (Fc.equalsValue(sentiment.emotion(), "negative")) {
+            UserIntent.Node.SentimentNode.Negative negative = node.getNegative();
+            return NodeResult.builder()
+                    .nextId(negative.getNextNode())
+                    .result(ObjectUtil.defaultIfNull(parser.parseExpression(negative.getResult()).getValue(nodeContext.getContext()), StringPool.EMPTY))
+                    .build();
+        }
+
+        UserIntent.Node.SentimentNode.Neuter neuter = node.getNeuter();
+        return NodeResult.builder()
+                .nextId(neuter.getNextNode())
+                .result(ObjectUtil.defaultIfNull(parser.parseExpression(neuter.getResult()).getValue(nodeContext.getContext()), StringPool.EMPTY))
+                .build();
+    }
+
+    private @NotNull Sentiment grantModel(String message, UserIntent.Node.SentimentNode node) {
+        TimeInterval interval = DateUtil.timer();
+        interval.start();
+        // 请求大模型
+        Sentiment sentiment = chatClients.client(ChatModelType.of(node.getModel()))
+                .prompt()
+                .options(JpowerChatOptions.builder()
+                        .temperature(0.1)
+                        .maxTokens(600)
+                        .jsonMode()
+                        .build())
+                .system(SYSTEM_PROMPT)
+                .user(u -> u.text(PROMPT_TEMPLATE)
+                        .param("message", message)
+                )
+                .call()
+                .entity(Sentiment.class);
+
+        log.info("情绪总用时={}, 识别结果={}, 用户话语={}", interval.intervalPretty(), sentiment, message);
+        return sentiment;
+    }
+
+    private @NotNull Sentiment grantAli(String message) {
         DefaultProfile defaultProfile = DefaultProfile.getProfile(
                 "cn-hangzhou",
                 aliProperty.getAccessKeyId(),
@@ -49,9 +129,6 @@ public class SentimentGranter implements NodeGranter<UserIntent.Node.SentimentNo
         GetSaChGeneralRequest request = new GetSaChGeneralRequest();
         request.setSysEndpoint("alinlp.cn-hangzhou.aliyuncs.com");
         request.setServiceCode("alinlp");
-
-        Expression expression = parser.parseExpression(node.getMessage());
-        String message = expression.getValue(nodeContext.getContext(), String.class);
         request.setText(message);
 
         JSONObject json = new JSONObject();
@@ -66,25 +143,12 @@ public class SentimentGranter implements NodeGranter<UserIntent.Node.SentimentNo
 
         if (json.getBooleanValue("success")){
             if (Fc.equalsValue("正面", json.getJSONObject("result").getString("sentiment"))) {
-                UserIntent.Node.SentimentNode.Front front = node.getFront();
-                return NodeResult.builder()
-                        .nextId(front.getNextNode())
-                        .result(ObjectUtil.defaultIfNull(parser.parseExpression(front.getResult()).getValue(nodeContext.getContext()), StringPool.EMPTY))
-                        .build();
+                return new Sentiment("front", 10.0);
             } else if (Fc.equalsValue("负面", json.getJSONObject("result").getString("sentiment"))){
-                UserIntent.Node.SentimentNode.Negative negative = node.getNegative();
-                return NodeResult.builder()
-                        .nextId(negative.getNextNode())
-                        .result(ObjectUtil.defaultIfNull(parser.parseExpression(negative.getResult()).getValue(nodeContext.getContext()), StringPool.EMPTY))
-                        .build();
+                return new Sentiment("negative", 10.0);
             }
         }
-
-        UserIntent.Node.SentimentNode.Neuter neuter = node.getNeuter();
-        return NodeResult.builder()
-                .nextId(neuter.getNextNode())
-                .result(ObjectUtil.defaultIfNull(parser.parseExpression(neuter.getResult()).getValue(nodeContext.getContext()), StringPool.EMPTY))
-                .build();
+        return new Sentiment("neuter", 10.0);
     }
 
 }

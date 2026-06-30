@@ -3,6 +3,7 @@ package com.qidiangk.smart.aster.tripartite.ali;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.http.HttpRequest;
 import com.alibaba.fastjson.JSONPath;
+import com.qidiangk.smart.aster.tripartite.property.AliProperty;
 import lombok.extern.slf4j.Slf4j;
 import top.jpower.core.asterisk.audio.AsrClient;
 import top.jpower.core.asterisk.audio.AsrResult;
@@ -17,6 +18,10 @@ import java.util.function.Consumer;
 
 @Slf4j
 public class AliHttpAsrClient extends AliToken implements AsrClient {
+
+    protected AliHttpAsrClient(AliProperty aliProperty) {
+        super(aliProperty);
+    }
 
     @Override
     public AsrResult process(PipedInputStream pipedInput) {

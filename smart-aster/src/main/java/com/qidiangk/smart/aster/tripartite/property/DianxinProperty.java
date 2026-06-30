@@ -91,7 +91,7 @@ public class DianxinProperty {
         /**
          * 是否开启 ITN，默认：是
          */
-        private Boolean enableInverseTextNormalization;
+        private Boolean enableInverseTextNormalization = false;
         /**
          * 是否开启校勘（仅对多方言服务有效），默认：否
          */

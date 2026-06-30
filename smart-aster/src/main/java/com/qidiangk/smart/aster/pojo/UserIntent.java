@@ -4,19 +4,19 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.qidiangk.smart.aster.constants.MethodEnum;
+import com.qidiangk.smart.aster.constants.ScriptEnum;
+import com.qidiangk.smart.aster.constants.TypeEnum;
+import com.qidiangk.smart.aster.handler.nodes.granter.*;
+import com.qidiangk.smart.aster.tripartite.VoiceModelEnum;
+import com.qidiangk.smart.common.validated.InEnum;
+import com.qidiangk.smart.common.validated.SpEL;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
-import com.qidiangk.smart.common.validated.InEnum;
-import com.qidiangk.smart.common.validated.SpEL;
-import com.qidiangk.smart.aster.constants.MethodEnum;
-import com.qidiangk.smart.aster.constants.ScriptEnum;
-import com.qidiangk.smart.aster.constants.TypeEnum;
-import com.qidiangk.smart.aster.handler.nodes.granter.ExtractGranter;
-import com.qidiangk.smart.aster.handler.nodes.granter.IntentionGranter;
 
 import java.io.Serializable;
 import java.util.List;
@@ -62,7 +62,9 @@ public class UserIntent implements Serializable {
     @Data
     @Schema(
             description = "节点",
-            subTypes = { Node.AnswerNode.class,
+            subTypes = {
+                    Node.StartNode.class,
+                    Node.AnswerNode.class,
                     Node.ConditionNode.class,
                     Node.ServiceNode.class,
                     Node.ReceivedNode.class,
@@ -71,7 +73,12 @@ public class UserIntent implements Serializable {
                     Node.MaxKBNode.class,
                     Node.GlobeValueNode.class,
                     Node.SayNode.class,
-                    Node.HangupNode.class} // 列出所有子类
+                    Node.SentimentNode.class,
+                    Node.ChildNodes.class,
+                    Node.IntentionNode.class,
+                    Node.ExtractNode.class,
+                    Node.HangupNode.class
+            } // 列出所有子类
     )
     @JsonTypeInfo(
             use = JsonTypeInfo.Id.NAME,
@@ -80,18 +87,19 @@ public class UserIntent implements Serializable {
             visible = true
     )
     @JsonSubTypes({
-            @JsonSubTypes.Type(value = Node.AnswerNode.class, name = "answer"),
-            @JsonSubTypes.Type(value = Node.ConditionNode.class, name = "condition"),
-            @JsonSubTypes.Type(value = Node.ServiceNode.class, name = "service"),
-            @JsonSubTypes.Type(value = Node.ReceivedNode.class, name = "received"),
-            @JsonSubTypes.Type(value = Node.ScriptNode.class, name = "script"),
-            @JsonSubTypes.Type(value = Node.TransferNode.class, name = "transfer"),
-            @JsonSubTypes.Type(value = Node.MaxKBNode.class, name = "maxKB"),
-            @JsonSubTypes.Type(value = Node.GlobeValueNode.class, name = "variable-assign"),
-            @JsonSubTypes.Type(value = Node.SayNode.class, name = "say"),
-            @JsonSubTypes.Type(value = Node.SentimentNode.class, name = "sentiment"),
-            @JsonSubTypes.Type(value = Node.HangupNode.class, name = "hangup"),
-            @JsonSubTypes.Type(value = Node.ChildNodes.class, name = "childNodes"),
+            @JsonSubTypes.Type(value = Node.StartNode.class, name = "start"),
+            @JsonSubTypes.Type(value = Node.AnswerNode.class, name = AnswerGranter.GRANT_TYPE),
+            @JsonSubTypes.Type(value = Node.ConditionNode.class, name = ConditionGranter.GRANT_TYPE),
+            @JsonSubTypes.Type(value = Node.ServiceNode.class, name = ServiceGranter.GRANT_TYPE),
+            @JsonSubTypes.Type(value = Node.ReceivedNode.class, name = ReceivedGranter.GRANT_TYPE),
+            @JsonSubTypes.Type(value = Node.ScriptNode.class, name = ScriptGranter.GRANT_TYPE),
+            @JsonSubTypes.Type(value = Node.TransferNode.class, name = TransferGranter.GRANT_TYPE),
+            @JsonSubTypes.Type(value = Node.MaxKBNode.class, name = MaxKBGranter.GRANT_TYPE),
+            @JsonSubTypes.Type(value = Node.GlobeValueNode.class, name = GlobeValueGranter.GRANT_TYPE),
+            @JsonSubTypes.Type(value = Node.SayNode.class, name = SayGranter.GRANT_TYPE),
+            @JsonSubTypes.Type(value = Node.SentimentNode.class, name = SentimentGranter.GRANT_TYPE),
+            @JsonSubTypes.Type(value = Node.HangupNode.class, name = HangupGranter.GRANT_TYPE),
+            @JsonSubTypes.Type(value = Node.ChildNodes.class, name = ChildGranter.GRANT_TYPE),
             @JsonSubTypes.Type(value = Node.IntentionNode.class, name = IntentionGranter.GRANT_TYPE),
             @JsonSubTypes.Type(value = Node.ExtractNode.class, name = ExtractGranter.GRANT_TYPE),
     })
@@ -115,6 +123,36 @@ public class UserIntent implements Serializable {
         private Integer width;
         private Integer height;
         private Boolean showNode;
+
+        @Data
+        @Schema(description = "开始节点")
+        public static class StartNode extends Node {
+
+            @NotNull(message = "ASR 不可为空")
+            @Schema(description = "ASR")
+            @InEnum(value = VoiceModelEnum.class,message = "类型 的值必须为{value}")
+            private VoiceModelEnum asr;
+
+            @NotNull(message = "TTS 不可为空")
+            @Schema(description = "TTS")
+            @InEnum(value = VoiceModelEnum.class,message = "类型 的值必须为{value}")
+            private VoiceModelEnum tts;
+
+            @Schema(description = "ASR配置")
+            private JsonNode asrOption;
+            @Schema(description = "TTS配置")
+            private JsonNode ttsOption;
+
+
+
+
+            @NotBlank(message = "下一流程 不可为空;如果没用下一流程请填end")
+            @Schema(description = "下一流程CODE")
+            private String nextNode;
+
+            // 下面是前端需要的属性，不做任何校验
+            private JsonNode edge;
+        }
 
         @Data
         @Schema(description = "条件节点")
@@ -383,6 +421,10 @@ public class UserIntent implements Serializable {
 
         @Data
         public static class SentimentNode extends Node{
+            @NotBlank(message = "模型不可为空")
+            @Schema(description = "模型")
+            private String model;
+
             @NotBlank(message = "判断语句")
             @Schema(description = "判断语句 支持SPEL表达式")
             @SpEL(message = "判断语句 不是标准的SPEL表达式")

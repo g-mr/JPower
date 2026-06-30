@@ -1,16 +1,21 @@
 package com.qidiangk.smart.aster.tripartite.ali;
 
+import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import com.alibaba.nls.client.protocol.NlsClient;
 import com.alibaba.nls.client.protocol.asr.SpeechTranscriber;
 import com.alibaba.nls.client.protocol.asr.SpeechTranscriberListener;
 import com.alibaba.nls.client.protocol.asr.SpeechTranscriberResponse;
+import com.qidiangk.smart.aster.tripartite.property.AliAsrOption;
+import com.qidiangk.smart.aster.tripartite.property.AliProperty;
 import lombok.extern.slf4j.Slf4j;
 import top.jpower.core.asterisk.audio.AsrClient;
 import top.jpower.core.asterisk.audio.AsrResult;
+import top.jpower.core.util.utils.BeanUtil;
 import top.jpower.core.util.utils.Fc;
-import com.qidiangk.smart.aster.tripartite.property.AliProperty;
+import top.jpower.core.util.utils.SpringUtil;
+import top.jpower.core.util.utils.StringUtil;
 
 import java.io.IOException;
 import java.io.PipedInputStream;
@@ -60,7 +65,30 @@ public class AliAsrClient extends AliToken implements AsrClient {
         ERROR
     }
 
+    private static AliProperty merged(AliAsrOption asrOption) {
+        if (asrOption == null) {
+            return SpringUtil.getBean(AliProperty.class);
+        }
+
+        AliProperty property = BeanUtil.copyProperties(SpringUtil.getBean(AliProperty.class), AliProperty.class);
+        property.setAsrOption(BeanUtil.copyProperties(
+                SpringUtil.getBean(AliProperty.class).getAsrOption(), AliProperty.AsrOption.class));
+
+        BeanUtil.copyProperties(asrOption, property, CopyOptions.create().ignoreNullValue()
+                .setPropertiesFilter((field, value) -> !(value instanceof String) || StringUtil.isNotBlank((String) value)));
+        BeanUtil.copyProperties(asrOption, property.getAsrOption(), CopyOptions.create().ignoreNullValue()
+                .setPropertiesFilter((field, value) -> !(value instanceof String) || StringUtil.isNotBlank((String) value)));
+        return property;
+    }
+
     public AliAsrClient() throws Exception {
+        this(null);
+    }
+
+    public AliAsrClient(AliAsrOption asrOption) throws Exception {
+        super(merged(asrOption));
+
+
         client = new NlsClient(getToken());
         transcriber = new SpeechTranscriber(client, getTranscriberListener());
         transcriber.setAppKey(aliProperty.getAppKey());

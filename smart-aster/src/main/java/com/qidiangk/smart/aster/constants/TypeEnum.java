@@ -4,24 +4,24 @@ import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.qidiangk.smart.aster.handler.nodes.granter.*;
 import com.qidiangk.smart.common.enums.ArrayValuable;
-import com.qidiangk.smart.aster.handler.nodes.granter.ExtractGranter;
-import com.qidiangk.smart.aster.handler.nodes.granter.IntentionGranter;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum TypeEnum implements ArrayValuable<TypeEnum> {
-    ANSWER("answer"),
-    SCRIPT("script"),
-    SERVICE("service"),
-    CONDITION("condition"),
-    RECEIVED("received"),
-    TRANSFER("transfer"),
-    MAXKB("maxKB"),
-    GLOBE_VALUE("variable-assign"),
-    SAY("say"),
-    SENTIMENT("sentiment"),
-    CHILD("childNodes"),
-    HANGUP("hangup"),
+    START("start"),
+    ANSWER(AnswerGranter.GRANT_TYPE),
+    SCRIPT(ScriptGranter.GRANT_TYPE),
+    SERVICE(ServiceGranter.GRANT_TYPE),
+    CONDITION(ConditionGranter.GRANT_TYPE),
+    RECEIVED(ReceivedGranter.GRANT_TYPE),
+    TRANSFER(TransferGranter.GRANT_TYPE),
+    MAXKB(MaxKBGranter.GRANT_TYPE),
+    GLOBE_VALUE(GlobeValueGranter.GRANT_TYPE),
+    SAY(SayGranter.GRANT_TYPE),
+    SENTIMENT(SentimentGranter.GRANT_TYPE),
+    CHILD(ChildGranter.GRANT_TYPE),
+    HANGUP(HangupGranter.GRANT_TYPE),
     INTENTION(IntentionGranter.GRANT_TYPE),
     EXTRACT(ExtractGranter.GRANT_TYPE);
 

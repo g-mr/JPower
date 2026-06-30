@@ -1,5 +1,6 @@
 package com.qidiangk.smart.aster.tripartite.ali;
 
+import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.thread.ThreadUtil;
@@ -8,13 +9,17 @@ import com.alibaba.nls.client.protocol.NlsClient;
 import com.alibaba.nls.client.protocol.tts.FlowingSpeechSynthesizer;
 import com.alibaba.nls.client.protocol.tts.FlowingSpeechSynthesizerListener;
 import com.alibaba.nls.client.protocol.tts.FlowingSpeechSynthesizerResponse;
+import com.qidiangk.smart.aster.tripartite.property.AliProperty;
+import com.qidiangk.smart.aster.tripartite.property.AliTtsOption;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import top.jpower.core.asterisk.audio.TtsClient;
 import top.jpower.core.asterisk.audio.TtsResult;
+import top.jpower.core.util.utils.BeanUtil;
 import top.jpower.core.util.utils.Fc;
-import com.qidiangk.smart.aster.tripartite.property.AliProperty;
+import top.jpower.core.util.utils.SpringUtil;
+import top.jpower.core.util.utils.StringUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -87,7 +92,29 @@ public class AliTtsClient extends AliToken implements TtsClient {
 
     }
 
+    private static AliProperty merged(AliTtsOption ttsOption) {
+        if (ttsOption == null) {
+            return SpringUtil.getBean(AliProperty.class);
+        }
+
+        AliProperty property = BeanUtil.copyProperties(SpringUtil.getBean(AliProperty.class), AliProperty.class);
+        property.setTtsOption(BeanUtil.copyProperties(
+                SpringUtil.getBean(AliProperty.class).getTtsOption(), AliProperty.TtsOption.class));
+
+        BeanUtil.copyProperties(ttsOption, property, CopyOptions.create().ignoreNullValue()
+                .setPropertiesFilter((field, value) -> !(value instanceof String) || StringUtil.isNotBlank((String) value)));
+        BeanUtil.copyProperties(ttsOption, property.getTtsOption(), CopyOptions.create().ignoreNullValue()
+                .setPropertiesFilter((field, value) -> !(value instanceof String) || StringUtil.isNotBlank((String) value)));
+        return property;
+    }
+
     public AliTtsClient() throws Exception {
+        this(null);
+    }
+
+    public AliTtsClient(AliTtsOption ttsOption) throws Exception {
+        super(merged(ttsOption));
+
         this.client = new NlsClient(super.getToken());
         synthesizer = new FlowingSpeechSynthesizer(client, getSynthesizerListener());
         synthesizer.setAppKey(aliProperty.getAppKey());

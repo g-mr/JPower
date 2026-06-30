@@ -62,9 +62,7 @@ public class TokenServiceImpl implements ITokenService {
 
         if (!bucket.isExists()){
             Response rsp = getToken(bucket);
-            if (rsp != null) {
-                JpowerAssert.isNull(rsp, JpowerError.Rpc, rsp.code(), rsp.message());
-            }
+            JpowerAssert.isNull(rsp, JpowerError.Rpc, rsp.code(), rsp.message());
         }
 
         if (verification) {

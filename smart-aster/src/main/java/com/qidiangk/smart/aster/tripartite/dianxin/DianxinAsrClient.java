@@ -1,5 +1,6 @@
 package com.qidiangk.smart.aster.tripartite.dianxin;
 
+import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.thread.ThreadUtil;
@@ -8,14 +9,17 @@ import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.qidiangk.smart.aster.tripartite.property.DianxinAsrOption;
+import com.qidiangk.smart.aster.tripartite.property.DianxinProperty;
 import jakarta.websocket.*;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import top.jpower.core.asterisk.audio.AsrClient;
 import top.jpower.core.asterisk.audio.AsrResult;
+import top.jpower.core.util.utils.BeanUtil;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.JsonUtil;
-import com.qidiangk.smart.aster.tripartite.property.DianxinProperty;
+import top.jpower.core.util.utils.StringUtil;
 
 import java.io.IOException;
 import java.io.PipedInputStream;
@@ -34,7 +38,6 @@ import java.util.function.Consumer;
  * <a href="https://www.teleai.com.cn/doc/QVY8etHoYdG4XoW4Nxvz/msHIQauqMGhdwd4iJLR1">对接文档</a>
  */
 @Slf4j
-//@ClientEndpoint(decoders = DianxinAsrClient.MessageDTODecoder.class, configurator = DianxinAsrClient.HeaderConfigurator.class)
 public class DianxinAsrClient extends Endpoint implements AsrClient {
 
     /**
@@ -53,15 +56,29 @@ public class DianxinAsrClient extends Endpoint implements AsrClient {
         }
     }
 
+    private final DianxinProperty dianxinProperty;
+
     private volatile Session session;
-    private final DianxinProperty dianxinProperty = SpringUtil.getBean(DianxinProperty.class);
     private volatile Integer RES_STATUS = 4;
     // 收到状态RES_STATUS=2的时间
     private volatile long RES_STATUS_2_TIME = System.currentTimeMillis();
     private final StringBuffer MESSAGE = new StringBuffer();
 
-    @SneakyThrows
     public DianxinAsrClient() {
+        this(null);
+    }
+
+    @SneakyThrows
+    public DianxinAsrClient(DianxinAsrOption asrOption) {
+        dianxinProperty = BeanUtil.copyProperties(SpringUtil.getBean(DianxinProperty.class), DianxinProperty.class);
+        if (asrOption != null) {
+            dianxinProperty.setAsrOption(BeanUtil.copyProperties(SpringUtil.getBean(DianxinProperty.class).getAsrOption(), DianxinProperty.AsrOption.class));
+            BeanUtil.copyProperties(asrOption, dianxinProperty, CopyOptions.create().ignoreNullValue()
+                    .setPropertiesFilter((field, value) -> !(value instanceof String) || StringUtil.isNotBlank((String) value)));
+            BeanUtil.copyProperties(asrOption, dianxinProperty.getAsrOption(), CopyOptions.create().ignoreNullValue()
+                    .setPropertiesFilter((field, value) -> !(value instanceof String) || StringUtil.isNotBlank((String) value)));
+        }
+
         // 连接时传入 config 和 endpoint 类
         URI uri = URI.create(dianxinProperty.getAsrUrl());
 

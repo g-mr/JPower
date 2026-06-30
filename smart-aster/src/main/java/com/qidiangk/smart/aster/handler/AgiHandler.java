@@ -3,8 +3,15 @@ package com.qidiangk.smart.aster.handler;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
+import com.qidiangk.smart.aster.constants.CallRouteProcessEnum;
+import com.qidiangk.smart.aster.constants.VariableNameEnum;
 import com.qidiangk.smart.aster.dbs.dao.asterisk.EndpointsDao;
 import com.qidiangk.smart.aster.dbs.entity.asterisk.EndpointsDO;
+import com.qidiangk.smart.aster.handler.service.AgiSupportImpl;
+import com.qidiangk.smart.aster.pojo.UserIntent;
+import com.qidiangk.smart.aster.service.ICallRouteService;
+import com.qidiangk.smart.aster.service.IvrService;
+import com.qidiangk.smart.aster.service.asterisk.IQueueService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -20,28 +27,17 @@ import top.jpower.core.asterisk.agi.fastagi.support.AgiSupport;
 import top.jpower.core.asterisk.properties.AsteriskProperties;
 import top.jpower.core.asterisk.utils.AgiContext;
 import top.jpower.core.dbs.tenant.TenantBroker;
-import top.jpower.core.dbs.tenant.TenantContextHolder;
 import top.jpower.core.util.utils.Fc;
-import com.qidiangk.smart.aster.constants.CallRouteProcessEnum;
-import com.qidiangk.smart.aster.constants.VariableNameEnum;
-import com.qidiangk.smart.aster.dbs.entity.ivr.CallRouteDO;
-import com.qidiangk.smart.aster.handler.nodes.granter.IntentionGranter;
-import com.qidiangk.smart.aster.handler.service.AgiSupportImpl;
-import com.qidiangk.smart.aster.pojo.UserIntent;
-import com.qidiangk.smart.aster.service.ICallRouteService;
-import com.qidiangk.smart.aster.service.IvrService;
-import com.qidiangk.smart.aster.service.asterisk.IQueueService;
 
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.asteriskjava.live.QueueMemberState.DEVICE_NOT_INUSE;
 import static com.qidiangk.smart.aster.constants.VariableNameEnum.PARAMS;
 import static com.qidiangk.smart.aster.constants.VariableNameEnum.ROUTE_ID;
+import static org.asteriskjava.live.QueueMemberState.DEVICE_NOT_INUSE;
 
 @Slf4j
 @Agi(value = "call.agi", support = AgiSupportImpl.class)
@@ -71,7 +67,6 @@ public class AgiHandler extends AgiAbstractScript {
     @Override
     @SneakyThrows(Exception.class)
     public void service(final AgiSupport agiSupport) {
-//        agiSupport.request().getChannel();
         String endpointName = StrUtil.subBetween(agiSupport.channel().getName(), "/", "-");
         EndpointsDO endpoint = endpointsDao.getById(endpointName);
 
@@ -122,40 +117,28 @@ public class AgiHandler extends AgiAbstractScript {
             AgiContext.cache(agiSupport.channel()).put(PARAMS.getName(), params);
 
             // 获取流程
-            String routeId = agiSupport.getVariable(ROUTE_ID.getName());
-            Optional<CallRouteDO> optionalCallRouteDo = getFlow(Fc.toLong(routeId), agiSupport.request().getRequest().get("callerid"), agiSupport.request().getExtension(), CallRouteProcessEnum.valueOf(type));
-            agiSupport.setVariable(ROUTE_ID.getName(), Fc.toStr(optionalCallRouteDo.map(CallRouteDO::getId).orElse(null)));
+            Long routeId = Fc.toLong(agiSupport.getVariable(ROUTE_ID.getName()));
 
-            log.info("接受到来电==={},呼叫类型=={},呼叫路由={}", agiSupport.getPhone(), type, routeId);
+            if (Fc.notNull(routeId)) {
+                CallRouteProcessEnum callRouteProcessEnum = CallRouteProcessEnum.valueOf(type);
+                log.info("接受到来电==={},呼叫类型=={},呼叫路由={}", agiSupport.getPhone(), callRouteProcessEnum.getName(), routeId);
 
-            // 接通电话
-            agiSupport.answer();
+                // 接通电话
+                agiSupport.answer();
 
-            if (optionalCallRouteDo.isEmpty()) {
-                log.warn("[{}]未查找到流程，电话直接挂断.......", agiSupport.getPhone());
-                agiSupport.hangup();
+                if (callRouteService.existsFlowById(routeId, callRouteProcessEnum)) {
+                    List<? extends UserIntent.Node> flowObj = callRouteService.findCompleteFlow(routeId);
+                    ivrService.executeNode(agiSupport, flowObj);
+                } else {
+                    log.warn("[{}]未查找到流程，电话直接挂断.......", agiSupport.getPhone());
+                    agiSupport.hangup();
+                }
             } else {
-                List<? extends UserIntent.Node> flowObj = optionalCallRouteDo.map(routeDo->callRouteService.findCompleteFlow(routeDo.getId())).orElse(null);
-                ivrService.executeNode(agiSupport, flowObj);
+                log.warn("[{}]{}未传递线路ID，电话直接挂断.......", agiSupport.getPhone(), agiSupport.channel().getName());
+                agiSupport.hangup();
             }
         });
 
-    }
-
-    /**
-     * 获取流程
-     * @param routeId 路由ID
-     * @param callerid 主叫
-     * @param extension 被叫
-     * @param processEnum 流程类型
-     * @return 流程对象
-     */
-    private Optional<CallRouteDO> getFlow(Long routeId, String callerid, String extension, CallRouteProcessEnum processEnum) {
-        if (Fc.notNull(routeId)){
-            return callRouteService.getFlowById(routeId, processEnum);
-        } else {
-            return callRouteService.matching(callerid, extension, processEnum);
-        }
     }
 
 }

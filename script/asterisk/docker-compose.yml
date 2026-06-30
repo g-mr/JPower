@@ -29,7 +29,7 @@ services:
       - "5060:5060/tcp"
       - "5038:5038/tcp"
     volumes:
-      - ./conf/:/etc/asterisk
+#      - ./conf/:/etc/asterisk
       - ./log:/var/log/asterisk
       - /data/:/data
     restart: always

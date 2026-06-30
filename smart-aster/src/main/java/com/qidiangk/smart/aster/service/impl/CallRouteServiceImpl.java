@@ -2,10 +2,17 @@ package com.qidiangk.smart.aster.service.impl;
 
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.qidiangk.smart.aster.constants.CallRouteProcessEnum;
 import com.qidiangk.smart.aster.constants.CallRouteTypeEnum;
+import com.qidiangk.smart.aster.constants.StatusEnum;
+import com.qidiangk.smart.aster.dbs.dao.ivr.CallRouteDao;
+import com.qidiangk.smart.aster.dbs.dao.ivr.mapper.CallRouteMapper;
+import com.qidiangk.smart.aster.dbs.entity.ivr.CallRouteDO;
+import com.qidiangk.smart.aster.pojo.SelectVO;
+import com.qidiangk.smart.aster.pojo.UserIntent;
+import com.qidiangk.smart.aster.pojo.vo.ivr.RoutePageReqVO;
+import com.qidiangk.smart.aster.service.ICallRouteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
@@ -15,19 +22,11 @@ import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.core.util.rsp.Pg;
 import top.jpower.core.util.utils.Fc;
-import com.qidiangk.smart.aster.constants.CallRouteProcessEnum;
-import com.qidiangk.smart.aster.constants.StatusEnum;
-import com.qidiangk.smart.aster.dbs.dao.ivr.CallRouteDao;
-import com.qidiangk.smart.aster.dbs.dao.ivr.mapper.CallRouteMapper;
-import com.qidiangk.smart.aster.dbs.entity.ivr.CallRouteDO;
-import com.qidiangk.smart.aster.pojo.SelectVO;
-import com.qidiangk.smart.aster.pojo.UserIntent;
-import com.qidiangk.smart.aster.pojo.vo.ivr.RoutePageReqVO;
-import com.qidiangk.smart.aster.service.ICallRouteService;
-import top.jpower.core.util.utils.JsonUtil;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static com.qidiangk.smart.aster.dbs.entity.ivr.table.CallRouteDOTableDef.CALL_ROUTE_DO;
 
@@ -66,14 +65,13 @@ public class CallRouteServiceImpl extends BaseServiceImpl<CallRouteMapper, CallR
     }
 
     @Override
-    public Optional<CallRouteDO> getFlowById(Long routId, CallRouteProcessEnum processEnum) {
-        Optional<CallRouteDO> optionalCallRouteDO = super.getOneOpt(Wrappers.getQueryWrapper()
+    public boolean existsFlowById(Long routId, CallRouteProcessEnum processEnum) {
+        return super.exists(Wrappers.getQueryWrapper()
                 .eq(CallRouteDO::getId, routId)
                 .eq(CallRouteDO::getProcess, processEnum.getValue())
                 .eq(CallRouteDO::getStatus, StatusEnum.DISABLE.getStatus())
                 .isNotNull(CallRouteDO::getFlow)
                 .isNotNull(CallRouteDO::getType));
-        return optionalCallRouteDO;
     }
 
     @Override
@@ -99,7 +97,12 @@ public class CallRouteServiceImpl extends BaseServiceImpl<CallRouteMapper, CallR
      */
     @Override
     public List<? extends UserIntent.Node> findCompleteFlow(Long id) {
-        return findFlow(id);
+        Optional<Object> optionalFlow = super.getObjOpt(Wrappers.getQueryWrapper()
+                .select(CallRouteDO::getFlow)
+                .eq(CallRouteDO::getId, id));
+        return optionalFlow.map(flow -> {
+            return parseArray(flow.toString());
+        }).orElse(null);
     }
 
     @Override
@@ -120,15 +123,6 @@ public class CallRouteServiceImpl extends BaseServiceImpl<CallRouteMapper, CallR
                         .eq(CallRouteDO::getType, CallRouteTypeEnum.CHILDREN.getValue())
                         .orderBy(CallRouteDO::getPriority).asc()
                         .orderBy(CallRouteDO::getCreateTime).desc());
-    }
-
-    private List<? extends UserIntent.Node> findFlow(Long id) {
-        Optional<Object> optionalFlow = super.getObjOpt(Wrappers.getQueryWrapper()
-                .select(CallRouteDO::getFlow)
-                .eq(CallRouteDO::getId, id));
-        return optionalFlow.map(flow -> {
-            return parseArray(flow.toString());
-        }).orElse(null);
     }
 
     private List<? extends UserIntent.Node> parseArray(String text) {

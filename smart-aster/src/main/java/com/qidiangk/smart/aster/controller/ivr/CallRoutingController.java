@@ -90,25 +90,18 @@ public class CallRoutingController extends BaseController {
     @Operation(summary = "路由详情")
     @GetMapping("/detail/{id}")
     @Function(value = "路由详情", menus = {
-            @Menu(client = "admin", menuCode = "CALL_ROUTER", btnCode = "CALL_ROUTER_CONFIG", code = "CALL_ROUTER_CONFIG_DETAIL", type = Menu.TYPE.INTERFACE)
+            @Menu(client = "admin", menuCode = "CALL_ROUTER", btnCode = "CALL_ROUTER_CONFIG", code = "CALL_ROUTER_CONFIG_DETAIL", type = Menu.TYPE.INTERFACE),
+            @Menu(client = "admin", menuCode = "RouteFlow", code = "RouteFlow_CONFIG_DETAIL", type = Menu.TYPE.INTERFACE)
     })
     public R<CallRouteDO> detail(@Parameter(description = "呼叫路由ID") @PathVariable("id") Long id) {
         return R.data(callRouteService.getById(id));
     }
 
-//    @Operation(summary = "流程查看")
-//    @GetMapping("/flow/{id}")
-//    @Function(value = "流程查看", menus = {
-//            @Menu(client = "admin", menuCode = "CALL_ROUTER", btnCode = "CALL_ROUTER_CONFIG", code = "CALL_ROUTER_CONFIG_VIEW", type = Menu.TYPE.INTERFACE)
-//    })
-//    public R<List<? extends UserIntent.Node>> viewFlow(@Parameter(description = "呼叫路由ID") @PathVariable("id") Long id) {
-//        return R.data(callRouteService.flowView(id));
-//    }
-
     @Operation(summary = "流程设置")
     @PostMapping("/flow/{id}")
     @Function(value = "流程设置", menus = {
-            @Menu(client = "admin", menuCode = "CALL_ROUTER", code = "CALL_ROUTER_CONFIG", type = Menu.TYPE.BTN)
+            @Menu(client = "admin", menuCode = "CALL_ROUTER", code = "CALL_ROUTER_CONFIG", type = Menu.TYPE.BTN),
+            @Menu(client = "admin", menuCode = "RouteFlow", code = "RouteFlow_CONFIG", type = Menu.TYPE.INTERFACE)
     })
     public R<Boolean> flow(@Parameter(description = "呼叫路由ID") @PathVariable("id") Long id,
                                  @Valid @Size(min = 1, message = "流程最少为一个") @RequestBody List<? extends UserIntent.Node> nodes) {
@@ -128,7 +121,8 @@ public class CallRoutingController extends BaseController {
     @Operation(summary = "子流程列表")
     @GetMapping("/childList")
     @Function(value = "子流程列表", menus = {
-            @Menu(client = "admin", menuCode = "CALL_ROUTER", btnCode = "CALL_ROUTER_CONFIG", code = "CALL_ROUTER_CONFIG_CHILD", type = Menu.TYPE.INTERFACE)
+            @Menu(client = "admin", menuCode = "CALL_ROUTER", btnCode = "CALL_ROUTER_CONFIG", code = "CALL_ROUTER_CONFIG_CHILD", type = Menu.TYPE.INTERFACE),
+            @Menu(client = "admin", menuCode = "RouteFlow", code = "RouteFlow_CONFIG_CHILD", type = Menu.TYPE.INTERFACE)
     })
     public R<List<CallRouteDO>> childList() {
         return R.data(callRouteService.childList());

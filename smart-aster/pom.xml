@@ -5,7 +5,7 @@
     <parent>
         <artifactId>smart-call</artifactId>
         <groupId>com.qidiangk.smart</groupId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -20,6 +20,7 @@
         <aliyun.sdk.tts>2.2.14</aliyun.sdk.tts>
         <groovy.version>3.0.25</groovy.version>
         <nashorn.version>15.6</nashorn.version>
+        <dashscope.version>1.1.2.3</dashscope.version>
     </properties>
 
     <dependencies>
@@ -69,11 +70,29 @@
             <artifactId>jpower-core-asterisk</artifactId>
         </dependency>
 
-
-        <!-- 通义千问 -->
         <dependency>
             <groupId>com.alibaba.cloud.ai</groupId>
             <artifactId>spring-ai-alibaba-starter-dashscope</artifactId>
+        </dependency>
+
+<!--        &lt;!&ndash; 通义千问：保留 SDK 版 starter（底层基于 dashscope-sdk-java），移除非 SDK 版 starter &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>com.alibaba.cloud.ai</groupId>-->
+<!--            <artifactId>spring-ai-alibaba-starter-dashscope-sdk</artifactId>-->
+<!--            <version>${dashscope.version}</version>-->
+<!--        </dependency>-->
+
+        <!-- 显式声明 DashScope SDK 版本，覆盖 starter 传递的 2.15.1，以支持 Qwen-ASR-Realtime -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>dashscope-sdk-java</artifactId>
+            <version>2.22.5</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jsonschema-generator</artifactId>
+                    <groupId>com.github.victools</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- deepseek -->

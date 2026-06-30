@@ -1,12 +1,16 @@
 package com.qidiangk.smart.aster.tripartite.dianxin;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSON;
+import com.qidiangk.smart.aster.tripartite.property.DianxinProperty;
+import com.qidiangk.smart.aster.tripartite.property.DianxinTtsOption;
+import com.qidiangk.smart.aster.utils.WavWriter;
 import jakarta.websocket.*;
 import lombok.Data;
 import lombok.SneakyThrows;
@@ -16,8 +20,7 @@ import top.jpower.core.asterisk.audio.TtsClient;
 import top.jpower.core.asterisk.audio.TtsResult;
 import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.JsonUtil;
-import com.qidiangk.smart.aster.tripartite.property.DianxinProperty;
-import com.qidiangk.smart.aster.utils.WavWriter;
+import top.jpower.core.util.utils.StringUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -103,7 +106,7 @@ public class DianxinTtsClient extends Endpoint implements TtsClient {
     }
 
     private volatile Session session;
-    private final DianxinProperty dianxinProperty = SpringUtil.getBean(DianxinProperty.class);
+    private final DianxinProperty dianxinProperty;
 
     // 请求队列
     private final BlockingQueue<TTSRequest> requestQueue = new LinkedBlockingQueue<>();
@@ -112,8 +115,21 @@ public class DianxinTtsClient extends Endpoint implements TtsClient {
     // 当前处理的请求
     private final AtomicReference<TTSRequest> currentRequest = new AtomicReference<>();
 
-    @SneakyThrows
     public DianxinTtsClient() {
+        this(null);
+    }
+
+    @SneakyThrows
+    public DianxinTtsClient(DianxinTtsOption ttsOption) {
+        dianxinProperty = BeanUtil.copyProperties(SpringUtil.getBean(DianxinProperty.class), DianxinProperty.class);
+        if (ttsOption != null) {
+            dianxinProperty.setTtsOption(BeanUtil.copyProperties(SpringUtil.getBean(DianxinProperty.class).getTtsOption(), DianxinProperty.TtsOption.class));
+            BeanUtil.copyProperties(ttsOption, dianxinProperty, CopyOptions.create().ignoreNullValue()
+                    .setPropertiesFilter((field, value) -> !(value instanceof String) || StringUtil.isNotBlank((String) value)));
+            BeanUtil.copyProperties(ttsOption, dianxinProperty.getTtsOption(), CopyOptions.create().ignoreNullValue()
+                    .setPropertiesFilter((field, value) -> !(value instanceof String) || StringUtil.isNotBlank((String) value)));
+        }
+
         // 连接时传入 config 和 endpoint 类
         URI uri = URI.create(dianxinProperty.getTtsUrl());
 

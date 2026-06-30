@@ -9,6 +9,7 @@ import com.qidiangk.smart.aster.pojo.UserIntent;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -24,9 +25,19 @@ public class NodeState {
     public NodeState(List<? extends UserIntent.Node> nodeList, NodeGranterFactory nodeGranterFactory) {
         this.nodeGranterFactory = nodeGranterFactory;
 
-        this.currentNode = nodeList.get(0);
         this.nodeMap = nodeList.stream()
                 .collect(Collectors.toMap(UserIntent.Node::getCode, node -> node));
+
+        Optional<UserIntent.Node.StartNode> startNodeOptional = nodeList.stream()
+                .filter(node -> node instanceof UserIntent.Node.StartNode)
+                .map(node -> (UserIntent.Node.StartNode) node)
+                .findFirst();
+        startNodeOptional.ifPresentOrElse(startNode -> {
+            this.currentNode = nodeMap.get(startNode.getNextNode());
+            if (Fc.isNull(this.currentNode)) {
+                log.warn("开始节点后没有找到下一个节点[{}]，流程会自动结束......", startNode.getNextNode());
+            }
+        }, () -> log.warn("未找到开始节点，流程会自动结束......"));
     }
 
     public Object proceed(final AgiSupport support, Map<String, Object> initContext) {

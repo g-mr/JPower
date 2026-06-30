@@ -33,8 +33,6 @@ asterisk:
     event: true
   agi:
     port: 4573
-    asr-impl: com.qidiangk.smart.aster.tripartite.ali.AliAsrClient
-    tts-impl: com.qidiangk.smart.aster.tripartite.ali.AliTtsClient
   voice-root-dir: /data/
   context:
     out: outbound-dialer # 呼出上下文名称
