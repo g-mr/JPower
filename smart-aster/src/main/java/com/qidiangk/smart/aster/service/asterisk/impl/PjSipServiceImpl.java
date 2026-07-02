@@ -31,6 +31,7 @@ import com.qidiangk.smart.aster.pojo.vo.line.LineQueryVO;
 import com.qidiangk.smart.aster.pojo.vo.line.LineUpdateVO;
 import com.qidiangk.smart.aster.pojo.vo.line.LineVO;
 import com.qidiangk.smart.aster.service.asterisk.IPjSipService;
+import top.jpower.core.util.utils.SpringUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -68,7 +69,12 @@ public class PjSipServiceImpl extends BaseServiceImpl<EndpointsMapper, Endpoints
                 .maximumExpiration(1800)
                 .removeExisting(Boolean.TRUE)
                 .build();
-        aorsDao.save(aorsDO);
+        if (!aorsDao.save(aorsDO)) {
+            if (SpringUtil.getProperty("jpower.demo.enable", Boolean.class, Boolean.FALSE)){
+                throw new JpowerException(500, "演示环境不支持操作！");
+            }
+            throw new JpowerException(500, "更新失败");
+        }
 
         EndpointsDO endpointsDO = EndpointsDO.builder()
                 .id(aorsDO.getId())
@@ -116,7 +122,12 @@ public class PjSipServiceImpl extends BaseServiceImpl<EndpointsMapper, Endpoints
 
         authsDO.setUsername(attendVO.getUsername());
         authsDO.setPassword(attendVO.getPassword());
-        authsDao.updateById(authsDO);
+        if (!authsDao.updateById(authsDO)) {
+            if (SpringUtil.getProperty("jpower.demo.enable", Boolean.class, Boolean.FALSE)){
+                throw new JpowerException(500, "演示环境不支持操作！");
+            }
+            throw new JpowerException(500, "更新失败");
+        }
 
         endpointsDao.updateById(endpoint);
         return endpoint.getId();

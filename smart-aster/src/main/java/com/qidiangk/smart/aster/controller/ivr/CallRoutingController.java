@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -12,8 +13,11 @@ import org.springframework.web.bind.annotation.*;
 import com.qidiangk.smart.common.validated.group.Validation;
 import top.jpower.core.auth.annotation.Function;
 import top.jpower.core.auth.annotation.Menu;
+import top.jpower.core.boot.argument.RequestSingleBody;
 import top.jpower.core.boot.controller.BaseController;
 import top.jpower.core.dbs.support.Wrappers;
+import top.jpower.core.exception.enums.JpowerError;
+import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.core.util.rsp.Pg;
 import top.jpower.core.util.rsp.R;
 import top.jpower.core.util.utils.Fc;
@@ -53,6 +57,22 @@ public class CallRoutingController extends BaseController {
     })
     public R<Long> create(@Validated @RequestBody CallRouteDO callRouteDo) {
         callRouteDo.setStatus(true);
+        callRouteService.save(callRouteDo);
+        return R.data(callRouteDo.getId());
+    }
+
+    @Operation(summary = "复制呼叫路由")
+    @PostMapping("/copy")
+    @Function(value = "复制路由", menus = {
+            @Menu(client = "admin", menuCode = "CALL_ROUTER", code = "CALL_ROUTER_COPY", type = Menu.TYPE.BTN)
+    })
+    public R<Long> copy(@NotNull(message = "呼叫路由ID不能为空") @RequestSingleBody Long id) {
+        CallRouteDO callRouteDo = callRouteService.getById(id);
+        JpowerAssert.notNull(callRouteDo, JpowerError.NotFind,"呼叫路由");
+
+        callRouteDo.setId(null);
+        callRouteDo.setRouteCode(callRouteDo.getRouteCode() + "_copy");
+        callRouteDo.setRouteName(callRouteDo.getRouteName() + "_copy");
         callRouteService.save(callRouteDo);
         return R.data(callRouteDo.getId());
     }

@@ -308,7 +308,7 @@ ivr:
   # dashscope 配置，默认 DashScope ASR 引擎
   dashscope:
     # DashScope API Key
-    api-key: ${IVR_DASHSCOPE_API_KEY:}
+    api-key: ${IVR_DASHSCOPE_API_KEY:${spring.ai.dashscope.api-key}}
     # 自定义 WebSocket 地址（内网私有化部署时配置，留空使用官方地址）
     # websocket-url: wss://dashscope.aliyuncs.com/api-ws/v1/realtime
     asr-option:
@@ -399,4 +399,4 @@ maxkb:
   # 内网访问地址
   baseUrl: ${MAXKB_BASE_URL:http://127.0.0.1:8081/}
   # 外网访问地址
-  externalBaseUrl: ${MAXKB_EXTERNAL_BASE_URL:http://127.0.0.1:8081/}
+  externalBaseUrl: ${MAXKB_EXTERNAL_BASE_URL:${maxkb.baseUrl}}
