@@ -78,15 +78,21 @@ public class CityController extends BaseController {
     @Operation(summary = "修改行政区域")
     @PutMapping(value = "/update",  produces=APPLICATION_JSON_VALUE)
     public R<Long> update(@Validated(Validation.Update.class) @RequestBody CoreCity coreCity){
-        coreCityService.update(coreCity);
-        return R.data(coreCity.getId());
+        if (coreCityService.update(coreCity)) {
+            return R.data(coreCity.getId());
+        }
+
+        return R.status(false);
     }
 
     @Operation(summary = "新增行政区域")
     @PostMapping(value = "/add", produces = APPLICATION_JSON_VALUE)
     public R<Long> add(@Validated(Validation.Create.class) @RequestBody CoreCity coreCity){
-        coreCityService.add(coreCity);
-        return R.data(coreCity.getId());
+        if (coreCityService.add(coreCity)) {
+            return R.data(coreCity.getId());
+        }
+
+        return R.status(false);
     }
 
 
@@ -114,7 +120,7 @@ public class CityController extends BaseController {
     @Operation(summary = "查询下级列表")
     @GetMapping(value = "/listChild", produces = APPLICATION_JSON_VALUE)
     public R<List<SelectVO>> listChild(@Parameter(description = "父级code",required = true) @NotBlank(message = "父级CODE不可为空") @RequestParam(defaultValue = JpowerConstants.TOP_CODE) String pcode,
-									   @Parameter(description = "名称") @RequestParam(required = false) String name){
+                                       @Parameter(description = "名称") @RequestParam(required = false) String name){
         return R.data(coreCityService.listChild(pcode, name));
     }
 
