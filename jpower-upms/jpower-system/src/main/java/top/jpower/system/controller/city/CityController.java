@@ -78,15 +78,21 @@ public class CityController extends BaseController {
     @Operation(summary = "修改行政区域")
     @PutMapping(value = "/update",  produces=APPLICATION_JSON_VALUE)
     public R<Long> update(@Validated(Validation.Update.class) @RequestBody CoreCity coreCity){
-        coreCityService.update(coreCity);
-        return R.data(coreCity.getId());
+        if (coreCityService.update(coreCity)) {
+            return R.data(coreCity.getId());
+        }
+
+        return R.status(false);
     }
 
     @Operation(summary = "新增行政区域")
     @PostMapping(value = "/add", produces = APPLICATION_JSON_VALUE)
     public R<Long> add(@Validated(Validation.Create.class) @RequestBody CoreCity coreCity){
-        coreCityService.add(coreCity);
-        return R.data(coreCity.getId());
+        if (coreCityService.add(coreCity)) {
+            return R.data(coreCity.getId());
+        }
+
+        return R.status(false);
     }
 
 
