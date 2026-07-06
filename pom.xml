@@ -23,7 +23,7 @@
 
         <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
         <maven-resources.version>3.4.0</maven-resources.version>
-        <dockerfile-maven-plugin.version>1.4.13</dockerfile-maven-plugin.version>
+        <jib-maven-plugin.version>3.5.1</jib-maven-plugin.version>
         <spring-boot.version>3.5.8</spring-boot.version>
         <mybatis-flex.version>1.11.5</mybatis-flex.version>
         <auto.service.version>1.1.1</auto.service.version>
@@ -38,7 +38,7 @@
         <deploy.version>3.1.2</deploy.version>
 
         <docker.image.prefix>jpower</docker.image.prefix>
-        <docker.registry>8.130.172.218:8180</docker.registry>
+        <docker.registry>docker.qidiangk.com</docker.registry>
     </properties>
 
     <modules>
@@ -96,18 +96,33 @@
                         </execution>
                     </executions>
                 </plugin>
-                <!-- dockerfile -->
+                <!-- docker -->
                 <plugin>
-                    <groupId>com.spotify</groupId>
-                    <artifactId>dockerfile-maven-plugin</artifactId>
-                    <version>${dockerfile-maven-plugin.version}</version>
+                    <groupId>com.google.cloud.tools</groupId>
+                    <artifactId>jib-maven-plugin</artifactId>
+                    <version>${jib-maven-plugin.version}</version>
                     <configuration>
-                        <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
-                        <repository>${docker.registry}/${docker.image.prefix}/${project.build.finalName}</repository>
-                        <tag>${project.version}</tag>
-                        <buildArgs>
-                            <JAR_FILE>target/${project.build.finalName}-exec.jar</JAR_FILE>
-                        </buildArgs>
+                        <from>
+                            <image>registry.cn-hangzhou.aliyuncs.com/dockerhub_mirror/java:17-anolis</image>
+                        </from>
+                        <to>
+                            <image>${docker.registry}/${docker.image.prefix}/${project.build.finalName}</image>
+                            <tags>
+                                <tag>${project.version}</tag>
+                            </tags>
+                        </to>
+                        <container>
+                            <environment>
+                                <TZ>Asia/Shanghai</TZ>
+                                <!--记得换成 skywalking 容器地址-->
+                                <SW_AGENT_COLLECTOR_BACKEND_SERVICES>127.0.0.1:11800</SW_AGENT_COLLECTOR_BACKEND_SERVICES>
+                                <SW_AGENT_NAME>${project.build.finalName}</SW_AGENT_NAME>
+                            </environment>
+                            <args>
+                                <arg>--spring.profiles.active=test</arg>
+                            </args>
+                            <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
+                        </container>
                     </configuration>
                 </plugin>
 
@@ -131,8 +146,8 @@
             </plugin>
 
             <plugin>
-                <groupId>com.spotify</groupId>
-                <artifactId>dockerfile-maven-plugin</artifactId>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
                 <configuration>
                     <skip>true</skip>
                 </configuration>
