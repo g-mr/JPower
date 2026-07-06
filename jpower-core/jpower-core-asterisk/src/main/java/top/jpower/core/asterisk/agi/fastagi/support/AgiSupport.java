@@ -5,6 +5,7 @@ import cn.hutool.core.date.TimeInterval;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.text.StrPool;
+import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.*;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.extra.spring.SpringUtil;
@@ -385,7 +386,18 @@ public abstract class AgiSupport {
 
             // 启动线程持续发送录音内容
             executor.execute(()->{
-                try (FileInputStream fis = new FileInputStream(userFile)){
+                // 等待录音文件创建（MixMonitor启动到文件实际创建存在微小延迟）
+                File recordFile = new File(userFile);
+                int maxRetries = 50; // 最多等待5秒（50 * 100ms）
+                while (!recordFile.exists() && maxRetries-- > 0 && !isHangup()) {
+                    ThreadUtil.sleep(100);
+                }
+                if (!recordFile.exists()) {
+                    log.error("录音文件等待超时仍未创建[{}]", userFile);
+                    return;
+                }
+
+                try (FileInputStream fis = new FileInputStream(recordFile)){
                     byte[] buffer = new byte[3200];
                     int len;
 
