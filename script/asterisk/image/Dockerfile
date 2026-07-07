@@ -18,4 +18,4 @@ EXPOSE 5060/udp 5060/tcp 5038/tcp 10000-20000/udp
 
 ENTRYPOINT ["/entrypoint.sh"]
 
-CMD ["/usr/sbin/asterisk", "-vvvdddf", "-T", "-W", "-U", "asterisk", "-p"]
+CMD ["/usr/sbin/asterisk", "-vvvdddf", "-T", "-W", "-p"]

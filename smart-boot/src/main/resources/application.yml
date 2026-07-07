@@ -200,8 +200,9 @@ jpower:
 #    #XSS不过滤得接口路径，支持通配符模式
 #    excludes:
 #      - /html/**
-#  auth:
-#    skipUrl:
+  auth:
+    skipUrl:
+      - /home/**
 #      - /auth/**
 #      - /core/user/downloadTemplate
 #    client:

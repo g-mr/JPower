@@ -43,4 +43,6 @@ if [ -f /etc/asterisk/extensions.conf ]; then
     echo "extensions.conf: AGI host set to ${AGI_HOST:-smartaster}"
 fi
 
+echo "127.0.0.1 $(hostname)" >> /etc/hosts
+
 exec "$@"

@@ -1,7 +1,6 @@
 package com.qidiangk.smart.aster.tripartite.dashscope;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import com.alibaba.dashscope.audio.qwen_tts_realtime.QwenTtsRealtime;
 import com.alibaba.dashscope.audio.qwen_tts_realtime.QwenTtsRealtimeAudioFormat;
@@ -12,14 +11,14 @@ import com.alibaba.dashscope.exception.NoApiKeyException;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.qidiangk.smart.aster.tripartite.property.DashScopeProperty;
-import com.qidiangk.smart.aster.utils.WavWriter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import top.jpower.core.asterisk.audio.TtsClient;
 import top.jpower.core.asterisk.audio.TtsResult;
 import top.jpower.core.util.utils.Fc;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Base64;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
@@ -32,7 +31,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * <br/>
  * 基于 DashScope Qwen3-TTS 实时模型（qwen3-tts-flash-realtime、qwen3-tts-instruct-flash-realtime 等）实现实时语音合成。
  * <br/>
- * 使用 WebSocket 流式通信，支持边合成边写入文件。
+ * 使用 WebSocket 流式通信，支持边合成边写入 OutputStream。
  * <br/>
  * 模型文档：<a href="https://help.aliyun.com/zh/model-studio/qwen-tts-realtime-java-sdk">Qwen-TTS Realtime Java SDK</a>
  *
@@ -46,35 +45,20 @@ public class DashScopeQwenTtsClient implements TtsClient {
     /**
      * 请求实体
      */
+    @RequiredArgsConstructor
     private static class TTSRequest {
 
         private final CompletableFuture<Void> future;
-        private final File file;
-        private final int sampleRate;
-        private WavWriter writer;
+        private final OutputStream audioOutput;
         private final CountDownLatch startLatch;
         private volatile boolean firstAudioReceived = false;
 
-        public TTSRequest(CompletableFuture<Void> future, File file, int sampleRate, CountDownLatch startLatch) {
-            this.future = future;
-            this.file = file;
-            this.sampleRate = sampleRate;
-            this.startLatch = startLatch;
-        }
-
-        public void readyWriter() {
-            FileUtil.del(file);
-            FileUtil.mkParentDirs(file);
-            writer = new WavWriter(file.getAbsolutePath(), sampleRate, 1, 16);
-        }
-
         public void writeAudio(byte[] audioData) {
-            if (writer != null) {
-                try {
-                    writer.write(audioData);
-                } catch (IOException e) {
-                    log.error("[DashScope-QwenTTS-TTS] 文件写入报错: {}", ExceptionUtil.stacktraceToString(e));
-                }
+            try {
+                audioOutput.write(audioData);
+                audioOutput.flush();
+            } catch (IOException e) {
+                log.error("[DashScope-QwenTTS-TTS] 音频流写入报错: {}", ExceptionUtil.stacktraceToString(e));
             }
             // 首次收到音频数据时，通知框架可以开始播放
             if (!firstAudioReceived) {
@@ -83,13 +67,9 @@ public class DashScopeQwenTtsClient implements TtsClient {
             }
         }
 
-        public void closeWriter() {
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                    log.error("[DashScope-QwenTTS-TTS] 文件写入关闭报错: {}", ExceptionUtil.stacktraceToString(e));
-                }
+        public void closeOutput() {
+            try { audioOutput.close(); } catch (IOException e) {
+                log.error("[DashScope-QwenTTS-TTS] 音频流关闭报错: {}", ExceptionUtil.stacktraceToString(e));
             }
         }
     }
@@ -180,7 +160,7 @@ public class DashScopeQwenTtsClient implements TtsClient {
                         log.debug("[DashScope-QwenTTS-TTS] 响应完成");
                         TTSRequest req = currentRequest.get();
                         if (req != null) {
-                            req.closeWriter();
+                            req.closeOutput();
                             req.future.complete(null);
                             currentRequest.set(null);
                             requestSemaphore.release();
@@ -192,7 +172,7 @@ public class DashScopeQwenTtsClient implements TtsClient {
                         log.error("[DashScope-QwenTTS-TTS] 收到错误事件: {}", message);
                         TTSRequest errReq = currentRequest.get();
                         if (errReq != null) {
-                            errReq.closeWriter();
+                            errReq.closeOutput();
                             errReq.future.completeExceptionally(
                                     new RuntimeException("Qwen-TTS 合成出错: " + message));
                             currentRequest.set(null);
@@ -218,7 +198,7 @@ public class DashScopeQwenTtsClient implements TtsClient {
                 // 如果连接意外关闭且有活跃请求，释放信号量
                 TTSRequest req = currentRequest.get();
                 if (req != null) {
-                    req.closeWriter();
+                    req.closeOutput();
                     if (!req.future.isDone()) {
                         req.future.completeExceptionally(new RuntimeException("WebSocket 连接关闭: code=" + code));
                     }
@@ -253,8 +233,8 @@ public class DashScopeQwenTtsClient implements TtsClient {
      * 使用 commit 模式（而非 server_commit），以便通过 {@link QwenTtsRealtime#commit()} 显式控制每次合成的触发时机，
      * 支持在同一会话中多次合成而不会因 {@link QwenTtsRealtime#finish()} 结束会话导致配置丢失。
      * <br/>
-     * 始终使用 PCM 格式，WAV 容器由 {@link WavWriter} 负责封装。
-     * 若 SDK 返回 WAV 格式数据（自带 RIFF 头），会与 WavWriter 的 WAV 头产生双重头部冲突。
+     * 始终使用 PCM 格式，WAV 容器由框架层负责封装。
+     * 若 SDK 返回 WAV 格式数据（自带 RIFF 头），会与框架层 WavWriter 的 WAV 头产生双重头部冲突。
      *
      * @return 会话配置
      */
@@ -293,14 +273,14 @@ public class DashScopeQwenTtsClient implements TtsClient {
      * 执行一次文本到语音的合成。
      * <br/>
      * 使用信号量确保同一实例同时只处理一个请求。
-     * 合成结果通过 WebSocket 回调实时写入文件。
+     * 合成结果通过 WebSocket 回调实时写入 OutputStream（PCM 原始字节）。
      *
-     * @param say  要合成的文本
-     * @param file 音频输出文件
+     * @param say         要合成的文本
+     * @param audioOutput 音频数据输出流
      * @return TtsResult（包含 future 和 startLatch 用于异步控制和播放同步）
      */
     @Override
-    public TtsResult process(String say, File file) {
+    public TtsResult process(String say, OutputStream audioOutput) {
         CompletableFuture<Void> future = new CompletableFuture<>();
         CountDownLatch startLatch = new CountDownLatch(1);
         TtsResult result = new TtsResult(future, startLatch, true);
@@ -312,8 +292,7 @@ public class DashScopeQwenTtsClient implements TtsClient {
                 // 重置完成锁
                 completionLatch.set(new CountDownLatch(1));
 
-                TTSRequest request = new TTSRequest(future, file, Fc.toInt(property.getTtsOption().getSampleRate(), 24000), startLatch);
-                request.readyWriter();
+                TTSRequest request = new TTSRequest(future, audioOutput, startLatch);
                 currentRequest.set(request);
 
                 // 清除上一次合成残留的文本缓冲，确保本次合成只包含当前文本
@@ -342,6 +321,11 @@ public class DashScopeQwenTtsClient implements TtsClient {
         });
 
         return result;
+    }
+
+    @Override
+    public int getSampleRate() {
+        return property.getTtsOption().getSampleRate() != null ? property.getTtsOption().getSampleRate() : 8000;
     }
 
     @Override

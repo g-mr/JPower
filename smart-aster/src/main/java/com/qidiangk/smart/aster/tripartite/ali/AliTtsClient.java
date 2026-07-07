@@ -2,7 +2,6 @@ package com.qidiangk.smart.aster.tripartite.ali;
 
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.exceptions.ExceptionUtil;
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.nls.client.protocol.NlsClient;
@@ -12,7 +11,6 @@ import com.alibaba.nls.client.protocol.tts.FlowingSpeechSynthesizerResponse;
 import com.qidiangk.smart.aster.tripartite.property.AliProperty;
 import com.qidiangk.smart.aster.tripartite.property.AliTtsOption;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import top.jpower.core.asterisk.audio.TtsClient;
 import top.jpower.core.asterisk.audio.TtsResult;
@@ -21,10 +19,8 @@ import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.SpringUtil;
 import top.jpower.core.util.utils.StringUtil;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -54,39 +50,25 @@ public class AliTtsClient extends AliToken implements TtsClient {
     private static class TTSRequest {
 
         private final TtsResult result;
-        private final File file;
-        private FileOutputStream fileStream;
+        private final OutputStream audioOutput;
+        private volatile boolean firstAudioReceived = false;
 
-        @SneakyThrows(FileNotFoundException.class)
-        public void readyWriter() {
-            FileUtil.del(file);
-            FileUtil.mkParentDirs(file);
-            this.fileStream = new FileOutputStream(file);
-        }
-
-        public void firstStream() {
-            result.startLatch().countDown();
-        }
-
-        public void closeWriter() {
+        public void writeAudio(byte[] bytesArray) {
             try {
-                if (fileStream != null){
-                    fileStream.close();
-                }
+                audioOutput.write(bytesArray);
+                audioOutput.flush();
             } catch (IOException e) {
-                log.error("关闭文件流报错===>> {}", ExceptionUtil.stacktraceToString(e));
+                log.error("写入音频流报错===>> {}", ExceptionUtil.stacktraceToString(e));
+            }
+            if (!firstAudioReceived) {
+                firstAudioReceived = true;
+                result.startLatch().countDown();
             }
         }
 
-        public void writer(byte[] bytesArray) {
-            try {
-                if (fileStream == null){
-                    log.error("文件流为空===>>fileStream");
-                } else {
-                    fileStream.write(bytesArray);
-                }
-            } catch (IOException e) {
-                log.error("写入文件流报错===>> {}", ExceptionUtil.stacktraceToString(e));
+        public void closeOutput() {
+            try { audioOutput.close(); } catch (IOException e) {
+                log.error("关闭音频流报错===>> {}", ExceptionUtil.stacktraceToString(e));
             }
         }
 
@@ -153,7 +135,6 @@ public class AliTtsClient extends AliToken implements TtsClient {
             //流式文本语音合成开始
             @Override
             public void onSynthesisStart(FlowingSpeechSynthesizerResponse response) {
-                currentRequest.get().readyWriter();
             }
             //服务端检测到了一句话的开始
             @Override
@@ -163,12 +144,12 @@ public class AliTtsClient extends AliToken implements TtsClient {
             @Override
             public void onSentenceEnd(FlowingSpeechSynthesizerResponse response) {
                 // 当一句话结束的时候代表可以进行同步播放了
-                currentRequest.get().firstStream();
+                currentRequest.get().result.startLatch().countDown();
             }
             //流式文本语音合成结束
             @Override
             public void onSynthesisComplete(FlowingSpeechSynthesizerResponse response) {
-                currentRequest.get().closeWriter();
+                currentRequest.get().closeOutput();
                 currentRequest.get().result.future().complete(null);
                 currentRequest.set(null);
             }
@@ -177,7 +158,7 @@ public class AliTtsClient extends AliToken implements TtsClient {
             public void onAudioData(ByteBuffer message) {
                 byte[] bytesArray = new byte[message.remaining()];
                 message.get(bytesArray, 0, bytesArray.length);
-                currentRequest.get().writer(bytesArray);
+                currentRequest.get().writeAudio(bytesArray);
             }
             //收到语音合成的增量音频时间戳
             @Override
@@ -199,7 +180,7 @@ public class AliTtsClient extends AliToken implements TtsClient {
                                     ", status: " + response.getStatus() +
                                     //错误信息
                                     ", status_text: " + response.getStatusText()));
-                    currentRequest.get().closeWriter();
+                    currentRequest.get().closeOutput();
                     currentRequest.set(null);
                 }
                 // 连接断了
@@ -213,18 +194,18 @@ public class AliTtsClient extends AliToken implements TtsClient {
     /**
      * 发送请求
      * @param say 说话内容
-     * @param file 写入文件
+     * @param audioOutput 音频数据输出流
      * @return
      */
     @Override
-    public synchronized TtsResult process(String say, File file) {
+    public synchronized TtsResult process(String say, OutputStream audioOutput) {
         TtsResult result = new TtsResult(new CompletableFuture<>(), new CountDownLatch(1), true);
         ThreadUtil.execute(() -> {
             try {
                 // 保证阻塞，只有一个请求正在处理
                 requestSemaphore.acquire();
                 // 当前正在处理的请求
-                currentRequest.set(new TTSRequest(result, file));
+                currentRequest.set(new TTSRequest(result, audioOutput));
 
                 // 发送文本
                 String[] textArray = StrUtil.split(say, 5);
@@ -244,6 +225,12 @@ public class AliTtsClient extends AliToken implements TtsClient {
             }
         });
         return result;
+    }
+
+    @Override
+    public int getSampleRate() {
+        AliProperty.TtsOption option = aliProperty.getTtsOption();
+        return option != null && option.getSampleRate() != null ? option.getSampleRate().value : 8000;
     }
 
     @Override

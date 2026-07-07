@@ -1,13 +1,14 @@
 package com.qidiangk.smart.aster.dbs.dao.ivr.mapper;
 
 import com.mybatisflex.core.FlexConsts;
+import com.mybatisflex.core.provider.EntitySqlProvider;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.qidiangk.smart.aster.dbs.entity.ivr.OutTaskDO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.apache.poi.ss.formula.functions.T;
+import org.apache.ibatis.annotations.SelectProvider;
 import top.jpower.core.dbs.config.annotation.NoSqlLog;
 import top.jpower.core.dbs.dbs.dao.mapper.base.JpowerBaseMapper;
-import com.qidiangk.smart.aster.dbs.entity.ivr.OutTaskDO;
 
 import java.util.List;
 
@@ -18,8 +19,7 @@ import java.util.List;
 public interface OutTaskMapper extends JpowerBaseMapper<OutTaskDO> {
 
     @NoSqlLog
-    default List<OutTaskDO> selectListIdTimes(@Param(FlexConsts.QUERY) QueryWrapper queryWrapper) {
-        return selectListByQuery(queryWrapper);
-    }
+    @SelectProvider(type = EntitySqlProvider.class, method = "selectListByQuery")
+    List<OutTaskDO> selectListIdTimes(@Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
 
 }

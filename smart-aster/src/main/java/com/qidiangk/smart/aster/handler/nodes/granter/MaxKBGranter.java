@@ -1,7 +1,5 @@
 package com.qidiangk.smart.aster.handler.nodes.granter;
 
-import cn.hutool.cache.CacheUtil;
-import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.TimeInterval;
 import cn.hutool.core.exceptions.ExceptionUtil;
@@ -15,10 +13,10 @@ import com.qidiangk.smart.maxkb.api.feign.AgentChatClient;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.text.StringSubstitutor;
 import org.asteriskjava.fastagi.AgiHangupException;
 import org.springframework.stereotype.Component;
 import top.jpower.core.util.rsp.R;
-import top.jpower.core.util.utils.StringUtil;
 
 import static com.qidiangk.smart.aster.constants.ConstantUtil.MUSIC;
 
@@ -33,7 +31,6 @@ import static com.qidiangk.smart.aster.constants.ConstantUtil.MUSIC;
 public class MaxKBGranter implements NodeGranter<UserIntent.Node.MaxKBNode> {
 
     public static final String GRANT_TYPE = "maxKB";
-    private static final TimedCache<String, String> CACHE = CacheUtil.newTimedCache(1000 * 60 * 10);
 
     private final AgentChatClient chatClient;
 
@@ -51,7 +48,7 @@ public class MaxKBGranter implements NodeGranter<UserIntent.Node.MaxKBNode> {
             return NodeResult.builder().nextId("end").build();
         }
 
-        String issue = StringUtil.format(node.getIssue(), nodeContext.getParams());
+        String issue = StringSubstitutor.replace(node.getIssue(), nodeContext.getParams());
 
 
         try {

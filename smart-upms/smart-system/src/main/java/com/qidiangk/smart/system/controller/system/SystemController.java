@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.qidiangk.smart.common.constants.ParamsConstants;
 import top.jpower.core.boot.controller.BaseController;
+import top.jpower.core.dbs.config.properties.DemoProperties;
 import top.jpower.core.dbs.tenant.JpowerTenantProperties;
 import top.jpower.core.util.constants.JpowerConstants;
 import top.jpower.core.util.rsp.R;
@@ -32,6 +33,7 @@ import static top.jpower.core.auth.utils.constant.RoleConstant.ROOT_ID;
 public class SystemController extends BaseController {
 
     private final JpowerTenantProperties tenantProperties;
+    private final DemoProperties demoProperties;
 
     @Operation(summary = "前端配置")
     @GetMapping(value = "/configure" , produces = APPLICATION_JSON_VALUE)
@@ -42,6 +44,7 @@ public class SystemController extends BaseController {
 				.put("menuCodeHeader", JpowerConstants.HEADER_MENU)
 				.put("tenantCodeHeader", JpowerConstants.HEADER_TENANT)
                 .put("languageCodeHeader", JpowerConstants.I18N_KEY)
+                .put("enableDemo", demoProperties.isEnable())
                 .put("enableTenant", tenantProperties.getEnable())
                 .put("enableRegister", ParamCache.getBoolean(ParamsConstants.IS_REGISTER,Boolean.FALSE))
                 .put("enableForgetPassword", ParamCache.getBoolean(ParamsConstants.IS_FORGET_PASSWORD,Boolean.FALSE))

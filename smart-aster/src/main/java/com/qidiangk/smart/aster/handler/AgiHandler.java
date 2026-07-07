@@ -78,7 +78,7 @@ public class AgiHandler extends AgiAbstractScript {
             agiSupport.setVariable(VariableNameEnum.FILE_PATH.getName(), recordingPath);
 
             // 设置录音
-            String file =  StrUtil.concat(true, StrUtil.appendIfMissing(asteriskProperties.getVoiceRootDir(), File.separator), agiSupport.getPhone(), File.separator, "recording_", DateUtil.format(DateUtil.date(), "yyyyMMddHHmmss"),".wav");
+            String file =  StrUtil.concat(true, asteriskProperties.getVoiceRootDir(), agiSupport.getPhone(), File.separator, "recording_", DateUtil.format(DateUtil.date(), "yyyyMMddHHmmss"),".wav");
             // 创建录音目录
             FileUtil.mkParentDirs(file);
             // 开始录音

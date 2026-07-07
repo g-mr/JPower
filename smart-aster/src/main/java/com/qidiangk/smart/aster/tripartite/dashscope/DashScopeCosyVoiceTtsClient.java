@@ -1,7 +1,6 @@
 package com.qidiangk.smart.aster.tripartite.dashscope;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import com.alibaba.dashscope.audio.tts.SpeechSynthesisResult;
 import com.alibaba.dashscope.audio.ttsv2.SpeechSynthesisAudioFormat;
@@ -10,14 +9,14 @@ import com.alibaba.dashscope.audio.ttsv2.SpeechSynthesizer;
 import com.alibaba.dashscope.common.ResultCallback;
 import com.alibaba.dashscope.utils.Constants;
 import com.qidiangk.smart.aster.tripartite.property.DashScopeProperty;
-import com.qidiangk.smart.aster.utils.WavWriter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import top.jpower.core.asterisk.audio.TtsClient;
 import top.jpower.core.asterisk.audio.TtsResult;
 import top.jpower.core.util.utils.Fc;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
@@ -29,7 +28,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * <br/>
  * 基于 DashScope CosyVoice 系列模型（cosyvoice-v1/v2/v3-flash/v3-plus 等）实现实时语音合成。
  * <br/>
- * 使用 WebSocket 流式通信，支持边合成边写入文件，适用于电话 VoIP 场景。
+ * 使用 WebSocket 流式通信，支持边合成边写入 OutputStream，适用于电话 VoIP 场景。
  * <br/>
  * 模型文档：<a href="https://help.aliyun.com/zh/model-studio/cosyvoice-java-sdk">CosyVoice Java SDK</a>
  *
@@ -57,33 +56,19 @@ public class DashScopeCosyVoiceTtsClient implements TtsClient {
     /**
      * 请求实体
      */
+    @RequiredArgsConstructor
     private static class TTSRequest {
 
         private final TtsResult result;
-        private final File file;
-        private final int sampleRate;
-        private WavWriter writer;
+        private final OutputStream audioOutput;
         private volatile boolean firstAudioReceived = false;
 
-        public TTSRequest(TtsResult result, File file, int sampleRate) {
-            this.result = result;
-            this.file = file;
-            this.sampleRate = sampleRate;
-        }
-
-        public void readyWriter() {
-            FileUtil.del(file);
-            FileUtil.mkParentDirs(file);
-            writer = new WavWriter(file.getAbsolutePath(), sampleRate, 1, 16);
-        }
-
         public void writeAudio(byte[] audioData) {
-            if (writer != null) {
-                try {
-                    writer.write(audioData);
-                } catch (IOException e) {
-                    log.error("[DashScope-CosyVoice-TTS] 文件写入报错: {}", ExceptionUtil.stacktraceToString(e));
-                }
+            try {
+                audioOutput.write(audioData);
+                audioOutput.flush();
+            } catch (IOException e) {
+                log.error("[DashScope-CosyVoice-TTS] 音频流写入报错: {}", ExceptionUtil.stacktraceToString(e));
             }
             // 首次收到音频数据时，通知框架可以开始播放
             if (!firstAudioReceived) {
@@ -92,13 +77,9 @@ public class DashScopeCosyVoiceTtsClient implements TtsClient {
             }
         }
 
-        public void closeWriter() {
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                    log.error("[DashScope-CosyVoice-TTS] 文件写入关闭报错: {}", ExceptionUtil.stacktraceToString(e));
-                }
+        public void closeOutput() {
+            try { audioOutput.close(); } catch (IOException e) {
+                log.error("[DashScope-CosyVoice-TTS] 音频流关闭报错: {}", ExceptionUtil.stacktraceToString(e));
             }
         }
     }
@@ -133,7 +114,7 @@ public class DashScopeCosyVoiceTtsClient implements TtsClient {
     /**
      * 构建语音合成参数。
      * <br/>
-     * 始终使用 PCM 格式（原始音频数据），WAV 容器由 {@link WavWriter} 负责封装。
+     * 始终使用 PCM 格式（原始音频数据），WAV 容器由框架层负责封装。
      */
     private SpeechSynthesisParam buildParam() {
         DashScopeProperty.TtsOption ttsOpt = property.getTtsOption();
@@ -178,7 +159,7 @@ public class DashScopeCosyVoiceTtsClient implements TtsClient {
             public void onComplete() {
                 TTSRequest request = currentRequest.get();
                 if (request != null) {
-                    request.closeWriter();
+                    request.closeOutput();
                     request.result.future().complete(null);
                     currentRequest.set(null);
                     log.debug("[DashScope-CosyVoice-TTS] 语音合成完成");
@@ -191,7 +172,7 @@ public class DashScopeCosyVoiceTtsClient implements TtsClient {
                 log.error("[DashScope-CosyVoice-TTS] 语音合成出错: {}", e.getMessage());
                 TTSRequest request = currentRequest.get();
                 if (request != null) {
-                    request.closeWriter();
+                    request.closeOutput();
                     request.result.future().completeExceptionally(
                             new RuntimeException("CosyVoice TTS 合成出错: " + e.getMessage(), e));
                     currentRequest.set(null);
@@ -207,21 +188,20 @@ public class DashScopeCosyVoiceTtsClient implements TtsClient {
      * 执行一次文本到语音的合成。
      * <br/>
      * 使用信号量确保同一实例同时只处理一个请求。
-     * 合成结果通过 WebSocket 回调实时写入文件。
+     * 合成结果通过 WebSocket 回调实时写入 OutputStream（PCM 原始字节）。
      *
-     * @param say  要合成的文本
-     * @param file 音频输出文件
+     * @param say         要合成的文本
+     * @param audioOutput 音频数据输出流
      * @return TtsResult（包含 future 和 startLatch 用于异步控制和播放同步）
      */
     @Override
-    public TtsResult process(String say, File file) {
+    public TtsResult process(String say, OutputStream audioOutput) {
         TtsResult result = new TtsResult(new CompletableFuture<>(), new CountDownLatch(1), true);
 
         ThreadUtil.execute(() -> {
             try {
                 requestSemaphore.acquire();
-                TTSRequest request = new TTSRequest(result, file, property.getTtsOption().getSampleRate());
-                request.readyWriter();
+                TTSRequest request = new TTSRequest(result, audioOutput);
                 currentRequest.set(request);
 
                 // 流式发送文本并通知完成
@@ -244,6 +224,11 @@ public class DashScopeCosyVoiceTtsClient implements TtsClient {
     }
 
     @Override
+    public int getSampleRate() {
+        return property.getTtsOption().getSampleRate() != null ? property.getTtsOption().getSampleRate() : 8000;
+    }
+
+    @Override
     public void close() {
         try {
             if (synthesizer != null) {
@@ -260,12 +245,11 @@ public class DashScopeCosyVoiceTtsClient implements TtsClient {
     /**
      * 根据采样率解析 SDK 音频格式枚举。
      * <br/>
-     * 始终使用 PCM 格式（原始音频数据），因为 WAV 容器由 {@link WavWriter} 负责封装。
+     * 始终使用 PCM 格式（原始音频数据），因为 WAV 容器由框架层负责封装。
      * <br/>
-     * 若 SDK 返回 WAV 格式数据（自带 RIFF 头），会与 WavWriter 写入的 WAV 头产生双重头部冲突，
+     * 若 SDK 返回 WAV 格式数据（自带 RIFF 头），会与框架层 WavWriter 写入的 WAV 头产生双重头部冲突，
      * 导致 Asterisk 读取 "Does not begin with RIFF" 或音频损坏。
      *
-     * @param format    配置的音频格式（已忽略，始终使用 PCM）
      * @param sampleRate 采样率
      */
     private static SpeechSynthesisAudioFormat resolveAudioFormat(Integer sampleRate) {

@@ -120,7 +120,7 @@ public class CityController extends BaseController {
     @Operation(summary = "查询下级列表")
     @GetMapping(value = "/listChild", produces = APPLICATION_JSON_VALUE)
     public R<List<SelectVO>> listChild(@Parameter(description = "父级code",required = true) @NotBlank(message = "父级CODE不可为空") @RequestParam(defaultValue = JpowerConstants.TOP_CODE) String pcode,
-                                       @Parameter(description = "名称") @RequestParam(required = false) String name){
+									   @Parameter(description = "名称") @RequestParam(required = false) String name){
         return R.data(coreCityService.listChild(pcode, name));
     }
 

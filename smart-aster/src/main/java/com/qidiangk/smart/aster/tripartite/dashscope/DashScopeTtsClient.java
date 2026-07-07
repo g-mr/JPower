@@ -11,7 +11,7 @@ import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.SpringUtil;
 import top.jpower.core.util.utils.StringUtil;
 
-import java.io.File;
+import java.io.OutputStream;
 
 /**
  * DashScope 实时 TTS 代理客户端
@@ -93,12 +93,17 @@ public class DashScopeTtsClient implements TtsClient {
     }
 
     @Override
-    public TtsResult process(String say, File file) {
-        return ttsClient.process(say, file);
+    public TtsResult process(String say, OutputStream audioOutput) {
+        return ttsClient.process(say, audioOutput);
     }
 
     @Override
     public void close() {
         ttsClient.close();
+    }
+
+    @Override
+    public int getSampleRate() {
+        return ttsClient.getSampleRate();
     }
 }

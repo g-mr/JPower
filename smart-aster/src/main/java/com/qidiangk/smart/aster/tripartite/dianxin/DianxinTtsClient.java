@@ -3,14 +3,12 @@ package com.qidiangk.smart.aster.tripartite.dianxin;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.exceptions.ExceptionUtil;
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSON;
 import com.qidiangk.smart.aster.tripartite.property.DianxinProperty;
 import com.qidiangk.smart.aster.tripartite.property.DianxinTtsOption;
-import com.qidiangk.smart.aster.utils.WavWriter;
 import jakarta.websocket.*;
 import lombok.Data;
 import lombok.SneakyThrows;
@@ -22,8 +20,8 @@ import top.jpower.core.util.utils.Fc;
 import top.jpower.core.util.utils.JsonUtil;
 import top.jpower.core.util.utils.StringUtil;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -52,39 +50,29 @@ public class DianxinTtsClient extends Endpoint implements TtsClient {
 
         private final CompletableFuture<Void> future;
         private final DianxinProperty.TtsOption ttsOption;
-        private final File file;
-        private WavWriter writer;
+        private final OutputStream audioOutput;
         private final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        public TTSRequest(CompletableFuture<Void> future, DianxinProperty.TtsOption ttsOption, File file){
+        public TTSRequest(CompletableFuture<Void> future, DianxinProperty.TtsOption ttsOption, OutputStream audioOutput){
             this.future = future;
             this.ttsOption = ttsOption;
-            this.file = file;
-        }
-
-        public void readyWriter() {
-            FileUtil.del(file);
-            FileUtil.mkParentDirs(file);
-            writer = new WavWriter(file.getAbsolutePath(), 8000, 1, 16);
+            this.audioOutput = audioOutput;
         }
 
         public void write(byte[] audioData) {
-            if (writer != null){
-                try {
-                    writer.write(audioData);
-                } catch (IOException e) {
-                    log.error("[dianxin-tts]文件写入报错={}", ExceptionUtil.stacktraceToString(e));
-                }
+            try {
+                audioOutput.write(audioData);
+                audioOutput.flush();
+            } catch (IOException e) {
+                log.error("[dianxin-tts]音频流写入报错={}", ExceptionUtil.stacktraceToString(e));
             }
         }
 
-        public void closeWriter() {
-            if (writer != null){
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                    log.error("[dianxin-tts]文件写入关闭报错={}", ExceptionUtil.stacktraceToString(e));
-                }
+        public void closeOutput() {
+            try {
+                audioOutput.close();
+            } catch (IOException e) {
+                log.error("[dianxin-tts]音频流关闭报错={}", ExceptionUtil.stacktraceToString(e));
             }
         }
     }
@@ -168,11 +156,7 @@ public class DianxinTtsClient extends Endpoint implements TtsClient {
             if (!request.future().isDone()) {
                 request.future().completeExceptionally(new IllegalStateException("连接关闭..."));
             }
-            try {
-                request.writer.close();
-            } catch (IOException e) {
-                log.error("[dianxin-tts]关闭文件写入报错={}", ExceptionUtil.stacktraceToString(e));
-            }
+            request.closeOutput();
         }
     }
 
@@ -197,8 +181,7 @@ public class DianxinTtsClient extends Endpoint implements TtsClient {
                     if (request != null){
                         // 从请求队列中取出来，放到处理队列中
                         if (pendingQueue.offer(request)){
-                            // 代表一个请求已经通过，可以处理了，需要初始化操作以后等着处理
-                            request.readyWriter();
+                            // 代表一个请求已经通过，可以处理了
                         } else {
                             log.warn("当前有请求正在处理，正常情况不可能执行这里，如果执行就需要好好检查代码并发逻辑，或者电信得文档骗人，不是按发送顺序返回的。当前的请求={}==={}", JSON.toJSONString(currentRequest.get().ttsOption()),JsonUtil.toJson(message));
                         }
@@ -221,7 +204,7 @@ public class DianxinTtsClient extends Endpoint implements TtsClient {
                     request.countDownLatch().countDown();
 
                     if (message.result().isEnd()){
-                        request.closeWriter();
+                        request.closeOutput();
                         // 标记为已完成
                         request.future().complete( null);
                         currentRequest.set(null);
@@ -257,10 +240,11 @@ public class DianxinTtsClient extends Endpoint implements TtsClient {
      * 使用锁机制，单实例下只能同时识别一个
      *
      * @param say 要转语音的内容
+     * @param audioOutput 音频数据输出流
      * @return
      */
     @Override
-    public TtsResult process(String say, File file) {
+    public TtsResult process(String say, OutputStream audioOutput) {
         CompletableFuture<Void> future = new CompletableFuture<>();
 
         // 创建TTS请求选项
@@ -270,7 +254,7 @@ public class DianxinTtsClient extends Endpoint implements TtsClient {
         ttsOption.setReqId(IdUtil.getSnowflakeNextIdStr());
 
         // 加入队列成功则发送请求
-        TTSRequest request = new TTSRequest(future, ttsOption, file);
+        TTSRequest request = new TTSRequest(future, ttsOption, audioOutput);
         if (requestQueue.offer(request)) {
             try {
                 sendMessage(ttsOption);

@@ -10,17 +10,17 @@ import cn.hutool.http.Method;
 import cn.hutool.json.JSONConfig;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import jakarta.validation.constraints.NotNull;
-import jodd.util.StringPool;
-import lombok.extern.slf4j.Slf4j;
-import org.asteriskjava.fastagi.AgiException;
-import org.springframework.stereotype.Component;
-import top.jpower.core.util.utils.Fc;
-import top.jpower.core.util.utils.StringUtil;
 import com.qidiangk.smart.aster.handler.nodes.NodeContext;
 import com.qidiangk.smart.aster.handler.nodes.NodeGranter;
 import com.qidiangk.smart.aster.handler.nodes.NodeResult;
 import com.qidiangk.smart.aster.pojo.UserIntent;
+import jakarta.validation.constraints.NotNull;
+import jodd.util.StringPool;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.text.StringSubstitutor;
+import org.asteriskjava.fastagi.AgiException;
+import org.springframework.stereotype.Component;
+import top.jpower.core.util.utils.Fc;
 
 import java.util.List;
 import java.util.Map;
@@ -49,7 +49,7 @@ public class ServiceGranter implements NodeGranter<UserIntent.Node.ServiceNode> 
                 map.put(match, "");
             }
         });
-        return StringUtil.format(param, map);
+        return StringSubstitutor.replace(param, map);
     }
 
     @Override

@@ -46,9 +46,15 @@
             </plugin>
 
             <plugin>
-                <groupId>com.spotify</groupId>
-                <artifactId>dockerfile-maven-plugin</artifactId>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
                 <configuration>
+                    <container>
+                        <workingDirectory>/smart/log</workingDirectory>
+                        <ports>
+                            <port>17000</port>
+                        </ports>
+                    </container>
                     <skip>false</skip>
                 </configuration>
             </plugin>
