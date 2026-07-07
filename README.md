@@ -277,7 +277,7 @@ docker-compose up -d
 
 ```bash
 mvn clean compile jib:dockerBuild
-cd boot/app
+cd script/boot
 docker-compose up -d
 ```
 
