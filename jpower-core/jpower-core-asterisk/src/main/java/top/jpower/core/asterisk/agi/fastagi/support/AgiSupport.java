@@ -102,7 +102,7 @@ public abstract class AgiSupport {
     }
 
     public String getPhone() {
-        return Fc.equalsValue(getCallType(), 2)?request.getCallerIdNumber():request.getRequest().get("callerid");
+        return Fc.equalsValue(getCallType(), 2) ? request.getCallerIdNumber() : request.getRequest().get("callerid");
     }
 
     public String getUniqueId() {

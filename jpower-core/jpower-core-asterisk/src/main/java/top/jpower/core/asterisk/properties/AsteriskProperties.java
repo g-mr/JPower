@@ -5,6 +5,8 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+
 @Data
 @Component
 @ConfigurationProperties(prefix = "asterisk")
@@ -41,7 +43,7 @@ public class AsteriskProperties {
     }
 
     public String getVoiceRootDir() {
-        return StrUtil.appendIfMissing(voiceRootDir, "/");
+        return StrUtil.appendIfMissing(voiceRootDir, File.separator);
     }
 
 }
