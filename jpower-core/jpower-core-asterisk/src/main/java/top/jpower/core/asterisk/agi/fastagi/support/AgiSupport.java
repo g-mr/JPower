@@ -412,13 +412,6 @@ public abstract class AgiSupport {
                     result.noDataReference().set(null);
                 }
 
-                // 已经播放完了，识别到用户说话，但是等了3秒用户还没有新的话语，标识没有识别清楚就给个提示
-//                if (isVoiceEnd.get() && result.isStarted() && ms > 3000) {
-//                    streamFile("您请说...", true);
-                    // 播放一次就不用重复播了
-//                    result.noDataReference().set(null);
-//                }
-
             });
 
             // 开始录音
