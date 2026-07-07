@@ -203,6 +203,7 @@ jpower:
   auth:
     skipUrl:
       - /home/**
+      - /record/download
 #      - /auth/**
 #      - /core/user/downloadTemplate
 #    client:

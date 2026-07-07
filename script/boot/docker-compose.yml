@@ -1,0 +1,17 @@
+services:
+  smartaster:
+    image: docker.qidiangk.com/smartaster/smart-boot:1.0.1
+    container_name: smartaster
+    restart: always
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./logs/:/app/springboot/logs/
+      - ./file/:/data/file/
+      - smart_voice_data:/data/
+    ports:
+      - "9999:9999"
+
+volumes:
+  smart_voice_data:
+    name: smart_voice_data

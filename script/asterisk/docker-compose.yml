@@ -1,7 +1,7 @@
 services:
   asterisk:
-    # 如果是自己构建镜像，请修改为asterisk:22
-    image: 8.130.172.218:8180/smart/asterisk:22
+    # 如果是使用仓库镜像，请修改为docker.qidiangk.com/smart/asterisk:22
+    image: smart/asterisk:22
     hostname: "smart-asterisk"
     container_name: "asterisk"
     network_mode: "host"

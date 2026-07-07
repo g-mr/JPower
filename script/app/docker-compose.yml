@@ -120,7 +120,7 @@ services:
         ipv4_address: 172.16.238.54
 
   smart-admin:
-    image: "219.148.186.235:99/smart/smart-admin:3.0.1"
+    image: "docker.qidiangk.com/smartaster/smart-admin:1.0.1"
     privileged: true
     restart: always
     ports:
@@ -129,7 +129,7 @@ services:
       - smart_net
 
   smart-gateway:
-    image: "219.148.186.235:99/smart/smart-gateway:3.0.1"
+    image: "docker.qidiangk.com/smartaster/smart-gateway:1.0.1"
     privileged: true
     volumes:
 #      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
@@ -143,7 +143,7 @@ services:
         ipv4_address: 172.16.238.25
 
   smart-auth:
-    image: "219.148.186.235:99/smart/smart-auth:3.0.1"
+    image: "docker.qidiangk.com/smartaster/smart-auth:1.0.1"
     privileged: true
     volumes:
       #      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
@@ -156,7 +156,7 @@ services:
       - smart_net
 
   smart-user:
-    image: "219.148.186.235:99/smart/smart-user:3.0.1"
+    image: "docker.qidiangk.com/smartaster/smart-user:1.0.1"
     privileged: true
     volumes:
       #      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
@@ -169,7 +169,7 @@ services:
       - smart_net
 
   smart-system:
-    image: "219.148.186.235:99/smart/smart-system:3.0.1"
+    image: "docker.qidiangk.com/smartaster/smart-system:1.0.1"
     privileged: true
     volumes:
       #      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
@@ -182,7 +182,7 @@ services:
       - smart_net
 
   smart-resource:
-    image: "219.148.186.235:99/smart/smart-resource:3.0.1"
+    image: "docker.qidiangk.com/smartaster/smart-resource:1.0.1"
     volumes:
       #      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
       - ../docker/skywalking/agent/:/smart/skywalking/agent/
@@ -197,7 +197,7 @@ services:
       - smart_net
 
   smart-doc:
-    image: "219.148.186.235:99/smart/smart-doc:3.0.1"
+    image: "docker.qidiangk.com/smartaster/smart-doc:1.0.1"
     ports:
       - 18000:18000
     privileged: true
@@ -206,7 +206,37 @@ services:
       - smart_net
 
   smart-log:
-    image: "219.148.186.235:99/smart/smart-log:3.0.1"
+    image: "docker.qidiangk.com/smartaster/smart-log:1.0.1"
+    volumes:
+      #      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
+      - ../docker/skywalking/agent/:/smart/skywalking/agent/
+      #      系统文件映射路径
+      - ../docker/log/:/root/file
+    environment:
+      - JAVA_TOOL_OPTIONS=-javaagent:/smart/skywalking/agent/skywalking-agent.jar
+      - SW_AGENT_COLLECTOR_BACKEND_SERVICES=skywalking-oap:11800
+    privileged: true
+    restart: always
+    networks:
+      - smart_net
+  
+  smart-aster:
+    image: "docker.qidiangk.com/smartaster/smart-aster:1.0.1"
+    volumes:
+      #      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
+      - ../docker/skywalking/agent/:/smart/skywalking/agent/
+      #      系统文件映射路径
+      - ../docker/log/:/root/file
+    environment:
+      - JAVA_TOOL_OPTIONS=-javaagent:/smart/skywalking/agent/skywalking-agent.jar
+      - SW_AGENT_COLLECTOR_BACKEND_SERVICES=skywalking-oap:11800
+    privileged: true
+    restart: always
+    networks:
+      - smart_net
+    
+  smart-maxkb:
+    image: "docker.qidiangk.com/smartaster/smart-maxkb:1.0.1"
     volumes:
       #      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
       - ../docker/skywalking/agent/:/smart/skywalking/agent/

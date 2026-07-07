@@ -11,17 +11,17 @@ base(){
 
 #启动核心程序模块
 core(){
-  docker-compose up -d smart-gateway smart-auth smart-user smart-system smart-resource smart-log smart-doc smart-admin
+  docker-compose up -d smart-gateway smart-auth smart-user smart-system smart-resource smart-log smart-doc smart-admin smart-aster smart-maxkb
 }
 
 #关闭核心程序模块
 stopCore(){
-  docker-compose stop smart-gateway smart-auth smart-user smart-system smart-resource smart-log smart-doc smart-admin
+  docker-compose stop smart-gateway smart-auth smart-user smart-system smart-resource smart-log smart-doc smart-admin smart-aster smart-maxkb
 }
 
 #下载核心程序模块镜像
 pull(){
-  docker-compose pull smart-gateway smart-auth smart-user smart-system smart-resource smart-log smart-doc smart-admin
+  docker-compose pull smart-gateway smart-auth smart-user smart-system smart-resource smart-log smart-doc smart-admin smart-aster smart-maxkb
 }
 
 #关闭所有模块
