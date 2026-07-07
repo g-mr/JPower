@@ -406,17 +406,17 @@ public class ChatClientRequestBuilder {
     @Nullable
     private Object createDashScopeResponseFormat(ClassLoader cl) {
         // 原版 JAR 中的类路径（api 包）
-        Object result = createViaBuilder(cl,
+        Object result = createDashScopeResponseFormatForClass(cl,
                 "com.alibaba.cloud.ai.dashscope.api.DashScopeResponseFormat",
-                "type", "json_object");
+                "com.alibaba.cloud.ai.dashscope.api.DashScopeResponseFormat$Type");
         if (result != null) {
             return result;
         }
 
         // 旧版本兼容（chat 包）
-        result = createViaBuilder(cl,
+        result = createDashScopeResponseFormatForClass(cl,
                 "com.alibaba.cloud.ai.dashscope.chat.DashScopeResponseFormat",
-                "type", "json_object");
+                "com.alibaba.cloud.ai.dashscope.chat.DashScopeResponseFormat$Type");
         if (result != null) {
             return result;
         }
@@ -426,7 +426,33 @@ public class ChatClientRequestBuilder {
     }
 
     /**
-     * 通过 builder 模式反射创建对象
+     * 针对指定类名和枚举类名，创建 DashScopeResponseFormat(JSON_OBJECT) 对象。
+     * <p>
+     * 枚举值名称先尝试 {@code JSON_OBJECT}（驼峰命名规范），再尝试 {@code json_object}（小写）。
+     * 若枚举类不存在或枚举值未找到，则回退为直接传入字符串 {@code "json_object"}。
+     */
+    @Nullable
+    private Object createDashScopeResponseFormatForClass(ClassLoader cl, String className, String enumClassName) {
+        // 按优先级依次尝试枚举值名称
+        Object typeValue = findEnumValue(cl, enumClassName, "JSON_OBJECT");
+        if (typeValue == null) {
+            typeValue = findEnumValue(cl, enumClassName, "json_object");
+        }
+
+        if (typeValue != null) {
+            // 已解析到正确的枚举实例，通过 builder 创建
+            return createViaBuilder(cl, className, "type", typeValue);
+        }
+
+        // 枚举类未找到（可能是不同版本使用字符串字段），降级尝试直接传字符串
+        return createViaBuilder(cl, className, "type", "json_object");
+    }
+
+    /**
+     * 通过 builder 模式反射创建对象。
+     * <p>
+     * setter 调用时优先按参数类型精确匹配，以避免因类型不匹配导致的
+     * {@link IllegalArgumentException}（例如传入枚举实例但方法参数为 String 时）。
      */
     @Nullable
     private Object createViaBuilder(ClassLoader cl, String className, String setterName, Object value) {
@@ -437,11 +463,25 @@ public class ChatClientRequestBuilder {
             var builderMethod = clazz.getMethod("builder");
             Object builder = builderMethod.invoke(null);
 
-            // Set the field
+            // Set the field — 按参数类型精确匹配，避免 argument type mismatch
+            boolean setterCalled = false;
             for (var method : builder.getClass().getMethods()) {
                 if (method.getName().equals(setterName) && method.getParameterCount() == 1) {
-                    method.invoke(builder, value);
-                    break;
+                    Class<?> paramType = method.getParameterTypes()[0];
+                    if (paramType.isInstance(value)) {
+                        method.invoke(builder, value);
+                        setterCalled = true;
+                        break;
+                    }
+                }
+            }
+            // 若精确匹配未找到，按方法名宽松匹配（兼容旧版行为）
+            if (!setterCalled) {
+                for (var method : builder.getClass().getMethods()) {
+                    if (method.getName().equals(setterName) && method.getParameterCount() == 1) {
+                        method.invoke(builder, value);
+                        break;
+                    }
                 }
             }
 

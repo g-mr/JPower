@@ -24,14 +24,12 @@ import top.jpower.core.asterisk.audio.AsrClient;
 import top.jpower.core.asterisk.audio.AsrResult;
 import top.jpower.core.asterisk.audio.TtsClient;
 import top.jpower.core.asterisk.audio.TtsResult;
+import top.jpower.core.asterisk.audio.WavWriter;
 import top.jpower.core.asterisk.properties.AsteriskProperties;
 import top.jpower.core.util.utils.Fc;
 
 import java.io.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -215,7 +213,17 @@ public abstract class AgiSupport {
         if (FileUtil.exist(filePath)){
             return StrUtil.removeSuffix(filePath, ".wav");
         } else {
-            TtsResult result = ttsClient.process(say, new File(filePath));
+            // 从 PipedInputStream 读取音频数据并写入 WavWriter
+            PipedOutputStream pipedOut = new PipedOutputStream();
+            TtsResult result = ttsClient.process(say, pipedOut);;
+            try {
+                PipedInputStream pipedIn = new PipedInputStream(pipedOut, 1024 * 1024);
+                // 从管道读取音频数据并写入 WAV 文件
+                ThreadUtil.execute(() -> pipeToFile(pipedIn, filePath, result, ttsClient.getSampleRate()));
+            } catch (IOException e) {
+                log.error("创建 TTS 管道失败[播放内容={}]===>{}", say, ExceptionUtil.stacktraceToString(e));
+                return "";
+            }
 
             try {
                 if (result.isWriterPlay()){
@@ -232,6 +240,38 @@ public abstract class AgiSupport {
                 log.error("播放文件创建超时[播放内容={}，文件名={}]===>>{}{}", say, filePath, StrPool.TAB, e.getMessage());
             }
             return "";
+        }
+    }
+
+    /**
+     * 从管道流读取音频数据并写入 WAV 文件。
+     * <br/>
+     * 此方法在独立线程中运行，由框架统一管理文件生命周期，
+     * TTS 实现类只需将 PCM 原始字节写入提供的 OutputStream。
+     *
+     * @param pipedIn    管道输入流（连接实现类的 PipedOutputStream）
+     * @param filePath   WAV 文件输出路径
+     * @param result     TTS 结果句柄（用于错误感知）
+     * @param sampleRate 采样率，用于创建 WAV 文件头
+     */
+    private void pipeToFile(PipedInputStream pipedIn, String filePath, TtsResult result, int sampleRate) {
+        try (WavWriter writer = new WavWriter(filePath, sampleRate, 1, 16)) {
+            byte[] buffer = new byte[4096];
+            int len;
+            while ((len = pipedIn.read(buffer)) != -1) {
+                writer.write(buffer, 0, len);
+            }
+        } catch (IOException e) {
+            log.error("TTS 文件写入失败[文件名={}]===>{}", filePath, ExceptionUtil.stacktraceToString(e));
+            FileUtil.del(filePath);
+            if (!result.isDone()) {
+                result.future().completeExceptionally(e);
+            }
+        } finally {
+            try {
+                pipedIn.close();
+            } catch (IOException ignored) {
+            }
         }
     }
 
@@ -388,9 +428,9 @@ public abstract class AgiSupport {
             executor.execute(()->{
                 // 等待录音文件创建（MixMonitor启动到文件实际创建存在微小延迟）
                 File recordFile = new File(userFile);
-                int maxRetries = 50; // 最多等待5秒（50 * 100ms）
+                int maxRetries = 100; // 最多等待1秒（100 * 10ms）
                 while (!recordFile.exists() && maxRetries-- > 0 && !isHangup()) {
-                    ThreadUtil.sleep(100);
+                    ThreadUtil.sleep(10);
                 }
                 if (!recordFile.exists()) {
                     log.error("录音文件等待超时仍未创建[{}]", userFile);
