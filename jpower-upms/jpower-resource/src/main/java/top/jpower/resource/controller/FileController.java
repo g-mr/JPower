@@ -34,7 +34,6 @@ import top.jpower.resource.pojo.MoveBO;
 import top.jpower.resource.service.ResourceFileService;
 import top.jpower.resource.service.ResourceOssService;
 import top.jpower.resource.service.file.FileOperateBuilder;
-import top.jpower.system.api.cache.dict.DictCache;
 import top.jpower.system.api.dto.SelectDTO;
 
 import java.io.IOException;
@@ -68,7 +67,7 @@ public class FileController extends BaseController {
     @Operation(summary = "上传文件")
     @PostMapping(value = "/upload", produces = APPLICATION_JSON_VALUE)
     public R<Long> upload(@Parameter(description = "文件", required = true) @NotNull(message = "文件不可为空") @RequestParam MultipartFile file,
-						  @Parameter(description = "存储类型 字典:FILE_STORAGE_TYPE", example = "SERVER") @RequestParam(required = false, defaultValue = "SERVER") String storageType,
+						  @Parameter(description = "存储位置", example = "SERVER") @RequestParam(required = false) String storageType,
 						  @Parameter(description = "文件分组ID") @RequestParam(required = false) Long groupId) throws IOException {
 		ResourceFile coreFile = operateBuilder.getBuilder(storageType).upload(file.getBytes(), file.getOriginalFilename(), file.getSize(), groupId);
 		CacheUtil.clear(CacheNames.FILE_KEY);
@@ -129,7 +128,7 @@ public class FileController extends BaseController {
 		@Parameter(name = "name", description = "文件名称", in = ParameterIn.QUERY),
 		@Parameter(name = "groupId_eq", description = "分组ID", in = ParameterIn.QUERY),
 		@Parameter(name = "groupId_null", description = "查询未分组文件，只要有这个参数不管有没有值都会生效", in = ParameterIn.QUERY),
-		@Parameter(name = "storageType_eq", description = "存储位置 字典FILE_STORAGE_TYPE", in = ParameterIn.QUERY),
+		@Parameter(name = "storageType_eq", description = "存储位置", in = ParameterIn.QUERY),
 		@Parameter(name = "fileType_eq", description = "文件类型", in = ParameterIn.QUERY),
 		@Parameter(name = "fileSize_gt", description = "文件大小最大值", in = ParameterIn.QUERY),
 		@Parameter(name = "fileSize_lt", description = "文件大小最小值", in = ParameterIn.QUERY),
@@ -178,9 +177,7 @@ public class FileController extends BaseController {
     @Operation(summary = "上传类型")
     @GetMapping(value = "/storageType",produces=APPLICATION_JSON_VALUE)
     public R<List<SelectDTO>> storageType(){
-        List<SelectDTO> list = DictCache.getDictByType("FILE_STORAGE_TYPE");
-        list.addAll(ossService.listCodeName());
-        return R.data(list);
+        return R.data(ossService.listCodeName());
     }
 
 	@Function(value = "移动文件",menus = {

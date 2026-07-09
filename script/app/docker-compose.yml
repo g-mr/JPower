@@ -120,7 +120,7 @@ services:
         ipv4_address: 172.16.238.54
 
   jpower-admin:
-    image: "219.148.186.235:99/jpower/jpower-admin:3.0.2"
+    image: "219.148.186.235:99/jpower/jpower-admin:3.0.3"
     privileged: true
     restart: always
     ports:
@@ -129,7 +129,7 @@ services:
       - jpower_net
 
   jpower-gateway:
-    image: "219.148.186.235:99/jpower/jpower-gateway:3.0.2"
+    image: "219.148.186.235:99/jpower/jpower-gateway:3.0.3"
     privileged: true
     volumes:
 #      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
@@ -143,7 +143,7 @@ services:
         ipv4_address: 172.16.238.25
 
   jpower-auth:
-    image: "219.148.186.235:99/jpower/jpower-auth:3.0.2"
+    image: "219.148.186.235:99/jpower/jpower-auth:3.0.3"
     privileged: true
     volumes:
       #      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
@@ -156,7 +156,7 @@ services:
       - jpower_net
 
   jpower-user:
-    image: "219.148.186.235:99/jpower/jpower-user:3.0.2"
+    image: "219.148.186.235:99/jpower/jpower-user:3.0.3"
     privileged: true
     volumes:
       #      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
@@ -169,7 +169,7 @@ services:
       - jpower_net
 
   jpower-system:
-    image: "219.148.186.235:99/jpower/jpower-system:3.0.2"
+    image: "219.148.186.235:99/jpower/jpower-system:3.0.3"
     privileged: true
     volumes:
       #      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
@@ -182,7 +182,7 @@ services:
       - jpower_net
 
   jpower-resource:
-    image: "219.148.186.235:99/jpower/jpower-resource:3.0.2"
+    image: "219.148.186.235:99/jpower/jpower-resource:3.0.3"
     volumes:
       #      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
       - ../docker/skywalking/agent/:/jpower/skywalking/agent/
@@ -197,7 +197,7 @@ services:
       - jpower_net
 
   jpower-doc:
-    image: "219.148.186.235:99/jpower/jpower-doc:3.0.2"
+    image: "219.148.186.235:99/jpower/jpower-doc:3.0.3"
     ports:
       - 18000:18000
     privileged: true
@@ -206,7 +206,7 @@ services:
       - jpower_net
 
   jpower-log:
-    image: "219.148.186.235:99/jpower/jpower-log:3.0.2"
+    image: "219.148.186.235:99/jpower/jpower-log:3.0.3"
     volumes:
       #      skywalking指针得目录，需要映射到容器，如果skywalking指针得目录在宿主机上得位置改变了这里也需要修改
       - ../docker/skywalking/agent/:/jpower/skywalking/agent/

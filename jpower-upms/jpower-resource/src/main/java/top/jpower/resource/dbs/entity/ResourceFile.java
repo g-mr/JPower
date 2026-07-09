@@ -10,7 +10,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import top.jpower.core.dbs.dbs.entity.base.BaseEntity;
-import top.jpower.core.dbs.dictbind.annotation.Dict;
 
 /**
  * 文件
@@ -45,7 +44,6 @@ public class ResourceFile extends BaseEntity {
     @Schema(description = "文件标识")
     private String mark;
     @Schema(description = "存储类型")
-    @Dict(name = "FILE_STORAGE_TYPE")
     private String storageType;
     @Schema(description = "备注")
     private String note;

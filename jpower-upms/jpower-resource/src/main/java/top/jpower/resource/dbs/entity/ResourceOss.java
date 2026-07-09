@@ -40,6 +40,12 @@ public class ResourceOss extends BaseEntity {
     @Schema(description = "编码")
     private String code;
 
+    @Schema(description = "是否内置数据")
+    private Boolean isSystem;
+
+    @Schema(description = "是否默认配置")
+    private Boolean isDefault;
+
     @Schema(description = "accessKey")
     private String accessKey;
 

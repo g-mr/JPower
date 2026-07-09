@@ -6,7 +6,7 @@
 
     <groupId>top.jpower</groupId>
     <artifactId>jpower-core-dependencies</artifactId>
-    <version>3.0.2</version>
+    <version>3.0.3</version>
     <packaging>pom</packaging>
     <name>JPower Core Dependencies</name>
     <description>JPower 框架统一依赖版本管理 BOM（Bill of Materials）</description>
@@ -39,7 +39,7 @@
         <maven-gpg.version>3.2.8</maven-gpg.version>
 
         <!-- jpower-core 各子模块版本 -->
-        <top.jpower.version>3.0.2</top.jpower.version>
+        <top.jpower.version>3.0.3</top.jpower.version>
 
         <!-- 基础框架 BOM -->
         <spring-boot.version>3.5.8</spring-boot.version>

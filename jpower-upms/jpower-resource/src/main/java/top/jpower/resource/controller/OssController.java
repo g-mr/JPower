@@ -71,6 +71,15 @@ public class OssController extends BaseController {
         return R.data(resourceOss.getId());
     }
 
+    @Function(value = "默认",menus = {
+            @Menu(client = "admin",menuCode = "OSS",code = "OSS_DEFAULT", type = Menu.TYPE.BTN)
+    })
+    @Operation(summary = "默认")
+    @PostMapping(value = "default/{id}", produces = APPLICATION_JSON_VALUE)
+    public R<Void> setDefault(@PathVariable("id") Long id){
+        return R.status(false);
+    }
+
     @Function(value = "更新",menus = {
         @Menu(client = "admin",menuCode = "OSS",code = "OSS_UPDATE", type = Menu.TYPE.BTN)
     })

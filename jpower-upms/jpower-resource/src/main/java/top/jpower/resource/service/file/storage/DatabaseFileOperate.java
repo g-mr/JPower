@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 import top.jpower.common.constants.DefaultValConstants;
 import top.jpower.common.enums.FileStorageTypeEnum;
 import top.jpower.core.util.utils.*;
+import top.jpower.resource.dbs.dao.ResourceFileDao;
 import top.jpower.resource.dbs.entity.ResourceFile;
-import top.jpower.resource.service.ResourceFileService;
 import top.jpower.resource.service.file.FileOperate;
 
 import java.io.IOException;
@@ -29,7 +29,7 @@ import static top.jpower.resource.service.file.storage.DatabaseFileOperate.STORA
 public class DatabaseFileOperate implements FileOperate {
 
 	public static final String STORAGE_TYPE = "DATABASE";
-	private final ResourceFileService coreFileService;
+	private final ResourceFileDao coreFileDao;
 
 	@Override
 	public ResourceFile upload(byte[] bytes, String name, Long size, Long groupId) {
@@ -44,7 +44,7 @@ public class DatabaseFileOperate implements FileOperate {
 		coreFile.setName(name);
 		coreFile.setGroupId(groupId);
 
-		coreFileService.add(coreFile);
+        coreFileDao.save(coreFile);
 
 		return coreFile;
 	}
@@ -56,7 +56,7 @@ public class DatabaseFileOperate implements FileOperate {
 
 	@Override
 	public byte[] getByte(ResourceFile coreFile) {
-		return coreFileService.getContentById(coreFile.getId());
+		return coreFileDao.getContentById(coreFile.getId());
 	}
 
 	@Override

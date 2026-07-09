@@ -11,8 +11,8 @@ import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.utils.*;
+import top.jpower.resource.dbs.dao.ResourceFileDao;
 import top.jpower.resource.dbs.entity.ResourceFile;
-import top.jpower.resource.service.ResourceFileService;
 import top.jpower.resource.service.file.FileOperate;
 import top.jpower.resource.service.file.properties.FileProperties;
 
@@ -20,9 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
-import static top.jpower.common.constants.ServiceCodeConstants.FILE_NOT_EXIST;
-import static top.jpower.common.constants.ServiceCodeConstants.FILE_PATH_NOT_EXIST;
-import static top.jpower.common.constants.ServiceCodeConstants.FILE_SAVE_PATH_NOT_CONFIG;
+import static top.jpower.common.constants.ServiceCodeConstants.*;
 import static top.jpower.resource.service.file.storage.ServerFileOperate.STORAGE_TYPE;
 
 /**
@@ -40,7 +38,7 @@ public class ServerFileOperate implements FileOperate {
 
 	public static final String STORAGE_TYPE = "SERVER";
 	private final FileProperties fileProperties;
-	private final ResourceFileService coreFileService;
+	private final ResourceFileDao resourceFileDao;
 
 	@Override
 	public ResourceFile upload(byte[] bytes, String name, Long size, Long groupId) {
@@ -59,7 +57,7 @@ public class ServerFileOperate implements FileOperate {
 		coreFile.setGroupId(groupId);
 
 		try {
-			if (!coreFileService.add(coreFile)){
+			if (!resourceFileDao.save(coreFile)){
 				FileUtil.deleteFile(saveFile);
 				return null;
 			}

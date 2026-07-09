@@ -33,7 +33,7 @@ public class JpowerConstants {
     public static final String COUNTRY_CODE = "CHN";
 
     /** 框架版本 **/
-    public static final String JPOWER_VESION = "3.0.2";
+    public static final String JPOWER_VESION = "3.0.3";
 
     /**
      * 测试环境验证码

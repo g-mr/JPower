@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import top.jpower.common.constants.AppConstant;
+import top.jpower.common.enums.FileStorageTypeEnum;
 import top.jpower.core.util.rsp.R;
 import top.jpower.resource.api.dto.FileDTO;
 
@@ -29,7 +30,7 @@ public interface FileClient {
      * @return R
      **/
     @PostMapping(value = "/uploadFile",consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces =  MediaType.APPLICATION_PROBLEM_JSON_VALUE)
-    R<Long> uploadFile(@RequestPart("file") File file,@RequestParam("storageType") String storageType);
+    R<Long> uploadFile(@RequestPart("file") File file,@RequestParam("storageType") FileStorageTypeEnum storageType);
 
     /**
      * 获取文件外链

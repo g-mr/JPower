@@ -37,9 +37,9 @@ public class FileClientController implements FileClient {
 
     @Override
     @PostMapping(value = "/uploadFile",consumes = MediaType.MULTIPART_FORM_DATA_VALUE,produces =  MediaType.APPLICATION_PROBLEM_JSON_VALUE)
-    public R<Long> uploadFile(@RequestParam("file") File file,@RequestParam("storageType") String storageType){
+    public R<Long> uploadFile(@RequestParam("file") File file,@RequestParam("storageType") FileStorageTypeEnum storageType){
         ResourceFile coreFile = operateBuilder
-                .getBuilder(storageType)
+                .getBuilder(storageType.getValue())
                 .upload(FileUtil.readBytes(file), file.getName(), file.length(), null);
         return R.data(coreFile.getId());
     }
@@ -50,7 +50,7 @@ public class FileClientController implements FileClient {
 
         ResourceFile coreFile = coreFileService.getById(id);
         return R.data(operateBuilder
-                .getBuilder(FileStorageTypeEnum.SERVER.getValue())
+                .getBuilder(coreFile.getStorageType())
                 .getUrl(coreFile));
     }
 

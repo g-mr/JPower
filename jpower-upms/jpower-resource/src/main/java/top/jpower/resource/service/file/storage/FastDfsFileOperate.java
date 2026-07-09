@@ -10,8 +10,8 @@ import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.utils.*;
+import top.jpower.resource.dbs.dao.ResourceFileDao;
 import top.jpower.resource.dbs.entity.ResourceFile;
-import top.jpower.resource.service.ResourceFileService;
 import top.jpower.resource.service.file.FileOperate;
 import top.jpower.resource.service.file.properties.FileProperties;
 import top.jpower.resource.utils.FileDfsUtil;
@@ -36,7 +36,7 @@ public class FastDfsFileOperate implements FileOperate {
 
 	public static final String STORAGE_TYPE = "FASTDFS";
 	private final FileProperties fileProperties;
-	private final ResourceFileService coreFileService;
+	private final ResourceFileDao resourceFileDao;
 
 
 	@Override
@@ -56,7 +56,7 @@ public class FastDfsFileOperate implements FileOperate {
 		file.setGroupId(groupId);
 
 		try {
-			if (!coreFileService.add(file)){
+			if (!resourceFileDao.save(file)){
 				FileDfsUtil.deleteFile(dfsPath);
 				return null;
 			}
