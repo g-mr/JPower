@@ -26,7 +26,19 @@ public enum OssCategoryEnum {
     /**
      * 亚马逊
      **/
-    AWS("aws", "亚马逊");
+    AWS("aws", "亚马逊"),
+    /**
+     * 服务器
+     **/
+    SERVER("服务器", "服务器"),
+    /**
+     * 数据库
+     **/
+    DATABASE("数据库", "数据库"),
+    /**
+     * FASTDFS
+     **/
+    FASTDFS("fastdfs", "FASTDFS");
 
     private final String value;
     private final String name;

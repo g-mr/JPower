@@ -35,4 +35,17 @@ public class ResourceOssServiceImpl extends BaseServiceImpl<ResourceOssMapper, R
     public List<SelectDTO> listCodeName() {
         return resourceOssDao.listCodeName();
     }
+
+    /**
+     * 设置默认
+     *
+     * @author mr.g
+     * @param id 编码
+     * @return Boolean 是否成功
+     */
+    @Override
+    public Boolean setDefault(Long id) {
+        resourceOssDao.updateChain().set(ResourceOss::getIsDefault, false).update();
+        return resourceOssDao.updateChain().set(ResourceOss::getIsDefault, true).eq(ResourceOss::getId, id).update();
+    }
 }

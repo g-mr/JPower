@@ -3,7 +3,6 @@ package top.jpower.resource.api.feign;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
-import top.jpower.common.enums.FileStorageTypeEnum;
 import top.jpower.core.util.rsp.R;
 import top.jpower.resource.api.dto.FileDTO;
 
@@ -21,7 +20,12 @@ public class FileClientFallback implements FallbackFactory<FileClient> {
         return new FileClient() {
 
             @Override
-            public R<Long> uploadFile(File file, FileStorageTypeEnum storageType) {
+            public R<Long> uploadFile(File file, String storageType) {
+                return R.fail("上传服务器失败");
+            }
+
+            @Override
+            public R<Long> uploadFile(File file) {
                 return R.fail("上传服务器失败");
             }
 

@@ -77,7 +77,7 @@ public class OssController extends BaseController {
     @Operation(summary = "默认")
     @PostMapping(value = "default/{id}", produces = APPLICATION_JSON_VALUE)
     public R<Void> setDefault(@PathVariable("id") Long id){
-        return R.status(false);
+        return R.status(ossService.setDefault(id));
     }
 
     @Function(value = "更新",menus = {

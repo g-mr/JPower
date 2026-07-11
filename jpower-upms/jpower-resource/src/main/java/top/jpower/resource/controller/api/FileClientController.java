@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import top.jpower.common.enums.FileStorageTypeEnum;
 import top.jpower.core.util.rsp.R;
 import top.jpower.core.util.utils.BeanUtil;
 import top.jpower.core.util.utils.FileUtil;
@@ -36,10 +35,19 @@ public class FileClientController implements FileClient {
     private final ResourceFileService coreFileService;
 
     @Override
-    @PostMapping(value = "/uploadFile",consumes = MediaType.MULTIPART_FORM_DATA_VALUE,produces =  MediaType.APPLICATION_PROBLEM_JSON_VALUE)
-    public R<Long> uploadFile(@RequestParam("file") File file,@RequestParam("storageType") FileStorageTypeEnum storageType){
+    @PostMapping(value = "/uploadFileByStorage",consumes = MediaType.MULTIPART_FORM_DATA_VALUE,produces =  MediaType.APPLICATION_PROBLEM_JSON_VALUE)
+    public R<Long> uploadFile(@RequestParam("file") File file,@RequestParam("storageType") String storageType){
         ResourceFile coreFile = operateBuilder
-                .getBuilder(storageType.getValue())
+                .getBuilder(storageType)
+                .upload(FileUtil.readBytes(file), file.getName(), file.length(), null);
+        return R.data(coreFile.getId());
+    }
+
+    @Override
+    @PostMapping(value = "/uploadFile",consumes = MediaType.MULTIPART_FORM_DATA_VALUE,produces =  MediaType.APPLICATION_PROBLEM_JSON_VALUE)
+    public R<Long> uploadFile(@RequestParam("file") File file){
+        ResourceFile coreFile = operateBuilder
+                .getBuilder(null)
                 .upload(FileUtil.readBytes(file), file.getName(), file.length(), null);
         return R.data(coreFile.getId());
     }

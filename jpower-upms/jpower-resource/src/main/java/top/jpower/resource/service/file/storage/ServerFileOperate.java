@@ -4,24 +4,22 @@ import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.util.IdUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Component;
 import top.jpower.common.constants.DefaultValConstants;
-import top.jpower.common.enums.FileStorageTypeEnum;
+import top.jpower.common.enums.OssCategoryEnum;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.utils.*;
 import top.jpower.resource.dbs.dao.ResourceFileDao;
 import top.jpower.resource.dbs.entity.ResourceFile;
+import top.jpower.resource.dbs.entity.ResourceOss;
 import top.jpower.resource.service.file.FileOperate;
-import top.jpower.resource.service.file.properties.FileProperties;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
 import static top.jpower.common.constants.ServiceCodeConstants.*;
-import static top.jpower.resource.service.file.storage.ServerFileOperate.STORAGE_TYPE;
 
 /**
  * 服务器文件操作实现
@@ -32,24 +30,22 @@ import static top.jpower.resource.service.file.storage.ServerFileOperate.STORAGE
  * @author mr.g
  * @since 2020-07-28
  */
-@Component(STORAGE_TYPE)
 @RequiredArgsConstructor
 public class ServerFileOperate implements FileOperate {
 
-	public static final String STORAGE_TYPE = "SERVER";
-	private final FileProperties fileProperties;
+	private final ResourceOss resourceOss;
 	private final ResourceFileDao resourceFileDao;
 
 	@Override
 	public ResourceFile upload(byte[] bytes, String name, Long size, Long groupId) {
-		JpowerAssert.notEmpty(fileProperties.getServer().getPath(), JpowerError.Unknown,FILE_SAVE_PATH_NOT_CONFIG);
+		JpowerAssert.notEmpty(resourceOss.getBucketName(), JpowerError.Unknown,FILE_SAVE_PATH_NOT_CONFIG);
 
-		File saveFile = FileUtil.saveFile(bytes, IdUtil.objectId(), fileProperties.getServer().getPath());
+		File saveFile = FileUtil.saveFile(bytes, IdUtil.objectId(), resourceOss.getBucketName());
 
 		ResourceFile coreFile = new ResourceFile();
 		coreFile.setPath(saveFile.getAbsolutePath());
 		coreFile.setName(name);
-		coreFile.setStorageType(FileStorageTypeEnum.SERVER.getValue());
+		coreFile.setStorageType(OssCategoryEnum.SERVER.name());
 		coreFile.setFileType(FileTypeUtil.getType(saveFile));
 		coreFile.setFileSize(size);
 		coreFile.setId(Fc.randomSnowFlakeId());
@@ -114,7 +110,7 @@ public class ServerFileOperate implements FileOperate {
 	 */
 	@Override
 	public String getUrl(ResourceFile coreFile) {
-		String domain = StringUtil.removeAllSuffix(fileProperties.getServer().getDomain(), StringPool.SLASH);
+		String domain = StringUtil.removeAllSuffix(resourceOss.getExternalAddress(), StringPool.SLASH);
 		File file = new File(coreFile.getPath());
 		return StringUtil.concat(domain, StringPool.SLASH, Optional.ofNullable(file.getParentFile()).map(File::getName).orElse(StringPool.EMPTY), StringPool.SLASH, file.getName());
 	}

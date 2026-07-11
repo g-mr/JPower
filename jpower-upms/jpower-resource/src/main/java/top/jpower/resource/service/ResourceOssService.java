@@ -24,4 +24,12 @@ public interface ResourceOssService extends BaseService<ResourceOss> {
      */
     List<SelectDTO> listCodeName();
 
+    /**
+     * 设置默认
+     *
+     * @author mr.g
+     * @param id 编码
+     * @return Boolean 是否成功
+     */
+    Boolean setDefault(Long id);
 }

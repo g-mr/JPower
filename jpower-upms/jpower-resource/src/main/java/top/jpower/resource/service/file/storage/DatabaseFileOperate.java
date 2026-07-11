@@ -5,7 +5,7 @@ import cn.hutool.core.io.IoUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import top.jpower.common.constants.DefaultValConstants;
-import top.jpower.common.enums.FileStorageTypeEnum;
+import top.jpower.common.enums.OssCategoryEnum;
 import top.jpower.core.util.utils.*;
 import top.jpower.resource.dbs.dao.ResourceFileDao;
 import top.jpower.resource.dbs.entity.ResourceFile;
@@ -39,7 +39,7 @@ public class DatabaseFileOperate implements FileOperate {
 		coreFile.setFileSize(size);
 		coreFile.setId(Fc.randomSnowFlakeId());
 		coreFile.setMark(DesUtil.encrypt(Fc.toStr(coreFile.getId()), DefaultValConstants.FILE_DES_KEY));
-		coreFile.setStorageType(FileStorageTypeEnum.DATABASE.getValue());
+		coreFile.setStorageType(OssCategoryEnum.DATABASE.name());
 		coreFile.setContent(bytes);
 		coreFile.setName(name);
 		coreFile.setGroupId(groupId);

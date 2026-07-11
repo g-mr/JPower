@@ -3,23 +3,21 @@ package top.jpower.resource.service.file.storage;
 import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.io.IoUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import top.jpower.common.constants.DefaultValConstants;
-import top.jpower.common.enums.FileStorageTypeEnum;
+import top.jpower.common.enums.OssCategoryEnum;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
 import top.jpower.core.util.constants.StringPool;
 import top.jpower.core.util.utils.*;
 import top.jpower.resource.dbs.dao.ResourceFileDao;
 import top.jpower.resource.dbs.entity.ResourceFile;
+import top.jpower.resource.dbs.entity.ResourceOss;
 import top.jpower.resource.service.file.FileOperate;
-import top.jpower.resource.service.file.properties.FileProperties;
 import top.jpower.resource.utils.FileDfsUtil;
 
 import java.io.IOException;
 
 import static top.jpower.common.constants.ServiceCodeConstants.FILE_NOT_EXIST;
-import static top.jpower.resource.service.file.storage.FastDfsFileOperate.STORAGE_TYPE;
 
 /**
  * FastDFS文件操作实现
@@ -30,18 +28,15 @@ import static top.jpower.resource.service.file.storage.FastDfsFileOperate.STORAG
  * @author mr.g
  * @since 2020-07-28
  */
-@Component(STORAGE_TYPE)
 @RequiredArgsConstructor
 public class FastDfsFileOperate implements FileOperate {
 
-	public static final String STORAGE_TYPE = "FASTDFS";
-	private final FileProperties fileProperties;
+	private final ResourceOss resourceOss;
 	private final ResourceFileDao resourceFileDao;
 
 
 	@Override
 	public ResourceFile upload(byte[] bytes, String name, Long size, Long groupId) {
-
 		String type = FileTypeUtil.getType(IoUtil.toStream(bytes), name);
 
 		String dfsPath = FileDfsUtil.upload(bytes, size, type);
@@ -50,7 +45,7 @@ public class FastDfsFileOperate implements FileOperate {
 		file.setFileSize(size);
 		file.setId(Fc.randomSnowFlakeId());
 		file.setMark(DesUtil.encrypt(Fc.toStr(file.getId()), DefaultValConstants.FILE_DES_KEY));
-		file.setStorageType(FileStorageTypeEnum.FASTDFS.getValue());
+		file.setStorageType(OssCategoryEnum.FASTDFS.name());
 		file.setPath(dfsPath);
 		file.setName(name);
 		file.setGroupId(groupId);
@@ -97,7 +92,7 @@ public class FastDfsFileOperate implements FileOperate {
 	 */
 	@Override
 	public String getUrl(ResourceFile coreFile) {
-		String domain = StringUtil.removeAllSuffix(fileProperties.getFastDfs().getDomain(), StringPool.SLASH);
+		String domain = StringUtil.removeAllSuffix(resourceOss.getExternalAddress(), StringPool.SLASH);
 		return domain+coreFile.getPath();
 	}
 }

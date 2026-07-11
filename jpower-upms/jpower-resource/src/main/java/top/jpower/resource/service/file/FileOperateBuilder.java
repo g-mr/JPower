@@ -1,9 +1,7 @@
 package top.jpower.resource.service.file;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
-import top.jpower.common.enums.FileStorageTypeEnum;
 import top.jpower.common.enums.OssCategoryEnum;
 import top.jpower.core.exception.enums.JpowerError;
 import top.jpower.core.exception.throwable.JpowerAssert;
@@ -11,10 +9,7 @@ import top.jpower.core.util.utils.Fc;
 import top.jpower.resource.dbs.dao.ResourceFileDao;
 import top.jpower.resource.dbs.dao.ResourceOssDao;
 import top.jpower.resource.dbs.entity.ResourceOss;
-import top.jpower.resource.service.file.properties.FileProperties;
-import top.jpower.resource.service.file.storage.OssAliFileOperate;
-import top.jpower.resource.service.file.storage.OssAwsFileOperate;
-import top.jpower.resource.service.file.storage.OssQnFileOperate;
+import top.jpower.resource.service.file.storage.*;
 
 import java.util.Map;
 
@@ -29,7 +24,6 @@ import static top.jpower.common.constants.ServiceCodeConstants.INVALID_STORAGE_T
  * @author mr.g
  */
 @Component
-@EnableConfigurationProperties(FileProperties.class)
 @RequiredArgsConstructor
 public class FileOperateBuilder {
 
@@ -48,11 +42,19 @@ public class FileOperateBuilder {
      * @return FileOperate 文件操作实现类
      */
     public synchronized FileOperate getBuilder(String storageType) {
-        FileOperate fileUpload = uploadPool.get(Fc.toStr(storageType, FileStorageTypeEnum.SERVER.getValue()));
+        FileOperate fileUpload = uploadPool.get(storageType);
 
         if (Fc.isEmpty(fileUpload)){
-            ResourceOss resourceOss = resourceOssDao.getByCode(storageType);
+            ResourceOss resourceOss = resourceOssDao.getDefaultByCode(storageType);
             switch (OssCategoryEnum.getEnum(resourceOss.getCategory())){
+                case SERVER:
+                    fileUpload = new ServerFileOperate(resourceOss, resourceFileDao);
+                    uploadPool.put(resourceOss.getCode(), fileUpload);
+                    break;
+                case FASTDFS:
+                    fileUpload = new FastDfsFileOperate(resourceOss, resourceFileDao);
+                    uploadPool.put(resourceOss.getCode(), fileUpload);
+                    break;
                 case ALI:
                     fileUpload = new OssAliFileOperate(resourceOss, resourceFileDao);
                     uploadPool.put(resourceOss.getCode(), fileUpload);
