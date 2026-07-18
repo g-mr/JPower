@@ -56,7 +56,6 @@ import java.util.stream.Collectors;
 @EnableConfigurationProperties({DemoProperties.class, MybatisProperties.class})
 public class MybatisFlexConfig {
 
-
     /**
      * 一些mybatis配置
      *
