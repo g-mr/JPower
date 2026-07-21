@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import top.jpower.common.constants.AppConstant;
 import top.jpower.common.constants.CacheNames;
 import top.jpower.common.enums.FunctionTargetEnum;
 import top.jpower.common.enums.FunctionTypeEnum;
@@ -338,7 +339,8 @@ public class CoreFunctionServiceImpl extends BaseServiceImpl<CoreFunctionMapper,
                                 function.setCode(code);
                                 function.setFunctionName(MapUtil.getStr(fun, "name"));
                                 function.setAlias(MapUtil.getStr(fun, "alias"));
-                                function.setUrl(MapUtil.getStr(fun, "url"));
+                                // BOOT环境有项目名为前缀，需要去除
+                                function.setUrl(AppConstant.stripServicePrefix(MapUtil.getStr(fun, "url")));
                                 function.setClientId(tbCoreFunction.getClientId());
                                 if (Fc.isEmpty(fun.get("btnCode"))){
                                     function.setParentId(tbCoreFunction.getId());

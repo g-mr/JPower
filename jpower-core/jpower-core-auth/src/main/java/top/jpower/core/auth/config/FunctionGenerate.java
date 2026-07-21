@@ -63,7 +63,7 @@ public class FunctionGenerate implements ApplicationRunner {
                             map.put("btnCode", menu.btnCode());
                             map.put("type", menu.type());
                             map.put("alias", Fc.blankDefault(function.alias(), MapUtil.getStr(map, "name")));
-                            map.put("url",url);
+                            map.put("url", url);
                             list.add(map);
                             functions.put(menu.menuCode(),list);
                         }
