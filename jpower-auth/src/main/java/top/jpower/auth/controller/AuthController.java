@@ -243,7 +243,6 @@ public class AuthController extends BaseController {
             return R.fail(USER_EXIST);
         }
 
-		coreUser.setPassword(DigestUtil.pwdEncrypt(coreUser.getPassword()));
         coreUser.setRoleIds(Collections.singletonList(ParamCache.getLong(ParamsConstants.REGISTER_ROLE_ID)));
         return userClient.saveUser(coreUser);
     }

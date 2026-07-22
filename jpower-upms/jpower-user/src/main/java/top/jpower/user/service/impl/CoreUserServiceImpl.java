@@ -184,7 +184,7 @@ public class CoreUserServiceImpl extends BaseServiceImpl<CoreUserMapper, CoreUse
 
     @Override
     public Long saveUser(CoreUser user, List<Long> roleIds) {
-		user.setPassword(DigestUtil.pwdEncrypt(ParamCache.getString(ParamsConstants.USER_DEFAULT_PASSWORD, DefaultValConstants.DEFAULT_USER_PASSWORD)));
+        user.setPassword(DigestUtil.pwdEncrypt(Fc.toStr(user.getPassword(), ParamCache.getString(ParamsConstants.USER_DEFAULT_PASSWORD, DefaultValConstants.DEFAULT_USER_PASSWORD))));
         if (coreUserDao.save(user)){
             if (Fc.isNotEmpty(roleIds)) {
                 List<CoreUserRole> userRoleList = new ArrayList<>();

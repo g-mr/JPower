@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import top.jpower.core.util.rsp.R;
 import top.jpower.core.util.utils.BeanUtil;
+import top.jpower.core.util.utils.Fc;
 import top.jpower.user.api.dto.CoreUserDTO;
 import top.jpower.user.api.dto.ValidatePasswordDTO;
 import top.jpower.user.api.feign.UserClient;
@@ -35,9 +36,12 @@ public class UserClientController implements UserClient {
     @GetMapping("/queryUserByLoginId")
     public R<CoreUserDTO> queryUserByLoginId(@RequestParam String loginId, @RequestParam String tenantCode) {
         CoreUser user = coreUserService.selectUserLoginId(loginId,tenantCode);
-		CoreUserDTO userDTO = BeanUtil.copyProperties(user, CoreUserDTO.class);
-		userDTO.setRoleIds(coreUserRoleService.queryRoleIds(user.getId()));
-        return R.data(userDTO);
+        if (Fc.notNull(user)) {
+            CoreUserDTO userDTO = BeanUtil.copyProperties(user, CoreUserDTO.class);
+            userDTO.setRoleIds(coreUserRoleService.queryRoleIds(user.getId()));
+            return R.data(userDTO);
+        }
+        return R.data(null);
     }
 
     @Override
