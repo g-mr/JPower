@@ -383,6 +383,14 @@ public abstract class AgiSupport {
         return radio(say, isSaveFile, null, null);
     }
 
+    public String radio(String say, boolean isSaveFile, AsrIdle asrIdle) {
+        return radio(say, isSaveFile, asrIdle, null);
+    }
+
+    public String radio(String say, boolean isSaveFile, List<AsrNoInterrupt> asrNoInterrupts) {
+        return radio(say, isSaveFile, null, asrNoInterrupts);
+    }
+
     /**
      * 边播边录音，一旦有录音立马进行打断
      * <br />
