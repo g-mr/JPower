@@ -379,6 +379,10 @@ public abstract class AgiSupport {
         return radio(say, false, null, null);
     }
 
+    public String radio(String say, boolean isSaveFile) {
+        return radio(say, isSaveFile, null, null);
+    }
+
     /**
      * 边播边录音，一旦有录音立马进行打断
      * <br />
