@@ -7,8 +7,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
-public record AsrResult(CompletableFuture<String> future, AtomicBoolean started, AtomicReference<Consumer<String>> dataReference, AtomicReference<Consumer<Long>> noDataReference) {
+public record AsrResult(CompletableFuture<String> future, AtomicBoolean started, AtomicReference<Function<String, Boolean>> dataReference, AtomicReference<Consumer<Long>> noDataReference) {
     /**
      * 获取最终结果（阻塞）
      *

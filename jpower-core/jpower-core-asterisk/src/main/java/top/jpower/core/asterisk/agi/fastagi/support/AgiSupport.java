@@ -6,7 +6,10 @@ import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.text.StrPool;
 import cn.hutool.core.thread.ThreadUtil;
-import cn.hutool.core.util.*;
+import cn.hutool.core.util.CharUtil;
+import cn.hutool.core.util.ClassUtil;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import lombok.Getter;
@@ -20,16 +23,18 @@ import org.asteriskjava.fastagi.AgiRequest;
 import org.asteriskjava.manager.ManagerConnection;
 import org.asteriskjava.manager.TimeoutException;
 import top.jpower.core.asterisk.ami.action.ControlPlaybackAction;
-import top.jpower.core.asterisk.audio.AsrClient;
-import top.jpower.core.asterisk.audio.AsrResult;
-import top.jpower.core.asterisk.audio.TtsClient;
-import top.jpower.core.asterisk.audio.TtsResult;
-import top.jpower.core.asterisk.audio.WavWriter;
+import top.jpower.core.asterisk.audio.*;
+import top.jpower.core.asterisk.dto.AsrIdle;
+import top.jpower.core.asterisk.dto.AsrNoInterrupt;
 import top.jpower.core.asterisk.properties.AsteriskProperties;
 import top.jpower.core.util.utils.Fc;
 
 import java.io.*;
-import java.util.concurrent.*;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -367,11 +372,11 @@ public abstract class AgiSupport {
      * @return 录音内容
      */
     public String radio() {
-        return radio(null, false);
+        return radio(null, false, null, null);
     }
 
     public String radio(String say) {
-        return radio(say, false);
+        return radio(say, false, null, null);
     }
 
     /**
@@ -380,9 +385,12 @@ public abstract class AgiSupport {
      * 锁机制，一个通话只能同时一条,确保线程安全
      *
      * @param say 播报内容,为空代表不播放
+     * @param isSaveFile 录音文件是否保存
+     * @param asrIdle 长时间无ASR
+     * @param asrNoInterrupts 识别不打断的内容
      * @return 录音内容
      */
-    public synchronized String radio(String say, boolean isSaveFile) {
+    public synchronized String radio(String say, boolean isSaveFile, AsrIdle asrIdle, List<AsrNoInterrupt> asrNoInterrupts) {
 
         // 创建录音文件
         String parentPath = StrUtil.concat(true, rootDir, getPhone(), "/voice/");
@@ -404,15 +412,48 @@ public abstract class AgiSupport {
 
             // 识别内容
             AsrResult result = asrClient.process(new PipedInputStream(pipedOut, 1024 * 1024));
-            result.noDataReference().set(ms->{
-                // 已经播放完了，但是等了10秒用户还不说话，就提示
-                if (isVoiceEnd.get() && !result.isStarted() && voiceStopTime.get() > 0 && DateUtil.spendMs(voiceStopTime.get()) > 10000){
-                    streamFile("喂。您有什么问题？", true);
-                    // 播放一次就不用重复播了
-                    result.noDataReference().set(null);
-                }
+            if (Fc.notNull(asrIdle)) {
+                result.noDataReference().set(ms->{
+                    // 已经播放完了，但是等了10秒用户还不说话，就提示
+                    if (isVoiceEnd.get() && !result.isStarted() && voiceStopTime.get() > 0 && DateUtil.spendMs(voiceStopTime.get()) > asrIdle.idleDuration().toMillis()){
+                        if (Fc.isNotBlank(asrIdle.idleSay())) {
+                            streamFile(asrIdle.idleSay(), true);
+                        }
+                        // 播放一次就不用重复播了
+                        result.noDataReference().set(null);
+                    }
+                });
+            }
 
-            });
+            AtomicBoolean isSayInterrupt = new AtomicBoolean(true);
+
+            if (Fc.isNotEmpty(asrNoInterrupts)) {
+                isSayInterrupt.set(false);
+                result.dataReference().set(message -> {
+                    if (Fc.isNotBlank(message)) {
+                        // 去掉标点符号
+                        String realTimeSay = message.replaceAll("[^\\p{L}\\p{N}]", "");
+
+                        boolean isMatch = asrNoInterrupts.stream().anyMatch(asrNoInterrupt -> {
+                            if (asrNoInterrupt.isPrecise()) {
+                                return Fc.equalsValue(realTimeSay, asrNoInterrupt.say());
+                            } else {
+                                return realTimeSay.contains(asrNoInterrupt.say());
+                            }
+                        });
+
+                        if (isMatch) {
+                            // 匹配成功代表这些话不能被打断
+                            return false;
+                        } else {
+                            // 如果都不匹配，代表需要打断
+                            isSayInterrupt.set(true);
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+            }
 
             // 开始录音
             exec("MixMonitor", file, "r("+userFile+")i(monitorId)"); //v(4)
@@ -485,7 +526,7 @@ public abstract class AgiSupport {
                 executor.execute(() -> {
                     while (!isHangup() && !result.isDone() && FileUtil.exist(fileVoice+".wav")) {
                         try {
-                            if (result.isStarted()){
+                            if (result.isStarted() && isSayInterrupt.get()){
                                 log.info("识别到说话了，进行停止播放==>>{}", channel.getName());
                                 ControlPlaybackAction action = new ControlPlaybackAction();
                                 action.setActionId(IdUtil.getSnowflakeNextIdStr());
@@ -534,4 +575,5 @@ public abstract class AgiSupport {
         ttsClient.close();
         asrClient.close();
     }
+
 }
